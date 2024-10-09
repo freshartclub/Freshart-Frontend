@@ -215,26 +215,49 @@ const OrderPage = () => {
                     </P>
                   </div>
 
-                  <div className="flex mt-6 items-center gap-5">
+                  <div className="flex sm:flex-row flex-col justify-between  w-full mt-6 ">
+                    <div className="flex items-center sm:justify-center justify-between md:gap-5 ">
+                      <Button
+                        variant={{
+                          fontWeight: "500",
+                          thickness: "thick",
+                        }}
+                        className="border border-black rounded-md text-sm sm:px-6 sm:py-3 !p-2"
+                      >
+                        {item.order_btn}
+                      </Button>
+
+                      <Button
+                        variant={{ fontWeight: "500" }}
+                        className="text-sm sm:px-6 sm:py-3 !p-2 "
+                      >
+                        {item.cancel}
+                      </Button>
+                    </div>
+                    <div className="flex md:justify-end mt-2 sm:mt-0">
+                      <Button
+                        variant={{
+                          theme: "light",
+                          fontWeight: "600",
+                        }}
+                        className="text-[16px] text-[#FF536B] border border-gray-400 text-sm  sm:px-6 sm:py-3 !p-2 "
+                      >
+                        {item.view}
+                      </Button>
+                    </div>
+                  </div>
+                  {/* <div className="flex sm:justify-end justify-center mt-2 sm:mt-0">
                     <Button
                       variant={{
-                        fontWeight: "400",
-                        thickness: "thick",
-                        fontSize: "small",
+                        fontSize: "base",
+                        theme: "light",
+                        fontWeight: "600",
                       }}
-                      className="border border-black rounded-md"
+                      className="text-[16px] text-[#FF536B] border border-gray-400"
                     >
-                      {item.order_btn}
-                    </Button>
-
-                    <a href="/">{item.cancel}</a>
-                  </div>
-
-                  <div className="flex sm:justify-end justify-center mt-2 sm:mt-0">
-                    <Link to="/" className="text-[16px] text-[#FF536B]">
                       {item.view}
-                    </Link>
-                  </div>
+                    </Button>
+                  </div> */}
                 </div>
               </div>
             </>

@@ -285,7 +285,7 @@ const ArtistDescription = () => {
 
         {activeTab === "curriculum" && (
           <div
-            className=" dark:bg-gray-800"
+            className=" "
             id="curriculum"
             role="tabpanel"
             aria-labelledby="curriculum-tab"
@@ -330,13 +330,14 @@ const ArtistDescription = () => {
                 >
                   Credentials and Insignias Area
                 </P>
-                <div className="flex sm:flex-row flex-col sm:gap-0 gap-8 items-center shadow-2xl rounded-md xl:px-7 px-5 xl:py-4 sm:py-3 py-5">
+
+                <div className="grid xl:grid-cols-4 lg:grid-cols-2 md:grid-cols-4 grid-cols-2 xl:gap-2 gap-5 items-center shadow-2xl rounded-md xl:py-10 py-5">
                   {credential.map((item, index) => (
                     <div
                       key={index}
-                      className={`flex flex-col gap-3 w-56 xl:px-6 px-4 justify-center items-center ${
+                      className={`flex flex-col gap-3 justify-center items-center ${
                         index !== credential.length - 1
-                          ? "sm:border-r-2 border-gray-300 border-r-none"
+                          ? " border-gray-300 border-r-none"
                           : ""
                       }`}
                     >

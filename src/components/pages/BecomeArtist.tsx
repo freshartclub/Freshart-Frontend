@@ -6,8 +6,13 @@ import browser from "../../assets/cloud-add.png";
 import Button from "../ui/Button";
 import arrow from "../../assets/arrow.png";
 import axios from "axios";
+import toast from "react-hot-toast";
+import file_logo from "../../assets/file_logo.png";
+import { useRef } from "react";
+import { CommonValidation } from "../ui/CommonValidation";
 
 const BecomeArtist = () => {
+  const fileInputRef = useRef(null);
   interface FormValues {
     fullName: string;
     email: string;
@@ -37,21 +42,8 @@ const BecomeArtist = () => {
       website: "",
       uploadDocs: null,
     },
-    validationSchema: Yup.object({
-      fullName: Yup.string().required("Full Name is required"),
-      email: Yup.string()
-        .email("Invalid email format")
-        .required("Email is required"),
-      phone: Yup.string().required("Phone Number is required"),
-      category: Yup.string().required("Category is required"),
-      style: Yup.string().required("Style is required"),
-      city: Yup.string().required("City is required"),
-      region: Yup.string().required("Region is required"),
-      country: Yup.string().required("Country is required"),
-      zipCode: Yup.string().required("Zip code is required"),
-      socialMedia: Yup.string().required("Social Media Link is required"),
-      website: Yup.string().required("Website link is required"),
-    }),
+
+    validationSchema: CommonValidation,
 
     onSubmit: async (values: FormValues) => {
       const formData = new FormData();
@@ -65,13 +57,12 @@ const BecomeArtist = () => {
       formData.append("country", values.country);
       formData.append("socialMedia", values.socialMedia);
       formData.append("website", values.website);
+      formData.append("city", values.city);
+      formData.append("uploadDocs", values.uploadDocs);
 
-      if (values.uploadDocs) {
-        formData.append("uploadDocs", values.uploadDocs);
-      }
+      console.log(formData.get("uploadDocs"));
 
       try {
-        console.log([...formData]);
         const response = await axios.post(
           "http://localhost:5000/api/artist/become-artist",
           formData,
@@ -79,16 +70,17 @@ const BecomeArtist = () => {
             headers: {
               "Content-Type": "multipart/form-data",
             },
-            // body: formData,
           }
         );
 
-        console.log("Form submitted successfully:", response.data);
-      } catch (error: any) {
+        toast.success("Become Artist successfull");
+        formik.resetForm();
+      } catch (error) {
         console.error(
-          "Data post failed:",
-          error.response?.data?.message || error.message
+          "Become Artist failed",
+          error.response ? error.response.data : error.message
         );
+        toast.error("Become Artist Form failed");
       }
     },
   });
@@ -96,7 +88,7 @@ const BecomeArtist = () => {
   return (
     <div className="bg-[#F9F7F6]">
       <div className="container mx-auto sm:px-6 px-3">
-        <div className="xl:w-[50%] lg:w-[70%] w-full mx-auto py-10">
+        <div className="xl:w-[70%] lg:w-[90%] w-full mx-auto py-10">
           <form
             onSubmit={formik.handleSubmit}
             className="bg-white  -md rounded px-8 pt-6 pb-8 mb-4"
@@ -114,7 +106,6 @@ const BecomeArtist = () => {
               Please fill the form below to become an artist. Feel free to add
               as much detail as needed. Our admin will contact you.
             </P>
-
             <div className="sm:mb-4 mb-2">
               <label className="block text-gray-700 text-sm font-bold mb-2">
                 Full Name
@@ -128,12 +119,11 @@ const BecomeArtist = () => {
                 placeholder="Enter full name"
               />
               {formik.touched.fullName && formik.errors.fullName && (
-                <span className="text-red-500 text-xs italic">
+                <span className="text-red-500 text-xs ">
                   {formik.errors.fullName}
                 </span>
               )}
             </div>
-
             <div className="flex sm:flex-row flex-col justify-between">
               <div className="sm:mb-4 mb-2 sm:w-[49%] w-full">
                 <label className="block text-gray-700 text-sm font-bold mb-2">
@@ -148,7 +138,7 @@ const BecomeArtist = () => {
                   placeholder="Enter email"
                 />
                 {formik.touched.email && formik.errors.email && (
-                  <span className="text-red-500 text-xs italic">
+                  <span className="text-red-500 text-xs  ">
                     {formik.errors.email}
                   </span>
                 )}
@@ -167,13 +157,12 @@ const BecomeArtist = () => {
                   placeholder="Enter phone number"
                 />
                 {formik.touched.phone && formik.errors.phone && (
-                  <span className="text-red-500 text-xs italic">
+                  <span className="text-red-500 text-xs  ">
                     {formik.errors.phone}
                   </span>
                 )}
               </div>
             </div>
-
             <div className="flex sm:flex-row flex-col justify-between">
               {/* Category Field */}
               <div className="sm:mb-4 mb-2 sm:w-[49%] w-full">
@@ -192,7 +181,7 @@ const BecomeArtist = () => {
                   <option value="category2">Category 2</option>
                 </select>
                 {formik.touched.category && formik.errors.category && (
-                  <span className="text-red-500 text-xs italic">
+                  <span className="text-red-500 text-xs  ">
                     {formik.errors.category}
                   </span>
                 )}
@@ -215,13 +204,12 @@ const BecomeArtist = () => {
                   <option value="style2">Style 2</option>
                 </select>
                 {formik.touched.style && formik.errors.style && (
-                  <span className="text-red-500 text-xs italic">
+                  <span className="text-red-500 text-xs  ">
                     {formik.errors.style}
                   </span>
                 )}
               </div>
             </div>
-
             <div className="mb-4 w-full">
               <label className="block text-gray-700 text-sm font-bold mb-2">
                 ZipCode
@@ -235,12 +223,11 @@ const BecomeArtist = () => {
                 placeholder="Enter City"
               />
               {formik.touched.zipCode && formik.errors.zipCode && (
-                <span className="text-red-500 text-xs italic">
+                <span className="text-red-500 text-xs  ">
                   {formik.errors.zipCode}
                 </span>
               )}
             </div>
-
             <div className="flex sm:flex-row flex-col justify-between">
               <div className="mb-4 sm:w-[32%] w-full">
                 <label className="block text-gray-700 text-sm font-bold mb-2">
@@ -255,7 +242,7 @@ const BecomeArtist = () => {
                   placeholder="Enter City"
                 />
                 {formik.touched.city && formik.errors.city && (
-                  <span className="text-red-500 text-xs italic">
+                  <span className="text-red-500 text-xs  ">
                     {formik.errors.city}
                   </span>
                 )}
@@ -274,7 +261,7 @@ const BecomeArtist = () => {
                   placeholder="Enter Region"
                 />
                 {formik.touched.region && formik.errors.region && (
-                  <span className="text-red-500 text-xs italic">
+                  <span className="text-red-500 text-xs  ">
                     {formik.errors.region}
                   </span>
                 )}
@@ -293,28 +280,33 @@ const BecomeArtist = () => {
                   placeholder="Enter Country"
                 />
                 {formik.touched.country && formik.errors.country && (
-                  <span className="text-red-500 text-xs italic">
+                  <span className="text-red-500 text-xs  ">
                     {formik.errors.country}
                   </span>
                 )}
               </div>
             </div>
-
             <div className="flex sm:flex-row flex-col justify-between">
               <div className="sm:mb-4 mb-2 sm:w-[49%] w-full">
                 <label className="block text-gray-700 text-sm font-bold mb-2">
                   Social Media Reference
                 </label>
-                <input
+
+                <select
                   name="socialMedia"
                   value={formik.values.socialMedia}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  className="  appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus: -outline"
-                  placeholder="Instagram"
-                />
+                  className="block appearance-none w-full bg-white border px-4 py-3 pr-8 rounded leading-tight focus:outline-none focus: -outline"
+                >
+                  <option value="">Instagram</option>
+                  <option value="socialMedia1">Facebook</option>
+                  <option value="socialMedia2">LinkedIn</option>
+                  <option value="socialMedia3">Twitter</option>
+                </select>
+
                 {formik.touched.socialMedia && formik.errors.socialMedia && (
-                  <span className="text-red-500 text-xs italic">
+                  <span className="text-red-500 text-xs  ">
                     {formik.errors.socialMedia}
                   </span>
                 )}
@@ -333,7 +325,7 @@ const BecomeArtist = () => {
                   placeholder="www.google.com"
                 />
                 {formik.touched.website && formik.errors.website && (
-                  <span className="text-red-500 text-xs italic">
+                  <span className="text-red-500 text-xs  ">
                     {formik.errors.website}
                   </span>
                 )}
@@ -341,7 +333,10 @@ const BecomeArtist = () => {
             </div>
 
             <div className="mb-8">
-              <div className="border-2 border-dashed border-gray-300 p-6 rounded-lg text-center">
+              <div
+                className="border-2 border-dashed border-gray-300 p-6 rounded-lg text-center cursor-pointer"
+                onClick={() => fileInputRef.current.click()}
+              >
                 <div className="flex justify-center items-center">
                   <img src={browser} alt="browse-icon" />
                 </div>
@@ -350,33 +345,57 @@ const BecomeArtist = () => {
                 </label>
                 <label className="block text-center">
                   <input
+                    ref={fileInputRef}
                     name="uploadDocs"
                     type="file"
-                    onChange={(event) =>
+                    accept=".pdf,.doc,.docx,.xls,.xlsx"
+                    onChange={(event) => {
                       formik.setFieldValue(
                         "uploadDocs",
                         event.currentTarget.files[0]
-                      )
-                    }
+                      );
+
+                      event.target.value = null;
+                    }}
                     className="hidden"
                   />
                   <p className="text-gray-600 sm:text-md text-base mt-4">
                     PDF, DOC, and Excel formats, up to 5MB
                   </p>
+
+                  {formik.values.uploadDocs && (
+                    <>
+                      <div className="w-full flex items-center justify-center mt-4">
+                        <img
+                          src={file_logo}
+                          alt="file logo"
+                          className="w-[20px] h-[20px] mt-2 mr-1"
+                        />
+                        <p className="text-red-500 text-bold mt-2">
+                          {formik.values.uploadDocs.name}
+                        </p>
+                      </div>
+                    </>
+                  )}
+
                   <Button
                     variant={{
                       fontSize: "md",
                       thickness: "thick",
                       fontWeight: "600",
                     }}
-                    className="border border-[#CBD0DC] text-[#54575C] py-3 sm:px-16  rounded-2xl cursor-pointer mt-5"
+                    className="border border-[#CBD0DC] text-[#54575C] py-3 sm:px-16 rounded-2xl cursor-pointer mt-5"
                   >
                     Browse File
                   </Button>
                 </label>
+                {formik.touched.website && formik.errors.website && (
+                  <span className="text-red-500 text-xs  ">
+                    {formik.errors.uploadDocs}
+                  </span>
+                )}
               </div>
             </div>
-
             <div className="flex items-center justify-end">
               <Button
                 type="submit"

@@ -1,7 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useFormik } from "formik";
-import * as Yup from "yup";
 import loginImage from "../../assets/login.png";
 import arrow from "../../assets/arrow.png";
 import facebook from "../../assets/facebook.png";
@@ -12,6 +11,7 @@ import P from "../ui/P";
 import Button from "../ui/Button";
 import eye from "../../assets/view.png";
 import eyeclose from "../../assets/hidden.png";
+import { CommonValidation } from "../ui/CommonValidation";
 
 const Login: React.FC = () => {
   const [newPasswordIcon, setNewPasswordIcon] = React.useState(eyeclose);
@@ -32,14 +32,8 @@ const Login: React.FC = () => {
       email: "",
       password: "",
     },
-    validationSchema: Yup.object({
-      email: Yup.string()
-        .email("Invalid email address")
-        .required("Email is required"),
-      password: Yup.string()
-        .required("Password is required")
-        .min(6, "Password must be at least 6 characters long"),
-    }),
+
+    validationSchema: CommonValidation,
     onSubmit: (values) => {
       console.log("Form values:", values);
     },
@@ -48,7 +42,7 @@ const Login: React.FC = () => {
   return (
     <div className="container mx-auto md:px-6 px-3">
       <div className="grid md:grid-cols-2 grid-cols-1 gap-10 py-10">
-        <div className="text-center shadow-xl bg-white xl:p-10 lg:p-8 md:p-6 p-8 lg:w-[80%] w-full">
+        <div className="text-center shadow-xl bg-white xl:p-10 lg:p-8 md:p-6 p-4 xl:w-[80%] w-full">
           <Header variant={{ size: "2xl", theme: "dark", weight: "semiBold" }}>
             Welcome Back
           </Header>
@@ -144,14 +138,14 @@ const Login: React.FC = () => {
 
           <div>
             <div className="flex items-center my-4">
-              <span className="flex-grow sm:w-[20%] w-[30%] sm:ml-10 ml-8 border-2 border-t border-gray-300"></span>
+              <span className="flex-grow sm:w-[20%] w-[28%] lg:ml-10 md:mr-0 mr-2 border-2 border-t border-gray-300"></span>
               <P
-                variant={{ size: "base", theme: "dark", weight: "semiBold" }}
-                className="lg:mx-4 md:mx-2 mx-3"
+                variant={{ theme: "dark", weight: "semiBold" }}
+                className="lg:mx-4 md:mx-2 mx-0 md:text-base text-sm"
               >
                 Or continue with
               </P>
-              <span className="flex-grow sm:w-[20%] w-[30%] sm:mr-10 mr-8 border-2 border-t border-gray-300"></span>
+              <span className="flex-grow sm:w-[20%] w-[28%] lg:mr-10 md:ml-0 ml-2 border-2 border-t border-gray-300"></span>
             </div>
 
             <div className="grid grid-cols-1 gap-2 mt-4 xl:grid-cols-3 lg:grid-cols-2 md:grid-cols-1 sm:grid-cols-3 lg:gap-4 lg:mt-6">
@@ -163,11 +157,15 @@ const Login: React.FC = () => {
                   thickness: "moderate",
                   fontSize: "base",
                 }}
-                className="flex justify-center border border-[#102030]"
+                className={`flex justify-center border border-[#102030]`}
               >
-                <img src={google} alt="Google" className="ml-2" />
+                <img src={google} alt="arrow" className="ml-2" />
                 <P
-                  variant={{ size: "base", theme: "dark", weight: "medium" }}
+                  variant={{
+                    size: "base",
+                    theme: "dark",
+                    weight: "medium",
+                  }}
                   className="ml-1 mt-[2px]"
                 >
                   Google
@@ -182,11 +180,15 @@ const Login: React.FC = () => {
                   thickness: "moderate",
                   fontSize: "base",
                 }}
-                className="flex justify-center border border-[#102030]"
+                className={`flex justify-center border border-[#102030]`}
               >
-                <img src={apple} alt="Apple" className="ml-2" />
+                <img src={apple} alt="arrow" className="ml-2" />
                 <P
-                  variant={{ size: "base", theme: "dark", weight: "medium" }}
+                  variant={{
+                    size: "base",
+                    theme: "dark",
+                    weight: "medium",
+                  }}
                   className="ml-2 mt-[2px]"
                 >
                   Apple ID
@@ -201,11 +203,15 @@ const Login: React.FC = () => {
                   thickness: "moderate",
                   fontSize: "base",
                 }}
-                className="flex justify-center border border-[#102030]"
+                className={`flex justify-center border border-[#102030]`}
               >
-                <img src={facebook} alt="Facebook" className="" />
+                <img src={facebook} alt="arrow" className="" />
                 <P
-                  variant={{ size: "base", theme: "dark", weight: "medium" }}
+                  variant={{
+                    size: "base",
+                    theme: "dark",
+                    weight: "medium",
+                  }}
                   className="ml-1 mt-[2px]"
                 >
                   Facebook
@@ -213,7 +219,7 @@ const Login: React.FC = () => {
               </Button>
             </div>
 
-            <div className="flex mt-5 justify-center">
+            <div className="flex sm:flex-row flex-col mt-5 justify-center">
               <P
                 variant={{ theme: "dark", weight: "medium" }}
                 className="md:text-base text-sm"
@@ -222,7 +228,7 @@ const Login: React.FC = () => {
               </P>
               <Link
                 to="/signup"
-                className="font-bold uppercase border-b border-black ml-1 md:text-base text-sm"
+                className="font-bold uppercase ml-1 md:text-base text-sm"
               >
                 Sign Up
               </Link>

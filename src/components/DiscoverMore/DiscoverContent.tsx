@@ -9,15 +9,18 @@ import question from "./assets/question.png";
 
 const DiscoverContent = () => {
   return (
-    <div className="">
+    <div>
       <P
         variant={{ size: "small", weight: "semiBold" }}
-        className="mb-10 text-[#999999]"
+        className="lg:mb-10 mb-3 text-[#999999]"
       >
         Black & White Fashion
       </P>
       <div className="flex gap-2">
-        <Header variant={{ size: "3xl", theme: "dark", weight: "bold" }}>
+        <Header
+          variant={{ theme: "dark", weight: "bold" }}
+          className="xl:text-3xl text-xl"
+        >
           Ornamental Goblet Poster
         </Header>
         <P
@@ -28,7 +31,7 @@ const DiscoverContent = () => {
         </P>
       </div>
 
-      <div className="flex pb-5 border-b mt-2 gap-1">
+      <div className="flex lg:pb-5 pb-2 border-b lg:mt-2 gap-1">
         <P variant={{ size: "base", theme: "dark", weight: "medium" }}>
           Author :
         </P>
@@ -37,7 +40,7 @@ const DiscoverContent = () => {
         </P>
       </div>
 
-      <div className="flex gap-2 mt-2">
+      <div className="flex gap-2 lg:mt-2 mt-1">
         <P variant={{ size: "base", theme: "dark", weight: "normal" }}>
           Years of creation :
         </P>
@@ -46,15 +49,14 @@ const DiscoverContent = () => {
 
       <P
         variant={{ size: "base", theme: "dark", weight: "normal" }}
-        className="mt-2"
+        className="lg:mt-2 mt-1"
       >
         Newyork, USA
       </P>
 
       <P
         variant={{ size: "base", theme: "dark", weight: "normal" }}
-        className="my-6
-        "
+        className="lg:my-6 my-2"
       >
         Quia in harum exercitationem sit sequi omnis. Tenetur id facere illo
         dolor. Nulla molestiae voluptatem mollitia ullam necessitatibus sit
@@ -72,22 +74,21 @@ const DiscoverContent = () => {
 
       <Header
         variant={{ size: "xl", theme: "dark", weight: "semiBold" }}
-        className="my-4"
+        className="lg:my-4 my-2"
       >
         $120.00
       </Header>
 
-      <div className="flex gap-10">
+      <div className="flex md:flex-row flex-col xl:gap-10 gap-2">
         <Button
           variant={{
-            fontSize: "lg",
             theme: "dark",
             fontWeight: "600",
             rounded: "full",
           }}
-          className="flex !px-12 !py-4"
+          className="text-base flex items-center justify-center xl:!px-12 lg:px-4 lg:!py-4 !py-2 w-full"
         >
-          <img src={cart} alt="" className="mx-2" />
+          <img src={cart} alt="" className="md:mx-2 mx-1" />
           <P variant={{ size: "base", theme: "light", weight: "normal" }}>
             Add to cart
           </P>
@@ -95,45 +96,44 @@ const DiscoverContent = () => {
 
         <Button
           variant={{
-            fontSize: "lg",
             theme: "",
             rounded: "full",
           }}
-          className="flex border !px-12 !py-4"
+          className="text-base flex items-center justify-center border xl:!px-12 lg:px-4 lg:!py-4 !py-2 w-full"
         >
-          <img src={mark} alt="" className="mx-2" />
+          <img src={mark} alt="" className="md:mx-2 mx-1" />
           <P variant={{ size: "base", theme: "dark", weight: "normal" }}>
             Make an offer
           </P>
         </Button>
       </div>
 
-      <div className="flex w-[70%] justify-end items-center my-6">
-        <div className="flex items-center justify-center gap-2 w-[30%]">
+      <div className="flex lg:flex-row flex-col w-full xl:justify-end lg:justify-between lg:items-center gap-2 lg:my-6 my-3">
+        <div className="flex items-center lg:justify-center gap-2 xl:w-[30%]">
           <img src={wishlist} alt="whishlist icon" />
           <P
             variant={{ size: "small", weight: "semiBold" }}
-            className="text-[#999999]"
+            className="text-[#999999] uppercase"
           >
             Add to Wishlist
           </P>
         </div>
 
-        <div className="flex items-center justify-center gap-2 w-[30%]">
+        <div className="flex items-center lg:justify-center gap-2 xl:w-[30%]">
           <img src={like} alt="like btn" />
           <P
             variant={{ size: "small", weight: "semiBold" }}
-            className="text-[#999999]"
+            className="text-[#999999] uppercase"
           >
             LIKE
           </P>
         </div>
 
-        <div className="flex gap-2 items-center justify-center w-[30%]">
+        <div className="flex gap-2 items-center lg:justify-center xl:w-[30%]">
           <img src={question} alt="question" />
           <P
             variant={{ size: "small", weight: "semiBold" }}
-            className="text-[#999999]"
+            className="text-[#999999] uppercase"
           >
             Ask Questions
           </P>

@@ -44,6 +44,9 @@ import OrderDetail from "./components/OrderDetail/OrderDetail";
 import AccountSetting from "./components/AccountSetting/AccountSetting";
 import Blogs from "./components/Blogs/Blogs";
 import EditProfile from "./components/EditProfile/EditProfile";
+import ArtistDashboard from "./components/ArtistDashboard/ArtistDashboard";
+// import TablePage from "./components/ui/TablePage";
+// import Table from "./components/ui/Table";
 
 const queryClient = new QueryClient();
 
@@ -52,14 +55,14 @@ const App: React.FC = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Layout isAuthenticated={isAuthenticated}>
+      <Layout isAuthenticated={isAuthenticateWd}>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/getstarted" element={<GetStarted />}></Route>
-          <Route path="/forget-password" element={<ForgetPassword />}></Route>
-          <Route path="/change-password" element={<ChangePassword />}></Route>
+          <Route path="/forget_password" element={<ForgetPassword />}></Route>
+          <Route path="/change_password" element={<ChangePassword />}></Route>
           <Route path="/otp" element={<OtpPage />}></Route>
           <Route
             path="/payment_successful"
@@ -104,6 +107,8 @@ const App: React.FC = () => {
           <Route path="/account_setting" element={<AccountSetting />}></Route>
           <Route path="/blogs" element={<Blogs />}></Route>
           <Route path="/edit_profile" element={<EditProfile />}></Route>
+          <Route path="/artist_dashboard" element={<ArtistDashboard />}></Route>
+          {/* <Route path="/table_page" element={<TablePage />}></Route> */}
         </Routes>
       </Layout>
     </QueryClientProvider>

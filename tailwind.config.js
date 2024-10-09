@@ -5,10 +5,6 @@ module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
-      screens: {
-        xsm: "360px",
-      },
-
       transitionProperty: {
         width: "width",
         spacing: "margin, padding",
@@ -59,6 +55,12 @@ module.exports = {
           "linear-gradient(180deg, rgba(0,0,0,1) 60%, var(--dark_background) 100%)",
         "custom-gradient1": "linear-gradient(90deg, #00BF8F 0%, #001510 100%)",
         "custom-gradient2": "linear-gradient(90deg, #870000 0%, #190A05 100%)",
+        bg_purchase: "url('./src/components/PurchasePage/assets/purchase.png')",
+        bg_discover_art:
+          "url('./src/components/DiscoveryArt/assets/Background.png')",
+        bg_artist: "url('./src/components/ArtistDashboard/assets/Image.png')",
+        all_artist:
+          "url('./src/components/AllArtist/assets/Rectangle 5330.png')",
       },
       keyframes: {
         fadeIn: {

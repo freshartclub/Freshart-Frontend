@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import logo from "../../assets/Logo01 1.png";
 import call from "../../assets/PhoneCall 1.png";
 import down from "../../assets/downarrow.png";
@@ -6,13 +6,57 @@ import us_flag from "../../assets/Clip path group.png";
 import search from "../../assets/Search.png";
 import heart from "../../assets/Heart.png";
 import bag from "../../assets/Bag.png";
-import profile from "../../assets/Avatar.png";
+// import profile from "../../assets/Avatar.png";
 import { Link, useNavigate } from "react-router-dom";
 import P from "../ui/P";
 import Header from "../ui/Header";
 import selling from "../../assets/Images-cuate 1.png";
 import ShoppingCard from "../pages/ShoppingCard";
 import Button from "../ui/Button";
+import profile1 from "../../assets/profile_image.png";
+
+const categories = [
+  {
+    title: "Category 1",
+    products: ["Products 01", "Products 02", "Products 03"],
+  },
+  {
+    title: "Category 2",
+    products: [
+      "Product 01",
+      "Product 02",
+      "Product 03",
+      "Product 04",
+      "Product 05",
+    ],
+  },
+  {
+    title: "Category 3",
+    products: ["Product 01", "Product 02", "Product 03"],
+  },
+  {
+    title: "Category 4",
+    products: ["Product 01", "Product 02"],
+  },
+];
+
+const profile_data = [
+  { to: "/user_profile", label: "View Profile" },
+  { to: "/account_setting", label: "Account Settings" },
+  { to: "/wishlist", label: "Favourites Artworks" },
+  { to: "/", label: "Switch to artist Account" },
+  { to: "/create_invite", label: "Create Invite" },
+  { to: "/order", label: "My Orders" },
+  { to: "/support", label: "Support" },
+];
+
+const mobile_links = [
+  { path: "/", label: "Home" },
+  { path: "/", label: "Subscribe" },
+  { path: "/purchase", label: "Purchase" },
+  { path: "/all_artist", label: "Artist" },
+  { path: "/blog", label: "Blog" },
+];
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -27,7 +71,6 @@ const NavBar = () => {
   useEffect(() => {
     const storedUserName = localStorage.getItem("userName");
     const storedEmail = localStorage.getItem("userEmail");
-
     if (storedUserName) setUserName(storedUserName);
     if (storedEmail) setEmail(storedEmail);
   }, []);
@@ -120,11 +163,9 @@ const NavBar = () => {
             </Link>
             <Link
               to="#"
-              // to="/"
               className="group mt-3 font-semibold text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
               id="mega-menu-dropdown-button"
               onClick={toggleDropdown}
-              // to={""}
             >
               <div className="relative flex px-2">
                 Subscribe
@@ -152,196 +193,32 @@ const NavBar = () => {
                   id="mega-menu-dropdown"
                   className="absolute z-10 top-[9rem] grid grid-cols-[1fr_1fr_1fr_1fr_4fr] gap-4 text-sm bg-white border rounded-lg shadow-md p-8"
                 >
-                  <div className=" text-gray-900 md:pb-4 dark:text-white">
-                    <ul
-                      className="space-y-4"
-                      aria-labelledby="mega-menu-dropdown-button"
-                    >
-                      <li>
-                        <a href="#" className="uppercase font-bold">
-                          Category
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          href="#"
-                          className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500"
-                        >
-                          Products 01
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#" className="uppercase font-bold">
-                          Category
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#" className="text-gray-500">
-                          Products 01
-                        </a>
-                      </li>
+                  {categories.map((category, index) => (
+                    <div key={index} className="text-gray-900 md:pb-4">
+                      <ul
+                        className="space-y-4"
+                        aria-labelledby="mega-menu-dropdown-button"
+                      >
+                        <li>
+                          <a href="#" className="uppercase font-bold">
+                            {category.title}
+                          </a>
+                        </li>
+                        {category.products.map((product, prodIndex) => (
+                          <li key={prodIndex}>
+                            <a
+                              href="#"
+                              className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500"
+                            >
+                              {product}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
 
-                      <li>
-                        <a href="#" className="text-gray-500">
-                          Products 01
-                        </a>
-                      </li>
-
-                      <li>
-                        <a href="#" className="text-gray-500">
-                          Products 01
-                        </a>
-                      </li>
-
-                      <li>
-                        <a href="#" className="text-gray-500">
-                          Products 01
-                        </a>
-                      </li>
-
-                      <li>
-                        <a href="#" className="text-gray-500">
-                          Products 01
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-
-                  <div className=" text-gray-900 md:pb-4">
-                    <ul className="space-y-4">
-                      <li>
-                        <a href="#" className="uppercase font-bold">
-                          Category
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          href="#"
-                          className="text-gray-500 dark:text-gray-400"
-                        >
-                          Product 01
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          href="#"
-                          className="text-gray-500 dark:text-gray-400"
-                        >
-                          Product 01
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          href="#"
-                          className="text-gray-500 dark:text-gray-400"
-                        >
-                          Product 01
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          href="#"
-                          className="text-gray-500 dark:text-gray-400"
-                        >
-                          Product 01
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          href="#"
-                          className="text-gray-500 dark:text-gray-400"
-                        >
-                          Product 01
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-
-                  <div className=" text-gray-900 md:pb-4">
-                    <ul className="space-y-4">
-                      <li>
-                        <a href="#" className="uppercase font-bold">
-                          Category
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          href="#"
-                          className="text-gray-500 dark:text-gray-400"
-                        >
-                          Product 01
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          href="#"
-                          className="text-gray-500 dark:text-gray-400"
-                        >
-                          Product 01
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          href="#"
-                          className="text-gray-500 dark:text-gray-400"
-                        >
-                          Product 01
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          href="#"
-                          className="text-gray-500 dark:text-gray-400"
-                        >
-                          Product 01
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          href="#"
-                          className="text-gray-500 dark:text-gray-400"
-                        >
-                          Product 01
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-
-                  <div className=" text-gray-900 md:pb-4">
-                    <ul className="space-y-4">
-                      <li>
-                        <a href="#" className="uppercase font-bold">
-                          Category
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          href="#"
-                          className="text-gray-500 dark:text-gray-400"
-                        >
-                          Product 01
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          href="#"
-                          className="text-gray-500 dark:text-gray-400"
-                        >
-                          Product 01
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          href="#"
-                          className="text-gray-500 dark:text-gray-400"
-                        >
-                          Product 01
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-
-                  <div className="">
+                  <div>
                     <Header
                       variant={{
                         theme: "dark",
@@ -351,7 +228,7 @@ const NavBar = () => {
                     >
                       Top selling product
                     </Header>
-                    <img src={selling} alt="selling prduct" />
+                    <img src={selling} alt="selling product" />
                   </div>
                 </div>
               )}
@@ -417,12 +294,12 @@ const NavBar = () => {
             </button>
             <button className="focus:outline-none">
               <img
-                src={profile}
+                src={profile1}
                 alt="profile"
                 onClick={toggleProfile}
                 id="dropdownInformationButton"
                 data-dropdown-toggle="dropdownInformation"
-                className="w-8 h-8 text-white mx-2"
+                className=" text-white mx-2"
               />
             </button>
 
@@ -461,70 +338,17 @@ const NavBar = () => {
                     className="text-sm"
                     aria-labelledby="dropdownInformationButton"
                   >
-                    <Link
-                      to="/user_profile"
-                      className="block px-4 py-2 text-sm"
-                      onClick={() => setIsProfileDropdown(false)}
-                    >
-                      View Profile
-                    </Link>
-
-                    <Link
-                      to="/"
-                      className="block px-4 py-2 text-sm"
-                      onClick={() => setIsProfileDropdown(false)}
-                    >
-                      Account Settings
-                    </Link>
-
-                    <Link
-                      to="/wishlist"
-                      className="block px-4 py-2 text-sm"
-                      onClick={() => setIsProfileDropdown(false)}
-                    >
-                      Favourites Artworks
-                    </Link>
+                    {profile_data.map((item, index) => (
+                      <Link
+                        key={index}
+                        to={item.to}
+                        className="block px-4 py-2 text-sm"
+                        onClick={() => setIsProfileDropdown(false)}
+                      >
+                        {item.label}
+                      </Link>
+                    ))}
                   </ul>
-
-                  <div className="">
-                    <Link
-                      to="/"
-                      className="block px-4 py-2 text-sm"
-                      onClick={() => setIsProfileDropdown(false)}
-                    >
-                      Switch to artist Account
-                    </Link>
-                  </div>
-
-                  <div className="">
-                    <Link
-                      to="/create_invite"
-                      className="block px-4 py-2 text-sm"
-                      onClick={() => setIsProfileDropdown(false)}
-                    >
-                      Create Invite
-                    </Link>
-                  </div>
-
-                  <div className="">
-                    <Link
-                      to="/order"
-                      className="block px-4 py-2 text-sm"
-                      onClick={() => setIsProfileDropdown(false)}
-                    >
-                      My Orders
-                    </Link>
-                  </div>
-
-                  <div className="">
-                    <Link
-                      to="/support"
-                      className="block px-4 py-2 text-sm"
-                      onClick={() => setIsProfileDropdown(false)}
-                    >
-                      Support
-                    </Link>
-                  </div>
 
                   <div className="">
                     <a
@@ -670,21 +494,11 @@ const NavBar = () => {
 
         {isOpen && (
           <div className="lg:hidden absolute top-48 left-0 right-0 z-10 bg-[#102030] text-white px-6 pb-4">
-            <Link to="/" className="block py-2">
-              Home
-            </Link>
-            <Link to="/" className="block py-2">
-              Subscribe
-            </Link>
-            <Link to="/purchase" className="block py-2">
-              Purchase
-            </Link>
-            <Link to="/all_artist" className="block py-2">
-              Artist
-            </Link>
-            <Link to="/blog" className="block py-2">
-              Blog
-            </Link>
+            {mobile_links.map((link, index) => (
+              <Link to={link.path} className="block py-2" key={index}>
+                {link.label}
+              </Link>
+            ))}
           </div>
         )}
       </nav>

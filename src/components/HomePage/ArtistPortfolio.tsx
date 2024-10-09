@@ -9,11 +9,10 @@ import img4 from "../../assets/product_4_4.png";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import arrow from "../../assets/view_arrow.png";
 import "./ArtistPortfoilio.css";
-import Button from "../ui/Button";
 import Header from "../ui/Header";
 import { useNavigate } from "react-router-dom";
+import ViewButton from "../ui/ViewButton";
 
 const artistData = [
   {
@@ -115,18 +114,8 @@ const ArtistPortfolio = () => {
           >
             Artist Portfolio
           </Header>
-          <Button
-            variant={{
-              rounded: "full",
-              fontWeight: "500",
-              fontSize: "base",
-            }}
-            className="sm:w-auto w-[43%] uppercase flex items-center py-2 sm:px-4 px-2 border border-[#FF725E] mt-4"
-            onClick={redirectToAllArtistPage}
-          >
-            View More
-            <img src={arrow} alt="arrow" className="ml-2" />
-          </Button>
+
+          <ViewButton onClick={redirectToAllArtistPage} />
         </div>
       </div>
       <div className="artist_slider" onClick={handleArtistDesc}>

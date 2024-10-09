@@ -69,17 +69,19 @@ const Support = () => {
             <Header variant={{ size: "2xl", theme: "dark", weight: "bold" }}>
               How we can help you!
             </Header>
-            <div className="border border-lightgray py-2 px-2 md:w-[80%] w-full flex justify-between my-5">
-              <img
-                src={search}
-                alt="search icon"
-                className="w-[24px] h-[24px] mt-3 mr-3"
-              />
-              <input
-                type="text"
-                placeholder="Enter your question or keyword"
-                className="md:w-96 w-full"
-              ></input>
+            <div className="border border-lightgray py-2 px-2 md:w-[70%] w-full flex justify-between my-5">
+              <div className="flex w-full">
+                <img
+                  src={search}
+                  alt="search icon"
+                  className="w-[24px] h-[24px] mt-3 mr-3"
+                />
+                <input
+                  type="text"
+                  placeholder="Enter your question or keyword"
+                  className="w-[90%] outline-none"
+                ></input>
+              </div>
               <Button
                 variant={{
                   fontWeight: "500",

@@ -80,25 +80,29 @@ const RecentSection = () => {
   return (
     <div className="bg-[#F5F2EB] py-24 mt-16">
       <div className="container mx-auto md:px-6 px-3">
-        <h1 className="text-[30px] font-semibold mb-5">
+        <h1 className="text-[30px] font-semibold mb-5 w-80 sm:w-full">
           Recent Viewed Artworks
         </h1>
         <Slider {...settings}>
           {recentData.map((item, index) => (
-            <div key={index} className="md:px-3 px-0 border-none outline-none">
+            <div
+              key={index}
+              className="sm:px-3 px-0 border-none outline-none relative"
+            >
               <img src={item.image} alt="image" className="w-full h-full" />
+
+              <button className="absolute top-2 right-[28px] border border-[#FFD9DE] rounded-full px-3 py-3 bg-white cursor-pointer">
+                <img src={like} alt="like" className="w-[20px] h-[20px]" />
+              </button>
               <div className="mt-3">
                 <p className="text-[14px] text-[#696868]">{item.title}</p>
                 <div className="flex justify-between items-center">
-                  <h1 className="font-bold text-[20px] text-[#333333]">
+                  <h1 className="font-bold text-[20px] text-[#333333] xl:w-[80%] lg:w-[70%] w-[80%] line-clamp-2">
                     {item.heading}
                   </h1>
-                  <div className="border border-[#FFD9DE] rounded-full px-3 py-3">
-                    <img src={like} alt="" className="w-[20px] h-[20px]" />
-                  </div>
+                  <p className="text-[14px] text-[#696868]">{item.size}</p>
                 </div>
                 <p className="text-[14px] text-[#696868]">{item.para}</p>
-                <p className="text-[14px] text-[#696868]">{item.size}</p>
               </div>
             </div>
           ))}

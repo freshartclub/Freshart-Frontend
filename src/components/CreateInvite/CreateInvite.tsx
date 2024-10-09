@@ -1,17 +1,17 @@
 import { useFormik } from "formik";
-import * as Yup from "yup";
 import Header from "../ui/Header";
 import P from "../ui/P";
 import Button from "../ui/Button";
 import { useState } from "react";
 import DatePicker from "react-datepicker";
+import { CommonValidation } from "../ui/CommonValidation";
 
 const CreateInvite = () => {
   const [startDate, setStartDate] = useState(new Date());
   const formik = useFormik({
     initialValues: {
       email: "",
-      phoneNumber: "",
+      phone: "",
       name: "",
       surname1: "",
       surname2: "",
@@ -25,23 +25,7 @@ const CreateInvite = () => {
       inviteCode: "",
     },
 
-    validationSchema: Yup.object({
-      email: Yup.string()
-        .email("Invalid email formate")
-        .required("Email is required"),
-      phoneNumber: Yup.string().required("Phone Number is required"),
-      name: Yup.string().required("Name is required"),
-      surname1: Yup.string().required("Surname1 is required"),
-      surname2: Yup.string().required("Surname2 is required"),
-      country: Yup.string().required("Country is required"),
-      zipcode: Yup.string().required("Zip code is required"),
-      city: Yup.string().required("City is required"),
-      province: Yup.string().required("Province is required"),
-      selectGender: Yup.string().required("Gender is required"),
-      dob: Yup.string().required("Dob is required"),
-      discountCode: Yup.string().required("Discount Code is required"),
-      inviteCode: Yup.string().required("Invite Code is required"),
-    }),
+    validationSchema: CommonValidation,
 
     onSubmit: (values) => {
       console.log(values);
@@ -52,7 +36,7 @@ const CreateInvite = () => {
     <div>
       <div className="bg-[#F9F7F6]">
         <div className="container mx-auto sm:px-6 px-3">
-          <div className="xl:w-[50%] lg:w-[70%] w-full mx-auto py-10">
+          <div className="xl:w-[70%] lg:w-[90%] w-full mx-auto py-10">
             <form
               onSubmit={formik.handleSubmit}
               className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
@@ -85,7 +69,7 @@ const CreateInvite = () => {
                     placeholder="admin@gmal.com"
                   />
                   {formik.touched.email && formik.errors.email && (
-                    <span className="text-red-500 text-xs italic">
+                    <span className="text-red-500 text-xs  ">
                       {formik.errors.email}
                     </span>
                   )}
@@ -97,16 +81,16 @@ const CreateInvite = () => {
                   </label>
 
                   <input
-                    name="phoneNumber"
-                    value={formik.values.phoneNumber}
+                    name="phone"
+                    value={formik.values.phone}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     className="  appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus: -outline"
                     placeholder="+91 9546213252"
                   />
-                  {formik.touched.phoneNumber && formik.errors.phoneNumber && (
-                    <span className="text-red-500 text-xs italic">
-                      {formik.errors.phoneNumber}
+                  {formik.touched.phone && formik.errors.phone && (
+                    <span className="text-red-500 text-xs  ">
+                      {formik.errors.phone}
                     </span>
                   )}
                 </div>
@@ -127,7 +111,7 @@ const CreateInvite = () => {
                     placeholder="Name"
                   />
                   {formik.touched.name && formik.errors.name && (
-                    <span className="text-red-500 text-xs italic">
+                    <span className="text-red-500 text-xs  ">
                       {formik.errors.name}
                     </span>
                   )}
@@ -147,7 +131,7 @@ const CreateInvite = () => {
                     placeholder="Surname1"
                   />
                   {formik.touched.surname1 && formik.errors.surname1 && (
-                    <span className="text-red-500 text-xs italic">
+                    <span className="text-red-500 text-xs  ">
                       {formik.errors.surname1}
                     </span>
                   )}
@@ -167,7 +151,7 @@ const CreateInvite = () => {
                     placeholder="Surname2"
                   />
                   {formik.touched.surname2 && formik.errors.surname2 && (
-                    <span className="text-red-500 text-xs italic">
+                    <span className="text-red-500 text-xs  ">
                       {formik.errors.surname2}
                     </span>
                   )}
@@ -192,7 +176,7 @@ const CreateInvite = () => {
                     <option value="category2">Country 2</option>
                   </select>
                   {formik.touched.country && formik.errors.country && (
-                    <span className="text-red-500 text-xs italic">
+                    <span className="text-red-500 text-xs  ">
                       {formik.errors.country}
                     </span>
                   )}
@@ -211,7 +195,7 @@ const CreateInvite = () => {
                     placeholder="452010"
                   />
                   {formik.touched.zipcode && formik.errors.zipcode && (
-                    <span className="text-red-500 text-xs italic">
+                    <span className="text-red-500 text-xs  ">
                       {formik.errors.zipcode}
                     </span>
                   )}
@@ -232,7 +216,7 @@ const CreateInvite = () => {
                     placeholder="Enter City"
                   />
                   {formik.touched.city && formik.errors.city && (
-                    <span className="text-red-500 text-xs italic">
+                    <span className="text-red-500 text-xs  ">
                       {formik.errors.city}
                     </span>
                   )}
@@ -252,7 +236,7 @@ const CreateInvite = () => {
                     placeholder="Enter Province"
                   />
                   {formik.touched.province && formik.errors.province && (
-                    <span className="text-red-500 text-xs italic">
+                    <span className="text-red-500 text-xs  ">
                       {formik.errors.province}
                     </span>
                   )}
@@ -277,7 +261,7 @@ const CreateInvite = () => {
                   </select>
                   {formik.touched.selectGender &&
                     formik.errors.selectGender && (
-                      <span className="text-red-500 text-xs italic">
+                      <span className="text-red-500 text-xs  ">
                         {formik.errors.selectGender}
                       </span>
                     )}
@@ -296,7 +280,7 @@ const CreateInvite = () => {
                   />
 
                   {/* {formik.touched.dob && formik.errors.dob && (
-                    <span className="text-red-500 text-xs italic">
+                    <span className="text-red-500 text-xs  ">
                       {formik.errors.dob}
                     </span>
                   )} */}
@@ -317,7 +301,7 @@ const CreateInvite = () => {
                     placeholder="XXXXX - XXXXX - XXXXX"
                   />
                   {formik.touched.discountCode && (
-                    <span className="text-red-500 text-xs italic">
+                    <span className="text-red-500 text-xs  ">
                       {formik.errors.discountCode}
                     </span>
                   )}
@@ -336,7 +320,7 @@ const CreateInvite = () => {
                     placeholder="ABCD-EFCFD-DHDF"
                   />
                   {formik.touched.inviteCode && formik.errors.inviteCode && (
-                    <span className="text-red-500 text-xs italic">
+                    <span className="text-red-500 text-xs  ">
                       {formik.errors.inviteCode}
                     </span>
                   )}

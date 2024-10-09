@@ -37,7 +37,7 @@ const RecentBlogPost = () => {
               How do you create compelling presentations that wow your
               colleagues and impress your managers?
             </P>
-            <div className="flex">
+            <div className="flex flex-wrap">
               <P
                 variant={{ size: "base", theme: "dark", weight: "medium" }}
                 className="bg-[#F8F9FC] text-[#6941C6] px-3 py-1 rounded-full mr-2 mb-2"

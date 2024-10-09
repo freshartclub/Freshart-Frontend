@@ -31,9 +31,9 @@ const address_data = [
 
 const BillingSection = () => {
   return (
-    <div className="grid lg:grid-cols-3 grid-cols-1 mt-10">
+    <div className="grid lg:grid-cols-3 grid-cols-1 md:mt-10 mt-1">
       {address_data.map((item, index) => (
-        <div key={index} className="lg:border-r px-4 md:mt-6 mt-0">
+        <div key={index} className="lg:border-r px-4 md:mt-6 mt-6">
           <Header
             variant={{ size: "md", theme: "dark", weight: "semiBold" }}
             className="lg:mb-4 mb-2"

@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
 import Header from "../ui/Header";
-import BackButton from "../ui/BackButton";
 import P from "../ui/P";
 
 const TermAndCondition = () => {
@@ -12,11 +11,11 @@ const TermAndCondition = () => {
   return (
     <>
       <div className="container mx-auto md:px-6 px-3 my-10">
-        <BackButton
+        {/* <BackButton
           onClick={handleBack}
           iconClass="text-text_primary_dark font-semibold"
           className="pb-4 hidden md:flex"
-        />
+        /> */}
         <Header
           variant={{ size: "2xl", theme: "dark", weight: "semiBold" }}
           className="text-[#FF536B] mt-3"

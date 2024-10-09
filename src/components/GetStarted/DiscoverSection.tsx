@@ -18,7 +18,7 @@ const DiscoverSection = () => {
         <h1 className="md:text-[36px] text-[30px] text-[#102030] font-semibold pb-10">
           Discover the different plans to join our community
         </h1>
-        <div className="flex flex-col sm:flex-row justify-center items-center gap-32">
+        <div className="flex flex-col sm:flex-row justify-center items-center lg:gap-32 md:gap-10 sm:gap-14 gap-0">
           <img
             src={icon1}
             alt="icon1"

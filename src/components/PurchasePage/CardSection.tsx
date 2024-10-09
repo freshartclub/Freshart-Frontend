@@ -180,32 +180,35 @@ const CardSection = ({ query }: any) => {
 
       <div className="grid xl:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-4 justify-center">
         {searchData.map((item, index) => (
-          <div key={index} className="sm:px-3 px-0 border-none outline-none">
+          <div
+            key={index}
+            className="sm:px-3 px-0 border-none outline-none relative"
+          >
             <img src={item.image} alt="image" className="w-full shadow-xl" />
+            <button className="absolute top-2 right-[28px] border border-[#FFD9DE] rounded-full px-3 py-3 bg-white cursor-pointer">
+              <img src={like} alt="like" className="w-[20px] h-[20px]" />
+            </button>
             <div className="mt-3">
               <p className="text-[14px] text-[#696868]">{item.title}</p>
               <div className="flex justify-between items-center">
                 <Header
                   variant={{ weight: "bold" }}
-                  className="md:text-md sm:text-sm text-[#333333]"
+                  className="md:text-md sm:text-sm text-[#333333]  xl:w-[80%] lg:w-[70%] w-[80%] line-clamp-2"
                 >
                   {item.heading}
                 </Header>
-                <div className="border border-[#FFD9DE] rounded-full px-3 py-3">
-                  <img src={like} alt="" className="w-[20px] h-[20px]" />
-                </div>
+                <P
+                  variant={{ size: "base", theme: "dark", weight: "medium" }}
+                  className="text-[14px] text-[#696868]"
+                >
+                  {item.size}
+                </P>
               </div>
               <P
                 variant={{ size: "base", theme: "dark", weight: "medium" }}
                 className="text-[14px] text-[#696868]"
               >
                 {item.para}
-              </P>
-              <P
-                variant={{ size: "base", theme: "dark", weight: "medium" }}
-                className="text-[14px] text-[#696868]"
-              >
-                {item.size}
               </P>
               <P
                 variant={{ size: "small", theme: "dark", weight: "medium" }}
@@ -308,20 +311,29 @@ const CardSection = ({ query }: any) => {
 
       <div className="grid xl:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-4 justify-center my-16">
         {highlightData.map((item, index) => (
-          <div key={index} className="sm:px-3 px-0 border-none outline-none">
+          <div
+            key={index}
+            className="sm:px-3 px-0 border-none outline-none relative"
+          >
             <img src={item.image} alt="image" className="w-full shadow-xl" />
+            <button className="absolute top-2 right-[28px] border border-[#FFD9DE] rounded-full px-3 py-3 bg-white cursor-pointer">
+              <img src={like} alt="like" className="w-[20px] h-[20px]" />
+            </button>
             <div className="mt-3">
               <p className="text-[14px] text-[#696868]">{item.title}</p>
               <div className="flex justify-between items-center">
                 <Header
                   variant={{ size: "md", weight: "bold" }}
-                  className=" text-[#333333]"
+                  className=" text-[#333333]  xl:w-[80%] lg:w-[70%] w-[80%] line-clamp-2"
                 >
                   {item.heading}
                 </Header>
-                <div className="border border-[#FFD9DE] rounded-full px-3 py-3">
-                  <img src={like} alt="" className="w-[20px] h-[20px]" />
-                </div>
+                <P
+                  variant={{ size: "base", theme: "dark", weight: "medium" }}
+                  className="text-[14px] text-[#696868]"
+                >
+                  {item.size}
+                </P>
               </div>
               <P
                 variant={{ size: "base", theme: "dark", weight: "medium" }}

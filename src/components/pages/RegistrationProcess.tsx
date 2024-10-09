@@ -9,6 +9,8 @@ import Button from "../ui/Button";
 import arrow from "../../assets/arrow.png";
 import BackButton from "../ui/BackButton";
 import { useNavigate } from "react-router-dom";
+import upload_image from "../../assets/Upload_image.png";
+import UploadImage from "../ui/UploadImage";
 
 const RegistrationProcess = () => {
   const countryOptions = [
@@ -41,12 +43,12 @@ const RegistrationProcess = () => {
     name: Yup.string().required("Name is required"),
     surname1: Yup.string().required("Surname 1 is required"),
     surname2: Yup.string().required("Surname 2 is required"),
-    country: Yup.object().required("Country is required").nullable(),
+    country: Yup.object().required("Country is required"),
     zipcode: Yup.string().required("Zipcode is required"),
     city: Yup.string().required("City is required"),
     province: Yup.string().required("Province is required"),
-    gender: Yup.object().required("Gender is required").nullable(), // Corrected to be an object
-    dob: Yup.date().required("Date of Birth is required").nullable(),
+    gender: Yup.object().required("Gender is required"),
+    dob: Yup.date().required("Date of Birth is required"),
     terms: Yup.boolean().oneOf(
       [true],
       "You must accept the terms and conditions"
@@ -54,10 +56,10 @@ const RegistrationProcess = () => {
   });
 
   return (
-    <div className="bg-[#F9F7F6]">
-      <div className="container mx-auto sm:px-6 px-3x">
-        <div className="xl:w-[80%] lg:w-[70%] md:w-[80%] w-full mx-auto bg-white shadow-xl mt-10">
-          <div className="text-center  xl:p-10 lg:p-8 md:p-6 p-8">
+    <div className="bg-[#F9F7F6] py-10">
+      <div className="container mx-auto sm:px-6 px-3">
+        <div className="xl:w-[90%] w-full mx-auto bg-white shadow-xl">
+          <div className="text-center  xl:p-10 lg:p-6 md:p-6 p-3">
             <BackButton
               onClick={handleBack}
               iconClass="text-text_primary_dark font-semibold"
@@ -65,20 +67,24 @@ const RegistrationProcess = () => {
             />
 
             <Header
-              variant={{ size: "2xl", theme: "dark", weight: "bold" }}
+              variant={{ size: "3xl", theme: "dark", weight: "bold" }}
               className="mb-5"
             >
               Complete Your Profile
             </Header>
             <P
-              variant={{ size: "small", theme: "dark", weight: "normal" }}
+              variant={{ size: "base", theme: "dark", weight: "normal" }}
               className="mb-5"
             >
               Please fill the form below to become a art lover. Feel free to add
               as much detail as needed.
             </P>
 
-            <div>
+            <div className="flex lg:flex-row flex-col xl:gap-10 gap-8 xl:items-start items-center">
+              <div className="xl:p-8 p-3 shadow-xl rounded-xl bg-white h-fit xl:w-[30%] sm:w-[45%] w-[90%] flex flex-col justify-center items-center">
+                <UploadImage />
+              </div>
+
               <div className="w-full">
                 <Formik
                   initialValues={{
@@ -102,10 +108,10 @@ const RegistrationProcess = () => {
                   }}
                 >
                   {({ setFieldValue, values, isValid, isSubmitting }) => (
-                    <Form>
-                      <div className="xl:w-[90%] mx-auto lg:w-[70%] md:w-[80%] w-full p-10 rounded-xl bg-white shadow-2xl">
-                        <div className="flex sm:flex-row flex-col justify-between">
-                          <div className="sm:my-3 my-1 sm:w-[32%] w-full">
+                    <Form className="w-full">
+                      <div className=" md:p-10 p-3 rounded-xl bg-white shadow-2xl">
+                        <div className="flex md:flex-row flex-col justify-between">
+                          <div className="sm:my-3 my-1 md:w-[32%] w-full">
                             <label
                               htmlFor="name"
                               className="block mb-2 text-sm font-semibold text-gray-700 text-left"
@@ -116,7 +122,7 @@ const RegistrationProcess = () => {
                               type="text"
                               name="name"
                               placeholder="Name"
-                              className="border border-[#D3D3D3] p-2 w-full rounded-md focus:outline-none"
+                              className="border border-[#D3D3D3] p-3 w-full rounded-xl focus:outline-none"
                             />
                             <ErrorMessage
                               name="name"
@@ -125,7 +131,7 @@ const RegistrationProcess = () => {
                             />
                           </div>
 
-                          <div className="sm:my-3 my-1 sm:w-[32%] w-full">
+                          <div className="sm:my-3 my-1 md:w-[32%] w-full">
                             <label
                               htmlFor="surname1"
                               className="block mb-2 text-sm font-semibold text-gray-700 text-left"
@@ -136,7 +142,7 @@ const RegistrationProcess = () => {
                               type="text"
                               name="surname1"
                               placeholder="Surname 1"
-                              className="border border-[#D3D3D3] p-2 w-full rounded-md focus:outline-none"
+                              className="border border-[#D3D3D3] p-3 w-full rounded-xl focus:outline-none"
                             />
                             <ErrorMessage
                               name="surname1"
@@ -145,7 +151,7 @@ const RegistrationProcess = () => {
                             />
                           </div>
 
-                          <div className="sm:my-3 my-1 sm:w-[32%] w-full">
+                          <div className="sm:my-3 my-1 md:w-[32%] w-full">
                             <label
                               htmlFor="surname2"
                               className="block mb-2 text-sm font-semibold text-gray-700 text-left"
@@ -156,7 +162,7 @@ const RegistrationProcess = () => {
                               type="text"
                               name="surname2"
                               placeholder="Surname 2"
-                              className="border border-[#D3D3D3] p-2 w-full rounded-md focus:outline-none"
+                              className="border border-[#D3D3D3] p-3 w-full rounded-xl focus:outline-none"
                             />
                             <ErrorMessage
                               name="surname2"
@@ -178,11 +184,17 @@ const RegistrationProcess = () => {
                               name="country"
                               options={countryOptions}
                               placeholder="Select a country"
-                              className="rounded-md focus:outline-none text-left"
+                              className="rounded-xl focus:outline-none text-left"
                               styles={{
                                 control: (provided) => ({
                                   ...provided,
-                                  padding: "2px",
+                                  padding: "6px", // Increase padding here
+                                  borderWidth: "2px", // Optionally, make the border thicker
+                                  fontSize: "1rem", // Optional: Adjust font size if needed
+                                }),
+                                placeholder: (provided) => ({
+                                  ...provided,
+                                  color: "#6B7280", // Tailwind gray-500 color
                                 }),
                               }}
                               value={values.country}
@@ -208,7 +220,7 @@ const RegistrationProcess = () => {
                               type="text"
                               name="zipcode"
                               placeholder="452010"
-                              className="border border-[#D3D3D3] p-2 w-full rounded-md focus:outline-none"
+                              className="border border-[#D3D3D3] p-3 w-full rounded-xl focus:outline-none"
                             />
                             <ErrorMessage
                               name="zipcode"
@@ -230,7 +242,7 @@ const RegistrationProcess = () => {
                               type="text"
                               name="city"
                               placeholder="City"
-                              className="border border-[#D3D3D3] p-2 w-full rounded-md focus:outline-none"
+                              className="border border-[#D3D3D3] p-3 w-full rounded-xl focus:outline-none"
                             />
                             <ErrorMessage
                               name="city"
@@ -250,7 +262,7 @@ const RegistrationProcess = () => {
                               type="text"
                               name="province"
                               placeholder="Province"
-                              className="border border-[#D3D3D3] p-2 w-full rounded-md focus:outline-none"
+                              className="border border-[#D3D3D3] p-3 w-full rounded-xl focus:outline-none"
                             />
                             <ErrorMessage
                               name="province"
@@ -272,11 +284,13 @@ const RegistrationProcess = () => {
                               name="gender"
                               options={genderOptions}
                               placeholder="Male"
-                              className="rounded-md text-left"
+                              className="rounded-xl text-left"
                               styles={{
                                 control: (provided) => ({
                                   ...provided,
-                                  padding: "2px",
+                                  padding: "6px",
+                                  borderWidth: "2px", // Optionally, make the border thicker
+                                  fontSize: "1rem", // Optional: Adjust font size if needed
                                 }),
                               }}
                               value={values.gender}
@@ -304,7 +318,7 @@ const RegistrationProcess = () => {
                               onChange={(date) => setFieldValue("dob", date)}
                               dateFormat="dd/MM/yyyy"
                               placeholderText="Select your date of birth"
-                              className="border border-[#D3D3D3] p-2 w-[100%] rounded-md focus:outline-none"
+                              className="border border-[#D3D3D3] p-3 w-[100%] rounded-xl focus:outline-none"
                               popperClassName="react-datepicker-popper"
                             />
                             <ErrorMessage
@@ -314,52 +328,51 @@ const RegistrationProcess = () => {
                             />
                           </div>
                         </div>
-
-                        <div className="flex items-center mt-2">
-                          <Field
-                            type="checkbox"
-                            name="terms"
-                            id="terms"
-                            className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                          />
-                          <label
-                            htmlFor="terms"
-                            className="ml-2 text-sm text-gray-700"
-                          >
-                            I accept all{" "}
-                            <a
-                              href="#"
-                              className="text-[#FF536B] font-semibold border-b border-b-[#FF536B]"
-                              onClick={redirectToTermAndCondition}
-                            >
-                              Terms & Conditions.
-                            </a>
-                          </label>
-                        </div>
-                        <ErrorMessage
+                      </div>
+                      <div className="flex text-left mt-5">
+                        <Field
+                          type="checkbox"
                           name="terms"
-                          component="div"
-                          className="text-red-500 text-sm text-left"
+                          id="terms"
+                          className="h-4 w-4 mt-[2px] text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                         />
-
-                        <div className="flex sm:justify-end justify-center mt-5">
-                          <Button
-                            type="submit"
-                            variant={{
-                              fontSize: "md",
-                              theme: "dark",
-                              fontWeight: "500",
-                              rounded: "large",
-                            }}
-                            className="flex items-center"
-                            disabled={isSubmitting || !isValid}
+                        <label
+                          htmlFor="terms"
+                          className="ml-2 text-sm text-gray-700"
+                        >
+                          I accept all
+                          <a
+                            href="#"
+                            className="text-[#FF536B] ml-2 font-semibold border-b border-b-[#FF536B]"
+                            onClick={redirectToTermAndCondition}
                           >
-                            <span onClick={redirectToPricePlan}>
-                              Continue to Payment
-                            </span>
-                            <img src={arrow} alt="arrow" className="ml-2" />
-                          </Button>
-                        </div>
+                            Terms & Conditions.
+                          </a>
+                        </label>
+                      </div>
+                      <ErrorMessage
+                        name="terms"
+                        component="div"
+                        className="text-red-500 text-sm text-left"
+                      />
+
+                      <div className="flex sm:justify-end justify-center mt-5">
+                        <Button
+                          type="submit"
+                          variant={{
+                            fontSize: "md",
+                            theme: "dark",
+                            fontWeight: "500",
+                            rounded: "full",
+                          }}
+                          className="flex items-center"
+                          disabled={isSubmitting || !isValid}
+                        >
+                          <span onClick={redirectToPricePlan}>
+                            Continue to Payment
+                          </span>
+                          <img src={arrow} alt="arrow" className="ml-2" />
+                        </Button>
                       </div>
                     </Form>
                   )}

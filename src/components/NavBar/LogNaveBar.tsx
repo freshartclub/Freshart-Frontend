@@ -54,7 +54,8 @@ const LogNaveBar = () => {
                   onClick={handleRedirectToBecomeAnArtist}
                 >
                   <P
-                    variant={{ size: "base", theme: "light", weight: "normal" }}
+                    variant={{ theme: "light", weight: "normal" }}
+                    className="md:text-base text-sm"
                   >
                     Become an Artist
                   </P>

@@ -11,6 +11,7 @@ import comment from "../../assets/ChatCentered 1.png";
 import Button from "../ui/Button";
 import Barrow from "../../assets/view_arrow.png";
 import { useNavigate } from "react-router-dom";
+import ViewButton from "../ui/ViewButton";
 
 const FreshArt = () => {
   const freshData = [
@@ -110,18 +111,8 @@ const FreshArt = () => {
       <div className="container mx-auto md:px-6 px-3">
         <div className="flex sm:flex-row flex-col justify-between">
           <h1 className="text-[30px] font-semibold">Fresh Art Club Circle</h1>
-          <Button
-            variant={{
-              rounded: "full",
-              fontWeight: "500",
-              fontSize: "base",
-            }}
-            className="sm:w-auto w-[43%] uppercase flex items-center py-2 sm:px-4 px-2 border border-[#FF725E] mt-4"
-            onClick={redirectToCirclePage}
-          >
-            View More
-            <img src={Barrow} alt="arrow" className="ml-2" />
-          </Button>
+
+          <ViewButton onClick={redirectToCirclePage} />
         </div>
         <div className="grid xl:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-8 mt-10">
           {freshData.map((item, index) => (
@@ -131,21 +122,27 @@ const FreshArt = () => {
               onClick={redirectToBlog}
             >
               <img src={item.image} alt="image" className="w-full" />
-              <div className="border-2 border-[#FF536B] hover:border-transparent p-4 rounded-b-lg">
+              <div className="border-2 border-[#FF536B] hover:border-transparent md:p-4 p-2 rounded-b-lg">
                 <div className="flex justify-between mb-2">
                   <div className="flex items-center xl:space-x-2 lg:space-x-1">
                     <img src={item.artlogo} alt="tag" />
-                    <p className="text-[#4D4D4D]">{item.art}</p>
+                    <p className="text-[#4D4D4D] md:text-base text-sm">
+                      {item.art}
+                    </p>
                   </div>
 
                   <div className="flex items-center xl:space-x-2 lg:space-x-1">
                     <img src={item.adminlogo} alt="tag" />
-                    <p className="text-[#4D4D4D]">{item.admin}</p>
+                    <p className="text-[#4D4D4D] md:text-base text-sm">
+                      {item.admin}
+                    </p>
                   </div>
 
                   <div className="flex items-center xl:space-x-2 lg:space-x-1">
                     <img src={item.commentlogo} alt="tag" />
-                    <p className="text-[#4D4D4D]">{item.comment}</p>
+                    <p className="text-[#4D4D4D] md:text-base text-sm">
+                      {item.comment}
+                    </p>
                   </div>
                 </div>
 

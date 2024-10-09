@@ -56,7 +56,7 @@ const OrderDetail = () => {
           </ul>
         </div>
 
-        <div className="flex sm:flex-row flex-col justify-end gap-5 mb-8">
+        <div className="flex sm:flex-row flex-col justify-end gap-5 mb-8 md:mt-0 mt-6">
           <Button
             variant={{ fontSize: "sm", fontWeight: "bold" }}
             className="flex bg-[#DEDEFA]"

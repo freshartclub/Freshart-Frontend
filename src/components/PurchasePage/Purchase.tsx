@@ -51,9 +51,9 @@ const Purchase = () => {
 
   return (
     <>
-      <div className="container mx-auto sm:px-6 px-3x">
+      <div className="container mx-auto sm:px-6 px-3">
         <div className="flex justify-between my-4 items-center">
-          <div className="relative">
+          <div className="relative w-full">
             <button
               className="lg:hidden p-2"
               onClick={toggleMenu}
@@ -66,8 +66,8 @@ const Purchase = () => {
               className={`${
                 isOpen ? "block" : "hidden"
               } lg:flex flex-col lg:flex-row items-start lg:items-center mt-3 lg:mt-0
-               space-y-2 lg:space-y-0 lg:space-x-4 bg-white absolute lg:relative z-10 md:w-[40%] 
-               w-full lg:w-auto shadow-lg lg:shadow-none p-4 lg:p-0`}
+               space-y-2 lg:space-y-0 lg:space-x-4 bg-white absolute lg:relative z-0 md:w-[40%] sm:w-[50%]
+                lg:w-auto shadow-lg lg:shadow-none p-4 lg:p-0`}
             >
               {art_data.map((item, index) => (
                 <Link
@@ -83,7 +83,7 @@ const Purchase = () => {
             </div>
           </div>
 
-          <div className="flex gap-4">
+          <div className="flex gap-4 ">
             <Button
               variant={{
                 fontSize: "md",

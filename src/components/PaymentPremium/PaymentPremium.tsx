@@ -19,6 +19,7 @@ import dots from "./assets/dotss.png";
 import Button from "../ui/Button";
 import Select from "react-select";
 import { useNavigate } from "react-router-dom";
+import DiscountCode from "../ui/DiscountCode";
 
 const cards_Data = [
   {
@@ -120,18 +121,8 @@ const PaymentPremium = () => {
             <div>
               <img src={card} alt="card" className="w-full" />
 
-              <div className="bg-white border-4 border-[#EDE8FF] rounded-md px-4 py-5 flex justify-between mt-5">
-                <P
-                  variant={{ size: "base", theme: "dark", weight: "semiBold" }}
-                >
-                  Discount Code
-                </P>
-                <P
-                  variant={{ size: "base", theme: "dark", weight: "semiBold" }}
-                  className="text-[#004E92]"
-                >
-                  APPLY
-                </P>
+              <div className="mt-5">
+                <DiscountCode />
               </div>
 
               <div>
@@ -153,7 +144,7 @@ const PaymentPremium = () => {
                       className="text-[11px] md:text-[16px] text-left"
                     >
                       Card
-                    </P>{" "}
+                    </P>
                   </button>
 
                   <button

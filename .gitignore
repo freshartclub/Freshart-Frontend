@@ -40,3 +40,8 @@ tsconfig.tsbuildinfo
 # Lock files
 *.lock
 
+<<<<<<< HEAD
+=======
+node_modules
+node_modules
+>>>>>>> Test

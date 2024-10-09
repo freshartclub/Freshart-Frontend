@@ -88,7 +88,7 @@ const ProductInfo = () => {
   ];
 
   return (
-    <div className="mt-20">
+    <div className="mt-20 hidden">
       <Tabs>
         <TabList>
           <Tab>Description</Tab>

@@ -9,6 +9,7 @@ import aisthete from "./assets/aisthete.png";
 import eruditus from "./assets/eruditus.png";
 import expertus from "./assets/expertus-icon.png";
 import { useNavigate } from "react-router-dom";
+import DiscountCode from "../ui/DiscountCode";
 
 const artwork_1_plans = [
   {
@@ -149,20 +150,9 @@ const PriceAndPlan = () => {
         </div>
 
         <div className="my-8 ">
-          {/* Discount Code Section */}
-
-          {/* Tabs Section */}
           <div className="flex lg:flex-row flex-col items-center justify-between w-full">
-            <div className="bg-white border-4 border-[#EDE8FF] rounded-lg px-4 py-4 flex justify-between lg:w-[25%] md:w-[50%] sm:w-[80%] w-full">
-              <P variant={{ size: "base", theme: "dark", weight: "semiBold" }}>
-                Discount Code
-              </P>
-              <P
-                variant={{ size: "base", theme: "dark", weight: "semiBold" }}
-                className="text-[#004E92]"
-              >
-                APPLY
-              </P>
+            <div>
+              <DiscountCode />
             </div>
 
             <div className="2xl:w-[35%] xl:w-[39%] lg:w-[53%] md:w-[73%] sm:w-[55%] w-full border border-[#FF536B] bg-white rounded-full flex justify-center md:gap-7 gap-2 lg:mt-0 mt-4">

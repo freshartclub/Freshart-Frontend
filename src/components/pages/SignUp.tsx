@@ -20,7 +20,7 @@ const SignUp = () => {
       .required("Password is required"),
     cpassword: Yup.string()
       .oneOf([Yup.ref("password")], "Passwords must match")
-      .required("confirm password is required"),
+      .required("Confirm Password is required"),
     terms: Yup.boolean().oneOf(
       [true],
       "You must accept the terms and conditions"
@@ -30,8 +30,8 @@ const SignUp = () => {
   return (
     <div className="bg-[#F9F7F6]">
       <div className="container mx-auto md:px-6 px-3">
-        <div className="grid md:grid-cols-2 grid-cols-1 gap-10 py-10">
-          <div className="text-center shadow-xl bg-white xl:p-10 lg:p-8 md:p-6 p-8 lg:w-[80%] w-full">
+        <div className="grid md:grid-cols-2 grid-cols-1 gap-10 py-10 items-center">
+          <div className="text-center shadow-xl bg-white xl:p-10 lg:p-8 md:p-6 p-4 xl:w-[80%] w-full">
             <Header
               variant={{ size: "2xl", theme: "dark", weight: "semiBold" }}
             >
@@ -146,18 +146,14 @@ const SignUp = () => {
 
                   <div>
                     <div className="flex items-center my-4">
-                      <span className="flex-grow sm:w-[20%] w-[30%] sm:ml-10 ml-8 border-2 border-t border-gray-300"></span>
+                      <span className="flex-grow sm:w-[20%] w-[28%] 2xl:ml-10 md:mr-0 mr-2 border-2 border-t border-gray-300"></span>
                       <P
-                        variant={{
-                          size: "base",
-                          theme: "dark",
-                          weight: "semiBold",
-                        }}
-                        className="lg:mx-4 md:mx-2 mx-3"
+                        variant={{ theme: "dark", weight: "semiBold" }}
+                        className="lg:mx-4 md:mx-2 mx-0 md:text-base text-sm"
                       >
                         Or continue with
                       </P>
-                      <span className="flex-grow sm:w-[20%] w-[30%] sm:mr-10 mr-8 border-2 border-t border-gray-300"></span>
+                      <span className="flex-grow sm:w-[20%] w-[28%] lg:mr-10 md:ml-0 ml-2 border-2 border-t border-gray-300"></span>
                     </div>
 
                     <div className="grid grid-cols-1 gap-2 mt-4 xl:grid-cols-3 lg:grid-cols-2 md:grid-cols-1 sm:grid-cols-3 lg:gap-4 lg:mt-6">
@@ -231,7 +227,7 @@ const SignUp = () => {
                       </Button>
                     </div>
 
-                    <div className="flex mt-5 justify-center">
+                    <div className="flex sm:flex-row flex-col mt-5">
                       <P
                         variant={{ theme: "dark", weight: "medium" }}
                         className="md:text-base text-sm"
@@ -240,7 +236,7 @@ const SignUp = () => {
                       </P>
                       <Link
                         to="/login"
-                        className="font-bold uppercase border-b border-black ml-1 md:text-base text-sm"
+                        className="font-bold uppercase sm:mt-0 mt-2 ml-1 md:text-base text-sm"
                       >
                         Sign In
                       </Link>

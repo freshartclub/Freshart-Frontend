@@ -14,12 +14,6 @@ const FooterSection = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const navigate = useNavigate();
-  const redirectToArtistPage = () => {
-    navigate("/all_artist");
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
   return (
     <>
       <footer className="bg-[#102030] text-white pt-16 pb-6">
@@ -40,9 +34,13 @@ const FooterSection = () => {
                 Contact Fresh Art
               </h2>
 
-              <div className="flex mt-6 items-start">
-                <img src={location} alt="Location" className="w-6 h-6" />
-                <div className="ml-4">
+              <div className="flex mt-6 md:items-start items-center sm:justify-start justify-center">
+                <img
+                  src={location}
+                  alt="Location"
+                  className="w-6 h-6 sm:block hidden"
+                />
+                <div className="ml-4 ">
                   <p className="text-sm">Visit Our Location</p>
                   <p className="mt-1 text-sm">
                     5th Street, 21st Floor, New York, USA
@@ -50,17 +48,25 @@ const FooterSection = () => {
                 </div>
               </div>
 
-              <div className="flex mt-6 items-start">
-                <img src={mail} alt="Mail" className="w-6 h-6" />
-                <div className="ml-4">
+              <div className="flex mt-6 md:items-start items-center sm:justify-start justify-center">
+                <img
+                  src={mail}
+                  alt="Mail"
+                  className="w-6 h-6 sm:block hidden"
+                />
+                <div className="ml-4 ">
                   <p className="text-sm">Send Us Email</p>
                   <p className="mt-1 text-sm">admin@gmail.com</p>
                 </div>
               </div>
 
-              <div className="flex mt-6 items-start">
-                <img src={call} alt="Call" className="w-6 h-6" />
-                <div className="ml-4">
+              <div className="flex mt-6 md:items-start items-center sm:justify-start justify-center">
+                <img
+                  src={call}
+                  alt="Call"
+                  className="w-6 h-6 sm:block hidden"
+                />
+                <div className="ml-4 ">
                   <p className="text-sm">Looking For Project</p>
                   <p className="mt-1 text-sm">+91-234-567-8900</p>
                 </div>

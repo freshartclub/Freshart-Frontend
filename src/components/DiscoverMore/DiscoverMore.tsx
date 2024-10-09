@@ -19,6 +19,7 @@ import SelectedSection from "./SelectedSection";
 import { Link } from "react-router-dom";
 import arrow from "../../assets/arrow_22.png";
 import home from "../../assets/home.png";
+import Button from "../ui/Button";
 
 const DiscoverMore = () => {
   const sliderRef = useRef<Slider>(null);
@@ -40,7 +41,7 @@ const DiscoverMore = () => {
 
   return (
     <>
-      <div className="container mx-auto px-6 sm:px-3">
+      <div className="container mx-auto md:px-6 px-3">
         <ul className="flex p-2 gap-4 text-xl text-[#2E4053] items-center mt-10">
           <li>
             <Link to="/" className="rounded-md transition-all flex">
@@ -81,10 +82,10 @@ const DiscoverMore = () => {
           </li>
         </ul>
 
-        <div className="flex  items-center mt-10">
-          <div className="flex gap-4 w-[50%]">
+        <div className="flex md:flex-row flex-col items-center gap-10 mt-10">
+          <div className="flex md:flex-row flex-col gap-4 md:w-[50%] w-full md:items-center">
             {/* Thumbnails Container */}
-            <div className="flex flex-col w-[15%] ml-4 col-span-1">
+            <div className="flex md:flex-col flex-row md:gap-0 gap-2 w-[15%] lg:ml-4 ">
               {[
                 { src: slide_1, alt: "Thumbnail 1" },
                 { src: slide_2, alt: "Thumbnail 2" },
@@ -97,14 +98,14 @@ const DiscoverMore = () => {
                   key={index}
                   src={thumb.src}
                   alt={thumb.alt}
-                  className="mb-4 w-20 h-24"
+                  className="mb-4 lg:w-20 lg:h-24"
                   onClick={() => handleThumbnailClick(index)}
                 />
               ))}
             </div>
 
             {/* Slider Container */}
-            <div className="flex-1 w-[70%]">
+            <div className="flex-1 md:w-[70%] w-full">
               <Slider {...settings} ref={sliderRef} className="discover_more">
                 <div>
                   <img src={slider1} alt="Slide 1" className=" mx-auto " />
@@ -128,28 +129,28 @@ const DiscoverMore = () => {
             </div>
           </div>
 
-          <div className="w-[50%] ml-20">
+          <div className="md:w-[50%] w-full ">
             <DiscoverContent />
           </div>
         </div>
-        <div className="flex justify-center w-[50%] gap-10 mb-10">
+        <div className="flex justify-center md:w-[50%] w-full gap-10 mb-10">
           <div className="flex gap-1">
             <img src={eye} alt="eye" className="w-[19px] h-[12px] mt-1" />
             <P variant={{ size: "base", theme: "dark", weight: "normal" }}>
               View in Room
             </P>
           </div>
-          <div className="flex gap-1">
-            <img src={share} alt="share" />
+          <Button className="flex gap-1 !p-0">
+            <img src={share} alt="share" className="w-[19px] h-[16px] mt-1" />
             <P variant={{ size: "base", theme: "dark", weight: "normal" }}>
               Share
             </P>
-          </div>
+          </Button>
         </div>
 
         <ProductInfo />
-        <SelectedSection />
       </div>
+      <SelectedSection />
     </>
   );
 };

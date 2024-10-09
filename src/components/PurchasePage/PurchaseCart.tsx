@@ -118,7 +118,8 @@ const PurchaseCart = () => {
                     >
                       <td
                         scope="row"
-                        className="flex sm:flex-row flex-col justify-start xl:gap-4 lg:gap-2 gap-2 sm:items-center xl:px-6 lg:px-4 px-2 py-4 font-medium text-gray-900  dark:text-white"
+                        className="flex sm:flex-row flex-col justify-start xl:gap-4 lg:gap-2 gap-2 sm:items-center
+                         xl:px-6 lg:px-4 px-2 py-4 font-medium text-gray-900  dark:text-white"
                       >
                         <button onClick={() => handleRemove(table.id)}>
                           <img src={table.cross} alt="cross" />

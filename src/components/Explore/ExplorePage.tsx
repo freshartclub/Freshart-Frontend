@@ -9,7 +9,7 @@ const ExplorePage = () => {
   const [selectedSize, setSelectedSize] = useState("");
 
   return (
-    <div className="container mx-auto px-6 sm:px-3 py-14">
+    <div className="container mx-auto sm:px-6 px-3 md:py-14 py-5">
       <div>
         <Header variant={{ size: "xl", theme: "dark", weight: "semiBold" }}>
           Browse Paintings for Sale: Originals and Prints with Visual Search

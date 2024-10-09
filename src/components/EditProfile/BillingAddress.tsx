@@ -331,7 +331,7 @@ const BillingAddress = () => {
 
   return (
     <div>
-      <div className="xl:w-[70%] lg:w-[95%] w-full mx-auto shadow-xl my-10">
+      <div className=" shadow-xl my-10">
         <div className="rounded-md bg-white border border-[#E6E6E6]">
           <Header
             variant={{ size: "xl", theme: "dark", weight: "semiBold" }}

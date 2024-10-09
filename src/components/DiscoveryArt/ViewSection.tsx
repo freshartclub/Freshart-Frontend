@@ -80,7 +80,7 @@ const ViewSection = () => {
       {viewData.map((item, index) => (
         <div
           key={index}
-          className={`flex flex-col md:flex-row justify-between p-4 gap-4 ${
+          className={`flex flex-col md:flex-row justify-between lg:gap-4 gap-2 ${
             index % 2 === 0 ? "" : "md:flex-row-reverse"
           }`}
         >
@@ -89,7 +89,7 @@ const ViewSection = () => {
             alt=""
             className="w-full md:w-[50%] h-auto object-cover"
           />
-          <div className="flex flex-col justify-center w-full md:w-[40%] p-4">
+          <div className="flex flex-col justify-center w-full md:w-[48%] ">
             <P
               variant={{ size: "base", theme: "dark", weight: "medium" }}
               className="uppercase tracking-wide text-pink text-md mb-2"
