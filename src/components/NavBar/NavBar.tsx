@@ -514,12 +514,12 @@ const NavBar = () => {
             <div className="flex text-white gap-5 items-center">
               <button onClick={() => navigate("/login")}>Login</button>
               <button onClick={() => navigate("/signup")}>SignUp</button>
-              <button
+              {/* <button
                 onClick={() => navigate("become_artist")}
                 className="w-[10rem] "
               >
                 Become An Artist
-              </button>
+              </button> */}
             </div>
           )}
         </div>

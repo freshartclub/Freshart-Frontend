@@ -155,7 +155,7 @@ const FooterSection = () => {
                     className="text-sm hover:underline"
                     onClick={scrolToTop}
                   >
-                    Artist Login
+                  Become An Artist
                   </Link>
                 </li>
                 <li>
