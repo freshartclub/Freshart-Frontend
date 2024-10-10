@@ -102,8 +102,8 @@ const NavBar = () => {
   };
   const redirectModalToHomepage = () => {
     setIsModalOpen((Modalprev) => !Modalprev);
-    localStorage.removeItem("userName");
-    localStorage.removeItem("userEmail");
+    localStorage.removeItem("auth_token");
+    // localStorage.removeItem("userEmail");
     navigate("/login");
   };
 
