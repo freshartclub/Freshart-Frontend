@@ -7,7 +7,7 @@ import search from "../../assets/Search.png";
 import heart from "../../assets/Heart.png";
 import bag from "../../assets/Bag.png";
 // import profile from "../../assets/Avatar.png";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import P from "../ui/P";
 import Header from "../ui/Header";
 import selling from "../../assets/Images-cuate 1.png";
@@ -74,6 +74,8 @@ const NavBar = () => {
     if (storedUserName) setUserName(storedUserName);
     if (storedEmail) setEmail(storedEmail);
   }, []);
+
+  const token = localStorage.getItem("auth_token");
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -148,9 +150,9 @@ const NavBar = () => {
         </div>
       </div>
 
-      <nav className="bg-[#102030] py-8">
-        <div className="container mx-auto sm:px-6 px-3 flex justify-between">
-          <div className="hidden lg:flex xl:space-x-6 lg:space-x-0 text-white w-[33%]">
+      <nav className="bg-[#102030] py-8 px-28 ">
+        <div className="container sm:px-6  flex justify-between">
+          <div className="hidden  lg:flex xl:space-x-6 lg:space-x-0 text-white ">
             <Link
               to="/"
               className="group mt-3 font-semibold text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
@@ -267,229 +269,259 @@ const NavBar = () => {
           </div>
 
           <div
-            className="flex items-center justify-center w-[60%]"
+            className="flex items-center justify-center "
             onClick={redirectToHomepage}
           >
             <img src={logo} alt="logo" className="" />
           </div>
-          <div className="lg:flex hidden space-x-4 w-[33%] justify-end mt-3">
-            <Link to="/" className="focus:outline-none">
-              <img
-                src={search}
-                alt="search"
-                className="w-8 h-8 text-white mx-2"
-              />
-            </Link>
-            <Link to="/wishlist" className="focus:outline-none">
-              <img
-                src={heart}
-                alt="heart"
-                className="w-8 h-8 text-white mx-2"
-              />
-            </Link>
 
-            <ShoppingCard isOpen={isSidebarOpen} onClose={toggleSidebar} />
-            <button onClick={toggleSidebar} className="focus:outline-none">
-              <img src={bag} alt="bag" className="w-8 h-8 text-white mx-2" />
-            </button>
-            <button className="focus:outline-none">
-              <img
-                src={profile1}
-                alt="profile"
-                onClick={toggleProfile}
-                id="dropdownInformationButton"
-                data-dropdown-toggle="dropdownInformation"
-                className=" text-white mx-2"
-              />
-            </button>
+          {token ? (
+            <>
+              <div className="lg:flex hidden space-x-4  justify-end mt-3">
+                <Link to="/" className="focus:outline-none">
+                  <img
+                    src={search}
+                    alt="search"
+                    className="w-8 h-8 text-white mx-2"
+                  />
+                </Link>
+                <Link to="/wishlist" className="focus:outline-none">
+                  <img
+                    src={heart}
+                    alt="heart"
+                    className="w-8 h-8 text-white mx-2"
+                  />
+                </Link>
 
-            {isProfileDropdown && (
-              <>
-                <div
-                  id="dropdownInformation"
-                  className="absolute z-10 top-[8rem] bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600 pb-3"
-                >
-                  <div className="px-4 py-3 text-sm text-gray-900 dark:text-white">
-                    <div className="flex justify-between gap-3 items-center">
-                      <div>
-                        <P
-                          variant={{
-                            size: "base",
-                            theme: "dark",
-                            weight: "normal",
-                          }}
-                        >
-                          {userName ?? ""}
-                        </P>
-                        <P
-                          variant={{
-                            size: "base",
-                            theme: "dark",
-                            weight: "normal",
-                          }}
-                          className="font-medium truncate"
-                        >
-                          {email ?? ""}
-                        </P>
-                      </div>
-                    </div>
-                  </div>
-                  <ul
-                    className="text-sm"
-                    aria-labelledby="dropdownInformationButton"
-                  >
-                    {profile_data.map((item, index) => (
-                      <Link
-                        key={index}
-                        to={item.to}
-                        className="block px-4 py-2 text-sm"
-                        onClick={() => setIsProfileDropdown(false)}
-                      >
-                        {item.label}
-                      </Link>
-                    ))}
-                  </ul>
+                <ShoppingCard isOpen={isSidebarOpen} onClose={toggleSidebar} />
+                <button onClick={toggleSidebar} className="focus:outline-none">
+                  <img
+                    src={bag}
+                    alt="bag"
+                    className="w-8 h-8 text-white mx-2"
+                  />
+                </button>
+                <button className="focus:outline-none">
+                  <img
+                    src={profile1}
+                    alt="profile"
+                    onClick={toggleProfile}
+                    id="dropdownInformationButton"
+                    data-dropdown-toggle="dropdownInformation"
+                    className=" text-white mx-2"
+                  />
+                </button>
 
-                  <div className="">
-                    <a
-                      onClick={toggleModal}
-                      className="block px-4 py-2 text-sm"
+                {isProfileDropdown && (
+                  <>
+                    <div
+                      id="dropdownInformation"
+                      className="absolute z-10 top-[8rem] bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600 pb-3"
                     >
-                      Log out
-                    </a>
-
-                    {/* Modal */}
-                    {isModalOpen && (
-                      <div
-                        id="popup-modal"
-                        className="fixed inset-0 z-50 flex justify-center items-center w-full h-full bg-black bg-opacity-50"
-                      >
-                        <div className="relative p-4 w-full max-w-md max-h-full">
-                          <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                            <button
-                              type="button"
-                              onClick={toggleModal}
-                              className="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                      <div className="px-4 py-3 text-sm text-gray-900 dark:text-white">
+                        <div className="flex justify-between gap-3 items-center">
+                          <div>
+                            <P
+                              variant={{
+                                size: "base",
+                                theme: "dark",
+                                weight: "normal",
+                              }}
                             >
-                              <svg
-                                className="w-3 h-3"
-                                aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 14 14"
-                              >
-                                <path
-                                  stroke="currentColor"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth="2"
-                                  d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
-                                />
-                              </svg>
-                              <span className="sr-only">Close modal</span>
-                            </button>
-                            <div className="p-4 md:p-5 text-center">
-                              <svg
-                                className="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200"
-                                aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 20 20"
-                              >
-                                <path
-                                  stroke="currentColor"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth="2"
-                                  d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                                />
-                              </svg>
-                              <Header
-                                variant={{
-                                  size: "lg",
-                                  theme: "dark",
-                                  weight: "semiBold",
-                                }}
-                                className="mb-5"
-                              >
-                                Are you sure you want to logout?
-                              </Header>
-
-                              <P
-                                variant={{
-                                  size: "base",
-                                  weight: "medium",
-                                }}
-                                className=" text-[#696868]"
-                              >
-                                Are you sure you want to logout this account?
-                              </P>
-                              <P
-                                variant={{
-                                  size: "base",
-                                  weight: "medium",
-                                }}
-                                className="mb-5 text-[#696868]"
-                              >
-                                Click on the right to logout.
-                              </P>
-                              <Button
-                                variant={{
-                                  fontSize: "md",
-                                  theme: "light",
-                                  fontWeight: "500",
-                                }}
-                                onClick={toggleModal}
-                                type="button"
-                                className="mx-2 border border-gray w-40"
-                              >
-                                Cancel
-                              </Button>
-
-                              <Button
-                                variant={{
-                                  fontSize: "md",
-                                  theme: "dark",
-                                  fontWeight: "400",
-                                  rounded: "md",
-                                }}
-                                onClick={redirectModalToHomepage}
-                                type="button"
-                                className="mx-2 bg-red-600 text-white border border-transparent w-40"
-                              >
-                                Yes
-                              </Button>
-                            </div>
+                              {userName ?? ""}
+                            </P>
+                            <P
+                              variant={{
+                                size: "base",
+                                theme: "dark",
+                                weight: "normal",
+                              }}
+                              className="font-medium truncate"
+                            >
+                              {email ?? ""}
+                            </P>
                           </div>
                         </div>
                       </div>
-                    )}
-                  </div>
-                </div>
-              </>
-            )}
-          </div>
-          <div className="lg:hidden relative">
-            <button
-              onClick={toggleMenu}
-              className="text-white focus:outline-none"
-            >
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
+                      <ul
+                        className="text-sm"
+                        aria-labelledby="dropdownInformationButton"
+                      >
+                        {profile_data.map((item, index) => (
+                          <Link
+                            key={index}
+                            to={item.to}
+                            className="block px-4 py-2 text-sm"
+                            onClick={() => setIsProfileDropdown(false)}
+                          >
+                            {item.label}
+                          </Link>
+                        ))}
+                      </ul>
+
+                      <div className="">
+                        {token ? (
+                          <a
+                            onClick={toggleModal}
+                            className="block px-4 py-2 text-sm cursor-pointer"
+                          >
+                            Log out
+                          </a>
+                        ) : (
+                          <a
+                            onClick={() => navigate("/login")}
+                            className="block px-4 py-2 text-sm cursor-pointer"
+                          >
+                            Login
+                          </a>
+                        )}
+
+                        {/* Modal */}
+                        {isModalOpen && (
+                          <div
+                            id="popup-modal"
+                            className="fixed inset-0 z-50 flex justify-center items-center w-full h-full bg-black bg-opacity-50"
+                          >
+                            <div className="relative p-4 w-full max-w-md max-h-full">
+                              <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                                <button
+                                  type="button"
+                                  onClick={toggleModal}
+                                  className="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                                >
+                                  <svg
+                                    className="w-3 h-3"
+                                    aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 14 14"
+                                  >
+                                    <path
+                                      stroke="currentColor"
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth="2"
+                                      d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                                    />
+                                  </svg>
+                                  <span className="sr-only">Close modal</span>
+                                </button>
+                                <div className="p-4 md:p-5 text-center">
+                                  <svg
+                                    className="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200"
+                                    aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 20 20"
+                                  >
+                                    <path
+                                      stroke="currentColor"
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth="2"
+                                      d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                                    />
+                                  </svg>
+                                  <Header
+                                    variant={{
+                                      size: "lg",
+                                      theme: "dark",
+                                      weight: "semiBold",
+                                    }}
+                                    className="mb-5"
+                                  >
+                                    Are you sure you want to logout?
+                                  </Header>
+
+                                  <P
+                                    variant={{
+                                      size: "base",
+                                      weight: "medium",
+                                    }}
+                                    className=" text-[#696868]"
+                                  >
+                                    Are you sure you want to logout this
+                                    account?
+                                  </P>
+                                  <P
+                                    variant={{
+                                      size: "base",
+                                      weight: "medium",
+                                    }}
+                                    className="mb-5 text-[#696868]"
+                                  >
+                                    Click on the right to logout.
+                                  </P>
+                                  <Button
+                                    variant={{
+                                      fontSize: "md",
+                                      theme: "light",
+                                      fontWeight: "500",
+                                    }}
+                                    onClick={toggleModal}
+                                    type="button"
+                                    className="mx-2 border border-gray w-40"
+                                  >
+                                    Cancel
+                                  </Button>
+
+                                  <Button
+                                    variant={{
+                                      fontSize: "md",
+                                      theme: "dark",
+                                      fontWeight: "400",
+                                      rounded: "md",
+                                    }}
+                                    onClick={redirectModalToHomepage}
+                                    type="button"
+                                    className="mx-2 bg-red-600 text-white border border-transparent w-40"
+                                  >
+                                    Yes
+                                  </Button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+              <div className="lg:hidden relative">
+                <button
+                  onClick={toggleMenu}
+                  className="text-white focus:outline-none"
+                >
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M4 6h16M4 12h16M4 18h16"
+                    ></path>
+                  </svg>
+                </button>
+              </div>
+            </>
+          ) : (
+            <div className="flex text-white gap-5 items-center">
+              <button onClick={() => navigate("/login")}>Login</button>
+              <button onClick={() => navigate("/signup")}>SignUp</button>
+              <button
+                onClick={() => navigate("become_artist")}
+                className="w-[10rem] "
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4 6h16M4 12h16M4 18h16"
-                ></path>
-              </svg>
-            </button>
-          </div>
+                Become An Artist
+              </button>
+            </div>
+          )}
         </div>
 
         {isOpen && (
