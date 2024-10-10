@@ -5,12 +5,38 @@ import arrow from "../../assets/arrow.png";
 import Button from "../ui/Button";
 import BackButton from "../ui/BackButton";
 import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import * as Yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import useForgotPasswordMutation from "../../http/auth/useForgetPasswordMutation";
 
 const ForgetPassword = () => {
   const navigate = useNavigate();
+
   const handleBack = () => {
     navigate("/");
   };
+
+  const validationSchema = Yup.object().shape({
+    email: Yup.string()
+      .email("Invalid email address")
+      .required("Email is required"),
+  });
+
+  const { register, handleSubmit, formState: { errors } } = useForm({
+    resolver: yupResolver(validationSchema),
+  });
+
+  const { mutateAsync, isPending } = useForgotPasswordMutation();
+
+  const onSubmit = handleSubmit(async (data) => {
+    console.log(data);
+    try {
+      await mutateAsync(data);
+    } catch (error) {
+      console.error(error.message);
+    }
+  });
 
   return (
     <div className="bg-[#F5F2EB] min-h-screen flex flex-col justify-center">
@@ -25,37 +51,42 @@ const ForgetPassword = () => {
             <Header
               variant={{ size: "2xl", theme: "dark", weight: "semiBold" }}
             >
-              Forget Password
+              Enter Your Email
             </Header>
             <P
-              variant={{ size: "base", theme: "dark", weight: "normal" }}
-              className="lg:w-[60%] md:w-[80%] mx-auto mt-4"
+              variant={{ size: "base", theme: "dark", weight: "medium" }}
+              className="lg:w-[60%] md:w-[80%] mx-auto mt-4 tracking-tight leading-1"
             >
-              Enter your mobile number or email to get 4 digit OTP
+              Enter your email to get a 6-digit OTP
             </P>
-            <div className="my-5">
-              <input
-                type="text"
-                placeholder="Email or phone number"
-                className="border border-[#D3D3D3] p-2 w-full rounded-md focus:outline-none"
-              />
-            </div>
+            <form onSubmit={handleSubmit(onSubmit)} className="my-5">
+              <div>
+                <input
+                  type="email"
+                  placeholder="Email"
+                  {...register("email")}
+                  className={`border ${errors.email ? "border-red-500" : "border-[#D3D3D3]"} p-2 w-full rounded-md focus:outline-none`}
+                />
+                {errors.email && <div className="text-red-500 text-sm text-left">{errors.email.message}</div>}
+              </div>
 
-            <Button
-              variant={{
-                theme: "dark",
-                rounded: "full",
-                fontWeight: "500",
-                thickness: "thick",
-                fontSize: "base",
-              }}
-              className="mt-3 flex justify-center w-full mb-5"
-            >
-              <P variant={{ size: "base", theme: "light", weight: "semiBold" }}>
-                Send OTP
-              </P>
-              <img src={arrow} alt="arrow" className="ml-2 mt-1" />
-            </Button>
+              <Button
+                variant={{
+                  theme: "dark",
+                  rounded: "full",
+                  fontWeight: "500",
+                  thickness: "thick",
+                  fontSize: "base",
+                }}
+                className="mt-3 flex justify-center w-full mb-5"
+                type="submit"
+              >
+                <P variant={{ size: "base", theme: "light", weight: "semiBold" }}>
+             { isPending ? "Sending..." :   "Send OTP"}
+                </P>
+                <img src={arrow} alt="arrow" className="ml-2 mt-1" />
+              </Button>
+            </form>
           </div>
           <div className="mt-10 md:mt-0 md:ml-10">
             <img src={loginimage} alt="image" className="max-w-full h-auto" />

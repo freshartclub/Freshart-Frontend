@@ -1,3 +1,4 @@
+import useCheckIsAuthorized from "../../http/auth/useGetAuhtorizedUser";
 import ArtistPortfolio from "./ArtistPortfolio";
 import ArtWork from "./ArtWork";
 import BannerSection from "./BannerSection";
@@ -9,6 +10,12 @@ import SecondSection from "./SecondSection";
 import TrendingSection from "./TrendingSection";
 
 const HomePage = () => {
+
+
+  useCheckIsAuthorized()
+  
+
+
   return (
     <div>
       <BannerSection />

@@ -27,7 +27,7 @@ const UserProfile = () => {
         <img src={arrow} alt="Home icon" className="w-[4px] h-[6px] mr-1" />
         <li>
           <Link
-            to="/products"
+            
             className="cursor-pointer hover:bg-[#E8DAEF] rounded-md transition-all duration-300"
           >
             <P

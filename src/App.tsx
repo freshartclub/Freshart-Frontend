@@ -55,15 +55,15 @@ const App: React.FC = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Layout isAuthenticated={isAuthenticateWd}>
+      <Layout isAuthenticated={isAuthenticated}>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/getstarted" element={<GetStarted />}></Route>
-          <Route path="/forget_password" element={<ForgetPassword />}></Route>
-          <Route path="/change_password" element={<ChangePassword />}></Route>
-          <Route path="/otp" element={<OtpPage />}></Route>
+          <Route path="/forget-password" element={<ForgetPassword />}></Route>
+          <Route path="/reset-password" element={<ChangePassword />}></Route>
+          <Route path="/otp" element={<OtpPage />} />
           <Route
             path="/payment_successful"
             element={<PaymentSuccessfull />}

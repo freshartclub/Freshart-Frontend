@@ -5,28 +5,86 @@ import P from "../ui/P";
 import arrow from "../../assets/arrow.png";
 import Button from "../ui/Button";
 import BackButton from "../ui/BackButton";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import otpimage from "../../assets/otp.png";
 import useTimer, { formatTime } from "../hooks/useTimer";
+import { useForm } from "react-hook-form";
+import * as Yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import useOtpVerifyMutation from "../../http/auth/useOtpVerifyMutation";
+import useOtpResendMutation from "../../http/auth/useOtpResendMutation";
+import { useAppDispatch, useAppSelector } from "../../store/typedReduxHooks";
+import { forgotPasswordUserId } from "../../store/userSlice/userSlice";
 
 const OtpPage = () => {
+  const [localId, setLocalId] = useState("");
+  const userId = useAppSelector((state) => state.user.userId);
+  const dispatch = useAppDispatch();
+
   const navigate = useNavigate();
-  const timerLimit = 2 * 60;
+  const [otp, setOtp] = useState("");
+  const timerLimit = 2 * 60; // 2 minutes
   const { startTimer, stopTimer, seconds } = useTimer(timerLimit);
 
-  const [otp, setOtp] = useState("");
+  const [searchParams, setSearchParam] = useSearchParams();
+  const id = searchParams.get("id");
+
+  const validationSchema = Yup.object().shape({
+    // otp: Yup.string()
+    //   .length(6, "OTP must be 6 digits")
+    //   .required("OTP is required"),
+  });
+
+  useEffect(() => {
+    if (userId) {
+      setLocalId(userId);
+      dispatch(forgotPasswordUserId({userId: ""}));
+
+    }else{
+      navigate('/forget-password')
+    }
+  }, []);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: yupResolver(validationSchema),
+  });
+
+  const { isPending, mutateAsync } = useOtpVerifyMutation();
+  const { isPending: isResendPendig, mutateAsync: resendMutateAsync } =
+    useOtpResendMutation();
 
   useEffect(() => {
     startTimer();
-    return () => stopTimer();
+
+    return () => {
+      stopTimer(); // Stop the timer on unmount
+    };
   }, [startTimer, stopTimer]);
 
   const handleBack = () => {
     navigate("/");
   };
 
-  const handleCompleteForm = () => {
-    navigate("/registration_process");
+  const onSubmit = handleSubmit(async (data) => {
+    console.log(otp);
+    try {
+      const newData = {
+        id: localId,
+        otp: otp, // Ensure you're sending the correct OTP data
+      };
+
+      console.log(newData);
+      await mutateAsync(newData);
+    } catch (error) {
+      console.error(error.message);
+    }
+  });
+
+  const handleResendOtp = async () => {
+    await resendMutateAsync({ id: id });
   };
 
   return (
@@ -53,45 +111,56 @@ const OtpPage = () => {
             {formatTime(seconds)}
           </P>
 
-          <OTPInput
-            value={otp}
-            onChange={setOtp}
-            numInputs={4}
-            renderInput={(props) => (
-              <input
-                {...props}
-                className="!w-10 h-10 border border-gray-300 rounded-lg mx-2 text-center text-lg bg-[#FFF9EF] focus:border-blue-500 focus:outline-none"
-              />
+          <form onSubmit={onSubmit} className="mb-4">
+            <OTPInput
+              value={otp}
+              onChange={setOtp}
+              numInputs={6}
+              renderInput={(props) => (
+                <input
+                  {...props}
+                  className="!w-10 h-10 border border-gray-300 rounded-lg mx-2 text-center text-lg bg-[#FFF9EF] focus:border-blue-500 focus:outline-none"
+                />
+              )}
+              containerStyle="flex justify-center mb-4"
+            />
+            {errors.otp && (
+              <div className="text-red-500 text-sm text-left">
+                {errors.otp.message}
+              </div>
             )}
-            containerStyle="flex justify-center mb-4"
-          />
 
-          <P
-            variant={{ size: "base", theme: "dark", weight: "medium" }}
-            className="mb-8 mt-6"
-          >
-            Didn’t Receive Code?{" "}
-            <Link to="/" className="font-bold">
-              SEND AGAIN
-            </Link>
-          </P>
-
-          <Button
-            variant={{
-              theme: "dark",
-              rounded: "full",
-              fontWeight: "500",
-              thickness: "thick",
-              fontSize: "base",
-            }}
-            onClick={handleCompleteForm}
-            className="mt-3 flex justify-center w-full"
-          >
-            <P variant={{ size: "base", theme: "light", weight: "semiBold" }}>
-              Submit OTP
+            <P
+              variant={{ size: "base", theme: "dark", weight: "medium" }}
+              className="mb-8 mt-6"
+            >
+              Didn’t Receive Code?{" "}
+              <span
+                onClick={handleResendOtp}
+                className="font-bold cursor-pointer tracking-tight"
+              >
+                SEND AGAIN
+              </span>
             </P>
-            <img src={arrow} alt="arrow" className="ml-2 mt-1" />
-          </Button>
+
+            <Button
+              variant={{
+                theme: "dark",
+                rounded: "full",
+                fontWeight: "500",
+                thickness: "thick",
+                fontSize: "base",
+              }}
+              type="submit"
+              className="mt-3 flex justify-center w-full"
+              disabled={isSubmitting}
+            >
+              <P variant={{ size: "base", theme: "light", weight: "semiBold" }}>
+                {isPending ? "Validating..." : "Submit OTP"}
+              </P>
+              <img src={arrow} alt="arrow" className="ml-2 mt-1" />
+            </Button>
+          </form>
         </div>
         <div className="mt-10 md:mt-0 md:ml-10">
           <img src={loginimage} alt="image" className="max-w-full h-auto" />

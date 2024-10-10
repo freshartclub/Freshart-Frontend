@@ -14,6 +14,7 @@ import Header from "../ui/Header";
 import { useNavigate } from "react-router-dom";
 import ViewButton from "../ui/ViewButton";
 
+
 const artistData = [
   {
     profile: profile1,
@@ -52,6 +53,8 @@ const artistData = [
     image: img2,
   },
 ];
+
+
 
 const settings = {
   dots: true,
