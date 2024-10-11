@@ -28,7 +28,7 @@ const ChangePassword = () => {
   const id = searchParams.get("id");
   const token = searchParams.get("token");
 
-  console.log(token)
+  console.log(id, token)
 
   const [newPasswordType, setNewPasswordType] = useState("password");
   const [confirmPasswordType, setConfirmPasswordType] = useState("password");
@@ -68,6 +68,7 @@ const ChangePassword = () => {
   });
 
   const onSubmit = handleSubmit(async (data) => {
+    console.log(data)
    
     try {
       const newData = {

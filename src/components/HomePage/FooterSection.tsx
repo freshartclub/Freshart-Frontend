@@ -14,6 +14,12 @@ const FooterSection = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  
+  const token = localStorage.getItem("auth_token");
+
+  console.log("Token Is " + token);
+
+
   return (
     <>
       <footer className="bg-[#102030] text-white pt-16 pb-6">
@@ -105,8 +111,8 @@ const FooterSection = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link
-                    to="/all_artist"
+                   <Link
+                    to={token ? "/all_artist" : "/login"}
                     className="text-sm hover:underline"
                     onClick={scrolToTop}
                   >
@@ -115,7 +121,7 @@ const FooterSection = () => {
                 </li>
                 <li>
                   <Link
-                    to="/purchase"
+                    to={token ? "/purchase" : "/login"}
                     className="text-sm hover:underline"
                     onClick={scrolToTop}
                   >

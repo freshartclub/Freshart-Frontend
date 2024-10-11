@@ -57,10 +57,10 @@ const App: React.FC = () => {
     <QueryClientProvider client={queryClient}>
       <Layout isAuthenticated={isAuthenticated}>
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          <Route path="/" element={<GetStarted />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignUp />} />
-          <Route path="/getstarted" element={<GetStarted />}></Route>
+          <Route path="/home" element={<HomePage/>}/>
           <Route path="/forget-password" element={<ForgetPassword />}></Route>
           <Route path="/reset-password" element={<ChangePassword />}></Route>
           <Route path="/otp" element={<OtpPage />} />

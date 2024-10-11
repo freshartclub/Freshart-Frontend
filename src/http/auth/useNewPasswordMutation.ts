@@ -9,9 +9,9 @@ import { useNavigate } from "react-router-dom";
 let toastId: any;
 
 async function newPassword(input: any) {
-    console.log(input);
+  console.log(input);
   return axiosInstance.post(
-    `${AUTH_ENDPOINTS.ResetPassword}?artistId=${input.id}&token=${input.token}`,
+    `${AUTH_ENDPOINTS.ResetPassword}?id=${input.id}&token=${input.token}`,
     input
   );
 }
@@ -24,7 +24,7 @@ const useNewPasswordMutation = () => {
     onSuccess: async (res, input) => {
       toast.dismiss(toastId);
       toast.success(res.data.message);
-      navigate("/");
+      navigate("/home");
     },
     onError: (res) => {
       toast.error(res.response.data.message);

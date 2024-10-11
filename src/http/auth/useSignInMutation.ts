@@ -33,7 +33,7 @@ const useSigInInMutation = () => {
       dispatch(setIsAuthorized(true));
       toast.dismiss(toastId);
       toast.success(res.data.message);
-      navigate('/')
+      navigate('/home')
     },
     onError: (res) => {
       toast.error(res.response.data.message);

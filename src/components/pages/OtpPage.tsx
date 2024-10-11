@@ -29,6 +29,11 @@ const OtpPage = () => {
   const [searchParams, setSearchParam] = useSearchParams();
   const id = searchParams.get("id");
 
+
+
+
+
+
   const validationSchema = Yup.object().shape({
     // otp: Yup.string()
     //   .length(6, "OTP must be 6 digits")
@@ -52,7 +57,9 @@ const OtpPage = () => {
     resolver: yupResolver(validationSchema),
   });
 
-  const { isPending, mutateAsync } = useOtpVerifyMutation();
+  const { isPending, mutateAsync } = useOtpVerifyMutation(); 
+
+
   const { isPending: isResendPendig, mutateAsync: resendMutateAsync } =
     useOtpResendMutation();
 
@@ -101,8 +108,8 @@ const OtpPage = () => {
             variant={{ size: "base", theme: "dark", weight: "medium" }}
             className="mb-2 text-base text-text_primary_dark font-normal lg:w-[60%] md:w-[80%] mx-auto mt-4"
           >
-            Enter the Code From the SMS We Sent to{" "}
-            <strong>+91 9564568752</strong>
+            Enter the Code From the Mail We Sent to{" "}
+            <strong>***************@gmail.com</strong>
           </P>
           <P
             variant={{ size: "base", theme: "dark", weight: "medium" }}

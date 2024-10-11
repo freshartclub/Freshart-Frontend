@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import useCheckIsAuthorized from "../../http/auth/useGetAuhtorizedUser";
 import ArtistPortfolio from "./ArtistPortfolio";
 import ArtWork from "./ArtWork";
@@ -10,14 +11,17 @@ import SecondSection from "./SecondSection";
 import TrendingSection from "./TrendingSection";
 
 const HomePage = () => {
-
-
-  useCheckIsAuthorized()
   
+  useCheckIsAuthorized();
 
+  const token = localStorage.getItem("auth_token");
+  const navigate = useNavigate()
+  if (!token) {
+    return navigate("/");
+  }
 
   return (
-    <div>
+        <div>
       <BannerSection />
       <SecondSection />
       <HighlightSection />

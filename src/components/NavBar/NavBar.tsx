@@ -104,7 +104,7 @@ const NavBar = () => {
     setIsModalOpen((Modalprev) => !Modalprev);
     localStorage.removeItem("auth_token");
     // localStorage.removeItem("userEmail");
-    navigate("/login");
+    navigate("/");
   };
 
   return (
@@ -152,131 +152,130 @@ const NavBar = () => {
 
       <nav className="bg-[#102030] py-8 px-28 ">
         <div className="container sm:px-6  flex justify-between">
-          <div className="hidden  lg:flex xl:space-x-6 lg:space-x-0 text-white ">
-            <Link
-              to="/"
-              className="group mt-3 font-semibold text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
-            >
-              <div className="relative inline-block px-2">
-                Home
-                <div className="absolute left-0 top-6 transform -translate-y-1/2 h-3 w-0.5 bg-[#E19D00] hidden group-hover:block"></div>
-                <div className="absolute right-0 -bottom-2 h-3.5 w-0.5 bg-[#E19D00] hidden group-hover:block"></div>
-              </div>
-            </Link>
-            <Link
-              to="#"
-              className="group mt-3 font-semibold text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
-              id="mega-menu-dropdown-button"
-              onClick={toggleDropdown}
-            >
-              <div className="relative flex px-2">
-                Subscribe
-                <svg
-                  className="w-2.5 h-2.5 ml-1 mt-2"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 10 6"
-                >
-                  <path
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="m1 1 4 4 4-4"
-                  />
-                </svg>
-                <div className="absolute left-0 top-6 transform -translate-y-1/2 h-3 w-0.5 bg-[#E19D00] hidden group-hover:block "></div>
-                <div className="absolute right-0 -bottom-2 h-3.5 w-0.5 bg-[#E19D00] hidden group-hover:block"></div>
-              </div>
-
-              {isDropdownOpen && (
-                <div
-                  id="mega-menu-dropdown"
-                  className="absolute z-10 top-[9rem] grid grid-cols-[1fr_1fr_1fr_1fr_4fr] gap-4 text-sm bg-white border rounded-lg shadow-md p-8"
-                >
-                  {categories.map((category, index) => (
-                    <div key={index} className="text-gray-900 md:pb-4">
-                      <ul
-                        className="space-y-4"
-                        aria-labelledby="mega-menu-dropdown-button"
-                      >
-                        <li>
-                          <a href="#" className="uppercase font-bold">
-                            {category.title}
-                          </a>
-                        </li>
-                        {category.products.map((product, prodIndex) => (
-                          <li key={prodIndex}>
-                            <a
-                              href="#"
-                              className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500"
-                            >
-                              {product}
-                            </a>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-
-                  <div>
-                    <Header
-                      variant={{
-                        theme: "dark",
-                        weight: "bold",
-                      }}
-                      className="uppercase text-sm"
-                    >
-                      Top selling product
-                    </Header>
-                    <img src={selling} alt="selling product" />
-                  </div>
-                </div>
-              )}
-            </Link>
-
-            <Link
-              to="/purchase"
-              className="group mt-3 font-semibold text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
-            >
-              <div className="relative inline-block px-2">
-                Purchase
-                <div className="absolute left-0 top-6 transform -translate-y-1/2 h-3 w-0.5 bg-[#E19D00] hidden group-hover:block"></div>
-                <div className="absolute right-0 -bottom-2 h-3.5 w-0.5 bg-[#E19D00] hidden group-hover:block"></div>
-              </div>
-            </Link>
-            <Link
-              to="/all_artist"
-              className="group mt-3 font-semibold text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
-            >
-              <div className="relative inline-block px-2">
-                Artist
-                <div className="absolute left-0 top-6 transform -translate-y-1/2 h-3 w-0.5 bg-[#E19D00] hidden group-hover:block"></div>
-                <div className="absolute right-0 -bottom-2 h-3.5 w-0.5 bg-[#E19D00] hidden group-hover:block"></div>
-              </div>
-            </Link>
-            <Link
-              to="/blog"
-              className="group mt-3 font-semibold text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
-            >
-              <div className="relative inline-block px-2">
-                Blog
-                <div className="absolute left-0 top-6 transform -translate-y-1/2 h-3 w-0.5 bg-[#E19D00] hidden group-hover:block"></div>
-                <div className="absolute right-0 -bottom-2 h-3.5 w-0.5 bg-[#E19D00] hidden group-hover:block"></div>
-              </div>
-            </Link>
-          </div>
-
-          <div
-            className="flex items-center justify-center "
-            onClick={redirectToHomepage}
-          >
-            <img src={logo} alt="logo" className="" />
-          </div>
-
           {token ? (
             <>
+              {" "}
+              <div className="hidden  lg:flex xl:space-x-6 lg:space-x-0 text-white ">
+                <Link
+                  to="/"
+                  className="group mt-3 font-semibold text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
+                >
+                  <div className="relative inline-block px-2">
+                    Home
+                    <div className="absolute left-0 top-6 transform -translate-y-1/2 h-3 w-0.5 bg-[#E19D00] hidden group-hover:block"></div>
+                    <div className="absolute right-0 -bottom-2 h-3.5 w-0.5 bg-[#E19D00] hidden group-hover:block"></div>
+                  </div>
+                </Link>
+                <Link
+                  to="#"
+                  className="group mt-3 font-semibold text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
+                  id="mega-menu-dropdown-button"
+                  onClick={toggleDropdown}
+                >
+                  <div className="relative flex px-2">
+                    Subscribe
+                    <svg
+                      className="w-2.5 h-2.5 ml-1 mt-2"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 10 6"
+                    >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="m1 1 4 4 4-4"
+                      />
+                    </svg>
+                    <div className="absolute left-0 top-6 transform -translate-y-1/2 h-3 w-0.5 bg-[#E19D00] hidden group-hover:block "></div>
+                    <div className="absolute right-0 -bottom-2 h-3.5 w-0.5 bg-[#E19D00] hidden group-hover:block"></div>
+                  </div>
+
+                  {isDropdownOpen && (
+                    <div
+                      id="mega-menu-dropdown"
+                      className="absolute z-10 top-[9rem] grid grid-cols-[1fr_1fr_1fr_1fr_4fr] gap-4 text-sm bg-white border rounded-lg shadow-md p-8"
+                    >
+                      {categories.map((category, index) => (
+                        <div key={index} className="text-gray-900 md:pb-4">
+                          <ul
+                            className="space-y-4"
+                            aria-labelledby="mega-menu-dropdown-button"
+                          >
+                            <li>
+                              <a href="#" className="uppercase font-bold">
+                                {category.title}
+                              </a>
+                            </li>
+                            {category.products.map((product, prodIndex) => (
+                              <li key={prodIndex}>
+                                <a
+                                  href="#"
+                                  className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500"
+                                >
+                                  {product}
+                                </a>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+
+                      <div>
+                        <Header
+                          variant={{
+                            theme: "dark",
+                            weight: "bold",
+                          }}
+                          className="uppercase text-sm"
+                        >
+                          Top selling product
+                        </Header>
+                        <img src={selling} alt="selling product" />
+                      </div>
+                    </div>
+                  )}
+                </Link>
+
+                <Link
+                  to="/purchase"
+                  className="group mt-3 font-semibold text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
+                >
+                  <div className="relative inline-block px-2">
+                    Purchase
+                    <div className="absolute left-0 top-6 transform -translate-y-1/2 h-3 w-0.5 bg-[#E19D00] hidden group-hover:block"></div>
+                    <div className="absolute right-0 -bottom-2 h-3.5 w-0.5 bg-[#E19D00] hidden group-hover:block"></div>
+                  </div>
+                </Link>
+                <Link
+                  to="/all_artist"
+                  className="group mt-3 font-semibold text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
+                >
+                  <div className="relative inline-block px-2">
+                    Artist
+                    <div className="absolute left-0 top-6 transform -translate-y-1/2 h-3 w-0.5 bg-[#E19D00] hidden group-hover:block"></div>
+                    <div className="absolute right-0 -bottom-2 h-3.5 w-0.5 bg-[#E19D00] hidden group-hover:block"></div>
+                  </div>
+                </Link>
+                <Link
+                  to="/blog"
+                  className="group mt-3 font-semibold text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
+                >
+                  <div className="relative inline-block px-2">
+                    Blog
+                    <div className="absolute left-0 top-6 transform -translate-y-1/2 h-3 w-0.5 bg-[#E19D00] hidden group-hover:block"></div>
+                    <div className="absolute right-0 -bottom-2 h-3.5 w-0.5 bg-[#E19D00] hidden group-hover:block"></div>
+                  </div>
+                </Link>
+              </div>
+              <div
+                className="flex items-center justify-center "
+                onClick={redirectToHomepage}
+              >
+                <img src={logo} alt="logo" className="" />
+              </div>
               <div className="lg:flex hidden space-x-4  justify-end mt-3">
                 <Link to="/" className="focus:outline-none">
                   <img
@@ -360,21 +359,12 @@ const NavBar = () => {
                       </ul>
 
                       <div className="">
-                        {token ? (
-                          <a
-                            onClick={toggleModal}
-                            className="block px-4 py-2 text-sm cursor-pointer"
-                          >
-                            Log out
-                          </a>
-                        ) : (
-                          <a
-                            onClick={() => navigate("/login")}
-                            className="block px-4 py-2 text-sm cursor-pointer"
-                          >
-                            Login
-                          </a>
-                        )}
+                        <a
+                          onClick={toggleModal}
+                          className="block px-4 py-2 text-sm cursor-pointer"
+                        >
+                          Log out
+                        </a>
 
                         {/* Modal */}
                         {isModalOpen && (
@@ -511,16 +501,27 @@ const NavBar = () => {
               </div>
             </>
           ) : (
-            <div className="flex text-white gap-5 items-center">
-              <button onClick={() => navigate("/login")}>Login</button>
-              <button onClick={() => navigate("/signup")}>SignUp</button>
-              {/* <button
-                onClick={() => navigate("become_artist")}
-                className="w-[10rem] "
+            <>
+              <div
+                className="flex items-center justify-center "
+                onClick={redirectToHomepage}
               >
-                Become An Artist
-              </button> */}
-            </div>
+                <img src={logo} alt="logo" className="" />
+              </div>
+
+              <div>
+                <Link to="/login"
+                 
+                  className="px-4 py-2 text-sm bg-white rounded-md hover:bg-gray-200 focus:outline-none"
+                >
+                  Sign In
+                </Link>
+                <Link to="/signup" className="ml-4 text-sm text-white ">
+                  Sign Up
+                </Link>
+              </div>
+
+            </>
           )}
         </div>
 

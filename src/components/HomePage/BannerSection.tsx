@@ -4,8 +4,12 @@ import Header from "../ui/Header";
 import P from "../ui/P";
 import banner2 from "../../assets/banner_2.jpg";
 import banner3 from "../../assets/banner3.png";
+import { useAppSelector } from "../../store/typedReduxHooks";
 
 const BannerSection = () => {
+  const user = useAppSelector((state)=> state.user.user);
+  console.log(user);
+  
   const bannerData = [
     {
       image1: banner,
