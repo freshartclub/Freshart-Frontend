@@ -76,7 +76,7 @@ const LogNaveBar = () => {
                     variant={{ size: "base", theme: "light", weight: "normal" }}
                     onClick={handleRedirectToArtistLogin}
                   >
-                    Artist Login
+                   Become An Artist
                   </P>
                   <img src={arrow3} alt="arrow" className="ml-2 mt-1" />
                 </Button>
