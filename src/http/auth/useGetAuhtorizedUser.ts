@@ -36,6 +36,8 @@ const useCheckIsAuthorized = () => {
     queryFn: fetchUser,
     enabled: true,
   });
+
+  
 };
 
 export default useCheckIsAuthorized;

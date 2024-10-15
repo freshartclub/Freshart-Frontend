@@ -17,28 +17,7 @@ import view1 from "./assets/viewArrow.png";
 import dots from "./assets/DotsThree.png";
 import copy from "./assets/Copy.png";
 
-const personal_info = [
-  {
-    title: "Name",
-    value: "Phillip Burke",
-  },
-  {
-    title: "Email",
-    value: "phillip@scribbler.ai",
-  },
-  {
-    title: "Phone No",
-    value: "088 3579 454 687",
-  },
-  {
-    title: "Counrty",
-    value: "United Arab Emirates",
-  },
-  {
-    title: "Language",
-    value: "Arabic",
-  },
-];
+
 
 const order_data = [
   {
@@ -99,12 +78,36 @@ const getStatusColor = (status: any) => {
 };
 const colors = ["bg-[#EAF6FE]", "bg-[#FFF3EB]", "bg-[#EAF7E9]"];
 
-const UserDescription = () => {
+const UserDescription = ({user}) => {
+  const personal_info = [
+    {
+      title: "Name",
+      value: `${user?.artistName}`,
+    },
+    {
+      title: "Email",
+      value: `${user?.email}`,
+    },
+    {
+      title: "Phone No",
+      value: `${user?.phone}`,
+    },
+    {
+      title: "Counrty",
+      value: `${user?.address.country}`,
+    },
+    {
+      title: "Language",
+      value: `${user?.language}`,
+    },
+  ];
+
+
   return (
     <div className="xl:w-[78%] lg:w[80%] md:w-[75%] w-full">
       <div>
         <Header variant={{ size: "xl", theme: "dark", weight: "semiBold" }}>
-          Hello, Kelvin
+          {`Hello,${user.artistName}`}
         </Header>
         <P
           variant={{ size: "base", theme: "dark", weight: "medium" }}

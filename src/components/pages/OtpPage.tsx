@@ -29,11 +29,6 @@ const OtpPage = () => {
   const [searchParams, setSearchParam] = useSearchParams();
   const id = searchParams.get("id");
 
-
-
-
-
-
   const validationSchema = Yup.object().shape({
     // otp: Yup.string()
     //   .length(6, "OTP must be 6 digits")
@@ -43,12 +38,12 @@ const OtpPage = () => {
   useEffect(() => {
     if (userId) {
       setLocalId(userId);
-      dispatch(forgotPasswordUserId({userId: ""}));
-
-    }else{
-      navigate('/forget-password')
+      dispatch(forgotPasswordUserId({ userId: "" }));
+    } else {
+      navigate("/forget-password");
     }
   }, []);
+
   const {
     register,
     handleSubmit,
@@ -57,8 +52,7 @@ const OtpPage = () => {
     resolver: yupResolver(validationSchema),
   });
 
-  const { isPending, mutateAsync } = useOtpVerifyMutation(); 
-
+  const { isPending, mutateAsync } = useOtpVerifyMutation();
 
   const { isPending: isResendPendig, mutateAsync: resendMutateAsync } =
     useOtpResendMutation();
@@ -67,7 +61,7 @@ const OtpPage = () => {
     startTimer();
 
     return () => {
-      stopTimer(); // Stop the timer on unmount
+      stopTimer();
     };
   }, [startTimer, stopTimer]);
 
@@ -80,7 +74,7 @@ const OtpPage = () => {
     try {
       const newData = {
         id: localId,
-        otp: otp, // Ensure you're sending the correct OTP data
+        otp: otp,
       };
 
       console.log(newData);

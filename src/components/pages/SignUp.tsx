@@ -190,7 +190,7 @@ const SignUp = () => {
                     Already have an account?
                   </P>
                   <Link to="/login" className="font-bold uppercase sm:mt-0 mt-2 ml-1 md:text-base text-sm">
-                    Sign In
+                  { isPending ? "SignUp..." :   "SignUp"}
                   </Link>
                 </div>
               </div>

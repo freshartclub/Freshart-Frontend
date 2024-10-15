@@ -1,10 +1,15 @@
-import { useState, useRef } from "react";
+import React, { useState, useRef, SetStateAction } from "react";
 import upload_image from "../../assets/Upload_image.png";
 import P from "./P";
 
-const UploadImage = () => {
+const UploadImage = ({
+  selectedFile,
+  setSelectedFile,
+}: {
+  selectedFile: any;
+  setSelectedFile: React.Dispatch<SetStateAction<any>>;
+}) => {
   const fileInputRef = useRef(null);
-  const [selectedFile, setSelectedFile] = useState<string | null>(null);
 
   const handleImageClick = () => {
     if (fileInputRef.current) {
@@ -15,30 +20,36 @@ const UploadImage = () => {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      setSelectedFile(URL.createObjectURL(file));
+      setSelectedFile(file);
     }
   };
 
   return (
     <div className="flex flex-col gap-5 justify-center items-center">
-      <img
-        src={selectedFile || upload_image}
-        alt="uploaded image"
-        className="w-auto h-auto flex flex-col justify-center items-center cursor-pointer"
-        onClick={handleImageClick}
-      />
+      {selectedFile ? (
+        <>
+          <img
+            src={URL.createObjectURL(selectedFile)}
+            alt="uploaded image "
+            className="w-[200px] h-[200px] flex flex-col justify-center items-center cursor-pointer rounded-full"
+          />
 
-      <P variant={{ size: "base", theme: "dark", weight: "normal" }}>
-        Allowed *.jpeg, *.jpg, *.png, *.gif Max size of 3.1 MB
-      </P>
-
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/jpeg, image/jpg, image/png, image/gif"
-        className="hidden"
-        onChange={handleFileChange}
-      />
+        </>
+      ) : (
+        <>
+        <input
+          // ref={fileInputRef}
+          type="file"
+          accept="image/jpeg, image/jpg, image/png, image/gif"
+          className=""
+          onChange={handleFileChange}
+        />
+        
+        <P variant={{ size: "base", theme: "dark", weight: "normal" }}>
+            Allowed *.jpeg, *.jpg, *.png Max size of 3.1 MB
+          </P>
+        </>
+      )}
     </div>
   );
 };

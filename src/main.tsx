@@ -15,18 +15,12 @@ const queryClient = new QueryClient();
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <BrowserRouter>
-      <QueryClientProvider client={queryClient}>
-        <Provider store={store}>
-          <AuthProvider>
-            <Toaster position="top-right" />
-            {/* <NavBar /> */}
+      <Toaster position="top-right" />
+      {/* <NavBar /> */}
 
-            <App />
+      <App />
 
-            <FooterSection />
-          </AuthProvider>
-        </Provider>
-      </QueryClientProvider>
+      <FooterSection />
     </BrowserRouter>
   </React.StrictMode>
 );

@@ -9,7 +9,7 @@ import { useMutation } from '@tanstack/react-query';
 import axiosInstance from '../../components/utils/axios';
 import { setToken } from '../../components/utils/tokenHelper';
 import { useAppDispatch } from '../../store/typedReduxHooks';
-import { setIsAuthorized } from '../../store/userSlice/userSlice';
+import { forgotPasswordUserId, setIsAuthorized } from '../../store/userSlice/userSlice';
 import toast from 'react-hot-toast';
 import { ARTIST_BASE_URl } from '../../components/utils/baseUrls';
 import { AUTH_ENDPOINTS } from '../apiEndPoints/Auth';
@@ -29,12 +29,13 @@ const useSignUpMutation = () => {
 
     onSuccess: async (res, input) => {
       console.log(res.data)
-      setToken(res.data.token, input.rememberMe);
+      // setToken(res.data.token, input.rememberMe);
       
-      dispatch(setIsAuthorized(true));
+      // dispatch(setIsAuthorized(true));
       toast.dismiss(toastId);
       toast.success(res.data.message);
-      navigate('/home')
+      dispatch(forgotPasswordUserId({ userId: res.data.id }));
+      navigate('/sign-up-otp')
     },
     onError: (res) => {
       toast.error(res.response.data.message);

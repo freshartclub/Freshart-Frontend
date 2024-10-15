@@ -125,8 +125,8 @@ const PriceAndPlan = () => {
     navigate("/premium_payment");
   };
 
-  const redirectToHome = () => {
-    navigate("/");
+  const handleCompleteForm = () => {
+    navigate("/registration_process");
     window.scrollTo(0, 0);
   };
 
@@ -433,7 +433,7 @@ const PriceAndPlan = () => {
               fontWeight: "bold",
               rounded: "full",
             }}
-            onClick={redirectToHome}
+            onClick={handleCompleteForm}
           >
             I am not sure yet. Let me take a look, I will choose later on!
           </Button>

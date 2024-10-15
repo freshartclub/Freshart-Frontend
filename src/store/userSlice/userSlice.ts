@@ -6,15 +6,12 @@ interface UserState {
   user: any;
   isAuthorized: boolean;
   userId: string;
-  
-
 }
 
 const initialState: UserState = {
   user: null,
   isAuthorized: false,
   userId: '',
-  
 
 };
 
@@ -28,6 +25,7 @@ export const userSlice = createSlice({
     removeUser: (state) => {
       state.user = null;
     },
+
     forgotPasswordUserId: (state, action: PayloadAction<any>) => {      
       state.userId = action.payload.userId;
     },

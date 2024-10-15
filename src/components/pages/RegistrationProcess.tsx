@@ -1,5 +1,7 @@
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import React, { useState } from "react";
+import { useForm, Controller } from "react-hook-form";
 import * as Yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 import Header from "../ui/Header";
 import P from "../ui/P";
 import Select from "react-select";
@@ -11,8 +13,16 @@ import BackButton from "../ui/BackButton";
 import { useNavigate } from "react-router-dom";
 import upload_image from "../../assets/Upload_image.png";
 import UploadImage from "../ui/UploadImage";
+import useCompleteRegistration from "../../http/artist/useCompleteRegistration";
+import { useAppSelector } from "../../store/typedReduxHooks";
 
 const RegistrationProcess = () => {
+  const [selectedFile, setSelectedFile] = useState<string | null>(null);
+  const { mutateAsync, isPending } = useCompleteRegistration();
+
+  const { userId } = useAppSelector((state) => state.user);
+  console.log(userId);
+
   const countryOptions = [
     { value: "us", label: "United States" },
     { value: "ca", label: "Canada" },
@@ -21,7 +31,7 @@ const RegistrationProcess = () => {
 
   const genderOptions = [
     { value: "male", label: "Male" },
-    { value: "female", label: "Femal" },
+    { value: "female", label: "Female" },
     { value: "other", label: "Other" },
   ];
 
@@ -30,8 +40,9 @@ const RegistrationProcess = () => {
     navigate("/");
   };
 
-  const redirectToPricePlan = (values: any) => {
-    console.log("...........", values.name);
+  const redirectToPricePlan = (data: any) => {
+    console.log("Submitted Data: ", data);
+    navigate("/priceandplans");
   };
 
   const redirectToTermAndCondition = () => {
@@ -40,13 +51,13 @@ const RegistrationProcess = () => {
   };
 
   const validationSchema = Yup.object({
-    name: Yup.string().required("Name is required"),
-    surname1: Yup.string().required("Surname 1 is required"),
-    surname2: Yup.string().required("Surname 2 is required"),
+    artistName: Yup.string().required("Name is required"),
+    artistSurname1: Yup.string().required("Surname 1 is required"),
+    artistSurname2: Yup.string().required("Surname 2 is required"),
     country: Yup.object().required("Country is required"),
-    zipcode: Yup.string().required("Zipcode is required"),
+    zipCode: Yup.string().required("zipCodeis required"),
     city: Yup.string().required("City is required"),
-    province: Yup.string().required("Province is required"),
+    state: Yup.string().required("state is required"),
     gender: Yup.object().required("Gender is required"),
     dob: Yup.date().required("Date of Birth is required"),
     terms: Yup.boolean().oneOf(
@@ -55,11 +66,53 @@ const RegistrationProcess = () => {
     ),
   });
 
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState: { errors, isSubmitting, isValid },
+  } = useForm({
+    // resolver: yupResolver(validationSchema),
+    defaultValues: {
+      artistName: "",
+      artistSurname1: "",
+      artistSurname2: "",
+
+      country: "",
+      zipCode: "",
+      city: "",
+      state: "",
+      gender: "",
+      dob: "",
+      terms: false,
+    },
+  });
+
+  const onSubmit = handleSubmit(async (data) => {
+    const formData = new FormData();
+
+    Object.keys(data).forEach((key) => {
+      formData.append(key, data[key]);
+    });
+    formData.append("avatar", selectedFile);
+
+    const newData={
+      data: formData,
+      userId: userId,
+    }
+
+    try {
+      await mutateAsync(newData);
+    } catch (error) {
+      console.error("Error in form submission: ", error);
+    }
+  });
+
   return (
     <div className="bg-[#F9F7F6] py-10">
       <div className="container mx-auto sm:px-6 px-3">
         <div className="xl:w-[90%] w-full mx-auto bg-white shadow-xl">
-          <div className="text-center  xl:p-10 lg:p-6 md:p-6 p-3">
+          <div className="text-center xl:p-10 lg:p-6 md:p-6 p-3">
             <BackButton
               onClick={handleBack}
               iconClass="text-text_primary_dark font-semibold"
@@ -76,307 +129,261 @@ const RegistrationProcess = () => {
               variant={{ size: "base", theme: "dark", weight: "normal" }}
               className="mb-5"
             >
-              Please fill the form below to become a art lover. Feel free to add
-              as much detail as needed.
+              Please fill the form below to become an art lover. Feel free to
+              add as much detail as needed.
             </P>
 
             <div className="flex lg:flex-row flex-col xl:gap-10 gap-8 xl:items-start items-center">
               <div className="xl:p-8 p-3 shadow-xl rounded-xl bg-white h-fit xl:w-[30%] sm:w-[45%] w-[90%] flex flex-col justify-center items-center">
-                <UploadImage />
+                <UploadImage
+                  selectedFile={selectedFile}
+                  setSelectedFile={setSelectedFile}
+                />
               </div>
 
               <div className="w-full">
-                <Formik
-                  initialValues={{
-                    name: "",
-                    surname1: "",
-                    surname2: "",
-                    country: null,
-                    zipcode: "",
-                    city: "",
-                    province: "",
-                    gender: null,
-                    dob: null,
-                    terms: false,
-                  }}
-                  validationSchema={validationSchema}
-                  onSubmit={(values, { resetForm }) => {
-                    console.log(".....", values);
-                    redirectToPricePlan(values);
-                    resetForm();
-                    navigate("/priceandplans");
-                  }}
-                >
-                  {({ setFieldValue, values, isValid, isSubmitting }) => (
-                    <Form className="w-full">
-                      <div className=" md:p-10 p-3 rounded-xl bg-white shadow-2xl">
-                        <div className="flex md:flex-row flex-col justify-between">
-                          <div className="sm:my-3 my-1 md:w-[32%] w-full">
-                            <label
-                              htmlFor="name"
-                              className="block mb-2 text-sm font-semibold text-gray-700 text-left"
-                            >
-                              Name
-                            </label>
-                            <Field
-                              type="text"
-                              name="name"
-                              placeholder="Name"
-                              className="border border-[#D3D3D3] p-3 w-full rounded-xl focus:outline-none"
-                            />
-                            <ErrorMessage
-                              name="name"
-                              component="p"
-                              className="text-red-500 text-sm text-left"
-                            />
-                          </div>
-
-                          <div className="sm:my-3 my-1 md:w-[32%] w-full">
-                            <label
-                              htmlFor="surname1"
-                              className="block mb-2 text-sm font-semibold text-gray-700 text-left"
-                            >
-                              Surname 1
-                            </label>
-                            <Field
-                              type="text"
-                              name="surname1"
-                              placeholder="Surname 1"
-                              className="border border-[#D3D3D3] p-3 w-full rounded-xl focus:outline-none"
-                            />
-                            <ErrorMessage
-                              name="surname1"
-                              component="p"
-                              className="text-red-500 text-sm text-left"
-                            />
-                          </div>
-
-                          <div className="sm:my-3 my-1 md:w-[32%] w-full">
-                            <label
-                              htmlFor="surname2"
-                              className="block mb-2 text-sm font-semibold text-gray-700 text-left"
-                            >
-                              Surname 2
-                            </label>
-                            <Field
-                              type="text"
-                              name="surname2"
-                              placeholder="Surname 2"
-                              className="border border-[#D3D3D3] p-3 w-full rounded-xl focus:outline-none"
-                            />
-                            <ErrorMessage
-                              name="surname2"
-                              component="p"
-                              className="text-red-500 text-sm text-left"
-                            />
-                          </div>
-                        </div>
-
-                        <div className="flex sm:flex-row flex-col justify-between">
-                          <div className="sm:my-3 my-1 sm:w-[49%] w-full">
-                            <label
-                              htmlFor="country"
-                              className="block mb-2 text-sm font-semibold text-gray-700 text-left"
-                            >
-                              Country
-                            </label>
-                            <Select
-                              name="country"
-                              options={countryOptions}
-                              placeholder="Select a country"
-                              className="rounded-xl focus:outline-none text-left"
-                              styles={{
-                                control: (provided) => ({
-                                  ...provided,
-                                  padding: "6px", // Increase padding here
-                                  borderWidth: "2px", // Optionally, make the border thicker
-                                  fontSize: "1rem", // Optional: Adjust font size if needed
-                                }),
-                                placeholder: (provided) => ({
-                                  ...provided,
-                                  color: "#6B7280", // Tailwind gray-500 color
-                                }),
-                              }}
-                              value={values.country}
-                              onChange={(option) =>
-                                setFieldValue("country", option)
-                              }
-                            />
-                            <ErrorMessage
-                              name="country"
-                              component="p"
-                              className="text-red-500 text-sm text-left"
-                            />
-                          </div>
-
-                          <div className="sm:my-3 my-1 sm:w-[49%] w-full">
-                            <label
-                              htmlFor="zipcode"
-                              className="block mb-2 text-sm font-semibold text-gray-700 text-left"
-                            >
-                              Zipcode
-                            </label>
-                            <Field
-                              type="text"
-                              name="zipcode"
-                              placeholder="452010"
-                              className="border border-[#D3D3D3] p-3 w-full rounded-xl focus:outline-none"
-                            />
-                            <ErrorMessage
-                              name="zipcode"
-                              component="p"
-                              className="text-red-500 text-sm text-left"
-                            />
-                          </div>
-                        </div>
-
-                        <div className="flex sm:flex-row flex-col justify-between">
-                          <div className="sm:my-3 my-1 sm:w-[49%] w-full">
-                            <label
-                              htmlFor="city"
-                              className="block mb-2 text-sm font-semibold text-gray-700 text-left"
-                            >
-                              City
-                            </label>
-                            <Field
-                              type="text"
-                              name="city"
-                              placeholder="City"
-                              className="border border-[#D3D3D3] p-3 w-full rounded-xl focus:outline-none"
-                            />
-                            <ErrorMessage
-                              name="city"
-                              component="p"
-                              className="text-red-500 text-sm text-left"
-                            />
-                          </div>
-
-                          <div className="sm:my-3 my-1 sm:w-[49%] w-full">
-                            <label
-                              htmlFor="province"
-                              className="block mb-2 text-sm font-semibold text-gray-700 text-left"
-                            >
-                              Province
-                            </label>
-                            <Field
-                              type="text"
-                              name="province"
-                              placeholder="Province"
-                              className="border border-[#D3D3D3] p-3 w-full rounded-xl focus:outline-none"
-                            />
-                            <ErrorMessage
-                              name="province"
-                              component="p"
-                              className="text-red-500 text-sm text-left"
-                            />
-                          </div>
-                        </div>
-
-                        <div className="flex sm:flex-row flex-col justify-between">
-                          <div className="sm:my-3 my-1 sm:w-[49%] w-full">
-                            <label
-                              htmlFor="Gender"
-                              className="block mb-2 text-sm font-semibold text-gray-700 text-left"
-                            >
-                              Gender
-                            </label>
-                            <Select
-                              name="gender"
-                              options={genderOptions}
-                              placeholder="Male"
-                              className="rounded-xl text-left"
-                              styles={{
-                                control: (provided) => ({
-                                  ...provided,
-                                  padding: "6px",
-                                  borderWidth: "2px", // Optionally, make the border thicker
-                                  fontSize: "1rem", // Optional: Adjust font size if needed
-                                }),
-                              }}
-                              value={values.gender}
-                              onChange={(option) =>
-                                setFieldValue("gender", option)
-                              }
-                            />
-
-                            <ErrorMessage
-                              name="gender"
-                              component="p"
-                              className="text-red-500 text-sm text-left"
-                            />
-                          </div>
-
-                          <div className="sm:my-3 my-1 sm:w-[49%] w-full">
-                            <label
-                              htmlFor="dob"
-                              className="block mb-2 text-sm font-semibold text-gray-700 text-left"
-                            >
-                              Date of Birth
-                            </label>
-                            <DatePicker
-                              selected={values.dob}
-                              onChange={(date) => setFieldValue("dob", date)}
-                              dateFormat="dd/MM/yyyy"
-                              placeholderText="Select your date of birth"
-                              className="border border-[#D3D3D3] p-3 w-[100%] rounded-xl focus:outline-none"
-                              popperClassName="react-datepicker-popper"
-                            />
-                            <ErrorMessage
-                              name="dob"
-                              component="p"
-                              className="text-red-500 text-sm text-left"
-                            />
-                          </div>
-                        </div>
+                <form className="w-full">
+                  <div className="md:p-10 p-3 rounded-xl bg-white shadow-2xl">
+                    <div className="flex md:flex-row flex-col justify-between">
+                      <div className="sm:my-3 my-1 md:w-[32%] w-full">
+                        <label
+                          htmlFor="artistName"
+                          className="block mb-2 text-sm font-semibold text-gray-700 text-left"
+                        >
+                          Name
+                        </label>
+                        <input
+                          {...register("artistName")}
+                          className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
+                          placeholder="Enter Name
+"
+                        />
+                        {errors.artistName && (
+                          <p className="text-red-500 text-sm text-left">
+                            {errors.artistName.message}
+                          </p>
+                        )}
                       </div>
-                      <div className="flex text-left mt-5">
-                        <Field
+
+                      <div className="sm:my-3 my-1 md:w-[32%] w-full">
+                        <label
+                          htmlFor="artistSurname1"
+                          className="block mb-2 text-sm font-semibold text-gray-700 text-left"
+                        >
+                          Surname 1
+                        </label>
+                        <input
+                          {...register("artistSurname1")}
+                          className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
+                          placeholder="Enter Surname
+"
+                        />
+                        {errors.artistSurname1 && (
+                          <p className="text-red-500 text-sm text-left">
+                            {errors.artistSurname1.message}
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="sm:my-3 my-1 md:w-[32%] w-full">
+                        <label
+                          htmlFor="artistSurname2"
+                          className="block mb-2 text-sm font-semibold text-gray-700 text-left"
+                        >
+                          Surname 2
+                        </label>
+                        <input
+                          {...register("artistSurname2")}
+                          className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
+                          placeholder="Enter Surname
+"
+                        />
+                        {errors.artistSurname2 && (
+                          <p className="text-red-500 text-sm text-left">
+                            {errors.artistSurname2.message}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex sm:flex-row flex-col justify-between">
+                      <div className="sm:my-3 my-1 sm:w-[49%] w-full">
+                        <label
+                          htmlFor="country"
+                          className="block mb-2 text-sm font-semibold text-gray-700 text-left"
+                        >
+                          Country
+                        </label>
+                        <input
+                          {...register("country")}
+                          className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
+                          placeholder="Enter Country
+"
+                        />
+                        {errors.country && (
+                          <p className="text-red-500 text-sm text-left">
+                            {errors.country.message}
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="sm:my-3 my-1 sm:w-[49%] w-full">
+                        <label
+                          htmlFor="zipCode"
+                          className="block mb-2 text-sm font-semibold text-gray-700 text-left"
+                        >
+                          Zipcode
+                        </label>
+                        <input
+                          {...register("zipCode")}
+                          className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
+                          placeholder="Enter Zipcode
+"
+                        />
+                        {errors.zipCode && (
+                          <p className="text-red-500 text-sm text-left">
+                            {errors.zipCode.message}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex sm:flex-row flex-col justify-between">
+                      <div className="sm:my-3 my-1 sm:w-[49%] w-full">
+                        <label
+                          htmlFor="city"
+                          className="block mb-2 text-sm font-semibold text-gray-700 text-left"
+                        >
+                          City
+                        </label>
+                        <input
+                          {...register("city")}
+                          className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
+                          placeholder="Enter City
+"
+                        />
+                        {errors.city && (
+                          <p className="text-red-500 text-sm text-left">
+                            {errors.city.message}
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="sm:my-3 my-1 sm:w-[49%] w-full">
+                        <label
+                          htmlFor="state"
+                          className="block mb-2 text-sm font-semibold text-gray-700 text-left"
+                        >
+                          Province
+                        </label>
+                        <input
+                          {...register("state")}
+                          className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
+                          placeholder="Enter Province
+"
+                        />
+                        {errors.state && (
+                          <p className="text-red-500 text-sm text-left">
+                            {errors.state.message}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex sm:flex-row flex-col justify-between">
+                      <div className="sm:my-3 my-1 sm:w-[49%] w-full">
+                        <label
+                          htmlFor="gender"
+                          className="block mb-2 text-sm font-semibold text-gray-700 text-left"
+                        >
+                          Gender
+                        </label>
+                        <input
+                          {...register("gender")}
+                          className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
+                          placeholder="Enter Gender
+"
+                        />
+                        {errors.gender && (
+                          <p className="text-red-500 text-sm text-left">
+                            {errors.gender.message}
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="sm:my-3 my-1 sm:w-[49%] w-full">
+                        <label
+                          htmlFor="dob"
+                          className="block mb-2 text-sm font-semibold text-gray-700 text-left"
+                        >
+                          Date of Birth
+                        </label>
+                        <input
+                          {...register("dob")}
+                          type="date"
+                          className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
+                          placeholder=""
+                        />
+                        {errors.dob && (
+                          <p className="text-red-500 text-sm text-left">
+                            {errors.dob.message}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex text-left mt-5">
+                    <Controller
+                      name="terms"
+                      control={control}
+                      render={({ field }) => (
+                        <input
                           type="checkbox"
-                          name="terms"
+                          {...field}
                           id="terms"
                           className="h-4 w-4 mt-[2px] text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                         />
-                        <label
-                          htmlFor="terms"
-                          className="ml-2 text-sm text-gray-700"
-                        >
-                          I accept all
-                          <a
-                            href="#"
-                            className="text-[#FF536B] ml-2 font-semibold border-b border-b-[#FF536B]"
-                            onClick={redirectToTermAndCondition}
-                          >
-                            Terms & Conditions.
-                          </a>
-                        </label>
-                      </div>
-                      <ErrorMessage
-                        name="terms"
-                        component="div"
-                        className="text-red-500 text-sm text-left"
-                      />
-
-                      <div className="flex sm:justify-end justify-center mt-5">
-                        <Button
-                          type="submit"
-                          variant={{
-                            fontSize: "md",
-                            theme: "dark",
-                            fontWeight: "500",
-                            rounded: "full",
-                          }}
-                          className="flex items-center"
-                          disabled={isSubmitting || !isValid}
-                        >
-                          <span onClick={redirectToPricePlan}>
-                            Continue to Payment
-                          </span>
-                          <img src={arrow} alt="arrow" className="ml-2" />
-                        </Button>
-                      </div>
-                    </Form>
+                      )}
+                    />
+                    <label
+                      htmlFor="terms"
+                      className="ml-2 text-sm text-gray-700"
+                    >
+                      I accept all
+                      <a
+                        href="#"
+                        className="text-[#FF536B] ml-2 font-semibold border-b border-b-[#FF536B]"
+                        onClick={redirectToTermAndCondition}
+                      >
+                        Terms & Conditions.
+                      </a>
+                    </label>
+                  </div>
+                  {errors.terms && (
+                    <div className="text-red-500 text-sm text-left">
+                      {errors.terms.message}
+                    </div>
                   )}
-                </Formik>
+
+                  <div className="flex sm:justify-end justify-center mt-5">
+                    <Button
+                      onClick={onSubmit}
+                      type="submit"
+                      variant={{
+                        fontSize: "md",
+                        theme: "dark",
+                        fontWeight: "500",
+                        rounded: "full",
+                      }}
+                      className="flex items-center"
+                      // disabled={isSubmitting || !isValid}
+                    >
+                      <span>Continue</span>
+                      <img src={arrow} alt="arrow" className="ml-2" />
+                    </Button>
+                  </div>
+                </form>
               </div>
             </div>
           </div>
