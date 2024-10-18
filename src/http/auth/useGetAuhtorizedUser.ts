@@ -1,14 +1,10 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery } from "@tanstack/react-query";
 
-
-
-
-
-
-import { AUTH_ENDPOINTS } from '../apiEndPoints/Auth';
-import axiosInstance from '../../components/utils/axios';
-import { useAppDispatch } from '../../store/typedReduxHooks';
-import { setIsAuthorized, updateUser } from '../../store/userSlice/userSlice';
+import { AUTH_ENDPOINTS } from "../apiEndPoints/Auth";
+import axiosInstance from "../../components/utils/axios";
+import { useAppDispatch } from "../../store/typedReduxHooks";
+import { setIsAuthorized, updateUser } from "../../store/userSlice/userSlice";
+import { useNavigate } from "react-router-dom";
 
 async function getUser() {
   const { data } = await axiosInstance.get(AUTH_ENDPOINTS.CheckToken);
@@ -17,6 +13,7 @@ async function getUser() {
 
 const useCheckIsAuthorized = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const fetchUser = async () => {
     try {
@@ -24,10 +21,12 @@ const useCheckIsAuthorized = () => {
 
       dispatch(updateUser(res.artist));
       dispatch(setIsAuthorized(true));
+      navigate("/home");
 
       return res;
     } catch (error) {
       dispatch(setIsAuthorized(false));
+      navigate("/");
       return error;
     }
   };
@@ -36,8 +35,6 @@ const useCheckIsAuthorized = () => {
     queryFn: fetchUser,
     enabled: true,
   });
-
-  
 };
 
 export default useCheckIsAuthorized;

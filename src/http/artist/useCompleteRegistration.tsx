@@ -7,8 +7,7 @@ import { useAppSelector } from "../../store/typedReduxHooks";
 
 let toastId: any;
 
-async function completeRegistration(input: any,) {
-    
+async function completeRegistration(input: any) {
   return await axiosInstance.post(
     `${AUTH_ENDPOINTS.CompleteProfile}/${input.userId}`,
     input.data,

@@ -7,26 +7,6 @@ import { useNavigate } from "react-router-dom";
 let toastId: any;
 
 async function becomeAnArtist(input: any) {
-//   const formData = new FormData();
-
-// Object.keys(input).forEach((key)=> {
-//     console.log(input)
-//     console.log(key)
-//       if (Array.isArray(input[key])) {
-//         console.log(input[key]);
-//         input[key].forEach((item) => {
-//             console.log(item);
-//           formData.append(key, item);
-//         });
-//       } else {
-//         formData.append(key, input[key]);
-        
-//       }
-//     });
-
-  // console.log(formData);
-
-  // Sending FormData
   return await axiosInstance.post(AUTH_ENDPOINTS.BecomeAnArtist, input, {
     headers: {
       "Content-Type": "multipart/form-data",
@@ -43,8 +23,11 @@ const useBecomeAnArtistMutation = () => {
     onSuccess: async (res) => {
       console.log(res.data.id);
       toast.dismiss(toastId);
-      toast.success(res.data.message);
-      navigate("/");
+      toast.success(res.data.message, {
+        duration: 5000,
+      });
+
+      navigate("/home");
     },
     onError: (error) => {
       toast.error(error.response?.data?.message || "An error occurred");

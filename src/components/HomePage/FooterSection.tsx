@@ -8,21 +8,22 @@ import icon from "../../assets/Link (1).png";
 import instagram from "../../assets/Link (2).png";
 import cross from "../../assets/Link (3).png";
 import linkedin from "../../assets/Link (4).png";
+import { useAppSelector } from "../../store/typedReduxHooks";
 
 const FooterSection = () => {
+  const isAuthorized = useAppSelector((state) => state.user.isAuthorized);
   const scrolToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  
   const token = localStorage.getItem("auth_token");
 
   console.log("Token Is " + token);
 
-
   return (
     <>
       <footer className="bg-[#102030] text-white pt-16 pb-6">
+        {/* {0 ? <h1>H111</h1> : null} */}
         <div className="container mx-auto px-6 lg:px-10">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
             {/* Logo and Description */}
@@ -110,24 +111,28 @@ const FooterSection = () => {
                     Contact Us
                   </Link>
                 </li>
-                <li>
-                   <Link
-                    to={token ? "/all_artist" : "/login"}
-                    className="text-sm hover:underline"
-                    onClick={scrolToTop}
-                  >
-                    Artists
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to={token ? "/purchase" : "/login"}
-                    className="text-sm hover:underline"
-                    onClick={scrolToTop}
-                  >
-                    Gallery
-                  </Link>
-                </li>
+                {isAuthorized ? (
+                  <>
+                    <li>
+                      <Link
+                        to={token ? "/all_artist" : "/login"}
+                        className="text-sm hover:underline"
+                        onClick={scrolToTop}
+                      >
+                        Artists
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to={token ? "/purchase" : "/login"}
+                        className="text-sm hover:underline"
+                        onClick={scrolToTop}
+                      >
+                        Gallery
+                      </Link>
+                    </li>
+                  </>
+                ) : null}
               </ul>
             </div>
 
@@ -136,32 +141,37 @@ const FooterSection = () => {
               <h2 className="text-xl font-bold text-[#FF725E] mb-3">
                 Quick Links
               </h2>
+
               <ul className="mt-6 space-y-4">
-                <li>
-                  <Link
-                    to="/login"
-                    className="text-sm hover:underline"
-                    onClick={scrolToTop}
-                  >
-                    Login
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/signup"
-                    className="text-sm hover:underline"
-                    onClick={scrolToTop}
-                  >
-                    Signup
-                  </Link>
-                </li>
+                {isAuthorized ? null : (
+                  <>
+                    <li>
+                      <Link
+                        to="/login"
+                        className="text-sm hover:underline"
+                        onClick={scrolToTop}
+                      >
+                        Login
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="/signup"
+                        className="text-sm hover:underline"
+                        onClick={scrolToTop}
+                      >
+                        Signup
+                      </Link>
+                    </li>
+                  </>
+                )}
                 <li>
                   <Link
                     to="/become_artist"
                     className="text-sm hover:underline"
                     onClick={scrolToTop}
                   >
-                  Become An Artist
+                    Become An Artist
                   </Link>
                 </li>
                 <li>

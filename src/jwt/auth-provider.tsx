@@ -6,10 +6,9 @@ type Props = {
 };
 
 export function AuthProvider({ children }: Props) {
-  setup();
-
   const { isLoading } = useCheckIsAuthorized();
 
   if (isLoading) return <div>Loading...</div>;
+  
   return children;
 }

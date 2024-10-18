@@ -11,14 +11,6 @@ import SecondSection from "./SecondSection";
 import TrendingSection from "./TrendingSection";
 
 const HomePage = () => {
-  useCheckIsAuthorized();
-
-  const token = localStorage.getItem("auth_token");
-  const navigate = useNavigate();
-  if (!token) {
-    return navigate("/");
-  }
-
   return (
     <div>
       <BannerSection />
