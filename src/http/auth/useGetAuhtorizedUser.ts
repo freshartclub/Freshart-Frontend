@@ -25,7 +25,7 @@ const useCheckIsAuthorized = () => {
       return res;
     } catch (error) {
       dispatch(setIsAuthorized(false));
-      navigate("/");
+      // navigate("/");
       return error;
     }
   };

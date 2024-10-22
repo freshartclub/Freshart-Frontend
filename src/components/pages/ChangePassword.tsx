@@ -28,8 +28,6 @@ const ChangePassword = () => {
   const id = searchParams.get("id");
   const token = searchParams.get("token");
 
-  console.log(id, token)
-
   const [newPasswordType, setNewPasswordType] = useState("password");
   const [confirmPasswordType, setConfirmPasswordType] = useState("password");
   const [newPasswordIcon, setNewPasswordIcon] = useState(eyeclose);
@@ -68,15 +66,13 @@ const ChangePassword = () => {
   });
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log(data)
-   
     try {
       const newData = {
-        id:id,
-        newPassword:data.newPassword,
+        id: id,
+        newPassword: data.newPassword,
         confirmPassword: data.confirmPassword,
         token: token,
-      }
+      };
       await mutateAsync(newData);
     } catch (error) {
       console.error(error.message);
@@ -84,8 +80,9 @@ const ChangePassword = () => {
   });
   return (
     <div className="bg-[#F5F2EB] min-h-screen flex flex-col justify-center">
+      {/* Navbar  */}
       <div className="container mx-auto md:px-6 px-3 py-10">
-        <header className="relative py-4">
+        {/* <header className="relative py-4">
           <div className="flex md:flex-row flex-col justify-between items-center">
             <div>
               <img src={logo} alt="Fresh Art Club" className="h-10" />
@@ -121,7 +118,7 @@ const ChangePassword = () => {
             alt="Semicircle"
             className="md:absolute right-[50%] left-[50%] top-0 h-full"
           />
-        </header>
+        </header> */}
 
         <div className="grid md:grid-cols-2 grid-cols-1 lg:gap-10 py-10 items-center">
           <div className="text-center shadow-xl bg-white lg:px-10 px-5 lg:pt-10 pt-5 lg:pb-16 pb-10 my-auto xl:w-[80%] w-full">
@@ -198,7 +195,7 @@ const ChangePassword = () => {
                   className="mt-3 flex justify-center w-full"
                   type="submit"
                 >
-                {isPending ? "Submiting..." : "Submit"}
+                  {isPending ? "Submiting..." : "Submit"}
                   <img src={arrow} alt="arrow" className="ml-2 mt-1" />
                 </Button>
               </div>

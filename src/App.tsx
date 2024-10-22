@@ -105,7 +105,7 @@ const App: React.FC = () => {
 
   return (
     <AuthProvider>
-      <Layout>
+      <Layout isAuthenticated={isAuthenticated}>
         <Suspense fallback={<Loader />}>
           <Routes>
             {/* Public Routes */}
@@ -118,10 +118,41 @@ const App: React.FC = () => {
             <Route path="/sign-up-otp" element={<SignUpOtp />} />
             <Route path="/terms" element={<TermAndCondition />} />
             <Route path="/become_artist" element={<BecomeArtist />} />
-            <Route path="/artist-panel/*" element={<ArtistPanel />} />
-            <Route path="/tickets" element={<TicketHistory />}></Route>
-            <Route path="/ticket_detail/:id" element={<SingleTicket />} />
-            <Route path="/new_ticket" element={<NewTicket />} />
+
+            <Route
+              path="/artist-panel/*"
+              element={
+                <AuthGuard>
+                  <ArtistPanel />{" "}
+                </AuthGuard>
+              }
+            />
+
+            <Route
+              path="/tickets"
+              element={
+                <AuthGuard>
+                  <TicketHistory />
+                </AuthGuard>
+              }
+            ></Route>
+            <Route
+              path="/ticket_detail/:id"
+              element={
+                <AuthGuard>
+                  <SingleTicket />{" "}
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/new_ticket"
+              element={
+                <AuthGuard>
+                  {" "}
+                  <NewTicket />{" "}
+                </AuthGuard>
+              }
+            />
 
             {/* <Route path="/artdashboard" element={<Dashboard />} />
             <Route path="/artwork" element={<Artwork />} />
@@ -131,7 +162,7 @@ const App: React.FC = () => {
 
             {/* Protected Routes */}
             <Route
-              path="/home"
+              path="/home/"
               element={
                 <AuthGuard>
                   <HomePage />

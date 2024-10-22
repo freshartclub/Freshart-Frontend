@@ -10,7 +10,7 @@ import { useLocation } from "react-router-dom";
 const LogNaveBar = () => {
   const navigate = useNavigate();
   const handleRedirectToArtistLogin = () => {
-    navigate("/");
+    navigate("/become_artist");
   };
 
   const handleRedirectToBecomeAnArtist = () => {
@@ -30,7 +30,11 @@ const LogNaveBar = () => {
         <header className="relative py-4">
           <div className=" flex md:flex-row flex-col justify-between items-center">
             <div onClick={redirectToHomepage}>
-              <img src={logo} alt="Fresh Art Club" className="h-10" />
+              <img
+                src={logo}
+                alt="Fresh Art Club"
+                className="h-10 cursor-pointer"
+              />
             </div>
             <div className="flex items-center mt-6 md:mt-0">
               <Link to="/">

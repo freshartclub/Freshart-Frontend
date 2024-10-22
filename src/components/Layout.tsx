@@ -12,8 +12,8 @@ const Layout: React.FC<LayoutProps> = ({ children, isAuthenticated }) => {
   const location = useLocation();
   const isLoginPage = location.pathname === "/login";
   const isSignUpPage = location.pathname === "/signup";
-
   const isForgetPassword = location.pathname === "/forget-password";
+  const isResetPassword = location.pathname === "/reset-password";
 
   return (
     <div>

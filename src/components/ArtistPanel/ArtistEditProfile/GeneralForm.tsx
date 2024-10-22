@@ -38,8 +38,8 @@ const GeneralForm = () => {
       gender: data?.gender || "",
       about: data?.aboutArtist?.about || "",
 
-      imageFields: data?.profile.additionalImage || "",
-      videoFields: data?.profile.mainVideo || "",
+      imageFields: data?.profile?.additionalImage || "",
+      videoFields: data?.profile?.mainVideo || "",
       cvEntries: data?.highlights.cv || "",
       accounts: data?.links || "",
     },
@@ -49,20 +49,20 @@ const GeneralForm = () => {
 
   useEffect(() => {
     if (data) {
-      setValue("name", data.artistName || "");
-      setValue("country", data.address.country || "Spain");
-      setValue("zip", data.zipCode || "");
+      setValue("name", data?.artistName || "");
+      setValue("country", data?.address.country || "Spain");
+      setValue("zip", data?.zipCode || "");
       setValue("city", data?.address?.city || "");
       setValue("stateRegion", data.address?.state || "");
-      setValue("zip", data.address.zipCode || "");
-      setValue("phoneNumber", data.phone || "");
-      setValue("address", data.address?.residentialAddress || "");
-      setValue("email", data.email || "");
+      setValue("zip", data?.address?.zipCode || "");
+      setValue("phoneNumber", data?.phone || "");
+      setValue("address", data?.address?.residentialAddress || "");
+      setValue("email", data?.email || "");
       setValue("about", data?.aboutArtist?.about || "");
-      setValue("language", data.language || []);
-      setValue("gender", data.gender || "");
-      setValue("accounts", data.links || "");
-      setValue("cvEntries", data?.highlights.cv || "");
+      setValue("language", data?.language || []);
+      setValue("gender", data?.gender || "");
+      setValue("accounts", data?.links || "");
+      setValue("cvEntries", data?.highlights?.cv || "");
       setValue("imageFields", data?.profile?.additionalImage || "");
       setValue("videoFields", data?.profile?.mainVideo || "");
     }
