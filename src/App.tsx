@@ -1,13 +1,22 @@
 // src/App.tsx
 import React, { useState, Suspense, lazy } from "react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient } from "@tanstack/react-query";
 import { Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
 import useCheckIsAuthorized from "./http/auth/useGetAuhtorizedUser";
-import { Provider } from "react-redux";
 import { AuthProvider } from "./jwt/auth-provider";
-import { store } from "./store/store";
 import FooterSection from "./components/HomePage/FooterSection";
+import AuthGuard from "./components/AuthGuard";
+import { setup } from "./components/utils/axios";
+import ArtistPanel from "./components/ArtistPanel/ArtistPanel";
+import Dashboard from "./components/ArtistPanel/ArtistDashboard/Dashboard";
+import Artwork from "./components/ArtistDetail/Artwork";
+import Orders from "./components/ArtistPanel/Orders";
+import AddArtwork from "./components/ArtistPanel/AddArtwork/AddArtwork";
+import ArtistProfile from "./components/ArtistPanel/ArtistEditProfile/ArtistProfile";
+import Loader from "./components/ui/Loader";
+import TicketHistory from "./components/NewTicket/ticket history/TicketHistory";
+import SingleTicket from "./components/NewTicket/ticket history/ticketDetail";
 
 const queryClient = new QueryClient();
 
@@ -89,67 +98,314 @@ const ArtistDashboard = lazy(
 const SignUpOtp = lazy(() => import("./components/pages/SignUpOtp"));
 
 const App: React.FC = () => {
+  setup();
   const [isAuthenticated] = useState<boolean>(false);
 
   useCheckIsAuthorized();
 
   return (
     <AuthProvider>
-      <Layout isAuthenticated={isAuthenticated}>
-        <Suspense fallback={<div>Loading...</div>}>
+      <Layout>
+        <Suspense fallback={<Loader />}>
           <Routes>
+            {/* Public Routes */}
             <Route path="/" element={<GetStarted />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignUp />} />
-            <Route path="/home" element={<HomePage />} />
             <Route path="/forget-password" element={<ForgetPassword />} />
             <Route path="/reset-password" element={<ChangePassword />} />
             <Route path="/otp" element={<OtpPage />} />
             <Route path="/sign-up-otp" element={<SignUpOtp />} />
+            <Route path="/terms" element={<TermAndCondition />} />
+            <Route path="/become_artist" element={<BecomeArtist />} />
+            <Route path="/artist-panel/*" element={<ArtistPanel />} />
+            <Route path="/tickets" element={<TicketHistory />}></Route>
+            <Route path="/ticket_detail/:id" element={<SingleTicket />} />
+            <Route path="/new_ticket" element={<NewTicket />} />
+
+            {/* <Route path="/artdashboard" element={<Dashboard />} />
+            <Route path="/artwork" element={<Artwork />} />
+            <Route path="/order" element={<Orders />} />
+            <Route path="/addartwork" element={<AddArtwork />} />
+            <Route path="/edit-artistprofile" element={<ArtistProfile />} /> */}
+
+            {/* Protected Routes */}
+            <Route
+              path="/home"
+              element={
+                <AuthGuard>
+                  <HomePage />
+                </AuthGuard>
+              }
+            />
             <Route
               path="/payment_successful"
-              element={<PaymentSuccessfull />}
+              element={
+                <AuthGuard>
+                  <PaymentSuccessfull />
+                </AuthGuard>
+              }
             />
-            <Route path="/thankyou" element={<ThankYou />} />
-            <Route path="/error" element={<ErrorPage />} />
-            <Route path="/blog" element={<BlogAndNews />} />
-            <Route path="/circleblog" element={<CircleBlog />} />
+            <Route
+              path="/thankyou"
+              element={
+                <AuthGuard>
+                  <ThankYou />
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/error"
+              element={
+                <AuthGuard>
+                  <ErrorPage />
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/blog"
+              element={
+                <AuthGuard>
+                  <BlogAndNews />
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/circleblog"
+              element={
+                <AuthGuard>
+                  <CircleBlog />
+                </AuthGuard>
+              }
+            />
             <Route
               path="/registration_process"
-              element={<CompleteProfileForm />}
+              element={
+                <AuthGuard>
+                  <CompleteProfileForm />
+                </AuthGuard>
+              }
             />
-            <Route path="/become_artist" element={<BecomeArtist />} />
-            <Route path="/card_success" element={<CardSuccessPage />} />
-            <Route path="/discovery_art" element={<DiscoveryArt />} />
-            <Route path="/priceandplans" element={<PriceAndPlan />} />
-            <Route path="/support" element={<Support />} />
-            <Route path="/order" element={<OrderPage />} />
-            <Route path="/terms" element={<TermAndCondition />} />
-            <Route path="/wishlist" element={<Wishlist />} />
-            <Route path="/premium_payment" element={<PaymentPremium />} />
+
+            <Route
+              path="/card_success"
+              element={
+                <AuthGuard>
+                  <CardSuccessPage />
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/discovery_art"
+              element={
+                <AuthGuard>
+                  <DiscoveryArt />
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/priceandplans"
+              element={
+                <AuthGuard>
+                  <PriceAndPlan />
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/support"
+              element={
+                <AuthGuard>
+                  <Support />
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/order"
+              element={
+                <AuthGuard>
+                  <OrderPage />
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/terms"
+              element={
+                <AuthGuard>
+                  <TermAndCondition />
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/wishlist"
+              element={
+                <AuthGuard>
+                  <Wishlist />
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/premium_payment"
+              element={
+                <AuthGuard>
+                  <PaymentPremium />
+                </AuthGuard>
+              }
+            />
             <Route
               path="/artist_portfolio_page"
-              element={<ArtistPortfolioPage />}
+              element={
+                <AuthGuard>
+                  <ArtistPortfolioPage />
+                </AuthGuard>
+              }
             />
-            <Route path="/discover_more" element={<DiscoverMore />} />
-            <Route path="/purchase" element={<Purchase />} />
-            <Route path="/purchase_cart" element={<PurchaseCart />} />
-            <Route path="/explore" element={<ExplorePage />} />
-            <Route path="/artist_detail" element={<ArtistDetail />} />
-            <Route path="/new_ticket" element={<NewTicket />} />
-            <Route path="/cart_success_page" element={<CartSuccess />} />
-            <Route path="/user_profile" element={<UserProfile />} />
-            <Route path="/circle_page" element={<CirclePage />} />
-            <Route path="/followers" element={<Followers />} />
-            <Route path="/all_artist" element={<AllArtist />} />
-            <Route path="/more_discovery" element={<DiscoveryMore />} />
-            <Route path="/artwork_group" element={<ArtworkGroup />} />
-            <Route path="/create_invite" element={<CreateInvite />} />
-            <Route path="/order_detail" element={<OrderDetail />} />
-            <Route path="/account_setting" element={<AccountSetting />} />
-            <Route path="/blogs" element={<Blogs />} />
-            <Route path="/edit_profile" element={<EditProfile />} />
-            <Route path="/artist_dashboard" element={<ArtistDashboard />} />
+            <Route
+              path="/discover_more"
+              element={
+                <AuthGuard>
+                  <DiscoverMore />
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/purchase"
+              element={
+                <AuthGuard>
+                  <Purchase />
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/purchase_cart"
+              element={
+                <AuthGuard>
+                  <PurchaseCart />
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/explore"
+              element={
+                <AuthGuard>
+                  <ExplorePage />
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/artist_detail"
+              element={
+                <AuthGuard>
+                  <ArtistDetail />
+                </AuthGuard>
+              }
+            />
+
+            <Route
+              path="/cart_success_page"
+              element={
+                <AuthGuard>
+                  <CartSuccess />
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/user_profile"
+              element={
+                <AuthGuard>
+                  <UserProfile />
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/circle_page"
+              element={
+                <AuthGuard>
+                  <CirclePage />
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/followers"
+              element={
+                <AuthGuard>
+                  <Followers />
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/all_artist"
+              element={
+                <AuthGuard>
+                  <AllArtist />
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/more_discovery"
+              element={
+                <AuthGuard>
+                  <DiscoveryMore />
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/artwork_group"
+              element={
+                <AuthGuard>
+                  <ArtworkGroup />
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/create_invite"
+              element={
+                <AuthGuard>
+                  <CreateInvite />
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/order_detail"
+              element={
+                <AuthGuard>
+                  <OrderDetail />
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/account_setting"
+              element={
+                <AuthGuard>
+                  <AccountSetting />
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/blogs"
+              element={
+                <AuthGuard>
+                  <Blogs />
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/edit_profile"
+              element={
+                <AuthGuard>
+                  <EditProfile />
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/artist_dashboard"
+              element={
+                <AuthGuard>
+                  <ArtistDashboard />
+                </AuthGuard>
+              }
+            />
+            {/* Artist Dashboard Routes */}
+
             {/* <Route path="/table_page" element={<TablePage />} /> */}
           </Routes>
         </Suspense>

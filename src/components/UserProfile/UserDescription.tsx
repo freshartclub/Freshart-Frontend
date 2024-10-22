@@ -17,8 +17,6 @@ import view1 from "./assets/viewArrow.png";
 import dots from "./assets/DotsThree.png";
 import copy from "./assets/Copy.png";
 
-
-
 const order_data = [
   {
     order: order1,
@@ -78,11 +76,11 @@ const getStatusColor = (status: any) => {
 };
 const colors = ["bg-[#EAF6FE]", "bg-[#FFF3EB]", "bg-[#EAF7E9]"];
 
-const UserDescription = ({user}) => {
+const UserDescription = ({ user }) => {
   const personal_info = [
     {
       title: "Name",
-      value: `${user?.artistName}`,
+      value: `${user?.artistName}` || "edit ",
     },
     {
       title: "Email",
@@ -102,12 +100,11 @@ const UserDescription = ({user}) => {
     },
   ];
 
-
   return (
     <div className="xl:w-[78%] lg:w[80%] md:w-[75%] w-full">
       <div>
         <Header variant={{ size: "xl", theme: "dark", weight: "semiBold" }}>
-          {`Hello,${user.artistName}`}
+          {`Hello,${user?.artistName}`}
         </Header>
         <P
           variant={{ size: "base", theme: "dark", weight: "medium" }}

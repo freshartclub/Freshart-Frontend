@@ -23,7 +23,10 @@ const SignUp = () => {
     cpassword: Yup.string()
       .oneOf([Yup.ref("password")], "Passwords must match")
       .required("Confirm Password is required"),
-    terms: Yup.boolean().oneOf([true], "You must accept the terms and conditions"),
+    terms: Yup.boolean().oneOf(
+      [true],
+      "You must accept the terms and conditions"
+    ),
   });
 
   const {
@@ -50,7 +53,9 @@ const SignUp = () => {
       <div className="container mx-auto md:px-6 px-3">
         <div className="grid md:grid-cols-2 grid-cols-1 gap-10 py-10 items-center">
           <div className="text-center shadow-xl bg-white xl:p-10 lg:p-8 md:p-6 p-4 xl:w-[80%] w-full">
-            <Header variant={{ size: "2xl", theme: "dark", weight: "semiBold" }}>
+            <Header
+              variant={{ size: "2xl", theme: "dark", weight: "semiBold" }}
+            >
               Sign Up
             </Header>
             <P
@@ -66,9 +71,15 @@ const SignUp = () => {
                   type="email"
                   placeholder="Email Address"
                   {...register("email")}
-                  className={`border ${errors.email ? "border-red-500" : "border-[#D3D3D3]"} p-2 w-full rounded-md focus:outline-none`}
+                  className={`border ${
+                    errors.email ? "border-red-500" : "border-[#D3D3D3]"
+                  } p-2 w-full rounded-md focus:outline-none`}
                 />
-                {errors.email && <div className="text-red-500 text-sm text-left">{errors.email.message}</div>}
+                {errors.email && (
+                  <div className="text-red-500 text-sm text-left">
+                    {errors.email.message}
+                  </div>
+                )}
               </div>
 
               <div>
@@ -76,9 +87,15 @@ const SignUp = () => {
                   type="password"
                   placeholder="Password"
                   {...register("password")}
-                  className={`border ${errors.password ? "border-red-500" : "border-[#D3D3D3]"} p-2 w-full rounded-md focus:outline-none`}
+                  className={`border ${
+                    errors.password ? "border-red-500" : "border-[#D3D3D3]"
+                  } p-2 w-full rounded-md focus:outline-none`}
                 />
-                {errors.password && <div className="text-red-500 text-sm text-left">{errors.password.message}</div>}
+                {errors.password && (
+                  <div className="text-red-500 text-sm text-left">
+                    {errors.password.message}
+                  </div>
+                )}
               </div>
 
               <div className="my-5">
@@ -86,9 +103,15 @@ const SignUp = () => {
                   type="password"
                   placeholder="Confirm Password"
                   {...register("cpassword")}
-                  className={`border ${errors.cpassword ? "border-red-500" : "border-[#D3D3D3]"} p-2 w-full rounded-md focus:outline-none`}
+                  className={`border ${
+                    errors.cpassword ? "border-red-500" : "border-[#D3D3D3]"
+                  } p-2 w-full rounded-md focus:outline-none`}
                 />
-                {errors.cpassword && <div className="text-red-500 text-sm text-left">{errors.cpassword.message}</div>}
+                {errors.cpassword && (
+                  <div className="text-red-500 text-sm text-left">
+                    {errors.cpassword.message}
+                  </div>
+                )}
               </div>
 
               <div className="my-5">
@@ -98,15 +121,27 @@ const SignUp = () => {
               </div>
 
               <div className="flex text-left items-start">
-                <input type="checkbox" {...register("terms")} className="mt-2" />
+                <input
+                  type="checkbox"
+                  {...register("terms")}
+                  className="mt-2"
+                />
                 <p className="ml-3 font-medium tracking-tight leading-1">
                   By signing up, I have read and agree to
-                  <Link to="/terms" className="text-red-600 mx-1">Terms</Link>
+                  <Link to="/terms" className="text-red-600 mx-1">
+                    Terms
+                  </Link>
                   and
-                  <Link to="/" className="text-red-600 ml-1">Privacy Policy.</Link>
+                  <Link to="/" className="text-red-600 ml-1">
+                    Privacy Policy.
+                  </Link>
                 </p>
               </div>
-              {errors.terms && <div className="text-red-500 text-sm text-left">{errors.terms.message}</div>}
+              {errors.terms && (
+                <div className="text-red-500 text-sm text-left">
+                  {errors.terms.message}
+                </div>
+              )}
 
               <div className="my-5">
                 <Button
@@ -121,7 +156,8 @@ const SignUp = () => {
                   className={`mt-3 flex justify-center w-full`}
                   disabled={isSubmitting || isPending}
                 >
-                  <p>Sign Up</p>
+                  {isPending ? "SignUp..." : "SignUp"}
+
                   <img src={arrow} alt="arrow" className="ml-2 mt-1" />
                 </Button>
               </div>
@@ -129,7 +165,10 @@ const SignUp = () => {
               <div>
                 <div className="flex items-center my-4">
                   <span className="flex-grow sm:w-[20%] w-[28%] 2xl:ml-10 md:mr-0 mr-2 border-2 border-t border-gray-300"></span>
-                  <P variant={{ theme: "dark", weight: "semiBold" }} className="lg:mx-4 md:mx-2 mx-0 md:text-base text-sm">
+                  <P
+                    variant={{ theme: "dark", weight: "semiBold" }}
+                    className="lg:mx-4 md:mx-2 mx-0 md:text-base text-sm"
+                  >
                     Or continue with
                   </P>
                   <span className="flex-grow sm:w-[20%] w-[28%] lg:mr-10 md:ml-0 ml-2 border-2 border-t border-gray-300"></span>
@@ -147,7 +186,14 @@ const SignUp = () => {
                     className={`flex justify-center border border-[#102030]`}
                   >
                     <img src={google} alt="Google" className="" />
-                    <P variant={{ size: "base", theme: "dark", weight: "medium" }} className="ml-1 mt-[2px]">
+                    <P
+                      variant={{
+                        size: "base",
+                        theme: "dark",
+                        weight: "medium",
+                      }}
+                      className="ml-1 mt-[2px]"
+                    >
                       Google
                     </P>
                   </Button>
@@ -163,7 +209,14 @@ const SignUp = () => {
                     className={`flex justify-center border border-[#102030]`}
                   >
                     <img src={apple} alt="Apple" className="ml-2" />
-                    <P variant={{ size: "base", theme: "dark", weight: "medium" }} className="ml-2 mt-[2px]">
+                    <P
+                      variant={{
+                        size: "base",
+                        theme: "dark",
+                        weight: "medium",
+                      }}
+                      className="ml-2 mt-[2px]"
+                    >
                       Apple ID
                     </P>
                   </Button>
@@ -179,18 +232,31 @@ const SignUp = () => {
                     className={`flex justify-center border border-[#102030]`}
                   >
                     <img src={facebook} alt="Facebook" className="" />
-                    <P variant={{ size: "base", theme: "dark", weight: "medium" }} className="ml-1 mt-[2px]">
+                    <P
+                      variant={{
+                        size: "base",
+                        theme: "dark",
+                        weight: "medium",
+                      }}
+                      className="ml-1 mt-[2px]"
+                    >
                       Facebook
                     </P>
                   </Button>
                 </div>
 
                 <div className="flex sm:flex-row flex-col mt-5 place-content-center">
-                  <P variant={{ theme: "dark", weight: "medium" }} className="md:text-base text-sm">
+                  <P
+                    variant={{ theme: "dark", weight: "medium" }}
+                    className="md:text-base text-sm"
+                  >
                     Already have an account?
                   </P>
-                  <Link to="/login" className="font-bold uppercase sm:mt-0 mt-2 ml-1 md:text-base text-sm">
-                  { isPending ? "SignUp..." :   "SignUp"}
+                  <Link
+                    to="/login"
+                    className="font-bold uppercase sm:mt-0 mt-2 ml-1 md:text-base text-sm"
+                  >
+                    Sign In
                   </Link>
                 </div>
               </div>

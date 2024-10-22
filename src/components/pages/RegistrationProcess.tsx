@@ -89,6 +89,7 @@ const RegistrationProcess = () => {
   });
 
   const onSubmit = handleSubmit(async (data) => {
+    console.log(data);
     const formData = new FormData();
 
     Object.keys(data).forEach((key) => {
@@ -96,10 +97,10 @@ const RegistrationProcess = () => {
     });
     formData.append("avatar", selectedFile);
 
-    const newData={
+    const newData = {
       data: formData,
       userId: userId,
-    }
+    };
 
     try {
       await mutateAsync(newData);

@@ -101,7 +101,6 @@ const BecomeArtist = () => {
   }, [watch("email")]);
 
   const sendOtp = () => {
-    console.log("sendOtp");
     const data = {
       email,
       isArtistRequest: true,

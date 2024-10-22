@@ -12,7 +12,7 @@ import TrendingSection from "./TrendingSection";
 
 const HomePage = () => {
   return (
-    <div>
+    <div className="overflow-x-hidden">
       <BannerSection />
       <SecondSection />
       <HighlightSection />

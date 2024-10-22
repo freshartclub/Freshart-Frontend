@@ -1,3 +1,4 @@
+import Loader from "../components/ui/Loader";
 import { setup } from "../components/utils/axios";
 import useCheckIsAuthorized from "../http/auth/useGetAuhtorizedUser";
 
@@ -8,7 +9,12 @@ type Props = {
 export function AuthProvider({ children }: Props) {
   const { isLoading } = useCheckIsAuthorized();
 
-  if (isLoading) return <div>Loading...</div>;
-  
+  if (isLoading)
+    return (
+      <div>
+        <Loader />
+      </div>
+    );
+
   return children;
 }

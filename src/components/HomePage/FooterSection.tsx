@@ -18,8 +18,6 @@ const FooterSection = () => {
 
   const token = localStorage.getItem("auth_token");
 
-  console.log("Token Is " + token);
-
   return (
     <>
       <footer className="bg-[#102030] text-white pt-16 pb-6">
@@ -86,7 +84,7 @@ const FooterSection = () => {
               <ul className="mt-6 space-y-4">
                 <li>
                   <Link
-                    to="/"
+                    to="/home"
                     className="text-sm hover:underline"
                     onClick={scrolToTop}
                   >

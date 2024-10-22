@@ -1,0 +1,16 @@
+.custom-progress-bar .CircularProgressbar-path {
+    stroke-width: 6px; /* Path width */
+    stroke-linecap: round;
+  }
+  
+  .custom-progress-bar .CircularProgressbar-trail {
+    stroke-width: 4px; /* Trail width */
+    stroke-linecap: round;
+  }
+  .CircularProgressbar .CircularProgressbar-text {
+    fill: #3e98c7;
+    font-size: 20px;
+    dominant-baseline: ideographic !important;
+    text-anchor: middle;
+}
+  

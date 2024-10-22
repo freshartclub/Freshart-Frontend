@@ -1,6 +1,6 @@
-import type { PayloadAction } from '@reduxjs/toolkit';
+import type { PayloadAction } from "@reduxjs/toolkit";
 
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 interface UserState {
   user: any;
@@ -11,12 +11,11 @@ interface UserState {
 const initialState: UserState = {
   user: null,
   isAuthorized: false,
-  userId: '',
-
+  userId: "",
 };
 
 export const userSlice = createSlice({
-  name: 'user',
+  name: "user",
   initialState,
   reducers: {
     updateUser: (state, action: PayloadAction<any>) => {
@@ -26,7 +25,7 @@ export const userSlice = createSlice({
       state.user = null;
     },
 
-    forgotPasswordUserId: (state, action: PayloadAction<any>) => {      
+    forgotPasswordUserId: (state, action: PayloadAction<any>) => {
       state.userId = action.payload.userId;
     },
     setIsAuthorized: (state, action: PayloadAction<boolean>) => {
@@ -35,6 +34,7 @@ export const userSlice = createSlice({
   },
 });
 
-export const { updateUser, setIsAuthorized, removeUser, forgotPasswordUserId } = userSlice.actions;
+export const { updateUser, setIsAuthorized, removeUser, forgotPasswordUserId } =
+  userSlice.actions;
 
 export const userReducer = userSlice.reducer;

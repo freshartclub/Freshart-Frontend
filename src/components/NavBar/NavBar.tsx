@@ -44,7 +44,7 @@ const profile_data = [
   { to: "/user_profile", label: "View Profile" },
   { to: "/account_setting", label: "Account Settings" },
   { to: "/wishlist", label: "Favourites Artworks" },
-  { to: "/", label: "Switch to artist Account" },
+  { to: "/artist-panel", label: "Switch to artist Account" },
   { to: "/create_invite", label: "Create Invite" },
   { to: "/order", label: "My Orders" },
   { to: "/support", label: "Support" },
@@ -510,8 +510,8 @@ const NavBar = () => {
               </div>
 
               <div>
-                <Link to="/login"
-                 
+                <Link
+                  to="/login"
                   className="px-4 py-2 text-sm bg-white rounded-md hover:bg-gray-200 focus:outline-none"
                 >
                   Sign In
@@ -520,7 +520,6 @@ const NavBar = () => {
                   Sign Up
                 </Link>
               </div>
-
             </>
           )}
         </div>

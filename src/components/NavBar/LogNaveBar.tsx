@@ -37,9 +37,15 @@ const LogNaveBar = () => {
                 <img src={globe} alt="" className="mr-5" />
               </Link>
 
-              <Link to="/signup" className="text-black mr-4">
-                SIGN UP
-              </Link>
+              {isSignupPage ? (
+                <Link to="/login" className="text-black mr-4">
+                  SIGN IN
+                </Link>
+              ) : (
+                <Link to="/signup" className="text-black mr-4">
+                  SIGN UP
+                </Link>
+              )}
 
               {isSignupPage ? (
                 <Button
@@ -76,7 +82,7 @@ const LogNaveBar = () => {
                     variant={{ size: "base", theme: "light", weight: "normal" }}
                     onClick={handleRedirectToArtistLogin}
                   >
-                   Become An Artist
+                    Become An Artist
                   </P>
                   <img src={arrow3} alt="arrow" className="ml-2 mt-1" />
                 </Button>

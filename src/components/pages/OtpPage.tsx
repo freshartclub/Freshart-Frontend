@@ -70,7 +70,6 @@ const OtpPage = () => {
   };
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log(otp);
     try {
       const newData = {
         id: localId,

@@ -21,7 +21,6 @@ const useCheckIsAuthorized = () => {
 
       dispatch(updateUser(res.artist));
       dispatch(setIsAuthorized(true));
-      navigate("/home");
 
       return res;
     } catch (error) {

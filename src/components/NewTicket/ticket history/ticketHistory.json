@@ -1,0 +1,33 @@
+ [
+  {
+    "id": 1,
+    "title": "Ticket# 2023-CS123",
+    "description": "How to deposit money to my portal?",
+    "status": "New Tickets",
+    "userName": "John Snow",
+    "profileImg": "People.png",
+    "time": "12:45 AM",
+    "para": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+  },
+  {
+    "id": 2,
+    "title": "Ticket# 2023-CS124",
+    "description": "How to deposit money to my portal?",
+    "status": "On-Going Tickets",
+    "userName": "Jane Doe",
+    "profileImg": "People.png",
+    "time": "12:50 AM",
+    "para": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+  },
+  {
+    "id": 3,
+    "title": "Ticket# 2023-CS125",
+    "description": "How to deposit money to my portal?",
+    "status": "Resolved Tickets",
+    "userName": "Sam Smith",
+    "profileImg": "People.png",
+     "time": "1:00 AM",
+    "para": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+  }
+  
+]
