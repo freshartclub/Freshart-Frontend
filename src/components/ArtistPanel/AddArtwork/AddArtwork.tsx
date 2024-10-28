@@ -7,22 +7,25 @@ import ArtworkRight from "./ArtworkRight";
 import ArtBreadcrumbs from "./ArtBreadcrumb";
 import { TiPlus } from "react-icons/ti";
 import P from "../../ui/P";
+import {
+  package_dimension,
+  artwork_orientation,
+  Framed_dimension,
+  options,
+  options_1,
+  options_2,
+  buttonsData,
+  yearOption,
+  seriesData,
+  shipping_inventry,
+} from "../../utils/mockData";
 import Select from "react-select";
+import image_icon from "../assets/Avatar.png";
+import video_icon from "../assets/Avatar.png";
 import * as Yup from "yup";
-
-type InputRefs = {
-  [key: string]: HTMLInputElement | null;
-};
+import axiosInstance from "../../utils/axios";
 
 const AddArtwork = () => {
-  const inputRefs = useRef<InputRefs>({});
-  const [previews, setPreviews] = useState<{ [key: string]: string | null }>(
-    {}
-  );
-  const [selectedImages, setSelectedImages] = useState<{
-    [key: string]: File[];
-  }>({});
-
   const [progress, setProgress] = useState(0);
 
   // const validationSchema = Yup.object({
@@ -35,16 +38,18 @@ const AddArtwork = () => {
   //   message: Yup.string().required("Message is required"),
   // });
 
+  const [mainPhoto, setMainPhoto] = useState(null);
+  const [backPhoto, setBackPhoto] = useState(null);
+  const [inProcessPhotos, setInProcessPhotos] = useState(null);
+  const [detailPhotos, setDetailPhotos] = useState([]);
+  const [mainVideo, setMainVideo] = useState(null);
+  const [otherVideos, setOtherVideos] = useState([]);
+
   const initialValues = {
-    artworktype: "",
-    artworkname: "",
+    artworkName: "",
     artistname: "",
     productDescription: "",
-    mainphoto: null,
-    additionalimages: null,
-    vedio: null,
-    vedios: null,
-    baseprice: "",
+    basePrice: "",
     discounttype: "",
     discounpercentage: "",
     textclass: "",
@@ -79,240 +84,67 @@ const AddArtwork = () => {
     variations: [{ variationtype: "", variation: "" }],
   };
 
-  const package_dimension = [
-    {
-      name: "packageDimensionsWeight",
-      label: "Weight",
-      placeholder: "Product weight...",
-    },
-    {
-      name: "packageDimensionsheight",
-      label: "Height",
-      placeholder: "Height (cm)...",
-    },
-    {
-      name: "packageDimensionslenght",
-      label: "Length",
-      placeholder: "Length (cm)...",
-    },
-    {
-      name: "packageDimensionswidth",
-      label: "Width",
-      placeholder: "Width (cm)...",
-    },
-  ];
-
-  const artwork_orientation = [
-    {
-      name: "artworkOrientationWeight",
-      label: "Weight",
-      placeholder: "Product weight...ddd",
-    },
-    {
-      name: "artworkOrientationheight",
-      label: "Height",
-      placeholder: "Height (cm)...dd",
-    },
-    {
-      name: "artworkOrientationlenght",
-      label: "Length",
-      placeholder: "Length (cm)...",
-    },
-    {
-      name: "artworkOrientationwidth",
-      label: "Width",
-      placeholder: "Width (cm)...",
-    },
-  ];
-
-  const Framed_dimension = [
-    { name: "framedHeight", label: "Height", placeholder: "Height (cm)..." },
-    { name: "framedLenght", label: "Length", placeholder: "Length (cm)..." },
-    { name: "framedWidth", label: "Width", placeholder: "Width (cm)..." },
-  ];
-
-  const options = [
-    { value: "print", label: "print" },
-    { value: "art", label: "art" },
-  ];
-
-  const options_1 = [
-    { value: "Dark", label: "Dark" },
-    { value: "highlights", label: "highlights" },
-  ];
-
-  const options_2 = [
-    { value: "Blue", label: "Blue" },
-    { value: "magenta", label: "magenta" },
-  ];
-
-  const mediaSections = [
-    {
-      label: "Main Photo",
-      name: "mainPhoto",
-      placeholder: "Drag and drop image here, or click add image",
-      type: "image",
-      //con: image_icon,
-      btn_text: "Add Image",
-    },
-    {
-      label: "Back Photo",
-      name: "backPhoto",
-      placeholder: "Drag and drop image here, or click add image",
-      type: "image",
-      //con: image_icon,
-      btn_text: "Add Image",
-    },
-    {
-      label: "Inprocess Photo",
-      name: "inProcessPhoto",
-      placeholder: "Drag and drop image here, or click add image",
-      type: "image",
-      //con: image_icon,
-      btn_text: "Add Image",
-    },
-  ];
-
-  const detailSection = [
-    {
-      label: "Details Photos ",
-      max: "(max 3 images)",
-      name: "detailPhotos",
-      placeholder: "Drag and drop image here, or click add image",
-      type: "image",
-      //con: image_icon,
-      btn_text: "Add Image",
-    },
-    {
-      label: "Details Photos ",
-      max: "(max 3 images)",
-      name: "detailPhotos",
-      placeholder: "Drag and drop image here, or click add image",
-      type: "image",
-      //con: image_icon,
-      btn_text: "Add Image",
-    },
-  ];
-
-  const videoSection = [
-    {
-      label: "Main Video",
-      name: "mainVideo",
-      placeholder: "Drag and drop video here, or click add video (max 1 video)",
-      type: "video",
-      //icon: video_icon,
-      btn_text: "Add Video",
-    },
-    {
-      label: "Other Video",
-      name: "otherVideo",
-      placeholder:
-        "Drag and drop video here, or click add video (max 2 videos)",
-      type: "video",
-      //icon: video_icon,
-      btn_text: "Add Video",
-    },
-  ];
-
-  const buttonsData = [
-    { label: "Preview" },
-    { label: "Revalidate" },
-    { label: "generate QR code" },
-    { label: "generate certificate of authenticity" },
-  ];
-
-  const yearOption = [
-    {
-      year: "select year",
-    },
-    {
-      year: 2023,
-    },
-    {
-      year: 2022,
-    },
-    {
-      year: 2021,
-    },
-    {
-      year: 2020,
-    },
-    {
-      year: 2019,
-    },
-  ];
-
-  const seriesData = [
-    {
-      series: "Artwork with alienida",
-    },
-    {
-      series: "Series 2",
-    },
-    {
-      series: "Series 3",
-    },
-    {
-      series: "Series 4",
-    },
-  ];
-
-  const shipping_inventry = [
-    {
-      name: "sku",
-      label: "SKU",
-      placeholder: "Type Product sku here...",
-    },
-    {
-      name: "barcode",
-      label: "Product Code",
-      placeholder: "Product Code...",
-    },
-  ];
-
-  const handleFileChange = (
-    event: ChangeEvent<HTMLInputElement>,
-    sectionName: string,
-    detailName?: string
-  ) => {
-    const file = event.currentTarget.files?.[0];
+  const handleFileChange = (e, setFile) => {
+    const file = e.target.files[0];
     if (file) {
-      const previewUrl = URL.createObjectURL(file);
-      setPreviews((prev) => ({
-        ...prev,
-        [sectionName]: previewUrl,
-        ...(detailName && { [detailName]: previewUrl }),
-      }));
+      setFile(file);
     }
   };
-  const onSubmit = (values: any) => {
-    console.log("values==============", values);
-  };
-  const handleImageChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    name: string
-  ) => {
-    if (e.target.files) {
-      const filesArray = Array.from(e.target.files);
-      const currentImages = selectedImages[name] || [];
 
-      if (currentImages.length + filesArray.length > 3) {
-        alert("You can only select up to 3 images.");
-        return;
+  const handleMultiFileChange = (e, setFiles) => {
+    const files = Array.from(e.target.files);
+    setFiles(files);
+  };
+
+  const onSubmit = async (values: any) => {
+    values.profileImage = mainPhoto;
+    values.backImage = backPhoto;
+    values.inProcessImage = inProcessPhotos;
+    values.additionalImage = detailPhotos;
+    values.mainVideo = mainVideo;
+    values.otherVideo = otherVideos;
+
+    const formData = new FormData();
+
+    Object.keys(values).forEach((key) => {
+      if (Array.isArray(values[key])) {
+        values[key].forEach((item) => {
+          formData.append(key, item);
+        });
+      } else {
+        formData.append(key, values[key]);
       }
+    });
 
-      setSelectedImages((prev) => ({
-        ...prev,
-        [name]: [...currentImages, ...filesArray], // Append the new images to the correct section
-      }));
-    }
+    console.log("values==============", values);
+
+    const response = await axiosInstance.post(
+      "/api/artist/add-artwork",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    console.log("response==============", response);
   };
 
   const removeImage = (name: string, index: number) => {
-    setSelectedImages((prev) => ({
-      ...prev,
-      [name]: prev[name].filter((_, i) => i !== index), // Remove image at specific index in the correct section
-    }));
+    if (name === "mainPhoto") {
+      setMainPhoto(null);
+    } else if (name === "backPhoto") {
+      setBackPhoto(null);
+    } else if (name === "inProcessPhotos") {
+      setInProcessPhotos(null);
+    } else if (name === "detailPhotos") {
+      setDetailPhotos(detailPhotos.filter((_, i) => i !== index));
+    } else if (name === "mainvideo") {
+      setMainVideo(null);
+    } else if (name === "otherVideos") {
+      setOtherVideos(otherVideos.filter((_, i) => i !== index));
+    }
   };
 
   const [value, setValue] = useState(null);
@@ -374,14 +206,14 @@ const AddArtwork = () => {
                     </label>
                     <Field
                       type="text"
-                      name="artworkname"
-                      id="artworkname"
+                      name="artworkName"
+                      id="artworkName"
                       placeholder="Type artwork name here..."
                       className="w-full bg-[#F9F9FC] border text-sm sm:text-base border-gray-300 rounded-md p-1 sm:p-3 outline-none"
                     />
-                    {touched.artworkname && errors.artworkname ? (
+                    {touched.artworkName && errors.artworkName ? (
                       <div className="error text-red-500 mt-1 text-sm">
-                        {errors.artworkname}
+                        {errors.artworkName}
                       </div>
                     ) : null}
                   </div>
@@ -486,15 +318,37 @@ const AddArtwork = () => {
                           }}
                           className="mb-2 text-[#203F58]"
                         >
-                          {/* {section.label} */}
                           Main Photo
                         </Header>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          id="main-photo-input"
+                          onChange={(e) => handleFileChange(e, setMainPhoto)}
+                          className="hidden"
+                        />
                         <div className="bg-[#F9F9FC]  border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
-                          <img
-                            src={image_icon}
-                            alt="icon"
-                            className="w-28 max-h-28 min-h-28 object-cover mb-4"
-                          />
+                          {mainPhoto ? (
+                            <div className="relative">
+                              <img
+                                src={URL.createObjectURL(mainPhoto)}
+                                alt="image"
+                                className="w-28 h-28 object-cover"
+                              />
+                              <span
+                                className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center "
+                                onClick={() => removeImage("mainPhoto", 0)}
+                              >
+                                &times;
+                              </span>
+                            </div>
+                          ) : (
+                            <img
+                              src={image_icon}
+                              alt="icon"
+                              className="w-28 max-h-28 min-h-28 object-cover mb-4"
+                            />
+                          )}
 
                           <P
                             variant={{
@@ -504,33 +358,18 @@ const AddArtwork = () => {
                             }}
                             className="text-center"
                           >
-                            {/* {section.placeholder} */}
                             Drag and drop image here, or click add image
                           </P>
-                          <Button
-                            className="bg-[#DEDEFA]  font-bold mt-2"
-
-                            // onChange={(e) => {
-                            //   handleFileChange(e, section.mainphoto);
-                            // }}
+                          <span
+                            onClick={() =>
+                              document
+                                .querySelector("#main-photo-input")
+                                .click()
+                            }
+                            className="bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer"
                           >
-                            {/* {section.btn_text} */}
                             Add Image
-                          </Button>
-                          <input
-                            type="file"
-                            // name={section.mainphoto}
-                            // accept={
-                            //   section.type === "image" ? "image/*" : "video/*"
-                            // }
-                            // ref={(el) =>
-                            //   (inputRefs.current[section.mainphoto] = el)
-                            // }
-                            // onChange={(e) => {
-                            //   handleFileChange(e, section.mainphoto);
-                            // }}
-                            className="hidden"
-                          />
+                          </span>
                         </div>
                       </div>
 
@@ -545,11 +384,35 @@ const AddArtwork = () => {
                         >
                           Back Photo
                         </Header>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          id="back-photo-input"
+                          onChange={(e) => handleFileChange(e, setBackPhoto)}
+                          className="hidden"
+                        />
                         <div className="bg-[#F9F9FC]  border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
-                          <img
-                            src={image_icon}
-                            className="w-28 max-h-28 min-h-28 object-cover mb-4"
-                          />
+                          {backPhoto ? (
+                            <div className="relative">
+                              <img
+                                src={URL.createObjectURL(backPhoto)}
+                                alt="image"
+                                className="w-28 h-28 object-cover"
+                              />
+                              <span
+                                className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center "
+                                onClick={() => removeImage("backPhoto", 0)}
+                              >
+                                &times;
+                              </span>
+                            </div>
+                          ) : (
+                            <img
+                              src={image_icon}
+                              alt="icon"
+                              className="w-28 max-h-28 min-h-28 object-cover mb-4"
+                            />
+                          )}
 
                           <P
                             variant={{
@@ -561,30 +424,16 @@ const AddArtwork = () => {
                           >
                             Drag and drop image here, or click add image
                           </P>
-                          <Button
-                            className="bg-[#DEDEFA]  font-bold mt-2"
-                            // onClick={(e) => {
-                            //   e.preventDefault();
-                            //   inputRefs.current[section.mainphoto]?.click();
-                            // }}
+                          <span
+                            onClick={() =>
+                              document
+                                .querySelector("#back-photo-input")
+                                .click()
+                            }
+                            className="bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer"
                           >
-                            {/* {section.btn_text} */}
                             Add Image
-                          </Button>
-                          <input
-                            type="file"
-                            // name={section.mainphoto}
-                            // accept={
-                            //   section.type === "image" ? "image/*" : "video/*"
-                            // }
-                            // ref={(el) =>
-                            //   (inputRefs.current[section.mainphoto] = el)
-                            // }
-                            // onChange={(e) => {
-                            //   handleFileChange(e, section.mainphoto);
-                            // }}
-                            className="hidden"
-                          />
+                          </span>
                         </div>
                       </div>
 
@@ -599,11 +448,39 @@ const AddArtwork = () => {
                         >
                           Inprocess Photo
                         </Header>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          id="inprocess-photo-input"
+                          onChange={(e) =>
+                            handleFileChange(e, setInProcessPhotos)
+                          }
+                          className="hidden"
+                        />
                         <div className="bg-[#F9F9FC]  border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
-                          <img
-                            src={image_icon}
-                            className="w-28 max-h-28 min-h-28 object-cover mb-4"
-                          />
+                          {inProcessPhotos ? (
+                            <div className="relative">
+                              <img
+                                src={URL.createObjectURL(inProcessPhotos)}
+                                alt="image"
+                                className="w-28 h-28 object-cover"
+                              />
+                              <span
+                                className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center "
+                                onClick={() =>
+                                  removeImage("inProcessPhotos", 0)
+                                }
+                              >
+                                &times;
+                              </span>
+                            </div>
+                          ) : (
+                            <img
+                              src={image_icon}
+                              alt="icon"
+                              className="w-28 max-h-28 min-h-28 object-cover mb-4"
+                            />
+                          )}
 
                           <P
                             variant={{
@@ -613,96 +490,23 @@ const AddArtwork = () => {
                             }}
                             className="text-center"
                           >
-                            {/* {section.placeholder} */}Drag and drop image
-                            here, or click add image
+                            Drag and drop image here, or click add image
                           </P>
-                          <Button
-                            className="bg-[#DEDEFA]  font-bold mt-2"
-                            // onClick={(e) => {
-                            //   e.preventDefault();
-                            //   inputRefs.current[section.mainphoto]?.click();
-                            // }}
+                          <span
+                            onClick={() =>
+                              document
+                                .querySelector("#inprocess-photo-input")
+                                .click()
+                            }
+                            className="bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer"
                           >
-                            {/* {section.btn_text} */}
                             Add Image
-                          </Button>
-                          <input
-                            type="file"
-                            // name={section.mainphoto}
-                            // accept={
-                            //   section.type === "image" ? "image/*" : "video/*"
-                            // }
-                            // ref={(el) =>
-                            //   (inputRefs.current[section.mainphoto] = el)
-                            // }
-                            // onChange={(e) => {
-                            //   handleFileChange(e, section.mainphoto);
-                            // }}
-                            className="hidden"
-                          />
+                          </span>
                         </div>
                       </div>
                     </div>
-                    {/* detailsection */}
-
-                    <div className="grid lg:grid-cols-2 gap-4">
-                      <div>
-                        <Header
-                          variant={{
-                            size: "base",
-                            theme: "dark",
-                            weight: "semiBold",
-                          }}
-                          className="mb-2 text-[#203F58]"
-                        >
-                          {/* {section.label} */}
-                          Details photos (max 3 images)
-                        </Header>
-                        <div className="bg-[#F9F9FC]  border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
-                          <img
-                            src={image_icon}
-                            alt="icon"
-                            className="w-28 max-h-28 min-h-28 object-cover mb-4"
-                          />
-
-                          <P
-                            variant={{
-                              size: "base",
-                              theme: "dark",
-                              weight: "normal",
-                            }}
-                            className="text-center"
-                          >
-                            {/* {section.placeholder} */}
-                            Drag and drop image here, or click add image
-                          </P>
-                          <Button
-                            className="bg-[#DEDEFA]  font-bold mt-2"
-
-                            // onChange={(e) => {
-                            //   handleFileChange(e, section.mainphoto);
-                            // }}
-                          >
-                            {/* {section.btn_text} */}
-                            Add Image
-                          </Button>
-                          <input
-                            type="file"
-                            // name={section.mainphoto}
-                            // accept={
-                            //   section.type === "image" ? "image/*" : "video/*"
-                            // }
-                            // ref={(el) =>
-                            //   (inputRefs.current[section.mainphoto] = el)
-                            // }
-                            // onChange={(e) => {
-                            //   handleFileChange(e, section.mainphoto);
-                            // }}
-                            className="hidden"
-                          />
-                        </div>
-                      </div>
-
+                    {/* details photos */}
+                    <div className="grid gap-4">
                       <div>
                         <Header
                           variant={{
@@ -714,11 +518,42 @@ const AddArtwork = () => {
                         >
                           Details photos (max 3 images)
                         </Header>
+                        <input
+                          type="file"
+                          multiple
+                          accept="image/*"
+                          id="details-photo-input"
+                          onChange={(e) =>
+                            handleMultiFileChange(e, setDetailPhotos)
+                          }
+                          className="hidden"
+                        />
                         <div className="bg-[#F9F9FC]  border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
-                          <img
-                            src={image_icon}
-                            className="w-28 max-h-28 min-h-28 object-cover mb-4"
-                          />
+                          {detailPhotos && detailPhotos.length > 0 ? (
+                            detailPhotos.map((img, i) => (
+                              <div key={i} className="relative">
+                                <img
+                                  src={URL.createObjectURL(img)}
+                                  alt="image"
+                                  className="w-28 h-28 object-cover"
+                                />
+                                <span
+                                  className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center "
+                                  onClick={() =>
+                                    removeImage("inProcessPhotos", i)
+                                  }
+                                >
+                                  &times;
+                                </span>
+                              </div>
+                            ))
+                          ) : (
+                            <img
+                              src={image_icon}
+                              alt="icon"
+                              className="w-28 max-h-28 min-h-28 object-cover mb-4"
+                            />
+                          )}
 
                           <P
                             variant={{
@@ -730,34 +565,18 @@ const AddArtwork = () => {
                           >
                             Drag and drop image here, or click add image
                           </P>
-                          <Button
-                            className="bg-[#DEDEFA]  font-bold mt-2"
-                            // onClick={(e) => {
-                            //   e.preventDefault();
-                            //   inputRefs.current[section.mainphoto]?.click();
-                            // }}
+                          <span
+                            onClick={() =>
+                              document
+                                .querySelector("#details-photo-input")
+                                .click()
+                            }
+                            className="bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer"
                           >
-                            {/* {section.btn_text} */}
-                            Add Image
-                          </Button>
-                          <input
-                            type="file"
-                            // name={section.mainphoto}
-                            // accept={
-                            //   section.type === "image" ? "image/*" : "video/*"
-                            // }
-                            // ref={(el) =>
-                            //   (inputRefs.current[section.mainphoto] = el)
-                            // }
-                            // onChange={(e) => {
-                            //   handleFileChange(e, section.mainphoto);
-                            // }}
-                            className="hidden"
-                          />
+                            Add Images
+                          </span>
                         </div>
                       </div>
-
-                      {/* ))} */}
                     </div>
 
                     <div className="grid lg:grid-cols-2 gap-4">
@@ -772,12 +591,35 @@ const AddArtwork = () => {
                         >
                           Main Video
                         </Header>
+                        <input
+                          type="file"
+                          accept="video/*"
+                          id="main-video-input"
+                          onChange={(e) => handleFileChange(e, setMainVideo)}
+                          className="hidden"
+                        />
                         <div className="bg-[#F9F9FC]  border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
-                          <img
-                            src={video_icon}
-                            alt="icon"
-                            className="w-28 max-h-28 min-h-28 object-cover mb-4"
-                          />
+                          {mainVideo ? (
+                            <div className="relative">
+                              <video
+                                src={URL.createObjectURL(mainVideo)}
+                                className="w-28 max-h-28 object-cover mb-4"
+                                controls
+                              />
+                              <span
+                                className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center "
+                                onClick={() => removeImage("mainvideo", 0)}
+                              >
+                                &times;
+                              </span>
+                            </div>
+                          ) : (
+                            <img
+                              src={image_icon}
+                              alt="icon"
+                              className="w-28 max-h-28 min-h-28 object-cover mb-4"
+                            />
+                          )}
 
                           <P
                             variant={{
@@ -787,32 +629,18 @@ const AddArtwork = () => {
                             }}
                             className="text-center"
                           >
-                            Drag and drop video here, or click add video (max 1
-                            video)
+                            Drag and drop image here, or click add image
                           </P>
-                          <Button
-                            className="bg-[#DEDEFA]  font-bold mt-2"
-                            // onChange={(e) => {
-                            //   handleFileChange(e, section.mainphoto);
-                            // }}
+                          <span
+                            onClick={() =>
+                              document
+                                .querySelector("#main-video-input")
+                                .click()
+                            }
+                            className="bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer"
                           >
-                            {/* {section.btn_text} */}
                             Add Video
-                          </Button>
-                          <input
-                            type="file"
-                            // name={section.mainphoto}
-                            // accept={
-                            //   section.type === "image" ? "image/*" : "video/*"
-                            // }
-                            // ref={(el) =>
-                            //   (inputRefs.current[section.mainphoto] = el)
-                            // }
-                            // onChange={(e) => {
-                            //   handleFileChange(e, section.mainphoto);
-                            // }}
-                            className="hidden"
-                          />
+                          </span>
                         </div>
                       </div>
 
@@ -827,11 +655,42 @@ const AddArtwork = () => {
                         >
                           Other Video
                         </Header>
+                        <input
+                          type="file"
+                          id="other-video-input"
+                          accept="video/*"
+                          multiple
+                          onChange={(e) =>
+                            handleMultiFileChange(e, setOtherVideos)
+                          }
+                          className="hidden"
+                        />
                         <div className="bg-[#F9F9FC]  border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
-                          <img
-                            src={video_icon}
-                            className="w-28 max-h-28 min-h-28 object-cover mb-4"
-                          />
+                          {otherVideos && otherVideos.length > 0 ? (
+                            otherVideos.map((v, i) => (
+                              <div key={i} className="relative">
+                                <video
+                                  src={URL.createObjectURL(v)}
+                                  className="w-28 max-h-28 object-cover mb-4"
+                                  controls
+                                />
+                                <span
+                                  className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center "
+                                  onClick={() =>
+                                    removeImage("inProcessPhotos", 0)
+                                  }
+                                >
+                                  &times;
+                                </span>
+                              </div>
+                            ))
+                          ) : (
+                            <img
+                              src={image_icon}
+                              alt="icon"
+                              className="w-28 max-h-28 min-h-28 object-cover mb-4"
+                            />
+                          )}
 
                           <P
                             variant={{
@@ -841,33 +700,18 @@ const AddArtwork = () => {
                             }}
                             className="text-center"
                           >
-                            Drag and drop video here, or click add video (max 2
-                            videos)
+                            Drag and drop image here, or click add image
                           </P>
-                          <Button
-                            className="bg-[#DEDEFA]  font-bold mt-2"
-                            // onClick={(e) => {
-                            //   e.preventDefault();
-                            //   inputRefs.current[section.mainphoto]?.click();
-                            // }}
+                          <span
+                            onClick={() =>
+                              document
+                                .querySelector("#other-video-input")
+                                .click()
+                            }
+                            className="bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer"
                           >
-                            {/* {section.btn_text} */}
-                            Add Video
-                          </Button>
-                          <input
-                            type="file"
-                            // name={section.mainphoto}
-                            // accept={
-                            //   section.type === "image" ? "image/*" : "video/*"
-                            // }
-                            // ref={(el) =>
-                            //   (inputRefs.current[section.mainphoto] = el)
-                            // }
-                            // onChange={(e) => {
-                            //   handleFileChange(e, section.mainphoto);
-                            // }}
-                            className="hidden"
-                          />
+                            Add Videos
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -1217,15 +1061,15 @@ const AddArtwork = () => {
                     </label>
                     <Field
                       type="text"
-                      name="baseprice"
-                      id="baseprice"
+                      name="basePrice"
+                      id="basePrice"
                       placeholder="$ Type base price here..."
-                      value={values.baseprice}
+                      value={values.basePrice}
                       className="bg-[#F9F9FC] border mb-3 border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full  p-1 sm:p-2.5 "
                     />
                   </>
-                  {touched.baseprice && errors.baseprice ? (
-                    <div className="error text-red-500">{errors.baseprice}</div>
+                  {touched.basePrice && errors.basePrice ? (
+                    <div className="error text-red-500">{errors.basePrice}</div>
                   ) : null}
                   <label className="text-[#203F58] font-semibold  ">
                     Discount Type
@@ -1366,13 +1210,6 @@ const AddArtwork = () => {
                 <button className="border border-[#7E98B5] rounded px-4 py-1 text-sm font-semibold">
                   ✕ Cancel
                 </button>
-                {/* <button
-                  type="submit"
-                  className=" bg-[#0A0E17] shadow-md text-white rounded px-4 py-1 text-sm font-semibold"
-                  // onClick={handleSubmit}
-                >
-                  + Submit
-                </button> */}
 
                 <div className="flex justify-end mt-6">
                   <Button
