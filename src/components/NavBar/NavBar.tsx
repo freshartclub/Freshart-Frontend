@@ -15,6 +15,7 @@ import ShoppingCard from "../pages/ShoppingCard";
 import Button from "../ui/Button";
 import profile1 from "../../assets/profile_image.png";
 import { useAppSelector } from "../../store/typedReduxHooks";
+import useLogOutMutation from "../../http/auth/useLogOutMutation";
 
 const categories = [
   {
@@ -80,6 +81,7 @@ const NavBar = () => {
   }, []);
 
   const token = localStorage.getItem("auth_token");
+  const { mutate: logOut } = useLogOutMutation();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -114,11 +116,14 @@ const NavBar = () => {
   const toggleModal = () => {
     setIsModalOpen((Modalprev) => !Modalprev);
   };
+
   const redirectModalToHomepage = () => {
     setIsModalOpen((Modalprev) => !Modalprev);
-    localStorage.removeItem("auth_token");
-    // localStorage.removeItem("userEmail");
-    navigate("/");
+    try {
+      logOut();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -363,21 +368,21 @@ const NavBar = () => {
                         <Link
                           to="/user_profile"
                           className="block px-4 py-2 text-sm"
-                          onClick={() => setIsDropdownOpen(false)}
+                          onClick={(prev) => setIsProfileDropdown(!prev)}
                         >
                           View Profile
                         </Link>
                         <Link
                           to="/account_setting"
                           className="block px-4 py-2 text-sm"
-                          onClick={() => setIsDropdownOpen(false)}
+                          oonClick={(prev) => setIsProfileDropdown(!prev)}
                         >
                           Account Settings
                         </Link>
                         <Link
                           to="/wishlist"
                           className="block px-4 py-2 text-sm"
-                          onClick={() => setIsDropdownOpen(false)}
+                          onClick={(prev) => setIsProfileDropdown(!prev)}
                         >
                           Favourites ArtWork
                         </Link>
@@ -398,14 +403,14 @@ const NavBar = () => {
                         <Link
                           to="/order"
                           className="block px-4 py-2 text-sm"
-                          onClick={() => setIsDropdownOpen(false)}
+                          onClick={(prev) => setIsProfileDropdown(!prev)}
                         >
                           My Orders
                         </Link>
                         <Link
+                          onClick={(prev) => setIsProfileDropdown(!prev)}
                           to="/support"
                           className="block px-4 py-2 text-sm"
-                          onClick={() => setIsDropdownOpen(false)}
                         >
                           Support
                         </Link>

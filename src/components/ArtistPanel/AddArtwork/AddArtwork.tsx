@@ -477,199 +477,399 @@ const AddArtwork = () => {
 
                   <div className="bg-white p-4 rounded-md mt-4">
                     <div className="grid lg:grid-cols-3 gap-4">
-                      {mediaSections.map((section, index) => (
-                        <div key={index}>
-                          <Header
+                      <div>
+                        <Header
+                          variant={{
+                            size: "base",
+                            theme: "dark",
+                            weight: "semiBold",
+                          }}
+                          className="mb-2 text-[#203F58]"
+                        >
+                          {/* {section.label} */}
+                          Main Photo
+                        </Header>
+                        <div className="bg-[#F9F9FC]  border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
+                          <img
+                            src={image_icon}
+                            alt="icon"
+                            className="w-28 max-h-28 min-h-28 object-cover mb-4"
+                          />
+
+                          <P
                             variant={{
                               size: "base",
                               theme: "dark",
-                              weight: "semiBold",
+                              weight: "normal",
                             }}
-                            className="mb-2 text-[#203F58]"
+                            className="text-center"
                           >
-                            {section.label}
-                          </Header>
-                          <div className="bg-[#F9F9FC]  border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
-                            <img
-                              src={previews[section.name] || section.icon}
-                              alt={section.label}
-                              className="w-28  max-h-28 min-h-28 object-cover mb-4"
-                            />
-                            <P
-                              variant={{
-                                size: "base",
-                                theme: "dark",
-                                weight: "normal",
-                              }}
-                              className="text-center"
-                            >
-                              {section.placeholder}
-                            </P>
-                            <Button
-                              className="bg-[#DEDEFA]  font-bold mt-2"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                inputRefs.current[section.name]?.click();
-                              }}
-                            >
-                              {section.btn_text}
-                            </Button>
-                            <input
-                              type="file"
-                              name={section.name}
-                              accept={
-                                section.type === "image" ? "image/*" : "video/*"
-                              }
-                              ref={(el) =>
-                                (inputRefs.current[section.name] = el)
-                              }
-                              onChange={(e) =>
-                                handleFileChange(e, section.name)
-                              }
-                              className="hidden"
-                            />
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+                            {/* {section.placeholder} */}
+                            Drag and drop image here, or click add image
+                          </P>
+                          <Button
+                            className="bg-[#DEDEFA]  font-bold mt-2"
 
-                    <div className="grid lg:grid-cols-2 gap-4 mt-5 mb-5">
-                      {detailSection.map((detail, index) => (
-                        <div key={index}>
-                          <div className="flex gap-1">
-                            <Header
-                              variant={{
-                                size: "base",
-                                theme: "dark",
-                                weight: "semiBold",
-                              }}
-                              className="mb-2"
-                            >
-                              {detail.label}
-                            </Header>
-                            <span className="text-sm">{detail.max}</span>
-                          </div>
-                          <div className="bg-[#F9F9FC] border border-dashed py-10 px-12 flex flex-col items-center relative">
-                            {selectedImages[detail.name] &&
-                            selectedImages[detail.name].length > 0 ? (
-                              <div className="flex flex-wrap gap-4">
-                                {selectedImages[detail.name].map(
-                                  (image, imgIndex) => (
-                                    <div key={imgIndex} className="relative">
-                                      <img
-                                        src={URL.createObjectURL(image)}
-                                        alt={`selected-${imgIndex}`}
-                                        className="w-28 h-28 object-cover"
-                                      />
-                                      <button
-                                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center "
-                                        onClick={() =>
-                                          removeImage(detail.name, imgIndex)
-                                        }
-                                      >
-                                        &times;
-                                      </button>
-                                    </div>
-                                  )
-                                )}
-                              </div>
-                            ) : (
-                              <>
-                                <img
-                                  src={detail.icon}
-                                  alt={detail.label}
-                                  className="w-28 max-h-28 min-h-28 object-cover mb-4"
-                                />
-                                <P
-                                  variant={{
-                                    size: "base",
-                                    theme: "dark",
-                                    weight: "normal",
-                                  }}
-                                  className="text-center"
-                                >
-                                  {detail.placeholder}
-                                </P>
-                              </>
-                            )}
-                            <Button
-                              className="bg-[#DEDEFA] font-bold mt-2"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                inputRefs.current[detail.name]?.click();
-                              }}
-                            >
-                              {detail.btn_text}
-                            </Button>
-                            <input
-                              type="file"
-                              name={detail.name}
-                              accept="image/*"
-                              multiple
-                              ref={(el) =>
-                                (inputRefs.current[detail.name] = el)
-                              }
-                              className="hidden"
-                              onChange={(e) =>
-                                handleImageChange(e, detail.name)
-                              }
-                            />
-                          </div>
+                            // onChange={(e) => {
+                            //   handleFileChange(e, section.mainphoto);
+                            // }}
+                          >
+                            {/* {section.btn_text} */}
+                            Add Image
+                          </Button>
+                          <input
+                            type="file"
+                            // name={section.mainphoto}
+                            // accept={
+                            //   section.type === "image" ? "image/*" : "video/*"
+                            // }
+                            // ref={(el) =>
+                            //   (inputRefs.current[section.mainphoto] = el)
+                            // }
+                            // onChange={(e) => {
+                            //   handleFileChange(e, section.mainphoto);
+                            // }}
+                            className="hidden"
+                          />
                         </div>
-                      ))}
+                      </div>
+
+                      <div>
+                        <Header
+                          variant={{
+                            size: "base",
+                            theme: "dark",
+                            weight: "semiBold",
+                          }}
+                          className="mb-2 text-[#203F58]"
+                        >
+                          Back Photo
+                        </Header>
+                        <div className="bg-[#F9F9FC]  border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
+                          <img
+                            src={image_icon}
+                            className="w-28 max-h-28 min-h-28 object-cover mb-4"
+                          />
+
+                          <P
+                            variant={{
+                              size: "base",
+                              theme: "dark",
+                              weight: "normal",
+                            }}
+                            className="text-center"
+                          >
+                            Drag and drop image here, or click add image
+                          </P>
+                          <Button
+                            className="bg-[#DEDEFA]  font-bold mt-2"
+                            // onClick={(e) => {
+                            //   e.preventDefault();
+                            //   inputRefs.current[section.mainphoto]?.click();
+                            // }}
+                          >
+                            {/* {section.btn_text} */}
+                            Add Image
+                          </Button>
+                          <input
+                            type="file"
+                            // name={section.mainphoto}
+                            // accept={
+                            //   section.type === "image" ? "image/*" : "video/*"
+                            // }
+                            // ref={(el) =>
+                            //   (inputRefs.current[section.mainphoto] = el)
+                            // }
+                            // onChange={(e) => {
+                            //   handleFileChange(e, section.mainphoto);
+                            // }}
+                            className="hidden"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <Header
+                          variant={{
+                            size: "base",
+                            theme: "dark",
+                            weight: "semiBold",
+                          }}
+                          className="mb-2 text-[#203F58]"
+                        >
+                          Inprocess Photo
+                        </Header>
+                        <div className="bg-[#F9F9FC]  border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
+                          <img
+                            src={image_icon}
+                            className="w-28 max-h-28 min-h-28 object-cover mb-4"
+                          />
+
+                          <P
+                            variant={{
+                              size: "base",
+                              theme: "dark",
+                              weight: "normal",
+                            }}
+                            className="text-center"
+                          >
+                            {/* {section.placeholder} */}Drag and drop image
+                            here, or click add image
+                          </P>
+                          <Button
+                            className="bg-[#DEDEFA]  font-bold mt-2"
+                            // onClick={(e) => {
+                            //   e.preventDefault();
+                            //   inputRefs.current[section.mainphoto]?.click();
+                            // }}
+                          >
+                            {/* {section.btn_text} */}
+                            Add Image
+                          </Button>
+                          <input
+                            type="file"
+                            // name={section.mainphoto}
+                            // accept={
+                            //   section.type === "image" ? "image/*" : "video/*"
+                            // }
+                            // ref={(el) =>
+                            //   (inputRefs.current[section.mainphoto] = el)
+                            // }
+                            // onChange={(e) => {
+                            //   handleFileChange(e, section.mainphoto);
+                            // }}
+                            className="hidden"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    {/* detailsection */}
+
+                    <div className="grid lg:grid-cols-2 gap-4">
+                      <div>
+                        <Header
+                          variant={{
+                            size: "base",
+                            theme: "dark",
+                            weight: "semiBold",
+                          }}
+                          className="mb-2 text-[#203F58]"
+                        >
+                          {/* {section.label} */}
+                          Details photos (max 3 images)
+                        </Header>
+                        <div className="bg-[#F9F9FC]  border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
+                          <img
+                            src={image_icon}
+                            alt="icon"
+                            className="w-28 max-h-28 min-h-28 object-cover mb-4"
+                          />
+
+                          <P
+                            variant={{
+                              size: "base",
+                              theme: "dark",
+                              weight: "normal",
+                            }}
+                            className="text-center"
+                          >
+                            {/* {section.placeholder} */}
+                            Drag and drop image here, or click add image
+                          </P>
+                          <Button
+                            className="bg-[#DEDEFA]  font-bold mt-2"
+
+                            // onChange={(e) => {
+                            //   handleFileChange(e, section.mainphoto);
+                            // }}
+                          >
+                            {/* {section.btn_text} */}
+                            Add Image
+                          </Button>
+                          <input
+                            type="file"
+                            // name={section.mainphoto}
+                            // accept={
+                            //   section.type === "image" ? "image/*" : "video/*"
+                            // }
+                            // ref={(el) =>
+                            //   (inputRefs.current[section.mainphoto] = el)
+                            // }
+                            // onChange={(e) => {
+                            //   handleFileChange(e, section.mainphoto);
+                            // }}
+                            className="hidden"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <Header
+                          variant={{
+                            size: "base",
+                            theme: "dark",
+                            weight: "semiBold",
+                          }}
+                          className="mb-2 text-[#203F58]"
+                        >
+                          Details photos (max 3 images)
+                        </Header>
+                        <div className="bg-[#F9F9FC]  border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
+                          <img
+                            src={image_icon}
+                            className="w-28 max-h-28 min-h-28 object-cover mb-4"
+                          />
+
+                          <P
+                            variant={{
+                              size: "base",
+                              theme: "dark",
+                              weight: "normal",
+                            }}
+                            className="text-center"
+                          >
+                            Drag and drop image here, or click add image
+                          </P>
+                          <Button
+                            className="bg-[#DEDEFA]  font-bold mt-2"
+                            // onClick={(e) => {
+                            //   e.preventDefault();
+                            //   inputRefs.current[section.mainphoto]?.click();
+                            // }}
+                          >
+                            {/* {section.btn_text} */}
+                            Add Image
+                          </Button>
+                          <input
+                            type="file"
+                            // name={section.mainphoto}
+                            // accept={
+                            //   section.type === "image" ? "image/*" : "video/*"
+                            // }
+                            // ref={(el) =>
+                            //   (inputRefs.current[section.mainphoto] = el)
+                            // }
+                            // onChange={(e) => {
+                            //   handleFileChange(e, section.mainphoto);
+                            // }}
+                            className="hidden"
+                          />
+                        </div>
+                      </div>
+
+                      {/* ))} */}
                     </div>
 
                     <div className="grid lg:grid-cols-2 gap-4">
-                      {videoSection.map((video, index) => (
-                        <div key={index}>
-                          <Header
+                      <div>
+                        <Header
+                          variant={{
+                            size: "base",
+                            theme: "dark",
+                            weight: "semiBold",
+                          }}
+                          className="mb-2 text-[#203F58]"
+                        >
+                          Main Video
+                        </Header>
+                        <div className="bg-[#F9F9FC]  border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
+                          <img
+                            src={video_icon}
+                            alt="icon"
+                            className="w-28 max-h-28 min-h-28 object-cover mb-4"
+                          />
+
+                          <P
                             variant={{
                               size: "base",
                               theme: "dark",
-                              weight: "semiBold",
+                              weight: "normal",
                             }}
-                            className="mb-2 text-[#203F58]"
+                            className="text-center"
                           >
-                            {video.label}
-                          </Header>
-                          <div className="bg-[#F9F9FC]  border border-dashed py-10 pt-20 px-12 flex flex-col items-center">
-                            <img
-                              src={previews[video.name] || video.icon}
-                              alt={video.label}
-                              className="  mb-4"
-                            />
-                            <P
-                              variant={{
-                                size: "base",
-                                theme: "dark",
-                                weight: "normal",
-                              }}
-                              className="text-center w-60 "
-                            >
-                              {video.placeholder}
-                            </P>
-                            <Button
-                              className="bg-[#DEDEFA] font-bold mt-2"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                inputRefs.current[video.name]?.click();
-                              }}
-                            >
-                              {video.btn_text}
-                            </Button>
-                            <input
-                              type="file"
-                              name={video.name}
-                              accept={
-                                video.type === "image" ? "image/*" : "video/*"
-                              }
-                              ref={(el) => (inputRefs.current[video.name] = el)}
-                              onChange={(e) => handleFileChange(e, video.name)}
-                              className="hidden"
-                            />
-                          </div>
+                            Drag and drop video here, or click add video (max 1
+                            video)
+                          </P>
+                          <Button
+                            className="bg-[#DEDEFA]  font-bold mt-2"
+                            // onChange={(e) => {
+                            //   handleFileChange(e, section.mainphoto);
+                            // }}
+                          >
+                            {/* {section.btn_text} */}
+                            Add Video
+                          </Button>
+                          <input
+                            type="file"
+                            // name={section.mainphoto}
+                            // accept={
+                            //   section.type === "image" ? "image/*" : "video/*"
+                            // }
+                            // ref={(el) =>
+                            //   (inputRefs.current[section.mainphoto] = el)
+                            // }
+                            // onChange={(e) => {
+                            //   handleFileChange(e, section.mainphoto);
+                            // }}
+                            className="hidden"
+                          />
                         </div>
-                      ))}
+                      </div>
+
+                      <div>
+                        <Header
+                          variant={{
+                            size: "base",
+                            theme: "dark",
+                            weight: "semiBold",
+                          }}
+                          className="mb-2 text-[#203F58]"
+                        >
+                          Other Video
+                        </Header>
+                        <div className="bg-[#F9F9FC]  border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
+                          <img
+                            src={video_icon}
+                            className="w-28 max-h-28 min-h-28 object-cover mb-4"
+                          />
+
+                          <P
+                            variant={{
+                              size: "base",
+                              theme: "dark",
+                              weight: "normal",
+                            }}
+                            className="text-center"
+                          >
+                            Drag and drop video here, or click add video (max 2
+                            videos)
+                          </P>
+                          <Button
+                            className="bg-[#DEDEFA]  font-bold mt-2"
+                            // onClick={(e) => {
+                            //   e.preventDefault();
+                            //   inputRefs.current[section.mainphoto]?.click();
+                            // }}
+                          >
+                            {/* {section.btn_text} */}
+                            Add Video
+                          </Button>
+                          <input
+                            type="file"
+                            // name={section.mainphoto}
+                            // accept={
+                            //   section.type === "image" ? "image/*" : "video/*"
+                            // }
+                            // ref={(el) =>
+                            //   (inputRefs.current[section.mainphoto] = el)
+                            // }
+                            // onChange={(e) => {
+                            //   handleFileChange(e, section.mainphoto);
+                            // }}
+                            className="hidden"
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>

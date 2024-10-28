@@ -54,11 +54,11 @@ const RegistrationProcess = () => {
     artistName: Yup.string().required("Name is required"),
     artistSurname1: Yup.string().required("Surname 1 is required"),
     artistSurname2: Yup.string().required("Surname 2 is required"),
-    country: Yup.object().required("Country is required"),
+    // country: Yup.object().required("Country is required"),
     zipCode: Yup.string().required("zipCodeis required"),
     city: Yup.string().required("City is required"),
     state: Yup.string().required("state is required"),
-    gender: Yup.object().required("Gender is required"),
+    // gender: Yup.object().required("Gender is required"),
     dob: Yup.date().required("Date of Birth is required"),
     terms: Yup.boolean().oneOf(
       [true],
@@ -72,7 +72,7 @@ const RegistrationProcess = () => {
     handleSubmit,
     formState: { errors, isSubmitting, isValid },
   } = useForm({
-    // resolver: yupResolver(validationSchema),
+    resolver: yupResolver(validationSchema),
     defaultValues: {
       artistName: "",
       artistSurname1: "",
@@ -380,7 +380,7 @@ const RegistrationProcess = () => {
                       className="flex items-center"
                       // disabled={isSubmitting || !isValid}
                     >
-                      <span>Continue</span>
+                      {isPending ? "Loading..." : "Continue"}
                       <img src={arrow} alt="arrow" className="ml-2" />
                     </Button>
                   </div>

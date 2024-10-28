@@ -92,7 +92,7 @@ const UserDescription = ({ user }) => {
     },
     {
       title: "Counrty",
-      value: `${user?.address.country}`,
+      value: `${user?.address?.country}`,
     },
     {
       title: "Language",

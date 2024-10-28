@@ -14,9 +14,9 @@ import { useAppDispatch, useAppSelector } from "../../store/typedReduxHooks";
 
 let toastId: any;
 
-async function logOut(input: any) {
+async function logOut() {
   const token = localStorage.getItem("auth_token");
-  console.log(input);
+
   return await axiosInstance.patch(AUTH_ENDPOINTS.LogOut, {
     headers: {
       authorization: `Bearer ${token}`,
@@ -24,10 +24,6 @@ async function logOut(input: any) {
   });
 }
 const useLogOutMutation = () => {
-  // const [searchParam,setSearchParam] = useSearchParams();
-
-  // const id = searchParam.get('id');
-  console.log("hey");
   const isAuthorized = useAppSelector((state) => state.user.isArtist);
 
   const navigate = useNavigate();
@@ -37,13 +33,9 @@ const useLogOutMutation = () => {
     mutationFn: logOut,
 
     onSuccess: async (res) => {
-      console.log("hey");
       dispatch(setIsAuthorized(false));
-      console.log("before", isAuthorized);
 
       dispatch(setIsArtist(false));
-
-      console.log("after", isAuthorized);
 
       toast.dismiss(toastId);
       toast.success(res.data.message);

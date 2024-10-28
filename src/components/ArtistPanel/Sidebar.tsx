@@ -68,6 +68,18 @@ const sections = [
     icon: mail,
     path: "mail",
   },
+  {
+    key: "help",
+    label: "Help",
+    icon: mail,
+    path: "help",
+  },
+  {
+    key: "support",
+    label: "Support",
+    icon: mail,
+    path: "support",
+  },
 ];
 
 const Sidebar: React.FC = () => {

@@ -5,11 +5,8 @@ import P from "../ui/P";
 import UserImage from "./UserImage";
 import UserDescription from "./UserDescription";
 import { useAppSelector } from "../../store/typedReduxHooks";
-import { useGetArtistDetails } from "./http/useGetDetails";
-import Loader from "../ui/Loader";
 
 const UserProfile = () => {
-  // const { data, isLoading } = useGetArtistDetails();
   const { user } = useAppSelector((state) => state.user);
   console.log(user);
 
@@ -23,7 +20,9 @@ const UserProfile = () => {
           <li>
             <Link to="/" className="rounded-md transition-all flex">
               <img
-                src={home}
+                src={`${import.meta.env.VITE_SERVER_URL}/uploads/users/${
+                  user?.media?.mainImage
+                }`}
                 alt="Home icon"
                 className="w-[14px] h-[14px] mr-2"
               />

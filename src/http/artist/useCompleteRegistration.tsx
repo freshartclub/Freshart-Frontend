@@ -3,7 +3,8 @@ import axiosInstance from "../../components/utils/axios";
 import toast from "react-hot-toast";
 import { AUTH_ENDPOINTS } from "../apiEndPoints/Auth";
 import { useNavigate } from "react-router-dom";
-import { useAppSelector } from "../../store/typedReduxHooks";
+import { useAppDispatch, useAppSelector } from "../../store/typedReduxHooks";
+import { updateUser } from "../../store/userSlice/userSlice";
 
 let toastId: any;
 
@@ -22,6 +23,7 @@ async function completeRegistration(input: any) {
 
 const useCompleteRegistration = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   return useMutation({
     mutationFn: completeRegistration,
@@ -29,6 +31,7 @@ const useCompleteRegistration = () => {
     onSuccess: async (res) => {
       console.log(res.data.id);
       toast.dismiss(toastId);
+      dispatch(updateUser(res.data.user));
       toast.success(res.data.message);
       navigate("/home");
     },

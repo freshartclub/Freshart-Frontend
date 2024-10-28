@@ -25,12 +25,7 @@ const ArtistNavBar = () => {
 
   const handleLogOut = () => {
     try {
-      console.log("log out");
-      logOut(authToken);
-      localStorage.removeItem("profile");
-      navigate("/", { replace: true });
-      localStorage.setItem("profile", "user");
-      localStorage.removeItem("auth_token");
+      logOut();
     } catch (error) {
       console.log(error);
     }
@@ -39,7 +34,6 @@ const ArtistNavBar = () => {
   const handleProfile = () => {
     navigate("/home", { replace: true });
     localStorage.setItem("profile", "user");
-    // localStorage.removeItem("profile");
   };
 
   return (

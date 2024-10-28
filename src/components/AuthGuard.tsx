@@ -7,10 +7,10 @@ interface AuthGuardProps {
 }
 
 const AuthGuard = ({ children }: AuthGuardProps) => {
-  
   const isAuthorized = useAppSelector((state) => state.user.isAuthorized);
-  console.log(isAuthorized);
+  const isArtist = useAppSelector((state) => state.user.isArtist);
 
+  console.log(isArtist);
   if (!isAuthorized) return <Navigate to="/login" replace />;
 
   return <>{children}</>;
