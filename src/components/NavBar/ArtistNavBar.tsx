@@ -1,0 +1,104 @@
+import React, { useState } from "react";
+import logo from "../../assets/loginlogo.png";
+import { IoMdSearch } from "react-icons/io";
+import { IoNotifications } from "react-icons/io5";
+import { Link, useNavigate } from "react-router-dom";
+import { artistPanel } from "../utils/paths";
+import BackButton from "../ui/BackButton";
+import { useAppDispatch, useAppSelector } from "../../store/typedReduxHooks";
+import useLogOutMuttion from "../../http/auth/useLogOutMutation";
+import useLogOutMutation from "../../http/auth/useLogOutMutation";
+
+const ArtistNavBar = () => {
+  const [isToogleOpen, setIsToggelOpen] = useState(false);
+  const [isSearchBar, setIsSeachBar] = useState(false);
+  const navigate = useNavigate();
+  const user = useAppSelector((state) => state.user.user);
+  console.log(user);
+
+  const disptach = useAppDispatch();
+  const profile = localStorage.getItem("profile");
+  const authToken = localStorage.getItem("auth_token");
+  console.log(authToken);
+
+  const { mutate: logOut } = useLogOutMutation();
+
+  const handleLogOut = () => {
+    try {
+      console.log("log out");
+      logOut(authToken);
+      localStorage.removeItem("profile");
+      navigate("/", { replace: true });
+      localStorage.setItem("profile", "user");
+      localStorage.removeItem("auth_token");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleProfile = () => {
+    navigate("/home", { replace: true });
+    localStorage.setItem("profile", "user");
+    // localStorage.removeItem("profile");
+  };
+
+  return (
+    <div className="w-full  py-5 px-5 flex items-center gap-5 relative">
+      <div className="">
+        <img src={logo} alt="" />
+      </div>
+      <div className="w-full flex items-center gap-5 justify-between ">
+        <div>
+          {/* <h1 className="font-bold px-2 bg-red-200 py-2 rounded ">
+            {user?.artistName}
+          </h1> */}
+        </div>
+        <div className="flex items-center gap-8">
+          <div className="flex items-center gap-2">
+            <input
+              placeholder="Search"
+              className="rounded outline-none px-2 py-1 border border-zinc-800"
+              type="text"
+            />
+            <IoMdSearch className="cursor-pointer" size="2em" />
+          </div>
+
+          <h1>Language</h1>
+          <IoNotifications className="cursor-pointer" size="2em" />
+          <span
+            onClick={() => setIsToggelOpen(!isToogleOpen)}
+            className="w-12 h-12 rounded-full bg-red-200 flex items-center justify-center cursor-pointer"
+          >
+            A
+          </span>
+        </div>
+      </div>
+
+      {isToogleOpen && (
+        <div className="absolute z-10 top-20 right-5 flex flex-col  gap-4 text-sm bg-white border rounded-lg shadow-md py-5 px-5">
+          <Link
+            className="font-medium hover:bg-zinc-200 transition-all duration-200"
+            to={artistPanel.artistEditProfile}
+            onClick={() => setIsToggelOpen(!isToogleOpen)}
+          >
+            Profile
+          </Link>
+          <button
+            className="font-medium hover:bg-zinc-200 "
+            onClick={handleProfile}
+          >
+            Switch To User Profile
+          </button>
+          <button
+            className="bg-red-300 py-2 rounded hover:bg-red-400 font-medium"
+            onClick={handleLogOut}
+          >
+            Sign Out
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default ArtistNavBar;

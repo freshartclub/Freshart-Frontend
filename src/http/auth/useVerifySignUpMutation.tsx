@@ -32,6 +32,7 @@ const VerifySignUpMutation = () => {
 
       dispatch(forgotPasswordUserId({ userId: res.data.id }));
       dispatch(setIsAuthorized(true));
+      localStorage.setItem("profile", "user");
       toast.dismiss(toastId);
       toast.success(res.data.message);
 

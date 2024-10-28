@@ -4,19 +4,28 @@ import blue from "../ticket history/assets/blue.png";
 import green from "../ticket history/assets/green.png";
 import { useNavigate } from "react-router-dom";
 import artistImg from "../ticket history/assets/People.png";
+import Loader from "../../ui/Loader";
+import { useAppSelector } from "../../../store/typedReduxHooks";
+
 const TicketsList: FC<{
   tickets: any[];
   currentPage: number;
   totalPages: number;
   searchQuery: string;
+  isLoading: any;
   onPageChange: (page: number) => void;
-}> = ({ tickets, currentPage, totalPages, onPageChange }) => {
-  console.log("ticketstickets dta", tickets);
+}> = ({ tickets, currentPage, totalPages, onPageChange, isLoading }) => {
+  const ticket = useAppSelector((state) => state.user.ticket);
+  console.log(ticket);
 
   const navigate = useNavigate();
   const handleClick = (id) => {
     navigate(`/ticket_detail/${id}`);
   };
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <div className="">

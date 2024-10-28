@@ -9,8 +9,9 @@ import LearnMoreSection from "./LearnMoreSection";
 import ThirdSection from "./ThirdSection";
 
 const GetStarted = () => {
-  const user = useAppSelector((state) => state.user);
-  console.log(user);
+  const isAuthorized = useAppSelector((state) => state.user.isArtist);
+  console.log(isAuthorized);
+
   return (
     <>
       <div>

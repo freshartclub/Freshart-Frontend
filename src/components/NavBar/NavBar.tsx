@@ -14,6 +14,7 @@ import selling from "../../assets/Images-cuate 1.png";
 import ShoppingCard from "../pages/ShoppingCard";
 import Button from "../ui/Button";
 import profile1 from "../../assets/profile_image.png";
+import { useAppSelector } from "../../store/typedReduxHooks";
 
 const categories = [
   {
@@ -40,15 +41,15 @@ const categories = [
   },
 ];
 
-const profile_data = [
-  { to: "/user_profile", label: "View Profile" },
-  { to: "/account_setting", label: "Account Settings" },
-  { to: "/wishlist", label: "Favourites Artworks" },
-  { to: "/artist-panel", label: "Switch to artist Account" },
-  { to: "/create_invite", label: "Create Invite" },
-  { to: "/order", label: "My Orders" },
-  { to: "/support", label: "Support" },
-];
+// const profile_data = [
+//   { to: "/user_profile", label: "View Profile" },
+//   { to: "/account_setting", label: "Account Settings" },
+//   { to: "/wishlist", label: "Favourites Artworks" },
+//   { to: "/artist-panel", label: "Switch to artist Account" },
+//   { to: "/create_invite", label: "Create Invite" },
+//   { to: "/order", label: "My Orders" },
+//   { to: "/support", label: "Support" },
+// ];
 
 const mobile_links = [
   { path: "/", label: "Home" },
@@ -68,6 +69,9 @@ const NavBar = () => {
   const [email, setEmail] = useState("");
   const navigate = useNavigate();
 
+  const isArtist = useAppSelector((state) => state.user.isArtist);
+  console.log("hey is this is a ", isArtist);
+
   useEffect(() => {
     const storedUserName = localStorage.getItem("userName");
     const storedEmail = localStorage.getItem("userEmail");
@@ -79,6 +83,16 @@ const NavBar = () => {
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
+  };
+
+  const handleProfile = () => {
+    if (isArtist) {
+      navigate("/artist-panel", { replace: true });
+      localStorage.setItem("profile", "artist");
+    } else {
+      navigate("/home", { replace: true });
+      localStorage.setItem("profile", "user");
+    }
   };
 
   const redirectToHomepage = () => {
@@ -346,16 +360,55 @@ const NavBar = () => {
                         className="text-sm"
                         aria-labelledby="dropdownInformationButton"
                       >
-                        {profile_data.map((item, index) => (
-                          <Link
-                            key={index}
-                            to={item.to}
+                        <Link
+                          to="/user_profile"
+                          className="block px-4 py-2 text-sm"
+                          onClick={() => setIsDropdownOpen(false)}
+                        >
+                          View Profile
+                        </Link>
+                        <Link
+                          to="/account_setting"
+                          className="block px-4 py-2 text-sm"
+                          onClick={() => setIsDropdownOpen(false)}
+                        >
+                          Account Settings
+                        </Link>
+                        <Link
+                          to="/wishlist"
+                          className="block px-4 py-2 text-sm"
+                          onClick={() => setIsDropdownOpen(false)}
+                        >
+                          Favourites ArtWork
+                        </Link>
+                        {isArtist ? (
+                          <button
                             className="block px-4 py-2 text-sm"
-                            onClick={() => setIsProfileDropdown(false)}
+                            onClick={handleProfile}
                           >
-                            {item.label}
-                          </Link>
-                        ))}
+                            Switch To Artist Profile
+                          </button>
+                        ) : null}
+                        <Link
+                          to="/create_invite"
+                          className="block px-4 py-2 text-sm"
+                        >
+                          Create Invite
+                        </Link>
+                        <Link
+                          to="/order"
+                          className="block px-4 py-2 text-sm"
+                          onClick={() => setIsDropdownOpen(false)}
+                        >
+                          My Orders
+                        </Link>
+                        <Link
+                          to="/support"
+                          className="block px-4 py-2 text-sm"
+                          onClick={() => setIsDropdownOpen(false)}
+                        >
+                          Support
+                        </Link>
                       </ul>
 
                       <div className="">

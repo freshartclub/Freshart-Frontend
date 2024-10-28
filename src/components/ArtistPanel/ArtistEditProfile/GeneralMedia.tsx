@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { useFieldArray, Control, RegisterOptions } from "react-hook-form";
+import { useFieldArray, Control } from "react-hook-form";
 import Header from "../../ui/Header";
 
 const GeneralMedia = ({ control }) => {
@@ -29,7 +29,11 @@ const GeneralMedia = ({ control }) => {
 
     if (files) {
       Array.from(files).forEach((file) => {
-        appendImage({ url: file });
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          appendImage({ file, dataUrl: reader.result }); // Store the data URL for preview
+        };
+        reader.readAsDataURL(file);
       });
     }
   };
@@ -38,8 +42,7 @@ const GeneralMedia = ({ control }) => {
     const file = event.target.files?.[0];
 
     if (file) {
-      const videoUrl = file;
-      appendVideo({ url: videoUrl });
+      appendVideo({ file }); // Append the whole file object
     }
   };
 
@@ -59,7 +62,7 @@ const GeneralMedia = ({ control }) => {
     <div className="p-6 mt-6 bg-white rounded-lg shadow-md">
       <Header
         variant={{ theme: "dark", weight: "bold" }}
-        className="text-xl mb-2 "
+        className="text-xl mb-2"
       >
         Media
       </Header>
@@ -75,7 +78,7 @@ const GeneralMedia = ({ control }) => {
           {imageFields.map((image, index) => (
             <div key={image.id} className="relative w-24 h-24">
               <img
-                src={image.url}
+                src={image.dataUrl} // Use the data URL for preview
                 alt={`upload-${index}`}
                 className="w-full h-full object-cover rounded-md"
               />
@@ -124,9 +127,9 @@ const GeneralMedia = ({ control }) => {
           {videoFields.map((video, index) => (
             <div key={video.id} className="relative w-full h-64">
               <video
-                src={video.url}
                 controls
                 className="w-full h-full object-cover rounded-md"
+                src={URL.createObjectURL(video.file)} // This is needed for video preview
               />
               <button
                 className="absolute top-0 right-0 w-6 h-6 rounded-xl gap-1 bg-[#CFE7DC]"

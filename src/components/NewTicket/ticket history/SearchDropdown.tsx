@@ -59,11 +59,12 @@ const SearchDropdown: FC<SearchDropdownProps> = ({
           <option value="New Tickets">This Month</option>
         </select>
 
-         <Link to='/new_ticket'>
-         <button className="text-white bg-black p-4 rounded-md flex justify-center items-center gap-1 w-full sm:w-auto">
-          <img className="bg-[#102030]" src={new_Ticket} alt="New Ticket" />
-          New Ticket
-        </button></Link>
+        <Link to="/new_ticket">
+          <button className="text-white bg-black p-4 rounded-md flex justify-center items-center gap-1 w-full sm:w-auto">
+            <img className="bg-[#102030]" src={new_Ticket} alt="New Ticket" />
+            New Ticket
+          </button>
+        </Link>
       </div>
     </div>
   );

@@ -14,6 +14,9 @@ import store from "../../assets/Storefront.png";
 import arrow from "../../assets/arrow.png";
 import call from "../../assets/PhoneCall.png";
 import msg from "../../assets/ChatCircleDots.png";
+import { FaWhatsapp } from "react-icons/fa";
+import { BsFillTicketPerforatedFill } from "react-icons/bs";
+import { Link, useNavigate } from "react-router-dom";
 
 const assist_Data = [
   {
@@ -51,6 +54,13 @@ const assist_Data = [
 ];
 
 const Support = () => {
+  const navigate = useNavigate();
+
+  const handleSubmitButton = () => {
+    navigate("/tickets");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <div>
       <div className="container mx-auto md:px-6 px-3">
@@ -204,21 +214,17 @@ const Support = () => {
             </Header>
           </div>
 
-          <div className="grid md:grid-cols-2 grid-cols-1 justify-between gap-10">
+          <div className="grid md:grid-cols-2 grid-cols-1 justify-between gap-10 ">
             <div className="flex flex-col md:flex-row bg-white py-8 pl-8">
-              <div className="bg-[#919EAB] w-[120px] h-[80px] p-2 flex items-center justify-center mr-5">
-                <img
-                  src={call}
-                  alt="call icons"
-                  className="w-[48px] h-[48px] "
-                />
+              <div className="bg-[#d1dde9] w-[120px] h-[80px] p-2 flex items-center justify-center mr-5">
+                <BsFillTicketPerforatedFill size="3em" />
               </div>
               <div>
                 <Header
                   variant={{ size: "xl", theme: "dark", weight: "semiBold" }}
                   className="mb-3"
                 >
-                  Call us now
+                  Submit a ticket
                 </Header>
                 <P
                   variant={{ size: "md", theme: "dark", weight: "normal" }}
@@ -227,13 +233,9 @@ const Support = () => {
                   we are available online from 9:00 AM to 5:00 PM (GMT95:45)
                   Talk with use now
                 </P>
-                <P
-                  variant={{ weight: "semiBold", theme: "dark", size: "md" }}
-                  className="mb-3"
-                >
-                  +1-202-555-0126
-                </P>
+
                 <Button
+                  onClick={handleSubmitButton}
                   variant={{
                     fontSize: "base",
                     fontWeight: "500",
@@ -241,22 +243,22 @@ const Support = () => {
                   }}
                   className="uppercase flex mt-8"
                 >
-                  Call now
+                  Submit ticket
                   <img src={arrow} alt="arrow" className="mt-1 ml-2" />
                 </Button>
               </div>
             </div>
 
             <div className="flex flex-col md:flex-row bg-white py-8 pl-8">
-              <div className="bg-[#FFE1E9] w-[120px] h-[80px] p-2  flex items-center justify-center mr-5">
-                <img src={msg} alt="call icons" className="w-[48px] h-[48px]" />
+              <div className="bg-green-100 w-[120px] h-[80px] p-2  flex items-center justify-center mr-5">
+                <FaWhatsapp size="3em" color="green" />
               </div>
               <div>
                 <Header
                   variant={{ size: "xl", theme: "dark", weight: "semiBold" }}
                   className="mb-3"
                 >
-                  Chat with us
+                  Chat with us on Whatsapp
                 </Header>
                 <P
                   variant={{ size: "md", theme: "dark", weight: "normal" }}
@@ -265,21 +267,26 @@ const Support = () => {
                   we are available online from 9:00 AM to 5:00 PM (GMT95:45)
                   Talk with use now
                 </P>
-                <P
+                {/* <P
                   variant={{ weight: "semiBold", theme: "dark", size: "md" }}
                   className="mb-3"
                 >
                   Support@clicon.com
-                </P>
+                </P> */}
                 <Button
                   variant={{ fontSize: "base", fontWeight: "500" }}
                   className="uppercase flex bg-[#FF536B] text-white mt-8"
                 >
-                  Contact Us
+                  Start Chat
                   <img src={arrow} alt="arrow" className="mt-1 ml-2" />
                 </Button>
               </div>
             </div>
+          </div>
+          <div className="flex items-center justify-center py-5">
+            <Link className="text-red-400 font-medium text-center underline">
+              See Recent Ticket History
+            </Link>
           </div>
         </div>
       </div>

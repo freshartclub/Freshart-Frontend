@@ -6,8 +6,8 @@ import P from "../ui/P";
 import { useRef } from "react";
 
 import { useNavigate } from "react-router-dom";
-import { ARTTIST_ENDPOINTS } from "../../http/apiEndPoints/Artist";
-import axiosInstance from "../utils/axios";
+
+import useGetPostArtistTicketMutation from "./ticket history/http/usePostTicket";
 
 const NewTicket = () => {
   const validationSchema = Yup.object({
@@ -32,23 +32,13 @@ const NewTicket = () => {
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();
+  const { mutate, isPending } = useGetPostArtistTicketMutation();
   const onSubmit = async (values: object) => {
+    console.log(values);
     try {
-      const response = await axiosInstance.post(
-        `${ARTTIST_ENDPOINTS.RaiseTicket}`,
-        values,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      navigate("/tickets");
-      return response;
+      mutate(values);
     } catch (error) {
-      console.error("Error while creating the ticket:", error);
-
-      throw error;
+      console.error(error);
     }
   };
 
@@ -232,25 +222,25 @@ const NewTicket = () => {
                             setFieldValue("ticketImg", file);
                           }
                         }}
-                        className="hidden"
+                        className=""
                       />
 
-                      <Button
-                        type="button"
+                      {/* <span
+                        // type="button"
                         onClick={() => {
                           if (fileInputRef.current) {
                             fileInputRef.current.click();
                           }
                         }}
-                        variant={{
-                          fontSize: "md",
-                          thickness: "thick",
-                          fontWeight: "600",
-                        }}
-                        className="border-2 border-[#E30077] text-[#E30077] rounded-2xl "
+                        // variant={{
+                        //   fontSize: "md",
+                        //   thickness: "thick",
+                        //   fontWeight: "600",
+                        // }}
+                        className="border-2 border-[#E30077] text-[#E30077] rounded-2xl py-3 px-3 "
                       >
                         Browse File
-                      </Button>
+                      </span> */}
                       <ErrorMessage
                         name="ticketImg"
                         component="div"
@@ -270,7 +260,7 @@ const NewTicket = () => {
                     }}
                     className=" text-white py-2 px-10 rounded mr-4"
                   >
-                    Submit
+                    {isPending ? "Loading..." : "Submit"}
                   </Button>
 
                   <Button

@@ -1,5 +1,5 @@
 // src/App.tsx
-import React, { useState, Suspense, lazy } from "react";
+import React, { useState, Suspense, lazy, useEffect } from "react";
 import { QueryClient } from "@tanstack/react-query";
 import { Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
@@ -21,9 +21,12 @@ import SingleTicket from "./components/NewTicket/ticket history/ticketDetail";
 const queryClient = new QueryClient();
 
 // Lazy loading the components
-const GetStarted = lazy(() => import("./components/GetStarted/GetStarted"));
-const LoginPage = lazy(() => import("./components/pages/Login"));
-const HomePage = lazy(() => import("./components/HomePage/HomePage"));
+import GetStarted from "./components/GetStarted/GetStarted";
+import LoginPage from "./components/pages/Login";
+import HomePage from "./components/HomePage/HomePage";
+import { useAppSelector } from "./store/typedReduxHooks";
+import ArtistGuard from "./components/ArtistGuard";
+import NotFoundPage from "./components/pages/NotFoundPage";
 const SignUp = lazy(() => import("./components/pages/SignUp"));
 const ForgetPassword = lazy(() => import("./components/pages/ForgetPassword"));
 const ChangePassword = lazy(() => import("./components/pages/ChangePassword"));
@@ -99,9 +102,11 @@ const SignUpOtp = lazy(() => import("./components/pages/SignUpOtp"));
 
 const App: React.FC = () => {
   setup();
+  const { isLoading } = useCheckIsAuthorized();
   const [isAuthenticated] = useState<boolean>(false);
-
-  useCheckIsAuthorized();
+  const data = useAppSelector((state) => state.user.user);
+  console.log(data);
+  if (isLoading) return <Loader />;
 
   return (
     <AuthProvider>
@@ -118,12 +123,15 @@ const App: React.FC = () => {
             <Route path="/sign-up-otp" element={<SignUpOtp />} />
             <Route path="/terms" element={<TermAndCondition />} />
             <Route path="/become_artist" element={<BecomeArtist />} />
+            <Route path="*" element={<NotFoundPage />} />
 
             <Route
               path="/artist-panel/*"
               element={
                 <AuthGuard>
-                  <ArtistPanel />{" "}
+                  <ArtistGuard>
+                    <ArtistPanel />
+                  </ArtistGuard>
                 </AuthGuard>
               }
             />

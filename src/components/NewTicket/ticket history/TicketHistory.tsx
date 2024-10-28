@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import SearchDropdown from "../ticket history/SearchDropdown";
 import axiosInstance from "../../utils/axios";
@@ -7,6 +6,7 @@ import newTicket from "../ticket history/assets/newTicket.png";
 import onGoingTicket from "../ticket history/assets/on-going.png";
 import Resolved from "../ticket history/assets//resolved.png";
 import TicketsList from "./TicketList";
+import { useGetTicket } from "./http/useGetTicket";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -25,27 +25,9 @@ const TicketHistory: React.FC = () => {
   const [ticketsdata, setTickets] = useState<any[]>([]);
   const [totalPages, setTotalPages] = useState<number>(0);
 
-  const ticketsPerPage =10; 
+  const ticketsPerPage = 10;
 
- 
-
-  const getTicketList = async () => {
-    try {
-      const response = await axiosInstance.get(
-        `http://localhost:5000/api/artist/tickets?search=${encodeURIComponent(searchQuery)}&page=${currentPage}&limit=${ticketsPerPage}`
-      );
-      console.log("API Response:", response.data); 
-      setTickets(response.data.data); 
-      setTotalPages(response.data.pagination.totalPages); 
-      console.log("Tickets State:", response.data.data); 
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  useEffect(() => {
-    getTicketList();
-  }, [searchQuery, currentPage]);
+  const { data, isLoading } = useGetTicket();
 
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
@@ -55,7 +37,7 @@ const TicketHistory: React.FC = () => {
 
   const handleSearch = (query: string) => {
     setSearchQuery(query.trim());
-    setCurrentPage(1); 
+    setCurrentPage(1);
   };
 
   const [activeTab, setActiveTab] = useState("all");
@@ -75,7 +57,6 @@ const TicketHistory: React.FC = () => {
       />
 
       <div className="sm:mx-6">
-
         <div
           className="mb-4 md:mt-4 flex flex-col md:flex-row items-start md:items-center border-b gap-4"
           style={{ borderColor: "#8080807a" }}
@@ -133,25 +114,23 @@ const TicketHistory: React.FC = () => {
                 role="tab"
                 aria-selected={activeTab === "Resolved"}
               >
-              Resolved
+                Resolved
               </button>
             </li>
-            
           </ul>
         </div>
 
         <div>
           <TabPanel activeTab={activeTab} tabKey="all">
-
             <TicketsList
-              tickets={ticketsdata}
+              tickets={data}
+              isLoading={isLoading}
               searchQuery={searchQuery}
               currentPage={currentPage}
               totalPages={totalPages}
               onPageChange={handlePageChange}
             />
           </TabPanel>
-          
         </div>
       </div>
     </div>

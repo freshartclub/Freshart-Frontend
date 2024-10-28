@@ -5,18 +5,30 @@ import axiosInstance from "../../components/utils/axios";
 import toast from "react-hot-toast";
 import { AUTH_ENDPOINTS } from "../apiEndPoints/Auth";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { removeUser } from "../../store/userSlice/userSlice";
-import { useAppDispatch } from "../../store/typedReduxHooks";
+import {
+  removeUser,
+  setIsArtist,
+  setIsAuthorized,
+} from "../../store/userSlice/userSlice";
+import { useAppDispatch, useAppSelector } from "../../store/typedReduxHooks";
 
 let toastId: any;
 
 async function logOut(input: any) {
-  return await axiosInstance.post(AUTH_ENDPOINTS.LogOut, input);
+  const token = localStorage.getItem("auth_token");
+  console.log(input);
+  return await axiosInstance.patch(AUTH_ENDPOINTS.LogOut, {
+    headers: {
+      authorization: `Bearer ${token}`,
+    },
+  });
 }
-const useLogOutMuttion = () => {
+const useLogOutMutation = () => {
   // const [searchParam,setSearchParam] = useSearchParams();
 
   // const id = searchParam.get('id');
+  console.log("hey");
+  const isAuthorized = useAppSelector((state) => state.user.isArtist);
 
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -24,13 +36,23 @@ const useLogOutMuttion = () => {
   return useMutation({
     mutationFn: logOut,
 
-    onSuccess: async (res, input) => {
-      console.log(res.data.id);
+    onSuccess: async (res) => {
+      console.log("hey");
+      dispatch(setIsAuthorized(false));
+      console.log("before", isAuthorized);
+
+      dispatch(setIsArtist(false));
+
+      console.log("after", isAuthorized);
+
       toast.dismiss(toastId);
       toast.success(res.data.message);
+
       dispatch(removeUser());
+
       localStorage.removeItem("auth_token");
-      navigate("/login");
+
+      navigate("/login", { replace: true });
     },
     onError: (res) => {
       toast.error(res.response.data.message);
@@ -38,4 +60,4 @@ const useLogOutMuttion = () => {
   });
 };
 
-export default useLogOutMuttion;
+export default useLogOutMutation;

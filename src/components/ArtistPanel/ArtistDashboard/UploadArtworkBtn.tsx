@@ -1,5 +1,5 @@
 import { GoPlus } from "react-icons/go";
-import { NavLink, useNavigate, useNavigationType } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 const UploadArtworkBtn = ({ path }: any) => {
   const navigate = useNavigate();
 

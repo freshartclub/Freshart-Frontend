@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import loginImage from "../../assets/login.png";
 import arrow from "../../assets/arrow.png";
@@ -13,6 +13,7 @@ import eye from "../../assets/view.png";
 import eyeclose from "../../assets/hidden.png";
 import { CommonValidation } from "../ui/CommonValidation";
 import useSignInMutation from "../../http/auth/useSignInMutation";
+import { useAppSelector } from "../../store/typedReduxHooks";
 
 const Login: React.FC = () => {
   const [newPasswordIcon, setNewPasswordIcon] = React.useState(eyeclose);
@@ -26,8 +27,10 @@ const Login: React.FC = () => {
   } = useForm();
 
   const handleNewPasswordToggle = () => {
-    setNewPasswordType(prevType => (prevType === "password" ? "text" : "password"));
-    setNewPasswordIcon(prevIcon => (prevIcon === eyeclose ? eye : eyeclose));
+    setNewPasswordType((prevType) =>
+      prevType === "password" ? "text" : "password"
+    );
+    setNewPasswordIcon((prevIcon) => (prevIcon === eyeclose ? eye : eyeclose));
   };
 
   const onSubmit = handleSubmit(async (data) => {
@@ -38,7 +41,6 @@ const Login: React.FC = () => {
       console.error(error.message);
     }
   });
- 
 
   return (
     <div className="container mx-auto md:px-6 px-3">
@@ -58,11 +60,23 @@ const Login: React.FC = () => {
             <div className="my-5">
               <input
                 type="email"
-                {...register("email", { required: "Email is required", pattern: { value: /^[^@ ]+@[^@ ]+\.[^@ .]+$/, message: "Email is not valid" } })}
+                {...register("email", {
+                  required: "Email is required",
+                  pattern: {
+                    value: /^[^@ ]+@[^@ ]+\.[^@ .]+$/,
+                    message: "Email is not valid",
+                  },
+                })}
                 placeholder="Email or phone number"
-                className={`border ${errors.email ? "border-red-500" : "border-[#D3D3D3]"} p-2 w-full rounded-md focus:outline-none`}
+                className={`border ${
+                  errors.email ? "border-red-500" : "border-[#D3D3D3]"
+                } p-2 w-full rounded-md focus:outline-none`}
               />
-              {errors.email && <div className="text-red-500 text-sm text-left">{errors.email.message}</div>}
+              {errors.email && (
+                <div className="text-red-500 text-sm text-left">
+                  {errors.email.message}
+                </div>
+              )}
             </div>
 
             <div className="flex">
@@ -70,7 +84,9 @@ const Login: React.FC = () => {
                 type={newPasswordType}
                 {...register("password", { required: "Password is required" })}
                 placeholder="Password"
-                className={`border ${errors.password ? "border-red-500" : "border-[#D3D3D3]"} p-2 w-full rounded-md focus:outline-none`}
+                className={`border ${
+                  errors.password ? "border-red-500" : "border-[#D3D3D3]"
+                } p-2 w-full rounded-md focus:outline-none`}
               />
               <img
                 src={newPasswordIcon}
@@ -79,7 +95,11 @@ const Login: React.FC = () => {
                 onClick={handleNewPasswordToggle}
               />
             </div>
-            {errors.password && <div className="text-red-500 text-sm text-left">{errors.password.message}</div>}
+            {errors.password && (
+              <div className="text-red-500 text-sm text-left">
+                {errors.password.message}
+              </div>
+            )}
 
             <div className="my-5">
               <Button
@@ -94,7 +114,7 @@ const Login: React.FC = () => {
                 type="submit"
                 disabled={isPending}
               >
-                <p>{isPending ? 'Signing in...' : 'Sign in'}</p>
+                <p>{isPending ? "Signing in..." : "Sign in"}</p>
                 <img src={arrow} alt="arrow" className="ml-2 mt-1" />
               </Button>
             </div>

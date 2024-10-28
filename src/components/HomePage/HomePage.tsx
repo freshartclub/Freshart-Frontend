@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import useCheckIsAuthorized from "../../http/auth/useGetAuhtorizedUser";
 import ArtistPortfolio from "./ArtistPortfolio";
 import ArtWork from "./ArtWork";

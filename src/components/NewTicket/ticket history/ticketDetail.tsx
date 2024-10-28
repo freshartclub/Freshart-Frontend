@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axiosInstance from "../../utils/axios";
 import artistImg from "../ticket history/assets/People.png";
+import { ARTTIST_ENDPOINTS } from "../../../http/apiEndPoints/Artist";
+import { useAppSelector } from "../../../store/typedReduxHooks";
 
 interface Ticket {
   ticketId: string;
@@ -12,16 +14,18 @@ interface Ticket {
 }
 
 const SingleTicket = () => {
-  const { id } = useParams();  
-  const [ticket, setTicket] = useState<Ticket | null>(null); 
+  const { id } = useParams();
+
+  const [ticket, setTicket] = useState<Ticket | null>(null);
+  const user = useAppSelector((state) => state.user.user);
 
   const getTicketDetail = async () => {
     try {
       const response = await axiosInstance.get(
-        `http://localhost:5000/api/artist/ticket/${id}`
+        `${ARTTIST_ENDPOINTS.GetArtistTicketsDetails}/${id}`
       );
       console.log("API Response:", response.data);
-      setTicket(response.data.data);  
+      setTicket(response.data.data);
     } catch (error) {
       console.error("Error fetching ticket:", error);
     }
@@ -32,7 +36,7 @@ const SingleTicket = () => {
   }, [id]);
 
   if (!ticket) {
-    return <div>Loading...</div>;  
+    return <div>Loading...</div>;
   }
 
   return (
@@ -40,9 +44,7 @@ const SingleTicket = () => {
       <div className="flex justify-between items-center w-full p-2">
         <div className="flex items-center gap-2">
           <span className="w-2.5 h-2.5 bg-[#F8A53499] rounded-full"></span>
-          <span className="font-semibold text-gray-800">
-            {ticket.ticketId}
-          </span>
+          <span className="font-semibold text-gray-800">{ticket.ticketId}</span>
           <span className="text-[#84818A]">({ticket.ticketType})</span>
         </div>
 
@@ -61,7 +63,7 @@ const SingleTicket = () => {
 
       <div className="flex items-center gap-3">
         <img src={artistImg} alt="People" className="w-10 h-10 object-cover" />
-        <span className="text-[#84818A] font-semibold">testname</span>
+        <span className="text-[#84818A] font-semibold">{user.artistName}</span>
       </div>
 
       <div className="mt-10">

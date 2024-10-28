@@ -71,51 +71,35 @@ const GeneralForm = () => {
   const onSubmit = (data) => {
     console.log("Form Data:", data);
 
+    return;
+
     const formData = new FormData();
 
     Object.keys(data).forEach((key) => {
-      if (key !== "images" && key !== "videos" && key !== "cvEntries") {
+      if (Array.isArray(data[key])) {
+        data[key].forEach((item) => {
+          formData.append(key, JSON.stringify(item)); // Serialize each item as JSON
+        });
+      } else {
         formData.append(key, data[key]);
       }
     });
 
-    if (data.images && Array.isArray(data.images)) {
-      data.images.forEach((image, index) => {
-        // Ensure you append valid string or Blob data
-        if (typeof image === "object" && image.url) {
-          formData.append(`images[${index}]`, image.url); // Use URL or convert object to string if necessary
-        }
-      });
-    }
+    // if (data.images && Array.isArray(data.images)) {
+    //   data.images.forEach((image, index) => {
+    //     if (typeof image === "object" && image.url) {
+    //       formData.append(`images[${index}]`, image.url);
+    //     }
+    //   });
+    // }
 
-    if (data.videos && Array.isArray(data.videos)) {
-      data.videos.forEach((video, index) => {
-        // Similarly handle videos array
-        if (typeof video === "object" && video.url) {
-          formData.append(`videos[${index}]`, video.url);
-        }
-      });
-    }
-
-    if (data.cvEntries && Array.isArray(data.cvEntries)) {
-      data.cvEntries.forEach((cv, index) => {
-        // Convert the whole cv object to a JSON string
-
-        formData.append(`cvEntries[${index}]`, JSON.stringify(cv));
-      });
-    }
-
-    if (data.accounts && Array.isArray(data.accounts)) {
-      data.accounts.forEach((account, index) => {
-        if (account.socialMedia && account.website) {
-          formData.append(
-            `accounts[${index}].socialMedia`,
-            account.socialMedia
-          );
-          formData.append(`accounts[${index}].website`, account.website);
-        }
-      });
-    }
+    // if (data.videos && Array.isArray(data.videos)) {
+    //   data.videos.forEach((video, index) => {
+    //     if (typeof video === "object" && video.url) {
+    //       formData.append(`videos[${index}]`, video.url);
+    //     }
+    //   });
+    // }
 
     for (let [key, value] of formData.entries()) {
       console.log(`${key}:`, value);
@@ -134,7 +118,6 @@ const GeneralForm = () => {
         <Loader />
       ) : (
         <div className="w-[70%] flex shadow-lg justify-center items-center">
-          {/* Child Container with Border */}
           <div className="rounded-md w-full bg-white">
             <div className="xl:p-4 lg:p-3 md:p-4 p-3 w-full">
               <form onSubmit={handleSubmit(onSubmit)}>

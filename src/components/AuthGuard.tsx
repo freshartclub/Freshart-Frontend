@@ -7,7 +7,7 @@ interface AuthGuardProps {
 }
 
 const AuthGuard = ({ children }: AuthGuardProps) => {
-  console.log(children);
+  
   const isAuthorized = useAppSelector((state) => state.user.isAuthorized);
   console.log(isAuthorized);
 

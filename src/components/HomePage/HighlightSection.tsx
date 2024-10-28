@@ -8,38 +8,38 @@ import "../../App.css";
 import like from "../../assets/like.png";
 import { useNavigate } from "react-router-dom";
 
-const highlightData = [
-  {
-    image: img1,
-    title: "Illustrator, painting",
-    heading: "Nineteenth-Century Pastel Portraits",
-    para: "Andrews meson",
-    size: "70 x 32 ",
-  },
-  {
-    image: img2,
-    title: "Illustrator, painting",
-    heading: "Nineteenth-Century Pastel Portraits",
-    para: "Andrews meson",
-    size: "70 x 32 ",
-  },
-  {
-    image: img3,
-    title: "Illustrator, painting",
-    heading: "Nineteenth-Century Pastel Portraits",
-    para: "Andrews meson",
-    size: "70 x 32 ",
-  },
-  {
-    image: img2,
-    title: "Illustrator, painting",
-    heading: "Nineteenth-Century Pastel Portraits",
-    para: "Andrews meson",
-    size: "70 x 32 ",
-  },
-];
-
 const HighlightSection = () => {
+  const highlightData = [
+    {
+      image: img1,
+      title: "Illustrator, painting",
+      heading: "Nineteenth-Century Pastel Portraits",
+      para: "Andrews meson",
+      size: "70 x 32 ",
+    },
+    {
+      image: img2,
+      title: "Illustrator, painting",
+      heading: "Nineteenth-Century Pastel Portraits",
+      para: "Andrews meson",
+      size: "70 x 32 ",
+    },
+    {
+      image: img3,
+      title: "Illustrator, painting",
+      heading: "Nineteenth-Century Pastel Portraits",
+      para: "Andrews meson",
+      size: "70 x 32 ",
+    },
+    {
+      image: img2,
+      title: "Illustrator, painting",
+      heading: "Nineteenth-Century Pastel Portraits",
+      para: "Andrews meson",
+      size: "70 x 32 ",
+    },
+  ];
+
   const settings = {
     dots: true,
     infinite: true,

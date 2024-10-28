@@ -6,12 +6,18 @@ interface UserState {
   user: any;
   isAuthorized: boolean;
   userId: string;
+  isArtist: boolean;
+  profile: string;
+  ticket: any;
 }
 
 const initialState: UserState = {
   user: null,
   isAuthorized: false,
   userId: "",
+  isArtist: false,
+  profile: "user",
+  ticket: null,
 };
 
 export const userSlice = createSlice({
@@ -31,10 +37,26 @@ export const userSlice = createSlice({
     setIsAuthorized: (state, action: PayloadAction<boolean>) => {
       state.isAuthorized = action.payload;
     },
+    setIsArtist: (state, action: PayloadAction<boolean>) => {
+      state.isArtist = action.payload;
+    },
+    setProfile: (state, action: PayloadAction<any>) => {
+      state.profile = action.payload;
+    },
+    setTicket: (state, action: PayloadAction<any>) => {
+      state.ticket = action.payload;
+    },
   },
 });
 
-export const { updateUser, setIsAuthorized, removeUser, forgotPasswordUserId } =
-  userSlice.actions;
+export const {
+  updateUser,
+  setIsAuthorized,
+  removeUser,
+  forgotPasswordUserId,
+  setIsArtist,
+  setProfile,
+  setTicket,
+} = userSlice.actions;
 
 export const userReducer = userSlice.reducer;
