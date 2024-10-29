@@ -20,9 +20,7 @@ const UserProfile = () => {
           <li>
             <Link to="/" className="rounded-md transition-all flex">
               <img
-                src={`${import.meta.env.VITE_SERVER_URL}/uploads/users/${
-                  user?.avatar
-                }`}
+                src={home}
                 alt="Home icon"
                 className="w-[14px] h-[14px] mr-2"
               />
@@ -48,7 +46,7 @@ const UserProfile = () => {
         </ul>
 
         <div className="flex md:flex-row flex-col w-full xl:gap-10 lg:gap-5 gap-5">
-          <UserImage avatar={user?.avatar} />
+          <UserImage user={user} />
           <UserDescription user={user} />
         </div>
       </div>

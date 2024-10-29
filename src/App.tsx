@@ -27,6 +27,7 @@ import HomePage from "./components/HomePage/HomePage";
 import { useAppSelector } from "./store/typedReduxHooks";
 import ArtistGuard from "./components/ArtistGuard";
 import NotFoundPage from "./components/pages/NotFoundPage";
+import ArtworkDetails from "./components/ArtistPanel/Artwork/artworkDetails/ArtworkDetails";
 const SignUp = lazy(() => import("./components/pages/SignUp"));
 const ForgetPassword = lazy(() => import("./components/pages/ForgetPassword"));
 const ChangePassword = lazy(() => import("./components/pages/ChangePassword"));
@@ -392,6 +393,14 @@ const App: React.FC = () => {
               element={
                 <AuthGuard>
                   <ArtworkGroup />
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/artwork-details"
+              element={
+                <AuthGuard>
+                  <ArtworkDetails />
                 </AuthGuard>
               }
             />
