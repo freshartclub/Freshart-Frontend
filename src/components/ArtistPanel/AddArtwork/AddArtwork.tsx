@@ -20,8 +20,8 @@ import {
   shipping_inventry,
 } from "../../utils/mockData";
 import Select from "react-select";
-import image_icon from "../assets/Avatar.png";
-import video_icon from "../assets/Avatar.png";
+import image_icon from "../../../assets/image_icon.png";
+import video_icon from "../../../assets/video_icon.png";
 import * as Yup from "yup";
 import axiosInstance from "../../utils/axios";
 
@@ -660,7 +660,7 @@ const AddArtwork = () => {
                             </div>
                           ) : (
                             <img
-                              src={image_icon}
+                              src={video_icon}
                               alt="icon"
                               className="w-28 max-h-28 min-h-28 object-cover mb-4"
                             />
@@ -731,7 +731,7 @@ const AddArtwork = () => {
                             ))
                           ) : (
                             <img
-                              src={image_icon}
+                              src={video_icon}
                               alt="icon"
                               className="w-28 max-h-28 min-h-28 object-cover mb-4"
                             />
