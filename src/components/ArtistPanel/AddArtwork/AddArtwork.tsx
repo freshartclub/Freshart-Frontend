@@ -38,45 +38,89 @@ const AddArtwork = () => {
   //   message: Yup.string().required("Message is required"),
   // });
 
-  const [mainPhoto, setMainPhoto] = useState(null);
-  const [backPhoto, setBackPhoto] = useState(null);
-  const [inProcessPhotos, setInProcessPhotos] = useState(null);
-  const [detailPhotos, setDetailPhotos] = useState([]);
+  const [mainImage, setMainImage] = useState(null);
+  const [backImage, setBackImage] = useState(null);
+  const [inProcessImage, setInProcessImage] = useState(null);
+  const [images, setImages] = useState([]);
   const [mainVideo, setMainVideo] = useState(null);
   const [otherVideos, setOtherVideos] = useState([]);
 
   const initialValues = {
     artworkName: "",
-    artistname: "",
+
+    artistName: "",
+    artworkCreationYear: "",
+    artworkSeries: "",
     productDescription: "",
+    mainImage: "",
+    backImage: "",
+    inProcessImage: "",
+    images: [],
+    mainVideo: "",
+    otherVideo: "",
+    artworkTechnic: "",
+    artworkTheme: "",
+    artworkOrientation: "",
+    material: "",
+    offensive: "",
+    weight: "",
+    lenght: "",
+    height: "",
+    width: "",
+    emotions: [],
     basePrice: "",
     discounttype: "",
-    discounpercentage: "",
+
+    discountAcceptation: "",
+
     textclass: "",
-    vatamount: "",
+    vatAmount: "",
     sku: "",
+    pCode: "",
+    location: "",
+
     barcode: "",
-    artworkstyle: "",
-    artworkstyle2: "",
-    artwortheme: "",
-    artworkTechnic: "",
-    ArtworkTheme: "",
-    ArtworkOrientaion: "",
-    HangingAvailable: "",
-    ShortDescription: "",
-    FarmedDescription: "",
-    ArtworkStyle: "",
-    framedHeight: "",
-    framedLenght: "",
-    framedWidth: "",
-    packageDimensionsWeight: "",
-    packageDimensionsheight: "",
-    packageDimensionslenght: "",
-    packageDimensionswidth: "",
-    artworkOrientationWeight: "",
-    artworkOrientationheight: "",
-    artworkOrientationlenght: "",
-    artworkOrientationwidth: "",
+
+    // artworkstyle: "",
+
+    // artworkTheme: "",
+
+    hangingAvailable: "",
+
+    framedDescription: "",
+    framed: "",
+    frameHeight: "",
+    frameLenght: "",
+    frameWidth: "",
+
+    artworkStyle: [],
+    colors: [],
+    purchaseCatalog: "",
+    artistFees: "",
+    downwardOffer: "",
+    upworkOffer: "",
+    acceptOfferPrice: "",
+    priceRequest: "",
+
+    dpersentage: "",
+
+    // frameHeight: "",
+    // framedLenght: "",
+    // framedWidth: "",
+    // packageDimensionsWeight: "",
+    // packageDimensionsheight: "",
+    // packageDimensionslenght: "",
+    // packageDimensionswidth: "",
+    // artworkOrientationWeight: "",
+    // artworkOrientationheight: "",
+    // artworkOrientationlenght: "",
+    // artworkOrientationwidth: "",
+
+    artworkDiscipline: "",
+    artworkTags: [],
+    promotion: "",
+    promotionScore: "",
+
     productcategory: "",
     producttags: "",
     Fieldlocation: "",
@@ -97,10 +141,12 @@ const AddArtwork = () => {
   };
 
   const onSubmit = async (values: any) => {
-    values.profileImage = mainPhoto;
-    values.backImage = backPhoto;
-    values.inProcessImage = inProcessPhotos;
-    values.additionalImage = detailPhotos;
+    console.log("onSubmit", values);
+
+    values.mainImage = mainImage;
+    values.backImage = backImage;
+    values.inProcessImage = inProcessImage;
+    values.additionalImage = images;
     values.mainVideo = mainVideo;
     values.otherVideo = otherVideos;
 
@@ -115,8 +161,6 @@ const AddArtwork = () => {
         formData.append(key, values[key]);
       }
     });
-
-    console.log("values==============", values);
 
     const response = await axiosInstance.post(
       "/api/artist/add-artwork",
@@ -133,13 +177,13 @@ const AddArtwork = () => {
 
   const removeImage = (name: string, index: number) => {
     if (name === "mainPhoto") {
-      setMainPhoto(null);
+      setMainImage(null);
     } else if (name === "backPhoto") {
-      setBackPhoto(null);
+      setBackImage(null);
     } else if (name === "inProcessPhotos") {
-      setInProcessPhotos(null);
+      setInProcessImage(null);
     } else if (name === "detailPhotos") {
-      setDetailPhotos(detailPhotos.filter((_, i) => i !== index));
+      setImages(detailPhotos.filter((_, i) => i !== index));
     } else if (name === "mainvideo") {
       setMainVideo(null);
     } else if (name === "otherVideos") {
@@ -224,14 +268,14 @@ const AddArtwork = () => {
                     </label>
                     <Field
                       type="text"
-                      name="artistname"
-                      id="artistname"
+                      name="artistName"
+                      id="artistName"
                       placeholder="Type artist name here (if different from artist). . ."
                       className="w-full bg-[#F9F9FC] text-sm sm:text-base border border-gray-300 rounded-md p-1 sm:p-3 outline-none"
                     />
-                    {touched.artistname && errors.artistname ? (
+                    {touched.artistName && errors.artistName ? (
                       <div className="error text-red-500 mt-1 text-sm">
-                        {errors.artistname}
+                        {errors.artistName}
                       </div>
                     ) : null}
                   </div>
@@ -242,7 +286,10 @@ const AddArtwork = () => {
                         Artwork creation year
                       </label>
 
-                      <select className="w-full bg-[#F9F9FC] border border-gray-300 rounded-md p-1 sm:p-3 outline-none">
+                      <select
+                        name="artworkCreationYear"
+                        className="w-full bg-[#F9F9FC] border border-gray-300 rounded-md p-1 sm:p-3 outline-none"
+                      >
                         {yearOption.map((year, index) => (
                           <option key={index} value={year}>
                             {year.year}
@@ -266,7 +313,10 @@ const AddArtwork = () => {
                           </span>
                         </p>
                       </div>
-                      <select className="w-full bg-[#F9F9FC] border border-gray-300 rounded-md p-1 sm:p-3 outline-none">
+                      <select
+                        name="artworkSeries"
+                        className="w-full bg-[#F9F9FC] border border-gray-300 rounded-md p-1 sm:p-3 outline-none"
+                      >
                         {seriesData.map((series, index) => (
                           <option key={index} value={series}>
                             {series.series}
@@ -278,7 +328,7 @@ const AddArtwork = () => {
 
                   <>
                     <label className="block text-sm sm:text-base mb-2 font-semibold text-[#203F58]">
-                      Description
+                      Product Description
                     </label>
                     <Field
                       as="textarea"
@@ -324,20 +374,20 @@ const AddArtwork = () => {
                           type="file"
                           accept="image/*"
                           id="main-photo-input"
-                          onChange={(e) => handleFileChange(e, setMainPhoto)}
+                          onChange={(e) => handleFileChange(e, setMainImage)}
                           className="hidden"
                         />
                         <div className="bg-[#F9F9FC]  border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
-                          {mainPhoto ? (
+                          {mainImage ? (
                             <div className="relative">
                               <img
-                                src={URL.createObjectURL(mainPhoto)}
+                                src={URL.createObjectURL(mainImage)}
                                 alt="image"
                                 className="w-28 h-28 object-cover"
                               />
                               <span
                                 className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center "
-                                onClick={() => removeImage("mainPhoto", 0)}
+                                onClick={() => removeImage("mainImage", 0)}
                               >
                                 &times;
                               </span>
@@ -388,20 +438,20 @@ const AddArtwork = () => {
                           type="file"
                           accept="image/*"
                           id="back-photo-input"
-                          onChange={(e) => handleFileChange(e, setBackPhoto)}
+                          onChange={(e) => handleFileChange(e, setBackImage)}
                           className="hidden"
                         />
                         <div className="bg-[#F9F9FC]  border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
-                          {backPhoto ? (
+                          {backImage ? (
                             <div className="relative">
                               <img
-                                src={URL.createObjectURL(backPhoto)}
+                                src={URL.createObjectURL(backImage)}
                                 alt="image"
                                 className="w-28 h-28 object-cover"
                               />
                               <span
                                 className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center "
-                                onClick={() => removeImage("backPhoto", 0)}
+                                onClick={() => removeImage("backImage", 0)}
                               >
                                 &times;
                               </span>
@@ -453,23 +503,21 @@ const AddArtwork = () => {
                           accept="image/*"
                           id="inprocess-photo-input"
                           onChange={(e) =>
-                            handleFileChange(e, setInProcessPhotos)
+                            handleFileChange(e, setInProcessImage)
                           }
                           className="hidden"
                         />
                         <div className="bg-[#F9F9FC]  border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
-                          {inProcessPhotos ? (
+                          {inProcessImage ? (
                             <div className="relative">
                               <img
-                                src={URL.createObjectURL(inProcessPhotos)}
+                                src={URL.createObjectURL(inProcessImage)}
                                 alt="image"
                                 className="w-28 h-28 object-cover"
                               />
                               <span
                                 className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center "
-                                onClick={() =>
-                                  removeImage("inProcessPhotos", 0)
-                                }
+                                onClick={() => removeImage("inProcessImage", 0)}
                               >
                                 &times;
                               </span>
@@ -523,14 +571,13 @@ const AddArtwork = () => {
                           multiple
                           accept="image/*"
                           id="details-photo-input"
-                          onChange={(e) =>
-                            handleMultiFileChange(e, setDetailPhotos)
-                          }
+                          name="images"
+                          onChange={(e) => handleMultiFileChange(e, setImages)}
                           className="hidden"
                         />
                         <div className="bg-[#F9F9FC]  border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
-                          {detailPhotos && detailPhotos.length > 0 ? (
-                            detailPhotos.map((img, i) => (
+                          {images && images.length > 0 ? (
+                            images.map((img, i) => (
                               <div key={i} className="relative">
                                 <img
                                   src={URL.createObjectURL(img)}
@@ -539,9 +586,7 @@ const AddArtwork = () => {
                                 />
                                 <span
                                   className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center "
-                                  onClick={() =>
-                                    removeImage("inProcessPhotos", i)
-                                  }
+                                  onClick={() => removeImage("images", i)}
                                 >
                                   &times;
                                 </span>
@@ -752,8 +797,8 @@ const AddArtwork = () => {
                       Artwork theme
                       <Field
                         as="select"
-                        id="ArtworkTheme"
-                        name="ArtworkTheme"
+                        id="artworkTheme"
+                        name="artworkTheme"
                         className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
                       >
                         <option>Select type </option>
@@ -768,8 +813,8 @@ const AddArtwork = () => {
                     Artwork orientation
                     <Field
                       as="select"
-                      id="ArtworkOrientaion"
-                      name="ArtworkOrientaion"
+                      id="artworkOrientation"
+                      name="artworkOrientation"
                       className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
                     >
                       <option>Square </option>
@@ -785,7 +830,7 @@ const AddArtwork = () => {
                       <Field
                         as="select"
                         id="Material"
-                        name="Material"
+                        name="material"
                         className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
                       >
                         <option>Paper</option>
@@ -800,7 +845,7 @@ const AddArtwork = () => {
                       <Field
                         as="select"
                         id="Offensive"
-                        name="Offensive"
+                        name="offensive"
                         className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
                       >
                         <option>Yes </option>
@@ -831,8 +876,8 @@ const AddArtwork = () => {
                       Hanging available
                       <Field
                         as="select"
-                        id="HangingAvailable"
-                        name="HangingAvailable"
+                        id="hangingAvailable"
+                        name="hangingAvailable"
                         className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
                       >
                         <option>Yes </option>
@@ -845,7 +890,7 @@ const AddArtwork = () => {
                       <Field
                         type="text"
                         id="ShortDescription"
-                        name="ShortDescription"
+                        name="hangingDescription"
                         placeholder="Type Hanging description here. . .. . ."
                         className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full  p-1 sm:p-2.5 pb-10 "
                       ></Field>
@@ -856,7 +901,7 @@ const AddArtwork = () => {
                       <Field
                         as="select"
                         id="Farmed"
-                        name="Farmed"
+                        name="framed"
                         className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
                       >
                         <option>Yes </option>
@@ -868,8 +913,8 @@ const AddArtwork = () => {
                       Framed Description
                       <Field
                         type="text"
-                        id="FarmedDescription"
-                        name="FarmedDescription"
+                        id="framedDescription"
+                        name="framedDescription"
                         placeholder="Type Framed description here. . ."
                         className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5 pb-10 "
                       ></Field>
@@ -899,6 +944,7 @@ const AddArtwork = () => {
                         defaultValue={value}
                         placeholder="Select Artwork Style"
                         isMulti
+                        name="artworkStyle"
                         styles={{
                           dropdownIndicator: () => ({
                             color: "black",
@@ -924,6 +970,7 @@ const AddArtwork = () => {
                         defaultValue={value}
                         placeholder="Emotions"
                         isMulti
+                        name="emotions"
                         styles={{
                           dropdownIndicator: () => ({
                             color: "black",
@@ -950,6 +997,7 @@ const AddArtwork = () => {
                         defaultValue={value}
                         placeholder="Select Color"
                         isMulti
+                        name="colors"
                         styles={{
                           dropdownIndicator: () => ({
                             color: "black",
@@ -973,8 +1021,8 @@ const AddArtwork = () => {
                       Artwork Style
                       <Field
                         as="select"
-                        id="ArtworkStyle"
-                        name="ArtworkStyle"
+                        id="artworkStyle"
+                        name="artworkStyle"
                         className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
                       >
                         <option>Yes </option>
@@ -1001,15 +1049,15 @@ const AddArtwork = () => {
                   </Header>
                   <div className="space-y-2">
                     <label className="text-[#203F58] text-sm sm:text-base font-semibold ">
-                      Subscription Catalog
+                      Purchase Catalog
                       <Field
                         as="select"
                         id="textclass"
-                        name="text"
+                        name="purchaseCatalog"
                         className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
                       >
-                        <option>Catalog02 </option>
-                        <option>Catalog03</option>
+                        <option>Yes</option>
+                        <option>No</option>
                       </Field>
                     </label>
                   </div>
@@ -1019,8 +1067,8 @@ const AddArtwork = () => {
                       Artist Fees
                       <Field
                         type="text"
-                        id="Description"
-                        name="Description"
+                        id="artistFees"
+                        name="artistFees"
                         placeholder="20%"
                         className="bg-[#E0E2E7] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5 "
                       ></Field>
@@ -1032,13 +1080,54 @@ const AddArtwork = () => {
                       Downward Offer
                       <Field
                         as="select"
-                        id="textclass"
-                        name="text"
+                        id="downwardOffer"
+                        name="downwardOffer"
                         className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
                       >
                         <option>Yes</option>
                         <option>No</option>
                       </Field>
+                    </label>
+                  </div>
+                  <div className="mt-4">
+                    <label className="text-[#203F58] sm:text-base font-semibold ">
+                      Upwork Offer
+                      <Field
+                        as="select"
+                        id="upworkOffer"
+                        name="upworkOffer"
+                        placeholder="Select"
+                        className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
+                      >
+                        <option>Yes</option>
+                        <option>No</option>
+                      </Field>
+                    </label>
+                  </div>
+
+                  <div className="mt-4">
+                    <label className="text-[#203F58] sm:text-base font-semibold ">
+                      Accept Offer Price
+                      <Field
+                        type="text"
+                        id="acceptOfferPrice"
+                        name="acceptOfferPrice"
+                        placeholder="20%"
+                        className="bg-[#E0E2E7] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5 "
+                      ></Field>
+                    </label>
+                  </div>
+
+                  <div className="mt-4">
+                    <label className="text-[#203F58] sm:text-base font-semibold ">
+                      Price Request
+                      <Field
+                        type="text"
+                        id="priceRequest"
+                        name="priceRequest"
+                        placeholder="20%"
+                        className="bg-[#E0E2E7] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5 "
+                      ></Field>
                     </label>
                   </div>
                 </div>
@@ -1071,49 +1160,41 @@ const AddArtwork = () => {
                   {touched.basePrice && errors.basePrice ? (
                     <div className="error text-red-500">{errors.basePrice}</div>
                   ) : null}
-                  <label className="text-[#203F58] font-semibold  ">
-                    Discount Type
+                  <label className="text-[#203F58] text-sm sm:text-base font-semibold ">
+                    Discount Percentage
                   </label>
                   <Field
-                    as="select"
-                    id="discounttype"
-                    name="discounttype"
-                    className="bg-[#F9F9FC] mb-3 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5 "
-                  >
-                    <option>Select a discount type</option>
-                    <option>Early payment</option>
-                    <option>Percentage</option>
-                    <option>Buy one, get one free </option>
-                  </Field>
+                    type="text"
+                    name="dpersentage"
+                    id="dpersentage"
+                    placeholder="$ 00  %"
+                    value={values.dpersentage}
+                    className="bg-[#F9F9FC] border mb-3 border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full  p-1 sm:p-2.5 "
+                  />
 
                   <div className="grid md:grid-cols-2 gap-3">
                     <label className="text-[#203F58] text-sm sm:text-base  font-semibold">
-                      Tax Class
+                      Artist Base Fess
                       <Field
-                        as="select"
                         id="textclass"
                         name="textclass"
+                        placeholder="Artist Base Fess"
                         className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
-                      >
-                        <option>Select a tax class</option>
-                        <option>two</option>
-                        <option>three</option>
-                        <option>four</option>
-                      </Field>
+                      ></Field>
                     </label>
                     <label className="text-[#203F58] text-sm sm:text-base font-semibold">
                       VAT Amount (%)
                       <Field
                         type="text"
-                        id="vatamount"
-                        name="vatamount"
+                        id="vatAmount"
+                        name="vatAmount"
                         placeholder="Type VAT amount. . ."
-                        value={values.vatamount}
+                        value={values.vatAmount}
                         className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5 "
                       ></Field>
-                      {touched.vatamount && errors.vatamount ? (
+                      {touched.vatAmount && errors.vatAmount ? (
                         <div className="error text-red-500">
-                          {errors.vatamount}
+                          {errors.vatAmount}
                         </div>
                       ) : null}
                     </label>
@@ -1155,15 +1236,15 @@ const AddArtwork = () => {
                     </label>
                     <Field
                       type="text"
-                      name="sku"
-                      id="sku"
+                      name="location"
+                      id="location"
                       placeholder="India"
-                      value={values.sku}
+                      value={values.location}
                       className="bg-[#F9F9FC] border mb-2 border-gray-300 outline-none text-[#203F58] text-sm rounded-lg block w-full p-1 sm:p-2.5 "
                     />
                   </span>
 
-                  <Header
+                  {/* <Header
                     variant={{
                       size: "lg",
                       theme: "dark",
@@ -1172,9 +1253,9 @@ const AddArtwork = () => {
                     className="mb-2"
                   >
                     Package Dimensions
-                  </Header>
+                  </Header> */}
 
-                  <div className="grid grid-cols-4 gap-3">
+                  {/* <div className="grid grid-cols-4 gap-3">
                     {package_dimension.map((field) => (
                       <span key={field.name}>
                         <label className="p-1 text-[14px] text-sm sm:text-base text-[#203F58] font-semibold">
@@ -1190,7 +1271,7 @@ const AddArtwork = () => {
                         />
                       </span>
                     ))}
-                  </div>
+                  </div> */}
                 </div>
               </div>
               {/* ------------------------ */}

@@ -15,10 +15,8 @@ const TicketsList: FC<{
   isLoading: any;
   onPageChange: (page: number) => void;
 }> = ({ tickets, currentPage, totalPages, onPageChange, isLoading }) => {
-  const ticket = useAppSelector((state) => state.user.ticket);
-  console.log(ticket);
-
   const navigate = useNavigate();
+
   const handleClick = (id) => {
     navigate(`/ticket_detail/${id}`);
   };
@@ -29,10 +27,10 @@ const TicketsList: FC<{
 
   return (
     <div className="">
-      {tickets.length === 0 ? (
+      {tickets?.length === 0 ? (
         <p>No tickets available.</p>
       ) : (
-        tickets.map((ticket) => {
+        tickets?.map((ticket) => {
           let imageSrc;
           switch (ticket.status) {
             case "New Tickets":
@@ -121,7 +119,7 @@ const TicketsList: FC<{
           }`}
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          style={{ display: tickets.length === 0 ? "none" : "block" }}
+          style={{ display: tickets?.length === 0 ? "none" : "block" }}
         >
           Previous
         </button>
@@ -147,7 +145,7 @@ const TicketsList: FC<{
           }`}
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          style={{ display: tickets.length === 0 ? "none" : "block" }}
+          style={{ display: tickets?.length === 0 ? "none" : "block" }}
         >
           Next
         </button>

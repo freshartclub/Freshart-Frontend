@@ -21,7 +21,7 @@ const UserProfile = () => {
             <Link to="/" className="rounded-md transition-all flex">
               <img
                 src={`${import.meta.env.VITE_SERVER_URL}/uploads/users/${
-                  user?.media?.mainImage
+                  user?.avatar
                 }`}
                 alt="Home icon"
                 className="w-[14px] h-[14px] mr-2"

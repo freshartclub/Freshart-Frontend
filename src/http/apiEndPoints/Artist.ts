@@ -8,7 +8,7 @@ export const ARTTIST_ENDPOINTS = {
   // GetArtistArtwork: `${ARTIST_BASE_URl}/get-artist-artwork `,
   // DeleteArtwork: `${ARTIST_BASE_URl}/delete-artist-artwork `,
   // UpdateArtwork: `${ARTIST_BASE_URl}/update-artist-artwork `,
-  GetArtistTickets: `${ARTIST_BASE_URl}/get-tickets`,
+  GetArtistTickets: `${ARTIST_BASE_URl}/get-user-tickets`,
   GetArtistTicketsDetails: `${ARTIST_BASE_URl}/ticket`,
 
   GetAllArtist: `${ARTIST_BASE_URl}/get-all-artists`,

@@ -284,7 +284,10 @@ const Support = () => {
             </div>
           </div>
           <div className="flex items-center justify-center py-5">
-            <Link className="text-red-400 font-medium text-center underline">
+            <Link
+              to="/tickets"
+              className="text-red-400 font-medium text-center underline"
+            >
               See Recent Ticket History
             </Link>
           </div>

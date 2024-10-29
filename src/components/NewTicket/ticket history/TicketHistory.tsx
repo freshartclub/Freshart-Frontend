@@ -7,6 +7,7 @@ import onGoingTicket from "../ticket history/assets/on-going.png";
 import Resolved from "../ticket history/assets//resolved.png";
 import TicketsList from "./TicketList";
 import { useGetTicket } from "./http/useGetTicket";
+import { useAppSelector } from "../../../store/typedReduxHooks";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -29,6 +30,10 @@ const TicketHistory: React.FC = () => {
 
   const { data, isLoading } = useGetTicket();
 
+  console.log(data);
+  // console.log(data);
+  // const tickets = useAppSelector((state) => state.user.ticket);
+  // console.log(tickets);
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
@@ -36,9 +41,20 @@ const TicketHistory: React.FC = () => {
   };
 
   const handleSearch = (query: string) => {
+    console.log("search query", query);
     setSearchQuery(query.trim());
+    if (query) {
+      const filteredTickets = data.filter((item) =>
+        item.subject.includes(query)
+      );
+      setTickets(filteredTickets);
+      setTotalPages(Math.ceil(filteredTickets.length / ticketsPerPage));
+    }
+
     setCurrentPage(1);
   };
+
+  console.log("itmes", ticketsdata);
 
   const [activeTab, setActiveTab] = useState("all");
 
@@ -50,7 +66,7 @@ const TicketHistory: React.FC = () => {
     <div className="container mx-auto sm:px-6 px-3 mb-[3rem]">
       <h1 className="font-bold text-xl sm:p-4 py-2">Tickets</h1>
       <SearchDropdown
-        searchQuery={searchQuery.trim()}
+        searchQuery={searchQuery}
         setSearchQuery={handleSearch}
         filter={filter}
         setFilter={setFilter}
@@ -123,7 +139,7 @@ const TicketHistory: React.FC = () => {
         <div>
           <TabPanel activeTab={activeTab} tabKey="all">
             <TicketsList
-              tickets={data}
+              tickets={searchQuery ? ticketsdata : data}
               isLoading={isLoading}
               searchQuery={searchQuery}
               currentPage={currentPage}

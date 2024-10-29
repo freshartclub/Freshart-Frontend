@@ -23,31 +23,31 @@ export const package_dimension = [
 
 export const artwork_orientation = [
   {
-    name: "artworkOrientationWeight",
+    name: "weight",
     label: "Weight",
     placeholder: "Product weight...ddd",
   },
   {
-    name: "artworkOrientationheight",
+    name: "height",
     label: "Height",
     placeholder: "Height (cm)...dd",
   },
   {
-    name: "artworkOrientationlenght",
+    name: "lenght",
     label: "Length",
     placeholder: "Length (cm)...",
   },
   {
-    name: "artworkOrientationwidth",
+    name: "width",
     label: "Width",
     placeholder: "Width (cm)...",
   },
 ];
 
 export const Framed_dimension = [
-  { name: "framedHeight", label: "Height", placeholder: "Height (cm)..." },
-  { name: "framedLenght", label: "Length", placeholder: "Length (cm)..." },
-  { name: "framedWidth", label: "Width", placeholder: "Width (cm)..." },
+  { name: "frameHeight", label: "Height", placeholder: "Height (cm)..." },
+  { name: "frameLenght", label: "Length", placeholder: "Length (cm)..." },
+  { name: "frameWidth", label: "Width", placeholder: "Width (cm)..." },
 ];
 
 export const options = [
@@ -115,7 +115,7 @@ export const shipping_inventry = [
     placeholder: "Type Product sku here...",
   },
   {
-    name: "barcode",
+    name: "pCode",
     label: "Product Code",
     placeholder: "Product Code...",
   },

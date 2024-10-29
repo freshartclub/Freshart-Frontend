@@ -6,158 +6,175 @@ import bell from "./assets/bell.png";
 import share from "./assets/share.png";
 import security from "./assets/key.png";
 import GeneralUpload from "./GeneralUpload";
+import Notification from "./Notification";
+import Sociallinks from "./Sociallinks";
+import Security from "./Security";
+import Language from "./Language";
+import Billing from "./Billing";
 
 const ArtistTabs = () => {
   const [activeTab, setActiveTab] = useState("general");
 
   return (
     <>
-      <div className="my-5  dark:border-gray-700 flex sm:flex-row flex-col-reverse items-center">
+      {/* Tabs Container */}
+      <div className="my-5 dark:border-gray-700 flex sm:flex-row flex-col items-center">
+        {/* Tab List with Scrollable Feature on Small Screens */}
         <ul
-          className="flex -mb-px text-sm font-medium text-center"
+          className="flex -mb-px text-sm font-medium text-center overflow-x-auto scrollbar-hide w-full sm:w-auto"
           id="default-tab"
           data-tabs-toggle="#default-tab-content"
           role="tablist"
         >
+          {/* General Tab */}
           <P
             variant={{ size: "base", theme: "dark", weight: "semiBold" }}
-            className="mx-5"
+            className="mx-2 sm:mx-5 flex-shrink-0"
             role="presentation"
           >
             <button
-              className={` pb-2 rounded-t-lg flex items-center gap-1 ${
+              className={`pb-2 rounded-t-lg flex items-center gap-1 ${
                 activeTab === "general"
-                  ? "border-b-2 border-black text-black "
-                  : "hover:text-gray-600 hover:border-gray-300 "
+                  ? "border-b-2 border-black text-black"
+                  : "hover:text-gray-600 hover:border-gray-300"
               }`}
-              id="highlight-tab"
+              id="general-tab"
               onClick={() => setActiveTab("general")}
-              data-tabs-target="#general"
               type="button"
               role="tab"
               aria-controls="general"
-              aria-selected={activeTab === "highlight"}
+              aria-selected={activeTab === "general"}
             >
-              <img src={general} alt="general" />
+              <img src={general} alt="general" className="h-5 w-5" />
               General
             </button>
           </P>
 
+          {/* Billing Tab */}
           <P
             variant={{ size: "base", theme: "dark", weight: "semiBold" }}
-            className="mx-5"
+            className="mx-2 sm:mx-5 flex-shrink-0"
             role="presentation"
           >
             <button
-              className={` pb-2 rounded-t-lg flex items-center gap-1 ${
+              className={`pb-2 rounded-t-lg flex items-center gap-1 ${
                 activeTab === "billing"
-                  ? "border-b-2 border-black "
-                  : "hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+                  ? "border-b-2 border-black"
+                  : "hover:text-gray-600 hover:border-gray-300"
               }`}
-              id="billing-tab"
               onClick={() => setActiveTab("billing")}
-              data-tabs-target="#billing"
               type="button"
               role="tab"
               aria-controls="billing"
               aria-selected={activeTab === "billing"}
             >
-              <img src={bill} alt="general" />
+              <img src={bill} alt="billing" className="h-5 w-5" />
               Billing
             </button>
           </P>
 
+          {/* Notification Tab */}
           <P
             variant={{ size: "base", theme: "dark", weight: "semiBold" }}
-            className="mx-5"
+            className="mx-2 sm:mx-5 flex-shrink-0"
             role="presentation"
           >
             <button
-              className={` pb-2 rounded-t-lg flex items-center gap-1 ${
+              className={`pb-2 rounded-t-lg flex items-center gap-1 ${
                 activeTab === "notification"
-                  ? "border-b-2 border-black "
-                  : "hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+                  ? "border-b-2 border-black"
+                  : "hover:text-gray-600 hover:border-gray-300"
               }`}
-              id="notification-tab"
               onClick={() => setActiveTab("notification")}
-              data-tabs-target="#notification"
               type="button"
               role="tab"
               aria-controls="notification"
               aria-selected={activeTab === "notification"}
             >
-              <img src={bell} alt="general" />
+              <img src={bell} alt="notification" className="h-5 w-5" />
               Notifications
             </button>
           </P>
 
+          {/* Social Links Tab */}
           <P
             variant={{ size: "base", theme: "dark", weight: "semiBold" }}
-            className="mx-5"
+            className="mx-2 sm:mx-5 flex-shrink-0"
             role="presentation"
           >
             <button
-              className={` pb-2 rounded-t-lg flex items-center gap-1 ${
+              className={`pb-2 rounded-t-lg flex items-center gap-1 ${
                 activeTab === "social"
-                  ? "border-b-2 border-black "
-                  : "hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+                  ? "border-b-2 border-black"
+                  : "hover:text-gray-600 hover:border-gray-300"
               }`}
-              id="social-tab"
               onClick={() => setActiveTab("social")}
-              data-tabs-target="#social"
               type="button"
               role="tab"
               aria-controls="social"
               aria-selected={activeTab === "social"}
             >
-              <img src={share} alt="general" />
+              <img src={share} alt="social" className="h-5 w-5" />
               Social links
             </button>
           </P>
 
+          {/* Security Tab */}
           <P
             variant={{ size: "base", theme: "dark", weight: "semiBold" }}
-            className="mx-5"
+            className="mx-2 sm:mx-5 flex-shrink-0"
             role="presentation"
           >
             <button
-              className={` pb-2 rounded-t-lg flex items-center gap-1 ${
+              className={`pb-2 rounded-t-lg flex items-center gap-1 ${
                 activeTab === "security"
-                  ? "border-b-2 border-black "
-                  : "hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+                  ? "border-b-2 border-black"
+                  : "hover:text-gray-600 hover:border-gray-300"
               }`}
-              id="security-tab"
               onClick={() => setActiveTab("security")}
-              data-tabs-target="#security"
               type="button"
               role="tab"
               aria-controls="security"
               aria-selected={activeTab === "security"}
             >
-              <img src={security} alt="general" />
+              <img src={security} alt="security" className="h-5 w-5" />
               Security
+            </button>
+          </P>
+
+          {/* Language Tab */}
+          <P
+            variant={{ size: "base", theme: "dark", weight: "semiBold" }}
+            className="mx-2 sm:mx-5 flex-shrink-0"
+            role="presentation"
+          >
+            <button
+              className={`pb-2 rounded-t-lg flex items-center gap-1 ${
+                activeTab === "language"
+                  ? "border-b-2 border-black"
+                  : "hover:text-gray-600 hover:border-gray-300"
+              }`}
+              onClick={() => setActiveTab("language")}
+              type="button"
+              role="tab"
+              aria-controls="language"
+              aria-selected={activeTab === "language"}
+            >
+              <img src={security} alt="language" className="h-5 w-5" />
+              Language
             </button>
           </P>
         </ul>
       </div>
+
+      {/* Tab Content */}
       <div id="default-tab-content">
-        {activeTab === "general" && (
-          <>
-            <GeneralUpload />
-          </>
-        )}
-
-        {activeTab === "billing" && (
-          <>
-            <P variant={{}}>Billing</P>
-          </>
-        )}
-
-        {activeTab === "notification" && <P variant={{}}>Notification</P>}
-
-        {activeTab === "social" && <P variant={{}}>Social Links</P>}
-
-        {activeTab === "security" && <P variant={{}}>Security</P>}
+        {activeTab === "general" && <GeneralUpload />}
+        {activeTab === "billing" && <Billing />}
+        {activeTab === "notification" && <Notification />}
+        {activeTab === "social" && <Sociallinks />}
+        {activeTab === "security" && <Security />}
+        {activeTab === "language" && <Language />}
       </div>
     </>
   );

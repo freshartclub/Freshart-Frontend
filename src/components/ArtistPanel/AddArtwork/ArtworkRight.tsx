@@ -5,7 +5,7 @@ const ArtworkRight = () => {
   const fields = [
     {
       id: "artworkdiscipline",
-      name: "artworkdiscipline",
+      name: "artworkDiscipline",
       label: "Artwork discipline",
       options: [
         "Select a Discipline",
@@ -16,7 +16,7 @@ const ArtworkRight = () => {
     },
     {
       id: "artworktags",
-      name: "artworktags",
+      name: "artworkTags",
       label: "Artwork Tags",
       options: ["Select Tags", "Cards", "Business Cards"],
     },
@@ -31,7 +31,7 @@ const ArtworkRight = () => {
     },
     {
       id: "promotionscore",
-      name: "promotionscore",
+      name: "promotionScore",
       label: "Promotion Score",
       options: ["10 out of 10", "9 out of 10", "8 out of 10"],
     },

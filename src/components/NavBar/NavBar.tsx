@@ -176,7 +176,7 @@ const NavBar = () => {
               {" "}
               <div className="hidden  lg:flex xl:space-x-6 lg:space-x-0 text-white ">
                 <Link
-                  to="/"
+                  to="/home"
                   className="group mt-3 font-semibold text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
                 >
                   <div className="relative inline-block px-2">

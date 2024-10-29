@@ -8,7 +8,6 @@ async function fetchData() {
     `${ARTTIST_ENDPOINTS.GetArtistTickets}`
   );
   console.log("data is ", data);
-
   return data.data;
 }
 
