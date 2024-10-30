@@ -5,6 +5,9 @@ import Artwork from "../ArtistDetail/Artwork";
 import AddArtwork from "./AddArtwork/AddArtwork";
 import Orders from "./Orders";
 import ArtistProfile from "./ArtistEditProfile/ArtistProfile";
+import TicketHistory from "../NewTicket/ticket history/TicketHistory";
+import SingleTicket from "../NewTicket/ticket history/ticketDetail";
+import ArtworkDetails from "./Artwork/artworkDetails/ArtworkDetails";
 
 const ArtistPanel = () => {
   return (
@@ -15,9 +18,13 @@ const ArtistPanel = () => {
           <Route index element={<Dashboard />} />
           <Route path="artdashboard" element={<Dashboard />} />
           <Route path="artwork" element={<Artwork />} />
+          <Route path="artwork/details" element={<ArtworkDetails />} />
           <Route path="order" element={<Orders />} />
           <Route path="artwork/add" element={<AddArtwork />} />
           <Route path="edit-artistprofile" element={<ArtistProfile />} />
+          <Route path="ticket" element={<TicketHistory />} />
+          {/* <Route path="ticket/:ticketId" element={<TicketDe />} /> */}
+          <Route path="/ticket/:id" element={<SingleTicket />} />
         </Routes>
       </div>
     </div>

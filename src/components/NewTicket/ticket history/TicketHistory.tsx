@@ -8,6 +8,8 @@ import Resolved from "../ticket history/assets//resolved.png";
 import TicketsList from "./TicketList";
 import { useGetTicket } from "./http/useGetTicket";
 import { useAppSelector } from "../../../store/typedReduxHooks";
+import dayjs from "dayjs";
+import Loader from "../../ui/Loader";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -28,24 +30,27 @@ const TicketHistory: React.FC = () => {
 
   const ticketsPerPage = 10;
 
-  const { data, isLoading } = useGetTicket();
+  const { data = [], isLoading } = useGetTicket();
 
-  console.log(data);
-  // console.log(data);
-  // const tickets = useAppSelector((state) => state.user.ticket);
-  // console.log(tickets);
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
     }
   };
 
+  const [activeTab, setActiveTab] = useState("all");
+
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+  };
+
   const handleSearch = (query: string) => {
     console.log("search query", query);
     setSearchQuery(query.trim());
+
     if (query) {
       const filteredTickets = data.filter((item) =>
-        item.subject.includes(query)
+        item.ticketId.toLowerCase().includes(query.toLowerCase())
       );
       setTickets(filteredTickets);
       setTotalPages(Math.ceil(filteredTickets.length / ticketsPerPage));
@@ -53,14 +58,21 @@ const TicketHistory: React.FC = () => {
 
     setCurrentPage(1);
   };
+  const now = dayjs();
 
-  console.log("itmes", ticketsdata);
+  // const sortedTickets = [...data].sort((a, b) =>
+  //   dayjs(b.createdAt).diff(dayjs(a.createdAt))
+  // );
 
-  const [activeTab, setActiveTab] = useState("all");
+  const newTickets = data.filter((ticket) =>
+    dayjs(ticket.createdAt).isAfter(now.subtract(3, "day"))
+  );
 
-  const handleTabChange = (tab: string) => {
-    setActiveTab(tab);
-  };
+  console.log("itmes", data);
+
+  if (!data) {
+    return <Loader />;
+  }
 
   return (
     <div className="container mx-auto sm:px-6 px-3 mb-[3rem]">
@@ -140,6 +152,16 @@ const TicketHistory: React.FC = () => {
           <TabPanel activeTab={activeTab} tabKey="all">
             <TicketsList
               tickets={searchQuery ? ticketsdata : data}
+              isLoading={isLoading}
+              searchQuery={searchQuery}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
+          </TabPanel>
+          <TabPanel activeTab={activeTab} tabKey="new">
+            <TicketsList
+              tickets={newTickets}
               isLoading={isLoading}
               searchQuery={searchQuery}
               currentPage={currentPage}

@@ -3,6 +3,7 @@ import deleteimg from "../assets/Container (2).png";
 import { NavLink } from "react-router-dom";
 
 const ArtCard = ({ record }: any) => {
+  console.log("this is record", record);
   return (
     <>
       <div
@@ -18,13 +19,14 @@ const ArtCard = ({ record }: any) => {
       >
         <div className="flex justify-center relative overflow-hidden bg-cover bg-no-repeat">
           <img
-            src={record.image}
-            alt="Artwork image"
+            src={`${import.meta.env.VITE_SERVER_URL}/uploads/users/${
+              record.media?.mainImage
+            }`}
             className="rounded-md w-full object-cover"
           />
           <div className="absolute bottom-0 left-0 right-0 top-0 h-full w-full overflow-hidden bg-[#D9D9D9] bg-fixed flex items-center justify-center opacity-0 transition duration-300 ease-in-out hover:opacity-50 hover:cursor-pointer">
             <div className="flex gap-2 ">
-              <NavLink to={"/addartwork"}>
+              <NavLink to={`/artist-panel/artwork/add?id=${record._id}`}>
                 <img src={edit} className="" alt="" />
               </NavLink>
               <img src={deleteimg} className="" alt="" />
@@ -44,9 +46,13 @@ const ArtCard = ({ record }: any) => {
             }`}
           ></div>
 
-          <p className="text-[12px]">{record.pyntingtype}</p>
-          <p className="text-black text-[16px] font-bold">{record.time}</p>
-          <p className="text-black text-[16px] font-bold">{record.title}</p>
+          <p className="text-[12px]">{record.discipline?.artworkDiscipline}</p>
+          <p className="text-black text-[16px] font-bold">
+            {record.artworkName}
+          </p>
+          <p className="text-black text-[13px] font-meedium">
+            {record.owner?.artistName}
+          </p>
         </div>
       </div>
     </>

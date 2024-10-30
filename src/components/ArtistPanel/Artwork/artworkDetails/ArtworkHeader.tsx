@@ -4,7 +4,7 @@ import send from "../artworkDetails/assets/send.png";
 import edit from "../artworkDetails/assets/edit.png";
 import button_arrow from "../artworkDetails/assets/button_arrow.png";
 
-const ArtworkHeader = () => {
+const ArtworkHeader = ({ artwork }) => {
   return (
     <div className="flex justify-between w-full items-center py-4 px-4 sm:px-6 md:px-8">
       {/* Back Button */}

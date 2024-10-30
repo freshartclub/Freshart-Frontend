@@ -9,7 +9,7 @@ import circle from "./assets/bar.png";
 import mail from "./assets/mail.png";
 import toggle from "./assets/toggle_arrow.png";
 import arrow from "./assets/turn-right.png";
-const sections = [
+export const sections = [
   {
     key: "dashboard",
     label: "Dashboard",
@@ -70,15 +70,10 @@ const sections = [
   },
   {
     key: "help",
-    label: "Help",
+    label: "Help & Support",
     icon: mail,
-    path: "help",
-  },
-  {
-    key: "support",
-    label: "Support",
-    icon: mail,
-    path: "support",
+    path: "ticket",
+    submenu: [{ key: "ticket", label: "Raise Ticket", path: "ticket" }],
   },
 ];
 

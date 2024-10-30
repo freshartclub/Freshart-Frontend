@@ -57,7 +57,7 @@ const Support = () => {
   const navigate = useNavigate();
 
   const handleSubmitButton = () => {
-    navigate("/tickets");
+    navigate("/new_ticket");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 

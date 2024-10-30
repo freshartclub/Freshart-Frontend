@@ -5,6 +5,7 @@ import green from "../ticket history/assets/green.png";
 import { useNavigate } from "react-router-dom";
 import artistImg from "../ticket history/assets/People.png";
 import Loader from "../../ui/Loader";
+import dayjs from "dayjs";
 import { useAppSelector } from "../../../store/typedReduxHooks";
 
 const TicketsList: FC<{
@@ -20,6 +21,8 @@ const TicketsList: FC<{
   const handleClick = (id) => {
     navigate(`/ticket_detail/${id}`);
   };
+
+  console.log("this is from ticket list page", tickets);
 
   if (isLoading) {
     return <Loader />;
@@ -72,14 +75,7 @@ const TicketsList: FC<{
                       className="text-[13px] font-semibold"
                       style={{ color: "#212529" }}
                     >
-                      {`Posted at ${new Date(ticket.ticketDate).toLocaleString(
-                        "en-US",
-                        {
-                          hour: "numeric",
-                          minute: "numeric",
-                          hour12: true,
-                        }
-                      )}`}
+                      {dayjs(ticket?.createdAt).format("MMMM D, YYYY")}
                     </h2>
                   </div>
                 </div>

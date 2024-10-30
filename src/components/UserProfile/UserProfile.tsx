@@ -5,10 +5,15 @@ import P from "../ui/P";
 import UserImage from "./UserImage";
 import UserDescription from "./UserDescription";
 import { useAppSelector } from "../../store/typedReduxHooks";
+import Loader from "../ui/Loader";
 
 const UserProfile = () => {
   const { user } = useAppSelector((state) => state.user);
   console.log(user);
+
+  if (!user) {
+    return <Loader />;
+  }
 
   return (
     <>

@@ -23,7 +23,7 @@ const useGetPostArtistTicketMutation = () => {
     mutationFn: usePostTicketReply,
 
     onSuccess: async (res) => {
-      console.log(res.data.id);
+      console.log(res.data);
 
       navigate("/tickets");
       toast.success(res.data.message, {

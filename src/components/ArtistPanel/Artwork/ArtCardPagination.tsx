@@ -5,6 +5,8 @@ import ArtCard from "./ArtCard";
 import PaginationTabs from "../ArtistDashboard/PaginationTabs";
 import SelectDateBtn from "../ArtistDashboard/SelectDateBtn";
 import FilterBtn from "../Artwork/FilterBtn";
+import { useGetArtWorkList } from "../../ArtistDetail/http/getArtWorkList";
+import Loader from "../../ui/Loader";
 const ArtCardPagination = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const recordPerPage = 8;
@@ -13,7 +15,13 @@ const ArtCardPagination = () => {
   const records = cardData.slice(firstIndex, lastIndex);
   const nPages = Math.ceil(cardData.length / recordPerPage);
   const numbers = [...Array(nPages + 1).keys()].slice(1);
-  // console.log("records//////////////", records);
+
+  const { data, isLoading } = useGetArtWorkList();
+
+  console.log("this is from dashborad", data);
+  if (isLoading) {
+    return <Loader />;
+  }
   return (
     <div>
       <div className="flex flex-wrap justify-between mt-5">
@@ -32,7 +40,7 @@ const ArtCardPagination = () => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-x-5 gap-y-5 mt-4">
-        {records.map((record, index) => (
+        {data.map((record, index) => (
           // <div key={record.index}>
           <div key={index}>
             <ArtCard record={record} />

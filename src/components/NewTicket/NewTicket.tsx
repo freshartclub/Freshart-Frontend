@@ -67,46 +67,6 @@ const NewTicket = () => {
           >
             {({ setFieldValue, resetForm, setErrors }) => (
               <Form className="bg-white my-4">
-                {/* <div className="mb-4">
-                  <label
-                    className="block text-gray-700 text-sm font-bold mb-2 font-readex"
-                    htmlFor="name"
-                  >
-                    Name*
-                  </label>
-                  <Field
-                    name="name"
-                    type="text"
-                    placeholder="Name"
-                    className="outline-[#FDB7DC] bg-[#FFD1D114] shadow border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-[#FDB7DC] focus:shadow-outline"
-                  />
-                  <ErrorMessage
-                    name="name"
-                    component="div"
-                    className="text-red-500 text-sm mt-1"
-                  />
-                </div>
-
-                <div className="mb-4">
-                  <label
-                    className="block text-gray-700 text-sm font-bold mb-2"
-                    htmlFor="email"
-                  >
-                    Email*
-                  </label>
-                  <Field
-                    name="email"
-                    type="text"
-                    placeholder="admin@gmail.com"
-                    className="outline-[#FDB7DC] bg-[#FFD1D114] shadow border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-[#FDB7DC] focus:shadow-outline"
-                  />
-                  <ErrorMessage
-                    name="email"
-                    component="div"
-                    className="text-red-500 text-sm mt-1"
-                  />
-                </div> */}
-
                 <div className="mb-4">
                   <label
                     htmlFor="region"
@@ -224,23 +184,6 @@ const NewTicket = () => {
                         }}
                         className=""
                       />
-
-                      {/* <span
-                        // type="button"
-                        onClick={() => {
-                          if (fileInputRef.current) {
-                            fileInputRef.current.click();
-                          }
-                        }}
-                        // variant={{
-                        //   fontSize: "md",
-                        //   thickness: "thick",
-                        //   fontWeight: "600",
-                        // }}
-                        className="border-2 border-[#E30077] text-[#E30077] rounded-2xl py-3 px-3 "
-                      >
-                        Browse File
-                      </span> */}
                       <ErrorMessage
                         name="ticketImg"
                         component="div"

@@ -396,14 +396,7 @@ const App: React.FC = () => {
                 </AuthGuard>
               }
             />
-            <Route
-              path="/artwork-details"
-              element={
-                <AuthGuard>
-                  <ArtworkDetails />
-                </AuthGuard>
-              }
-            />
+
             <Route
               path="/create_invite"
               element={

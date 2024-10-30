@@ -1,6 +1,6 @@
 import { ErrorMessage, Field, FieldArray, Form, Formik } from "formik";
 import { formSchemas } from "../schemas/index";
-import { ChangeEvent, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import Header from "../../ui/Header";
 import Button from "../../ui/Button";
 import ArtworkRight from "./ArtworkRight";
@@ -24,6 +24,7 @@ import image_icon from "../../../assets/image_icon.png";
 import video_icon from "../../../assets/video_icon.png";
 import * as Yup from "yup";
 import axiosInstance from "../../utils/axios";
+import { useSearchParams } from "react-router-dom";
 
 const AddArtwork = () => {
   const [progress, setProgress] = useState(0);
@@ -127,6 +128,15 @@ const AddArtwork = () => {
     productstatus: "",
     variations: [{ variationtype: "", variation: "" }],
   };
+
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get("id");
+
+  // useEffect(() => {
+  //   if (id) {
+
+  //   }
+  // }, []);
 
   const handleFileChange = (e, setFile) => {
     const file = e.target.files[0];

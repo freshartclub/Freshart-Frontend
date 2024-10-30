@@ -7,7 +7,7 @@ async function fetchData() {
   const { data } = await axiosInstance.get(
     `${ARTTIST_ENDPOINTS.GetArtistTickets}`
   );
-  console.log("data is ", data);
+  console.log("data is is from get ticket ", data);
   return data.data;
 }
 
