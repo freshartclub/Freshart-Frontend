@@ -146,7 +146,7 @@ const App: React.FC = () => {
               }
             ></Route>
             <Route
-              path="/ticket_detail/:id"
+              path="/ticket_detail"
               element={
                 <AuthGuard>
                   <SingleTicket />{" "}

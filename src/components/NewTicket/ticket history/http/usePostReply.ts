@@ -1,30 +1,26 @@
 import { useMutation } from "@tanstack/react-query";
-
 import toast from "react-hot-toast";
-
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { ARTTIST_ENDPOINTS } from "../../../../http/apiEndPoints/Artist";
 import axiosInstance from "../../../utils/axios";
 
-let toastId: any;
-
-async function usePostTicketReply(input: any) {
-  return await axiosInstance.post(ARTTIST_ENDPOINTS.RaiseTicket, input, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
-}
-
-const useGetPostArtistTicketMutation = () => {
+const useGetPostArtistTicketReplyMutation = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get("id");
+  console.log("id is ", id);
+
+  const usePostTicketReply = async (input: any) => {
+    return await axiosInstance.post(
+      `${ARTTIST_ENDPOINTS.PostTicket}/${id}`,
+      input
+    );
+  };
 
   return useMutation({
     mutationFn: usePostTicketReply,
-
     onSuccess: async (res) => {
       console.log(res.data);
-
       navigate("/tickets");
       toast.success(res.data.message, {
         duration: 3000,
@@ -36,4 +32,4 @@ const useGetPostArtistTicketMutation = () => {
   });
 };
 
-export default useGetPostArtistTicketMutation;
+export default useGetPostArtistTicketReplyMutation;

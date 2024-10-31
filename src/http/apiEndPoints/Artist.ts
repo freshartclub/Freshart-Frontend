@@ -4,6 +4,7 @@ export const ARTTIST_ENDPOINTS = {
   GetArtistDetials: `${ARTIST_BASE_URl}/get-artist `,
   EditArtistProfile: `${ARTIST_BASE_URl}/edit-artist-profile `,
   RaiseTicket: `${ARTIST_BASE_URl}/create-ticket `,
+  PostTicket: `${ARTIST_BASE_URl}/reply-ticket`,
   GetArtWorkList: `${ARTIST_BASE_URl}/get-artist-artworks `,
   // GetArtistArtwork: `${ARTIST_BASE_URl}/get-artist-artwork `,
   // DeleteArtwork: `${ARTIST_BASE_URl}/delete-artist-artwork `,

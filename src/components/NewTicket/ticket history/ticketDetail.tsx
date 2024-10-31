@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import axiosInstance from "../../utils/axios";
 import artistImg from "../ticket history/assets/People.png";
 import { ARTTIST_ENDPOINTS } from "../../../http/apiEndPoints/Artist";
 import { useAppSelector } from "../../../store/typedReduxHooks";
 import dayjs from "dayjs";
+import useGetPostArtistTicketMutation from "./http/usePostTicket";
+import TicketHistory from "./TicketHistory";
+import useGetPostArtistTicketReplyMutation from "./http/usePostReply";
 
 interface Ticket {
   ticketId: string;
@@ -15,9 +18,12 @@ interface Ticket {
 }
 
 const SingleTicket = () => {
-  const { id } = useParams();
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get("id");
+  console.log("id is in ticket deaaatils ", id);
 
   const [ticket, setTicket] = useState<Ticket | null>(null);
+  const [reply, setReply] = useState("");
   const user = useAppSelector((state) => state.user.user);
 
   const getTicketDetail = async () => {
@@ -32,9 +38,27 @@ const SingleTicket = () => {
     }
   };
 
+  // console.log("kyekey", ticket.data.ticketType);
+  const { mutate, isPending } = useGetPostArtistTicketReplyMutation();
+
   useEffect(() => {
     getTicketDetail();
   }, [id]);
+
+  const handleReply = (ticket) => {
+    const newData = {
+      id: ticket.data._id,
+      message: reply,
+      ticketType: ticket.data.ticketType,
+      status: ticket.data.status,
+    };
+    const formData = new FormData();
+    for (const key in newData) {
+      formData.append(key, newData[key]);
+    }
+    console.log("this is newData", newData);
+    mutate(formData);
+  };
 
   if (!ticket) {
     return <div>Loading...</div>;
@@ -74,41 +98,26 @@ const SingleTicket = () => {
         </p>
       </div>
 
-      {ticket?.reply &&
-        ticket?.reply?.length &&
-        ticket?.reply.map((item, i) => (
-          <div className="bg-[#919EAB29] p-4">
-            <div className="flex justify-between">
-              <h1 className="font-montserrat text-[18px] font-semibold leading-[14px] text-left text-[#2E2C34] mb-2 ml-4">
-                Replied By Admin
-              </h1>
-              <div>
-                <span
-                  className={`ml-3 font-semibold rounded-lg px-2 ${
-                    item.status === "In progress"
-                      ? "bg-[#F8A53499]"
-                      : "bg-green-500"
-                  }`}
-                >
-                  {item.status}
-                </span>
-                <span className="ml-3  font-semibold">{item.ticketType}</span>
-                <span className="ml-3  font-semibold">
-                  {dayjs(item?.createdAt).format("MMMM D, YYYY")}
-                </span>
-              </div>
-            </div>
-            <div className="flex items-center mb-4 ml-4">
-              <span className="ml-3 text-[#84818A] font-semibold">
-                {item.userType}
-              </span>
-            </div>
+      <div className="bg-[#919EAB29] p-4">
+        <div className="flex justify-between">
+          <h1 className="font-montserrat text-[18px] font-semibold leading-[14px] text-left text-[#2E2C34] mb-2 ml-4">
+            Replied By Admin
+          </h1>
+        </div>
+        <div className="flex items-center mb-4 ml-4">
+          {/* <span className="ml-3 text-[#84818A] font-semibold">
+            {item.userType}
+          </span> */}
+        </div>
 
-            <p className="text-[#84818A] font-montserrat text-sm font-medium leading-[17.07px] text-left mb-6 ml-6 pr-4">
+        {ticket?.reply &&
+          ticket?.reply?.length &&
+          ticket?.reply.map((item, i) => (
+            <p className="text-[#84818A] font-montserrat text-sm font-medium leading-[17.07px] text-left mb-6 ml-6 pr-4 py-2 px-3">
               {item.message}
             </p>
-          </div>
-        ))}
+          ))}
+      </div>
 
       <div className="p-4">
         <h2 className="font-montserrat text-lg font-semibold mb-2 ml-2 mt-4">
@@ -118,10 +127,14 @@ const SingleTicket = () => {
           <textarea
             className="border border-gray-300 rounded-lg p-2 w-full mr-2"
             placeholder="Enter Your Message here..."
+            onChange={(e) => setReply(e.target.value)}
             rows={4}
           ></textarea>
-          <button className="bg-black text-white rounded-lg px-4 py-2">
-            Reply
+          <button
+            onClick={() => handleReply(ticket)}
+            className="bg-black text-white rounded-lg px-4 py-2"
+          >
+            {isPending ? "Loading..." : "Reply"}
           </button>
         </div>
       </div>

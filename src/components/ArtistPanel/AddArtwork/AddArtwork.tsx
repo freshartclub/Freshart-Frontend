@@ -25,6 +25,7 @@ import video_icon from "../../../assets/video_icon.png";
 import * as Yup from "yup";
 import axiosInstance from "../../utils/axios";
 import { useSearchParams } from "react-router-dom";
+import usePostArtWorkMutation from "./http/usePostArtwork";
 
 const AddArtwork = () => {
   const [progress, setProgress] = useState(0);
@@ -130,13 +131,8 @@ const AddArtwork = () => {
   };
 
   const [searchParams] = useSearchParams();
-  const id = searchParams.get("id");
 
-  // useEffect(() => {
-  //   if (id) {
-
-  //   }
-  // }, []);
+  const { mutate, isPending } = usePostArtWorkMutation();
 
   const handleFileChange = (e, setFile) => {
     const file = e.target.files[0];
@@ -172,17 +168,7 @@ const AddArtwork = () => {
       }
     });
 
-    const response = await axiosInstance.post(
-      "/api/artist/add-artwork",
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
-
-    console.log("response==============", response);
+    mutate(formData);
   };
 
   const removeImage = (name: string, index: number) => {
@@ -1313,7 +1299,7 @@ const AddArtwork = () => {
                     }}
                     className=" text-white py-2 px-4 rounded"
                   >
-                    Submit
+                    {isPending ? "Submiting..." : "  Submit"}
                   </Button>
                 </div>
               </div>

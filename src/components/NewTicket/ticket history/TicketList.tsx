@@ -19,7 +19,7 @@ const TicketsList: FC<{
   const navigate = useNavigate();
 
   const handleClick = (id) => {
-    navigate(`/ticket_detail/${id}`);
+    navigate(`/ticket_detail?id=${id}`);
   };
 
   console.log("this is from ticket list page", tickets);
