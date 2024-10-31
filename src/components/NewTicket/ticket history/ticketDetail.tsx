@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { useParams, useSearchParams } from "react-router-dom";
-import axiosInstance from "../../utils/axios";
-import artistImg from "../ticket history/assets/People.png";
+import dayjs from "dayjs";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { ARTTIST_ENDPOINTS } from "../../../http/apiEndPoints/Artist";
 import { useAppSelector } from "../../../store/typedReduxHooks";
-import dayjs from "dayjs";
-import useGetPostArtistTicketMutation from "./http/usePostTicket";
-import TicketHistory from "./TicketHistory";
+import axiosInstance from "../../utils/axios";
+import artistImg from "../ticket history/assets/People.png";
 import useGetPostArtistTicketReplyMutation from "./http/usePostReply";
 
 interface Ticket {
@@ -20,8 +18,6 @@ interface Ticket {
 const SingleTicket = () => {
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
-  console.log("id is in ticket deaaatils ", id);
-
   const [ticket, setTicket] = useState<Ticket | null>(null);
   const [reply, setReply] = useState("");
   const user = useAppSelector((state) => state.user.user);
@@ -31,14 +27,12 @@ const SingleTicket = () => {
       const response = await axiosInstance.get(
         `${ARTTIST_ENDPOINTS.GetArtistTicketsDetails}/${id}`
       );
-      console.log("API Response:", response.data);
       setTicket(response.data);
     } catch (error) {
       console.error("Error fetching ticket:", error);
     }
   };
 
-  // console.log("kyekey", ticket.data.ticketType);
   const { mutate, isPending } = useGetPostArtistTicketReplyMutation();
 
   useEffect(() => {
@@ -56,7 +50,6 @@ const SingleTicket = () => {
     for (const key in newData) {
       formData.append(key, newData[key]);
     }
-    console.log("this is newData", newData);
     mutate(formData);
   };
 
@@ -98,41 +91,35 @@ const SingleTicket = () => {
         </p>
       </div>
 
-      <div className="bg-[#919EAB29] p-4">
-        <div className="flex justify-between">
-          <h1 className="font-montserrat text-[18px] font-semibold leading-[14px] text-left text-[#2E2C34] mb-2 ml-4">
-            Replied By Admin
-          </h1>
-        </div>
-        <div className="flex items-center mb-4 ml-4">
-          {/* <span className="ml-3 text-[#84818A] font-semibold">
-            {item.userType}
-          </span> */}
-        </div>
-
+      <div className="bg-[#919EAB29] p-2 flex flex-col gap-2">
         {ticket?.reply &&
           ticket?.reply?.length &&
           ticket?.reply.map((item, i) => (
-            <p className="text-[#84818A] font-montserrat text-sm font-medium leading-[17.07px] text-left mb-6 ml-6 pr-4 py-2 px-3">
-              {item.message}
-            </p>
+            <div key={i}>
+              <span className="ml-3 text-[#84818A] text-[12px]">
+                {item.userType === "user" ? "Your Reply" : "Reply By - Admin"}
+              </span>
+              <p className="text-[#676669] font-montserrat text-sm font-medium leading-[17.07px] text-left ml-5 pr-4 py-2 px-3">
+                {item.message}
+              </p>
+            </div>
           ))}
       </div>
 
-      <div className="p-4">
-        <h2 className="font-montserrat text-lg font-semibold mb-2 ml-2 mt-4">
+      <div className="py-2">
+        <h2 className="font-montserrat text-lg font-semibold mt-4">
           Reply to Ticket
         </h2>
-        <div className="flex items-center rounded-lg p-4 bg-gray-50">
+        <div className="flex flex-col gap-2 items-end rounded-md py-3 bg-gray-50">
           <textarea
-            className="border border-gray-300 rounded-lg p-2 w-full mr-2"
+            className="border border-gray-300 rounded-lg p-2 w-full"
             placeholder="Enter Your Message here..."
             onChange={(e) => setReply(e.target.value)}
             rows={4}
-          ></textarea>
+          />
           <button
             onClick={() => handleReply(ticket)}
-            className="bg-black text-white rounded-lg px-4 py-2"
+            className="bg-black text-white rounded-md px-4 py-2"
           >
             {isPending ? "Loading..." : "Reply"}
           </button>
