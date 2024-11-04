@@ -8,7 +8,6 @@ import { useAppSelector } from "../../store/typedReduxHooks";
 
 const BannerSection = () => {
   const user = useAppSelector((state)=> state.user.user);
-  console.log(user);
   
   const bannerData = [
     {

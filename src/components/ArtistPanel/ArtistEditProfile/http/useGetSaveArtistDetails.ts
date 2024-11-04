@@ -23,7 +23,6 @@ const useGetSaveArtistDetailsMutation = () => {
     mutationFn: editArtistProfile,
 
     onSuccess: async (res) => {
-      console.log(res.data.id);
       toast.dismiss(toastId);
       toast.success(res.data.message, {
         duration: 3000,

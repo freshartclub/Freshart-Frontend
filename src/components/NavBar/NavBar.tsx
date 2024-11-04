@@ -71,7 +71,6 @@ const NavBar = () => {
   const navigate = useNavigate();
 
   const isArtist = useAppSelector((state) => state.user.isArtist);
-  console.log("hey is this is a ", isArtist);
 
   useEffect(() => {
     const storedUserName = localStorage.getItem("userName");

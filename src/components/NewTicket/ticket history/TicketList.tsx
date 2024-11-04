@@ -18,11 +18,11 @@ const TicketsList: FC<{
 }> = ({ tickets, currentPage, totalPages, onPageChange, isLoading }) => {
   const navigate = useNavigate();
 
+  const isArtist = useAppSelector((state) => state.user.isArtist);
+
   const handleClick = (id) => {
     navigate(`/ticket_detail?id=${id}`);
   };
-
-  console.log("this is from ticket list page", tickets);
 
   if (isLoading) {
     return <Loader />;

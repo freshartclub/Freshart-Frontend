@@ -11,8 +11,6 @@ import { useGetArtistDetails } from "../../UserProfile/http/useGetDetails";
 import Loader from "../../ui/Loader";
 
 const GeneralForm = () => {
-  // const data = useAppSelector((state) => state.data.data);
-  // console.log(data);
   const { data, isLoading } = useGetArtistDetails();
 
   const { mutate, isPending } = useGetSaveArtistDetailsMutation();
@@ -45,8 +43,6 @@ const GeneralForm = () => {
     },
   });
 
-  console.log(getValues());
-
   useEffect(() => {
     if (data) {
       setValue("name", data?.artistName || "");
@@ -69,41 +65,17 @@ const GeneralForm = () => {
   }, [data, setValue]);
 
   const onSubmit = (data) => {
-    console.log("Form Data:", data);
-
-    return;
-
     const formData = new FormData();
 
     Object.keys(data).forEach((key) => {
       if (Array.isArray(data[key])) {
         data[key].forEach((item) => {
-          formData.append(key, JSON.stringify(item)); // Serialize each item as JSON
+          formData.append(key, JSON.stringify(item));
         });
       } else {
         formData.append(key, data[key]);
       }
     });
-
-    // if (data.images && Array.isArray(data.images)) {
-    //   data.images.forEach((image, index) => {
-    //     if (typeof image === "object" && image.url) {
-    //       formData.append(`images[${index}]`, image.url);
-    //     }
-    //   });
-    // }
-
-    // if (data.videos && Array.isArray(data.videos)) {
-    //   data.videos.forEach((video, index) => {
-    //     if (typeof video === "object" && video.url) {
-    //       formData.append(`videos[${index}]`, video.url);
-    //     }
-    //   });
-    // }
-
-    for (let [key, value] of formData.entries()) {
-      console.log(`${key}:`, value);
-    }
 
     try {
       mutate(formData);

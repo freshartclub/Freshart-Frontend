@@ -29,23 +29,17 @@ const useSigInInMutation = () => {
 
     onSuccess: async (res, input) => {
       setToken(res.data.token, input.rememberMe);
-      console.log("response", res.data);
       dispatch(updateUser(res.data.user));
-      console.log("isautorized");
 
       dispatch(setIsAuthorized(true));
 
       if (res.data.user.isActivated) {
-        console.log(res.data.user.isActivated);
         dispatch(setIsArtist(true));
-        console.log("user event dispatched ");
 
         localStorage.setItem("profile", "artist");
-        console.log("user proffile is setup");
         navigate("/artist-panel", { replace: true });
       } else {
         localStorage.setItem("profile", "user");
-        console.log("artis profile is set");
         navigate("/home", { replace: true });
       }
 

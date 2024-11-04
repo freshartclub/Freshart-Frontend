@@ -26,6 +26,8 @@ import * as Yup from "yup";
 import axiosInstance from "../../utils/axios";
 import { useSearchParams } from "react-router-dom";
 import usePostArtWorkMutation from "./http/usePostArtwork";
+import { useGetArtWorkById } from "./http/useGetArtworkById";
+import { ARTTIST_ENDPOINTS } from "../../../http/apiEndPoints/Artist";
 
 const AddArtwork = () => {
   const [progress, setProgress] = useState(0);
@@ -47,9 +49,12 @@ const AddArtwork = () => {
   const [mainVideo, setMainVideo] = useState(null);
   const [otherVideos, setOtherVideos] = useState([]);
 
-  const initialValues = {
-    artworkName: "",
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get("id");
+  
 
+  const [initialValues, setInitialValues] = useState({
+    artworkName: "",
     artistName: "",
     artworkCreationYear: "",
     artworkSeries: "",
@@ -66,36 +71,28 @@ const AddArtwork = () => {
     material: "",
     offensive: "",
     weight: "",
-    lenght: "",
+    length: "",
     height: "",
     width: "",
     emotions: [],
     basePrice: "",
     discounttype: "",
-
     discountAcceptation: "",
-
     textclass: "",
     vatAmount: "",
     sku: "",
     pCode: "",
     location: "",
-
     barcode: "",
-
-    // artworkstyle: "",
-
-    // artworkTheme: "",
-
     hangingAvailable: "",
-
+    hangingDescription: "",
     framedDescription: "",
     framed: "",
     frameHeight: "",
-    frameLenght: "",
+    frameLength: "",
     frameWidth: "",
-
     artworkStyle: [],
+    artworkStyleType: [],
     colors: [],
     purchaseCatalog: "",
     artistFees: "",
@@ -103,34 +100,111 @@ const AddArtwork = () => {
     upworkOffer: "",
     acceptOfferPrice: "",
     priceRequest: "",
-
+    artistbaseFees: "",
     dpersentage: "",
-
-    // frameHeight: "",
-    // framedLenght: "",
-    // framedWidth: "",
-    // packageDimensionsWeight: "",
-    // packageDimensionsheight: "",
-    // packageDimensionslenght: "",
-    // packageDimensionswidth: "",
-    // artworkOrientationWeight: "",
-    // artworkOrientationheight: "",
-    // artworkOrientationlenght: "",
-    // artworkOrientationwidth: "",
-
     artworkDiscipline: "",
-    artworkTags: [],
+
+    artworkTags: "",
     promotion: "",
     promotionScore: "",
-
     productcategory: "",
     producttags: "",
     Fieldlocation: "",
     productstatus: "",
-    variations: [{ variationtype: "", variation: "" }],
-  };
+  });
 
-  const [searchParams] = useSearchParams();
+  useEffect(() => {
+    const fetchArtworkData = async () => {
+      if (id) {
+        const response = await axiosInstance.get(
+          `${ARTTIST_ENDPOINTS.GetArtWorkListById}/${id}`
+        );
+        console.log(response.data.data.additionalInfo);
+
+        setInitialValues((prevValues) => ({
+          ...prevValues,
+          ...response.data.data,
+          artistName: response.data.data?.owner?.artistName || "",
+          artworkTechnic:
+            response.data.data?.additionalInfo?.artworkTechnic || "",
+          artworkTheme: response.data.data?.additionalInfo?.artworkTheme || "",
+          artworkOrientation:
+            response.data.data?.additionalInfo?.artworkOrientation || "",
+
+          material: response.data.data?.additionalInfo?.material || "",
+          weight: response.data.data?.additionalInfo?.weight || "",
+          length: response.data.data?.additionalInfo?.length || "",
+          height: response.data.data?.additionalInfo?.height || "",
+          width: response.data.data?.additionalInfo?.width || "",
+          hangingAvailable:
+            response.data.data?.additionalInfo?.hangingAvailable || "",
+          hangingDescription:
+            response.data.data?.additionalInfo?.hangingDescription || "",
+          framed: response.data.data?.additionalInfo?.framed || "",
+
+          framedDescription:
+            response.data.data?.additionalInfo?.framedDescription || "",
+          frameHeight: response.data.data?.additionalInfo?.frameHeight || "",
+          frameLength: response.data.data?.additionalInfo?.frameLength || "",
+          frameWidth: response.data.data?.additionalInfo?.frameWidth || "",
+          // multi selceted options
+          artworkStyleType:
+            response.data.data?.additionalInfo?.artworkStyle.map((opt) => {
+              return { value: opt, label: opt };
+            }) || "",
+          emotions:
+            response.data.data?.additionalInfo?.emotions.map((opt) => {
+              return { value: opt, label: opt };
+            }) || "",
+          colors:
+            response.data.data?.additionalInfo?.colors.map((opt) => {
+              return { value: opt, label: opt };
+            }) || "",
+
+          offensive: response.data.data?.additionalInfo?.offensive || "",
+
+          purchaseCatalog:
+            response.data.data?.commercialization?.purchaseCatalog || "",
+          downwardOffer:
+            response.data.data?.commercialization?.downwardOffer || "",
+          upworkOffer: response.data.data?.commercialization?.upworkOffer || "",
+          acceptOfferPrice:
+            response.data.data?.commercialization?.acceptOfferPrice || "",
+          priceRequest:
+            response.data.data?.commercialization?.priceRequest || "",
+          artistbaseFees:
+            response.data.data?.commercialization?.artistbaseFees || "",
+          basePrice: response.data.data?.pricing?.basePrice || "",
+          dpersentage: response.data.data?.pricing?.dpersentage || "",
+          vatAmount: response.data.data?.pricing?.vatAmount || "",
+          artistFees: response.data.data?.pricing?.artistFees || "",
+
+          sku: response.data.data?.inventoryShipping?.sku || "",
+          pCode: response.data.data?.inventoryShipping?.pCode || "",
+          location: response.data.data?.inventoryShipping?.location || "",
+
+          artworkDiscipline:
+            response.data.data?.discipline?.artworkDiscipline || "",
+          artworkTags: response.data.data?.discipline?.artworkTags || "",
+
+          promotion: response.data.data?.promotions?.promotion || "",
+          promotionScore: response.data.data?.promotions?.promotionScore || "",
+
+          discountAcceptation:
+            response.data.data?.restriction?.discountAcceptation || "",
+
+          mainImage: response.data.data?.media?.mainImage || "",
+          backImage: response.data.data?.media?.backImage || "",
+          otherVideo: response.data.data?.media?.otherVideo || "",
+          mainVideo: response.data.data?.media?.mainVideo || "",
+        }));
+      }
+    };
+
+    fetchArtworkData();
+  }, [id]);
+
+
 
   const { mutate, isPending } = usePostArtWorkMutation();
 
@@ -161,14 +235,18 @@ const AddArtwork = () => {
     Object.keys(values).forEach((key) => {
       if (Array.isArray(values[key])) {
         values[key].forEach((item) => {
-          formData.append(key, item);
+          formData.append(key, JSON.stringify(item)); // Serialize each item as JSON
         });
       } else {
         formData.append(key, values[key]);
       }
     });
+    const newData = {
+      id: id,
+      data: formData,
+    };
 
-    mutate(formData);
+    mutate(newData);
   };
 
   const removeImage = (name: string, index: number) => {
@@ -192,10 +270,11 @@ const AddArtwork = () => {
   return (
     <Formik
       initialValues={initialValues}
+      enableReinitialize={true}
       // validationSchema={validationSchema}
       onSubmit={onSubmit}
     >
-      {({ handleSubmit, values, errors, touched }) => (
+      {({ handleSubmit, values, errors, touched, setFieldValue }) => (
         <div className="py-10 bg-white">
           <Header
             variant={{ size: "xl", theme: "dark", weight: "bold" }}
@@ -210,18 +289,18 @@ const AddArtwork = () => {
 
               <div className="flex flex-col lg:flex-row w-fit gap-4 flex-wrap mt-4 md:lg-0">
                 {buttonsData.map((button, index) => (
-                  <Button
+                  <span
                     key={index}
                     variant={{
                       fontSize: "base",
                       theme: "dark",
                       fontWeight: "500",
                     }}
-                    className="flex items-center gap-2 bg-black text-white text-[12px] md:text-[16px] px-2 py-2 lg:px-4 lg:py-3 rounded-lg hover:bg-gray-800"
+                    className="flex items-center cursor-pointer gap-2 bg-black text-white text-[12px] md:text-[16px] px-2 py-2 lg:px-4 lg:py-3 rounded-lg hover:bg-gray-800"
                   >
                     {/* <span>{button.icon}</span> */}
                     {button.label}
-                  </Button>
+                  </span>
                 ))}
               </div>
             </div>
@@ -282,16 +361,16 @@ const AddArtwork = () => {
                         Artwork creation year
                       </label>
 
-                      <select
+                      <Field
+                        as="select"
+                        id="artworkCreationYear"
                         name="artworkCreationYear"
-                        className="w-full bg-[#F9F9FC] border border-gray-300 rounded-md p-1 sm:p-3 outline-none"
+                        className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
                       >
                         {yearOption.map((year, index) => (
-                          <option key={index} value={year}>
-                            {year.year}
-                          </option>
+                          <option key={index}>{year.year}</option>
                         ))}
-                      </select>
+                      </Field>
                     </div>
 
                     <div className="w-full">
@@ -885,7 +964,7 @@ const AddArtwork = () => {
                       Short Description for hanging
                       <Field
                         type="text"
-                        id="ShortDescription"
+                        id="hangingDescription"
                         name="hangingDescription"
                         placeholder="Type Hanging description here. . .. . ."
                         className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full  p-1 sm:p-2.5 pb-10 "
@@ -924,10 +1003,10 @@ const AddArtwork = () => {
                           </label>
                           <Field
                             type="text"
-                            name={field.name} // Change here to field.name
+                            name={field.name}
                             id={field.name}
                             placeholder={field.placeholder}
-                            value={value}
+                            // value={value}
                             className="bg-[#F9F9FC] border mb-2 border-gray-300 outline-none text-[#203F58] text-sm rounded-lg block w-full p-1 sm:p-2.5 "
                           />
                         </span>
@@ -937,10 +1016,14 @@ const AddArtwork = () => {
                     <div className="">
                       <Select
                         options={options}
-                        defaultValue={value}
+                        // defaultValue={value}
                         placeholder="Select Artwork Style"
                         isMulti
-                        name="artworkStyle"
+                        name="artworkStyleType"
+                        value={values.artworkStyleType} // Bind to Formik's values
+                        onChange={(selectedOptions) =>
+                          setFieldValue("artworkStyleType", selectedOptions)
+                        }
                         styles={{
                           dropdownIndicator: () => ({
                             color: "black",
@@ -967,6 +1050,10 @@ const AddArtwork = () => {
                         placeholder="Emotions"
                         isMulti
                         name="emotions"
+                        value={values.emotions} // Bind to Formik's values
+                        onChange={(selectedOptions) =>
+                          setFieldValue("emotions", selectedOptions)
+                        }
                         styles={{
                           dropdownIndicator: () => ({
                             color: "black",
@@ -990,10 +1077,13 @@ const AddArtwork = () => {
                     <div>
                       <Select
                         options={options_2}
-                        defaultValue={value}
                         placeholder="Select Color"
                         isMulti
                         name="colors"
+                        value={values.colors} // Bind to Formik's values
+                        onChange={(selectedOptions) =>
+                          setFieldValue("colors", selectedOptions)
+                        }
                         styles={{
                           dropdownIndicator: () => ({
                             color: "black",
@@ -1172,8 +1262,8 @@ const AddArtwork = () => {
                     <label className="text-[#203F58] text-sm sm:text-base  font-semibold">
                       Artist Base Fess
                       <Field
-                        id="textclass"
-                        name="textclass"
+                        id="artistbaseFees"
+                        name="artistbaseFees"
                         placeholder="Artist Base Fess"
                         className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
                       ></Field>

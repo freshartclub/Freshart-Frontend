@@ -18,7 +18,6 @@ const ArtCardPagination = () => {
 
   const { data, isLoading } = useGetArtWorkList();
 
-  console.log("this is from dashborad", data);
   if (isLoading) {
     return <Loader />;
   }

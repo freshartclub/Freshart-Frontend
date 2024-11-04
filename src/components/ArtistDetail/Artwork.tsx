@@ -6,49 +6,50 @@ import "../../App.css";
 import like from "../../assets/like.png";
 import { useGetArtWorkList } from "./http/getArtWorkList";
 import Loader from "../ui/Loader";
-import { useNavigate } from "react-router-dom";
-import { useAppSelector } from "../../store/typedReduxHooks";
+import { NavLink, useNavigate } from "react-router-dom";
+import edit from "../ArtistDetail/assets/edit.png";
+import deleteimg from "../ArtistDetail/assets/Container (2).png";
 
-const highlightData = [
-  {
-    image: img1,
-    title: "Illustrator, painting",
-    heading: "Nineteenth-Century Pastel Portraits",
-    para: "Andrews meson",
-    size: "70 x 32 ",
-  },
-  {
-    image: img2,
-    title: "Illustrator, painting",
-    heading: "Nineteenth-Century Pastel Portraits",
-    para: "Andrews meson",
-    size: "70 x 32 ",
-  },
-  {
-    image: img3,
-    title: "Illustrator, painting",
-    heading: "Nineteenth-Century Pastel Portraits",
-    para: "Andrews meson",
-    size: "70 x 32 ",
-  },
-  {
-    image: img2,
-    title: "Illustrator, painting",
-    heading: "Nineteenth-Century Pastel Portraits",
-    para: "Andrews meson",
-    size: "70 x 32 ",
-  },
-];
+// const highlightData = [
+//   {
+//     image: img1,
+//     title: "Illustrator, painting",
+//     heading: "Nineteenth-Century Pastel Portraits",
+//     para: "Andrews meson",
+//     size: "70 x 32 ",
+//   },
+//   {
+//     image: img2,
+//     title: "Illustrator, painting",
+//     heading: "Nineteenth-Century Pastel Portraits",
+//     para: "Andrews meson",
+//     size: "70 x 32 ",
+//   },
+//   {
+//     image: img3,
+//     title: "Illustrator, painting",
+//     heading: "Nineteenth-Century Pastel Portraits",
+//     para: "Andrews meson",
+//     size: "70 x 32 ",
+//   },
+//   {
+//     image: img2,
+//     title: "Illustrator, painting",
+//     heading: "Nineteenth-Century Pastel Portraits",
+//     para: "Andrews meson",
+//     size: "70 x 32 ",
+//   },
+// ];
 
 const Artwork = () => {
   const { data, isLoading } = useGetArtWorkList();
-  console.log("this is from artWork List", data);
+
   // const data = useAppSelector((state) => state.user.user);
   const navigate = useNavigate();
-  const handleRedirectToDescription = (id) => {
-    navigate(`/artist-panel/artwork/details?id=${id}`);
-    window.scroll(0, 0);
-  };
+  // const handleRedirectToDescription = (id) => {
+  //   navigate(`/artist-panel/artwork/details?id=${id}`);
+  //   window.scroll(0, 0);
+  // };
 
   if (isLoading) {
     return <Loader />;
@@ -76,9 +77,18 @@ const Artwork = () => {
                   item.media.mainImage
                 }`}
                 alt="image"
-                className="w-[40vw] h-[50vh] object-cover cursor-pointer"
-                onClick={() => handleRedirectToDescription(item._id)}
+                className="w-[40vw] h-[50vh] object-cover cursor-pointer "
+                // onClick={() => handleRedirectToDescription(item._id)}
               />
+
+              <div className="absolute bottom-0 left-0 right-0 top-0 h-full w-full overflow-hidden bg-[#D9D9D9] bg-fixed flex gap-10 items-center justify-center opacity-0 transition duration-300 ease-in-out hover:opacity-[0.7] hover:cursor-pointer">
+                <div className="flex gap-5 ">
+                  <NavLink to={`/artist-panel/artwork/add?id=${item._id}`}>
+                    <img src={edit} className="" alt="" />
+                  </NavLink>
+                  <img src={deleteimg} className="" alt="" />
+                </div>
+              </div>
 
               {/* <button className="absolute top-2 right-[28px] border border-[#FFD9DE] rounded-full px-3 py-3 bg-white cursor-pointer">
                 <img src={like} alt="" className="w-[20px] h-[20px]" />

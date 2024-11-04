@@ -3,7 +3,6 @@ import deleteimg from "../assets/Container (2).png";
 import { NavLink } from "react-router-dom";
 
 const ArtCard = ({ record }: any) => {
-  console.log("this is record", record);
   return (
     <>
       <div

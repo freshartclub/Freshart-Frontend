@@ -33,7 +33,7 @@ export const artwork_orientation = [
     placeholder: "Height (cm)...dd",
   },
   {
-    name: "lenght",
+    name: "length",
     label: "Length",
     placeholder: "Length (cm)...",
   },
@@ -45,31 +45,41 @@ export const artwork_orientation = [
 ];
 
 export const Framed_dimension = [
-  { name: "frameHeight", label: "Height", placeholder: "Height (cm)..." },
-  { name: "frameLenght", label: "Length", placeholder: "Length (cm)..." },
-  { name: "frameWidth", label: "Width", placeholder: "Width (cm)..." },
+  { name: "frameHeight", label: "Frame Height", placeholder: "Height (cm)..." },
+  { name: "frameLength", label: "Frame Length", placeholder: "Length (cm)..." },
+  { name: "frameWidth", label: "Frame Width", placeholder: "Width (cm)..." },
 ];
 
 export const options = [
-  { value: "print", label: "print" },
-  { value: "art", label: "art" },
+  { value: "Print", label: "Print" },
+  { value: "Art", label: "Art" },
+  { value: "Cubism", label: "Cubism" },
+  { value: "Impressionism", label: "Impressionism" },
+  { value: "Surrealism", label: "Surrealism" },
+  { value: "Photorealism", label: "Photorealism" },
 ];
 
 export const options_1 = [
-  { value: "Dark", label: "Dark" },
-  { value: "highlights", label: "highlights" },
+  { value: "dark", label: "dark" },
+  { value: "highlight", label: "highlight" },
+  { value: "red", label: "red" },
+  { value: "Yellow", label: "Yellow" },
+  { value: "Naviblue", label: "Naviblue" },
 ];
 
 export const options_2 = [
-  { value: "Blue", label: "Blue" },
-  { value: "magenta", label: "magenta" },
+  { value: "dark", label: "dark" },
+  { value: "highlight", label: "highlight" },
+  { value: "red", label: "red" },
+  { value: "Yellow", label: "Yellow" },
+  { value: "Naviblue", label: "Naviblue" },
 ];
 
 export const buttonsData = [
-  { label: "Preview" },
-  { label: "Revalidate" },
-  { label: "generate QR code" },
-  { label: "generate certificate of authenticity" },
+  { label: "Preview", value: "preview", fn: () => {} },
+  { label: "Revalidate", value: "revalidate" },
+  { label: "generate QR code", value: "generate QR code" },
+  { label: "generate certificate of authenticity", value: "generate" },
 ];
 
 export const yearOption = [

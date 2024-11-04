@@ -23,9 +23,6 @@ const Layout: React.FC<LayoutProps> = ({
 
   const user = localStorage.getItem("profile");
 
-  // console.log(user);
-  // const navigate = useNavigate();
-
   const location = useLocation();
   const isLoginPage = location.pathname === "/login";
   const isSignUpPage = location.pathname === "/signup";

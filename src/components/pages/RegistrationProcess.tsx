@@ -21,7 +21,6 @@ const RegistrationProcess = () => {
   const { mutateAsync, isPending } = useCompleteRegistration();
 
   const { userId } = useAppSelector((state) => state.user);
-  console.log(userId);
 
   const countryOptions = [
     { value: "us", label: "United States" },
@@ -41,7 +40,6 @@ const RegistrationProcess = () => {
   };
 
   const redirectToPricePlan = (data: any) => {
-    console.log("Submitted Data: ", data);
     navigate("/priceandplans");
   };
 
@@ -89,7 +87,6 @@ const RegistrationProcess = () => {
   });
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log(data);
     const formData = new FormData();
 
     Object.keys(data).forEach((key) => {

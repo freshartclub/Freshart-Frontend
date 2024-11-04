@@ -5,7 +5,10 @@ export const ARTTIST_ENDPOINTS = {
   EditArtistProfile: `${ARTIST_BASE_URl}/edit-artist-profile `,
   RaiseTicket: `${ARTIST_BASE_URl}/create-ticket `,
   PostTicket: `${ARTIST_BASE_URl}/reply-ticket`,
-  GetArtWorkList: `${ARTIST_BASE_URl}/get-artist-artworks `,
+  GetArtWorkList: `${ARTIST_BASE_URl}/get-artist-artworks`,
+  GetArtWorkListById: `${ARTIST_BASE_URl}/get-artwork`,
+  AddArtWork: `${ARTIST_BASE_URl}/add-artwork`,
+
   // GetArtistArtwork: `${ARTIST_BASE_URl}/get-artist-artwork `,
   // DeleteArtwork: `${ARTIST_BASE_URl}/delete-artist-artwork `,
   // UpdateArtwork: `${ARTIST_BASE_URl}/update-artist-artwork `,

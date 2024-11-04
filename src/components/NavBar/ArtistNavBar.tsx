@@ -14,12 +14,10 @@ const ArtistNavBar = () => {
   const [isSearchBar, setIsSeachBar] = useState(false);
   const navigate = useNavigate();
   const user = useAppSelector((state) => state.user.user);
-  console.log(user);
 
   const disptach = useAppDispatch();
   const profile = localStorage.getItem("profile");
   const authToken = localStorage.getItem("auth_token");
-  console.log(authToken);
 
   const { mutate: logOut } = useLogOutMutation();
 

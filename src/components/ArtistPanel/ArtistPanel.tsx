@@ -24,7 +24,7 @@ const ArtistPanel = () => {
           <Route path="edit-artistprofile" element={<ArtistProfile />} />
           <Route path="ticket" element={<TicketHistory />} />
           {/* <Route path="ticket/:ticketId" element={<TicketDe />} /> */}
-          <Route path="/ticket/:id" element={<SingleTicket />} />
+          <Route path="/ticket_detail" element={<SingleTicket />} />
         </Routes>
       </div>
     </div>

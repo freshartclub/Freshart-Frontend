@@ -2,18 +2,25 @@ import { useMutation } from "@tanstack/react-query";
 
 import toast from "react-hot-toast";
 
-import { useNavigate } from "react-router-dom";
-import { ARTTIST_ENDPOINTS } from "../../../../http/apiEndPoints/Artist";
+import { useNavigate, useSearchParams } from "react-router-dom";
+// import { ARTTIST_ENDPOINTS } from "../../../../http/apiEndPoints/Artist";
 import axiosInstance from "../../../utils/axios";
 
 let toastId: any;
 
 async function usePostArtWork(input: any) {
-  return await await axiosInstance.post("/api/artist/add-artwork", input, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
+  // const [searchParams] = useSearchParams();
+  // const id = searchParams.get("id");
+  // console.log("id is from add artwork form ", id);
+  return await axiosInstance.post(
+    `/api/artist/add-artwork/${input.id}`,
+    input.data,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
 }
 
 const usePostArtWorkMutation = () => {
@@ -23,8 +30,6 @@ const usePostArtWorkMutation = () => {
     mutationFn: usePostArtWork,
 
     onSuccess: async (res) => {
-      console.log(res.data.id);
-
       navigate("/artist-panel/artwork");
       toast.success(res.data.message, {
         duration: 3000,

@@ -34,7 +34,6 @@ const Login: React.FC = () => {
   };
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log(data);
     try {
       await mutateAsync(data);
     } catch (error) {

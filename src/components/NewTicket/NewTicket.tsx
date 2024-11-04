@@ -34,7 +34,6 @@ const NewTicket = () => {
   const navigate = useNavigate();
   const { mutate, isPending } = useGetPostArtistTicketMutation();
   const onSubmit = async (values: object) => {
-    console.log(values);
     try {
       mutate(values);
     } catch (error) {

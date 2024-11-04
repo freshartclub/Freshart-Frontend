@@ -13,7 +13,6 @@ const EmailVerificationModal = ({ email, isOpen }) => {
       email,
       isArtistRequest: true,
     };
-    console.log(data);
     verifyOtp(data).then(() => {
       setIsOpen(false);
       setButton(false);

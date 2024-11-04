@@ -16,7 +16,6 @@ const ArtworkDetails = () => {
   const id = searchParams.get("id");
 
   const { data, isLoading } = useGetArtWorkList();
-  console.log(data);
 
   useEffect(() => {
     if (data) {
@@ -25,8 +24,6 @@ const ArtworkDetails = () => {
     }
   }, []);
 
-  console.log("Artwork:", artWork);
-  console.log("This is the ID:", id);
   if (!data) {
     return <Loader />;
   }

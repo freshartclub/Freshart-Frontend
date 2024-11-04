@@ -45,12 +45,13 @@ const TicketHistory: React.FC = () => {
   };
 
   const handleSearch = (query: string) => {
-    console.log("search query", query);
     setSearchQuery(query.trim());
 
     if (query) {
-      const filteredTickets = data.filter((item) =>
-        item.ticketId.toLowerCase().includes(query.toLowerCase())
+      const filteredTickets = data.filter(
+        (item) =>
+          item.ticketId.toLowerCase().includes(query.toLowerCase()) ||
+          item.subject.toLowerCase().includes(query.toLowerCase())
       );
       setTickets(filteredTickets);
       setTotalPages(Math.ceil(filteredTickets.length / ticketsPerPage));
@@ -67,8 +68,6 @@ const TicketHistory: React.FC = () => {
   const newTickets = data.filter((ticket) =>
     dayjs(ticket.createdAt).isAfter(now.subtract(3, "day"))
   );
-
-  console.log("itmes", data);
 
   if (!data) {
     return <Loader />;

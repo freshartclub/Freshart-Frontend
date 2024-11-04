@@ -17,16 +17,12 @@ const SignUpOtp = () => {
   const [localId, setLocalId] = useState("");
   const navigate = useNavigate();
 
-
   const handleBack = () => {
     navigate("/");
   };
 
   const userId = useAppSelector((state) => state.user.userId);
-  console.log(userId)
   const dispatch = useAppDispatch();
-
-
 
   const validationSchema = Yup.object().shape({
     passCode: Yup.string()
@@ -43,21 +39,23 @@ const SignUpOtp = () => {
     }
   }, []);
 
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
     resolver: yupResolver(validationSchema),
   });
 
   const { mutateAsync, isPending } = useVerifySignUpMutation();
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log(data)
     try {
       const newData = {
         id: localId,
         otp: data.passCode, // Ensure you're sending the correct OTP data
       };
 
-      console.log(newData);
       await mutateAsync(newData);
     } catch (error) {
       console.error(error.message);
@@ -83,7 +81,7 @@ const SignUpOtp = () => {
               variant={{ size: "base", theme: "dark", weight: "medium" }}
               className="lg:w-[60%] md:w-[80%] mx-auto mt-4 tracking-tight leading-1"
             >
-             Enter your validation code by Email
+              Enter your validation code by Email
             </P>
             <form onSubmit={handleSubmit(onSubmit)} className="my-5">
               <div>
@@ -91,9 +89,15 @@ const SignUpOtp = () => {
                   type="passCode"
                   placeholder="Validation Code"
                   {...register("passCode")}
-                  className={`border ${errors.passCode ? "border-red-500" : "border-[#D3D3D3]"} p-2 w-full rounded-md focus:outline-none`}
+                  className={`border ${
+                    errors.passCode ? "border-red-500" : "border-[#D3D3D3]"
+                  } p-2 w-full rounded-md focus:outline-none`}
                 />
-                {errors.passCode && <div className="text-red-500 text-sm text-left">{errors.passCode.message}</div>}
+                {errors.passCode && (
+                  <div className="text-red-500 text-sm text-left">
+                    {errors.passCode.message}
+                  </div>
+                )}
               </div>
 
               <Button
@@ -107,9 +111,10 @@ const SignUpOtp = () => {
                 className="mt-3 flex justify-center w-full mb-5"
                 type="submit"
               >
-                <P variant={{ size: "base", theme: "light", weight: "semiBold" }}>
-             { isPending ? "Vaildating..." :   "Verify Otp"}
-             
+                <P
+                  variant={{ size: "base", theme: "light", weight: "semiBold" }}
+                >
+                  {isPending ? "Vaildating..." : "Verify Otp"}
                 </P>
                 <img src={arrow} alt="arrow" className="ml-2 mt-1" />
               </Button>

@@ -9,8 +9,6 @@ interface ArtistGuardProps {
 const ArtistGuard = ({ children }: ArtistGuardProps) => {
   const isArtist = useAppSelector((state) => state.user.isArtist);
 
-  console.log(isArtist);
-
   if (!isArtist) return <Navigate to="/home" replace />;
 
   return <>{children}</>;

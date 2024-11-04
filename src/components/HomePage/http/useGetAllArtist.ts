@@ -5,7 +5,6 @@ import axiosInstance from "../../utils/axios";
 
 async function fetchData() {
   const { data } = await axiosInstance.get(`${ARTTIST_ENDPOINTS.GetAllArtist}`);
-  console.log("data is ", data);
   return data.data;
 }
 

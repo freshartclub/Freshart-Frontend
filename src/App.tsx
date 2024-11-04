@@ -106,7 +106,7 @@ const App: React.FC = () => {
   const { isLoading } = useCheckIsAuthorized();
   const [isAuthenticated] = useState<boolean>(false);
   const data = useAppSelector((state) => state.user.user);
-  console.log(data);
+ 
   if (isLoading) return <Loader />;
 
   return (

@@ -8,7 +8,6 @@ const useGetPostArtistTicketReplyMutation = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
-  console.log("id is ", id);
 
   const usePostTicketReply = async (input: any) => {
     return await axiosInstance.post(
@@ -20,7 +19,6 @@ const useGetPostArtistTicketReplyMutation = () => {
   return useMutation({
     mutationFn: usePostTicketReply,
     onSuccess: async (res) => {
-      console.log(res.data);
       navigate("/tickets");
       toast.success(res.data.message, {
         duration: 3000,

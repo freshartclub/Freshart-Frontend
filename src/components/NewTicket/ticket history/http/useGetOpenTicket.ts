@@ -4,10 +4,14 @@ import { ARTTIST_ENDPOINTS } from "../../../../http/apiEndPoints/Artist";
 import axiosInstance from "../../../utils/axios";
 
 async function fetchData() {
-  const { data } = await axiosInstance.get(
-    `${ARTTIST_ENDPOINTS.GetArtistTickets}`
-  );
-  return data.data;
+  try {
+    const response = await axiosInstance.get(
+      `${ARTTIST_ENDPOINTS.GetArtistTicketsDetails}/${id}`
+    );
+    setTicket(response.data);
+  } catch (error) {
+    console.error("Error fetching ticket:", error);
+  }
 }
 
 export const useGetTicket = () => {

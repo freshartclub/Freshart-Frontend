@@ -10,7 +10,6 @@ import ThirdSection from "./ThirdSection";
 
 const GetStarted = () => {
   const isAuthorized = useAppSelector((state) => state.user.isArtist);
-  console.log(isAuthorized);
 
   return (
     <>

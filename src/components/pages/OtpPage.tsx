@@ -76,7 +76,6 @@ const OtpPage = () => {
         otp: otp,
       };
 
-      console.log(newData);
       await mutateAsync(newData);
     } catch (error) {
       console.error(error.message);

@@ -63,8 +63,6 @@ const BecomeArtist = () => {
     useOtpVerifyMutationBecomeAnArtist();
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log("Form data:", data);
-
     const formData = new FormData();
 
     Object.keys(data).forEach((key) => {
@@ -117,7 +115,6 @@ const BecomeArtist = () => {
       email,
       isArtistRequest: true,
     };
-    console.log(data);
     verifyOtp(data).then(() => {
       setIsOpen(false);
       setButton(false);

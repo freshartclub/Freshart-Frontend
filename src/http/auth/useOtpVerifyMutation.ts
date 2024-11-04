@@ -19,8 +19,6 @@ const useOtpVerifyMutation = () => {
     mutationFn: verifyOtp,
 
     onSuccess: async (res, input) => {
-      console.log(res.data);
-
       toast.dismiss(toastId);
       toast.success(res.data.message);
       navigate("/reset-password" + "?id=" + res.data.id);

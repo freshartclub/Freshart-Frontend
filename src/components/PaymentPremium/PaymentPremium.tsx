@@ -57,7 +57,6 @@ const PaymentPremium = () => {
   const [selectedCountry, setSelectedCountry] = useState(dummyCountries[0]);
 
   const handleTabClick = (tab: string) => {
-    console.log(`Switching to: ${tab}`);
     setActiveTab(tab);
   };
 

@@ -40,7 +40,6 @@ const SignUp = () => {
   const { mutateAsync, isPending } = useSignUpMutation();
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log(data);
     try {
       await mutateAsync(data);
     } catch (error) {
