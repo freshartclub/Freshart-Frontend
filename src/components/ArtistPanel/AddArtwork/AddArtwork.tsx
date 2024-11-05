@@ -28,6 +28,7 @@ import { useSearchParams } from "react-router-dom";
 import usePostArtWorkMutation from "./http/usePostArtwork";
 import { useGetArtWorkById } from "./http/useGetArtworkById";
 import { ARTTIST_ENDPOINTS } from "../../../http/apiEndPoints/Artist";
+import Loader from "../../ui/Loader";
 
 const AddArtwork = () => {
   const [progress, setProgress] = useState(0);
@@ -51,7 +52,6 @@ const AddArtwork = () => {
 
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
-  
 
   const [initialValues, setInitialValues] = useState({
     artworkName: "",
@@ -112,99 +112,82 @@ const AddArtwork = () => {
     Fieldlocation: "",
     productstatus: "",
   });
+  const { data, isLoading, isFetching } = useGetArtWorkById(id);
 
   useEffect(() => {
-    const fetchArtworkData = async () => {
-      if (id) {
-        const response = await axiosInstance.get(
-          `${ARTTIST_ENDPOINTS.GetArtWorkListById}/${id}`
-        );
-        console.log(response.data.data.additionalInfo);
+    if (id) {
+      setInitialValues((prevValues) => ({
+        ...prevValues,
+        // ...response.data.data,
+        artistName: data?.owner?.artistName || "",
+        artworkSeries: data?.artworkSeries || "",
+        artworkCreationYear: data?.artworkCreationYear || "",
+        artworkName: data?.artworkName || "",
+        productDescription: data?.productDescription || "",
 
-        setInitialValues((prevValues) => ({
-          ...prevValues,
-          ...response.data.data,
-          artistName: response.data.data?.owner?.artistName || "",
-          artworkTechnic:
-            response.data.data?.additionalInfo?.artworkTechnic || "",
-          artworkTheme: response.data.data?.additionalInfo?.artworkTheme || "",
-          artworkOrientation:
-            response.data.data?.additionalInfo?.artworkOrientation || "",
+        artworkTechnic: data?.additionalInfo?.artworkTechnic || "",
+        artworkTheme: data?.additionalInfo?.artworkTheme || "",
+        artworkOrientation: data?.additionalInfo?.artworkOrientation || "",
 
-          material: response.data.data?.additionalInfo?.material || "",
-          weight: response.data.data?.additionalInfo?.weight || "",
-          length: response.data.data?.additionalInfo?.length || "",
-          height: response.data.data?.additionalInfo?.height || "",
-          width: response.data.data?.additionalInfo?.width || "",
-          hangingAvailable:
-            response.data.data?.additionalInfo?.hangingAvailable || "",
-          hangingDescription:
-            response.data.data?.additionalInfo?.hangingDescription || "",
-          framed: response.data.data?.additionalInfo?.framed || "",
+        material: data?.additionalInfo?.material || "",
+        weight: data?.additionalInfo?.weight || "",
+        length: data?.additionalInfo?.length || "",
+        height: data?.additionalInfo?.height || "",
+        width: data?.additionalInfo?.width || "",
+        hangingAvailable: data?.additionalInfo?.hangingAvailable || "",
+        hangingDescription: data?.additionalInfo?.hangingDescription || "",
+        framed: data?.additionalInfo?.framed || "",
 
-          framedDescription:
-            response.data.data?.additionalInfo?.framedDescription || "",
-          frameHeight: response.data.data?.additionalInfo?.frameHeight || "",
-          frameLength: response.data.data?.additionalInfo?.frameLength || "",
-          frameWidth: response.data.data?.additionalInfo?.frameWidth || "",
-          // multi selceted options
-          artworkStyleType:
-            response.data.data?.additionalInfo?.artworkStyle.map((opt) => {
-              return { value: opt, label: opt };
-            }) || "",
-          emotions:
-            response.data.data?.additionalInfo?.emotions.map((opt) => {
-              return { value: opt, label: opt };
-            }) || "",
-          colors:
-            response.data.data?.additionalInfo?.colors.map((opt) => {
-              return { value: opt, label: opt };
-            }) || "",
+        framedDescription: data?.additionalInfo?.framedDescription || "",
+        frameHeight: data?.additionalInfo?.frameHeight || "",
+        frameLength: data?.additionalInfo?.frameLength || "",
+        frameWidth: data?.additionalInfo?.frameWidth || "",
+        // multi selceted options
+        artworkStyleType:
+          data?.additionalInfo?.artworkStyle?.map((opt) => {
+            return { value: opt, label: opt };
+          }) || "",
+        emotions:
+          data?.additionalInfo?.emotions?.map((opt) => {
+            return { value: opt, label: opt };
+          }) || "",
+        colors:
+          data?.additionalInfo?.colors?.map((opt) => {
+            return { value: opt, label: opt };
+          }) || "",
 
-          offensive: response.data.data?.additionalInfo?.offensive || "",
+        offensive: data?.additionalInfo?.offensive || "",
 
-          purchaseCatalog:
-            response.data.data?.commercialization?.purchaseCatalog || "",
-          downwardOffer:
-            response.data.data?.commercialization?.downwardOffer || "",
-          upworkOffer: response.data.data?.commercialization?.upworkOffer || "",
-          acceptOfferPrice:
-            response.data.data?.commercialization?.acceptOfferPrice || "",
-          priceRequest:
-            response.data.data?.commercialization?.priceRequest || "",
-          artistbaseFees:
-            response.data.data?.commercialization?.artistbaseFees || "",
-          basePrice: response.data.data?.pricing?.basePrice || "",
-          dpersentage: response.data.data?.pricing?.dpersentage || "",
-          vatAmount: response.data.data?.pricing?.vatAmount || "",
-          artistFees: response.data.data?.pricing?.artistFees || "",
+        purchaseCatalog: data?.commercialization?.purchaseCatalog || "",
+        downwardOffer: data?.commercialization?.downwardOffer || "",
+        upworkOffer: data?.commercialization?.upworkOffer || "",
+        acceptOfferPrice: data?.commercialization?.acceptOfferPrice || "",
+        priceRequest: data?.commercialization?.priceRequest || "",
+        artistbaseFees: data?.commercialization?.artistbaseFees || "",
+        basePrice: data?.pricing?.basePrice || "",
+        dpersentage: data?.pricing?.dpersentage || "",
+        vatAmount: data?.pricing?.vatAmount || "",
+        artistFees: data?.pricing?.artistFees || "",
 
-          sku: response.data.data?.inventoryShipping?.sku || "",
-          pCode: response.data.data?.inventoryShipping?.pCode || "",
-          location: response.data.data?.inventoryShipping?.location || "",
+        sku: data?.inventoryShipping?.sku || "",
+        pCode: data?.inventoryShipping?.pCode || "",
+        location: data?.inventoryShipping?.location || "",
 
-          artworkDiscipline:
-            response.data.data?.discipline?.artworkDiscipline || "",
-          artworkTags: response.data.data?.discipline?.artworkTags || "",
+        artworkDiscipline: data?.discipline?.artworkDiscipline || "",
+        artworkTags: data?.discipline?.artworkTags || "",
 
-          promotion: response.data.data?.promotions?.promotion || "",
-          promotionScore: response.data.data?.promotions?.promotionScore || "",
+        promotion: data?.promotions?.promotion || "",
+        promotionScore: data?.promotions?.promotionScore || "",
 
-          discountAcceptation:
-            response.data.data?.restriction?.discountAcceptation || "",
+        discountAcceptation: data?.restriction?.discountAcceptation || "",
 
-          mainImage: response.data.data?.media?.mainImage || "",
-          backImage: response.data.data?.media?.backImage || "",
-          otherVideo: response.data.data?.media?.otherVideo || "",
-          mainVideo: response.data.data?.media?.mainVideo || "",
-        }));
-      }
-    };
-
-    fetchArtworkData();
-  }, [id]);
-
-
+        mainImage: data?.media?.mainImage || "",
+        backImage: data?.media?.backImage || "",
+        otherVideo: data?.media?.otherVideo || "",
+        mainVideo: data?.media?.mainVideo || "",
+      }));
+    }
+  }, [id, data]);
 
   const { mutate, isPending } = usePostArtWorkMutation();
 
@@ -266,6 +249,10 @@ const AddArtwork = () => {
   };
 
   const [value, setValue] = useState(null);
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <Formik
@@ -388,16 +375,26 @@ const AddArtwork = () => {
                           </span>
                         </p>
                       </div>
-                      <select
+
+                      <Field
+                        as="select"
+                        id="artworkSeries"
+                        name="artworkSeries"
+                        className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
+                      >
+                        {seriesData.map((series, index) => (
+                          <option key={index}>{series.series}</option>
+                        ))}
+                      </Field>
+
+                      {/* <select
                         name="artworkSeries"
                         className="w-full bg-[#F9F9FC] border border-gray-300 rounded-md p-1 sm:p-3 outline-none"
                       >
                         {seriesData.map((series, index) => (
-                          <option key={index} value={series}>
-                            {series.series}
-                          </option>
+                          <option key={index}>{series.series}</option>
                         ))}
-                      </select>
+                      </select> */}
                     </div>
                   </div>
 
