@@ -244,25 +244,30 @@ const artistData = [
 
 const ITEMS_PER_PAGE = 8;
 
-const AplhaFilter = ({ query }: any) => {
+const AplhaFilter = ({ query, data }: any) => {
+  console.log(data);
+
   const [selectedLetter, setSelectedLetter] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
 
   const filteredArtists = selectedLetter
-    ? artistData.filter((artist) =>
-        artist.name.toLowerCase().startsWith(selectedLetter.toLowerCase())
+    ? data?.artists?.filter((artist) =>
+        artist.artistName.toLowerCase().startsWith(selectedLetter.toLowerCase())
       )
-    : artistData;
-  const totalPages = Math.ceil(filteredArtists.length / ITEMS_PER_PAGE);
+    : data?.artists;
 
-  const currentItems = filteredArtists.slice(
+  console.log("FilteredItems", filteredArtists);
+
+  const totalPages = Math.ceil(filteredArtists?.length / ITEMS_PER_PAGE);
+
+  const currentItems = filteredArtists?.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );
 
-  const filteredItems = currentItems.filter((item) =>
-    item.name.toLowerCase().includes(query.toLowerCase())
+  const filteredItems = currentItems?.filter((item) =>
+    item?.artistName.toLowerCase().includes(query.toLowerCase())
   );
 
   const handlePrevious = () => {
@@ -278,8 +283,8 @@ const AplhaFilter = ({ query }: any) => {
   };
 
   const handleLetterClick = (letter: string) => {
-    const matchingArtists = artistData.filter((artist) =>
-      artist.name.toLowerCase().startsWith(letter.toLowerCase())
+    const matchingArtists = data?.artists?.filter((artist) =>
+      artist.artistName.toLowerCase().startsWith(letter.toLowerCase())
     );
 
     if (matchingArtists.length === 0) {
@@ -295,8 +300,8 @@ const AplhaFilter = ({ query }: any) => {
     setCurrentPage(1);
   };
 
-  const handleArtistDetail = () => {
-    navigate("/artist_detail");
+  const handleArtistDetail = (id) => {
+    navigate(`/artist_detail?id=${id}`);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -306,6 +311,7 @@ const AplhaFilter = ({ query }: any) => {
         <P
           onClick={handleAllClick}
           variant={{ size: "base", theme: "dark", weight: "semiBold" }}
+          className="cursor-pointer"
         >
           All
         </P>
@@ -314,6 +320,7 @@ const AplhaFilter = ({ query }: any) => {
             <P
               onClick={() => handleLetterClick(item.data)}
               variant={{ size: "base", theme: "dark", weight: "semiBold" }}
+              className="cursor-pointer"
             >
               {item.data}
             </P>
@@ -322,23 +329,40 @@ const AplhaFilter = ({ query }: any) => {
       </div>
 
       <div className="grid xl:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5 mb-10">
-        {filteredItems.map((item, index) => (
+        {filteredItems?.map((item, index) => (
           <div key={index} className=" text-center">
             <div
               className="mt-14 rounded-lg border border-[#FF536B] flex flex-col items-center"
-              onClick={handleArtistDetail}
+              onClick={() => handleArtistDetail(item?._id)}
             >
-              <img src={item.profile} alt="profile" className="-mt-10" />
-              <h1 className="text-xl my-1">{item.name}</h1>
-              <p className="text-sm mb-2">{item.profession}</p>
-              <img src={item.image} alt="Artwork" className="p-4 w-full" />
+              <img
+                src={`${data.url}/uploads/users/${item.profile.mainImage}`}
+                alt="profile"
+                className="-mt-10 w-[10vh] h-[10vh] rounded-full object-cover"
+              />
+              <h1 className="text-xl my-1">{item.artistName}</h1>
+              <p className="text-sm mb-2">
+                {" "}
+                {Array.isArray(item?.aboutArtist?.discipline) &&
+                  item?.aboutArtist?.discipline.map((iw, i) => (
+                    <span key={i}>
+                      {iw.discipline}
+                      {i < item?.aboutArtist?.discipline.length - 1 && "| "}
+                    </span>
+                  ))}
+              </p>
+              <img
+                src={`${data.url}/uploads/users/${item.profile.inProcessImage}`}
+                alt="Artwork"
+                className="p-4 w-[30vw] h-[30vh] object-cover"
+              />
             </div>
           </div>
         ))}
       </div>
 
       {/* Pagination Controls */}
-      {filteredArtists.length > ITEMS_PER_PAGE && (
+      {filteredArtists?.length > ITEMS_PER_PAGE && (
         <div className="flex justify-center my-5">
           <button
             className="mx-2 px-4 py-2 bg-gray-300 rounded-lg"

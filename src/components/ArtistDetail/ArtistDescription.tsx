@@ -29,12 +29,17 @@ const credential = [
   },
 ];
 
-const ArtistDescription = () => {
+const ArtistDescription = ({ data }) => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("highlight");
   const redirectToCircle = () => {
     navigate("/circleblog");
   };
+
+  const aboutText = data?.artist?.aboutArtist?.about.replace(
+    /^<p>|<\/p>$/g,
+    ""
+  );
   return (
     <div>
       <div className="flex gap-5 sm:justify-end justify-center items-center my-4">
@@ -226,27 +231,17 @@ const ArtistDescription = () => {
               variant={{ size: "base", theme: "dark", weight: "normal" }}
               className="leading-7 mb-7"
             >
-              Contrary to popular belief, Lorem Ipsum is not simply random text.
-              It has roots in a piece of classNameical Latin literature from 45
-              BC, making it over 2000 years old. Richard McClintock, a Latin
-              professor at Hampden-Sydney College in Virginia, looked up one of
-              the more obscure Latin words, consectetur, from a Lorem Ipsum
-              passage, and going through the cites of the word in classNameical
-              literature, discovered the undoubtable source. Lorem Ipsum comes
-              from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et
-              Malorum" (The Extremes of Good and Evil) by Cicero, written in 45
-              BC. This book is a treatise on the theory of ethics, very popular
-              during the Renaissance.{" "}
+              {aboutText}
             </P>
 
-            <P
+            {/* <P
               variant={{ size: "base", theme: "dark", weight: "normal" }}
               className="border-b pb-7"
             >
               Many desktop publishing packages and web page editors now use
               Lorem Ipsum as their default model text, and a search for 'lorem
               ipsum' will uncover many web sites still in their infancy.
-            </P>
+            </P> */}
 
             <div>
               <P

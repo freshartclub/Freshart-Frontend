@@ -2,6 +2,7 @@ import { useState } from "react";
 import AplhaFilter from "./AplhaFilter";
 import BannerSection from "./BannerSection";
 import FilterSection from "./FilterSection";
+import { useGetAllArtist } from "./https/useGetAllArtist";
 
 const AllArtist = () => {
   const [query, setQuery] = useState("");
@@ -9,12 +10,16 @@ const AllArtist = () => {
   const search = (e: any) => {
     setQuery(e.target.value);
   };
+
+  const { data, isLoading } = useGetAllArtist();
+
+  console.log(data);
   return (
     <div>
       <BannerSection />
       <div className="container mx-auto sm:px-6 px-3 ">
         <FilterSection query={query} search={search} />
-        <AplhaFilter query={query} />
+        <AplhaFilter query={query} data={data} />
       </div>
     </div>
   );

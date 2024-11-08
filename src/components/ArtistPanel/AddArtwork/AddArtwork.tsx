@@ -29,9 +29,15 @@ import usePostArtWorkMutation from "./http/usePostArtwork";
 import { useGetArtWorkById } from "./http/useGetArtworkById";
 import { ARTTIST_ENDPOINTS } from "../../../http/apiEndPoints/Artist";
 import Loader from "../../ui/Loader";
+import AdditionalSelect from "../../ui/AdditionalSelect";
 
 const AddArtwork = () => {
   const [progress, setProgress] = useState(0);
+  const artworkTechnic = [
+    { value: "color1", label: "Color1" },
+    { value: "color2", label: "Color2" },
+    { value: "color3", label: "Color3" },
+  ];
 
   // const validationSchema = Yup.object({
   //   name: Yup.string().required("Name is required"),
@@ -49,7 +55,6 @@ const AddArtwork = () => {
   const [images, setImages] = useState([]);
   const [mainVideo, setMainVideo] = useState(null);
   const [otherVideos, setOtherVideos] = useState([]);
-
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
 
@@ -96,6 +101,8 @@ const AddArtwork = () => {
     colors: [],
     purchaseCatalog: "",
     artistFees: "",
+    availableTo: "",
+    dicountAcceptation: "",
     downwardOffer: "",
     upworkOffer: "",
     acceptOfferPrice: "",
@@ -103,7 +110,7 @@ const AddArtwork = () => {
     artistbaseFees: "",
     dpersentage: "",
     artworkDiscipline: "",
-
+    collectionList: "",
     artworkTags: "",
     promotion: "",
     promotionScore: "",
@@ -113,78 +120,82 @@ const AddArtwork = () => {
     productstatus: "",
   });
   const { data, isLoading, isFetching } = useGetArtWorkById(id);
+  console.log(data);
 
   useEffect(() => {
     if (id) {
       setInitialValues((prevValues) => ({
         ...prevValues,
         // ...response.data.data,
-        artistName: data?.owner?.artistName || "",
-        artworkSeries: data?.artworkSeries || "",
-        artworkCreationYear: data?.artworkCreationYear || "",
-        artworkName: data?.artworkName || "",
-        productDescription: data?.productDescription || "",
+        availableTo: data?.data?.restriction?.availableTo || "",
+        collectionList: data?.data?.collectionList || "",
+        discountAcceptation: data?.data?.restriction?.discountAcceptation || "",
+        artistName: data?.data?.owner?.artistName || "",
+        artworkSeries: data?.data?.artworkSeries || "",
+        artworkCreationYear: data?.data?.artworkCreationYear || "",
+        artworkName: data?.data?.artworkName || "",
+        productDescription: data?.data?.productDescription || "",
 
-        artworkTechnic: data?.additionalInfo?.artworkTechnic || "",
-        artworkTheme: data?.additionalInfo?.artworkTheme || "",
-        artworkOrientation: data?.additionalInfo?.artworkOrientation || "",
+        artworkTechnic: data?.data?.additionalInfo?.artworkTechnic || "",
+        artworkTheme: data?.data?.additionalInfo?.artworkTheme || "",
+        artworkOrientation:
+          data?.data?.additionalInfo?.artworkOrientation || "",
 
-        material: data?.additionalInfo?.material || "",
-        weight: data?.additionalInfo?.weight || "",
-        length: data?.additionalInfo?.length || "",
-        height: data?.additionalInfo?.height || "",
-        width: data?.additionalInfo?.width || "",
-        hangingAvailable: data?.additionalInfo?.hangingAvailable || "",
-        hangingDescription: data?.additionalInfo?.hangingDescription || "",
-        framed: data?.additionalInfo?.framed || "",
+        material: data?.data?.additionalInfo?.material || "",
+        weight: data?.data?.additionalInfo?.weight || "",
+        length: data?.data?.additionalInfo?.length || "",
+        height: data?.data?.additionalInfo?.height || "",
+        width: data?.data?.additionalInfo?.width || "",
+        hangingAvailable: data?.data?.additionalInfo?.hangingAvailable || "",
+        hangingDescription:
+          data?.data?.additionalInfo?.hangingDescription || "",
+        framed: data?.data?.additionalInfo?.framed || "",
 
-        framedDescription: data?.additionalInfo?.framedDescription || "",
-        frameHeight: data?.additionalInfo?.frameHeight || "",
-        frameLength: data?.additionalInfo?.frameLength || "",
-        frameWidth: data?.additionalInfo?.frameWidth || "",
+        framedDescription: data?.data?.additionalInfo?.framedDescription || "",
+        frameHeight: data?.data?.additionalInfo?.frameHeight || "",
+        frameLength: data?.data?.additionalInfo?.frameLength || "",
+        frameWidth: data?.data?.additionalInfo?.frameWidth || "",
         // multi selceted options
         artworkStyleType:
-          data?.additionalInfo?.artworkStyle?.map((opt) => {
+          data?.data?.additionalInfo?.artworkStyle?.map((opt) => {
             return { value: opt, label: opt };
           }) || "",
         emotions:
-          data?.additionalInfo?.emotions?.map((opt) => {
+          data?.data?.additionalInfo?.emotions?.map((opt) => {
             return { value: opt, label: opt };
           }) || "",
         colors:
-          data?.additionalInfo?.colors?.map((opt) => {
+          data?.data?.additionalInfo?.colors?.map((opt) => {
             return { value: opt, label: opt };
           }) || "",
 
-        offensive: data?.additionalInfo?.offensive || "",
+        offensive: data?.data?.additionalInfo?.offensive || "",
 
-        purchaseCatalog: data?.commercialization?.purchaseCatalog || "",
-        downwardOffer: data?.commercialization?.downwardOffer || "",
-        upworkOffer: data?.commercialization?.upworkOffer || "",
-        acceptOfferPrice: data?.commercialization?.acceptOfferPrice || "",
-        priceRequest: data?.commercialization?.priceRequest || "",
-        artistbaseFees: data?.commercialization?.artistbaseFees || "",
-        basePrice: data?.pricing?.basePrice || "",
-        dpersentage: data?.pricing?.dpersentage || "",
-        vatAmount: data?.pricing?.vatAmount || "",
-        artistFees: data?.pricing?.artistFees || "",
+        purchaseCatalog: data?.data?.commercialization?.purchaseCatalog || "",
+        downwardOffer: data?.data?.commercialization?.downwardOffer || "",
+        upworkOffer: data?.data?.commercialization?.upworkOffer || "",
+        acceptOfferPrice: data?.data?.commercialization?.acceptOfferPrice || "",
+        priceRequest: data?.data?.commercialization?.priceRequest || "",
+        artistbaseFees: data?.data?.commercialization?.artistbaseFees || "",
+        basePrice: data?.data?.pricing?.basePrice || "",
+        dpersentage: data?.data?.pricing?.dpersentage || "",
+        vatAmount: data?.data?.pricing?.vatAmount || "",
+        artistFees: data?.data?.pricing?.artistFees || "",
 
-        sku: data?.inventoryShipping?.sku || "",
-        pCode: data?.inventoryShipping?.pCode || "",
-        location: data?.inventoryShipping?.location || "",
+        sku: data?.data?.inventoryShipping?.sku || "",
+        pCode: data?.data?.inventoryShipping?.pCode || "",
+        location: data?.data?.inventoryShipping?.location || "",
 
-        artworkDiscipline: data?.discipline?.artworkDiscipline || "",
-        artworkTags: data?.discipline?.artworkTags || "",
+        artworkDiscipline: data?.data?.discipline?.artworkDiscipline || "",
+        artworkTags: data?.data?.discipline?.artworkTags || "",
 
-        promotion: data?.promotions?.promotion || "",
-        promotionScore: data?.promotions?.promotionScore || "",
+        promotion: data?.data?.promotions?.promotion || "",
+        promotionScore: data?.data?.promotions?.promotionScore || "",
 
-        discountAcceptation: data?.restriction?.discountAcceptation || "",
-
-        mainImage: data?.media?.mainImage || "",
-        backImage: data?.media?.backImage || "",
-        otherVideo: data?.media?.otherVideo || "",
-        mainVideo: data?.media?.mainVideo || "",
+        mainImage: data?.data?.media?.mainImage || "",
+        backImage: data?.data?.media?.backImage || "",
+        otherVideo: data?.data?.media?.otherVideo || "",
+        mainVideo: data?.data?.media?.mainVideo || "",
       }));
     }
   }, [id, data]);
@@ -233,14 +244,14 @@ const AddArtwork = () => {
   };
 
   const removeImage = (name: string, index: number) => {
-    if (name === "mainPhoto") {
+    if (name === "mainImage") {
       setMainImage(null);
-    } else if (name === "backPhoto") {
+    } else if (name === "backImage") {
       setBackImage(null);
-    } else if (name === "inProcessPhotos") {
+    } else if (name === "inProcessImage") {
       setInProcessImage(null);
-    } else if (name === "detailPhotos") {
-      setImages(detailPhotos.filter((_, i) => i !== index));
+    } else if (name === "images") {
+      setImages(images.filter((_, i) => i !== index));
     } else if (name === "mainvideo") {
       setMainVideo(null);
     } else if (name === "otherVideos") {
@@ -249,6 +260,17 @@ const AddArtwork = () => {
   };
 
   const [value, setValue] = useState(null);
+  useEffect(() => {
+    if (data?.data) {
+      setMainImage(`${data.url}/uploads/users/${data.data?.media?.mainImage}`);
+      setBackImage(`${data.url}/uploads/users/${data.data?.media?.backImage}`);
+      setInProcessImage(
+        `${data.url}/uploads/users/${data.data?.media?.inProcessImage}`
+      );
+    }
+  }, []);
+
+  console.log(mainImage);
 
   if (isLoading) {
     return <Loader />;
@@ -354,6 +376,9 @@ const AddArtwork = () => {
                         name="artworkCreationYear"
                         className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
                       >
+                        <option value="" disabled selected>
+                          Select type
+                        </option>
                         {yearOption.map((year, index) => (
                           <option key={index}>{year.year}</option>
                         ))}
@@ -382,6 +407,9 @@ const AddArtwork = () => {
                         name="artworkSeries"
                         className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
                       >
+                        <option value="" disabled selected>
+                          Select type
+                        </option>
                         {seriesData.map((series, index) => (
                           <option key={index}>{series.series}</option>
                         ))}
@@ -450,10 +478,14 @@ const AddArtwork = () => {
                           className="hidden"
                         />
                         <div className="bg-[#F9F9FC]  border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
-                          {mainImage ? (
+                          {data?.data?.media?.mainImage || mainImage ? (
                             <div className="relative">
                               <img
-                                src={URL.createObjectURL(mainImage)}
+                                src={
+                                  id
+                                    ? `${data.url}/uploads/users/${data.data?.media?.mainImage}`
+                                    : URL.createObjectURL(mainImage)
+                                }
                                 alt="image"
                                 className="w-28 h-28 object-cover"
                               />
@@ -517,7 +549,11 @@ const AddArtwork = () => {
                           {backImage ? (
                             <div className="relative">
                               <img
-                                src={URL.createObjectURL(backImage)}
+                                src={
+                                  id
+                                    ? `${data.url}/uploads/users/${data.data?.media?.backImage}`
+                                    : URL.createObjectURL(backImage)
+                                }
                                 alt="image"
                                 className="w-28 h-28 object-cover"
                               />
@@ -583,7 +619,11 @@ const AddArtwork = () => {
                           {inProcessImage ? (
                             <div className="relative">
                               <img
-                                src={URL.createObjectURL(inProcessImage)}
+                                src={
+                                  id
+                                    ? `${data.url}/uploads/users/${data.data?.media?.inProcessImage}`
+                                    : URL.createObjectURL(inProcessImage)
+                                }
                                 alt="image"
                                 className="w-28 h-28 object-cover"
                               />
@@ -858,10 +898,14 @@ const AddArtwork = () => {
                         name="artworkTechnic"
                         className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full  p-1 sm:p-2.5 "
                       >
-                        <option>Select type </option>
-                        <option>one</option>
-                        <option>three</option>
-                        <option>four</option>
+                        <option value="" disabled selected>
+                          Select type
+                        </option>
+                        <option>Painting</option>
+                        <option>Dry Brushing</option>
+                        <option>Under Painting</option>
+                        <option>Acrylic Painting</option>
+                        <option>Glazing</option>
                       </Field>
                     </label>
 
@@ -873,10 +917,15 @@ const AddArtwork = () => {
                         name="artworkTheme"
                         className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
                       >
-                        <option>Select type </option>
-                        <option>one</option>
-                        <option>three</option>
-                        <option>four</option>
+                        <option value="" disabled selected>
+                          Select type
+                        </option>
+                        <option>Words-Poetry,Litreature,Ouotes,Phrase</option>
+                        <option>Vingettes Of Nature - Observation </option>
+
+                        <option>Observations-Realism</option>
+                        <option>Expression-Emotions</option>
+                        <option>Seascape-Marine Life</option>
                       </Field>
                     </label>
                   </div>
@@ -889,10 +938,13 @@ const AddArtwork = () => {
                       name="artworkOrientation"
                       className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
                     >
+                      <option value="" disabled selected>
+                        Select type
+                      </option>
                       <option>Square </option>
                       <option>Rectengle</option>
-                      <option>three</option>
-                      <option>four</option>
+                      <option>Circle</option>
+                      <option>Star</option>
                     </Field>
                   </label>
 
@@ -905,10 +957,14 @@ const AddArtwork = () => {
                         name="material"
                         className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
                       >
+                        <option value="" disabled selected>
+                          Select type
+                        </option>
                         <option>Paper</option>
-                        <option>one</option>
-                        <option>three</option>
-                        <option>four</option>
+                        <option>Watercolor Paper</option>
+                        <option>Mixed Media Paper</option>
+                        <option>Glaze Paper</option>
+                        <option>Drawing Paper</option>
                       </Field>
                     </label>
 
@@ -920,6 +976,9 @@ const AddArtwork = () => {
                         name="offensive"
                         className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
                       >
+                        <option value="" disabled selected>
+                          Select
+                        </option>
                         <option>Yes </option>
                         <option>No</option>
                       </Field>
@@ -952,6 +1011,9 @@ const AddArtwork = () => {
                         name="hangingAvailable"
                         className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
                       >
+                        <option value="" disabled selected>
+                          Select
+                        </option>
                         <option>Yes </option>
                         <option>No</option>
                       </Field>
@@ -976,6 +1038,9 @@ const AddArtwork = () => {
                         name="framed"
                         className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
                       >
+                        <option value="" disabled selected>
+                          Select
+                        </option>
                         <option>Yes </option>
                         <option>No</option>
                       </Field>
@@ -1075,12 +1140,18 @@ const AddArtwork = () => {
                       <Select
                         options={options_2}
                         placeholder="Select Color"
-                        isMulti
                         name="colors"
-                        value={values.colors} // Bind to Formik's values
-                        onChange={(selectedOptions) =>
-                          setFieldValue("colors", selectedOptions)
-                        }
+                        value={values.colors}
+                        onChange={(selectedOption) => {
+                          const selectedValues = Array.isArray(selectedOption)
+                            ? selectedOption // Multiple selection (array)
+                            : selectedOption
+                            ? [selectedOption] // Single selection (object, convert to array)
+                            : []; // No selection
+
+                          setFieldValue("colors", selectedValues);
+                        }}
+                        isMulti={true} // Set this to true or false based on your requirement
                         styles={{
                           dropdownIndicator: () => ({
                             color: "black",
@@ -1090,7 +1161,6 @@ const AddArtwork = () => {
                             backgroundColor: "#203F58",
                             color: "white",
                           }),
-
                           multiValueRemove: (provided) => ({
                             ...provided,
                             backgroundColor: "#203F58",
@@ -1108,6 +1178,9 @@ const AddArtwork = () => {
                         name="artworkStyle"
                         className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
                       >
+                        <option value="" disabled selected>
+                          Select
+                        </option>
                         <option>Yes </option>
                         <option>No</option>
                       </Field>
@@ -1139,6 +1212,9 @@ const AddArtwork = () => {
                         name="purchaseCatalog"
                         className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
                       >
+                        <option value="" disabled selected>
+                          Select
+                        </option>
                         <option>Yes</option>
                         <option>No</option>
                       </Field>
@@ -1167,6 +1243,9 @@ const AddArtwork = () => {
                         name="downwardOffer"
                         className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
                       >
+                        <option value="" disabled selected>
+                          Select
+                        </option>
                         <option>Yes</option>
                         <option>No</option>
                       </Field>
@@ -1182,6 +1261,9 @@ const AddArtwork = () => {
                         placeholder="Select"
                         className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
                       >
+                        <option value="" disabled selected>
+                          Select
+                        </option>
                         <option>Yes</option>
                         <option>No</option>
                       </Field>
@@ -1386,7 +1468,7 @@ const AddArtwork = () => {
                     }}
                     className=" text-white py-2 px-4 rounded"
                   >
-                    {isPending ? "Submiting..." : "  Submit"}
+                    {isPending ? "Previewing..." : "Save & Preview"}
                   </Button>
                 </div>
               </div>

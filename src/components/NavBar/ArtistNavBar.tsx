@@ -8,6 +8,7 @@ import BackButton from "../ui/BackButton";
 import { useAppDispatch, useAppSelector } from "../../store/typedReduxHooks";
 import useLogOutMuttion from "../../http/auth/useLogOutMutation";
 import useLogOutMutation from "../../http/auth/useLogOutMutation";
+import { setIsArtist } from "../../store/userSlice/userSlice";
 
 const ArtistNavBar = () => {
   const [isToogleOpen, setIsToggelOpen] = useState(false);
@@ -15,7 +16,7 @@ const ArtistNavBar = () => {
   const navigate = useNavigate();
   const user = useAppSelector((state) => state.user.user);
 
-  const disptach = useAppDispatch();
+  const dispatch = useAppDispatch();
   const profile = localStorage.getItem("profile");
   const authToken = localStorage.getItem("auth_token");
 
@@ -31,12 +32,13 @@ const ArtistNavBar = () => {
 
   const handleProfile = () => {
     navigate("/home", { replace: true });
+    // dispatch(setIsArtist(false));
     localStorage.setItem("profile", "user");
   };
 
   return (
     <div className="w-full  py-5 px-5 flex items-center gap-5 relative">
-      <div className="">
+      <div className="overflow-hidden">
         <img src={logo} alt="" />
       </div>
       <div className="w-full flex items-center gap-5 justify-between ">

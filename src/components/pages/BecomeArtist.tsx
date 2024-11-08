@@ -15,6 +15,8 @@ import { useEffect, useRef, useState } from "react";
 import { style } from "../utils/selectedField";
 import useSendOtp from "../../http/artist/useSendOtp";
 import useOtpVerifyMutationBecomeAnArtist from "../../http/artist/useOtpVerifyBecomeAnArtist";
+import { useGetDiscipline } from "./http/useGetDiscipline";
+import { useGetStyle } from "./http/useGetStyle";
 
 const BecomeArtist = () => {
   const validationSchema = Yup.object().shape({
@@ -45,6 +47,13 @@ const BecomeArtist = () => {
 
   const inputRef = useRef(null);
 
+  const disciplineOptions = [
+    "Paintings",
+    "Drawings",
+    "Photography",
+    "Sculpture",
+  ];
+
   const {
     register,
     handleSubmit,
@@ -61,6 +70,47 @@ const BecomeArtist = () => {
   const { mutateAsync: sendMail, isPending: sendMailPending } = useSendOtp();
   const { mutateAsync: verifyOtp, isPending: verifyOtpPending } =
     useOtpVerifyMutationBecomeAnArtist();
+
+  const { data, isLoading } = useGetDiscipline();
+  const { data: styleData, isLoading: styleLoading } = useGetStyle();
+
+  // console.log(data?.map((item, i) => <h1>{item.disciplineName}</h1>));
+
+  const dOption = data?.data.map((item) => {
+    return item.disciplineName;
+  });
+
+  console.log(styleData);
+  // console.log(watch("discipline"));
+  const styleOption = styleData?.data.map((item) => {
+    return item.discipline;
+  });
+
+  // console.log(styleOption);
+
+  const getDiciplineName = styleOption.flat();
+
+  const currentDicipline = watch("discipline");
+
+  const getStyle = styleOption
+    .flat()
+    .filter((item) => item.disciplineName.includes(currentDicipline));
+  console.log(getStyle);
+
+  // console.log(styleOption.filter((item)=> item.discipline))
+  const styleOption2 = () => {
+    const currentDicipline = watch("discipline");
+    const getStyle = getDiciplineName.filter((item) =>
+      item.disciplineName.includes(currentDicipline)
+    );
+    // if(currentDicipline)
+  };
+
+  // console.log(
+  //   styleData?.data?.map((item) => {
+  //     return item;
+  //   })
+  // );
 
   const onSubmit = handleSubmit(async (data) => {
     const formData = new FormData();
@@ -277,10 +327,13 @@ const BecomeArtist = () => {
                     className="block appearance-none w-full bg-white border px-4 py-3 pr-8 rounded leading-tight focus:outline-none"
                   >
                     <option value="">Select Discipline</option>
-                    <option value="Paintings">Paintings</option>
-                    <option value="Drawings">Drawings</option>
-                    <option value="Photography">Photography</option>
-                    <option value="Sculpture">Sculpture</option>
+                    {isLoading
+                      ? "Loading..."
+                      : dOption?.map((item, i) => (
+                          <option className="text-black" value={item}>
+                            {item}
+                          </option>
+                        ))}
                   </select>
                   {errors.discipline && (
                     <span className="text-red-500 text-xs">

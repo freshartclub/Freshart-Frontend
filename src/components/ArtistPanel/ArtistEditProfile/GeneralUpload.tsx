@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import GeneralForm from "./GeneralForm";
 
 import upload from "./assets/Upload.png";
 import camera from "./assets/camera.png";
 import P from "../../ui/P";
+import { useGetArtistDetails } from "./http/useGetDetails";
 
 const GeneralUpload = () => {
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
@@ -16,6 +17,15 @@ const GeneralUpload = () => {
       setUploadedImage(imageUrl);
     }
   };
+  // we have to fix it it is still  pending api is not ready
+  const { data, isLoading } = useGetArtistDetails();
+  console.log(data);
+
+  useEffect(() => {
+    if (data) {
+      setUploadedImage(data?.artist?.avatar);
+    }
+  }, []);
 
   const handleDelete = () => {
     setUploadedImage(null);
@@ -95,7 +105,7 @@ const GeneralUpload = () => {
             onClick={handleDelete}
             className="bg-[#FF563014] text-[#B71D18] px-4 py-2 rounded font-semibold mt-10"
           >
-            Delete User
+            Update Profile
           </button>
         </div>
       </div>

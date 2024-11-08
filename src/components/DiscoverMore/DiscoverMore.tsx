@@ -16,13 +16,21 @@ import P from "../ui/P";
 import DiscoverContent from "./DiscoverContent";
 import ProductInfo from "./ProductInfo";
 import SelectedSection from "./SelectedSection";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import arrow from "../../assets/arrow_22.png";
 import home from "../../assets/home.png";
 import Button from "../ui/Button";
+import { useGetArtWorkById } from "./http/useGetArtWorkById";
+import Loader from "../ui/Loader";
 
 const DiscoverMore = () => {
   const sliderRef = useRef<Slider>(null);
+
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get("id");
+  console.log(id);
+  const { data, isLoading } = useGetArtWorkById(id);
+  console.log("this is from more", data);
 
   const settings = {
     dots: false,
@@ -39,6 +47,17 @@ const DiscoverMore = () => {
     }
   };
 
+  const images = data?.data
+    ? [
+        { src: data?.data.media?.mainImage, alt: "Main Image" },
+        { src: data?.data.media?.backImage, alt: "Back Image" },
+        { src: data?.data.media?.inProcessImage, alt: "In Process Image" },
+      ]
+    : [];
+
+  if (isLoading) {
+    return <Loader />;
+  }
   return (
     <>
       <div className="container mx-auto md:px-6 px-3">
@@ -86,51 +105,38 @@ const DiscoverMore = () => {
           <div className="flex md:flex-row flex-col gap-4 md:w-[50%] w-full md:items-center">
             {/* Thumbnails Container */}
             <div className="flex md:flex-col flex-row md:gap-0 gap-2 w-[15%] lg:ml-4 ">
-              {[
-                { src: slide_1, alt: "Thumbnail 1" },
-                { src: slide_2, alt: "Thumbnail 2" },
-                { src: slide_3, alt: "Thumbnail 3" },
-                { src: slide_4, alt: "Thumbnail 4" },
-                { src: slide_5, alt: "Thumbnail 5" },
-                { src: slide_5, alt: "Thumbnail 6" },
-              ].map((thumb, index) => (
-                <img
-                  key={index}
-                  src={thumb.src}
-                  alt={thumb.alt}
-                  className="mb-4 lg:w-20 lg:h-24"
-                  onClick={() => handleThumbnailClick(index)}
-                />
-              ))}
+              {images.map((thumb, index) => {
+                console.log(thumb);
+                return (
+                  <img
+                    key={index}
+                    src={`${data?.url}/uploads/users/${thumb.src}`}
+                    alt={thumb.alt}
+                    className="mb-4 lg:w-20 lg:h-24 object-cover"
+                    onClick={() => handleThumbnailClick(index)}
+                  />
+                );
+              })}
             </div>
 
             {/* Slider Container */}
             <div className="flex-1 md:w-[70%] w-full">
               <Slider {...settings} ref={sliderRef} className="discover_more">
-                <div>
-                  <img src={slider1} alt="Slide 1" className=" mx-auto " />
-                </div>
-                <div>
-                  <img src={slider2} alt="Slide 2" className=" mx-auto" />
-                </div>
-                <div>
-                  <img src={slider3} alt="Slide 3" className=" mx-auto" />
-                </div>
-                <div>
-                  <img src={slider4} alt="Slide 4" className=" mx-auto" />
-                </div>
-                <div>
-                  <img src={slider5} alt="Slide 5" className=" mx-auto" />
-                </div>
-                <div>
-                  <img src={slider5} alt="Slide 6" className=" mx-auto" />
-                </div>
+                {images.map((slide, index) => (
+                  <div key={index}>
+                    <img
+                      src={`${data?.url}/uploads/users/${slide.src}`}
+                      alt={`Slide ${index + 1}`}
+                      className="mx-auto w-[35vw] h-[80vh] object-cover"
+                    />
+                  </div>
+                ))}
               </Slider>
             </div>
           </div>
 
           <div className="md:w-[50%] w-full ">
-            <DiscoverContent />
+            <DiscoverContent data={data?.data} />
           </div>
         </div>
         <div className="flex justify-center md:w-[50%] w-full gap-10 mb-10">
@@ -148,9 +154,9 @@ const DiscoverMore = () => {
           </Button>
         </div>
 
-        <ProductInfo />
+        <ProductInfo data={data} />
       </div>
-      <SelectedSection />
+      <SelectedSection data={data} />
     </>
   );
 };

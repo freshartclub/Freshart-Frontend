@@ -8,7 +8,7 @@ async function fetchData(id) {
     `${ARTTIST_ENDPOINTS.GetArtWorkListById}/${id}`
   );
 
-  return data.data;
+  return data;
 }
 
 export const useGetArtWorkById = (id) => {

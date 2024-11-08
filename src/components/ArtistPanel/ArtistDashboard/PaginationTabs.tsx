@@ -11,9 +11,12 @@ const PaginationTabs = ({
       setCurrentPage(currentPage - 1);
     }
   };
+
   const nextButtonHendler = () => {
     if (currentPage !== nPages) {
       setCurrentPage(currentPage + 1);
+    } else {
+      setCurrentPage(currentPage);
     }
   };
   return (

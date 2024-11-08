@@ -97,7 +97,7 @@ const NavBar = () => {
   };
 
   const redirectToHomepage = () => {
-    navigate("/");
+    navigate("/home");
   };
 
   const toggleDropdown = () => {
