@@ -125,6 +125,9 @@ const HighlightSection = () => {
                     <h1 className="font-bold text-[20px] text-[#333333]  xl:w-[80%] lg:w-[70%] w-[80%] line-clamp-2">
                       {item?.artworkName}
                     </h1>
+                    <p className="text-[14px] text-[#696868]">
+                      {`${item?.additionalInfo?.length} x ${item?.additionalInfo?.width}`}
+                    </p>
                     <div>
                       <p className="text-[14px] text-[#696868]">{item?.size}</p>
                     </div>

@@ -30,6 +30,8 @@ import { useGetArtWorkById } from "./http/useGetArtworkById";
 import { ARTTIST_ENDPOINTS } from "../../../http/apiEndPoints/Artist";
 import Loader from "../../ui/Loader";
 import AdditionalSelect from "../../ui/AdditionalSelect";
+import { useGetTechnic } from "./http/useGetTechnic";
+import { useGetTheme } from "./http/useGetTheme";
 
 const AddArtwork = () => {
   const [progress, setProgress] = useState(0);
@@ -201,6 +203,11 @@ const AddArtwork = () => {
   }, [id, data]);
 
   const { mutate, isPending } = usePostArtWorkMutation();
+
+  const { data: technicData, isLoading: technicLoading } = useGetTechnic();
+  const { data: themeData, isLoading: themeLoading } = useGetTheme();
+
+  console.log(themeData);
 
   const handleFileChange = (e, setFile) => {
     const file = e.target.files[0];
@@ -901,11 +908,11 @@ const AddArtwork = () => {
                         <option value="" disabled selected>
                           Select type
                         </option>
-                        <option>Painting</option>
-                        <option>Dry Brushing</option>
-                        <option>Under Painting</option>
-                        <option>Acrylic Painting</option>
-                        <option>Glazing</option>
+                        {technicLoading
+                          ? null
+                          : technicData?.data?.map((item, i) => (
+                              <option>{item.technicName}</option>
+                            ))}
                       </Field>
                     </label>
 
@@ -920,12 +927,15 @@ const AddArtwork = () => {
                         <option value="" disabled selected>
                           Select type
                         </option>
-                        <option>Words-Poetry,Litreature,Ouotes,Phrase</option>
-                        <option>Vingettes Of Nature - Observation </option>
-
-                        <option>Observations-Realism</option>
-                        <option>Expression-Emotions</option>
-                        <option>Seascape-Marine Life</option>
+                        {themeLoading ? (
+                          <option value="" disabled selected>
+                            Loading...
+                          </option>
+                        ) : (
+                          themeData?.data?.map((item, i) => (
+                            <option key={i}>{item.themeName}</option>
+                          ))
+                        )}
                       </Field>
                     </label>
                   </div>
