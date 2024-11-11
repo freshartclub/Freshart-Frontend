@@ -57,10 +57,17 @@ const assist_Data = [
 ];
 
 const Support = () => {
+  const location = useLocation();
+
+  const isArtistProfile = location.pathname.includes("/artist-panel");
+
   const navigate = useNavigate();
 
   const handleSubmitButton = () => {
-    navigate("/new_ticket");
+    const submitTicket = isArtistProfile
+      ? `/artist-panel/new_ticket`
+      : `/new_ticket`;
+    navigate(submitTicket);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
