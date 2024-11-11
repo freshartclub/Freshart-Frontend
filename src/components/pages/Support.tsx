@@ -57,10 +57,6 @@ const assist_Data = [
 ];
 
 const Support = () => {
-  const location = useLocation();
-
-  const isArtistProfile = location.pathname.includes("/artist-panel");
-
   const navigate = useNavigate();
 
   const handleSubmitButton = () => {
