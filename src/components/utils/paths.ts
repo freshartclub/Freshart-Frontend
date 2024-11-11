@@ -9,4 +9,6 @@ export const artistPanel = {
 export const generalPath = {
   getDiscipline: "api/general/list-discipline",
   getStyle: "api/general/list-style",
+  getTheme: "api/general/list-theme",
+  getTechnic: "api/general/list-Technic",
 };

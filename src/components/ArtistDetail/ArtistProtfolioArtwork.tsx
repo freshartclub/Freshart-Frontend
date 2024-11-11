@@ -58,8 +58,8 @@ const ArtistProtfolioArtwork = ({ data }) => {
       </Header>
 
       <div className="grid xl:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 ">
-        {data.artworks &&
-          data.artworks.length > 0 &&
+        {data?.artworks &&
+          data?.artworks?.length > 0 &&
           data.artworks.map((item: any, index: any) => (
             <div
               key={index}

@@ -47,13 +47,6 @@ const BecomeArtist = () => {
 
   const inputRef = useRef(null);
 
-  const disciplineOptions = [
-    "Paintings",
-    "Drawings",
-    "Photography",
-    "Sculpture",
-  ];
-
   const {
     register,
     handleSubmit,
@@ -74,43 +67,19 @@ const BecomeArtist = () => {
   const { data, isLoading } = useGetDiscipline();
   const { data: styleData, isLoading: styleLoading } = useGetStyle();
 
-  // console.log(data?.map((item, i) => <h1>{item.disciplineName}</h1>));
-
   const dOption = data?.data.map((item) => {
     return item.disciplineName;
   });
 
-  console.log(styleData);
-  // console.log(watch("discipline"));
-  const styleOption = styleData?.data.map((item) => {
-    return item.discipline;
-  });
-
-  // console.log(styleOption);
-
-  const getDiciplineName = styleOption.flat();
-
   const currentDicipline = watch("discipline");
 
-  const getStyle = styleOption
-    .flat()
-    .filter((item) => item.disciplineName.includes(currentDicipline));
-  console.log(getStyle);
-
-  // console.log(styleOption.filter((item)=> item.discipline))
-  const styleOption2 = () => {
-    const currentDicipline = watch("discipline");
-    const getStyle = getDiciplineName.filter((item) =>
-      item.disciplineName.includes(currentDicipline)
-    );
-    // if(currentDicipline)
-  };
-
-  // console.log(
-  //   styleData?.data?.map((item) => {
-  //     return item;
-  //   })
-  // );
+  const newStyle = styleData?.data.filter(
+    (item) =>
+      item.discipline &&
+      item.discipline.some((newItem) =>
+        newItem.disciplineName.includes(currentDicipline)
+      )
+  );
 
   const onSubmit = handleSubmit(async (data) => {
     const formData = new FormData();
@@ -355,7 +324,10 @@ const BecomeArtist = () => {
                       <Select
                         {...field}
                         isMulti
-                        options={style}
+                        options={newStyle?.map((item, i) => ({
+                          value: item.styleName,
+                          label: item.styleName,
+                        }))}
                         className="block appearance-none w-full bg-white rounded leading-tight focus:outline-none"
                       />
                     )}
