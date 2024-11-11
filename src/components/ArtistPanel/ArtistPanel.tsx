@@ -53,10 +53,10 @@ const ArtistPanel = () => {
             <Route path="order/orderDetail" element={<OrdersDetail />} />
             <Route path="artwork/add" element={<AddArtwork />} />
             <Route path="edit-artistprofile" element={<ArtistProfile />} />
-            <Route path="ticket" element={<TicketHistory />} />
+            {/* <Route path="ticket" element={<TicketHistory />} /> */}
             {/* <Route path="ticket/:ticketId" element={<TicketDe />} /> */}
-            {/* <Route path="ticket/tickets" element={<TicketHistory />} /> */}
-            {/* <Route path="ticket" element={<Support />} /> */}
+            <Route path="ticket/tickets" element={<TicketHistory />} />
+            <Route path="ticket" element={<Support />} />
             <Route path="/ticket_detail" element={<SingleTicket />} />
             <Route path="artwork/preview" element={<ArtworkReview />} />
           </Routes>
