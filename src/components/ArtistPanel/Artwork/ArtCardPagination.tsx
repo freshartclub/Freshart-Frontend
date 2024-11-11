@@ -63,7 +63,7 @@ const ArtCardPagination: React.FC = () => {
   const nPages = Math.ceil((artwork?.length || 0) / recordPerPage);
   const numbers = [...Array(nPages + 1).keys()].slice(1);
   console.log(nPages);
-  console.log(numbers);
+  console.log("numbers", numbers);
 
   return (
     <div>
@@ -120,6 +120,7 @@ const ArtCardPagination: React.FC = () => {
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
           numbers={numbers}
+          nPages={nPages}
         />
       </div>
     </div>
