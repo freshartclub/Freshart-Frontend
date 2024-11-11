@@ -3,26 +3,49 @@ import Header from "../ui/Header";
 import P from "../ui/P";
 import rightarr from "./assets/ArrowRight.png";
 
-const card_total = [
-  {
-    title: "Sub-total",
-    value: "$320",
-  },
-  {
-    title: "Shipping",
-    value: "Free",
-  },
-  {
-    title: "Discount",
-    value: "$24",
-  },
-  {
-    title: "Tax",
-    value: "$61.99",
-  },
-];
+const CartTotal = ({ data }) => {
+  const discountAmounts = data?.data?.cart.map((item) => {
+    const basePrice = parseFloat(item.pricing.basePrice.replace("$", ""));
+    const discountPercentage = item.pricing?.dpersentage || 0;
+    const discountAmount = (basePrice * discountPercentage) / 100;
+    return discountAmount;
+  });
 
-const CartTotal = () => {
+  const totalDiscountAmount = discountAmounts
+    .reduce((totalDiscount, item) => {
+      return totalDiscount + item;
+    }, 0)
+    .toFixed(2);
+
+  // console.log(`Total Discount Amount: $${totalDiscountAmount}`);
+
+  const totalPrice = data?.data?.cart
+    .reduce((total, item) => {
+      const itemPrice = parseFloat(item.pricing.basePrice.replace("$", ""));
+      return total + itemPrice;
+    }, 0)
+    .toFixed(2);
+
+  // console.log(totalPrice);
+
+  const card_total = [
+    {
+      title: "Sub-total",
+      value: `$ ${totalPrice}`,
+    },
+    {
+      title: "Shipping",
+      value: "Free",
+    },
+    {
+      title: "Discount",
+      value: `$ ${totalDiscountAmount}`,
+    },
+    {
+      title: "Tax",
+      value: "$61.99",
+    },
+  ];
   return (
     <>
       <div className="p-5 mb-8 border rounded-md">
@@ -54,7 +77,7 @@ const CartTotal = () => {
             Total
           </P>
           <P variant={{ size: "base", theme: "dark", weight: "semiBold" }}>
-            $357.99 USD
+            $ {totalPrice - totalDiscountAmount}
           </P>
         </div>
 

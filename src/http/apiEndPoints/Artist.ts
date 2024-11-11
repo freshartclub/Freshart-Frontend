@@ -15,8 +15,14 @@ export const ARTTIST_ENDPOINTS = {
   // UpdateArtwork: `${ARTIST_BASE_URl}/update-artist-artwork `,
   GetArtistTickets: `${ARTIST_BASE_URl}/get-user-tickets`,
   GetArtistTicketsDetails: `${ARTIST_BASE_URl}/ticket`,
+  GetAllIncidents: `${ARTIST_BASE_URl}/get-all-incidents`,
 
   GetAllArtist: `${ARTIST_BASE_URl}/get-all-artists`,
+  addToCart: `${ARTIST_BASE_URl}/item-to-cart`,
+  cartItems: `${ARTIST_BASE_URl}/get-cart`,
+  removeItems: `${ARTIST_BASE_URl}/item-to-cart`,
+  addToWishList: `${ARTIST_BASE_URl}/item-to-wishlist`,
+  getWishList: `${ARTIST_BASE_URl}/get-wishlist`,
 
   // GetArtistTicket: `${ARTIST_BASE_URl}/get
 };

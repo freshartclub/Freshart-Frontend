@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import P from "../ui/P";
 import arrow from "./assets/arrow_22.png";
 import home from "../../assets/home.png";
@@ -11,6 +11,7 @@ import CartTotal from "./CartTotal";
 import gray_cross from "./assets/garycross.png";
 import red_cross from "./assets/XCircle.png";
 import { useState } from "react";
+import { useGetCartItems } from "../pages/http/useGetCartItems";
 
 const product_data = [
   {
@@ -33,11 +34,29 @@ const product_data = [
 
 const PurchaseCart = () => {
   const [cross, setCross] = useState(product_data);
+  const navigate = useNavigate();
 
   const handleRemove = (id: number) => {
     const newList = cross.filter((item) => item.id !== id);
     setCross(newList);
   };
+
+  const { data, isPending } = useGetCartItems();
+
+  console.log("This is from purchase ", data);
+
+  const discountAmounts = data?.data?.cart.map((item: any) => {
+    const basePrice = parseFloat(item.pricing.basePrice.replace("$", ""));
+    const discountPercentage = item.pricing?.dpersentage || 0;
+    const discountAmount = (basePrice * discountPercentage) / 100;
+    return discountAmount;
+  });
+
+  const handlepurchase = () => {
+    navigate("/purchase");
+  };
+
+  console.log(discountAmounts);
   return (
     <div className="container mx-auto px-6 sm:px-3 mt-4">
       <ul className="flex p-2 gap-4 text-xl text-[#2E4053] items-center">
@@ -88,7 +107,7 @@ const PurchaseCart = () => {
 
             <div>
               <table className="w-full border-b text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                <thead className="text-sm text-black uppercase bg-[#F2F4F5] dark:bg-gray-700 dark:text-gray-400">
+                <thead className="text-sm text-black uppercase bg-[#F2F4F5] ">
                   <tr>
                     <th
                       scope="col"
@@ -106,52 +125,73 @@ const PurchaseCart = () => {
                       scope="col"
                       className="xl:px-6 lg:px-4 px-2 py-3 uppercase"
                     >
+                      Discount %
+                    </th>
+                    <th
+                      scope="col"
+                      className="xl:px-6 lg:px-4 px-2 py-3 uppercase"
+                    >
                       Sub-total
                     </th>
                   </tr>
                 </thead>
                 <tbody className="">
-                  {product_data.map((table, index) => (
-                    <tr
-                      key={index}
-                      className="bg-white dark:bg-gray-800 dark:border-gray-700"
-                    >
-                      <td
-                        scope="row"
-                        className="flex sm:flex-row flex-col justify-start xl:gap-4 lg:gap-2 gap-2 sm:items-center
-                         xl:px-6 lg:px-4 px-2 py-4 font-medium text-gray-900  dark:text-white"
-                      >
-                        <button onClick={() => handleRemove(table.id)}>
-                          <img src={table.cross} alt="cross" />
-                        </button>
+                  {data?.data?.cart.map((table: any, index: number) => {
+                    const basePrice = parseFloat(
+                      table.pricing.basePrice.replace("$", "")
+                    );
+                    const discountPercentage = table.pricing.dpersentage || 0;
+                    const discountAmount =
+                      (basePrice * discountPercentage) / 100;
+                    const discountedPrice = (
+                      basePrice - discountAmount
+                    ).toFixed(2);
 
-                        <img
-                          src={table.productimg}
-                          alt="image"
-                          className="w-[72px] h-[72px]"
-                        />
-                        <P
-                          variant={{
-                            weight: "medium",
-                            theme: "dark",
-                          }}
-                          className="xl:text-base text-sm"
+                    return (
+                      <tr key={index} className="bg-white">
+                        <td
+                          scope="row"
+                          className="flex sm:flex-row flex-col justify-start xl:gap-4 lg:gap-2 gap-2 sm:items-center
+                   xl:px-6 lg:px-4 px-2 py-4 font-medium text-gray-900 dark:text-white"
                         >
-                          {table.title}
-                        </P>
-                      </td>
-                      <td className="xl:px-6 lg:px-4 px-2 py-4 text-[#475156] font-medium">
-                        {table.price}
-                      </td>
-                      <td className="xl:px-6 lg:px-4 px-2 py-4 text-[#191C1F] font-semibold">
-                        {table.total}
-                      </td>
-                    </tr>
-                  ))}
+                          <button onClick={() => handleRemove(table.id)}>
+                            <img src={gray_cross} alt="cross" />
+                          </button>
+
+                          <img
+                            src={`${data?.url}/uploads/users/${table.media.mainImage}`}
+                            alt="image"
+                            className="w-[72px] h-[72px]"
+                          />
+                          <P
+                            variant={{
+                              weight: "medium",
+                              theme: "dark",
+                            }}
+                            className="xl:text-base text-sm"
+                          >
+                            {table.artworkName}
+                          </P>
+                        </td>
+                        <td className="xl:px-6 lg:px-4 px-2 py-4 text-[#475156] font-medium">
+                          ${table.pricing.basePrice}
+                        </td>
+                        <td className="xl:px-6 lg:px-4 px-2 py-4 text-[#475156] font-medium">
+                          {table.pricing.dpersentage}%
+                        </td>
+                        <td className="xl:px-6 lg:px-4 px-2 py-4 text-[#191C1F] font-semibold">
+                          ${discountedPrice}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
               <div className="p-5 flex sm:flex-row flex-col gap-5 sm:gap-0 justify-between">
-                <Button className="border border-[#203F58] rounded-full flex items-center justify-center gap-2">
+                <Button
+                  onClick={handlepurchase}
+                  className="border border-[#203F58] rounded-full flex items-center justify-center gap-2"
+                >
                   <img src={ret_arrow} alt="arrow" />
                   <P
                     variant={{
@@ -185,7 +225,7 @@ const PurchaseCart = () => {
           </div>
 
           <div className="lg:w-[28%] w-full">
-            <CartTotal />
+            <CartTotal data={data} />
           </div>
         </div>
       </div>

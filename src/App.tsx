@@ -91,7 +91,9 @@ const ArtworkGroup = lazy(
 const CreateInvite = lazy(
   () => import("./components/CreateInvite/CreateInvite")
 );
-const OrderTracking = lazy(() => import("./components/OrderTracking/OrderTracking"));
+const OrderTracking = lazy(
+  () => import("./components/OrderTracking/OrderTracking")
+);
 const AccountSetting = lazy(
   () => import("./components/AccountSetting/AccountSetting")
 );
@@ -102,14 +104,16 @@ const ArtistDashboard = lazy(
 );
 const SignUpOtp = lazy(() => import("./components/pages/SignUpOtp"));
 
-const OrderDetail = lazy(() => import("./components/ArtistPanel/Orderdetail/OrderDetails"));
+const OrderDetail = lazy(
+  () => import("./components/ArtistPanel/Orderdetail/OrderDetails")
+);
 
 const App: React.FC = () => {
   setup();
   const { isLoading } = useCheckIsAuthorized();
   const [isAuthenticated] = useState<boolean>(false);
   const data = useAppSelector((state) => state.user.user);
- 
+
   if (isLoading) return <Loader />;
 
   return (
@@ -128,7 +132,6 @@ const App: React.FC = () => {
             <Route path="/terms" element={<TermAndCondition />} />
             <Route path="/become_artist" element={<BecomeArtist />} />
             <Route path="*" element={<NotFoundPage />} />
-            
 
             <Route
               path="/order-approve*"

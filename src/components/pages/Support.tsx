@@ -17,6 +17,9 @@ import msg from "../../assets/ChatCircleDots.png";
 import { FaWhatsapp } from "react-icons/fa";
 import { BsFillTicketPerforatedFill } from "react-icons/bs";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useGetAllIncidents } from "../NewTicket/ticket history/http/useGetAllIncidents";
+import dayjs from "dayjs";
+import isBetween from "dayjs/plugin/isBetween";
 
 const assist_Data = [
   {
@@ -61,21 +64,37 @@ const Support = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  
+  const { data, isLoading } = useGetAllIncidents();
+  console.log(data);
+
+  dayjs.extend(isBetween);
+
+  const now = dayjs();
+  const startOfDay = now.startOf("day");
+  const endOfDay = now.endOf("day");
+
+  const newIncident = data?.filter((incident) => {
+    const incidentStart = dayjs(incident.initTime);
+
+    return incidentStart.isBetween(startOfDay, endOfDay, null, "[]");
+  });
+
+  console.log(newIncident);
+
   const location = useLocation();
   const isArtistProfile = location.pathname.includes("/artist-panel");
 
   return (
     <div>
       <div className="container mx-auto md:px-6 px-3">
-      <div className="bg-[#E9E4DF] border-2 border-[#FF536B] p-4 mb-4 rounded-md mt-6">
-    <h3 className="font-semibold">Important Notice:</h3>
-    <p className="mt-1">
-        Please be aware that some support services may have limited availability due to high demand.
-        Our response times may be slower than usual. We appreciate your patience and understanding.
-        
-    </p>
-</div>
+        <div className="bg-[#E9E4DF] border-2 border-[#FF536B] p-4 mb-4 rounded-md mt-6">
+          <h3 className="font-semibold">Important Notice:</h3>
+          {newIncident?.map((item, i) => (
+            <p className="mt-1" key={i}>
+              {item.description.replace(/(^<p>|<\/p>$)/g, "")}
+            </p>
+          ))}
+        </div>
         <div className="flex sm:flex-row flex-col justify-between my-10 w-full">
           <div className="md:w-[70%] w-full">
             <Button
@@ -138,7 +157,7 @@ const Support = () => {
                 key={index}
                 className="bg-white flex p-4 border-2 border-[#FFD8DD] shadow-lg"
               >
-                <img className="w-8 h-8"  src={item.image} alt="image" />
+                <img className="w-8 h-8" src={item.image} alt="image" />
                 <P
                   variant={{ size: "base", theme: "dark", weight: "normal" }}
                   className="ml-3 mt-1 font-bold text-sm"
@@ -297,7 +316,7 @@ const Support = () => {
           </div>
           <div className="flex items-center justify-center py-5">
             <Link
-              to= {isArtistProfile?"/artist-panel/ticket/tickets": "/tickets"}
+              to={isArtistProfile ? "/artist-panel/ticket/tickets" : "/tickets"}
               className="text-red-400 font-medium text-center underline"
             >
               See Recent Ticket History

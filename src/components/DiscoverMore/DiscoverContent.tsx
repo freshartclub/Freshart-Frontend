@@ -4,18 +4,52 @@ import P from "../ui/P";
 import cart from "./assets/cart.png";
 import mark from "./assets/offer.png";
 import wishlist from "./assets/wishlist.png";
+import wishlist_like from "../../assets/whishlist_like.png";
 import like from "./assets/like.png";
 import question from "./assets/question.png";
-import { RiH1 } from "react-icons/ri";
+import { AiFillLike, AiOutlineLike } from "react-icons/ai";
+import useAddToCartMutation from "./http/useAddToCartMutation";
+import { useState } from "react";
+import { useGetCartItems } from "./http/useGetCartItems";
+import useAddToWhislistMutation from "./http/useAddToWhislistMutation";
+import { useGetWishList } from "./http/useGetWishList";
 
 const DiscoverContent = ({ data }: any) => {
   console.log("this is from dicover", data);
+  const [addtoCart, setAddToCart] = useState("Add To Cart");
+
+  const { mutate, isPending } = useAddToCartMutation();
+  const { data: cartItem, isLoading } = useGetCartItems();
+  const { mutate: wishListMutation, isPending: wishlistPending } =
+    useAddToWhislistMutation();
+
+  const { data: wislistItem } = useGetWishList();
 
   const maxLength = 100;
   const description =
     data?.productDescription && data.productDescription.length > maxLength
       ? `${data.productDescription.slice(0, maxLength)}...`
       : data?.productDescription;
+
+  const addToCart = (id: string) => {
+    mutate(id);
+  };
+
+  const checkCartItem = cartItem?.data?.cart?.filter((item) => {
+    return item._id === data._id;
+  });
+
+  const addToWishList = (id) => {
+    wishListMutation(id);
+  };
+
+  const checkWishlist = wislistItem?.data?.wishlist?.filter((item) => {
+    return item._id === data._id;
+  });
+
+  console.log(checkWishlist);
+
+  // console.log(checkCartItem.length ? "hello" : "hey");
   return (
     <div>
       <P
@@ -91,16 +125,25 @@ const DiscoverContent = ({ data }: any) => {
 
       <div className="flex md:flex-row flex-col xl:gap-10 gap-2">
         <Button
+          onClick={() => addToCart(data?._id)}
           variant={{
             theme: "dark",
             fontWeight: "600",
             rounded: "full",
           }}
-          className="text-base flex items-center justify-center xl:!px-12 lg:px-4 lg:!py-4 !py-2 w-full"
+          className={`${
+            checkCartItem?.length
+              ? "text-base flex items-center justify-center xl:!px-12 lg:px-4 lg:!py-4 !py-2 w-full pointer-events-none opacity-50"
+              : "text-base flex items-center justify-center xl:!px-12 lg:px-4 lg:!py-4 !py-2 w-full"
+          } `}
         >
           <img src={cart} alt="" className="md:mx-2 mx-1" />
           <P variant={{ size: "base", theme: "light", weight: "normal" }}>
-            Add to cart
+            {checkCartItem?.length
+              ? "Already Added"
+              : isPending
+              ? "Adding..."
+              : "Add to cart"}
           </P>
         </Button>
 
@@ -118,8 +161,8 @@ const DiscoverContent = ({ data }: any) => {
         </Button>
       </div>
 
-      <div className="flex lg:flex-row flex-col w-full xl:justify-end lg:justify-between lg:items-center gap-2 lg:my-6 my-3">
-        <div className="flex items-center lg:justify-center gap-2 xl:w-[30%]">
+      <div className="flex lg:flex-row flex-col w-full xl:justify-between lg:justify-between lg:items-center gap-2 lg:my-6 my-3">
+        {/* <div className="flex items-center lg:justify-center gap-2 xl:w-[30%]">
           <img src={wishlist} alt="whishlist icon" />
           <P
             variant={{ size: "small", weight: "semiBold" }}
@@ -127,16 +170,25 @@ const DiscoverContent = ({ data }: any) => {
           >
             Add to Wishlist
           </P>
-        </div>
+        </div> */}
 
-        <div className="flex items-center lg:justify-center gap-2 xl:w-[30%]">
-          <img src={like} alt="like btn" />
-          <P
-            variant={{ size: "small", weight: "semiBold" }}
-            className="text-[#999999] uppercase"
+        <div className="flex  items-center lg:justify-center gap-2 xl:w-[30%] cursor-pointer">
+          <button
+            onClick={() => addToWishList(data?._id)}
+            className="text-[#999999] uppercase flex gap-2 items-centers"
           >
-            LIKE
-          </P>
+            {checkWishlist?.length ? (
+              <>
+                <AiFillLike size="1.6em" color="red" />
+                <span>Liked</span>
+              </>
+            ) : (
+              <>
+                <AiOutlineLike size="1.6em" />
+                <span>Like</span>
+              </>
+            )}
+          </button>
         </div>
 
         <div className="flex gap-2 items-center lg:justify-center xl:w-[30%]">
@@ -191,7 +243,7 @@ const DiscoverContent = ({ data }: any) => {
             className="capitalize text-[#999999] flex gap-2"
           >
             {Array.isArray(data?.discipline?.artworkTags) &&
-              data?.discipline?.artworkTags.map((iw, i) => (
+              data?.discipline?.artworkTags?.map((iw, i) => (
                 <span key={i}>
                   {iw}
                   {" |"}

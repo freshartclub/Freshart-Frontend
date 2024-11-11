@@ -1,48 +1,32 @@
-import { useState } from "react";
 import Header from "../ui/Header";
 import { RxCross1 } from "react-icons/rx";
 import P from "../ui/P";
-import profile1 from "../../assets/profile_1.png";
 import cross_icon from "../../assets/x-mark.png";
 import Button from "../ui/Button";
 import { useNavigate } from "react-router-dom";
+import { useGetCartItems } from "./http/useGetCartItems";
+import useGetCartItemsRemove from "./http/useGetCartItemsRemove";
+import Loader from "../ui/Loader";
 
 const ShoppingCard = ({ isOpen, onClose }: any) => {
-  const [cardData, setCardData] = useState([
-    {
-      img: profile1,
-      heading: "Surfing board painting",
-      quantity: "2 pieces x",
-      price: "$50.53",
-      cross: cross_icon,
-    },
-    {
-      img: profile1,
-      heading: "Painting horse grass",
-      quantity: "1 pieces x",
-      price: "$50.53",
-      cross: cross_icon,
-    },
-    {
-      img: profile1,
-      heading: "Surfing board painting",
-      quantity: "2 pieces x",
-      price: "$50.53",
-      cross: cross_icon,
-    },
-  ]);
+  const { data, isLoading } = useGetCartItems();
 
-  const handleRemoveItem = (indexToRemove: number) => {
-    setCardData((prevCardData) =>
-      prevCardData.filter((_, index) => index !== indexToRemove)
-    );
+  const { mutate, isPending } = useGetCartItemsRemove();
+
+  const handleCart = () => {
+    navigate("/purchase_cart");
+    onClose();
   };
 
-  const totalItems = cardData.length;
+  const handleRemoveItem = (indexToRemove: any) => {
+    mutate(indexToRemove);
+  };
 
-  const totalPrice = cardData
-    .reduce((total, item) => {
-      const itemPrice = parseFloat(item.price.replace("$", ""));
+  const totalItems = data?.data?.cart.length;
+
+  const totalPrice = data?.data?.cart
+    .reduce((total: any, item: any) => {
+      const itemPrice = parseFloat(item.pricing.basePrice.replace("$", ""));
       return total + itemPrice;
     }, 0)
     .toFixed(2);
@@ -51,6 +35,10 @@ const ShoppingCard = ({ isOpen, onClose }: any) => {
   const redirectToDetailPage = () => {
     navigate("/discover_more");
   };
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <div
@@ -69,16 +57,20 @@ const ShoppingCard = ({ isOpen, onClose }: any) => {
         </div>
 
         <div className="">
-          {cardData.map((item, index) => (
+          {data?.data?.cart.map((item: any, index: number) => (
             <div key={index} className="flex justify-between p-4 mb-1">
               <div
                 className="flex justify-between gap-10"
                 onClick={redirectToDetailPage}
               >
-                <img src={item.img} alt="cart image" />
+                <img
+                  src={`${data?.url}/uploads/users/${item.media.mainImage}`}
+                  alt="cart image"
+                  className="object-cover lg:w-[10vw] rounded"
+                />
                 <div className="flex flex-col justify-center">
                   <P variant={{ size: "base", theme: "dark", weight: "light" }}>
-                    {item.heading}
+                    {item?.artworkName}
                   </P>
                   <div className="flex">
                     <P
@@ -97,15 +89,15 @@ const ShoppingCard = ({ isOpen, onClose }: any) => {
                         weight: "normal",
                       }}
                     >
-                      {item.price}
+                      {item.pricing?.basePrice}
                     </P>
                   </div>
                 </div>
               </div>
 
               <div className="flex flex-col justify-center items-center">
-                <button onClick={() => handleRemoveItem(index)}>
-                  <img src={item.cross} alt="cross icon" />
+                <button onClick={() => handleRemoveItem(item._id)}>
+                  <img src={cross_icon} alt="cross icon" />
                 </button>
               </div>
             </div>
@@ -122,7 +114,7 @@ const ShoppingCard = ({ isOpen, onClose }: any) => {
               </P>
             </div>
 
-            <div className="w-full">
+            {/* <div className="w-full">
               <Button
                 variant={{
                   fontSize: "md",
@@ -134,10 +126,11 @@ const ShoppingCard = ({ isOpen, onClose }: any) => {
               >
                 Checkout
               </Button>
-            </div>
+            </div> */}
 
             <div className="w-full">
               <Button
+                onClick={handleCart}
                 variant={{ fontSize: "md", fontWeight: "normal" }}
                 className="w-full my-2 bg-lime-50 rounded-full"
               >

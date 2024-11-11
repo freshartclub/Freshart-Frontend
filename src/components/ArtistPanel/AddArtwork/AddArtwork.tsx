@@ -267,6 +267,8 @@ const AddArtwork = () => {
   };
 
   const [value, setValue] = useState(null);
+
+  // this has to coming from backend
   useEffect(() => {
     if (data?.data) {
       setMainImage(`${data.url}/uploads/users/${data.data?.media?.mainImage}`);
@@ -1197,7 +1199,6 @@ const AddArtwork = () => {
                     </label>
                   </div>
                 </div>
-              
 
                 {/* additional info */}
                 {/* <Commercialization /> */}
