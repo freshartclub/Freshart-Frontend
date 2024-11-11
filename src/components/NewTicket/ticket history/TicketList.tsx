@@ -2,7 +2,7 @@ import React, { FC } from "react";
 import orange from "../ticket history/assets/orange.png";
 import blue from "../ticket history/assets/blue.png";
 import green from "../ticket history/assets/green.png";
-import { useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import artistImg from "../ticket history/assets/People.png";
 import Loader from "../../ui/Loader";
 import dayjs from "dayjs";
@@ -19,9 +19,16 @@ const TicketsList: FC<{
   const navigate = useNavigate();
 
   const isArtist = useAppSelector((state) => state.user.isArtist);
+  const location = useLocation();
+  const isArtistProfile = location.pathname.includes("/artist-panel");
 
   const handleClick = (id) => {
-    navigate(`/ticket_detail?id=${id}`);
+    // navigate( `/artist-panel/ticket_detail?id=${id}` );
+    const SingleTicketLink = isArtistProfile
+      ? `/artist-panel/ticket_detail?id=${id}`
+      : `/ticket_detail?id=${id}`;
+
+    navigate(SingleTicketLink);
   };
 
   if (isLoading) {

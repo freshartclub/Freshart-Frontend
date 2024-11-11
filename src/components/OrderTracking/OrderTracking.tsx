@@ -7,7 +7,7 @@ import export_icon from "../../assets/export.png";
 import invoice from "../../assets/invoice.png";
 import OrderDescription from "./OrderDescription";
 
-const OrderDetail = () => {
+const OrderTracking = () => {
   return (
     <div className="bg-[#EFEFF7] pb-10">
       <div className="container mx-auto sm:px-6 px-3 ">
@@ -83,4 +83,4 @@ const OrderDetail = () => {
   );
 };
 
-export default OrderDetail;
+export default OrderTracking;

@@ -73,7 +73,7 @@ export const sections = [
     label: "Help & Support",
     icon: mail,
     path: "ticket",
-    submenu: [{ key: "ticket", label: "Raise Ticket", path: "ticket" }],
+    submenu: [{ key: "ticket", label: "Raise Ticket", path: "support" }],
   },
 ];
 

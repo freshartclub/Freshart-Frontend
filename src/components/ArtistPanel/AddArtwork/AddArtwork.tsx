@@ -1114,7 +1114,7 @@ const AddArtwork = () => {
                     </label>
                   </div>
                 </div>
-                {/* additional info */}
+              
 
                 {/* additional info */}
                 {/* <Commercialization /> */}
@@ -1370,12 +1370,12 @@ const AddArtwork = () => {
                 </span>
               </div>
 
-              <div className="flex space-x-2">
+              <div className="flex space-x-2 ">
                 <button className="border border-[#7E98B5] rounded px-4 py-1 text-sm font-semibold">
                   ✕ Cancel
                 </button>
 
-                <div className="flex justify-end mt-6">
+                <div className="flex justify-end ">
                   <Button
                     type="submit"
                     variant={{

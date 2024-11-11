@@ -63,11 +63,11 @@ const CVForm: React.FC<CVFormProps> = ({ control }) => {
             />
           </div>
 
-          <div className="flex flex-col flex-grow">
+          <div className="flex flex-col flex-grow w-28">
             <label className="text-sm font-medium mb-1">Description</label>
             <input
               type="text"
-              className="border border-gray-300 rounded-md px-1 py-1 outline-none"
+              className="border border-gray-300 rounded-md px-1 py-1  outline-none "
               placeholder="Description"
               {...control.register(`cvEntries.${index}.description`)} // Register the input
               defaultValue={cv.Description} // Use default value

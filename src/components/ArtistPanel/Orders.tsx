@@ -58,7 +58,7 @@ const Orders = () => {
                     ? "bg-black text-white border rounded-md px-2 py-1"
                     : ""
                 }`}
-                onClick={() => handleTabs(category)} // Pass category directly
+                onClick={() => handleTabs(category)} 
               >
                 <p>{category}</p>
               </div>

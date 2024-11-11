@@ -4,10 +4,13 @@ import Dashboard from "./ArtistDashboard/Dashboard";
 import Artwork from "../ArtistDetail/Artwork";
 import AddArtwork from "./AddArtwork/AddArtwork";
 import Orders from "./Orders";
+import OrdersDetail from "./Orderdetail/OrderDetails"
 import ArtistProfile from "./ArtistEditProfile/ArtistProfile";
 import TicketHistory from "../NewTicket/ticket history/TicketHistory";
 import SingleTicket from "../NewTicket/ticket history/ticketDetail";
 import ArtworkDetails from "./Artwork/artworkDetails/ArtworkDetails";
+import Support from "../pages/Support";
+
 
 const ArtistPanel = () => {
   return (
@@ -20,10 +23,17 @@ const ArtistPanel = () => {
           <Route path="artwork" element={<Artwork />} />
           <Route path="artwork/details" element={<ArtworkDetails />} />
           <Route path="order" element={<Orders />} />
+          <Route path="order/orderDetail" element={<OrdersDetail />} />
+
+          
           <Route path="artwork/add" element={<AddArtwork />} />
           <Route path="edit-artistprofile" element={<ArtistProfile />} />
-          <Route path="ticket" element={<TicketHistory />} />
+
+          <Route path="ticket" element={<Support />} />
+          {/* <Route path="ticket" element={<TicketHistory />} /> */}
           {/* <Route path="ticket/:ticketId" element={<TicketDe />} /> */}
+          <Route path="ticket/tickets" element={<TicketHistory />} />
+
           <Route path="/ticket_detail" element={<SingleTicket />} />
         </Routes>
       </div>

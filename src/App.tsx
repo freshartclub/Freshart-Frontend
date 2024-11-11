@@ -28,6 +28,7 @@ import { useAppSelector } from "./store/typedReduxHooks";
 import ArtistGuard from "./components/ArtistGuard";
 import NotFoundPage from "./components/pages/NotFoundPage";
 import ArtworkDetails from "./components/ArtistPanel/Artwork/artworkDetails/ArtworkDetails";
+import OrderApprove from "./components/ArtistPanel/OrderApprove/OrderApprove";
 const SignUp = lazy(() => import("./components/pages/SignUp"));
 const ForgetPassword = lazy(() => import("./components/pages/ForgetPassword"));
 const ChangePassword = lazy(() => import("./components/pages/ChangePassword"));
@@ -90,7 +91,7 @@ const ArtworkGroup = lazy(
 const CreateInvite = lazy(
   () => import("./components/CreateInvite/CreateInvite")
 );
-const OrderDetail = lazy(() => import("./components/OrderDetail/OrderDetail"));
+const OrderTracking = lazy(() => import("./components/OrderTracking/OrderTracking"));
 const AccountSetting = lazy(
   () => import("./components/AccountSetting/AccountSetting")
 );
@@ -100,6 +101,8 @@ const ArtistDashboard = lazy(
   () => import("./components/ArtistDashboard/ArtistDashboard")
 );
 const SignUpOtp = lazy(() => import("./components/pages/SignUpOtp"));
+
+const OrderDetail = lazy(() => import("./components/ArtistPanel/Orderdetail/OrderDetails"));
 
 const App: React.FC = () => {
   setup();
@@ -125,6 +128,18 @@ const App: React.FC = () => {
             <Route path="/terms" element={<TermAndCondition />} />
             <Route path="/become_artist" element={<BecomeArtist />} />
             <Route path="*" element={<NotFoundPage />} />
+            
+
+            <Route
+              path="/order-approve*"
+              element={
+                <AuthGuard>
+                  <ArtistGuard>
+                    <OrderApprove />
+                  </ArtistGuard>
+                </AuthGuard>
+              }
+            />
 
             <Route
               path="/artist-panel/*"
@@ -268,6 +283,14 @@ const App: React.FC = () => {
               }
             />
             <Route
+              path="/orderDetail"
+              element={
+                <AuthGuard>
+                  <OrderDetail />
+                </AuthGuard>
+              }
+            />
+            <Route
               path="/terms"
               element={
                 <AuthGuard>
@@ -406,10 +429,10 @@ const App: React.FC = () => {
               }
             />
             <Route
-              path="/order_detail"
+              path="/order_tracking"
               element={
                 <AuthGuard>
-                  <OrderDetail />
+                  <OrderTracking />
                 </AuthGuard>
               }
             />

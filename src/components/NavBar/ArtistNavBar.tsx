@@ -35,11 +35,11 @@ const ArtistNavBar = () => {
   };
 
   return (
-    <div className="w-full  py-5 px-5 flex items-center gap-5 relative">
+    <div className="w-full  py-5 px-5 flex  items-center gap-5 relative">
       <div className="">
         <img src={logo} alt="" />
       </div>
-      <div className="w-full flex items-center gap-5 justify-between ">
+      <div className="w-full flex  items-center gap-5 justify-between ">
         <div>
           {/* <h1 className="font-bold px-2 bg-red-200 py-2 rounded ">
             {user?.artistName}

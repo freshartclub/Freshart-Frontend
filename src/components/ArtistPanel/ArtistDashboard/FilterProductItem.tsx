@@ -5,6 +5,8 @@ import image3 from "../assets/Circle Icon Bagde (2).png";
 import image4 from "../assets/Circle Icon Bagde (3).png";
 import UploadArtworkBtn from "./UploadArtworkBtn";
 import SelectDateBtn from "./SelectDateBtn";
+import { NavLink } from "react-router-dom";
+import { GoPlus } from "react-icons/go";
 const FilterProductItem = () => {
   const products = [
     {
@@ -183,7 +185,13 @@ const FilterProductItem = () => {
         <div className="flex gap-3 mt-2 md:mt-0">
           <SelectDateBtn />
 
-          <UploadArtworkBtn path={"/artist-panel/artwork/add"} />
+          {/* <UploadArtworkBtn path={"/artist-panel/artwork/add"} /> */}
+          <NavLink
+            className="py-1 px-2 rounded-md border-gray-100 bg-[#FF536B] text-white flex gap-1 items-center h-fit"
+            to={"/artist-panel/artwork/add"}
+          >
+            <GoPlus /> Upload Artwork
+          </NavLink>
         </div>
       </div>
 

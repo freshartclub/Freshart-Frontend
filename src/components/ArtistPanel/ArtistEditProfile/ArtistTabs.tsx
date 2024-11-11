@@ -18,7 +18,7 @@ const ArtistTabs = () => {
   return (
     <>
       {/* Tabs Container */}
-      <div className="my-5 dark:border-gray-700 flex sm:flex-row flex-col items-center">
+      <div className="my-5 dark:border-gray-700 flex sm:flex-row flex-col items-center ">
         {/* Tab List with Scrollable Feature on Small Screens */}
         <ul
           className="flex -mb-px text-sm font-medium text-center overflow-x-auto scrollbar-hide w-full sm:w-auto"
@@ -45,7 +45,7 @@ const ArtistTabs = () => {
               aria-controls="general"
               aria-selected={activeTab === "general"}
             >
-              <img src={general} alt="general" className="h-5 w-5" />
+              <img src={general} alt="general" className="h-4 w-4" />
               General
             </button>
           </P>
@@ -68,7 +68,7 @@ const ArtistTabs = () => {
               aria-controls="billing"
               aria-selected={activeTab === "billing"}
             >
-              <img src={bill} alt="billing" className="h-5 w-5" />
+              <img src={bill} alt="billing" className="h-4 w-4" />
               Billing
             </button>
           </P>
@@ -91,7 +91,7 @@ const ArtistTabs = () => {
               aria-controls="notification"
               aria-selected={activeTab === "notification"}
             >
-              <img src={bell} alt="notification" className="h-5 w-5" />
+              <img src={bell} alt="notification" className="h-4 w-4" />
               Notifications
             </button>
           </P>
@@ -114,7 +114,7 @@ const ArtistTabs = () => {
               aria-controls="social"
               aria-selected={activeTab === "social"}
             >
-              <img src={share} alt="social" className="h-5 w-5" />
+              <img src={share} alt="social" className="h-4 w-4" />
               Social links
             </button>
           </P>
@@ -137,7 +137,7 @@ const ArtistTabs = () => {
               aria-controls="security"
               aria-selected={activeTab === "security"}
             >
-              <img src={security} alt="security" className="h-5 w-5" />
+              <img src={security} alt="security" className="h-3 w-4" />
               Security
             </button>
           </P>
@@ -160,7 +160,7 @@ const ArtistTabs = () => {
               aria-controls="language"
               aria-selected={activeTab === "language"}
             >
-              <img src={security} alt="language" className="h-5 w-5" />
+              <img src={security} alt="language" className="h-3 w-4" />
               Language
             </button>
           </P>

@@ -2,6 +2,7 @@ import { LuEye } from "react-icons/lu";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useState } from "react";
 import PaginationTabs from "../ArtistDashboard/PaginationTabs";
+import { useNavigate } from "react-router-dom";
 
 const Allorders = ({ orderDelail }: any) => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -25,6 +26,12 @@ const Allorders = ({ orderDelail }: any) => {
     { key: "status", label: "Status", colSpan: 1 },
     { key: "action", label: "Action", colSpan: 1 },
   ];
+
+  const navigate = useNavigate();
+
+  const handelClickData = (order) => {
+    navigate("/artist-panel/order/orderDetail", { state: { order } });
+  };
 
   return (
     <>

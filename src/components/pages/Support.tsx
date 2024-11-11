@@ -16,7 +16,7 @@ import call from "../../assets/PhoneCall.png";
 import msg from "../../assets/ChatCircleDots.png";
 import { FaWhatsapp } from "react-icons/fa";
 import { BsFillTicketPerforatedFill } from "react-icons/bs";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const assist_Data = [
   {
@@ -61,9 +61,21 @@ const Support = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  
+  const location = useLocation();
+  const isArtistProfile = location.pathname.includes("/artist-panel");
+
   return (
     <div>
       <div className="container mx-auto md:px-6 px-3">
+      <div className="bg-[#E9E4DF] border-2 border-[#FF536B] p-4 mb-4 rounded-md mt-6">
+    <h3 className="font-semibold">Important Notice:</h3>
+    <p className="mt-1">
+        Please be aware that some support services may have limited availability due to high demand.
+        Our response times may be slower than usual. We appreciate your patience and understanding.
+        
+    </p>
+</div>
         <div className="flex sm:flex-row flex-col justify-between my-10 w-full">
           <div className="md:w-[70%] w-full">
             <Button
@@ -79,8 +91,8 @@ const Support = () => {
             <Header variant={{ size: "2xl", theme: "dark", weight: "bold" }}>
               How we can help you!
             </Header>
-            <div className="border border-lightgray py-2 px-2 md:w-[70%] w-full flex justify-between my-5">
-              <div className="flex w-full">
+            <div className="border border-lightgray py-2 px-2 md:w-[70%] w-full flex justify-between my-5 bg-[#ffff] rounded-md">
+              <div className="flex w-full rounded-md">
                 <img
                   src={search}
                   alt="search icon"
@@ -99,7 +111,7 @@ const Support = () => {
                   thickness: "thick",
                   fontSize: "base",
                 }}
-                className="rounded-none"
+                className="rounded-sm"
               >
                 Search
               </Button>
@@ -124,12 +136,12 @@ const Support = () => {
             {assist_Data.map((item, index) => (
               <div
                 key={index}
-                className="bg-white flex p-4 border border-[#FFD8DD] shadow-lg"
+                className="bg-white flex p-4 border-2 border-[#FFD8DD] shadow-lg"
               >
-                <img src={item.image} alt="image" />
+                <img className="w-8 h-8"  src={item.image} alt="image" />
                 <P
                   variant={{ size: "base", theme: "dark", weight: "normal" }}
-                  className="ml-3 mt-1"
+                  className="ml-3 mt-1 font-bold text-sm"
                 >
                   {item.title}
                 </P>
@@ -285,7 +297,7 @@ const Support = () => {
           </div>
           <div className="flex items-center justify-center py-5">
             <Link
-              to="/tickets"
+              to= {isArtistProfile?"/artist-panel/ticket/tickets": "/tickets"}
               className="text-red-400 font-medium text-center underline"
             >
               See Recent Ticket History
