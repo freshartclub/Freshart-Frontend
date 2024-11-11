@@ -12,6 +12,7 @@ import ArtworkDetails from "./Artwork/artworkDetails/ArtworkDetails";
 import ArtworkReview from "./AddArtwork/ArtworkReview";
 import ArtistNavBar from "../NavBar/ArtistNavBar";
 import Support from "../pages/Support";
+import NewTicket from "../NewTicket/NewTicket";
 
 // const ArtistPanel = () => {
 //   return (
@@ -56,7 +57,9 @@ const ArtistPanel = () => {
             {/* <Route path="ticket" element={<TicketHistory />} /> */}
             {/* <Route path="ticket/:ticketId" element={<TicketDe />} /> */}
             <Route path="ticket/tickets" element={<TicketHistory />} />
-            <Route path="ticket" element={<Support />} />
+            <Route path="/ticket" element={<Support />} />
+            <Route path="/new_ticket" element={<NewTicket />} />
+            
             <Route path="/ticket_detail" element={<SingleTicket />} />
             <Route path="artwork/preview" element={<ArtworkReview />} />
           </Routes>

@@ -54,28 +54,31 @@ const assist_Data = [
 ];
 
 const Support = () => {
+  const location = useLocation();
+
+  const isArtistProfile = location.pathname.includes("/artist-panel");
+
   const navigate = useNavigate();
 
   const handleSubmitButton = () => {
-    navigate("/new_ticket");
+    const submitTicket = isArtistProfile
+      ? `/artist-panel/new_ticket`
+      : `/new_ticket`;
+    navigate(submitTicket);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
-
-  
-  const location = useLocation();
-  const isArtistProfile = location.pathname.includes("/artist-panel");
 
   return (
     <div>
       <div className="container mx-auto md:px-6 px-3">
-      <div className="bg-[#E9E4DF] border-2 border-[#FF536B] p-4 mb-4 rounded-md mt-6">
-    <h3 className="font-semibold">Important Notice:</h3>
-    <p className="mt-1">
-        Please be aware that some support services may have limited availability due to high demand.
-        Our response times may be slower than usual. We appreciate your patience and understanding.
-        
-    </p>
-</div>
+        <div className="bg-[#E9E4DF] border-2 border-[#FF536B] p-4 mb-4 rounded-md mt-6">
+          <h3 className="font-semibold">Important Notice:</h3>
+          <p className="mt-1">
+            Please be aware that some support services may have limited
+            availability due to high demand. Our response times may be slower
+            than usual. We appreciate your patience and understanding.
+          </p>
+        </div>
         <div className="flex sm:flex-row flex-col justify-between my-10 w-full">
           <div className="md:w-[70%] w-full">
             <Button
@@ -138,7 +141,7 @@ const Support = () => {
                 key={index}
                 className="bg-white flex p-4 border-2 border-[#FFD8DD] shadow-lg"
               >
-                <img className="w-8 h-8"  src={item.image} alt="image" />
+                <img className="w-8 h-8" src={item.image} alt="image" />
                 <P
                   variant={{ size: "base", theme: "dark", weight: "normal" }}
                   className="ml-3 mt-1 font-bold text-sm"
@@ -297,7 +300,7 @@ const Support = () => {
           </div>
           <div className="flex items-center justify-center py-5">
             <Link
-              to= {isArtistProfile?"/artist-panel/ticket/tickets": "/tickets"}
+              to={isArtistProfile ? "/artist-panel/ticket/tickets" : "/tickets"}
               className="text-red-400 font-medium text-center underline"
             >
               See Recent Ticket History

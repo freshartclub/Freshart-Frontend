@@ -58,14 +58,14 @@ const NewTicket = () => {
           adipiscing elit.
         </P>
 
-        <div className="w-full">
+        <div className="w-full ">
           <Formik
             initialValues={initialValues}
             validationSchema={validationSchema}
             onSubmit={onSubmit}
           >
             {({ setFieldValue, resetForm, setErrors }) => (
-              <Form className="bg-white my-4">
+              <Form className="bg-white my-4 p-6">
                 <div className="mb-4">
                   <label
                     htmlFor="region"
