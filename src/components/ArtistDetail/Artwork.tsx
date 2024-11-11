@@ -41,8 +41,9 @@ import deleteimg from "../ArtistDetail/assets/Container (2).png";
 //   },
 // ];
 
-const Artwork = () => {
+const Artwork = ({ data: singleArtistData }) => {
   const { data, isLoading } = useGetArtWorkList();
+  const profile = localStorage.getItem("profile");
 
   // const data = useAppSelector((state) => state.user.user);
   const navigate = useNavigate();
@@ -65,30 +66,30 @@ const Artwork = () => {
       </Header>
 
       <div className="grid xl:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 ">
-        {data &&
-          data.length > 0 &&
-          data.map((item: any, index: any) => (
+        {data.data &&
+          data.data.length > 0 &&
+          data.data.map((item: any, index: any) => (
             <div
               key={index}
               className="sm:px-3 px-0 border-none outline-none flex flex-col pb-5 justify-center relative"
             >
               <img
-                src={`${import.meta.env.VITE_SERVER_URL}/uploads/users/${
-                  item.media.mainImage
-                }`}
+                src={`${data.url}/uploads/users/${item.media.mainImage}`}
                 alt="image"
                 className="w-[40vw] h-[50vh] object-cover cursor-pointer "
                 // onClick={() => handleRedirectToDescription(item._id)}
               />
 
-              <div className="absolute bottom-0 left-0 right-0 top-0 h-full w-full overflow-hidden bg-[#D9D9D9] bg-fixed flex gap-10 items-center justify-center opacity-0 transition duration-300 ease-in-out hover:opacity-[0.7] hover:cursor-pointer">
-                <div className="flex gap-5 ">
-                  <NavLink to={`/artist-panel/artwork/add?id=${item._id}`}>
-                    <img src={edit} className="" alt="" />
-                  </NavLink>
-                  <img src={deleteimg} className="" alt="" />
+              {profile === "artist" ? (
+                <div className="absolute bottom-0 left-0 right-0 top-0 h-full w-full overflow-hidden bg-[#D9D9D9] bg-fixed flex gap-10 items-center justify-center opacity-0 transition duration-300 ease-in-out hover:opacity-[0.7] hover:cursor-pointer">
+                  <div className="flex gap-5 ">
+                    <NavLink to={`/artist-panel/artwork/add?id=${item._id}`}>
+                      <img src={edit} className="" alt="" />
+                    </NavLink>
+                    <img src={deleteimg} className="" alt="" />
+                  </div>
                 </div>
-              </div>
+              ) : null}
 
               {/* <button className="absolute top-2 right-[28px] border border-[#FFD9DE] rounded-full px-3 py-3 bg-white cursor-pointer">
                 <img src={like} alt="" className="w-[20px] h-[20px]" />

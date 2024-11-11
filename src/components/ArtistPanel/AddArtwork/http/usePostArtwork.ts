@@ -25,12 +25,22 @@ async function usePostArtWork(input: any) {
 
 const usePostArtWorkMutation = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get("id");
 
   return useMutation({
     mutationFn: usePostArtWork,
 
     onSuccess: async (res) => {
-      navigate("/artist-panel/artwork");
+      console.log("this is from res", res.data);
+      console.log(id);
+      navigate(
+        `${
+          id
+            ? `/artist-panel/artwork/preview?id=${id}&preview=true`
+            : `/artist-panel/artwork/preview?id=${res.data.artwork._id}&preview=true`
+        }`
+      );
       toast.success(res.data.message, {
         duration: 3000,
       });

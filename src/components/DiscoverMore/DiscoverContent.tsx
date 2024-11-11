@@ -6,28 +6,36 @@ import mark from "./assets/offer.png";
 import wishlist from "./assets/wishlist.png";
 import like from "./assets/like.png";
 import question from "./assets/question.png";
+import { RiH1 } from "react-icons/ri";
 
-const DiscoverContent = () => {
+const DiscoverContent = ({ data }: any) => {
+  console.log("this is from dicover", data);
+
+  const maxLength = 100;
+  const description =
+    data?.productDescription && data.productDescription.length > maxLength
+      ? `${data.productDescription.slice(0, maxLength)}...`
+      : data?.productDescription;
   return (
     <div>
       <P
         variant={{ size: "small", weight: "semiBold" }}
         className="lg:mb-10 mb-3 text-[#999999]"
       >
-        Black & White Fashion
+        {data?.discipline?.artworkDiscipline}
       </P>
       <div className="flex gap-2">
         <Header
           variant={{ theme: "dark", weight: "bold" }}
           className="xl:text-3xl text-xl"
         >
-          Ornamental Goblet Poster
+          {data?.artworkName}
         </Header>
         <P
           variant={{ size: "md", theme: "dark", weight: "normal" }}
           className="mt-5 "
         >
-          (2021)
+          ({data?.artworkCreationYear})
         </P>
       </div>
 
@@ -36,7 +44,7 @@ const DiscoverContent = () => {
           Author :
         </P>
         <P variant={{ size: "base", theme: "dark", weight: "normal" }}>
-          Alfred Frost,Melany Rodriguez
+          {data?.owner?.artistName + " " + data?.owner?.artistSurname1}
         </P>
       </div>
 
@@ -44,7 +52,9 @@ const DiscoverContent = () => {
         <P variant={{ size: "base", theme: "dark", weight: "normal" }}>
           Years of creation :
         </P>
-        <P variant={{ size: "base", theme: "dark", weight: "normal" }}>2022</P>
+        <P variant={{ size: "base", theme: "dark", weight: "normal" }}>
+          {data?.artworkCreationYear}
+        </P>
       </div>
 
       <P
@@ -58,9 +68,7 @@ const DiscoverContent = () => {
         variant={{ size: "base", theme: "dark", weight: "normal" }}
         className="lg:my-6 my-2"
       >
-        Quia in harum exercitationem sit sequi omnis. Tenetur id facere illo
-        dolor. Nulla molestiae voluptatem mollitia ullam necessitatibus sit
-        quibusdam.
+        {description}
       </P>
 
       <div className="flex">
@@ -68,7 +76,9 @@ const DiscoverContent = () => {
           Size :{" "}
         </P>
         <P variant={{ size: "base", theme: "dark", weight: "normal" }}>
-          17 x 54 x 55
+          {` ${data?.additionalInfo?.height} x ${
+            data?.additionalInfo?.weight
+          } x ${data?.additionalInfo?.length || null}`}
         </P>
       </div>
 
@@ -76,7 +86,7 @@ const DiscoverContent = () => {
         variant={{ size: "xl", theme: "dark", weight: "semiBold" }}
         className="lg:my-4 my-2"
       >
-        $120.00
+        {`$ ${data?.pricing?.basePrice}`}
       </Header>
 
       <div className="flex md:flex-row flex-col xl:gap-10 gap-2">
@@ -152,7 +162,7 @@ const DiscoverContent = () => {
             variant={{ size: "small", weight: "medium" }}
             className=" text-[#999999]"
           >
-            2489
+            {data?.inventoryShipping?.sku}
           </P>
         </div>
         <div className="flex gap-2 my-2">
@@ -160,13 +170,13 @@ const DiscoverContent = () => {
             variant={{ size: "small", theme: "dark", weight: "medium" }}
             className="uppercase"
           >
-            CATEGories :
+            Discipline :
           </P>
           <P
             variant={{ size: "small", weight: "medium" }}
             className="capitalize text-[#999999]"
           >
-            All Art pribts posters
+            {data?.discipline?.artworkDiscipline}
           </P>
         </div>
         <div className="flex gap-2 my-2">
@@ -178,10 +188,18 @@ const DiscoverContent = () => {
           </P>
           <P
             variant={{ size: "small", weight: "medium" }}
-            className="capitalize text-[#999999]"
+            className="capitalize text-[#999999] flex gap-2"
           >
-            {" "}
-            Art design graphic art illustration photography
+            {Array.isArray(data?.discipline?.artworkTags) &&
+              data?.discipline?.artworkTags.map((iw, i) => (
+                <span key={i}>
+                  {iw}
+                  {" |"}
+                </span>
+              ))}
+            {/* {data?.additionalInfo?.artworkStyle?.map((item, i) => (
+              <h1>{item}</h1>
+            ))} */}
           </P>
         </div>
       </div>

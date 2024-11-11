@@ -5,12 +5,14 @@ import axiosInstance from "../../utils/axios";
 
 async function fetchData() {
   const { data } = await axiosInstance.get(`${ARTTIST_ENDPOINTS.GetAllArtist}`);
-  return data.data;
+  
+  return data;
 }
 
 export const useGetAllArtist = () => {
+  let url = `${ARTTIST_ENDPOINTS.GetAllArtist}`;
   return useQuery({
-    queryKey: ["Name"],
+    queryKey: [url],
     queryFn: fetchData,
   });
 };

@@ -5,3 +5,8 @@ export const artistPanel = {
   artistOrder: "artist-panel/order",
   artistAddArtWork: "artist-panel/artwork/add",
 };
+
+export const generalPath = {
+  getDiscipline: "api/general/list-discipline",
+  getStyle: "api/general/list-style",
+};

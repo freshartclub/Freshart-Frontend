@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import dashboard from "./assets/dashboard.png";
 import artwork from "./assets/HANGER.png";
@@ -9,6 +9,7 @@ import circle from "./assets/bar.png";
 import mail from "./assets/mail.png";
 import toggle from "./assets/toggle_arrow.png";
 import arrow from "./assets/turn-right.png";
+import logo from "../../assets/loginlogo.png";
 export const sections = [
   {
     key: "dashboard",
@@ -90,8 +91,22 @@ const Sidebar: React.FC = () => {
     setOpenSubmenu(openSubmenu === key ? null : key);
   };
 
+  // useEffect(() => {
+  //   const handleResize = () => {
+  //     if (window.innerWidth >= 768) {
+  //       setIsOpen(false);
+  //     }
+  //   };
+
+  //   handleResize();
+
+  //   window.addEventListener("resize", handleResize);
+
+  //   return () => window.removeEventListener("resize", handleResize);
+  // }, []);
+
   return (
-    <div className={`flex transition-width duration-300 relative`}>
+    <div className={`flex transition-width duration-300 relative md:z-50`}>
       <div
         className={`${
           isOpen ? "w-64" : "w-14"
@@ -107,6 +122,7 @@ const Sidebar: React.FC = () => {
         </button>
 
         <ul className="space-y-2 mt-4">
+          {/* <img src={logo} alt="logo" className="px-4" /> */}
           {sections.map((section) => (
             <li key={section.key}>
               <Link to={`/artist-panel/${section.path}`}>

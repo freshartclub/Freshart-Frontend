@@ -7,7 +7,6 @@ import print from "./assets/print.png";
 import return1 from "./assets/return.png";
 import Header from "../ui/Header";
 import product from "./assets/single-product.jpg.png";
-import profile from "../ArtistPortfolioPage/assets/profile_photo.png";
 import circle1 from "../ArtistPortfolioPage/assets/circle1.png";
 import circle2 from "../ArtistPortfolioPage/assets/circle2.png";
 import account_plus from "../ArtistPortfolioPage/assets/account-plus-outline.png";
@@ -19,12 +18,28 @@ import twitter from "../ArtistPortfolioPage/assets/twitter.png";
 import linkedin from "../ArtistPortfolioPage/assets/linkedin.png";
 import arrow from "../ArtistPortfolioPage/assets/arrow_2.png";
 import Button from "../ui/Button";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 
-const ProductInfo = () => {
+interface DisciplineItem {
+  discipline: string;
+  id: string;
+}
+
+const ProductInfo = ({ data }: any) => {
+  console.log(data);
+
+  const artworkStyles = Array.isArray(data?.data?.additionalInfo?.artworkStyle)
+    ? data.data.additionalInfo.artworkStyle.map((iw, i) => (
+        <span key={i}>{iw}</span>
+      ))
+    : null;
+
   const overview_date = [
     {
       head: "Author :",
-      name: "Anthony Martiz",
+      name:
+        data?.data?.owner?.artistName + " " + data?.data?.owner?.artistSurname1,
     },
     {
       head: "Paper Size :",
@@ -32,19 +47,21 @@ const ProductInfo = () => {
     },
     {
       head: "Category :",
-      name: "Painting, 3D Abstract",
+      name: artworkStyles,
     },
     {
       head: "Width :",
-      name: "16cm",
+      name: data?.data?.additionalInfo?.width,
     },
     {
       head: "Height :",
-      name: "36cm",
+      name: data?.data?.additionalInfo?.height,
     },
     {
       head: "Colour :",
-      name: "Multicolor",
+      name: data?.data?.additionalInfo?.colors?.map((item, i) => (
+        <h1 className="">{item}</h1>
+      )),
     },
     {
       head: "Author type :",
@@ -68,7 +85,12 @@ const ProductInfo = () => {
     },
     {
       heading: "Dimensions: ",
-      description: "Dimensions: 304.1 x 212.4 x 15.6 mm",
+      description:
+        data?.data?.additionalInfo?.width +
+        "x" +
+        data?.data?.additionalInfo?.height +
+        "x" +
+        data?.data?.additionalInfo?.length,
     },
   ];
 
@@ -87,8 +109,19 @@ const ProductInfo = () => {
     },
   ];
 
+  const navigate = useNavigate();
+  const aboutText = data?.data?.owner?.aboutArtist?.about.replace(
+    /^<p>|<\/p>$/g,
+    ""
+  );
+
+  const handleShowmore = (id) => {
+    navigate(`/artist_detail?id=${id}`);
+  };
+
+  if (!product) return <div>Loading...</div>;
   return (
-    <div className="mt-20 hidden">
+    <div className="mt-20">
       <Tabs>
         <TabList>
           <Tab>Description</Tab>
@@ -109,10 +142,7 @@ const ProductInfo = () => {
                 variant={{ size: "xl", theme: "dark", weight: "medium" }}
                 className="my-5"
               >
-                This print from our famous painters and artists posters series,
-                from the mind of Seven Wall Art, with black, and with vertical
-                layout. Animal prints let you show your wild side through your
-                wall decoration. A modern touch for your home.
+                {data?.data?.productDescription}
               </Header>
               <P
                 variant={{ size: "base", theme: "dark", weight: "medium" }}
@@ -273,7 +303,7 @@ const ProductInfo = () => {
               <div className="bg-white shadow-2xl lg:max-w-xs sm:w-[90%] w-full p-5">
                 <div className="">
                   <img
-                    src={profile}
+                    src={`${data?.url}/uploads/users/${data?.data?.owner?.profile?.mainImage}`}
                     alt="Profile"
                     className="object-cover w-full h-full"
                   />
@@ -283,7 +313,9 @@ const ProductInfo = () => {
                     <Header
                       variant={{ size: "xl", theme: "dark", weight: "bold" }}
                     >
-                      Andrews Martin
+                      {data?.data?.owner?.artistName +
+                        " " +
+                        data?.data?.owner?.artistSurname1}
                     </Header>
                     <P
                       variant={{
@@ -293,7 +325,22 @@ const ProductInfo = () => {
                       }}
                       className="pb-10 mt-1 border-b border-dashed"
                     >
-                      PAINTER | SCULPTER | ARTIST
+                      {data?.data?.owner?.aboutArtist?.discipline.map(
+                        (item: DisciplineItem, i) => (
+                          <h1 className="">
+                            {item.discipline}
+                            {/* {i < item?.discipline?.length - 1 && "|"} */}
+                          </h1>
+                        )
+                      )}
+
+                      {/* {Array.isArray(item?.aboutArtist?.discipline) &&
+                  item?.aboutArtist?.discipline.map((iw, i) => (
+                    <span key={i}>
+                      {iw.discipline}
+                      {i < item?.aboutArtist?.discipline.length - 1 && "| "}
+                    </span>
+                  ))}  */}
                     </P>
                   </div>
                 </div>
@@ -339,7 +386,7 @@ const ProductInfo = () => {
                       }}
                       className="my-1"
                     >
-                      NY, Chicago 452100
+                      {`${data?.data?.owner?.address?.country},${data?.data?.owner?.address?.city}`}
                     </P>
                   </div>
                 </div>
@@ -405,17 +452,11 @@ const ProductInfo = () => {
                   variant={{ size: "base", theme: "dark", weight: "normal" }}
                   className="w-[90%]"
                 >
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-                  irure dolor in reprehenderit in voluptate velit esse cillum
-                  dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                  cupidatat non proident, sunt in culpa qui officia deserunt
-                  mollit anim id est laborum.
+                  {aboutText}
                 </P>
                 <div className="flex justify-end">
                   <Button
+                    onClick={() => handleShowmore(data?.data?.owner?._id)}
                     className="!p-0 flex items-center mt-2"
                     variant={{
                       fontSize: "md",

@@ -5,10 +5,12 @@ import P from "../ui/P";
 import banner2 from "../../assets/banner_2.jpg";
 import banner3 from "../../assets/banner3.png";
 import { useAppSelector } from "../../store/typedReduxHooks";
+import { useNavigate } from "react-router-dom";
 
 const BannerSection = () => {
-  const user = useAppSelector((state)=> state.user.user);
-  
+  const user = useAppSelector((state) => state.user.user);
+  const navigate = useNavigate();
+
   const bannerData = [
     {
       image1: banner,
@@ -73,6 +75,10 @@ const BannerSection = () => {
     ],
   };
 
+  const handleCollection = () => {
+    navigate("/purchase");
+  };
+
   return (
     <>
       <Slider {...settings} className="banner_arrow">
@@ -99,7 +105,10 @@ const BannerSection = () => {
                   >
                     {item.para}
                   </P>
-                  <button className="!border-b !bg-transparent">
+                  <button
+                    onClick={handleCollection}
+                    className="!border-b !bg-transparent"
+                  >
                     {item.btn}
                   </button>
                 </div>

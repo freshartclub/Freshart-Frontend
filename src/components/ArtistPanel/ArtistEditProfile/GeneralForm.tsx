@@ -26,7 +26,7 @@ const GeneralForm = () => {
     defaultValues: {
       name: data?.artistName || "",
       country: data?.address?.country || "Spain",
-      zip: data?.address.zipCode || "",
+      zip: data?.address?.zipCode || "",
       city: data?.address?.city || "",
       stateRegion: data?.address?.state || "",
       phoneNumber: data?.phone || "",
@@ -38,7 +38,7 @@ const GeneralForm = () => {
 
       imageFields: data?.profile?.additionalImage || "",
       videoFields: data?.profile?.mainVideo || "",
-      cvEntries: data?.highlights.cv || "",
+      cvEntries: data?.highlights?.cv || "",
       accounts: data?.links || "",
     },
   });
@@ -46,7 +46,7 @@ const GeneralForm = () => {
   useEffect(() => {
     if (data) {
       setValue("name", data?.artistName || "");
-      setValue("country", data?.address.country || "Spain");
+      setValue("country", data?.address?.country || "Spain");
       setValue("zip", data?.zipCode || "");
       setValue("city", data?.address?.city || "");
       setValue("stateRegion", data.address?.state || "");

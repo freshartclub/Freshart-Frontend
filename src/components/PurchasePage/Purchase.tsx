@@ -71,7 +71,7 @@ const Purchase = () => {
             >
               {art_data.map((item, index) => (
                 <Link
-                  to="/"
+                  to="/purchase"
                   key={index}
                   className="group font-semibold text-black"
                 >

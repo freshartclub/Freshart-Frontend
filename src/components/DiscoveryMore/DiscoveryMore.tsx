@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import BackButton from "../ui/BackButton";
 import { useRef, useState } from "react";
 import Slider from "react-slick";
@@ -10,12 +10,14 @@ import slide5 from "./assets/Images.png";
 import slider_show from "./assets/nature.png";
 import Header from "../ui/Header";
 import P from "../ui/P";
+import { useGetArtWorkById } from "../DiscoverMore/http/useGetArtWorkById";
 
 const DiscoveryMore = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const navigate = useNavigate();
   const sliderRef = useRef<Slider>(null);
   const [fade, setFade] = useState(false);
+
 
   const handleBack = () => {
     navigate("/");
