@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import GeneralSocial from "./GeneralSocial";
 import GeneralMedia from "./GeneralMedia";
 import CVForm from "./CVForm";
@@ -11,6 +11,10 @@ import { useGetArtistDetails } from "../../UserProfile/http/useGetDetails";
 import Loader from "../../ui/Loader";
 import Invoice from "./Invoice";
 import Logistics from "./Logistics";
+import PhoneInput from "react-phone-number-input";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import "react-phone-number-input/style.css";
 
 const GeneralForm = () => {
   const { data, isLoading } = useGetArtistDetails();
@@ -344,13 +348,11 @@ const GeneralForm = () => {
 
             <div className="flex flex-wrap justify-between w-full gap-4 mb-4">
               <div className="md:w-[48%] w-full relative">
-                <input
-                  type="text"
-                  // placeholder="365-374-4961"
-                  {...register("phoneNumber", {
-                    required: "Phone Number is required",
-                  })}
-                  className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-[#1C252E] outline-none"
+                <PhoneInput
+                  className="appearance-none border flex outline-none rounded  py-3 px-3 text-gray-700 leading-tight text-sm"
+                  placeholder="Enter phone number"
+                  value={getValues("phoneNumber")}
+                  onChange={(val) => setValue("phoneNumber", val)}
                 />
                 <label
                   htmlFor="phoneNumber"
@@ -358,12 +360,14 @@ const GeneralForm = () => {
                 >
                   Phone Number
                 </label>
+
                 {errors.phoneNumber && (
                   <div className="text-red-500 text-sm mt-1">
                     <div>{String(errors.phoneNumber?.message || "")}</div>
                   </div>
                 )}
               </div>
+
               <div className="md:w-[48%] w-full relative">
                 <input
                   type="text"
@@ -480,7 +484,38 @@ const GeneralForm = () => {
             </div>
 
             <div className="w-full relative">
-              <textarea
+              <Controller
+                name="about"
+                control={control}
+                defaultValue="" // Set default value if any
+                render={({ field }) => (
+                  <div className="relative">
+                    <ReactQuill
+                      {...field} // Pass field props to ReactQuill
+                      className="border border-[#E6E6E6] p-3 w-full rounded-md"
+                      theme="snow" // Choose a Quill theme
+                      placeholder="Write about yourself..." // Custom placeholder
+                      modules={{
+                        toolbar: [
+                          [{ header: "1" }, { header: "2" }, { font: [] }],
+                          [{ list: "ordered" }, { list: "bullet" }],
+                          ["bold", "italic", "underline"],
+                          [{ align: [] }],
+                          ["link"],
+                        ],
+                      }}
+                    />
+                    <label
+                      htmlFor="about"
+                      className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
+                    >
+                      About
+                    </label>
+                  </div>
+                )}
+              />
+
+              {/* <textarea
                 rows={3}
                 // placeholder="Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Sed aliquam, nisi quis porttitor congue, elit erat euismod orci, ac placerat dolor lectus quis orci."
                 {...register("about")}
@@ -491,7 +526,7 @@ const GeneralForm = () => {
                 className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
               >
                 About
-              </label>
+              </label> */}
             </div>
 
             <GeneralSocial control={control} />

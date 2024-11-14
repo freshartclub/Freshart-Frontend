@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FaAngleDown } from "react-icons/fa"; // Import down arrow icon
 
-const options = [
+export const options = [
   {
     label: "Change Currency",
     value: "currency",

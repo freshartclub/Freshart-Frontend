@@ -48,16 +48,18 @@ const DiscoverContent = ({ data }: any) => {
             </Header>
 
             <div className="flex items-center gap-2 w-[50%]">
-              <Button
-                onClick={() => handlePublishedArtwork(data?._id)}
-                variant={{
-                  rounded: "full",
-                  theme: "dark",
-                }}
-                className="flex justify-center border border-[#263238] w-full font-medium text-sm"
-              >
-                Publish
-              </Button>
+              {data?.status === "published" ? null : (
+                <Button
+                  onClick={() => handlePublishedArtwork(data?._id)}
+                  variant={{
+                    rounded: "full",
+                    theme: "dark",
+                  }}
+                  className="flex justify-center border border-[#263238] w-full font-medium text-sm"
+                >
+                  Publish
+                </Button>
+              )}
               <Button
                 onClick={() => editArtwork(data?._id)}
                 variant={{

@@ -73,15 +73,15 @@ const ArtworkRight = () => {
   return (
     <div>
       <div className=" rounded-md">
-        <div className="bg-white rounded-md p-4 border border-[#E0E2E7]">
-          <Header
+        {/* <div className="bg-white rounded-md p-4 border border-[#E0E2E7]"> */}
+        {/* <Header
             variant={{ size: "md", theme: "dark", weight: "semiBold" }}
             className="mb-3"
           >
             Discipline
-          </Header>
-          <>
-            {fields.map(({ id, name, label, options }) => (
+          </Header> */}
+        <>
+          {/* {fields.map(({ id, name, label, options }) => (
               <div key={id} className="mb-4">
                 <label
                   htmlFor={id}
@@ -105,10 +105,10 @@ const ArtworkRight = () => {
                   ))}
                 </Field>
               </div>
-            ))}
+            ))} */}
 
-            {/* Multi-select for Artwork Tags using react-select */}
-            <div className="mb-4">
+          {/* Multi-select for Artwork Tags using react-select */}
+          {/* <div className="mb-4">
               <label
                 htmlFor="artworkTags"
                 className="block text-sm sm:text-base font-semibold text-[#203F58] mb-2"
@@ -140,9 +140,9 @@ const ArtworkRight = () => {
                   }),
                 }}
               />
-            </div>
-          </>
-        </div>
+            </div> */}
+        </>
+        {/* </div> */}
 
         <div className="bg-white rounded-lg shadow-md p-6 mt-4 border border-[#E0E2E7]">
           <Header

@@ -69,6 +69,16 @@ const TicketHistory: React.FC = () => {
     dayjs(ticket.createdAt).isAfter(now.subtract(3, "day"))
   );
 
+  const onGoingTicket = data?.filter((ticket) => {
+    return ticket.status.includes("In progress");
+  });
+
+  const solvedTicket = data?.filter((ticket) => {
+    return ticket.status.includes("Finalise");
+  });
+
+  console.log(activeTab);
+
   if (isLoading) {
     return <Loader />;
   }
@@ -161,6 +171,28 @@ const TicketHistory: React.FC = () => {
           <TabPanel activeTab={activeTab} tabKey="new">
             <TicketsList
               tickets={newTickets}
+              isLoading={isLoading}
+              searchQuery={searchQuery}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
+          </TabPanel>
+
+          <TabPanel activeTab={activeTab} tabKey="On-Going">
+            <TicketsList
+              tickets={onGoingTicket}
+              isLoading={isLoading}
+              searchQuery={searchQuery}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
+          </TabPanel>
+
+          <TabPanel activeTab={activeTab} tabKey="Resolved">
+            <TicketsList
+              tickets={solvedTicket}
               isLoading={isLoading}
               searchQuery={searchQuery}
               currentPage={currentPage}

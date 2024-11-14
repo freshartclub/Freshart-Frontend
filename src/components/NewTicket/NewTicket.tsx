@@ -8,6 +8,12 @@ import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 import useGetPostArtistTicketMutation from "./ticket history/http/usePostTicket";
+import {
+  impactOption,
+  urgency,
+  urgencyData,
+  urgencyOption,
+} from "../utils/mockData";
 
 const NewTicket = () => {
   const validationSchema = Yup.object({
@@ -66,7 +72,7 @@ const NewTicket = () => {
           >
             {({ setFieldValue, resetForm, setErrors }) => (
               <Form className="bg-white my-4 p-6">
-                <div className="mb-4">
+                {/* <div className="mb-4">
                   <label
                     htmlFor="region"
                     className="block mb-2 text-sm font-bold text-gray-900 dark:text-white"
@@ -86,6 +92,26 @@ const NewTicket = () => {
                   </Field>
                   <ErrorMessage
                     name="region"
+                    component="div"
+                    className="text-red-500 text-sm mt-1"
+                  />
+                </div> */}
+
+                <div className="mb-4">
+                  <label
+                    className="block text-gray-700 text-sm font-bold mb-2"
+                    htmlFor="requestedBy"
+                  >
+                    Requested By
+                  </label>
+                  <Field
+                    name="requestedBy"
+                    type="text"
+                    placeholder="Requested By"
+                    className="outline-[#FDB7DC] bg-[#FFD1D114] shadow border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-[#FDB7DC] focus:shadow-outline"
+                  />
+                  <ErrorMessage
+                    name="requestedBy"
                     component="div"
                     className="text-red-500 text-sm mt-1"
                   />
@@ -113,7 +139,7 @@ const NewTicket = () => {
                 <div className="mb-4">
                   <label
                     htmlFor="region"
-                    className="block mb-2 text-sm font-bold text-gray-900 dark:text-white"
+                    className="block mb-2 text-sm font-bold text-gray-900 "
                   >
                     Select Ticket Type*
                   </label>
@@ -136,10 +162,71 @@ const NewTicket = () => {
                     className="text-red-500 text-sm mt-1"
                   />
                 </div>
+
+                <div className="flex justify-between items-center gap-3">
+                  <div className="mb-4 w-full">
+                    <label
+                      htmlFor="urgency"
+                      className="block mb-2 text-sm font-bold text-gray-900 "
+                    >
+                      Select Unrgency
+                    </label>
+                    <Field
+                      name="urgency"
+                      as="select"
+                      className="outline-[#FDB7DC] bg-[#FFD1D114] shadow border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-[#FDB7DC] focus:shadow-outline"
+                    >
+                      <option value="">Choose Urgency Type</option>
+
+                      {urgencyOption.map((item, i) => {
+                        return (
+                          <option key={i} value={item.value}>
+                            {item.label}
+                          </option>
+                        );
+                      })}
+                    </Field>
+                    <ErrorMessage
+                      name="ticketType"
+                      component="div"
+                      className="text-red-500 text-sm mt-1"
+                    />
+                  </div>
+
+                  <div className="mb-4 w-full">
+                    <label
+                      htmlFor="impact"
+                      className="block mb-2 text-sm font-bold text-gray-900 "
+                    >
+                      Select Impact
+                    </label>
+                    <Field
+                      name="impact"
+                      as="select"
+                      className="outline-[#FDB7DC] bg-[#FFD1D114] shadow border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-[#FDB7DC] focus:shadow-outline"
+                    >
+                      <option value="">Choose Impact Type</option>
+
+                      {impactOption.map((item, i) => {
+                        return (
+                          <option key={i} value={item.value}>
+                            {item.label}
+                          </option>
+                        );
+                      })}
+                    </Field>
+                    <ErrorMessage
+                      name="ticketType"
+                      component="div"
+                      className="text-red-500 text-sm mt-1"
+                    />
+                  </div>
+                </div>
+
                 <div className="mb-4">
                   <label
                     htmlFor="message"
-                    className="block mb-2 text-sm font-bold text-gray-900 dark:text-white"
+                    className="block mb-2 text-sm font-bold text-gray-900 "
                   >
                     Your message
                   </label>
@@ -160,13 +247,13 @@ const NewTicket = () => {
                 <div className="mb-8">
                   <label
                     htmlFor="message"
-                    className="block mb-2 text-sm font-bold text-gray-900 dark:text-white"
+                    className="block mb-2 text-sm font-bold text-gray-900 "
                   >
-                    Upload Your Image
+                    Upload Your File
                   </label>
                   <div className="border-2 border-dashed border-gray-300 py-10 px-6 bg-[#FFD1D114] rounded-lg text-center flex sm:flex-row flex-col gap-4 items-center justify-center">
                     <label className="text-md mb-2 text-center">
-                      Upload Your Image Here
+                      Upload Your File Here
                     </label>
                     <label className="block text-center">
                       <input
