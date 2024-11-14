@@ -4,10 +4,10 @@ import { ARTTIST_ENDPOINTS } from "../../../../http/apiEndPoints/Artist";
 import { useSearchParams } from "react-router-dom";
 
 async function fetchData(id) {
+  if (id === null) return {};
   const { data } = await axiosInstance.get(
     `${ARTTIST_ENDPOINTS.GetArtWorkListById}/${id}`
   );
-
   return data;
 }
 

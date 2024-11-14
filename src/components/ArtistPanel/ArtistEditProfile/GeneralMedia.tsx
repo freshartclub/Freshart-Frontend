@@ -9,7 +9,7 @@ const GeneralMedia = ({ control }) => {
     remove: removeImage,
   } = useFieldArray({
     control,
-    name: "images",
+    name: "additionalImage",
   });
 
   const {
@@ -18,7 +18,7 @@ const GeneralMedia = ({ control }) => {
     remove: removeVideo,
   } = useFieldArray({
     control,
-    name: "videos",
+    name: "additionalVideo",
   });
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -31,7 +31,7 @@ const GeneralMedia = ({ control }) => {
       Array.from(files).forEach((file) => {
         const reader = new FileReader();
         reader.onloadend = () => {
-          appendImage({ file, dataUrl: reader.result }); // Store the data URL for preview
+          appendImage(file);
         };
         reader.readAsDataURL(file);
       });
@@ -42,7 +42,7 @@ const GeneralMedia = ({ control }) => {
     const file = event.target.files?.[0];
 
     if (file) {
-      appendVideo({ file }); // Append the whole file object
+      appendVideo({ file });
     }
   };
 
@@ -57,6 +57,8 @@ const GeneralMedia = ({ control }) => {
       videoInputRef.current.click();
     }
   };
+
+  console.log("this is form imagesfields", imageFields);
 
   return (
     <div className="p-6 mt-6 bg-white rounded-lg shadow-md">
@@ -78,7 +80,7 @@ const GeneralMedia = ({ control }) => {
           {imageFields.map((image, index) => (
             <div key={image.id} className="relative w-24 h-24">
               <img
-                src={image.dataUrl} // Use the data URL for preview
+                src={image} // Use the data URL for preview
                 alt={`upload-${index}`}
                 className="w-full h-full object-cover rounded-md"
               />

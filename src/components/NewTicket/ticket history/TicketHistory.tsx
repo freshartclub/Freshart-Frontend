@@ -69,7 +69,7 @@ const TicketHistory: React.FC = () => {
     dayjs(ticket.createdAt).isAfter(now.subtract(3, "day"))
   );
 
-  if (!data) {
+  if (isLoading) {
     return <Loader />;
   }
 

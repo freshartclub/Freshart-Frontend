@@ -23,23 +23,63 @@ import Select from "react-select";
 import image_icon from "../../../assets/image_icon.png";
 import video_icon from "../../../assets/video_icon.png";
 import * as Yup from "yup";
-import axiosInstance from "../../utils/axios";
 import { useSearchParams } from "react-router-dom";
 import usePostArtWorkMutation from "./http/usePostArtwork";
 import { useGetArtWorkById } from "./http/useGetArtworkById";
-import { ARTTIST_ENDPOINTS } from "../../../http/apiEndPoints/Artist";
 import Loader from "../../ui/Loader";
-import AdditionalSelect from "../../ui/AdditionalSelect";
 import { useGetTechnic } from "./http/useGetTechnic";
 import { useGetTheme } from "./http/useGetTheme";
+import "react-datepicker/dist/react-datepicker.css";
+
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
+
+const CustomYearPicker = ({
+  field,
+  form,
+  selectedYear,
+  toggleCalendar,
+  showCalendar,
+}) => (
+  <div className="relative w-full">
+    {/* <Field
+      type="text"
+      name="artistName"
+      placeholder="Type artist name here (if different from artist)..."
+      className="w-full bg-[#F9F9FC] text-sm sm:text-base border border-gray-300 rounded-md p-1 sm:p-3 outline-none"
+    /> */}
+
+    <div
+      onClick={toggleCalendar}
+      className="bg-[#F9F9FC] mt-1 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5 text-left cursor-pointer"
+    >
+      {selectedYear ? `${selectedYear}` : "Select Year"}
+    </div>
+
+    {showCalendar && (
+      <div className="absolute z-10 mt-1 bg-white shadow-lg rounded-lg px-10 py-2 ">
+        <Calendar
+          view="decade"
+          defaultView="decade"
+          onClickYear={(date) => {
+            const year = date.getFullYear();
+            form.setFieldValue(field.name, year);
+            toggleCalendar();
+          }}
+          showNeighboringMonth={false}
+          value={selectedYear ? new Date(selectedYear, 0) : new Date()}
+        />
+      </div>
+    )}
+  </div>
+);
 
 const AddArtwork = () => {
   const [progress, setProgress] = useState(0);
-  const artworkTechnic = [
-    { value: "color1", label: "Color1" },
-    { value: "color2", label: "Color2" },
-    { value: "color3", label: "Color3" },
-  ];
+
+  const [showCalendar, setShowCalendar] = useState(false);
+
+  const toggleCalendar = () => setShowCalendar(!showCalendar);
 
   // const validationSchema = Yup.object({
   //   name: Yup.string().required("Name is required"),
@@ -58,6 +98,7 @@ const AddArtwork = () => {
   const [mainVideo, setMainVideo] = useState(null);
   const [otherVideos, setOtherVideos] = useState([]);
   const [searchParams] = useSearchParams();
+
   const id = searchParams.get("id");
 
   const [initialValues, setInitialValues] = useState({
@@ -380,18 +421,12 @@ const AddArtwork = () => {
                       </label>
 
                       <Field
-                        as="select"
-                        id="artworkCreationYear"
                         name="artworkCreationYear"
-                        className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
-                      >
-                        <option value="" disabled selected>
-                          Select type
-                        </option>
-                        {yearOption.map((year, index) => (
-                          <option key={index}>{year.year}</option>
-                        ))}
-                      </Field>
+                        component={CustomYearPicker}
+                        selectedYear={values.artworkCreationYear}
+                        toggleCalendar={toggleCalendar}
+                        showCalendar={showCalendar}
+                      />
                     </div>
 
                     <div className="w-full">

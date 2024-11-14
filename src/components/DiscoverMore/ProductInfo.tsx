@@ -325,7 +325,7 @@ const ProductInfo = ({ data }: any) => {
                       }}
                       className="pb-10 mt-1 border-b border-dashed"
                     >
-                      {data?.data?.owner?.aboutArtist?.discipline.map(
+                      {data?.data?.owner?.aboutArtist?.discipline?.map(
                         (item: DisciplineItem, i) => (
                           <h1 className="">
                             {item.discipline}

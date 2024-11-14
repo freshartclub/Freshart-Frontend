@@ -94,7 +94,7 @@ const Support = () => {
           <h3 className="font-semibold">Important Notice:</h3>
           {newIncident?.map((item, i) => (
             <p className="mt-1" key={i}>
-              {item.description.replace(/(^<p>|<\/p>$)/g, "")}
+              {item?.description?.replace(/(^<p>|<\/p>$)/g, "")}
             </p>
           ))}
         </div>

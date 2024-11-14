@@ -30,8 +30,8 @@ const useSigInInMutation = () => {
     onSuccess: async (res, input) => {
       setToken(res.data.token, input.rememberMe);
       dispatch(updateUser(res.data.user));
-
       dispatch(setIsAuthorized(true));
+      console.log("this is from sign in ", res.data);
 
       if (res.data.user.isActivated) {
         dispatch(setIsArtist(true));

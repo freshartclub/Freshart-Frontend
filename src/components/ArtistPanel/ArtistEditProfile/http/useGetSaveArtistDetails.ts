@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import toast from "react-hot-toast";
 
@@ -18,11 +18,17 @@ async function editArtistProfile(input: any) {
 
 const useGetSaveArtistDetailsMutation = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: editArtistProfile,
 
     onSuccess: async (res) => {
+      queryClient.invalidateQueries({
+        queryKey: [ARTTIST_ENDPOINTS.GetArtistDetials],
+        refetchType: "all",
+      });
+
       toast.dismiss(toastId);
       toast.success(res.data.message, {
         duration: 3000,

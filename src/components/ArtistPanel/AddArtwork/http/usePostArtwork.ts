@@ -9,9 +9,6 @@ import axiosInstance from "../../../utils/axios";
 let toastId: any;
 
 async function usePostArtWork(input: any) {
-  // const [searchParams] = useSearchParams();
-  // const id = searchParams.get("id");
-  // console.log("id is from add artwork form ", id);
   return await axiosInstance.post(
     `/api/artist/add-artwork/${input.id}`,
     input.data,

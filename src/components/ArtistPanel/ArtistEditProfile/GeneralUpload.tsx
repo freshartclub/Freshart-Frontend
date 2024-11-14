@@ -6,26 +6,38 @@ import upload from "./assets/Upload.png";
 import camera from "./assets/camera.png";
 import P from "../../ui/P";
 import { useGetArtistDetails } from "./http/useGetDetails";
+import useGetSaveArtistDetailsMutation from "./http/useGetSaveArtistDetails";
 
 const GeneralUpload = () => {
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [newImage, setNewImage] = useState<string | null>(null);
+
+  const { mutate, isPending } = useGetSaveArtistDetailsMutation();
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      setNewImage(file);
       const imageUrl = URL.createObjectURL(file);
       setUploadedImage(imageUrl);
     }
   };
   // we have to fix it it is still  pending api is not ready
   const { data, isLoading } = useGetArtistDetails();
-  console.log(data);
 
   useEffect(() => {
     if (data) {
-      setUploadedImage(data?.artist?.avatar);
+      setUploadedImage(data?.artist?.profile?.mainImage);
     }
   }, []);
+
+  console.log(data);
+
+  const handleUpdateProfile = () => {
+    const formData = new FormData();
+    formData.append("mainImage", newImage);
+    mutate(formData);
+  };
 
   const handleDelete = () => {
     setUploadedImage(null);
@@ -102,7 +114,7 @@ const GeneralUpload = () => {
 
         <div className="text-center">
           <button
-            onClick={handleDelete}
+            onClick={handleUpdateProfile}
             className="bg-[#FF563014] text-[#B71D18] px-4 py-2 rounded font-semibold mt-10"
           >
             Update Profile

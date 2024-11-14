@@ -27,8 +27,8 @@ export const sections = [
     icon: artwork,
     path: "artwork",
     submenu: [
-      { key: "myArt", label: "My Art", path: "artwork" },
-      { key: "addArt", label: "Add Art", path: "artwork/add" },
+      { key: "myArt", label: "My Artwork", path: "artwork" },
+      { key: "addArt", label: "Add Artwork", path: "artwork/add" },
     ],
   },
   {
@@ -74,7 +74,10 @@ export const sections = [
     label: "Help & Support",
     icon: mail,
     path: "ticket",
-    submenu: [{ key: "ticket", label: "Raise Ticket", path: "support" }],
+    submenu: [
+      { key: "ticket", label: "Raise Ticket", path: "ticket" },
+      { key: "ticketList", label: "Ticket List", path: "ticket/tickets" },
+    ],
   },
 ];
 

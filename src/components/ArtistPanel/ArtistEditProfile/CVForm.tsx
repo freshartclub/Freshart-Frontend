@@ -23,13 +23,31 @@ const CVForm: React.FC<CVFormProps> = ({ control }) => {
     name: "cvEntries",
   });
 
+  console.log("this is from cv", cvEntries);
   const addMoreCv = () => {
     append({ year: "", type: "", description: "", location: "", scope: "" });
   };
 
   return (
     <div className="p-4 mt-4 bg-white rounded-lg shadow-md max-w-full">
-      <h2 className="text-xl font-semibold mb-3 text-[#1A1C21]">Add CV</h2>
+      <h2 className="text-xl font-semibold mb-3 pb-3 text-[#1A1C21]">
+        Highlight & CV
+      </h2>
+      <div className="w-full relative">
+        <textarea
+          rows={3}
+          // placeholder="Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Sed aliquam, nisi quis porttitor congue, elit erat euismod orci, ac placerat dolor lectus quis orci."
+          {...control.register("addHighlights")}
+          className="border border-[#E6E6E6] outline-none p-3 w-full rounded-md placeholder:font-montserrat font-normal text-left placeholder:text-[#1C252E]"
+        />
+        <label
+          htmlFor="addHighlights"
+          className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
+        >
+          Highlight
+        </label>
+      </div>
+
       {cvEntries.map((cv, index) => (
         <div key={cv.id} className="flex space-x-2 mb-3">
           {/* Year Input - Changed to Select */}
@@ -54,13 +72,18 @@ const CVForm: React.FC<CVFormProps> = ({ control }) => {
 
           <div className="flex flex-col">
             <label className="text-sm font-medium mb-1">Type</label>
-            <input
-              type="text"
+            <select
               className="border border-gray-300 rounded-md px-1 py-1 w-24 outline-none"
-              placeholder="Type"
-              {...control.register(`cvEntries.${index}.type`)} // Register the input
-              defaultValue={cv.Type} // Use default value
-            />
+              {...control.register(`cvEntries.${index}.type`)} // Use control to register the input
+              defaultValue={cv.Type} // Set the default value from cv.Type
+            >
+              <option value="soloexhibition">Solo Exhibition</option>
+              <option value="groupexhibition">Group Exhibition</option>
+              <option value="collection">Collection</option>{" "}
+              <option value="awards">Awards</option>
+              <option value="press&bibliography">Press & Bibliography</option>
+              <option value="seduction">SEduction</option>
+            </select>
           </div>
 
           <div className="flex flex-col flex-grow w-28">
