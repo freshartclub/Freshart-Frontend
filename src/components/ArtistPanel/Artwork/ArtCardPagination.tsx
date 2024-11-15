@@ -95,22 +95,26 @@ const ArtCardPagination: React.FC = () => {
       <div className="flex gap-2 flex-wrap justify-end pt-2">
         <div className="flex gap-2 items-center">
           <div className="w-[.8em] h-[.8em] rounded-full bg-[#00DE00] flex items-center"></div>
-          <p className="text-[14px] text-black">Published</p>
-        </div>
-        <div className="flex gap-2 items-center">
-          <div className="w-[.8em] h-[.8em] rounded-full bg-[#EE1D52] flex items-center"></div>
-          <p className="text-[14px] text-black">Not Available</p>
-        </div>
-        <div className="flex gap-2 items-center">
-          <div className="w-[.8em] h-[.8em] rounded-full bg-[#FFA600] flex items-center"></div>
-          <p className="text-[14px] text-black">In subscription</p>
-        </div>
-        <div className="flex gap-2 items-center">
-          <div className="w-[.8em] h-[.8em] rounded-full bg-[#696868] flex items-center"></div>
-          <p className="text-[14px] text-black">Purchased</p>
+          <p className="text-[14px] text-black">Approved</p>
         </div>
         <div className="flex gap-2 items-center">
           <div className="w-[.8em] h-[.8em] rounded-full bg-[#D8F002] flex items-center"></div>
+          <p className="text-[14px] text-black">Pending</p>
+        </div>
+        {/* <div className="flex gap-2 items-center">
+          <div className="w-[.8em] h-[.8em] rounded-full bg-[#EE1D52] flex items-center"></div>
+          <p className="text-[14px] text-black">Not Available</p>
+        </div> */}
+        {/* <div className="flex gap-2 items-center">
+          <div className="w-[.8em] h-[.8em] rounded-full bg-[#FFA600] flex items-center"></div>
+          <p className="text-[14px] text-black">In subscription</p>
+        </div> */}
+        <div className="flex gap-2 items-center">
+          <div className="w-[.8em] h-[.8em] rounded-full   bg-[#EE1D52]   flex items-center"></div>
+          <p className="text-[14px] text-black">Rejected</p>
+        </div>
+        <div className="flex gap-2 items-center">
+          <div className="w-[.8em] h-[.8em] rounded-full bg-[#696868] flex items-center"></div>
           <p className="text-[14px] text-black">Darft</p>
         </div>
       </div>

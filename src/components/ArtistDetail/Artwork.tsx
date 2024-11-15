@@ -1,56 +1,42 @@
+import React, { useState, useEffect } from "react";
 import Header from "../ui/Header";
-import img1 from "../../assets/Overlay+Shadow (1).png";
-import img2 from "../../assets/oiloncanvasofalittlegirl.jpg.png";
-import img3 from "../../assets/Frame 1000009408.png";
-import "../../App.css";
-import like from "../../assets/like.png";
 import { useGetArtWorkList } from "./http/getArtWorkList";
 import Loader from "../ui/Loader";
 import { NavLink, useNavigate } from "react-router-dom";
 import edit from "../ArtistDetail/assets/edit.png";
 import deleteimg from "../ArtistDetail/assets/Container (2).png";
 
-// const highlightData = [
-//   {
-//     image: img1,
-//     title: "Illustrator, painting",
-//     heading: "Nineteenth-Century Pastel Portraits",
-//     para: "Andrews meson",
-//     size: "70 x 32 ",
-//   },
-//   {
-//     image: img2,
-//     title: "Illustrator, painting",
-//     heading: "Nineteenth-Century Pastel Portraits",
-//     para: "Andrews meson",
-//     size: "70 x 32 ",
-//   },
-//   {
-//     image: img3,
-//     title: "Illustrator, painting",
-//     heading: "Nineteenth-Century Pastel Portraits",
-//     para: "Andrews meson",
-//     size: "70 x 32 ",
-//   },
-//   {
-//     image: img2,
-//     title: "Illustrator, painting",
-//     heading: "Nineteenth-Century Pastel Portraits",
-//     para: "Andrews meson",
-//     size: "70 x 32 ",
-//   },
-// ];
-
 const Artwork = ({ data: singleArtistData }) => {
   const { data, isLoading } = useGetArtWorkList();
   const profile = localStorage.getItem("profile");
-
-  // const data = useAppSelector((state) => state.user.user);
   const navigate = useNavigate();
-  // const handleRedirectToDescription = (id) => {
-  //   navigate(`/artist-panel/artwork/details?id=${id}`);
-  //   window.scroll(0, 0);
-  // };
+
+  // State for selected filters
+  const [selectedDiscipline, setSelectedDiscipline] = useState("");
+  const [selectedSeries, setSelectedSeries] = useState("");
+  const [isArtProvider, setIsArtProvider] = useState(false);
+
+  // Sample disciplines and series options (replace these with actual data from API if needed)
+  const disciplines = [
+    "Dicipline 1",
+    "Dicipline 2",
+    "Dicipline 3",
+    "Dicipline 4",
+  ];
+  const series = ["Series 1", "Series 2", "Series 3", "Series 4", "Series 5"];
+
+  const handleFilterChange = () => {
+    console.log("Selected Discipline:", selectedDiscipline);
+    console.log("Selected Series:", selectedSeries);
+  };
+
+  const filteredData = data?.data?.filter((item) => {
+    return (
+      (!selectedDiscipline ||
+        item.discipline?.artworkDiscipline === selectedDiscipline) &&
+      (!selectedSeries || item.artworkSeries === selectedSeries)
+    );
+  });
 
   if (isLoading) {
     return <Loader />;
@@ -60,15 +46,55 @@ const Artwork = ({ data: singleArtistData }) => {
     <div>
       <Header
         variant={{ size: "xl", theme: "dark", weight: "semiBold" }}
-        className="mb-4"
+        className="mb-4 mt-4"
       >
         Artworks
       </Header>
 
+      <div className="flex justify-end mb-4 gap-3 pb-3">
+        <select
+          className="border p-2 rounded-md text-sm"
+          value={isArtProvider}
+          onChange={(e) => setIsArtProvider(e.target.value)}
+          onBlur={handleFilterChange}
+        >
+          <option value="">Select Art Provider</option>
+          <option value="True">True</option>
+          <option value="False">False</option>
+        </select>
+
+        <select
+          className="border p-2 rounded-md text-sm"
+          value={selectedDiscipline}
+          onChange={(e) => setSelectedDiscipline(e.target.value)}
+          onBlur={handleFilterChange}
+        >
+          <option value="">Select Discipline</option>
+          {disciplines.map((discipline, idx) => (
+            <option key={idx} value={discipline}>
+              {discipline}
+            </option>
+          ))}
+        </select>
+
+        <select
+          className="border p-2 rounded-md text-sm"
+          value={selectedSeries}
+          onChange={(e) => setSelectedSeries(e.target.value)}
+          onBlur={handleFilterChange}
+        >
+          <option value="">Select Series</option>
+          {series.map((seriesItem, idx) => (
+            <option key={idx} value={seriesItem}>
+              {seriesItem}
+            </option>
+          ))}
+        </select>
+      </div>
+
       <div className="grid xl:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 ">
-        {data.data &&
-          data.data.length > 0 &&
-          data.data.map((item: any, index: any) => (
+        {filteredData && filteredData.length > 0 ? (
+          filteredData.map((item, index) => (
             <div
               key={index}
               className="sm:px-3 px-0 border-none outline-none flex flex-col pb-5 justify-center relative"
@@ -76,36 +102,31 @@ const Artwork = ({ data: singleArtistData }) => {
               <img
                 src={`${data.url}/uploads/users/${item.media.mainImage}`}
                 alt="image"
-                className="w-[40vw] h-[50vh] object-cover cursor-pointer "
-                // onClick={() => handleRedirectToDescription(item._id)}
+                className="w-[40vw] h-[50vh] object-cover cursor-pointer"
               />
 
-              {profile === "artist" ? (
+              {profile === "artist" && (
                 <div className="absolute bottom-0 left-0 right-0 top-0 h-full w-full overflow-hidden bg-[#D9D9D9] bg-fixed flex gap-10 items-center justify-center opacity-0 transition duration-300 ease-in-out hover:opacity-[0.7] hover:cursor-pointer">
-                  <div className="flex gap-5 ">
+                  <div className="flex gap-5">
                     <NavLink to={`/artist-panel/artwork/add?id=${item._id}`}>
-                      <img src={edit} className="" alt="" />
+                      <img src={edit} alt="edit" />
                     </NavLink>
-                    <img src={deleteimg} className="" alt="" />
+                    <img src={deleteimg} alt="delete" />
                   </div>
                 </div>
-              ) : null}
-
-              {/* <button className="absolute top-2 right-[28px] border border-[#FFD9DE] rounded-full px-3 py-3 bg-white cursor-pointer">
-                <img src={like} alt="" className="w-[20px] h-[20px]" />
-              </button> */}
+              )}
 
               <div className="mt-3">
                 <p className="text-[14px] text-[#696868]">
                   {item.discipline?.artworkDiscipline}
                 </p>
                 <div className="flex justify-between items-center">
-                  <h1 className="font-bold text-[20px] text-[#333333]  xl:w-[80%] lg:w-[70%] w-[80%] line-clamp-2">
+                  <h1 className="font-bold text-[20px] text-[#333333] xl:w-[80%] lg:w-[70%] w-[80%] line-clamp-2">
                     {item.artworkName}
                   </h1>
                   <div>
                     <p className="text-[14px] text-[#696868]">
-                      {item?.additionalInfo.height}
+                      {item?.additionalInfo.artworkTechnic}
                     </p>
                   </div>
                 </div>
@@ -114,7 +135,10 @@ const Artwork = ({ data: singleArtistData }) => {
                 </p>
               </div>
             </div>
-          ))}
+          ))
+        ) : (
+          <p>No artworks found matching the selected filters.</p>
+        )}
       </div>
     </div>
   );

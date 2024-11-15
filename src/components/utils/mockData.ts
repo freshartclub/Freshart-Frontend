@@ -105,7 +105,7 @@ export const yearOption = [
 
 export const seriesData = [
   {
-    series: "Artwork with alienida",
+    series: "Series 1",
   },
   {
     series: "Series 2",
@@ -116,6 +116,18 @@ export const seriesData = [
   {
     series: "Series 4",
   },
+];
+
+export const urgencyOption = [
+  { value: "Low", label: "Low" },
+  { value: "Medium", label: "Medium" },
+  { value: "High", label: "High" },
+];
+
+export const impactOption = [
+  { value: "Low-Single User", label: "Low-Single User" },
+  { value: "Medium-Multiple Users", label: "Medium-Multiple Users" },
+  { value: "High-System Wide", label: "High-System Wide" },
 ];
 
 export const shipping_inventry = [

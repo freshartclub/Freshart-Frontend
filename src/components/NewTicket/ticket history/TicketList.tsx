@@ -18,6 +18,8 @@ const TicketsList: FC<{
 }> = ({ tickets, currentPage, totalPages, onPageChange, isLoading }) => {
   const navigate = useNavigate();
 
+  console.log(tickets);
+
   const isArtist = useAppSelector((state) => state.user.isArtist);
   const location = useLocation();
   const isArtistProfile = location.pathname.includes("/artist-panel");

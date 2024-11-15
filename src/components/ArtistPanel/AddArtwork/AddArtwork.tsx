@@ -1,4 +1,11 @@
-import { ErrorMessage, Field, FieldArray, Form, Formik } from "formik";
+import {
+  ErrorMessage,
+  Field,
+  FieldArray,
+  Form,
+  Formik,
+  useFormikContext,
+} from "formik";
 import { formSchemas } from "../schemas/index";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import Header from "../../ui/Header";
@@ -33,6 +40,7 @@ import "react-datepicker/dist/react-datepicker.css";
 
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
+import Dicipline from "./Dicipline";
 
 const CustomYearPicker = ({
   field,
@@ -76,6 +84,7 @@ const CustomYearPicker = ({
 
 const AddArtwork = () => {
   const [progress, setProgress] = useState(0);
+  const [isArtProvider, setIsArtProvider] = useState("");
 
   const [showCalendar, setShowCalendar] = useState(false);
 
@@ -185,6 +194,10 @@ const AddArtwork = () => {
     producttags: "",
     Fieldlocation: "",
     productstatus: "",
+    artistFeesCurrency: "",
+    baseFeesCurrency: "",
+    basePriceCurrency: "",
+    artProvider: "",
   });
   const { data, isLoading, isFetching } = useGetArtWorkById(id);
   console.log(data);
@@ -286,6 +299,8 @@ const AddArtwork = () => {
     setFiles(files);
   };
 
+  console.log(initialValues.artProvider);
+
   const onSubmit = async (values: any) => {
     console.log("onSubmit", values);
 
@@ -343,8 +358,6 @@ const AddArtwork = () => {
       );
     }
   }, []);
-
-  console.log(mainImage);
 
   if (isLoading) {
     return <Loader />;
@@ -422,21 +435,52 @@ const AddArtwork = () => {
 
                   <div className="mb-4">
                     <label className="block text-sm sm:text-base text-[#203F58] font-semibold mb-2">
-                      Artist name
+                      Art Povider
                     </label>
                     <Field
-                      type="text"
-                      name="artistName"
-                      id="artistName"
-                      placeholder="Type artist name here (if different from artist). . ."
-                      className="w-full bg-[#F9F9FC] text-sm sm:text-base border border-gray-300 rounded-md p-1 sm:p-3 outline-none"
-                    />
-                    {touched.artistName && errors.artistName ? (
+                      as="select"
+                      id="artProvider"
+                      name="artProvider"
+                      className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
+                      onChange={(e) => {
+                        console.log("Selected value:", e.target.value);
+                        // Optionally, you can call Formik's setFieldValue if needed
+                        setIsArtProvider(e.target.value);
+                        setFieldValue("artProvider", e.target.value); // This updates the form's value
+                      }}
+                    >
+                      <option value="" disabled selected>
+                        Select
+                      </option>
+                      <option value="yes">Yes</option>
+                      <option value="no">No</option>
+                    </Field>
+                    {touched.artProvider && errors.artistName ? (
                       <div className="error text-red-500 mt-1 text-sm">
-                        {errors.artistName}
+                        {errors.artProvider}
                       </div>
                     ) : null}
                   </div>
+
+                  {isArtProvider === "yes" ? (
+                    <div className="mb-4">
+                      <label className="block text-sm sm:text-base text-[#203F58] font-semibold mb-2">
+                        Artist name
+                      </label>
+                      <Field
+                        type="text"
+                        name="artistName"
+                        id="artistName"
+                        placeholder="Type artist name here (if different from artist). . ."
+                        className="w-full bg-[#F9F9FC] text-sm sm:text-base border border-gray-300 rounded-md p-1 sm:p-3 outline-none"
+                      />
+                      {touched.artistName && errors.artistName ? (
+                        <div className="error text-red-500 mt-1 text-sm">
+                          {errors.artistName}
+                        </div>
+                      ) : null}
+                    </div>
+                  ) : null}
 
                   <div className="mb-4 flex flex-col lg:flex-row  gap-2 w-full">
                     <div className="w-full">
@@ -482,21 +526,12 @@ const AddArtwork = () => {
                           <option key={index}>{series.series}</option>
                         ))}
                       </Field>
-
-                      {/* <select
-                        name="artworkSeries"
-                        className="w-full bg-[#F9F9FC] border border-gray-300 rounded-md p-1 sm:p-3 outline-none"
-                      >
-                        {seriesData.map((series, index) => (
-                          <option key={index}>{series.series}</option>
-                        ))}
-                      </select> */}
                     </div>
                   </div>
 
                   <>
                     <label className="block text-sm sm:text-base mb-2 font-semibold text-[#203F58]">
-                      Product Description
+                      Artwork Description
                     </label>
                     <Field
                       as="textarea"
@@ -954,73 +989,12 @@ const AddArtwork = () => {
                     }}
                     className="mb-4"
                   >
-                    Additional information
+                    Descriptive Information & Categorization
                   </Header>
 
-                  <div>
-                    {fields.map(({ id, name, label, options }) => (
-                      <div key={id} className="mb-4">
-                        <label
-                          htmlFor={id}
-                          className="block text-sm sm:text-base font-semibold text-[#203F58] mb-2"
-                        >
-                          {label}
-                        </label>
-                        <Field
-                          as="select"
-                          id={id}
-                          name={name}
-                          className="block w-full p-1 sm:px-4 sm:py-2 bg-[#F9F9FC] outline-none border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        >
-                          <option value="" disabled>
-                            Select Discipline
-                          </option>
-                          {options.map((option, index) => (
-                            <option key={index} value={option.value}>
-                              {option.label}
-                            </option>
-                          ))}
-                        </Field>
-                      </div>
-                    ))}
+                  <Dicipline />
 
-                    {/* Multi-select for Artwork Tags using react-select */}
-                    <div className="mb-4">
-                      <label
-                        htmlFor="artworkTags"
-                        className="block text-sm sm:text-base font-semibold text-[#203F58] mb-2"
-                      >
-                        Artwork Tags
-                      </label>
-                      <Select
-                        options={artworkTagsOptions}
-                        isMulti
-                        placeholder="Select Tags"
-                        name="artworkTags"
-                        value={values.artworkTags}
-                        onChange={(selectedOptions) =>
-                          setFieldValue("artworkTags", selectedOptions)
-                        }
-                        styles={{
-                          dropdownIndicator: () => ({
-                            color: "black",
-                          }),
-                          multiValueLabel: (provided) => ({
-                            ...provided,
-                            backgroundColor: "#203F58",
-                            color: "white",
-                          }),
-                          multiValueRemove: (provided) => ({
-                            ...provided,
-                            backgroundColor: "#203F58",
-                            color: "white",
-                          }),
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid md:grid-cols-2 gap-3 mb-4">
+                  <div className="grid md:grid-cols-2 gap-3 mb-4 mt-3">
                     <label className="text-[#203F58] text-sm sm:text-base font-semibold">
                       Artwork technic
                       <Field
@@ -1511,23 +1485,37 @@ const AddArtwork = () => {
                   >
                     Pricing
                   </Header>
-                  <>
-                    <label className="text-[#203F58] text-sm sm:text-base font-semibold ">
-                      Base Price
-                    </label>
+
+                  {/* Base Price Field with Currency Select */}
+                  <label className="text-[#203F58] text-sm sm:text-base font-semibold">
+                    Base Price
+                  </label>
+                  <div className="flex space-x-2">
                     <Field
                       type="text"
                       name="basePrice"
                       id="basePrice"
-                      placeholder="$ Type base price here..."
+                      placeholder="€ Type base price here..."
                       value={values.basePrice}
-                      className="bg-[#F9F9FC] border mb-3 border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full  p-1 sm:p-2.5 "
+                      className="bg-[#F9F9FC] border mb-3 border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5"
                     />
-                  </>
+                    <Field
+                      as="select"
+                      name="basePriceCurrency"
+                      className="bg-[#F9F9FC]  border border-gray-300 outline-none text-gray-900 text-sm rounded-lg h-full sm:p-2.5"
+                    >
+                      <option value="USD">USD</option>
+                      <option value="EUR">EUR</option>
+                      <option value="INR">INR</option>
+                      <option value="GBP">GBP</option>
+                    </Field>
+                  </div>
                   {touched.basePrice && errors.basePrice ? (
                     <div className="error text-red-500">{errors.basePrice}</div>
                   ) : null}
-                  <label className="text-[#203F58] text-sm sm:text-base font-semibold ">
+
+                  {/* Discount Percentage Field */}
+                  <label className="text-[#203F58] text-sm sm:text-base font-semibold">
                     Discount Percentage
                   </label>
                   <Field
@@ -1536,29 +1524,45 @@ const AddArtwork = () => {
                     id="dpersentage"
                     placeholder="$ 00  %"
                     value={values.dpersentage}
-                    className="bg-[#F9F9FC] border mb-3 border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full  p-1 sm:p-2.5 "
+                    className="bg-[#F9F9FC] border mb-3 border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5"
                   />
 
+                  {/* Artist Base Fees with Currency Select */}
                   <div className="grid md:grid-cols-2 gap-3">
-                    <label className="text-[#203F58] text-sm sm:text-base  font-semibold">
-                      Artist Base Fess
-                      <Field
-                        id="artistbaseFees"
-                        name="artistbaseFees"
-                        placeholder="Artist Base Fess"
-                        className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
-                      ></Field>
+                    <label className="text-[#203F58] text-sm sm:text-base font-semibold">
+                      Artist Base Fees
+                      <div className="flex space-x-2">
+                        <Field
+                          id="artistbaseFees"
+                          name="artistbaseFees"
+                          placeholder="€ Artist Base Fees"
+                          className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5"
+                        />
+                        <Field
+                          as="select"
+                          // also addd thses field in deafult values
+                          name="baseFeesCurrency"
+                          className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg p-1 sm:p-2.5"
+                        >
+                          <option value="USD">USD</option>
+                          <option value="EUR">EUR</option>
+                          <option value="INR">INR</option>
+                          <option value="GBP">GBP</option>
+                        </Field>
+                      </div>
                     </label>
+
+                    {/* VAT Amount Field */}
                     <label className="text-[#203F58] text-sm sm:text-base font-semibold">
                       VAT Amount (%)
                       <Field
                         type="text"
                         id="vatAmount"
                         name="vatAmount"
-                        placeholder="Type VAT amount. . ."
+                        placeholder="Type VAT amount..."
                         value={values.vatAmount}
-                        className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5 "
-                      ></Field>
+                        className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5"
+                      />
                       {touched.vatAmount && errors.vatAmount ? (
                         <div className="error text-red-500">
                           {errors.vatAmount}
