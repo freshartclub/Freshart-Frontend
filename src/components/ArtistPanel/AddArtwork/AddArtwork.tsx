@@ -177,6 +177,7 @@ const AddArtwork = () => {
     purchaseCatalog: "",
     subscriptionCatalog: "",
     artistFees: "",
+    purchesOption: "",
     availableTo: "",
     dicountAcceptation: "",
     downwardOffer: "",
@@ -1365,6 +1366,24 @@ const AddArtwork = () => {
                           </label>
                         </div>
 
+                        <div className="mt-4 space-y-2">
+                          <label className="text-[#203F58] text-sm sm:text-base font-semibold ">
+                            Purches Option
+                            <Field
+                              as="select"
+                              id="purchesOption"
+                              name="purchesOption"
+                              className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
+                            >
+                              <option value="" disabled selected>
+                                Select
+                              </option>
+                              <option>Yes</option>
+                              <option>No</option>
+                            </Field>
+                          </label>
+                        </div>
+                        {/* 
                         <div className="mt-4">
                           <label className="text-[#203F58] sm:text-base font-semibold ">
                             Accept Offer Price
@@ -1389,7 +1408,7 @@ const AddArtwork = () => {
                               className="bg-[#E0E2E7] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5 "
                             ></Field>
                           </label>
-                        </div>
+                        </div> */}
                       </>
                     )}
                   </div>
@@ -1417,6 +1436,32 @@ const AddArtwork = () => {
 
                         <div className="mt-4">
                           <label className="text-[#203F58] sm:text-base font-semibold ">
+                            Artist Fees
+                            <Field
+                              type="text"
+                              id="artistFees"
+                              name="artistFees"
+                              placeholder="20%"
+                              className="bg-[#E0E2E7] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5 "
+                            ></Field>
+                          </label>
+                        </div>
+
+                        <div className="mt-4">
+                          <label className="text-[#203F58] sm:text-base font-semibold ">
+                            Accept Offer Price
+                            <Field
+                              type="text"
+                              id="acceptOfferPrice"
+                              name="acceptOfferPrice"
+                              placeholder="20%"
+                              className="bg-[#E0E2E7] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5 "
+                            ></Field>
+                          </label>
+                        </div>
+
+                        {/* <div className="mt-4">
+                          <label className="text-[#203F58] sm:text-base font-semibold ">
                             Downward Offer
                             <Field
                               as="select"
@@ -1431,7 +1476,7 @@ const AddArtwork = () => {
                               <option>No</option>
                             </Field>
                           </label>
-                        </div>
+                        </div> */}
                         <div className="mt-4">
                           <label className="text-[#203F58] sm:text-base font-semibold ">
                             Upwork Offer
