@@ -46,7 +46,7 @@ const AdditionalInfo = () => {
 
       <div className="grid md:grid-cols-2 gap-3 mb-4">
         <label className="text-[#203F58] text-sm sm:text-base font-semibold">
-          Artwork technic
+          Artwork technic 
           <Field
             as="select"
             id="artworkTechnic"
@@ -75,6 +75,10 @@ const AdditionalInfo = () => {
           </Field>
         </label>
       </div>
+
+      
+
+      
 
       <label className="text-[#203F58] text-sm sm:text-base font-semibold ">
         Artwork orientation

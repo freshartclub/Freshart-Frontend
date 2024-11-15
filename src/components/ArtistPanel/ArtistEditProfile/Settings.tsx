@@ -1,15 +1,18 @@
-import Header from "../../ui/Header";
+import React from 'react'
+import ArtistTabs from './ArtistTabs'
+import Header from '../../ui/Header'
 import dot from "./assets/dot.png";
-import GeneralUpload from "./GeneralUpload";
 
-const ArtistProfile = () => {
+
+
+const Settings = () => {
   return (
-    <div className="bg-white p-10 ">
+<div className="bg-white p-10 ">
       <Header
         variant={{ size: "2xl", theme: "dark", weight: "semiBold" }}
         className="mt-6"
       >
-        Artist Profile
+        Artist Setting
       </Header>
 
       <nav className="flex" aria-label="Breadcrumb">
@@ -26,16 +29,16 @@ const ArtistProfile = () => {
           <li>
             <div className="flex items-center">
               <a href="#" className=" text-sm mx-2 font-medium text-[#919EAB]">
-                Profile
+                Setting
               </a>
             </div>
           </li>
         </ol>
       </nav>
 
-      <GeneralUpload/>
+      <ArtistTabs/>
     </div>
-  );
-};
+  )
+}
 
-export default ArtistProfile;
+export default Settings

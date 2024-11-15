@@ -1,11 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import view from "../assets/view.png";
 import edit from "../assets/icon.png";
 import Approve_1 from "../assets/orderApprove(1).png";
 import add from "../assets/add.png";
 import evidence3 from "../assets/evidence3.png";
+import select_file from "../assets/select_file.png";
+import select_img from "../assets/select_img.jpg";
 
 const OrderApproveDetails = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
+
   const details = [
     {
       name: "Urban Explorer Sneakers",
@@ -56,6 +62,27 @@ const OrderApproveDetails = () => {
     speedy: "standard",
     tracking_no: "SPX037739199373",
   };
+
+  const openModal = (product: React.SetStateAction<null>) => {
+    setSelectedProduct(product);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedProduct(null);
+  };
+
+  const handleClick = () => {
+    document.getElementById("fileInput").click();
+  };
+
+  const handleFileSelect = (event: { target: { files: any[] } }) => {
+    const file = event.target.files[0];
+    if (file) {
+      setSelectedImage(URL.createObjectURL(file));
+    }
+  };
   return (
     <div>
       <div className="flex flex-col lg:flex-row justify-between w-full gap-5">
@@ -67,7 +94,7 @@ const OrderApproveDetails = () => {
                 <div
                   key={index}
                   className="flex flex-col sm:flex-row justify-between md:items-center p-4 border-b-2  border-dashed  space-y-4"
-                >
+                               >
                   <div className="flex  flex-col  sm:flex-row items-center space-x-4">
                     <div className=" bg-gray-300 rounded-lg flex  items-center justify-center">
                       <img
@@ -90,8 +117,10 @@ const OrderApproveDetails = () => {
                     <p className=" font-semibold">{product.discount}</p>
                   </div>
                   <div className="flex justify-center sm:flex-row items-center gap-4 ">
-                    <img src={view}></img>
-                    <img src={edit}></img>
+                    <img className="cursor-pointer" src={view}></img>
+
+                    <img className="cursor-pointer" onClick={() => openModal(product)}
+   src={edit}></img>
                   </div>
                 </div>
               ))}
@@ -200,6 +229,83 @@ const OrderApproveDetails = () => {
           + Add More
         </button>
       </div>
+
+      {/*modal section */}
+
+      {isModalOpen && (
+        <div>
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-2/3 ">
+              <h2 className="text-lg font-bold"> Details</h2>
+              <p className="text-sm text-gray-400 font-semibold pb-4 border-b-2 mb-4 ">
+                Title, short description, image...
+              </p>
+
+              <h2 className="text-sm font-semibold mb-2"> Short Description</h2>
+              <input
+                type="text"
+                placeholder="Ex: Adventure Seekers Expedition..."
+                className="h-12 w-full border rounded-lg p-2"
+              ></input>
+
+              <h2 className="text-sm font-semibold mb-2 mt-4">
+                {" "}
+                upload your Shipment images{" "}
+              </h2>
+
+              <div className="flex flex-col items-center justify-center gap-x-4 bg-[#919EAB33] rounded-lg">
+                <div className="mt-20 flex flex-col items-center justify-center ">
+                  <input
+                    id="fileInput"
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    style={{ display: "none" }}
+                    onChange={handleFileSelect}
+                  ></input>
+                  <img src={select_file}></img>
+                  <h1 className="font-bold text-base mb-4">
+                    {" "}
+                    Drop or select file
+                  </h1>
+                  <p
+                    className="text-sm mb-10 text-gray-600 cursor-pointer"
+                    onClick={handleClick}
+                  >
+                    Drop files here or click to{" "}
+                    <span className="text-[#00A76F]">browse</span> through your
+                    machine.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row mt-6">
+                {selectedImage && (
+                  <div className="-">
+                    <img
+                      src={selectedImage}
+                      className="w-16 h-14 rounded-md"
+                    ></img>
+                  </div>
+                )}
+              </div>
+
+              <div className=" flex  justify-end gap-4 px-2 py-2 rounded">
+                <button
+                  onClick={closeModal}
+                  className=" bg-white-500 text-black text-md px-2 py-2 rounded-lg border-2 font-bold"
+                >
+                  Remove all
+                </button>
+                <button className="px-2 py-2 rounded-lg bg-black text-white text-md font-bold">
+                  {" "}
+                  Upload
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

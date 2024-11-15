@@ -44,7 +44,7 @@ const GeneralUpload = () => {
   };
 
   return (
-    <div className="flex gap-5 w-full">
+    <div className="flex gap-5 w-full mt-6">
       <div className="shadow-xl p-5 relative w-[30%] h-fit flex flex-col items-center rounded-xl">
         <div className="flex justify-center items-center ">
           {uploadedImage ? (

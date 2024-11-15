@@ -98,6 +98,29 @@ const AddArtwork = () => {
   const [mainVideo, setMainVideo] = useState(null);
   const [otherVideos, setOtherVideos] = useState([]);
   const [searchParams] = useSearchParams();
+  const [activeTab, setActiveTab] = useState("subscription");
+
+  const fields = [
+    {
+      id: "artworkdiscipline",
+      name: "artworkDiscipline",
+      label: "Artwork discipline",
+      options: [
+        { value: "Dicipline 1", label: "Dicipline 1" },
+        { value: "Dicipline 2", label: "Dicipline 2" },
+        { value: "Dicipline 3", label: "Dicipline 3" },
+        { value: "Dicipline 4", label: "Dicipline 4" },
+      ],
+    },
+  ];
+
+  const artworkTagsOptions = [
+    { value: "A", label: "A" },
+    { value: "B", label: "B" },
+    { value: "C", label: "C" },
+    { value: "D", label: "D" },
+    { value: "E", label: "E" },
+  ];
 
   const id = searchParams.get("id");
 
@@ -143,6 +166,7 @@ const AddArtwork = () => {
     artworkStyleType: [],
     colors: [],
     purchaseCatalog: "",
+    subscriptionCatalog: "",
     artistFees: "",
     availableTo: "",
     dicountAcceptation: "",
@@ -801,7 +825,7 @@ const AddArtwork = () => {
                         />
                         <div className="bg-[#F9F9FC]  border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
                           {mainVideo ? (
-                            <div className="relative">
+                            <div className="relative ">
                               <video
                                 src={URL.createObjectURL(mainVideo)}
                                 className="w-28 max-h-28 object-cover mb-4"
@@ -932,6 +956,69 @@ const AddArtwork = () => {
                   >
                     Additional information
                   </Header>
+
+                  <div>
+                    {fields.map(({ id, name, label, options }) => (
+                      <div key={id} className="mb-4">
+                        <label
+                          htmlFor={id}
+                          className="block text-sm sm:text-base font-semibold text-[#203F58] mb-2"
+                        >
+                          {label}
+                        </label>
+                        <Field
+                          as="select"
+                          id={id}
+                          name={name}
+                          className="block w-full p-1 sm:px-4 sm:py-2 bg-[#F9F9FC] outline-none border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        >
+                          <option value="" disabled>
+                            Select Discipline
+                          </option>
+                          {options.map((option, index) => (
+                            <option key={index} value={option.value}>
+                              {option.label}
+                            </option>
+                          ))}
+                        </Field>
+                      </div>
+                    ))}
+
+                    {/* Multi-select for Artwork Tags using react-select */}
+                    <div className="mb-4">
+                      <label
+                        htmlFor="artworkTags"
+                        className="block text-sm sm:text-base font-semibold text-[#203F58] mb-2"
+                      >
+                        Artwork Tags
+                      </label>
+                      <Select
+                        options={artworkTagsOptions}
+                        isMulti
+                        placeholder="Select Tags"
+                        name="artworkTags"
+                        value={values.artworkTags}
+                        onChange={(selectedOptions) =>
+                          setFieldValue("artworkTags", selectedOptions)
+                        }
+                        styles={{
+                          dropdownIndicator: () => ({
+                            color: "black",
+                          }),
+                          multiValueLabel: (provided) => ({
+                            ...provided,
+                            backgroundColor: "#203F58",
+                            color: "white",
+                          }),
+                          multiValueRemove: (provided) => ({
+                            ...provided,
+                            backgroundColor: "#203F58",
+                            color: "white",
+                          }),
+                        }}
+                      />
+                    </div>
+                  </div>
 
                   <div className="grid md:grid-cols-2 gap-3 mb-4">
                     <label className="text-[#203F58] text-sm sm:text-base font-semibold">
@@ -1235,9 +1322,6 @@ const AddArtwork = () => {
                   </div>
                 </div>
 
-                {/* additional info */}
-                {/* <Commercialization /> */}
-
                 <div className="bg-white p-4 rounded-md mt-6 border border-[#E0E2E7] shadow-md ">
                   <Header
                     variant={{
@@ -1249,100 +1333,172 @@ const AddArtwork = () => {
                   >
                     Commercialization
                   </Header>
-                  <div className="space-y-2">
-                    <label className="text-[#203F58] text-sm sm:text-base font-semibold ">
-                      Purchase Catalog
-                      <Field
-                        as="select"
-                        id="textclass"
-                        name="purchaseCatalog"
-                        className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
-                      >
-                        <option value="" disabled selected>
-                          Select
-                        </option>
-                        <option>Yes</option>
-                        <option>No</option>
-                      </Field>
-                    </label>
+
+                  <div className="flex border-b  border-gray-300">
+                    <span
+                      onClick={() => setActiveTab("subscription")}
+                      className={`py-2 font-bold ${
+                        activeTab === "subscription"
+                          ? "border-b-4 border-black"
+                          : "text-gray-500"
+                      }`}
+                    >
+                      Subscription
+                    </span>
+                    <span
+                      onClick={() => setActiveTab("purchase")}
+                      className={`py-2 mx-8 font-bold ${
+                        activeTab === "purchase"
+                          ? "border-b-4 border-black"
+                          : "text-gray-500"
+                      }`}
+                    >
+                      Purchase
+                    </span>
                   </div>
 
-                  <div className="mt-4">
-                    <label className="text-[#203F58] sm:text-base font-semibold ">
-                      Artist Fees
-                      <Field
-                        type="text"
-                        id="artistFees"
-                        name="artistFees"
-                        placeholder="20%"
-                        className="bg-[#E0E2E7] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5 "
-                      ></Field>
-                    </label>
+                  <div className="">
+                    {" "}
+                    {activeTab === "subscription" && (
+                      <>
+                        <div className="mt-4 space-y-2">
+                          <label className="text-[#203F58] text-sm sm:text-base font-semibold ">
+                            Subscription Catalog
+                            <Field
+                              as="select"
+                              id="textclass"
+                              name="subscriptionCatalog"
+                              className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
+                            >
+                              <option value="" disabled selected>
+                                Select
+                              </option>
+                              <option>Yes</option>
+                              <option>No</option>
+                            </Field>
+                          </label>
+                        </div>
+                        <div className="mt-4">
+                          <label className="text-[#203F58] sm:text-base font-semibold ">
+                            Artist Fees
+                            <Field
+                              type="text"
+                              id="artistFees"
+                              name="artistFees"
+                              placeholder="20%"
+                              className="bg-[#E0E2E7] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5 "
+                            ></Field>
+                          </label>
+                        </div>
+
+                        <div className="mt-4">
+                          <label className="text-[#203F58] sm:text-base font-semibold ">
+                            Accept Offer Price
+                            <Field
+                              type="text"
+                              id="acceptOfferPrice"
+                              name="acceptOfferPrice"
+                              placeholder="20%"
+                              className="bg-[#E0E2E7] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5 "
+                            ></Field>
+                          </label>
+                        </div>
+
+                        <div className="mt-4">
+                          <label className="text-[#203F58] sm:text-base font-semibold ">
+                            Price Request
+                            <Field
+                              type="text"
+                              id="priceRequest"
+                              name="priceRequest"
+                              placeholder="20%"
+                              className="bg-[#E0E2E7] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5 "
+                            ></Field>
+                          </label>
+                        </div>
+                      </>
+                    )}
                   </div>
 
-                  <div className="mt-4">
-                    <label className="text-[#203F58] sm:text-base font-semibold ">
-                      Downward Offer
-                      <Field
-                        as="select"
-                        id="downwardOffer"
-                        name="downwardOffer"
-                        className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
-                      >
-                        <option value="" disabled selected>
-                          Select
-                        </option>
-                        <option>Yes</option>
-                        <option>No</option>
-                      </Field>
-                    </label>
-                  </div>
-                  <div className="mt-4">
-                    <label className="text-[#203F58] sm:text-base font-semibold ">
-                      Upwork Offer
-                      <Field
-                        as="select"
-                        id="upworkOffer"
-                        name="upworkOffer"
-                        placeholder="Select"
-                        className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
-                      >
-                        <option value="" disabled selected>
-                          Select
-                        </option>
-                        <option>Yes</option>
-                        <option>No</option>
-                      </Field>
-                    </label>
-                  </div>
+                  <div className="py-4">
+                    {activeTab === "purchase" && (
+                      <div>
+                        <div className="space-y-2">
+                          <label className="text-[#203F58] text-sm sm:text-base font-semibold ">
+                            Purchase Catalog
+                            <Field
+                              as="select"
+                              id="textclass"
+                              name="purchaseCatalog1"
+                              className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
+                            >
+                              <option value="" disabled selected>
+                                Select
+                              </option>
+                              <option>Yes</option>
+                              <option>No</option>
+                            </Field>
+                          </label>
+                        </div>
 
-                  <div className="mt-4">
-                    <label className="text-[#203F58] sm:text-base font-semibold ">
-                      Accept Offer Price
-                      <Field
-                        type="text"
-                        id="acceptOfferPrice"
-                        name="acceptOfferPrice"
-                        placeholder="20%"
-                        className="bg-[#E0E2E7] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5 "
-                      ></Field>
-                    </label>
-                  </div>
+                        <div className="mt-4">
+                          <label className="text-[#203F58] sm:text-base font-semibold ">
+                            Downward Offer
+                            <Field
+                              as="select"
+                              id="downwardOffer"
+                              name="downwardOffer"
+                              className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
+                            >
+                              <option value="" disabled selected>
+                                Select
+                              </option>
+                              <option>Yes</option>
+                              <option>No</option>
+                            </Field>
+                          </label>
+                        </div>
+                        <div className="mt-4">
+                          <label className="text-[#203F58] sm:text-base font-semibold ">
+                            Upwork Offer
+                            <Field
+                              as="select"
+                              id="upworkOffer"
+                              name="upworkOffer"
+                              placeholder="Select"
+                              className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
+                            >
+                              <option value="" disabled selected>
+                                Select
+                              </option>
+                              <option>Yes</option>
+                              <option>No</option>
+                            </Field>
+                          </label>
+                        </div>
 
-                  <div className="mt-4">
-                    <label className="text-[#203F58] sm:text-base font-semibold ">
-                      Price Request
-                      <Field
-                        type="text"
-                        id="priceRequest"
-                        name="priceRequest"
-                        placeholder="20%"
-                        className="bg-[#E0E2E7] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5 "
-                      ></Field>
-                    </label>
+                        <div className="mt-4">
+                          <label className="text-[#203F58] sm:text-base font-semibold ">
+                            Price Request
+                            <Field
+                              as="select"
+                              id="priceRequest"
+                              name="priceRequest"
+                              placeholder="Select"
+                              className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
+                            >
+                              <option value="" disabled selected>
+                                Select
+                              </option>
+                              <option>Yes</option>
+                              <option>No</option>
+                            </Field>
+                          </label>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
-                {/* additional info */}
 
                 <div className="bg-white p-4 rounded-md mt-4 border border-[#E0E2E7]">
                   <Header

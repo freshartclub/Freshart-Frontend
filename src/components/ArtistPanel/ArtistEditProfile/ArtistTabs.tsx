@@ -1,19 +1,15 @@
 import { useState } from "react";
 import P from "../../ui/P";
-import general from "./assets/general.png";
 import bill from "./assets/bill.png";
 import bell from "./assets/bell.png";
-import share from "./assets/share.png";
 import security from "./assets/key.png";
-import GeneralUpload from "./GeneralUpload";
 import Notification from "./Notification";
-import Sociallinks from "./Sociallinks";
 import Security from "./Security";
 import Language from "./Language";
 import Billing from "./Billing";
 
 const ArtistTabs = () => {
-  const [activeTab, setActiveTab] = useState("general");
+  const [activeTab, setActiveTab] = useState("billing");
 
   return (
     <>
@@ -26,30 +22,6 @@ const ArtistTabs = () => {
           data-tabs-toggle="#default-tab-content"
           role="tablist"
         >
-          {/* General Tab */}
-          <P
-            variant={{ size: "base", theme: "dark", weight: "semiBold" }}
-            className="mx-2 sm:mx-5 flex-shrink-0"
-            role="presentation"
-          >
-            <button
-              className={`pb-2 rounded-t-lg flex items-center gap-1 ${
-                activeTab === "general"
-                  ? "border-b-2 border-black text-black"
-                  : "hover:text-gray-600 hover:border-gray-300"
-              }`}
-              id="general-tab"
-              onClick={() => setActiveTab("general")}
-              type="button"
-              role="tab"
-              aria-controls="general"
-              aria-selected={activeTab === "general"}
-            >
-              <img src={general} alt="general" className="h-4 w-4" />
-              General
-            </button>
-          </P>
-
           {/* Billing Tab */}
           <P
             variant={{ size: "base", theme: "dark", weight: "semiBold" }}
@@ -97,7 +69,7 @@ const ArtistTabs = () => {
           </P>
 
           {/* Social Links Tab */}
-          <P
+          {/* <P
             variant={{ size: "base", theme: "dark", weight: "semiBold" }}
             className="mx-2 sm:mx-5 flex-shrink-0"
             role="presentation"
@@ -117,7 +89,7 @@ const ArtistTabs = () => {
               <img src={share} alt="social" className="h-4 w-4" />
               Social links
             </button>
-          </P>
+          </P> */}
 
           {/* Security Tab */}
           <P
@@ -169,10 +141,9 @@ const ArtistTabs = () => {
 
       {/* Tab Content */}
       <div id="default-tab-content">
-        {activeTab === "general" && <GeneralUpload />}
         {activeTab === "billing" && <Billing />}
         {activeTab === "notification" && <Notification />}
-        {activeTab === "social" && <Sociallinks />}
+        {/* {activeTab === "social" && <Sociallinks />} */}
         {activeTab === "security" && <Security />}
         {activeTab === "language" && <Language />}
       </div>
