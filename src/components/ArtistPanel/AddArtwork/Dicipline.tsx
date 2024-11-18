@@ -39,8 +39,6 @@ const Dicipline = () => {
     setFieldValue("artworkTags", prefilledTags);
   }, [setFieldValue]);
 
-  console.log("this is from artwork tags", values.artworkTags);
-
   return (
     <div className="bg-white w-full rounded-md p-4 border ">
       <Header

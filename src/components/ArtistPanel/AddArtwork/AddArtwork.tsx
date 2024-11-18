@@ -94,7 +94,7 @@ const AddArtwork = () => {
   const [inProcessImage, setInProcessImage] = useState(null);
   const [images, setImages] = useState([]);
   const [mainVideo, setMainVideo] = useState(null);
-  const [otherVideos, setOtherVideos] = useState([]);
+  const [otherVideo, setOtherVideos] = useState([]);
   const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState("subscription");
   const [newImage, setNewImage] = useState(null);
@@ -309,23 +309,27 @@ const AddArtwork = () => {
     }
   };
 
-  const handleOtherVideo = (e, setFile) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setNewOtherVideo((prev) => [...prev, file]);
+  const handleOtherVideo = (e: any, setFile) => {
+    const files = e.target.files;
 
-      const videoUrl = URL.createObjectURL(file);
-
-      setOtherVideos((prevVideos) => [...prevVideos, videoUrl]);
+    if (files.length === 1) {
+      setOtherVideos((otherVideo) => [...otherVideo, files[0]]);
+    } else {
+      setOtherVideos((otherVideo) => [...otherVideo, ...Array.from(files)]);
     }
   };
 
-  const removeVideo = (index) => {
-    setOtherVideos((prevVideos) => prevVideos.filter((_, i) => i !== index));
-    setNewOtherVideo((prevFiles) => prevFiles.filter((_, i) => i !== index));
+  const removeVideo = (index: number, typeFile: string) => {
+    console.log(index, typeFile);
+    if (typeFile === "File") {
+      setOtherVideos((prevVideos) => prevVideos.filter((_, i) => i !== index));
+    } else {
+      initialValues.existingVideo = initialValues.existingVideo.filter(
+        (_, i) => i !== index
+      );
+      setInitialValues({ ...initialValues });
+    }
   };
-
-  console.log(activeTab);
 
   const onSubmit = async (values: any) => {
     console.log("onSubmit", values);
@@ -336,7 +340,7 @@ const AddArtwork = () => {
     values.inProcessImage = newInProcessImage;
     values.images = images;
     values.mainVideo = newMainVideo;
-    values.otherVideo = newOtherVideo;
+    values.otherVideo = otherVideo;
 
     const formData = new FormData();
 
@@ -383,12 +387,18 @@ const AddArtwork = () => {
       }
     } else if (name === "mainvideo") {
       setMainVideo(null);
-    } else if (name === "otherVideos") {
-      setOtherVideos(otherVideos.filter((_, i) => i !== index));
     }
   };
 
   const [value, setValue] = useState(null);
+
+  useEffect(() => {
+    setMainImage(`${data?.url}/users/${data?.data?.media?.mainImage}`);
+    setBackImage(`${data?.url}/users/${data?.data?.media?.backImage}`);
+    setInProcessImage(
+      `${data?.url}/users/${data?.data?.media?.inProcessImage}`
+    );
+  }, [data]);
 
   if (isLoading) {
     return <Loader />;
@@ -813,57 +823,59 @@ const AddArtwork = () => {
                           className="hidden"
                         />
                         <div className="bg-[#F9F9FC]  border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
-                          {images &&
-                            images.length > 0 &&
-                            images.map((img, i) => {
-                              return (
-                                <div key={i} className="relative">
-                                  <img
-                                    src={URL.createObjectURL(img)}
-                                    alt="image"
-                                    className="w-28 h-28 object-cover"
-                                  />
-                                  <span
-                                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center "
-                                    onClick={() =>
-                                      removeImage("images", i, "File")
-                                    } // Remove image by index
-                                  >
-                                    &times;
-                                  </span>
-                                </div>
-                              );
-                            })}
-                          {initialValues.existingImage &&
-                          initialValues.existingImage.length > 0 ? (
-                            initialValues.existingImage?.map(
-                              (img, i = images.length + 1) => {
+                          <div className="flex gap-2 flex-wrap">
+                            {images &&
+                              images.length > 0 &&
+                              images.map((img, i) => {
                                 return (
                                   <div key={i} className="relative">
                                     <img
-                                      src={`${data?.url}/users/${img}`}
+                                      src={URL.createObjectURL(img)}
                                       alt="image"
                                       className="w-28 h-28 object-cover"
                                     />
                                     <span
                                       className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center "
                                       onClick={() =>
-                                        removeImage("images", i, "Url")
+                                        removeImage("images", i, "File")
                                       } // Remove image by index
                                     >
                                       &times;
                                     </span>
                                   </div>
                                 );
-                              }
-                            )
-                          ) : (
-                            <img
-                              src={image_icon}
-                              alt="icon"
-                              className="w-28 max-h-28 min-h-28 object-cover mb-4"
-                            />
-                          )}
+                              })}
+                            {initialValues.existingImage &&
+                            initialValues.existingImage.length > 0 ? (
+                              initialValues.existingImage?.map(
+                                (img, i = images.length + 1) => {
+                                  return (
+                                    <div key={i} className="relative">
+                                      <img
+                                        src={`${data?.url}/users/${img}`}
+                                        alt="image"
+                                        className="w-28 h-28 object-cover"
+                                      />
+                                      <span
+                                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center "
+                                        onClick={() =>
+                                          removeImage("images", i, "Url")
+                                        } // Remove image by index
+                                      >
+                                        &times;
+                                      </span>
+                                    </div>
+                                  );
+                                }
+                              )
+                            ) : (
+                              <img
+                                src={image_icon}
+                                alt="icon"
+                                className="w-28 max-h-28 min-h-28 object-cover mb-4"
+                              />
+                            )}
+                          </div>
 
                           <P
                             variant={{
@@ -974,22 +986,42 @@ const AddArtwork = () => {
                           className="hidden"
                         />
                         <div className="bg-[#F9F9FC]  border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
-                          {otherVideos && otherVideos.length > 0 ? (
-                            otherVideos.map((videoUrl, i) => (
+                          {otherVideo &&
+                            otherVideo.length > 0 &&
+                            otherVideo.map((video, i) => (
                               <div key={i} className="relative">
                                 <video
-                                  src={videoUrl} // Use the URL for the video preview
+                                  src={URL.createObjectURL(video)} // Use the URL for the video preview
                                   className="w-28 max-h-28 object-cover mb-4"
                                   controls
                                 />
                                 <span
                                   className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
-                                  onClick={() => removeVideo(i)} // Custom function to remove video from state
+                                  onClick={() => removeVideo(i, "Url")} // Custom function to remove video from state
                                 >
                                   &times;
                                 </span>
                               </div>
-                            ))
+                            ))}
+                          {initialValues.existingVideo &&
+                          initialValues.existingVideo.length > 0 ? (
+                            initialValues.existingVideo.map(
+                              (video, i = otherVideo.length + 1) => (
+                                <div key={i} className="relative">
+                                  <video
+                                    src={`${data?.url}/videos/${video}`} // Use the URL for the video preview
+                                    className="w-28 max-h-28 object-cover mb-4"
+                                    controls
+                                  />
+                                  <span
+                                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
+                                    onClick={() => removeVideo(i, "File")} // Custom function to remove video from state
+                                  >
+                                    &times;
+                                  </span>
+                                </div>
+                              )
+                            )
                           ) : (
                             <img
                               src={video_icon}
