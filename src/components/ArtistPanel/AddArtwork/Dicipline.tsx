@@ -7,7 +7,7 @@ import { useEffect } from "react";
 const Dicipline = () => {
   const { setFieldValue, values } = useFormikContext();
 
-  console.log("this is value from discipline", values);
+  console.log("this is value from discipline", values.artworkTags);
 
   const fields = [
     {
@@ -30,14 +30,6 @@ const Dicipline = () => {
     { value: "D", label: "D" },
     { value: "E", label: "E" },
   ];
-
-  useEffect(() => {
-    const prefilledTags = [
-      { value: "A", label: "A" },
-      { value: "C", label: "C" },
-    ];
-    setFieldValue("artworkTags", prefilledTags);
-  }, [setFieldValue]);
 
   return (
     <div className="bg-white w-full rounded-md p-4 border ">
@@ -87,7 +79,16 @@ const Dicipline = () => {
               isMulti
               placeholder="Select Tags"
               name="artworkTags"
-              value={values.artworkTags}
+              value={
+                values.artworkTags &&
+                values.artworkTags.length > 0 &&
+                values.artworkTags.map((item) => {
+                  return {
+                    value: item,
+                    label: item,
+                  };
+                })
+              }
               onChange={(selectedOptions) =>
                 setFieldValue("artworkTags", selectedOptions)
               }

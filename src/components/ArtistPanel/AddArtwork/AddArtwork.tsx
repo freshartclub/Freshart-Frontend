@@ -166,7 +166,7 @@ const AddArtwork = () => {
     dpersentage: "",
     artworkDiscipline: "",
     collectionList: "",
-    artworkTags: "",
+    artworkTags: [],
     promotion: "",
     promotionScore: "",
     productcategory: "",
@@ -248,7 +248,7 @@ const AddArtwork = () => {
         location: data?.data?.inventoryShipping?.location || "",
 
         artworkDiscipline: data?.data?.discipline?.artworkDiscipline || "",
-        artworkTags: data?.data?.discipline?.artworkTags || "",
+        artworkTags: data?.data?.discipline?.artworkTags || [],
         existingVideo: data?.data?.media?.otherVideo || [],
         existingImage: data?.data?.media?.images || [],
         promotion: data?.data?.promotions?.promotion || "",
@@ -1081,13 +1081,13 @@ const AddArtwork = () => {
                         name="artworkTechnic"
                         className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full  p-1 sm:p-2.5 "
                       >
-                        <option value="" disabled selected>
+                        <option value="" disabled>
                           Select type
                         </option>
                         {technicLoading
                           ? null
                           : technicData?.data?.map((item, i) => (
-                              <option>{item.technicName}</option>
+                              <option key={i}>{item.technicName}</option>
                             ))}
                       </Field>
                     </label>
@@ -1100,11 +1100,11 @@ const AddArtwork = () => {
                         name="artworkTheme"
                         className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
                       >
-                        <option value="" disabled selected>
+                        <option value="" disabled>
                           Select type
                         </option>
                         {themeLoading ? (
-                          <option value="" disabled selected>
+                          <option value="" disabled>
                             Loading...
                           </option>
                         ) : (
@@ -1124,7 +1124,7 @@ const AddArtwork = () => {
                       name="artworkOrientation"
                       className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
                     >
-                      <option value="" disabled selected>
+                      <option value="" disabled>
                         Select type
                       </option>
                       <option>Square </option>
@@ -1143,7 +1143,7 @@ const AddArtwork = () => {
                         name="material"
                         className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
                       >
-                        <option value="" disabled selected>
+                        <option value="" disabled>
                           Select type
                         </option>
                         <option>Paper</option>
@@ -1162,7 +1162,7 @@ const AddArtwork = () => {
                         name="offensive"
                         className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
                       >
-                        <option value="" disabled selected>
+                        <option value="" disabled>
                           Select
                         </option>
                         <option>Yes </option>
@@ -1197,7 +1197,7 @@ const AddArtwork = () => {
                         name="hangingAvailable"
                         className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
                       >
-                        <option value="" disabled selected>
+                        <option value="" disabled>
                           Select
                         </option>
                         <option>Yes </option>
@@ -1224,7 +1224,7 @@ const AddArtwork = () => {
                         name="framed"
                         className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
                       >
-                        <option value="" disabled selected>
+                        <option value="" disabled>
                           Select
                         </option>
                         <option>Yes </option>
@@ -1364,7 +1364,7 @@ const AddArtwork = () => {
                         name="artworkStyle"
                         className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
                       >
-                        <option value="" disabled selected>
+                        <option value="" disabled>
                           Select
                         </option>
                         <option>Yes </option>
@@ -1422,7 +1422,7 @@ const AddArtwork = () => {
                               name="subscriptionCatalog"
                               className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
                             >
-                              <option value="" disabled selected>
+                              <option value="" disabled>
                                 Select
                               </option>
                               <option>Yes</option>
@@ -1430,18 +1430,6 @@ const AddArtwork = () => {
                             </Field>
                           </label>
                         </div>
-                        {/* <div className="mt-4">
-                          <label className="text-[#203F58] sm:text-base font-semibold ">
-                            Artist Fees
-                            <Field
-                              type="text"
-                              id="subscriptionArtistFees"
-                              name="artistFees"
-                              placeholder="20%"
-                              className="bg-[#E0E2E7] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5 "
-                            ></Field>
-                          </label>
-                        </div> */}
 
                         <div className="mt-4 space-y-2">
                           <label className="text-[#203F58] text-sm sm:text-base font-semibold ">
@@ -1452,7 +1440,7 @@ const AddArtwork = () => {
                               name="purchesOption"
                               className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
                             >
-                              <option value="" disabled selected>
+                              <option value="" disabled>
                                 Select
                               </option>
                               <option>Yes</option>
@@ -1460,32 +1448,6 @@ const AddArtwork = () => {
                             </Field>
                           </label>
                         </div>
-                        {/* 
-                        <div className="mt-4">
-                          <label className="text-[#203F58] sm:text-base font-semibold ">
-                            Accept Offer Price
-                            <Field
-                              type="text"
-                              id="acceptOfferPrice"
-                              name="acceptOfferPrice"
-                              placeholder="20%"
-                              className="bg-[#E0E2E7] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5 "
-                            ></Field>
-                          </label>
-                        </div>
-
-                        <div className="mt-4">
-                          <label className="text-[#203F58] sm:text-base font-semibold ">
-                            Price Request
-                            <Field
-                              type="text"
-                              id="priceRequest"
-                              name="priceRequest"
-                              placeholder="20%"
-                              className="bg-[#E0E2E7] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5 "
-                            ></Field>
-                          </label>
-                        </div> */}
                       </>
                     )}
                   </div>
@@ -1502,7 +1464,7 @@ const AddArtwork = () => {
                               name="purchaseCatalog1"
                               className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
                             >
-                              <option value="" disabled selected>
+                              <option value="" disabled>
                                 Select
                               </option>
                               <option>Yes</option>
@@ -1537,23 +1499,6 @@ const AddArtwork = () => {
                           </label>
                         </div>
 
-                        {/* <div className="mt-4">
-                          <label className="text-[#203F58] sm:text-base font-semibold ">
-                            Downward Offer
-                            <Field
-                              as="select"
-                              id="downwardOffer"
-                              name="downwardOffer"
-                              className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
-                            >
-                              <option value="" disabled selected>
-                                Select
-                              </option>
-                              <option>Yes</option>
-                              <option>No</option>
-                            </Field>
-                          </label>
-                        </div> */}
                         <div className="mt-4">
                           <label className="text-[#203F58] sm:text-base font-semibold ">
                             Upwork Offer
@@ -1564,7 +1509,7 @@ const AddArtwork = () => {
                               placeholder="Select"
                               className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
                             >
-                              <option value="" disabled selected>
+                              <option value="" disabled>
                                 Select
                               </option>
                               <option>Yes</option>
@@ -1583,7 +1528,7 @@ const AddArtwork = () => {
                               placeholder="Select"
                               className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
                             >
-                              <option value="" disabled selected>
+                              <option value="" disabled>
                                 Select
                               </option>
                               <option>Yes</option>
@@ -1736,35 +1681,6 @@ const AddArtwork = () => {
                       className="bg-[#F9F9FC] border mb-2 border-gray-300 outline-none text-[#203F58] text-sm rounded-lg block w-full p-1 sm:p-2.5 "
                     />
                   </span>
-
-                  {/* <Header
-                    variant={{
-                      size: "lg",
-                      theme: "dark",
-                      weight: "semiBold",
-                    }}
-                    className="mb-2"
-                  >
-                    Package Dimensions
-                  </Header> */}
-
-                  {/* <div className="grid grid-cols-4 gap-3">
-                    {package_dimension.map((field) => (
-                      <span key={field.name}>
-                        <label className="p-1 text-[14px] text-sm sm:text-base text-[#203F58] font-semibold">
-                          {field.label}
-                        </label>
-                        <Field
-                          type="text"
-                          name={field.name}
-                          id={field.name}
-                          placeholder={field.placeholder}
-                          value={values[field.name]}
-                          className="bg-[#F9F9FC] border mb-2 border-gray-300 outline-none text-[#203F58] text-sm rounded-lg block w-full p-1 sm:p-2.5"
-                        />
-                      </span>
-                    ))}
-                  </div> */}
                 </div>
               </div>
               {/* ------------------------ */}
