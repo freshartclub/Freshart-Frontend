@@ -17,6 +17,8 @@ import useSendOtp from "../../http/artist/useSendOtp";
 import useOtpVerifyMutationBecomeAnArtist from "../../http/artist/useOtpVerifyBecomeAnArtist";
 import { useGetDiscipline } from "./http/useGetDiscipline";
 import { useGetStyle } from "./http/useGetStyle";
+import { ARTIST_SOCIAL_LINKS } from "../utils/mockData";
+import SocialMediaLinks from "../ArtistPanel/ArtistEditProfile/GeneralSocial";
 
 const BecomeArtist = () => {
   const validationSchema = Yup.object().shape({
@@ -82,6 +84,7 @@ const BecomeArtist = () => {
   );
 
   const onSubmit = handleSubmit(async (data) => {
+    console.log("onSumbit", data);
     const formData = new FormData();
 
     Object.keys(data).forEach((key) => {
@@ -406,7 +409,7 @@ const BecomeArtist = () => {
                   )}
                 </div>
               </div>
-
+              
               <div className="flex sm:flex-row flex-col justify-between">
                 <div className="sm:mb-4 mb-2 sm:w-[49%] w-full">
                   <label className="block text-gray-700 text-sm font-bold mb-2">
@@ -417,10 +420,9 @@ const BecomeArtist = () => {
                     className="block appearance-none w-full bg-white border px-4 py-3 pr-8 rounded leading-tight focus:outline-none"
                   >
                     <option value="">Select Social Media</option>
-                    <option value="instagram">Instagram</option>
-                    <option value="facebook">Facebook</option>
-                    <option value="linkedin">LinkedIn</option>
-                    <option value="twitter">Twitter</option>
+                    {ARTIST_SOCIAL_LINKS.map((item, index) => (
+                      <option value={item.value}>{item.value}</option>
+                    ))}
                   </select>
                   {errors.socialMedia && (
                     <span className="text-red-500 text-xs">
@@ -445,6 +447,7 @@ const BecomeArtist = () => {
                   )}
                 </div>
               </div>
+              {/* <SocialMediaLinks control={control} /> */}
 
               <div className="mb-8">
                 <div className="border-2 border-dashed border-gray-300 p-6 rounded-lg text-center cursor-pointer">

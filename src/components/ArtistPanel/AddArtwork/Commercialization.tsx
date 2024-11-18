@@ -20,8 +20,8 @@ const Commercialization = () => {
           Subscription Catalog
           <Field
             as="select"
-            id="textclass"
-            name="text"
+            id="subscription"
+            name="subscription"
             className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
           >
             <option value="" disabled selected>

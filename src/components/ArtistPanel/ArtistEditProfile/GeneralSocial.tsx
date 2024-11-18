@@ -1,6 +1,7 @@
 import React from "react";
 import { useFieldArray, Controller } from "react-hook-form";
 import Button from "../../ui/Button";
+import { ARTIST_SOCIAL_LINKS } from "../../utils/mockData";
 
 const SocialMediaLinks = ({ control }) => {
   const { fields, append, remove } = useFieldArray({
@@ -33,9 +34,9 @@ const SocialMediaLinks = ({ control }) => {
                     className="border border-gray-300 rounded p-3 w-full outline-none"
                   >
                     <option value="">Select</option>
-                    <option value="Instagram">Instagram</option>
-                    <option value="Facebook">Facebook</option>
-                    <option value="Twitter">Twitter</option>
+                    {ARTIST_SOCIAL_LINKS.map((item, index) => (
+                      <option value={item.value}>{item.value}</option>
+                    ))}
                   </select>
                 )}
               />

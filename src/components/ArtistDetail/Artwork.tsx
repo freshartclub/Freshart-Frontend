@@ -14,7 +14,7 @@ const Artwork = ({ data: singleArtistData }) => {
   // State for selected filters
   const [selectedDiscipline, setSelectedDiscipline] = useState("");
   const [selectedSeries, setSelectedSeries] = useState("");
-  const [isArtProvider, setIsArtProvider] = useState(false);
+  const [isArtProvider, setIsArtProvider] = useState();
 
   const disciplines = [
     "Dicipline 1",
@@ -33,9 +33,12 @@ const Artwork = ({ data: singleArtistData }) => {
     return (
       (!selectedDiscipline ||
         item.discipline?.artworkDiscipline === selectedDiscipline) &&
-      (!selectedSeries || item.artworkSeries === selectedSeries)
+      (!selectedSeries || item.artworkSeries === selectedSeries) &&
+      (!isArtProvider || item.isArtProvider === isArtProvider)
     );
   });
+
+  console.log(data?.data);
 
   if (isLoading) {
     return <Loader />;
@@ -55,18 +58,18 @@ const Artwork = ({ data: singleArtistData }) => {
           className="border p-2 rounded-md text-sm"
           value={isArtProvider}
           onChange={(e) => setIsArtProvider(e.target.value)}
-          onBlur={handleFilterChange}
+          // onBlur={handleFilterChange}
         >
           <option value="">Select Art Provider</option>
-          <option value="True">True</option>
-          <option value="False">False</option>
+          <option value="True">Yes</option>
+          <option value="False">No</option>
         </select>
 
         <select
           className="border p-2 rounded-md text-sm"
           value={selectedDiscipline}
           onChange={(e) => setSelectedDiscipline(e.target.value)}
-          onBlur={handleFilterChange}
+          // onBlur={handleFilterChange}
         >
           <option value="">Select Discipline</option>
           {disciplines.map((discipline, idx) => (
@@ -80,7 +83,7 @@ const Artwork = ({ data: singleArtistData }) => {
           className="border p-2 rounded-md text-sm"
           value={selectedSeries}
           onChange={(e) => setSelectedSeries(e.target.value)}
-          onBlur={handleFilterChange}
+          // onBlur={handleFilterChange}
         >
           <option value="">Select Series</option>
           {series.map((seriesItem, idx) => (

@@ -21,6 +21,8 @@ const GeneralMedia = ({ control }) => {
     name: "additionalVideo",
   });
 
+  console.log("this is form imagesfields", imageFields);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
 
@@ -58,8 +60,6 @@ const GeneralMedia = ({ control }) => {
     }
   };
 
-  console.log("this is form imagesfields", imageFields);
-
   return (
     <div className="p-6 mt-6 bg-white rounded-lg shadow-md">
       <Header
@@ -80,7 +80,7 @@ const GeneralMedia = ({ control }) => {
           {imageFields.map((image, index) => (
             <div key={image.id} className="relative w-24 h-24">
               <img
-                src={image} // Use the data URL for preview
+                src={image.url}
                 alt={`upload-${index}`}
                 className="w-full h-full object-cover rounded-md"
               />

@@ -111,7 +111,7 @@ const AddArtwork = () => {
 
   const [initialValues, setInitialValues] = useState({
     artworkName: "",
-    artistName: "",
+    provideArtistName: "",
     artworkCreationYear: "",
     artworkSeries: "",
     productDescription: "",
@@ -151,6 +151,7 @@ const AddArtwork = () => {
     artworkStyleType: [],
     colors: [],
     purchaseCatalog: "",
+    activeTab: activeTab,
     subscriptionCatalog: "",
     subscriptionArtistFees: "",
     artistFees: "",
@@ -178,6 +179,7 @@ const AddArtwork = () => {
     artProvider: "",
     existingImage: [],
     existingVideo: [],
+    Subscription: "",
   });
   const { data, isLoading, isFetching } = useGetArtWorkById(id);
 
@@ -189,7 +191,7 @@ const AddArtwork = () => {
         availableTo: data?.data?.restriction?.availableTo || "",
         collectionList: data?.data?.collectionList || "",
         discountAcceptation: data?.data?.restriction?.discountAcceptation || "",
-        artistName: data?.data?.owner?.artistName || "",
+        provideArtistName: data?.data?.provideArtistName || "",
         artworkSeries: data?.data?.artworkSeries || "",
         artworkCreationYear: data?.data?.artworkCreationYear || "",
         artworkName: data?.data?.artworkName || "",
@@ -251,6 +253,7 @@ const AddArtwork = () => {
         existingImage: data?.data?.media?.images || [],
         promotion: data?.data?.promotions?.promotion || "",
         promotionScore: data?.data?.promotions?.promotionScore || "",
+        artProvider: data?.data?.isArtProcider || "",
       }));
     }
   }, [id, data]);
@@ -321,6 +324,8 @@ const AddArtwork = () => {
     setOtherVideos((prevVideos) => prevVideos.filter((_, i) => i !== index));
     setNewOtherVideo((prevFiles) => prevFiles.filter((_, i) => i !== index));
   };
+
+  console.log(activeTab);
 
   const onSubmit = async (values: any) => {
     console.log("onSubmit", values);
@@ -480,7 +485,7 @@ const AddArtwork = () => {
                       <option value="yes">Yes</option>
                       <option value="no">No</option>
                     </Field>
-                    {touched.artProvider && errors.artistName ? (
+                    {touched.artProvider && errors.provideArtistName ? (
                       <div className="error text-red-500 mt-1 text-sm">
                         {errors.artProvider}
                       </div>
@@ -494,14 +499,14 @@ const AddArtwork = () => {
                       </label>
                       <Field
                         type="text"
-                        name="artistName"
-                        id="artistName"
+                        name="provideArtistName"
+                        id="provideArtistName"
                         placeholder="Type artist name here (if different from artist). . ."
                         className="w-full bg-[#F9F9FC] text-sm sm:text-base border border-gray-300 rounded-md p-1 sm:p-3 outline-none"
                       />
-                      {touched.artistName && errors.artistName ? (
+                      {touched.provideArtistName && errors.provideArtistName ? (
                         <div className="error text-red-500 mt-1 text-sm">
-                          {errors.artistName}
+                          {errors.provideArtistName}
                         </div>
                       ) : null}
                     </div>
@@ -1393,7 +1398,7 @@ const AddArtwork = () => {
                             </Field>
                           </label>
                         </div>
-                        <div className="mt-4">
+                        {/* <div className="mt-4">
                           <label className="text-[#203F58] sm:text-base font-semibold ">
                             Artist Fees
                             <Field
@@ -1404,7 +1409,7 @@ const AddArtwork = () => {
                               className="bg-[#E0E2E7] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5 "
                             ></Field>
                           </label>
-                        </div>
+                        </div> */}
 
                         <div className="mt-4 space-y-2">
                           <label className="text-[#203F58] text-sm sm:text-base font-semibold ">

@@ -156,11 +156,18 @@ const GeneralForm = () => {
       );
 
       setValue("cvEntries", data?.data?.artist?.highlights?.cv || "");
+      // setValue(
+      //   "additionalImage",
+      //   data?.data?.artist?.profile?.additionalImage.map((item, i) => {
+      //     return `${data?.data?.url}users${item}`;
+      //   }) || []
+      // );
       setValue(
         "additionalImage",
-        data?.data?.artist?.profile?.additionalImage.map((item, i) => {
-          return `${data?.data?.url}users${item}`;
-        }) || []
+        data?.data?.artist?.profile?.additionalImage?.map((image, i) => ({
+          id: i.toString(), // Unique ID, can be based on index or any other unique value
+          url: `${data?.data?.url}/users/${image}`, // Assuming `image` is a string path
+        })) || []
       );
       setValue("additionalVideo", data?.data?.artist?.profile?.mainVideo || "");
     }
@@ -171,9 +178,8 @@ const GeneralForm = () => {
     data?.data?.artist?.profile?.additionalImage
   );
 
-  console.log(getValues("additionalImage"));
-
   const onSubmit = (data) => {
+    console.log("OnSubmit", data);
     const formData = new FormData();
 
     Object.keys(data).forEach((key) => {
@@ -587,7 +593,7 @@ const GeneralForm = () => {
                 {data?.data?.artist?.insignia?.map((item, i) => (
                   <div>
                     <img
-                      src={`${data.data.url}/users${item.insigniaImage}`}
+                      src={`${data.data.url}/users/${item.insigniaImage}`}
                       alt=""
                       className="w-[10vw] h-[10vh]"
                     />
