@@ -16,6 +16,7 @@ export const ARTTIST_ENDPOINTS = {
   GetArtistTickets: `${ARTIST_BASE_URl}/get-user-tickets`,
   GetArtistTicketsDetails: `${ARTIST_BASE_URl}/ticket`,
   GetAllIncidents: `${ARTIST_BASE_URl}/get-all-incidents`,
+  PatchFeedback: `${ARTIST_BASE_URl}/ticket-feedback`,
 
   GetAllArtist: `${ARTIST_BASE_URl}/get-all-artists`,
   addToCart: `${ARTIST_BASE_URl}/item-to-cart`,

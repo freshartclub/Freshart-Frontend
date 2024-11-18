@@ -3,7 +3,7 @@ import SearchDropdown from "../ticket history/SearchDropdown";
 import axiosInstance from "../../utils/axios";
 import allTicket from "../ticket history/assets/allTicket.png";
 import newTicket from "../ticket history/assets/newTicket.png";
-import onGoingTicket from "../ticket history/assets/on-going.png";
+import onGoingTicketImg from "../ticket history/assets/on-going.png";
 import Resolved from "../ticket history/assets//resolved.png";
 import TicketsList from "./TicketList";
 import { useGetTicket } from "./http/useGetTicket";
@@ -23,7 +23,8 @@ const TabPanel: React.FC<TabPanelProps> = ({ children, activeTab, tabKey }) => {
 
 const TicketHistory: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [filter, setFilter] = useState<string>("All Tickets");
+  const [filterPriority, setFilterPriority] = useState<string>("All Tickets");
+  const [filterTimeframe, setFilterTimeframe] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [ticketsdata, setTickets] = useState<any[]>([]);
   const [totalPages, setTotalPages] = useState<number>(0);
@@ -44,6 +45,12 @@ const TicketHistory: React.FC = () => {
     setActiveTab(tab);
   };
 
+  // if (filter) {
+  //   setActiveTab(filter);
+  // }
+
+  // console.log("this is from filter", filter);
+
   const handleSearch = (query: string) => {
     setSearchQuery(query.trim());
 
@@ -59,6 +66,7 @@ const TicketHistory: React.FC = () => {
 
     setCurrentPage(1);
   };
+
   const now = dayjs();
 
   // const sortedTickets = [...data].sort((a, b) =>
@@ -77,7 +85,58 @@ const TicketHistory: React.FC = () => {
     return ticket.status.includes("Finalise");
   });
 
-  console.log(activeTab);
+  const thisWeek = data.filter((ticket) =>
+    dayjs(ticket.createdAt).isAfter(now.startOf("week"))
+  );
+
+  const thisMonth = data.filter((ticket) =>
+    dayjs(ticket.createdAt).isAfter(now.startOf("month"))
+  );
+
+  const filterTickets = () => {
+    let filteredTickets = [...data];
+
+    // Apply search query filter
+    if (searchQuery) {
+      filteredTickets = filteredTickets.filter(
+        (item) =>
+          item.ticketId.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          item.subject.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    // Apply filterPriority
+    if (filterPriority === "New Tickets") {
+      filteredTickets = filteredTickets.filter((ticket) =>
+        dayjs(ticket.createdAt).isAfter(now.subtract(3, "day"))
+      );
+    } else if (filterPriority === "On-Going Tickets") {
+      filteredTickets = filteredTickets.filter((ticket) =>
+        ticket.status.includes("In progress")
+      );
+    } else if (filterPriority === "Resolved Tickets") {
+      filteredTickets = filteredTickets.filter((ticket) =>
+        ticket.status.includes("Finalise")
+      );
+    }
+
+    // Apply filterTimeframe
+    if (filterTimeframe === "thisWeek") {
+      filteredTickets = filteredTickets.filter((ticket) =>
+        dayjs(ticket.createdAt).isAfter(now.startOf("week"))
+      );
+    } else if (filterTimeframe === "thisMonth") {
+      filteredTickets = filteredTickets.filter((ticket) =>
+        dayjs(ticket.createdAt).isAfter(now.startOf("month"))
+      );
+    }
+
+    setTickets(filteredTickets);
+    setTotalPages(Math.ceil(filteredTickets.length / ticketsPerPage));
+  };
+  useEffect(() => {
+    filterTickets();
+  }, [filterPriority, filterTimeframe, searchQuery, data]);
 
   if (isLoading) {
     return <Loader />;
@@ -88,9 +147,11 @@ const TicketHistory: React.FC = () => {
       <h1 className="font-bold text-xl sm:p-4 py-2">Tickets</h1>
       <SearchDropdown
         searchQuery={searchQuery}
-        setSearchQuery={handleSearch}
-        filter={filter}
-        setFilter={setFilter}
+        setSearchQuery={setSearchQuery}
+        filterPriority={filterPriority}
+        setFilterPriority={setFilterPriority}
+        filterTimeframe={filterTimeframe}
+        setFilterTimeframe={setFilterTimeframe}
       />
 
       <div className="sm:mx-6">
@@ -129,7 +190,7 @@ const TicketHistory: React.FC = () => {
               </button>
             </li>
             <li className="flex items-center" role="presentation">
-              <img src={onGoingTicket} alt="On-Going" className="h-6 w-6" />
+              <img src={onGoingTicketImg} alt="On-Going" className="h-6 w-6" />
               <button
                 className={`inline-block p-2 rounded-sm ${
                   activeTab === "On-Going" ? "border-b-2 border-[#102030]" : ""
@@ -160,7 +221,7 @@ const TicketHistory: React.FC = () => {
         <div>
           <TabPanel activeTab={activeTab} tabKey="all">
             <TicketsList
-              tickets={searchQuery ? ticketsdata : data}
+              tickets={ticketsdata}
               isLoading={isLoading}
               searchQuery={searchQuery}
               currentPage={currentPage}

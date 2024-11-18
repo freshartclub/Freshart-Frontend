@@ -66,7 +66,7 @@ const ArtistProtfolioArtwork = ({ data }) => {
               className="sm:px-3 px-0 border-none outline-none flex flex-col pb-5 justify-center relative"
             >
               <img
-                src={`${data.url}/uploads/users/${item.media.mainImage}`}
+                src={`${data.url}/users/${item.media.mainImage}`}
                 alt="image"
                 className="w-[40vw] h-[50vh] object-cover cursor-pointer "
                 onClick={() => handleRedirectToDescription(item._id)}

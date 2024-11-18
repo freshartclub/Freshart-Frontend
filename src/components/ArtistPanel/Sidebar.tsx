@@ -109,7 +109,7 @@ const Sidebar: React.FC = () => {
   // }, []);
 
   return (
-    <div className={`flex transition-width duration-300 relative md:z-50`}>
+    <div className={`flex transition-width duration-300 relative `}>
       <div
         className={`${
           isOpen ? "w-64" : "w-14"

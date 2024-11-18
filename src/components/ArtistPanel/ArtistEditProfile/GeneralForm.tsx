@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import GeneralSocial from "./GeneralSocial";
 import GeneralMedia from "./GeneralMedia";
@@ -15,13 +15,23 @@ import PhoneInput from "react-phone-number-input";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "react-phone-number-input/style.css";
+import {
+  CitySelect,
+  CountrySelect,
+  StateSelect,
+  LanguageSelect,
+  RegionSelect,
+  PhonecodeSelect,
+} from "react-country-state-city";
+
+import "react-country-state-city/dist/react-country-state-city.css";
+import countryList from "react-select-country-list";
 
 const GeneralForm = () => {
   const { data, isLoading } = useGetArtistDetails();
   const dataaa = useAppSelector((state) => state.user.user);
-
-  console.log("this is coming from state", dataaa);
-
+  const [newId, setNewId] = useState();
+  const options = useMemo(() => countryList().getData(), []);
   const { mutate, isPending } = useGetSaveArtistDetailsMutation();
 
   const {
@@ -30,6 +40,7 @@ const GeneralForm = () => {
     control,
     setValue,
     getValues,
+    watch,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -124,7 +135,7 @@ const GeneralForm = () => {
       setValue("nickName", data?.data?.artist?.nickName || "");
 
       setValue("artistName", data?.data?.artist?.artistName || "");
-      setValue("country", data?.data?.artist?.address?.country || "Spain");
+      setValue("country", data?.data?.artist?.address?.country || "");
       setValue("zip", data?.data?.artist?.zipCode || "");
       setValue("city", data?.data?.artist?.address?.city || "");
       setValue("stateRegion", data?.data?.artist?.address?.state || "");
@@ -147,11 +158,20 @@ const GeneralForm = () => {
       setValue("cvEntries", data?.data?.artist?.highlights?.cv || "");
       setValue(
         "additionalImage",
-        data?.data?.artist?.profile?.additionalImage || []
+        data?.data?.artist?.profile?.additionalImage.map((item, i) => {
+          return `${data?.data?.url}users${item}`;
+        }) || []
       );
       setValue("additionalVideo", data?.data?.artist?.profile?.mainVideo || "");
     }
   }, [data]);
+
+  console.log(
+    "this is additional Image",
+    data?.data?.artist?.profile?.additionalImage
+  );
+
+  console.log(getValues("additionalImage"));
 
   const onSubmit = (data) => {
     const formData = new FormData();
@@ -176,6 +196,8 @@ const GeneralForm = () => {
       console.error("Error:", error);
     }
   };
+  // const countryValue = watch("country");
+  // console.log("this is country value", countryValue);
 
   if (isLoading) {
     return <Loader />;
@@ -306,7 +328,7 @@ const GeneralForm = () => {
                   })}
                   className="border border-[#E6E6E6] p-3 w-full rounded-md focus:outline-none peer placeholder::font-montserrat font-normal text-left placeholder:text-[#1C252E] outline-none"
                 >
-                  <option value="" label="Select a country" />
+                  <option value="" label="Select a Gender" />
                   <option value="Female" label="Female" />
                   <option value="Male" label="Male" />
                   <option value="Other" label="Other" />
@@ -324,6 +346,15 @@ const GeneralForm = () => {
                 )}
               </div>
               <div className="md:w-[48%] w-full relative">
+                {/* <LanguageSelect
+                  {...register("country")}
+                  value={getValues("language")}
+                  onChange={(val) => setValue("language", val)}
+                  // onChange={(e) => {
+                  //   console.log(e);
+                  // }}
+                  placeHolder="Select Language"
+                /> */}
                 <input
                   type="text"
                   // placeholder="Enter Your Email id"
@@ -393,6 +424,14 @@ const GeneralForm = () => {
 
             <div className="flex flex-wrap justify-between w-full gap-4 mb-4">
               <div className="md:w-[48%] w-full relative">
+                {/* <CountrySelect
+                  {...register("country")}
+                  onChange={(val) => setValue("country", val.name)}
+                  value={countryValue}
+                  // className="focus:outline-none border-none"
+                  placeHolder="Select Country"
+                /> */}
+
                 <select
                   {...register("country", {
                     required: "Country is required",
@@ -420,6 +459,14 @@ const GeneralForm = () => {
                 )}
               </div>
               <div className="md:w-[48%] w-full relative">
+                {/* <StateSelect
+                  countryid={newId}
+                  {...register("country")}
+                  value={getValues("stateRegion")}
+                  // {...register("stateRegion")}
+                  onChange={(val) => setValue("stateRegion", val)}
+                  placeHolder="Select State"
+                /> */}
                 <input
                   type="text"
                   // placeholder="Enter your country"
@@ -537,10 +584,10 @@ const GeneralForm = () => {
                 Insignia
               </h2>
               <div className="flex gap-2 items-center justify-center">
-                {data?.data?.artist?.insignia.map((item, i) => (
+                {data?.data?.artist?.insignia?.map((item, i) => (
                   <div>
                     <img
-                      src={`${data.data.url}/uploads/users/${item.insigniaImage}`}
+                      src={`${data.data.url}/users${item.insigniaImage}`}
                       alt=""
                       className="w-[10vw] h-[10vh]"
                     />

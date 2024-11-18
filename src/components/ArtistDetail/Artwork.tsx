@@ -16,7 +16,6 @@ const Artwork = ({ data: singleArtistData }) => {
   const [selectedSeries, setSelectedSeries] = useState("");
   const [isArtProvider, setIsArtProvider] = useState(false);
 
-  // Sample disciplines and series options (replace these with actual data from API if needed)
   const disciplines = [
     "Dicipline 1",
     "Dicipline 2",
@@ -100,19 +99,21 @@ const Artwork = ({ data: singleArtistData }) => {
               className="sm:px-3 px-0 border-none outline-none flex flex-col pb-5 justify-center relative"
             >
               <img
-                src={`${data.url}/uploads/users/${item.media.mainImage}`}
+                src={`${data.url}/users/${item.media.mainImage}`}
                 alt="image"
                 className="w-[40vw] h-[50vh] object-cover cursor-pointer"
               />
 
               {profile === "artist" && (
                 <div className="absolute bottom-0 left-0 right-0 top-0 h-full w-full overflow-hidden bg-[#D9D9D9] bg-fixed flex gap-10 items-center justify-center opacity-0 transition duration-300 ease-in-out hover:opacity-[0.7] hover:cursor-pointer">
-                  <div className="flex gap-5">
-                    <NavLink to={`/artist-panel/artwork/add?id=${item._id}`}>
-                      <img src={edit} alt="edit" />
-                    </NavLink>
-                    <img src={deleteimg} alt="delete" />
-                  </div>
+                  {item?.status === "draft" ? (
+                    <div className="flex gap-5">
+                      <NavLink to={`/artist-panel/artwork/add?id=${item._id}`}>
+                        <img src={edit} alt="edit" />{" "}
+                      </NavLink>
+                      <img src={deleteimg} alt="delete" />
+                    </div>
+                  ) : null}
                 </div>
               )}
 

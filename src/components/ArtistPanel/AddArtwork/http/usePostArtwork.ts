@@ -9,6 +9,7 @@ import axiosInstance from "../../../utils/axios";
 let toastId: any;
 
 async function usePostArtWork(input: any) {
+  console.log("this is input", input);
   return await axiosInstance.post(
     `/api/artist/add-artwork/${input.id}`,
     input.data,

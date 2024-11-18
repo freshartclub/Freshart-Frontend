@@ -159,9 +159,9 @@ const PurchaseCart = () => {
                           </button>
 
                           <img
-                            src={`${data?.url}/uploads/users/${table.media.mainImage}`}
+                            src={`${data?.url}/users/${table.media.mainImage}`}
                             alt="image"
-                            className="w-[72px] h-[72px]"
+                            className="w-[72px] h-[72px] object-cover"
                           />
                           <P
                             variant={{

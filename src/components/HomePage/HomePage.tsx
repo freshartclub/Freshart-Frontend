@@ -9,8 +9,18 @@ import HighlightSection from "./HighlightSection";
 import RecentSection from "./RecentSection";
 import SecondSection from "./SecondSection";
 import TrendingSection from "./TrendingSection";
+import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
+  const navigate = useNavigate();
+
+  const profile = localStorage.getItem("profile");
+  console.log(profile);
+
+  if (profile === "artist") {
+    return navigate("/artist-panel");
+  }
+
   return (
     <div className="overflow-x-hidden">
       <BannerSection />

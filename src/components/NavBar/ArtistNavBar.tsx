@@ -50,7 +50,7 @@ const ArtistNavBar = () => {
         <div className="flex items-center gap-8">
           <div className="flex items-center gap-2">
             <input
-              placeholder="Search"
+              placeholder="Searsasach"
               className="rounded outline-none px-2 py-1 border border-zinc-800"
               type="text"
             />

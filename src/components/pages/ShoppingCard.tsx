@@ -64,7 +64,7 @@ const ShoppingCard = ({ isOpen, onClose }: any) => {
                 onClick={redirectToDetailPage}
               >
                 <img
-                  src={`${data?.url}/uploads/users/${item.media.mainImage}`}
+                  src={`${data?.url}/users/${item.media.mainImage}`}
                   alt="cart image"
                   className="object-cover lg:w-[10vw] rounded"
                 />

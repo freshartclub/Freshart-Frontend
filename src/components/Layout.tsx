@@ -37,7 +37,9 @@ const Layout: React.FC<LayoutProps> = ({
   }
 
   // if (user !== "artist") {
-  //   return navigate("/home");
+  //   navigate("/home");
+  // } else {
+  //   navigate("/artist-panel");
   // }
   return (
     <div>

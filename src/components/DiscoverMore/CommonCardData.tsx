@@ -85,7 +85,7 @@ const CommonCardData = ({ heading, highlightData }: HandleLikeClickParams) => {
                 className="sm:px-3 px-0 border-none outline-none relative"
               >
                 <img
-                  src={`${highlightData?.url}/uploads/users/${item.media?.mainImage}`}
+                  src={`${highlightData?.url}/users/${item.media?.mainImage}`}
                   alt="image"
                   className="w-[35vw] object-cover h-[40vh]"
                   onClick={() => handleRedirectToDescription(item?._id)}

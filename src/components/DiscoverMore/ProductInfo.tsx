@@ -303,7 +303,7 @@ const ProductInfo = ({ data }: any) => {
               <div className="bg-white shadow-2xl lg:max-w-xs sm:w-[90%] w-full p-5">
                 <div className="">
                   <img
-                    src={`${data?.url}/uploads/users/${data?.data?.owner?.profile?.mainImage}`}
+                    src={`${data?.url}/users/${data?.data?.owner?.profile?.mainImage}`}
                     alt="Profile"
                     className="object-cover w-full h-full"
                   />

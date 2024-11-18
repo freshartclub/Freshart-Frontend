@@ -2,9 +2,12 @@ import { Field, useFormikContext } from "formik";
 import Select from "react-select";
 
 import Header from "../../ui/Header";
+import { useEffect } from "react";
 
 const Dicipline = () => {
   const { setFieldValue, values } = useFormikContext();
+
+  console.log("this is value from discipline", values);
 
   const fields = [
     {
@@ -27,6 +30,16 @@ const Dicipline = () => {
     { value: "D", label: "D" },
     { value: "E", label: "E" },
   ];
+
+  useEffect(() => {
+    const prefilledTags = [
+      { value: "A", label: "A" },
+      { value: "C", label: "C" },
+    ];
+    setFieldValue("artworkTags", prefilledTags);
+  }, [setFieldValue]);
+
+  console.log("this is from artwork tags", values.artworkTags);
 
   return (
     <div className="bg-white w-full rounded-md p-4 border ">
@@ -64,7 +77,6 @@ const Dicipline = () => {
             </div>
           ))}
 
-          {/* Multi-select for Artwork Tags using react-select */}
           <div className="mb-4">
             <label
               htmlFor="artworkTags"

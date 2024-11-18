@@ -160,7 +160,7 @@
 //                 return (
 //                   <img
 //                     key={index}
-//                     src={`${data?.url}/uploads/users/${thumb.src}`}
+//                     src={`${data?.url}/user${thumb.src}`}
 //                     alt={thumb.alt}
 //                     className="mb-4 lg:w-20 w-24 h-24 lg:h-24"
 //                     onClick={() => handleThumbnailClick(index)}
@@ -175,7 +175,7 @@
 //                 {images.map((slide, index) => (
 //                   <div key={index}>
 //                     <img
-//                       src={`${data?.url}/uploads/users/${slide.src}`}
+//                       src={`${data?.url}/user${slide.src}`}
 //                       alt={`Slide ${index + 1}`}
 //                       className="h-fit md:w-full w-auto overflow-y-hidden"
 //                     />
@@ -338,7 +338,7 @@ const DiscoverMore = () => {
                 return (
                   <img
                     key={index}
-                    src={`${data?.url}/uploads/users/${thumb.src}`}
+                    src={`${data?.url}/users/${thumb.src}`}
                     alt={thumb.alt}
                     className="mb-4 lg:w-20 w-24 h-24 lg:h-24"
                     onClick={() => handleThumbnailClick(index)}
@@ -352,7 +352,7 @@ const DiscoverMore = () => {
                 {images.map((slide, index) => (
                   <div key={index}>
                     <img
-                      src={`${data?.url}/uploads/users/${slide.src}`}
+                      src={`${data?.url}/users/${slide.src}`}
                       alt={`Slide ${index + 1}`}
                       className="md:w-[35vw] w-full h-[50vh] md:h-[80vh] object-cover overflow-y-hidden"
                     />

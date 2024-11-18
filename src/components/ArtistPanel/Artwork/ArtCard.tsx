@@ -21,18 +21,19 @@ const ArtCard = ({ record, data }: any) => {
       >
         <div className="flex justify-center relative overflow-hidden bg-cover bg-no-repeat">
           <img
-            src={`${data.url}/uploads/users/${record.media?.mainImage}`}
+            src={`${data.url}/users/${record.media?.mainImage}`}
             className="rounded-md w-[20vw] h-[40vh] object-cover"
           />
           <div className="absolute bottom-0 left-0 right-0 top-0 h-full w-full overflow-hidden bg-[#D9D9D9] bg-fixed flex items-center justify-center opacity-0 transition duration-300 ease-in-out hover:opacity-50 hover:cursor-pointer">
-            <div className="flex gap-2 ">
-              {record?.status === "draft" ? (
+            {record?.status === "draft" ? (
+              <div className="flex gap-2 ">
                 <NavLink to={`/artist-panel/artwork/add?id=${record._id}`}>
                   <img src={edit} className="" alt="" />
                 </NavLink>
-              ) : null}
-              <img src={deleteimg} className="" alt="" />
-            </div>
+
+                <img src={deleteimg} className="" alt="" />
+              </div>
+            ) : null}
           </div>
         </div>
         <div className="flex flex-col items-center text-center py-2">

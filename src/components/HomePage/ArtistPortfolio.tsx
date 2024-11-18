@@ -99,7 +99,7 @@ const ArtistPortfolio = () => {
             >
               <div className="mt-14 rounded-lg border border-[#FF536B] flex  flex-col items-center">
                 <img
-                  src={`${data.url}/uploads/users/${item?.profile?.mainImage}`}
+                  src={`${data.url}/users/${item?.profile?.mainImage}`}
                   alt="profile"
                   className="-mt-10 w-[10vh] h-[10vh] rounded-full object-cover"
                 />
@@ -112,7 +112,7 @@ const ArtistPortfolio = () => {
                   ))}
                 </p>
                 <img
-                  src={`${data.url}/uploads/users/${item?.profile?.inProcessImage}`}
+                  src={`${data.url}/users/${item?.profile?.inProcessImage}`}
                   alt="Artwork"
                   className="p-4 w-[30vw] h-[30vh] object-cover"
                 />

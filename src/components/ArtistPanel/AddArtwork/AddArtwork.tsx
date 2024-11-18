@@ -1,42 +1,31 @@
-import {
-  ErrorMessage,
-  Field,
-  FieldArray,
-  Form,
-  Formik,
-  useFormikContext,
-} from "formik";
-import { formSchemas } from "../schemas/index";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
-import Header from "../../ui/Header";
-import Button from "../../ui/Button";
-import ArtworkRight from "./ArtworkRight";
-import ArtBreadcrumbs from "./ArtBreadcrumb";
+import { Field, Formik } from "formik";
+import { useEffect, useState } from "react";
+import "react-datepicker/dist/react-datepicker.css";
 import { TiPlus } from "react-icons/ti";
+import { useSearchParams } from "react-router-dom";
+import Select from "react-select";
+import image_icon from "../../../assets/image_icon.png";
+import video_icon from "../../../assets/video_icon.png";
+import Button from "../../ui/Button";
+import Header from "../../ui/Header";
+import Loader from "../../ui/Loader";
 import P from "../../ui/P";
 import {
-  package_dimension,
   artwork_orientation,
+  buttonsData,
   Framed_dimension,
   options,
   options_1,
   options_2,
-  buttonsData,
-  yearOption,
   seriesData,
   shipping_inventry,
 } from "../../utils/mockData";
-import Select from "react-select";
-import image_icon from "../../../assets/image_icon.png";
-import video_icon from "../../../assets/video_icon.png";
-import * as Yup from "yup";
-import { useSearchParams } from "react-router-dom";
-import usePostArtWorkMutation from "./http/usePostArtwork";
+import ArtBreadcrumbs from "./ArtBreadcrumb";
+import ArtworkRight from "./ArtworkRight";
 import { useGetArtWorkById } from "./http/useGetArtworkById";
-import Loader from "../../ui/Loader";
 import { useGetTechnic } from "./http/useGetTechnic";
 import { useGetTheme } from "./http/useGetTheme";
-import "react-datepicker/dist/react-datepicker.css";
+import usePostArtWorkMutation from "./http/usePostArtwork";
 
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
@@ -108,28 +97,15 @@ const AddArtwork = () => {
   const [otherVideos, setOtherVideos] = useState([]);
   const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState("subscription");
+  const [newImage, setNewImage] = useState(null);
+  const [newBackImage, setNewBackImage] = useState(null);
+  const [newInProcessImage, setNewInProcessImage] = useState([]);
+  const [newInDetailsImage, setNewInDetailsImage] = useState([]);
+  const [newMainVideo, setNewMainVideo] = useState([]);
+  const [existingVideo, setExistingVideo] = useState([]);
+  const [existingImage, setExistingImage] = useState([]);
 
-  const fields = [
-    {
-      id: "artworkdiscipline",
-      name: "artworkDiscipline",
-      label: "Artwork discipline",
-      options: [
-        { value: "Dicipline 1", label: "Dicipline 1" },
-        { value: "Dicipline 2", label: "Dicipline 2" },
-        { value: "Dicipline 3", label: "Dicipline 3" },
-        { value: "Dicipline 4", label: "Dicipline 4" },
-      ],
-    },
-  ];
-
-  const artworkTagsOptions = [
-    { value: "A", label: "A" },
-    { value: "B", label: "B" },
-    { value: "C", label: "C" },
-    { value: "D", label: "D" },
-    { value: "E", label: "E" },
-  ];
+  const [newOtherVideo, setNewOtherVideo] = useState([]);
 
   const id = searchParams.get("id");
 
@@ -139,12 +115,12 @@ const AddArtwork = () => {
     artworkCreationYear: "",
     artworkSeries: "",
     productDescription: "",
-    mainImage: "",
-    backImage: "",
-    inProcessImage: "",
-    images: [],
-    mainVideo: "",
-    otherVideo: "",
+    // mainImage: "",
+    // backImage: "",
+    // inProcessImage: "",
+    // images: [],
+    // mainVideo: "",
+    // otherVideo: "",
     artworkTechnic: "",
     artworkTheme: "",
     artworkOrientation: "",
@@ -176,6 +152,7 @@ const AddArtwork = () => {
     colors: [],
     purchaseCatalog: "",
     subscriptionCatalog: "",
+    subscriptionArtistFees: "",
     artistFees: "",
     purchesOption: "",
     availableTo: "",
@@ -199,9 +176,10 @@ const AddArtwork = () => {
     baseFeesCurrency: "",
     basePriceCurrency: "",
     artProvider: "",
+    existingImage: [],
+    existingVideo: [],
   });
   const { data, isLoading, isFetching } = useGetArtWorkById(id);
-  console.log(data);
 
   useEffect(() => {
     if (id) {
@@ -269,14 +247,10 @@ const AddArtwork = () => {
 
         artworkDiscipline: data?.data?.discipline?.artworkDiscipline || "",
         artworkTags: data?.data?.discipline?.artworkTags || "",
-
+        existingVideo: data?.data?.media?.otherVideo || [],
+        existingImage: data?.data?.media?.images || [],
         promotion: data?.data?.promotions?.promotion || "",
         promotionScore: data?.data?.promotions?.promotionScore || "",
-
-        mainImage: data?.data?.media?.mainImage || "",
-        backImage: data?.data?.media?.backImage || "",
-        otherVideo: data?.data?.media?.otherVideo || "",
-        mainVideo: data?.data?.media?.mainVideo || "",
       }));
     }
   }, [id, data]);
@@ -286,43 +260,99 @@ const AddArtwork = () => {
   const { data: technicData, isLoading: technicLoading } = useGetTechnic();
   const { data: themeData, isLoading: themeLoading } = useGetTheme();
 
-  console.log(themeData);
-
   const handleFileChange = (e, setFile) => {
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
     if (file) {
-      setFile(file);
+      setNewImage(file);
+      const imageUrl = URL.createObjectURL(file);
+      setMainImage(imageUrl);
     }
   };
 
-  const handleMultiFileChange = (e, setFiles) => {
-    const files = Array.from(e.target.files);
-    setFiles(files);
+  const handleFileChangeBackImage = (e, setFile) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setNewBackImage(file);
+      const imageUrl = URL.createObjectURL(file);
+      setBackImage(imageUrl);
+    }
   };
 
-  console.log(initialValues.artProvider);
+  const handleFileChangeInprocessImage = (e, setFile) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setNewInProcessImage(file);
+      const imageUrl = URL.createObjectURL(file);
+      setInProcessImage(imageUrl);
+    }
+  };
+
+  const handleFileChangeDetailsImage = (e, setFile) => {
+    const files = e.target.files;
+
+    if (files.length === 1) {
+      setImages((images) => [...images, files[0]]);
+    } else {
+      setImages((images) => [...images, ...Array.from(files)]);
+    }
+  };
+
+  const handleMainVideo = (e, setFile) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setNewMainVideo(file);
+      const videoUrl = URL.createObjectURL(file);
+      setMainVideo(videoUrl);
+    }
+  };
+
+  const handleOtherVideo = (e, setFile) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setNewOtherVideo((prev) => [...prev, file]);
+
+      const videoUrl = URL.createObjectURL(file);
+
+      setOtherVideos((prevVideos) => [...prevVideos, videoUrl]);
+    }
+  };
+
+  const removeVideo = (index) => {
+    setOtherVideos((prevVideos) => prevVideos.filter((_, i) => i !== index));
+    setNewOtherVideo((prevFiles) => prevFiles.filter((_, i) => i !== index));
+  };
 
   const onSubmit = async (values: any) => {
     console.log("onSubmit", values);
 
-    values.mainImage = mainImage;
-    values.backImage = backImage;
-    values.inProcessImage = inProcessImage;
-    values.additionalImage = images;
-    values.mainVideo = mainVideo;
-    values.otherVideo = otherVideos;
+    // Assuming you want to add additional values like images and videos
+    values.mainImage = newImage;
+    values.backImage = newBackImage;
+    values.inProcessImage = newInProcessImage;
+    values.images = images;
+    values.mainVideo = newMainVideo;
+    values.otherVideo = newOtherVideo;
 
     const formData = new FormData();
 
     Object.keys(values).forEach((key) => {
-      if (Array.isArray(values[key])) {
-        values[key].forEach((item) => {
-          formData.append(key, JSON.stringify(item)); // Serialize each item as JSON
+      const value = values[key];
+
+      if (Array.isArray(value)) {
+        value.forEach((item) => {
+          if (item instanceof File) {
+            formData.append(key, item);
+          } else {
+            formData.append(key, JSON.stringify(item));
+          }
         });
+      } else if (value instanceof File) {
+        formData.append(key, value);
       } else {
-        formData.append(key, values[key]);
+        formData.append(key, value);
       }
     });
+
     const newData = {
       id: id,
       data: formData,
@@ -331,7 +361,7 @@ const AddArtwork = () => {
     mutate(newData);
   };
 
-  const removeImage = (name: string, index: number) => {
+  const removeImage = (name: string, index: number, typeFile: string) => {
     if (name === "mainImage") {
       setMainImage(null);
     } else if (name === "backImage") {
@@ -339,7 +369,13 @@ const AddArtwork = () => {
     } else if (name === "inProcessImage") {
       setInProcessImage(null);
     } else if (name === "images") {
-      setImages(images.filter((_, i) => i !== index));
+      if (typeFile === "File") {
+        setImages(images.filter((_, i) => i !== index));
+      } else {
+        initialValues.existingImage = initialValues.existingImage.filter(
+          (_, i) => i !== index
+        );
+      }
     } else if (name === "mainvideo") {
       setMainVideo(null);
     } else if (name === "otherVideos") {
@@ -348,17 +384,6 @@ const AddArtwork = () => {
   };
 
   const [value, setValue] = useState(null);
-
-  // this has to coming from backend
-  useEffect(() => {
-    if (data?.data) {
-      setMainImage(`${data.url}/uploads/users/${data.data?.media?.mainImage}`);
-      setBackImage(`${data.url}/uploads/users/${data.data?.media?.backImage}`);
-      setInProcessImage(
-        `${data.url}/uploads/users/${data.data?.media?.inProcessImage}`
-      );
-    }
-  }, []);
 
   if (isLoading) {
     return <Loader />;
@@ -444,7 +469,6 @@ const AddArtwork = () => {
                       name="artProvider"
                       className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
                       onChange={(e) => {
-                        console.log("Selected value:", e.target.value);
                         // Optionally, you can call Formik's setFieldValue if needed
                         setIsArtProvider(e.target.value);
                         setFieldValue("artProvider", e.target.value); // This updates the form's value
@@ -585,11 +609,7 @@ const AddArtwork = () => {
                           {data?.data?.media?.mainImage || mainImage ? (
                             <div className="relative">
                               <img
-                                src={
-                                  id
-                                    ? `${data.url}/uploads/users/${data.data?.media?.mainImage}`
-                                    : URL.createObjectURL(mainImage)
-                                }
+                                src={mainImage}
                                 alt="image"
                                 className="w-28 h-28 object-cover"
                               />
@@ -646,18 +666,16 @@ const AddArtwork = () => {
                           type="file"
                           accept="image/*"
                           id="back-photo-input"
-                          onChange={(e) => handleFileChange(e, setBackImage)}
+                          onChange={(e) =>
+                            handleFileChangeBackImage(e, setBackImage)
+                          }
                           className="hidden"
                         />
                         <div className="bg-[#F9F9FC]  border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
                           {backImage ? (
                             <div className="relative">
                               <img
-                                src={
-                                  id
-                                    ? `${data.url}/uploads/users/${data.data?.media?.backImage}`
-                                    : URL.createObjectURL(backImage)
-                                }
+                                src={backImage}
                                 alt="image"
                                 className="w-28 h-28 object-cover"
                               />
@@ -715,7 +733,7 @@ const AddArtwork = () => {
                           accept="image/*"
                           id="inprocess-photo-input"
                           onChange={(e) =>
-                            handleFileChange(e, setInProcessImage)
+                            handleFileChangeInprocessImage(e, setInProcessImage)
                           }
                           className="hidden"
                         />
@@ -723,11 +741,7 @@ const AddArtwork = () => {
                           {inProcessImage ? (
                             <div className="relative">
                               <img
-                                src={
-                                  id
-                                    ? `${data.url}/uploads/users/${data.data?.media?.inProcessImage}`
-                                    : URL.createObjectURL(inProcessImage)
-                                }
+                                src={inProcessImage}
                                 alt="image"
                                 className="w-28 h-28 object-cover"
                               />
@@ -788,26 +802,56 @@ const AddArtwork = () => {
                           accept="image/*"
                           id="details-photo-input"
                           name="images"
-                          onChange={(e) => handleMultiFileChange(e, setImages)}
+                          onChange={(e) =>
+                            handleFileChangeDetailsImage(e, setImages)
+                          }
                           className="hidden"
                         />
                         <div className="bg-[#F9F9FC]  border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
-                          {images && images.length > 0 ? (
-                            images.map((img, i) => (
-                              <div key={i} className="relative">
-                                <img
-                                  src={URL.createObjectURL(img)}
-                                  alt="image"
-                                  className="w-28 h-28 object-cover"
-                                />
-                                <span
-                                  className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center "
-                                  onClick={() => removeImage("images", i)}
-                                >
-                                  &times;
-                                </span>
-                              </div>
-                            ))
+                          {images &&
+                            images.length > 0 &&
+                            images.map((img, i) => {
+                              return (
+                                <div key={i} className="relative">
+                                  <img
+                                    src={URL.createObjectURL(img)}
+                                    alt="image"
+                                    className="w-28 h-28 object-cover"
+                                  />
+                                  <span
+                                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center "
+                                    onClick={() =>
+                                      removeImage("images", i, "File")
+                                    } // Remove image by index
+                                  >
+                                    &times;
+                                  </span>
+                                </div>
+                              );
+                            })}
+                          {initialValues.existingImage &&
+                          initialValues.existingImage.length > 0 ? (
+                            initialValues.existingImage?.map(
+                              (img, i = images.length + 1) => {
+                                return (
+                                  <div key={i} className="relative">
+                                    <img
+                                      src={`${data?.url}/users/${img}`}
+                                      alt="image"
+                                      className="w-28 h-28 object-cover"
+                                    />
+                                    <span
+                                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center "
+                                      onClick={() =>
+                                        removeImage("images", i, "Url")
+                                      } // Remove image by index
+                                    >
+                                      &times;
+                                    </span>
+                                  </div>
+                                );
+                              }
+                            )
                           ) : (
                             <img
                               src={image_icon}
@@ -856,14 +900,14 @@ const AddArtwork = () => {
                           type="file"
                           accept="video/*"
                           id="main-video-input"
-                          onChange={(e) => handleFileChange(e, setMainVideo)}
+                          onChange={(e) => handleMainVideo(e, setMainVideo)}
                           className="hidden"
                         />
                         <div className="bg-[#F9F9FC]  border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
                           {mainVideo ? (
                             <div className="relative ">
                               <video
-                                src={URL.createObjectURL(mainVideo)}
+                                src={mainVideo}
                                 className="w-28 max-h-28 object-cover mb-4"
                                 controls
                               />
@@ -921,25 +965,21 @@ const AddArtwork = () => {
                           id="other-video-input"
                           accept="video/*"
                           multiple
-                          onChange={(e) =>
-                            handleMultiFileChange(e, setOtherVideos)
-                          }
+                          onChange={(e) => handleOtherVideo(e, setOtherVideos)}
                           className="hidden"
                         />
                         <div className="bg-[#F9F9FC]  border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
                           {otherVideos && otherVideos.length > 0 ? (
-                            otherVideos.map((v, i) => (
+                            otherVideos.map((videoUrl, i) => (
                               <div key={i} className="relative">
                                 <video
-                                  src={URL.createObjectURL(v)}
+                                  src={videoUrl} // Use the URL for the video preview
                                   className="w-28 max-h-28 object-cover mb-4"
                                   controls
                                 />
                                 <span
-                                  className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center "
-                                  onClick={() =>
-                                    removeImage("inProcessPhotos", 0)
-                                  }
+                                  className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
+                                  onClick={() => removeVideo(i)} // Custom function to remove video from state
                                 >
                                   &times;
                                 </span>
@@ -1358,7 +1398,7 @@ const AddArtwork = () => {
                             Artist Fees
                             <Field
                               type="text"
-                              id="artistFees"
+                              id="subscriptionArtistFees"
                               name="artistFees"
                               placeholder="20%"
                               className="bg-[#E0E2E7] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5 "

@@ -1,11 +1,12 @@
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { ARTTIST_ENDPOINTS } from "../../../http/apiEndPoints/Artist";
 import { useAppSelector } from "../../../store/typedReduxHooks";
 import axiosInstance from "../../utils/axios";
 import artistImg from "../ticket history/assets/People.png";
 import useGetPostArtistTicketReplyMutation from "./http/usePostReply";
+import { FaArrowLeftLong } from "react-icons/fa6";
 
 interface Ticket {
   ticketId: string;
@@ -21,6 +22,7 @@ const SingleTicket = () => {
   const [ticket, setTicket] = useState<Ticket | null>(null);
   const [reply, setReply] = useState("");
   const user = useAppSelector((state) => state.user.user);
+  const navigate = useNavigate();
 
   const getTicketDetail = async () => {
     try {
@@ -53,12 +55,19 @@ const SingleTicket = () => {
     mutate(formData);
   };
 
+  const handleNavigate = () => {
+    navigate(-1);
+  };
+
+  console.log(ticket);
+
   if (!ticket) {
     return <div>Loading...</div>;
   }
 
   return (
     <div className="container mx-auto sm:px-6 px-3 mt-[2rem] mb-[2rem]">
+      <FaArrowLeftLong onClick={handleNavigate} className="cursor-pointer" />
       <div className="flex justify-between items-center w-full p-2">
         <div className="flex items-center gap-2">
           <span className="w-2.5 h-2.5 bg-[#F8A53499] rounded-full"></span>
@@ -69,8 +78,16 @@ const SingleTicket = () => {
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="w-2.5 h-2.5 bg-[#F8A53499] rounded-full"></span>
-          <span className="text-[#84818A]">Ongoing</span>
+          <span
+            className={`${
+              ticket.data?.status === "In progress"
+                ? "w-2.5 h-2.5  bg-[#3bf834] rounded-full"
+                : ticket.data?.status === "Created"
+                ? "w-2.5 h-2.5 bg-[#F8A53499] rounded-full"
+                : "w-2.5 h-2.5 bg-[#fe4323fd] rounded-full"
+            }`}
+          ></span>
+          <span className="text-[#84818A]">{ticket.data?.status}</span>
           <div className="text-gray-400 text-sm">
             {dayjs(ticket?.data?.createdAt).format("MMMM D, YYYY")}
           </div>

@@ -108,7 +108,7 @@ const HighlightSection = () => {
                 onClick={() => handleRedirectToDescription(item?._id)}
               >
                 <img
-                  src={`${data.url}/uploads/users/${item.media.mainImage}`}
+                  src={`${data.url}/users/${item.media.mainImage}`}
                   alt="image"
                   className="w-[20vw] h-[50vh] object-cover"
                 />

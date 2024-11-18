@@ -110,7 +110,7 @@ const DiscoverMore = () => {
                 return (
                   <img
                     key={index}
-                    src={`${data?.url}/uploads/users/${thumb.src}`}
+                    src={`${data?.url}/users/${thumb.src}`}
                     alt={thumb.alt}
                     className="mb-4 lg:w-20 lg:h-24 object-cover"
                     onClick={() => handleThumbnailClick(index)}
@@ -125,7 +125,7 @@ const DiscoverMore = () => {
                 {images.map((slide, index) => (
                   <div key={index}>
                     <img
-                      src={`${data?.url}/uploads/users/${slide.src}`}
+                      src={`${data?.url}/users/${slide.src}`}
                       alt={`Slide ${index + 1}`}
                       className="mx-auto w-[35vw] h-[80vh] object-cover"
                     />

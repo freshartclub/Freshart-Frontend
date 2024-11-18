@@ -9,37 +9,6 @@ import { useGetArtWorkList } from "./http/getArtWorkList";
 import { useNavigate } from "react-router-dom";
 import Loader from "../ui/Loader";
 
-const recentData = [
-  {
-    image: img1,
-    title: "Illustrator, painting",
-    heading: "Nineteenth-Century Pastel Portraits",
-    para: "Andrews meson",
-    size: "70 x 32 ",
-  },
-  {
-    image: img2,
-    title: "Illustrator, painting",
-    heading: "Nineteenth-Century Pastel Portraits",
-    para: "Andrews meson",
-    size: "70 x 32 ",
-  },
-  {
-    image: img3,
-    title: "Illustrator, painting",
-    heading: "Nineteenth-Century Pastel Portraits",
-    para: "Andrews meson",
-    size: "70 x 32 ",
-  },
-  {
-    image: img1,
-    title: "Illustrator, painting",
-    heading: "Nineteenth-Century Pastel Portraits",
-    para: "Andrews meson",
-    size: "70 x 32 ",
-  },
-];
-
 const ArtWork = () => {
   const settings = {
     dots: true,
@@ -107,7 +76,7 @@ const ArtWork = () => {
                 onClick={() => handleRedirectToDescription(item?._id)}
               >
                 <img
-                  src={`${data.url}/uploads/users/${item.media.mainImage}`}
+                  src={`${data.url}/users/${item.media.mainImage}`}
                   alt="image"
                   className="w-[20vw] h-[45vh] object-cover"
                 />

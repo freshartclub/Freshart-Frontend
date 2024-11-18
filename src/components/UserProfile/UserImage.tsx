@@ -5,7 +5,7 @@ const UserImage = ({ user }) => {
   return (
     <div className="lg:w-[20%] md:w-[25%] w-full">
       <img
-        src={`${import.meta.env.VITE_SERVER_URL}/uploads/users/${user?.avatar}`}
+        src={`${import.meta.env.VITE_SERVER_URL}/user${user?.avatar}`}
         alt="user profile"
         className="w-full sm:w-auto"
       />

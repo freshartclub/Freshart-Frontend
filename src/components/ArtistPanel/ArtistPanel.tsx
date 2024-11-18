@@ -18,7 +18,6 @@ import Settings from "./ArtistEditProfile/Settings";
 const ArtistPanel = () => {
   return (
     <>
-      {/* <ArtistNavBar /> */}
       <div className=" flex w-full overflow-hidden">
         <Sidebar />
         <div className="flex-1 sm:px-6 px-3 bg-zinc-100 ">
@@ -31,13 +30,13 @@ const ArtistPanel = () => {
             <Route path="order/orderDetail" element={<OrdersDetail />} />
             <Route path="artwork/add" element={<AddArtwork />} />
             <Route path="edit-artistprofile" element={<ArtistProfile />} />
-            <Route path="user/settings" element={<Settings/>} />
+            <Route path="user/settings" element={<Settings />} />
             {/* <Route path="ticket" element={<TicketHistory />} /> */}
             {/* <Route path="ticket/:ticketId" element={<TicketDe />} /> */}
             <Route path="ticket/tickets" element={<TicketHistory />} />
             <Route path="/ticket" element={<Support />} />
             <Route path="/new_ticket" element={<NewTicket />} />
-            
+
             <Route path="/ticket_detail" element={<SingleTicket />} />
             <Route path="artwork/preview" element={<ArtworkReview />} />
           </Routes>

@@ -336,7 +336,7 @@ const AplhaFilter = ({ query, data }: any) => {
               onClick={() => handleArtistDetail(item?._id)}
             >
               <img
-                src={`${data.url}/uploads/users/${item.profile.mainImage}`}
+                src={`${data.url}/users/${item.profile.mainImage}`}
                 alt="profile"
                 className="-mt-10 w-[10vh] h-[10vh] rounded-full object-cover"
               />
@@ -352,7 +352,7 @@ const AplhaFilter = ({ query, data }: any) => {
                   ))}
               </p>
               <img
-                src={`${data.url}/uploads/users/${item.profile.inProcessImage}`}
+                src={`${data.url}/users/${item.profile.inProcessImage}`}
                 alt="Artwork"
                 className="p-4 w-[30vw] h-[30vh] object-cover"
               />

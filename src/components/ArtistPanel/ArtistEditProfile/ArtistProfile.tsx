@@ -2,9 +2,16 @@ import { useState } from "react";
 import Header from "../../ui/Header";
 import dot from "./assets/dot.png";
 import GeneralUpload from "./GeneralUpload";
+import { useGetArtistDetails } from "./http/useGetDetails";
+import Loader from "../../ui/Loader";
 
 const ArtistProfile = () => {
   const [isActivated, setIsActivated] = useState(true);
+  const { data, isLoading } = useGetArtistDetails();
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <div className="bg-white p-10 ">
@@ -47,7 +54,7 @@ const ArtistProfile = () => {
         </ol>
       </nav>
 
-      <GeneralUpload/>
+      <GeneralUpload />
     </div>
   );
 };

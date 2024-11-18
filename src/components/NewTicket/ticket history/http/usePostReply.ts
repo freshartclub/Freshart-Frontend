@@ -19,7 +19,7 @@ const useGetPostArtistTicketReplyMutation = () => {
   return useMutation({
     mutationFn: usePostTicketReply,
     onSuccess: async (res) => {
-      navigate("/tickets");
+      navigate("/artist-panel/ticket/tickets");
       toast.success(res.data.message, {
         duration: 3000,
       });
