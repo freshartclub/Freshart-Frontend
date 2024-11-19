@@ -16,6 +16,8 @@ const GeneralUpload = () => {
 
   const { data, isLoading } = useGetArtistDetails();
 
+  console.log(data, "ujhwyaefuhwlaefgbiiuvuil");
+
   // Handle image change
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -48,11 +50,42 @@ const GeneralUpload = () => {
     mutate(formData);
   };
 
-  console.log(
-    `${data.data?.url}/users/${data?.data?.artist?.profile?.mainImage}`
-  );
-
   const handleDelete = () => {};
+
+  const defaultValues = {
+    artistName: data?.data?.artist?.artistName || "",
+    artistSurname1: data?.data?.artist?.artistSurname1 || "",
+    artistSurname2: data?.data?.artist?.artistSurname2 || "",
+    nickName: data?.data?.artist?.nickName || "",
+
+    country: data?.data?.artist?.address?.country || "Spain",
+    zip: data?.data?.artist?.address?.zipCode || "",
+    city: data?.data?.artist?.address?.city || "",
+    stateRegion: data?.data?.artist?.address?.state || "",
+    phoneNumber: data?.data?.artist?.phone || "",
+    address: data?.data?.artist?.address?.residentialAddress || "",
+    email: data?.data?.artist?.email || "",
+    language: data?.data?.artist?.language || [],
+    gender: data?.data?.artist?.gender || "",
+    about: data?.data?.artist?.aboutArtist?.about || "",
+
+    additionalImage: [],
+    existingAdditionalImage: data?.data?.artist?.profile?.additionalImage || [],
+    mainImage: data?.data?.artist?.profile?.mainImage || "",
+    backImage: data?.data?.artist?.profile?.backImage || "",
+    inProcessImage: data?.data?.artist?.profile?.inProcessImage || "",
+    mainVideo: data?.data?.artist?.profile?.mainVideo || "",
+
+    additionalVideo: [],
+    existingAdditionalVideo: data?.data?.artist?.profile?.additionalVideo || "",
+
+    cvEntries: data?.data?.artist?.highlights?.cv || "",
+    accounts: data?.data?.artist?.links || "",
+    insignia: data?.data?.artist?.insignia || "",
+
+    taxZipCode: data?.data?.artist?.invoice?.taxZipCode || "",
+    addHighlights: data?.data?.artist?.highlights?.addHighlights || "",
+  };
 
   if (isLoading) {
     return <Loader />;
@@ -139,7 +172,7 @@ const GeneralUpload = () => {
       </div>
 
       {/* General Form */}
-      <GeneralForm  />
+      <GeneralForm defaultValues={defaultValues} />
     </div>
   );
 };

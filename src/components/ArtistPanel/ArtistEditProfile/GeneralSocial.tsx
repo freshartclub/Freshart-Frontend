@@ -10,8 +10,10 @@ const SocialMediaLinks = ({ control }) => {
   });
 
   const handleAddAccount = () => {
-    append({ socialMedia: "Instagram", website: "" });
+    append({ name: "", link: "" });
   };
+
+  console.log(fields);
 
   return (
     <div className="p-4 mx-auto border border-custom-gray bg-white rounded-md shadow-custom">
@@ -27,7 +29,7 @@ const SocialMediaLinks = ({ control }) => {
               </label>
               <Controller
                 control={control}
-                name={`accounts.${index}.socialMedia`}
+                name={`accounts.${index}.name`}
                 render={({ field }) => (
                   <select
                     {...field}
@@ -47,7 +49,7 @@ const SocialMediaLinks = ({ control }) => {
               </label>
               <Controller
                 control={control}
-                name={`accounts.${index}.website`}
+                name={`accounts.${index}.link`}
                 render={({ field }) => (
                   <input
                     {...field}

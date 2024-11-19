@@ -10,6 +10,7 @@ import RecentSection from "./RecentSection";
 import SecondSection from "./SecondSection";
 import TrendingSection from "./TrendingSection";
 import { useNavigate } from "react-router-dom";
+import Loader from "../ui/Loader";
 
 const HomePage = () => {
   const navigate = useNavigate();

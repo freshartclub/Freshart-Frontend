@@ -2,7 +2,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import toast from "react-hot-toast";
 
-import { useNavigate } from "react-router-dom";
 import { ARTTIST_ENDPOINTS } from "../../../../http/apiEndPoints/Artist";
 import axiosInstance from "../../../utils/axios";
 
@@ -17,7 +16,6 @@ async function editArtistProfile(input: any) {
 }
 
 const useGetSaveArtistDetailsMutation = () => {
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   return useMutation({

@@ -8,8 +8,6 @@ const Invoice = ({ control }) => {
     name: "invoice",
   });
 
-  console.log(control.getFieldState());
-
   const invoiceData = [
     {
       name: "taxAddress",

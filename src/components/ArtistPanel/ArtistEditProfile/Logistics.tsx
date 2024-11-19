@@ -7,7 +7,6 @@ const Logistics = ({ control }) => {
     control,
     name: "logistics",
   });
-  console.log(control.logistics);
 
   const logisticsData = [
     {

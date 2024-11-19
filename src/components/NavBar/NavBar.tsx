@@ -16,6 +16,7 @@ import Button from "../ui/Button";
 import profile1 from "../../assets/profile_image.png";
 import { useAppSelector } from "../../store/typedReduxHooks";
 import useLogOutMutation from "../../http/auth/useLogOutMutation";
+import Loader from "../ui/Loader";
 
 const categories = [
   {
@@ -41,16 +42,6 @@ const categories = [
     products: ["Product 01", "Product 02"],
   },
 ];
-
-// const profile_data = [
-//   { to: "/user_profile", label: "View Profile" },
-//   { to: "/account_setting", label: "Account Settings" },
-//   { to: "/wishlist", label: "Favourites Artworks" },
-//   { to: "/artist-panel", label: "Switch to artist Account" },
-//   { to: "/create_invite", label: "Create Invite" },
-//   { to: "/order", label: "My Orders" },
-//   { to: "/support", label: "Support" },
-// ];
 
 const mobile_links = [
   { path: "/", label: "Home" },

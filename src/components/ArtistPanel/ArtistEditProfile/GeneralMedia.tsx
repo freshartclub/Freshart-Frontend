@@ -1,16 +1,19 @@
-import React, { useRef } from "react";
-import { useFieldArray, Control } from "react-hook-form";
-import Header from "../../ui/Header";
+import React, { useRef, useState, useEffect } from "react";
+import { useFieldArray, Control, useFormContext } from "react-hook-form";
+import Header from "../../ui/Header"; // Assuming this is your custom Header component
 
-const GeneralMedia = ({ control }) => {
-  const {
-    fields: imageFields,
-    append: appendImage,
-    remove: removeImage,
-  } = useFieldArray({
-    control,
-    name: "additionalImage",
-  });
+const GeneralMedia = ({ control, url }) => {
+  // Field arrays for images and video
+  const { setValue, getValues, watch } = useFormContext();
+
+  useEffect(() => {
+    watch("mainImage");
+    watch("inProcessImage");
+    watch("existingAdditionalImage");
+    watch("additionalImage");
+    watch("mainVideo");
+    watch("additionalVideo");
+  }, []);
 
   const {
     fields: videoFields,
@@ -21,36 +24,101 @@ const GeneralMedia = ({ control }) => {
     name: "additionalVideo",
   });
 
-  console.log("this is form imagesfields", imageFields);
+  const {
+    fields: additionalImage,
+    append: appendAdditionalImage,
+    remove: removeAdditionalImageFrom,
+  } = useFieldArray({
+    control,
+    name: "additionalImage",
+  });
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  // Refs for file inputs
+  const mainImageInputRef = useRef<HTMLInputElement>(null);
+  const backImageInputRef = useRef<HTMLInputElement>(null);
+  const inProcessImageInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
+  const [existingMainImage, setExistingMainImage] = useState(null);
+  const [existingMainVideo, setExistingMainVideo] = useState(null);
 
-    if (files) {
-      Array.from(files).forEach((file) => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          appendImage(file);
-        };
-        reader.readAsDataURL(file);
-      });
+  const [mainImageChanged, setMainImageChanged] = useState(false);
+
+  const [existingAdditionalImage, setExistingAdditionalImage] = useState([]);
+
+  const [existingAdditionalVideo, setExistingAdditionalVideo] = useState([]);
+
+  const [existingInProcessImage, setExistingInProcessImage] = useState(null);
+  const [inProcessImageChanged, setInProcessImageChanged] = useState(false);
+
+  useEffect(() => {
+    if (url) {
+      setExistingMainImage(`${url}/users/${getValues("mainImage")}`);
+      setExistingAdditionalImage(getValues("existingAdditionalImage"));
+      setExistingInProcessImage(`${url}/users/${getValues("inProcessImage")}`);
+      setExistingMainVideo(`${url}/videos/${getValues("mainVideo")}`);
+      setExistingAdditionalVideo(getValues("existingAdditionalVideo"));
     }
-  };
+  }, [url]);
 
-  const handleVideoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-
+  const handleMainImageChange = (e) => {
+    const file = e.target.files?.[0];
     if (file) {
-      appendVideo({ file });
+      setValue("mainImage", file);
+      const imageUrl = URL.createObjectURL(file);
+      setExistingMainImage(imageUrl);
     }
   };
 
-  const triggerFileInput = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
+  const handleMainVideoChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setValue("mainVideo", file);
+      const imageUrl = URL.createObjectURL(file);
+      setExistingMainVideo(imageUrl);
+    }
+  };
+
+  const handleInProcessImageUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setValue("inProcessImage", file);
+      const imageUrl = URL.createObjectURL(file);
+      setExistingInProcessImage(imageUrl);
+    }
+  };
+
+  const handleAdditionalImageUpload = (e) => {
+    const files = e.target.files;
+
+    Array.from(files).forEach((val) => {
+      appendAdditionalImage(val);
+    });
+  };
+
+  const handleAdditionalVideoUpload = (e) => {
+    const files = e.target.files;
+
+    Array.from(files).forEach((val) => {
+      appendVideo(val);
+    });
+  };
+
+  const triggerMainImageInput = () => {
+    if (mainImageInputRef.current) {
+      mainImageInputRef.current.click();
+    }
+  };
+
+  const triggerBackImageInput = () => {
+    if (backImageInputRef.current) {
+      backImageInputRef.current.click();
+    }
+  };
+
+  const triggerInProcessImageInput = () => {
+    if (inProcessImageInputRef.current) {
+      inProcessImageInputRef.current.click();
     }
   };
 
@@ -59,6 +127,52 @@ const GeneralMedia = ({ control }) => {
       videoInputRef.current.click();
     }
   };
+
+  const removeAdditionalImage = async (index: number, typeFile: string) => {
+    console.log(index, "-------------remoce");
+    if (typeFile === "File") {
+      removeAdditionalImageFrom("additionalImage", index);
+    } else {
+      setExistingAdditionalImage(
+        existingAdditionalImage.filter((_, i) => i !== index)
+      );
+      setValue("existingAdditionalImage", existingAdditionalImage);
+    }
+  };
+
+  const removeAdditionalVideo = async (index: number, typeFile: string) => {
+    console.log(index, "-------------remoce");
+    if (typeFile === "File") {
+      removeVideo("additionalVideo", index);
+    }
+
+    if ((typeFile = "Url")) {
+      setExistingAdditionalVideo(
+        existingAdditionalVideo.filter((_, i) => i !== index)
+      );
+      console.log(existingAdditionalVideo);
+      setValue("existingAdditionalVideo", existingAdditionalVideo);
+    }
+
+    console.log(existingAdditionalVideo);
+  };
+
+  const removeExistingAdditionalVideo = async (
+    index: number,
+    typeFile: string
+  ) => {
+    if ((typeFile = "Url")) {
+      setExistingAdditionalVideo(
+        existingAdditionalVideo.filter((_, i) => i !== index)
+      );
+      setValue("existingAdditionalVideo", existingAdditionalVideo);
+    }
+  };
+
+  console.log(
+    existingAdditionalVideo,
+    "fsdnfeksnkfnkjdsfndjknfdsjknfdjknfsjkdnfcsjknfjk"
+  );
 
   return (
     <div className="p-6 mt-6 bg-white rounded-lg shadow-md">
@@ -75,94 +189,278 @@ const GeneralMedia = ({ control }) => {
       >
         Photos
       </Header>
-      <div className="border-dashed border-2 border-gray-400 rounded-md p-4">
-        <div className="flex justify-center flex-wrap gap-4 mb-4">
-          {imageFields.map((image, index) => (
-            <div key={image.id} className="relative w-24 h-24">
-              <img
-                src={image.url}
-                alt={`upload-${index}`}
-                className="w-full h-full object-cover rounded-md"
-              />
-              <button
-                className="absolute top-0 right-0 w-6 h-6 rounded-xl gap-1 bg-[#CFE7DC]"
-                onClick={() => removeImage(index)}
-              >
-                ✕
-              </button>
-            </div>
-          ))}
-        </div>
 
-        <div
-          className="p-4 text-center cursor-pointer outline-none mb-4"
-          onClick={triggerFileInput}
-        >
-          Drag and drop image here, or click to add image
+      <div className="border-dashed border-2 border-gray-400 rounded-md p-4">
+        <div className="bg-white p-4 rounded-md mt-4">
+          <div className="grid lg:grid-cols-2 gap-4">
+            <div>
+              <Header
+                variant={{ size: "base", theme: "dark", weight: "semiBold" }}
+                className="mb-2 text-[#203F58]"
+              >
+                Main Photo
+              </Header>
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                ref={mainImageInputRef}
+                onChange={(e) => handleMainImageChange(e)}
+              />
+              <div className="bg-[#F9F9FC] border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
+                <div className="relative">
+                  {existingMainImage ? (
+                    <img
+                      src={existingMainImage}
+                      alt="Main Image"
+                      className="w-28 h-28 object-cover"
+                    />
+                  ) : (
+                    <div className="w-28 h-28 bg-gray-200 rounded-md mb-4" />
+                  )}
+                  <span
+                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer"
+                    onClick={(e) => setExistingMainImage()}
+                  >
+                    &times;
+                  </span>
+                </div>
+                <p className="text-center">
+                  Drag and drop image here, or click to add image
+                </p>
+                <span
+                  className="bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer"
+                  onClick={triggerMainImageInput}
+                >
+                  Add Image
+                </span>
+              </div>
+            </div>
+
+            <div>
+              <Header
+                variant={{ size: "base", theme: "dark", weight: "semiBold" }}
+                className="mb-2 text-[#203F58]"
+              >
+                In-Process Photo
+              </Header>
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                ref={inProcessImageInputRef}
+                onChange={(e) => handleInProcessImageUpload(e)}
+              />
+              <div className="bg-[#F9F9FC] border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
+                {existingInProcessImage ? (
+                  <div className="relative">
+                    <img
+                      src={existingInProcessImage}
+                      alt="In-Process Image"
+                      className="w-28 h-28 object-cover"
+                    />
+                    <span
+                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer"
+                      onClick={() => setExistingInProcessImage()}
+                    >
+                      &times;
+                    </span>
+                  </div>
+                ) : (
+                  <div className="w-28 h-28 bg-gray-200 rounded-md mb-4" />
+                )}
+                <p className="text-center">
+                  Drag and drop image here, or click to add image
+                </p>
+                <span
+                  className="bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer"
+                  onClick={triggerInProcessImageInput}
+                >
+                  Add Image
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
-        <input
-          type="file"
-          ref={fileInputRef}
-          multiple
-          accept="image/*"
-          className="hidden"
-          onChange={handleImageUpload}
-        />
-        <div className="text-center">
+        {/* Additional Images Section */}
+        <div className="bg-white p-4 rounded-md mt-4">
+          <Header
+            variant={{ size: "lg", weight: "semiBold" }}
+            className="mb-2 text-[#203F58]"
+          >
+            Additional Photos
+          </Header>
+          <input
+            type="file"
+            accept="image/*"
+            className="hidden"
+            id="photos-input"
+            multiple
+            onChange={(e) => handleAdditionalImageUpload(e)}
+          />
+          <div className="flex flex-wrap gap-4">
+            {getValues("additionalImage") &&
+              getValues("additionalImage").length > 0 &&
+              getValues("additionalImage")?.map((field, i) => (
+                <div key={i} className="relative w-28 h-28">
+                  <img
+                    src={URL.createObjectURL(field)}
+                    alt={`Additional Image ${i}`}
+                    className="w-full h-full object-cover"
+                  />
+                  <span
+                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer"
+                    onClick={() => removeAdditionalImage(i, "File")}
+                  >
+                    &times;
+                  </span>
+                </div>
+              ))}
+            {existingAdditionalImage &&
+              existingAdditionalImage.length > 0 &&
+              existingAdditionalImage?.map((field: string, i = i) => (
+                <div key={i} className="relative w-28 h-28">
+                  <img
+                    src={`${url}/users/${field}`}
+                    alt={`Additional Image ${i}`}
+                    className="w-full h-full object-cover"
+                  />
+                  <span
+                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer"
+                    onClick={() => removeAdditionalImage(i, "Url")}
+                  >
+                    &times;
+                  </span>
+                </div>
+              ))}
+          </div>
+          <p className="text-center  mt-4">Click to add additional images</p>
           <span
-            className="bg-[#DEDEFA] text-[#102030] px-4 py-2 rounded font-semibold cursor-pointer"
-            onClick={triggerFileInput}
+            className="bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer flex justify-center"
+            onClick={() => document.querySelector("#photos-input").click()}
           >
             Add Image
           </span>
         </div>
-      </div>
 
-      <Header
-        variant={{ size: "lg", weight: "semiBold" }}
-        className="mt-8 mb-4 text-[#203F58]"
-      >
-        Videos
-      </Header>
-      <div className="border-dashed border-2 border-gray-400 rounded-md p-4">
-        <div className="mb-4">
-          {videoFields.map((video, index) => (
-            <div key={video.id} className="relative w-full h-64">
-              <video
-                controls
-                className="w-full h-full object-cover rounded-md"
-                src={URL.createObjectURL(video.file)} // This is needed for video preview
-              />
-              <button
-                className="absolute top-0 right-0 w-6 h-6 rounded-xl gap-1 bg-[#CFE7DC]"
-                onClick={() => removeVideo(index)}
-              >
-                ✕
-              </button>
-            </div>
-          ))}
-        </div>
-
-        <div
-          className="p-4 text-center cursor-pointer outline-none mb-4"
-          onClick={triggerVideoInput}
-        >
-          Drag and drop video here, or click to add video
-        </div>
-        <input
-          type="file"
-          ref={videoInputRef}
-          accept="video/*"
-          className="hidden"
-          onChange={handleVideoUpload}
-        />
-        <div className="text-center">
-          <span
-            className="bg-[#DEDEFA] text-[#102030] px-4 py-2 rounded font-semibold cursor-pointer"
-            onClick={triggerVideoInput}
+        {/* vidoes for */}
+        <div>
+          <Header
+            variant={{ size: "lg", weight: "semiBold" }}
+            className="mb-4 text-[#203F58] mt-5"
           >
-            Add Video
-          </span>
+            Vidoes
+          </Header>
+
+          <div className="grid lg:grid-cols-1 gap-4">
+            <div>
+              <Header
+                variant={{ size: "base", theme: "dark", weight: "semiBold" }}
+                className="mb-2 text-[#203F58]"
+              >
+                Main Video
+              </Header>
+              <input
+                type="file"
+                accept="video/*"
+                className="hidden"
+                ref={videoInputRef}
+                onChange={(e) => handleMainVideoChange(e)}
+              />
+              <div className="bg-[#F9F9FC] border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
+                <div className="relative">
+                  {existingMainVideo ? (
+                    <video
+                      src={existingMainVideo}
+                      alt="Main Video"
+                      className="w-28 h-28 object-cover"
+                    />
+                  ) : (
+                    <div className="w-28 h-28 bg-gray-200 rounded-md mb-4" />
+                  )}
+                  <span
+                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer"
+                    onClick={(e) => setExistingMainVideo()}
+                  >
+                    &times;
+                  </span>
+                </div>
+                <p className="text-center">
+                  Drag and drop Video here, or click to add Video
+                </p>
+                <span
+                  className="bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer"
+                  onClick={triggerVideoInput}
+                >
+                  Add Video
+                </span>
+              </div>
+            </div>
+
+            <div className="bg-white p-4 rounded-md mt-4">
+              <Header
+                variant={{ size: "lg", weight: "semiBold" }}
+                className="mb-2 text-[#203F58]"
+              >
+                Additional Videos
+              </Header>
+              <input
+                type="file"
+                accept="video/*"
+                className="hidden"
+                id="Videos-input"
+                multiple
+                onChange={(e) => handleAdditionalVideoUpload(e)}
+              />
+              <div className="flex flex-wrap gap-4">
+                {getValues("additionalVideo") &&
+                  getValues("additionalVideo").length > 0 &&
+                  getValues("additionalVideo")?.map((field, i) => (
+                    <div key={i} className="relative w-28 h-28">
+                      <video
+                        src={URL.createObjectURL(field)}
+                        alt={`Additional Video ${i}`}
+                        className="w-full h-full object-cover"
+                      />
+                      <span
+                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer"
+                        onClick={() => removeAdditionalVideo(i, "File")}
+                      >
+                        &times;
+                      </span>
+                    </div>
+                  ))}
+                {existingAdditionalVideo &&
+                  existingAdditionalVideo.length > 0 &&
+                  existingAdditionalVideo?.map(
+                    (field: string, i = additionalVideo.length + 1) => (
+                      <div key={i} className="relative w-28 h-28">
+                        <video
+                          src={`${url}/videos/${field}`}
+                          alt={`Additional Video ${i}`}
+                          className="w-full h-full object-cover"
+                        />
+                        <span
+                          className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer"
+                          onClick={() =>
+                            removeExistingAdditionalVideo(i, "Url")
+                          }
+                        >
+                          &times;
+                        </span>
+                      </div>
+                    )
+                  )}
+              </div>
+              <p className="text-center mt-4">Click to add additional Vidoes</p>
+              <span
+                className="bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer flex items-center justify-center"
+                onClick={() => document.querySelector("#Videos-input").click()}
+              >
+                Add Video
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </div>

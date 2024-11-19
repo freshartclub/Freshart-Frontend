@@ -1,15 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Header from "../ui/Header";
 import { useGetArtWorkList } from "./http/getArtWorkList";
 import Loader from "../ui/Loader";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import edit from "../ArtistDetail/assets/edit.png";
 import deleteimg from "../ArtistDetail/assets/Container (2).png";
 
-const Artwork = ({ data: singleArtistData }) => {
+const Artwork = () => {
   const { data, isLoading } = useGetArtWorkList();
   const profile = localStorage.getItem("profile");
-  const navigate = useNavigate();
 
   // State for selected filters
   const [selectedDiscipline, setSelectedDiscipline] = useState("");
@@ -24,11 +23,6 @@ const Artwork = ({ data: singleArtistData }) => {
   ];
   const series = ["Series 1", "Series 2", "Series 3", "Series 4", "Series 5"];
 
-  const handleFilterChange = () => {
-    console.log("Selected Discipline:", selectedDiscipline);
-    console.log("Selected Series:", selectedSeries);
-  };
-
   const filteredData = data?.data?.filter((item) => {
     return (
       (!selectedDiscipline ||
@@ -37,8 +31,6 @@ const Artwork = ({ data: singleArtistData }) => {
       (!isArtProvider || item.isArtProvider === isArtProvider)
     );
   });
-
-  console.log(data?.data);
 
   if (isLoading) {
     return <Loader />;
@@ -58,18 +50,16 @@ const Artwork = ({ data: singleArtistData }) => {
           className="border p-2 rounded-md text-sm"
           value={isArtProvider}
           onChange={(e) => setIsArtProvider(e.target.value)}
-          // onBlur={handleFilterChange}
         >
           <option value="">Select Art Provider</option>
-          <option value="True">Yes</option>
-          <option value="False">No</option>
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
         </select>
 
         <select
           className="border p-2 rounded-md text-sm"
           value={selectedDiscipline}
           onChange={(e) => setSelectedDiscipline(e.target.value)}
-          // onBlur={handleFilterChange}
         >
           <option value="">Select Discipline</option>
           {disciplines.map((discipline, idx) => (
@@ -83,7 +73,6 @@ const Artwork = ({ data: singleArtistData }) => {
           className="border p-2 rounded-md text-sm"
           value={selectedSeries}
           onChange={(e) => setSelectedSeries(e.target.value)}
-          // onBlur={handleFilterChange}
         >
           <option value="">Select Series</option>
           {series.map((seriesItem, idx) => (
@@ -96,7 +85,7 @@ const Artwork = ({ data: singleArtistData }) => {
 
       <div className="grid xl:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 ">
         {filteredData && filteredData.length > 0 ? (
-          filteredData.map((item, index) => (
+          filteredData.map((item: any, index: number) => (
             <div
               key={index}
               className="sm:px-3 px-0 border-none outline-none flex flex-col pb-5 justify-center relative"

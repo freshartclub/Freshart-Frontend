@@ -111,6 +111,7 @@ const AddArtwork = () => {
 
   const [initialValues, setInitialValues] = useState({
     artworkName: "",
+    isArtProvider: isArtProvider,
     provideArtistName: "",
     artworkCreationYear: "",
     artworkSeries: "",
@@ -256,7 +257,7 @@ const AddArtwork = () => {
         artProvider: data?.data?.isArtProcider || "",
       }));
     }
-  }, [id, data]);
+  }, [id, data, inProcessImage, setInitialValues]);
 
   const { mutate, isPending } = usePostArtWorkMutation();
 
@@ -323,13 +324,20 @@ const AddArtwork = () => {
     console.log(index, typeFile);
     if (typeFile === "File") {
       setOtherVideos((prevVideos) => prevVideos.filter((_, i) => i !== index));
-    } else {
+    }
+  };
+
+  const removeExistingVideo = (index: number, typeFile: string) => {
+    console.log(index, typeFile);
+    if (typeFile === "Url") {
       initialValues.existingVideo = initialValues.existingVideo.filter(
         (_, i) => i !== index
       );
       setInitialValues({ ...initialValues });
     }
   };
+
+  console.log(initialValues.existingVideo, "daSzdfhgaDzxcgv");
 
   const onSubmit = async (values: any) => {
     console.log("onSubmit", values);
@@ -380,24 +388,33 @@ const AddArtwork = () => {
     } else if (name === "images") {
       if (typeFile === "File") {
         setImages(images.filter((_, i) => i !== index));
-      } else {
-        initialValues.existingImage = initialValues.existingImage.filter(
-          (_, i) => i !== index
-        );
       }
     } else if (name === "mainvideo") {
       setMainVideo(null);
     }
   };
 
+  const removeExistingImage = (index: number, typeFile: string) => {
+    console.log(index, typeFile);
+    if (typeFile === "Url") {
+      initialValues.existingImage = initialValues.existingImage.filter(
+        (_, i) => i !== index
+      );
+      setInitialValues({ ...initialValues });
+    }
+  };
+
   const [value, setValue] = useState(null);
 
   useEffect(() => {
-    setMainImage(`${data?.url}/users/${data?.data?.media?.mainImage}`);
-    setBackImage(`${data?.url}/users/${data?.data?.media?.backImage}`);
-    setInProcessImage(
-      `${data?.url}/users/${data?.data?.media?.inProcessImage}`
-    );
+    if (data && id) {
+      setMainImage(`${data?.url}/users/${data?.data?.media?.mainImage}`);
+      setBackImage(`${data?.url}/users/${data?.data?.media?.backImage}`);
+      setInProcessImage(
+        `${data?.url}/users/${data?.data?.media?.inProcessImage}`
+      );
+      setMainVideo(`${data?.url}/users/${data?.data?.media?.mainVideo}`);
+    }
   }, [data]);
 
   if (isLoading) {
@@ -484,9 +501,8 @@ const AddArtwork = () => {
                       name="artProvider"
                       className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
                       onChange={(e) => {
-                        // Optionally, you can call Formik's setFieldValue if needed
                         setIsArtProvider(e.target.value);
-                        setFieldValue("artProvider", e.target.value); // This updates the form's value
+                        setFieldValue("artProvider", e.target.value);
                       }}
                     >
                       <option value="" disabled selected>
@@ -847,27 +863,25 @@ const AddArtwork = () => {
                               })}
                             {initialValues.existingImage &&
                             initialValues.existingImage.length > 0 ? (
-                              initialValues.existingImage?.map(
-                                (img, i = images.length + 1) => {
-                                  return (
-                                    <div key={i} className="relative">
-                                      <img
-                                        src={`${data?.url}/users/${img}`}
-                                        alt="image"
-                                        className="w-28 h-28 object-cover"
-                                      />
-                                      <span
-                                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center "
-                                        onClick={() =>
-                                          removeImage("images", i, "Url")
-                                        } // Remove image by index
-                                      >
-                                        &times;
-                                      </span>
-                                    </div>
-                                  );
-                                }
-                              )
+                              initialValues.existingImage?.map((img, i) => {
+                                return (
+                                  <div key={i} className="relative">
+                                    <img
+                                      src={`${data?.url}/users/${img}`}
+                                      alt="image"
+                                      className="w-28 h-28 object-cover"
+                                    />
+                                    <span
+                                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center "
+                                      onClick={() =>
+                                        removeExistingImage(i, "Url")
+                                      }
+                                    >
+                                      &times;
+                                    </span>
+                                  </div>
+                                );
+                              })
                             ) : (
                               <img
                                 src={image_icon}
@@ -997,7 +1011,7 @@ const AddArtwork = () => {
                                 />
                                 <span
                                   className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
-                                  onClick={() => removeVideo(i, "Url")} // Custom function to remove video from state
+                                  onClick={() => removeVideo(i, "File")} // Custom function to remove video from state
                                 >
                                   &times;
                                 </span>
@@ -1015,7 +1029,9 @@ const AddArtwork = () => {
                                   />
                                   <span
                                     className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
-                                    onClick={() => removeVideo(i, "File")} // Custom function to remove video from state
+                                    onClick={() =>
+                                      removeExistingVideo(i, "Url")
+                                    } // Custom function to remove video from state
                                   >
                                     &times;
                                   </span>

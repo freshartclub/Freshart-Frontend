@@ -23,7 +23,6 @@ const CVForm: React.FC<CVFormProps> = ({ control }) => {
     name: "cvEntries",
   });
 
-  console.log("this is from cv", cvEntries);
   const addMoreCv = () => {
     append({ year: "", type: "", description: "", location: "", scope: "" });
   };
