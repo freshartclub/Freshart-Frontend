@@ -11,4 +11,5 @@ export const generalPath = {
   getStyle: "api/general/list-style",
   getTheme: "api/general/list-theme",
   getTechnic: "api/general/list-Technic",
+  getPickList: "api/picklist/get-picklist",
 };

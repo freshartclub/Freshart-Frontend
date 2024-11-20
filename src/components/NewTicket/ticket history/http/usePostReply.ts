@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ARTTIST_ENDPOINTS } from "../../../../http/apiEndPoints/Artist";
@@ -16,10 +16,16 @@ const useGetPostArtistTicketReplyMutation = () => {
     );
   };
 
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: usePostTicketReply,
     onSuccess: async (res) => {
-      navigate("/artist-panel/ticket/tickets");
+      queryClient.invalidateQueries({
+        queryKey: [`${ARTTIST_ENDPOINTS.GetArtistTicketsDetails}`],
+        refetchType: "all",
+      });
+      // navigate("/artist-panel/ticket/tickets");
       toast.success(res.data.message, {
         duration: 3000,
       });

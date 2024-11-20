@@ -27,7 +27,7 @@ const useBecomeAnArtistMutation = () => {
         duration: 5000,
       });
 
-      navigate("/home");
+      // navigate("/home");
     },
     onError: (error) => {
       toast.error(error.response?.data?.message || "An error occurred");

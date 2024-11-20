@@ -4,12 +4,12 @@ import axiosInstance from "../../utils/axios";
 import { generalPath } from "../../utils/paths";
 
 async function fetchData() {
-  const { data } = await axiosInstance.get(`${generalPath.getStyle}`);
+  const { data } = await axiosInstance.get(`${generalPath.getPickList}`);
   return data;
 }
 
-export const useGetStyle = () => {
-  let url = `${generalPath.getStyle}`;
+export const useGetSocialMediaPicklist = () => {
+  let url = `${generalPath.getPickList}`;
   return useQuery({
     queryKey: [url],
     queryFn: fetchData,

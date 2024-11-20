@@ -11,7 +11,7 @@ export const useGetTicket = () => {
     return data.data;
   }
   return useQuery({
-    queryKey: [url],
+    queryKey: ["like"],
     queryFn: fetchData,
   });
 };

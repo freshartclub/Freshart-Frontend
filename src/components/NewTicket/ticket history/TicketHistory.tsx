@@ -96,7 +96,6 @@ const TicketHistory: React.FC = () => {
   const filterTickets = () => {
     let filteredTickets = [...data];
 
-    // Apply search query filter
     if (searchQuery) {
       filteredTickets = filteredTickets.filter(
         (item) =>
@@ -105,7 +104,6 @@ const TicketHistory: React.FC = () => {
       );
     }
 
-    // Apply filterPriority
     if (filterPriority === "New Tickets") {
       filteredTickets = filteredTickets.filter((ticket) =>
         dayjs(ticket.createdAt).isAfter(now.subtract(3, "day"))
@@ -120,7 +118,6 @@ const TicketHistory: React.FC = () => {
       );
     }
 
-    // Apply filterTimeframe
     if (filterTimeframe === "thisWeek") {
       filteredTickets = filteredTickets.filter((ticket) =>
         dayjs(ticket.createdAt).isAfter(now.startOf("week"))

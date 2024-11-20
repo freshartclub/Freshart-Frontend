@@ -386,17 +386,8 @@ const GeneralForm = ({ defaultValues }: { defaultValues: any }) => {
                   )}
                 </div>
                 <div className="md:w-[48%] w-full relative">
-                  {/* <StateSelect
-                  countryid={newId}
-                  {...register("country")}
-                  value={getValues("stateRegion")}
-                  // {...register("stateRegion")}
-                  onChange={(val) => setValue("stateRegion", val)}
-                  placeHolder="Select State"
-                /> */}
                   <input
                     type="text"
-                    // placeholder="Enter your country"
                     {...register("stateRegion", {
                       required: "State/Region is required",
                     })}

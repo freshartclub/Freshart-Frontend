@@ -9,15 +9,19 @@ import FifthSection from "./FifthSection";
 import LearnMoreSection from "./LearnMoreSection";
 import ThirdSection from "./ThirdSection";
 import { useNavigate, useLocation } from "react-router-dom";
+import { replace } from "formik";
 
 const GetStarted = () => {
   const isAuthorized = useAppSelector((state) => state.user.isArtist);
   const navigate = useNavigate();
   const currentPath = useLocation().pathname;
+  const profile = localStorage.getItem("profile");
 
   useEffect(() => {
-    if (isAuthorized && currentPath === "/") {
+    if (isAuthorized && currentPath === "/" && profile === "user") {
       navigate("/home", { replace: true });
+    } else if (isAuthorized && currentPath === "/" && profile === "artist") {
+      navigate("/artist-panel", { replace: true });
     }
   }, [isAuthorized, currentPath, navigate]);
 

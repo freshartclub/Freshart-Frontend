@@ -7,6 +7,8 @@ import axiosInstance from "../../utils/axios";
 import artistImg from "../ticket history/assets/People.png";
 import useGetPostArtistTicketReplyMutation from "./http/usePostReply";
 import { FaArrowLeftLong } from "react-icons/fa6";
+import { useGetTicketDetails } from "./http/useGetTicketDetails";
+import Loader from "../../ui/Loader";
 
 interface Ticket {
   ticketId: string;
@@ -24,29 +26,15 @@ const SingleTicket = () => {
   const user = useAppSelector((state) => state.user.user);
   const navigate = useNavigate();
 
-  const getTicketDetail = async () => {
-    try {
-      const response = await axiosInstance.get(
-        `${ARTTIST_ENDPOINTS.GetArtistTicketsDetails}/${id}`
-      );
-      setTicket(response.data);
-    } catch (error) {
-      console.error("Error fetching ticket:", error);
-    }
-  };
-
+  const { data, isLoading } = useGetTicketDetails(id);
   const { mutate, isPending } = useGetPostArtistTicketReplyMutation();
-
-  useEffect(() => {
-    getTicketDetail();
-  }, [id]);
 
   const handleReply = (ticket) => {
     const newData = {
-      id: ticket.data._id,
+      id: ticket._id,
       message: reply,
-      ticketType: ticket.data.ticketType,
-      status: ticket.data.status,
+      ticketType: ticket.ticketType,
+      status: ticket.status,
     };
     const formData = new FormData();
     for (const key in newData) {
@@ -59,10 +47,10 @@ const SingleTicket = () => {
     navigate(-1);
   };
 
-  console.log(ticket);
+  console.log(data);
 
-  if (!ticket) {
-    return <div>Loading...</div>;
+  if (isLoading) {
+    return <Loader />;
   }
 
   return (
@@ -72,24 +60,24 @@ const SingleTicket = () => {
         <div className="flex items-center gap-2">
           <span className="w-2.5 h-2.5 bg-[#F8A53499] rounded-full"></span>
           <span className="font-semibold text-gray-800">
-            {ticket?.data?.ticketId}
+            {data?.data?.ticketId}
           </span>
-          <span className="text-[#84818A]">({ticket.data?.ticketType})</span>
+          <span className="text-[#84818A]">({data?.data?.ticketType})</span>
         </div>
 
         <div className="flex items-center gap-2">
           <span
             className={`${
-              ticket.data?.status === "In progress"
+              data?.data?.status === "In progress"
                 ? "w-2.5 h-2.5  bg-[#3bf834] rounded-full"
-                : ticket.data?.status === "Created"
+                : data?.data?.status === "Created"
                 ? "w-2.5 h-2.5 bg-[#F8A53499] rounded-full"
                 : "w-2.5 h-2.5 bg-[#fe4323fd] rounded-full"
             }`}
           ></span>
-          <span className="text-[#84818A]">{ticket.data?.status}</span>
+          <span className="text-[#84818A]">{data?.status}</span>
           <div className="text-gray-400 text-sm">
-            {dayjs(ticket?.data?.createdAt).format("MMMM D, YYYY")}
+            {dayjs(data?.data?.createdAt).format("MMMM D, YYYY")}
           </div>
         </div>
       </div>
@@ -101,22 +89,22 @@ const SingleTicket = () => {
 
       <div className="mt-10">
         <h1 className="w-[406px] h-[23px] top-2 font-montserrat text-[18px] font-semibold leading-[14px] text-left text-[#2E2C34]">
-          {ticket?.data?.subject}
+          {data?.data?.subject}
         </h1>
         <p className="text-[#84818A] font-montserrat text-sm font-medium leading-[17.07px] text-left mb-6">
-          {ticket?.data?.message}
+          {data?.data?.message}
         </p>
       </div>
 
-      <div className="bg-[#919EAB29] p-2 flex flex-col gap-2">
-        {ticket?.reply &&
-          ticket?.reply?.length &&
-          ticket?.reply.map((item, i) => (
-            <div key={i}>
-              <span className="ml-3 text-[#84818A] text-[12px]">
+      <div className="bg-[#919EAB29] p-2 flex flex-col gap-2 ">
+        {data?.reply &&
+          data?.reply?.length &&
+          data?.reply.map((item, i) => (
+            <div key={i} className="border border-zinc-500 rounded-md">
+              <span className="ml-3 text-[#84818A] text-[12px] border ">
                 {item.userType === "user" ? "Your Reply" : "Reply By - Admin"}
               </span>
-              <p className="text-[#676669] font-montserrat text-sm font-medium leading-[17.07px] text-left ml-5 pr-4 py-2 px-3">
+              <p className="text-[#676669] font-montserrat  text-sm font-medium leading-[17.07px] text-left ml-5 pr-4 py-2 px-3">
                 {item.message}
               </p>
             </div>
@@ -135,7 +123,7 @@ const SingleTicket = () => {
             rows={4}
           />
           <button
-            onClick={() => handleReply(ticket)}
+            onClick={() => handleReply(data.data)}
             className="bg-black text-white rounded-md px-4 py-2"
           >
             {isPending ? "Loading..." : "Reply"}

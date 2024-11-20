@@ -1,4 +1,14 @@
-.react-datepicker-wrapper{
-    width:100%;
+.react-datepicker-wrapper {
+  width: 100%;
 }
 
+.PhoneInput {
+  width: 100%;
+}
+.PhoneInput--focus {
+  /* outline: dotted; */
+}
+
+.PhoneInput-color--focus {
+  background-color: red;
+}

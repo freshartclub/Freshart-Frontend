@@ -19,6 +19,9 @@ import { useGetDiscipline } from "./http/useGetDiscipline";
 import { useGetStyle } from "./http/useGetStyle";
 import { ARTIST_SOCIAL_LINKS } from "../utils/mockData";
 import SocialMediaLinks from "../ArtistPanel/ArtistEditProfile/GeneralSocial";
+import toast from "react-hot-toast";
+import { useGetSocialMediaPicklist } from "./http/useGetSocialMedia";
+import ThankYou from "./ThankYou";
 
 const BecomeArtist = () => {
   const validationSchema = Yup.object().shape({
@@ -42,8 +45,12 @@ const BecomeArtist = () => {
 
   const [uploadDocs, setUploadDocs] = useState(null);
 
-  const [isOpen, setIsOpen] = useState(false);
-  const [button, setButton] = useState(true);
+  const [isOtpVerify, setIsOtpVerify] = useState(false);
+  const [popUp, setPopUp] = useState(true);
+  const [geoLocation, setGeoLocation] = useState(null);
+  const [countryCode, setCountryCode] = useState("");
+  const [validateEmail, setValidateEmail] = useState("Verify Email");
+  const [validateotp, setValidateotp] = useState("Validate Otp");
 
   const [email, setEmail] = useState("");
 
@@ -57,14 +64,19 @@ const BecomeArtist = () => {
     getValues,
     control,
     watch,
+    trigger,
   } = useForm({
     resolver: yupResolver(validationSchema),
+    reValidateMode: "onChange",
   });
 
   const { mutateAsync, isPending } = useBecomeAnArtistMutation();
   const { mutateAsync: sendMail, isPending: sendMailPending } = useSendOtp();
   const { mutateAsync: verifyOtp, isPending: verifyOtpPending } =
     useOtpVerifyMutationBecomeAnArtist();
+
+  const { data: socialMediaPicklist, isLoading: socialMediaPicklistLoading } =
+    useGetSocialMediaPicklist();
 
   const { data, isLoading } = useGetDiscipline();
   const { data: styleData, isLoading: styleLoading } = useGetStyle();
@@ -73,17 +85,91 @@ const BecomeArtist = () => {
     return item.disciplineName;
   });
 
+  const watchEmail = watch("email");
+
   const currentDicipline = watch("discipline");
 
-  const newStyle = styleData?.data.filter(
+  const GetOutSocialMedia = socialMediaPicklist?.data?.filter(
+    (item) => item.picklistName === "Social Media"
+  );
+
+  const newStyle = styleData?.data?.filter(
     (item) =>
       item.discipline &&
       item.discipline.some((newItem) =>
-        newItem.disciplineName.includes(currentDicipline)
+        newItem.disciplineName.includes(getValues("discipline"))
       )
   );
 
+  useEffect(() => {
+    watch("phone");
+    watch("email");
+    if (!errors.email) {
+      setEmail(getValues("email"));
+    }
+
+    const getGeoLocation = async () => {
+      const request = await fetch("https://ipapi.co/json");
+      const jsonResponse = await request.json();
+      setGeoLocation(jsonResponse);
+    };
+
+    getGeoLocation();
+  }, []);
+
+  useEffect(() => {
+    setValue("country", geoLocation?.country_name);
+    setValue("city", geoLocation?.city);
+    setValue("region", geoLocation?.region);
+    setCountryCode(geoLocation?.country);
+  }, [geoLocation]);
+
+  const handleRevalidateEmail = async () => {
+    const result = await trigger("email");
+
+    if (!result) {
+      return toast("Email Is Not Valid");
+    }
+
+    const data = {
+      email,
+      isArtistRequest: true,
+    };
+
+    sendMail(data).then(() => {
+      setValidateEmail("Resend");
+    });
+  };
+
+  const validateOtp = () => {
+    const data = {
+      otp: inputRef.current.value,
+      email,
+      isArtistRequest: true,
+    };
+
+    if (data.otp !== inputRef.current.value) {
+      return alert("Please Verify Otp");
+    }
+
+    verifyOtp(data).then(() => {
+      setIsOtpVerify(true);
+      setValidateotp("Validated");
+    });
+  };
+
   const onSubmit = handleSubmit(async (data) => {
+    if (!isOtpVerify) {
+      return toast("Please Verify Otp");
+    }
+
+    if (email !== watchEmail) {
+      setValidateEmail("Verify Email");
+      setValidateotp("Validate Otp");
+      setIsOtpVerify(false);
+      return toast("Email Is Changed Re-Verify Please");
+    }
+
     console.log("onSumbit", data);
     const formData = new FormData();
 
@@ -106,85 +192,25 @@ const BecomeArtist = () => {
     });
 
     try {
-      await mutateAsync(formData);
+      await mutateAsync(formData).then(() => {
+        setPopUp(true);
+      });
     } catch (error) {
       console.error(error.message);
     }
   });
 
-  useEffect(() => {
-    watch("phone");
-    watch("email");
-    if (!errors.email) {
-      setEmail(getValues("email"));
-    }
-  }, [watch("email")]);
-
-  const sendOtp = () => {
-    const data = {
-      email,
-      isArtistRequest: true,
-    };
-
-    sendMail(data).then(() => {
-      setIsOpen(true);
-    });
-  };
-
-  const validateOtp = () => {
-    const data = {
-      otp: inputRef.current.value,
-      email,
-      isArtistRequest: true,
-    };
-    verifyOtp(data).then(() => {
-      setIsOpen(false);
-      setButton(false);
-    });
-  };
-
-  const EmailVerificationModal = () => {
-    if (!isOpen) return null;
-
-    return (
-      <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-        <div className="bg-white rounded-lg shadow-lg p-6 w-80">
-          <h2 className="text-xl font-bold mb-4">Email Verification</h2>
-          <p className="mb-4">
-            Please enter the verification code sent to your email.
-          </p>
-          <input
-            type="text"
-            className="border rounded w-full py-2 px-3 mb-4"
-            placeholder="Verification Code"
-            ref={inputRef}
-          />
-          <div className="flex justify-between">
-            <span
-              className={`bg-blue-500  text-white px-2 py-3 rounded-md text-sm text-center cursor-pointer`}
-              onClick={validateOtp}
-            >
-              {verifyOtpPending ? "Validating.." : " Validate"}
-            </span>
-            <button
-              onClick={() => setIsOpen(false)}
-              className="bg-red-500 text-white py-2 px-4 rounded"
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   return (
     <>
-      <div className="bg-[#F9F7F6]">
+      <div
+        className={`${
+          popUp ? "bg-[#F9F7F6] pointer-events-none blur-sm" : "bg-[#F9F7F6]"
+        }`}
+      >
         <div className="container mx-auto sm:px-6 px-3">
           <div className="xl:w-[70%] lg:w-[90%] w-full mx-auto py-10">
             <form
-              onSubmit={handleSubmit(onSubmit)}
+              onSubmit={onSubmit}
               className="bg-white rounded px-8 pt-6 pb-8 mb-4"
             >
               <Header
@@ -204,7 +230,7 @@ const BecomeArtist = () => {
               <div className="flex sm:flex-row flex-col justify-between">
                 <div className="mb-4 sm:w-[32%] w-full">
                   <label className="block text-gray-700 text-sm font-bold mb-2">
-                    Artist Name
+                    Artist Name *
                   </label>
                   <input
                     {...register("artistName")}
@@ -254,15 +280,24 @@ const BecomeArtist = () => {
               <div className="flex sm:flex-row flex-col justify-between">
                 <div className="sm:mb-4 mb-2 sm:w-[49%] w-full ">
                   <label className="block text-gray-700 text-sm font-bold mb-2">
-                    Email
+                    Email *
                   </label>
-                  <div className="flex  items-center gap-2">
+
+                  <div className="flex w-full justify-between  items-center gap-2 ">
                     <input
                       {...register("email")}
-                      className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="appearance-none border rounded lg:w-[16vw]  py-3 px-3 text-gray-700 leading-tight focus:outline-none"
                       placeholder="Enter email"
                     />
+                    <span
+                      onClick={() => handleRevalidateEmail()}
+                      className="px-2 border border-zinc-800 rounded py-3 text-sm font-bold cursor-pointer"
+                    >
+                      {sendMailPending ? "Sending Otp..." : `${validateEmail}`}
+                    </span>
                   </div>
+
                   {errors.email && (
                     <span className="text-red-500 text-xs">
                       {errors.email.message}
@@ -270,13 +305,37 @@ const BecomeArtist = () => {
                   )}
                 </div>
 
+                <div className="sm:mb-4 mb-2 sm:w-[49%] w-full ">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    Enter Otp
+                  </label>
+
+                  <div className="flex  items-center gap-2 w-full justify-between">
+                    <input
+                      className="appearance-none border rounded w-[14vw]  py-3 px-5 text-gray-700 leading-tight focus:outline-none"
+                      placeholder="Enter Otp"
+                      ref={inputRef}
+                    />
+
+                    <span
+                      onClick={validateOtp}
+                      className="px-5 border border-zinc-800 rounded py-3  text-sm font-bold cursor-pointer"
+                    >
+                      {verifyOtpPending ? "Validating..." : `${validateotp}`}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="w-full ">
                 <div className="mb-4 sm:w-[49%] w-full">
                   <label className="block text-gray-700 text-sm font-bold mb-2">
-                    Phone Number
+                    Phone Number *
                   </label>
                   <PhoneInput
-                    className="appearance-none border outline-none rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
+                    className="appearance-none border outline-none rounded  py-3 px-3 text-gray-700 leading-tight focus:outline-none"
                     placeholder="Enter phone number"
+                    defaultCountry={countryCode}
                     value={getValues("phone")}
                     onChange={(val) => setValue("phone", val)}
                   />
@@ -292,7 +351,7 @@ const BecomeArtist = () => {
               <div className="flex sm:flex-row flex-col justify-between">
                 <div className="mb-4 sm:w-[49%] w-full">
                   <label className="block text-gray-700 text-sm font-bold mb-2">
-                    Discipline
+                    Discipline *
                   </label>
                   <select
                     {...register("discipline")}
@@ -316,7 +375,7 @@ const BecomeArtist = () => {
 
                 <div className="sm:mb-4 mb-2 sm:w-[49%] w-full">
                   <label className="block text-gray-700 text-sm font-bold mb-2">
-                    Style
+                    Style *
                   </label>
 
                   <Controller
@@ -331,7 +390,7 @@ const BecomeArtist = () => {
                           value: item.styleName,
                           label: item.styleName,
                         }))}
-                        className="block appearance-none w-full bg-white rounded leading-tight focus:outline-none"
+                        className="block appearance-none w-full bg-white rounded leading-tight focus:outline-none lg:py-1"
                       />
                     )}
                   />
@@ -346,7 +405,7 @@ const BecomeArtist = () => {
 
               <div className="mb-4 w-full">
                 <label className="block text-gray-700 text-sm font-bold mb-2">
-                  Country
+                  Country *
                 </label>
                 <input
                   {...register("country")}
@@ -363,7 +422,7 @@ const BecomeArtist = () => {
               <div className="flex sm:flex-row flex-col justify-between">
                 <div className="mb-4 sm:w-[32%] w-full">
                   <label className="block text-gray-700 text-sm font-bold mb-2">
-                    Zip Code
+                    Zip Code *
                   </label>
                   <input
                     {...register("zipCode")}
@@ -379,23 +438,7 @@ const BecomeArtist = () => {
 
                 <div className="mb-4 sm:w-[32%] w-full">
                   <label className="block text-gray-700 text-sm font-bold mb-2">
-                    Region
-                  </label>
-                  <input
-                    {...register("region")}
-                    className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
-                    placeholder="Enter Region"
-                  />
-                  {errors.region && (
-                    <span className="text-red-500 text-xs">
-                      {errors.region.message}
-                    </span>
-                  )}
-                </div>
-
-                <div className="mb-4 sm:w-[32%] w-full">
-                  <label className="block text-gray-700 text-sm font-bold mb-2">
-                    City
+                    City *
                   </label>
                   <input
                     {...register("city")}
@@ -408,8 +451,24 @@ const BecomeArtist = () => {
                     </span>
                   )}
                 </div>
+
+                <div className="mb-4 sm:w-[32%] w-full">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    Region *
+                  </label>
+                  <input
+                    {...register("region")}
+                    className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
+                    placeholder="Enter Region"
+                  />
+                  {errors.region && (
+                    <span className="text-red-500 text-xs">
+                      {errors.region.message}
+                    </span>
+                  )}
+                </div>
               </div>
-              
+
               <div className="flex sm:flex-row flex-col justify-between">
                 <div className="sm:mb-4 mb-2 sm:w-[49%] w-full">
                   <label className="block text-gray-700 text-sm font-bold mb-2">
@@ -420,9 +479,13 @@ const BecomeArtist = () => {
                     className="block appearance-none w-full bg-white border px-4 py-3 pr-8 rounded leading-tight focus:outline-none"
                   >
                     <option value="">Select Social Media</option>
-                    {ARTIST_SOCIAL_LINKS.map((item, index) => (
-                      <option value={item.value}>{item.value}</option>
-                    ))}
+                    {GetOutSocialMedia &&
+                      GetOutSocialMedia.length > 0 &&
+                      GetOutSocialMedia[0]?.picklist?.map((item, index) => (
+                        <option key={index} value={item.name}>
+                          {item.name}
+                        </option>
+                      ))}
                   </select>
                   {errors.socialMedia && (
                     <span className="text-red-500 text-xs">
@@ -433,7 +496,7 @@ const BecomeArtist = () => {
 
                 <div className="mb-4 sm:w-[49%] w-full">
                   <label className="block text-gray-700 text-sm font-bold mb-2">
-                    Website
+                    Links
                   </label>
                   <input
                     {...register("website")}
@@ -455,7 +518,7 @@ const BecomeArtist = () => {
                     <img src={browser} alt="browse-icon" />
                   </div>
                   <label className="block text-gray-700 sm:text-xl text-lg font-bold mb-2 text-center">
-                    Upload Your CV Here
+                    Upload Your CV Here *
                   </label>
                   <input
                     {...register("uploadDocs", { required: true })}
@@ -477,37 +540,20 @@ const BecomeArtist = () => {
                   )}
                 </div>
               </div>
-              {}
               <div className="flex items-center justify-end gap-2">
-                {!button ? (
-                  <Button
-                    type="submit"
-                    variant={{
-                      fontSize: "md",
-                      rounded: "full",
-                      theme: "dark",
-                      fontWeight: "600",
-                    }}
-                    className={` text-white py-3 px-6 flex uppercase`}
-                  >
-                    {isPending ? "Submiting..." : "Submit"}
-
-                    <img src={arrow} alt="arrow" className="mt-1 ml-2" />
-                  </Button>
-                ) : (
-                  <span
-                    onClick={sendOtp}
-                    className="bg-black  text-white w-[8vw] py-3   rounded-md text-sm text-center cursor-pointer"
-                  >
-                    {sendMailPending ? "Loading..." : "Verify Email "}
-                  </span>
-                )}
+                <button
+                  className="px-5 py-3 bg-black text-white rounded-md font-bold text-sm "
+                  type="submit"
+                >
+                  {isPending ? "Loading..." : "Submit"}
+                </button>
               </div>
             </form>
-
-            <EmailVerificationModal />
           </div>
         </div>
+      </div>
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ">
+        {popUp ? <ThankYou /> : null}
       </div>
     </>
   );

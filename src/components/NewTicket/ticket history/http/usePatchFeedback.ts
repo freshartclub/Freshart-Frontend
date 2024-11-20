@@ -21,7 +21,7 @@ const usePatchFeedbackMutation = () => {
     mutationFn: usePatchFeedback,
     onSuccess: async (res) => {
       queryClient.invalidateQueries({
-        queryKey: [ARTTIST_ENDPOINTS.GetArtistTicketsDetails],
+        queryKey: ["like"],
         refetchType: "all",
       });
       navigate("/artist-panel/ticket/tickets");

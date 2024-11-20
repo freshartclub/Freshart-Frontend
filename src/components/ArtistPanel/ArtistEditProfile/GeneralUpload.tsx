@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import GeneralForm from "./GeneralForm";
 import upload from "./assets/Upload.png";
 import camera from "./assets/camera.png";
@@ -31,7 +31,7 @@ const GeneralUpload = () => {
   useEffect(() => {
     if (data?.data?.artist?.profile?.mainImage !== null) {
       setUploadedImage(
-        `${data.data?.url}/users/${data?.data?.artist?.profile?.mainImage}`
+        `${data?.data?.url}/users/${data?.data?.artist?.profile?.mainImage}`
       );
     } else {
       setUploadedImage(null);

@@ -11,7 +11,6 @@ const AuthGuard = ({ children }: AuthGuardProps) => {
   const isArtist = useAppSelector((state) => state.user.isArtist);
   const profile = localStorage.getItem("profile");
   const currentPath = useLocation();
-  console.log("this is a current path name", location.pathname);
 
   if (isAuthorized && location.pathname === "/") {
     console.log("hhey working fine");

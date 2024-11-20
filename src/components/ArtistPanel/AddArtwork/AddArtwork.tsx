@@ -413,7 +413,7 @@ const AddArtwork = () => {
       setInProcessImage(
         `${data?.url}/users/${data?.data?.media?.inProcessImage}`
       );
-      setMainVideo(`${data?.url}/users/${data?.data?.media?.mainVideo}`);
+      setMainVideo(`${data?.url}/videos/${data?.data?.media?.mainVideo}`);
     }
   }, [data]);
 

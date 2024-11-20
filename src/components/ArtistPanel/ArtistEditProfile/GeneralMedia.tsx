@@ -3,7 +3,6 @@ import { useFieldArray, Control, useFormContext } from "react-hook-form";
 import Header from "../../ui/Header"; // Assuming this is your custom Header component
 
 const GeneralMedia = ({ control, url }) => {
-  // Field arrays for images and video
   const { setValue, getValues, watch } = useFormContext();
 
   useEffect(() => {
@@ -42,14 +41,11 @@ const GeneralMedia = ({ control, url }) => {
   const [existingMainImage, setExistingMainImage] = useState(null);
   const [existingMainVideo, setExistingMainVideo] = useState(null);
 
-  const [mainImageChanged, setMainImageChanged] = useState(false);
-
   const [existingAdditionalImage, setExistingAdditionalImage] = useState([]);
 
   const [existingAdditionalVideo, setExistingAdditionalVideo] = useState([]);
 
   const [existingInProcessImage, setExistingInProcessImage] = useState(null);
-  const [inProcessImageChanged, setInProcessImageChanged] = useState(false);
 
   useEffect(() => {
     if (url) {
@@ -110,12 +106,6 @@ const GeneralMedia = ({ control, url }) => {
     }
   };
 
-  const triggerBackImageInput = () => {
-    if (backImageInputRef.current) {
-      backImageInputRef.current.click();
-    }
-  };
-
   const triggerInProcessImageInput = () => {
     if (inProcessImageInputRef.current) {
       inProcessImageInputRef.current.click();
@@ -129,7 +119,6 @@ const GeneralMedia = ({ control, url }) => {
   };
 
   const removeAdditionalImage = async (index: number, typeFile: string) => {
-    console.log(index, "-------------remoce");
     if (typeFile === "File") {
       removeAdditionalImageFrom("additionalImage", index);
     } else {
@@ -141,7 +130,6 @@ const GeneralMedia = ({ control, url }) => {
   };
 
   const removeAdditionalVideo = async (index: number, typeFile: string) => {
-    console.log(index, "-------------remoce");
     if (typeFile === "File") {
       removeVideo("additionalVideo", index);
     }
@@ -150,11 +138,8 @@ const GeneralMedia = ({ control, url }) => {
       setExistingAdditionalVideo(
         existingAdditionalVideo.filter((_, i) => i !== index)
       );
-      console.log(existingAdditionalVideo);
       setValue("existingAdditionalVideo", existingAdditionalVideo);
     }
-
-    console.log(existingAdditionalVideo);
   };
 
   const removeExistingAdditionalVideo = async (
@@ -168,11 +153,6 @@ const GeneralMedia = ({ control, url }) => {
       setValue("existingAdditionalVideo", existingAdditionalVideo);
     }
   };
-
-  console.log(
-    existingAdditionalVideo,
-    "fsdnfeksnkfnkjdsfndjknfdsjknfdjknfsjkdnfcsjknfjk"
-  );
 
   return (
     <div className="p-6 mt-6 bg-white rounded-lg shadow-md">

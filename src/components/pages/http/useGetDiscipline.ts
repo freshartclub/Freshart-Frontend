@@ -5,7 +5,6 @@ import { generalPath } from "../../utils/paths";
 
 async function fetchData() {
   const { data } = await axiosInstance.get(`${generalPath.getDiscipline}`);
-  console.log("data is ", data);
   return data;
 }
 

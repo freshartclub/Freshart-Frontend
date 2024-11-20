@@ -42,7 +42,7 @@ const TicketsList: FC<{
       ...prevData,
       [ticketId]: { ...prevData[ticketId], isLiked: "yes" },
     }));
-    setOpenTicketId(ticketId); // Set the ticket ID of the opened modal
+    setOpenTicketId(ticketId);
   };
 
   const handleDisLike = (ticketId: string) => {
@@ -60,12 +60,12 @@ const TicketsList: FC<{
       isLiked: feedbackData[ticketId].isLiked,
     };
     mutateAsync(data).then(() => {
-      setOpenTicketId(null); // Close the modal after submitting feedback
+      setOpenTicketId(null);
     });
   };
 
   const handleCloseModal = () => {
-    setOpenTicketId(null); // Close the modal
+    setOpenTicketId(null);
   };
 
   if (isLoading) {
