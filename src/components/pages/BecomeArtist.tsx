@@ -46,7 +46,7 @@ const BecomeArtist = () => {
   const [uploadDocs, setUploadDocs] = useState(null);
 
   const [isOtpVerify, setIsOtpVerify] = useState(false);
-  const [popUp, setPopUp] = useState(true);
+  const [popUp, setPopUp] = useState(false);
   const [geoLocation, setGeoLocation] = useState(null);
   const [countryCode, setCountryCode] = useState("");
   const [validateEmail, setValidateEmail] = useState("Verify Email");
