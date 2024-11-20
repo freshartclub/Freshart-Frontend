@@ -492,7 +492,11 @@ const GeneralForm = ({ defaultValues }: { defaultValues: any }) => {
 
               <GeneralSocial control={control} />
 
-              <GeneralMedia control={control} url={data?.data?.url} />
+              <GeneralMedia
+                control={control}
+                data={data?.data?.artist?.profile}
+                url={data?.data?.url}
+              />
               <CVForm control={control} />
               <div className="p-4 mt-4 bg-white rounded-lg shadow-md max-w-full">
                 <h2 className="text-xl font-semibold mb-3 text-[#1A1C21]">

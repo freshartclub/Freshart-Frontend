@@ -13,10 +13,7 @@ const GeneralUpload = () => {
   const [imgUrl, setImgUrl] = useState();
 
   const { mutate, isPending } = useGetSaveArtistDetailsMutation();
-
   const { data, isLoading } = useGetArtistDetails();
-
-  console.log(data, "ujhwyaefuhwlaefgbiiuvuil");
 
   // Handle image change
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,16 +26,12 @@ const GeneralUpload = () => {
   };
 
   useEffect(() => {
-    if (data?.data?.artist?.profile?.mainImage !== null) {
+    if (data?.data?.artist) {
       setUploadedImage(
         `${data.data?.url}/users/${data?.data?.artist?.profile?.mainImage}`
       );
-    } else {
-      setUploadedImage(null);
     }
   }, [data]);
-
-  console.log(data);
 
   const handleUpdateProfile = () => {
     const formData = new FormData();
