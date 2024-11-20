@@ -1,8 +1,13 @@
 import React, { useRef, useState, useEffect } from "react";
-import { useFieldArray, Control, useFormContext } from "react-hook-form";
+import {
+  useFieldArray,
+  Control,
+  useFormContext,
+  useForm,
+} from "react-hook-form";
 import Header from "../../ui/Header"; // Assuming this is your custom Header component
 
-const GeneralMedia = ({ control, url }) => {
+const GeneralMedia = ({ control, data, url }) => {
   const { setValue, getValues, watch } = useFormContext();
 
   useEffect(() => {
@@ -41,21 +46,20 @@ const GeneralMedia = ({ control, url }) => {
   const [existingMainImage, setExistingMainImage] = useState(null);
   const [existingMainVideo, setExistingMainVideo] = useState(null);
 
+  const [mainImageChanged, setMainImageChanged] = useState(false);
+
   const [existingAdditionalImage, setExistingAdditionalImage] = useState([]);
-
   const [existingAdditionalVideo, setExistingAdditionalVideo] = useState([]);
-
   const [existingInProcessImage, setExistingInProcessImage] = useState(null);
+  const [inProcessImageChanged, setInProcessImageChanged] = useState(false);
 
   useEffect(() => {
-    if (url) {
-      setExistingMainImage(`${url}/users/${getValues("mainImage")}`);
-      setExistingAdditionalImage(getValues("existingAdditionalImage"));
-      setExistingInProcessImage(`${url}/users/${getValues("inProcessImage")}`);
-      setExistingMainVideo(`${url}/videos/${getValues("mainVideo")}`);
-      setExistingAdditionalVideo(getValues("existingAdditionalVideo"));
-    }
-  }, [url]);
+    setExistingMainImage(`${url}/users/${data?.mainImage}`);
+    setExistingAdditionalImage(data?.additionalImage);
+    setExistingInProcessImage(`${url}/users/${data?.inProcessImage}`);
+    setExistingMainVideo(`${url}/videos/${data?.mainVideo}`);
+    setExistingAdditionalVideo(data?.additionalVideo);
+  }, []);
 
   const handleMainImageChange = (e) => {
     const file = e.target.files?.[0];
@@ -281,7 +285,7 @@ const GeneralMedia = ({ control, url }) => {
           <div className="flex flex-wrap gap-4">
             {getValues("additionalImage") &&
               getValues("additionalImage").length > 0 &&
-              getValues("additionalImage")?.map((field, i) => (
+              getValues("additionalImage").map((field, i) => (
                 <div key={i} className="relative w-28 h-28">
                   <img
                     src={URL.createObjectURL(field)}
@@ -298,7 +302,7 @@ const GeneralMedia = ({ control, url }) => {
               ))}
             {existingAdditionalImage &&
               existingAdditionalImage.length > 0 &&
-              existingAdditionalImage?.map((field: string, i = i) => (
+              existingAdditionalImage?.map((field: string, i: number) => (
                 <div key={i} className="relative w-28 h-28">
                   <img
                     src={`${url}/users/${field}`}
@@ -352,7 +356,7 @@ const GeneralMedia = ({ control, url }) => {
                   {existingMainVideo ? (
                     <video
                       src={existingMainVideo}
-                      alt="Main Video"
+                      controls
                       className="w-28 h-28 object-cover"
                     />
                   ) : (
@@ -399,7 +403,7 @@ const GeneralMedia = ({ control, url }) => {
                     <div key={i} className="relative w-28 h-28">
                       <video
                         src={URL.createObjectURL(field)}
-                        alt={`Additional Video ${i}`}
+                        controls
                         className="w-full h-full object-cover"
                       />
                       <span
@@ -413,11 +417,14 @@ const GeneralMedia = ({ control, url }) => {
                 {existingAdditionalVideo &&
                   existingAdditionalVideo.length > 0 &&
                   existingAdditionalVideo?.map(
-                    (field: string, i = additionalVideo.length + 1) => (
+                    (
+                      field: string,
+                      i = getValues("additionalVideo")?.length + 1
+                    ) => (
                       <div key={i} className="relative w-28 h-28">
                         <video
                           src={`${url}/videos/${field}`}
-                          alt={`Additional Video ${i}`}
+                          controls
                           className="w-full h-full object-cover"
                         />
                         <span

@@ -13,8 +13,6 @@ const SocialMediaLinks = ({ control }) => {
     append({ name: "", link: "" });
   };
 
-  console.log(fields);
-
   return (
     <div className="p-4 mx-auto border border-custom-gray bg-white rounded-md shadow-custom">
       <h2 className="pb-3 font-medium text-lg leading-7 tracking-wider text-[#1A1C21]">
