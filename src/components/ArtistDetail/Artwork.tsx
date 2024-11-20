@@ -32,6 +32,8 @@ const Artwork = () => {
     );
   });
 
+  console.log(filteredData);
+
   if (isLoading) {
     return <Loader />;
   }
@@ -53,7 +55,6 @@ const Artwork = () => {
         >
           <option value="">Select Art Provider</option>
           <option value="yes">Yes</option>
-          <option value="no">No</option>
         </select>
 
         <select
@@ -124,7 +125,11 @@ const Artwork = () => {
                   </div>
                 </div>
                 <p className="text-[14px] text-[#696868]">
-                  {item?.owner?.artistName + " " + item?.owner?.artistSurname1}
+                  {item?.isArtProvider
+                    ? item?.owner?.artistName +
+                      " " +
+                      item?.owner?.artistSurname1
+                    : null}
                 </p>
               </div>
             </div>
