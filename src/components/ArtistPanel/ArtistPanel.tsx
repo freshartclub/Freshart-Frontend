@@ -14,6 +14,7 @@ import ArtistNavBar from "../NavBar/ArtistNavBar";
 import Support from "../pages/Support";
 import NewTicket from "../NewTicket/NewTicket";
 import Settings from "./ArtistEditProfile/Settings";
+import OrderApprove from "./OrderApprove/OrderApprove";
 
 const ArtistPanel = () => {
   return (
@@ -28,6 +29,7 @@ const ArtistPanel = () => {
             <Route path="artwork/details" element={<ArtworkDetails />} />
             <Route path="order" element={<Orders />} />
             <Route path="order/orderDetail" element={<OrdersDetail />} />
+            <Route path="order/approve-order" element={<OrderApprove />} />
             <Route path="artwork/add" element={<AddArtwork />} />
             <Route path="edit-artistprofile" element={<ArtistProfile />} />
             <Route path="user/settings" element={<Settings />} />

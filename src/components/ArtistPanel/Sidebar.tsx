@@ -48,7 +48,7 @@ export const sections = [
     path: "order",
     submenu: [
       { key: "current", label: "Current Orders", path: "order" },
-      { key: "history", label: "Order History", path: "order/history" },
+      { key: "history", label: "Order History", path: "order/approve-order" },
     ],
   },
   {

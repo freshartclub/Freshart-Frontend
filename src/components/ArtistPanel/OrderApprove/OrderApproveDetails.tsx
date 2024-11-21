@@ -155,7 +155,7 @@ const OrderApproveDetails = () => {
           </div>
         </div>
 
-        <div className="right border border-gray-100 shadow-lg mt-4 h-auto rounded-lg w-full lg:w-2/5 p-6 ">
+        <div className="bg-[#fff] right border border-gray-100 shadow-lg mt-4 h-auto rounded-lg w-full lg:w-2/5 p-6 ">
           <div className="flex  justify-between items-center ">
             <h1 className="font-bold ">Customer Info</h1>
 
@@ -211,10 +211,10 @@ const OrderApproveDetails = () => {
           </div>
         </div>
       </div>
-      <div className="border shadow-lg mt-6 rounded-lg p-6 w-full ">
+      <div className=" bg-[#fff] border shadow-lg mt-6 rounded-lg p-6 w-full">
         <h1 className="font-bold text-lg mb-4">Evidence Collection</h1>
 
-        <div className="flex flex-col sm:flex-row items-center space-x-2 ">
+        <div className="flex flex-col sm:flex-row items-left space-x-2 ">
           {evidence.map((src, index) => (
             <div key={index} className="">
               <img
