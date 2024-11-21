@@ -8,7 +8,7 @@ const ArtCard = ({ record, data }: any) => {
     <>
       <div
         className={`bg-white rounded-lg pb-5 border-b-4 ${
-          record?.status === "approved"
+          record?.status === "published"
             ? "border-[#00DE00]"
             : record?.status === "pending"
             ? "border-[#D8F002]"
@@ -39,15 +39,15 @@ const ArtCard = ({ record, data }: any) => {
         <div className="flex flex-col items-center text-center py-2">
           <div
             className={`w-[.8em] h-[.8em] rounded-lg ${
-              record?.status == "approved"
-                ? "border-[#00DE00]"
+              record?.status === "published"
+                ? "bg-[#00DE00]"
                 : record?.status == "draft"
                 ? "bg-[#696868]"
                 : record?.status == "pending"
                 ? "bg-[#D8F002]"
                 : record.category == "In subscription"
-                ? "border-[#FFA600]"
-                : "border-[#D8F002]"
+                ? "bg-[#FFA600]"
+                : "bg-[#D8F002]"
             }`}
           ></div>
 

@@ -57,7 +57,7 @@ const DiscoverContent = ({ data }: any) => {
                   }}
                   className="flex justify-center border border-[#263238] w-full font-medium text-sm"
                 >
-                  Publish
+                  {isPending ? "Publishing..." : "Publish"}
                 </Button>
               )}
               <Button

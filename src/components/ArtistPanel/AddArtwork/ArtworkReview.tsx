@@ -83,11 +83,17 @@ const DiscoverMore = () => {
     }
   };
 
+  const additionalImage = data?.data.media?.images.map((item, index) => item);
+
   const images = data?.data
     ? [
         { src: data?.data.media?.mainImage, alt: "Main Image" },
         { src: data?.data.media?.backImage, alt: "Back Image" },
         { src: data?.data.media?.inProcessImage, alt: "In Process Image" },
+        ...additionalImage.map((item) => ({
+          src: item,
+          alt: "Additional Image",
+        })),
       ]
     : [];
 

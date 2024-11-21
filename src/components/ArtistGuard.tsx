@@ -9,7 +9,6 @@ interface ArtistGuardProps {
 const ArtistGuard = ({ children }: ArtistGuardProps) => {
   const isArtist = useAppSelector((state) => state.user.isArtist);
   const profile = localStorage.getItem("profile");
-  console.log(profile);
 
   if (!isArtist) {
     return <Navigate to="/home" replace />;

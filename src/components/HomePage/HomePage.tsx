@@ -11,27 +11,33 @@ import SecondSection from "./SecondSection";
 import TrendingSection from "./TrendingSection";
 import { useNavigate } from "react-router-dom";
 import Loader from "../ui/Loader";
+import { useGetHomeData } from "./http/useGetHomeData";
 
 const HomePage = () => {
   const navigate = useNavigate();
 
   const profile = localStorage.getItem("profile");
-  console.log(profile);
-
   if (profile === "artist") {
     return navigate("/artist-panel");
+  }
+
+  const { data, isLoading } = useGetHomeData();
+  console.log("this a home data ", data);
+
+  if (isLoading) {
+    return <Loader />;
   }
 
   return (
     <div className="overflow-x-hidden">
       <BannerSection />
       <SecondSection />
-      <HighlightSection />
+      <HighlightSection data={data} />
       <TrendingSection />
-      <ArtWork />
+      <ArtWork data={data} />
       <HelpSection />
-      <ArtistPortfolio />
-      <RecentSection />
+      <ArtistPortfolio data={data} />
+      <RecentSection data={data} />
       <FreshArt />
     </div>
   );

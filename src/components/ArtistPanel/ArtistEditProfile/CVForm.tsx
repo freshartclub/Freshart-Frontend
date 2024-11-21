@@ -1,5 +1,6 @@
 import React from "react";
-import { useFieldArray, Control } from "react-hook-form";
+import { useFieldArray, Control, Controller } from "react-hook-form";
+import ReactQuill from "react-quill";
 
 interface CVEntry {
   year: string;
@@ -33,18 +34,36 @@ const CVForm: React.FC<CVFormProps> = ({ control }) => {
         Highlight & CV
       </h2>
       <div className="w-full relative">
-        <textarea
-          rows={3}
-          // placeholder="Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Sed aliquam, nisi quis porttitor congue, elit erat euismod orci, ac placerat dolor lectus quis orci."
-          {...control.register("addHighlights")}
-          className="border border-[#E6E6E6] outline-none p-3 w-full rounded-md placeholder:font-montserrat font-normal text-left placeholder:text-[#1C252E]"
+        <Controller
+          name="highlights"
+          control={control}
+          defaultValue=""
+          render={({ field }) => (
+            <div className="relative">
+              <ReactQuill
+                {...field}
+                className="border border-[#E6E6E6] p-3 w-full rounded-md"
+                theme="snow"
+                placeholder="Write about yourself..."
+                modules={{
+                  toolbar: [
+                    [{ header: "1" }, { header: "2" }, { font: [] }],
+                    [{ list: "ordered" }, { list: "bullet" }],
+                    ["bold", "italic", "underline"],
+                    [{ align: [] }],
+                    ["link"],
+                  ],
+                }}
+              />
+              <label
+                htmlFor="Hightlight"
+                className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
+              >
+                About
+              </label>
+            </div>
+          )}
         />
-        <label
-          htmlFor="addHighlights"
-          className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
-        >
-          Highlight
-        </label>
       </div>
 
       {cvEntries.map((cv, index) => (

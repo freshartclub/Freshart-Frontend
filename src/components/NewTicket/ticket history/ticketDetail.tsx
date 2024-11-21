@@ -96,11 +96,11 @@ const SingleTicket = () => {
         </p>
       </div>
 
-      <div className="bg-[#919EAB29] p-2 flex flex-col gap-2 ">
+      <div className="bg-[#919EAB29] p-2 flex flex-col gap-2 overflow-auto ">
         {data?.reply &&
           data?.reply?.length &&
           data?.reply.map((item, i) => (
-            <div key={i} className="border border-zinc-500 rounded-md">
+            <div key={i} className="border ">
               <span className="ml-3 text-[#84818A] text-[12px] border ">
                 {item.userType === "user" ? "Your Reply" : "Reply By - Admin"}
               </span>
@@ -115,7 +115,7 @@ const SingleTicket = () => {
         <h2 className="font-montserrat text-lg font-semibold mt-4">
           Reply to Ticket
         </h2>
-        <div className="flex flex-col gap-2 items-end rounded-md py-3 bg-gray-50">
+        <div className="flex flex-col gap-2 items-end rounded-md py-3 bg-gray-50 ">
           <textarea
             className="border border-gray-300 rounded-lg p-2 w-full"
             placeholder="Enter Your Message here..."

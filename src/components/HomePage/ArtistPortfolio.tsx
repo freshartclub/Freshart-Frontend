@@ -55,25 +55,19 @@ const settings = {
   ],
 };
 
-const ArtistPortfolio = () => {
+const ArtistPortfolio = ({ data }) => {
   const navigate = useNavigate();
   const redirectToAllArtistPage = () => {
     navigate("/all_artist");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const { data, isLoading } = useGetAllArtist();
-  console.log("this is data from artist", data);
 
   const handleArtistDesc = (id) => {
     console.log("this is from artistPortfoloio", id);
     navigate(`/artist_detail?id=${id}`);
     window.scroll(0, 0);
   };
-
-  if (isLoading) {
-    return <Loader />;
-  }
 
   return (
     <div className="container mx-auto md:px-6 px-3">

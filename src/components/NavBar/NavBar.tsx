@@ -62,6 +62,9 @@ const NavBar = () => {
   const navigate = useNavigate();
 
   const isArtist = useAppSelector((state) => state.user.isArtist);
+  const user = useAppSelector((state) => state.user.user);
+
+  const url = "https://dev.freshartclub.com/images";
 
   useEffect(() => {
     const storedUserName = localStorage.getItem("userName");
@@ -159,8 +162,8 @@ const NavBar = () => {
         </div>
       </div>
 
-      <nav className="bg-[#102030] py-8 px-28 ">
-        <div className="container sm:px-6  flex justify-between">
+      <nav className="bg-[#102030] py-8 xl:px-28 px-8">
+        <div className="flex justify-between">
           {token ? (
             <>
               {" "}
@@ -311,12 +314,12 @@ const NavBar = () => {
                 </button>
                 <button className="focus:outline-none">
                   <img
-                    src={profile1}
+                    src={`${url}/users/${user?.profile?.mainImage}`}
                     alt="profile"
                     onClick={toggleProfile}
                     id="dropdownInformationButton"
                     data-dropdown-toggle="dropdownInformation"
-                    className=" text-white mx-2"
+                    className=" text-white mx-2 rounded-full object-cover w-8 h-8"
                   />
                 </button>
 

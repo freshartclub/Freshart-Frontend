@@ -80,7 +80,9 @@ const UserDescription = ({ user }) => {
   const personal_info = [
     {
       title: "Name",
-      value: `${user?.artistName}` || "edit ",
+      value:
+        `${user?.artistName} ${user?.artistSurname1} ${user?.artistSurname2}` ||
+        "edit ",
     },
     {
       title: "Email",
@@ -104,7 +106,7 @@ const UserDescription = ({ user }) => {
     <div className="xl:w-[78%] lg:w[80%] md:w-[75%] w-full">
       <div>
         <Header variant={{ size: "xl", theme: "dark", weight: "semiBold" }}>
-          {`Hello,${user?.artistName}`}
+          {`Hello, ${user?.artistName} ${user?.artistSurname1} ${user?.artistSurname2}`}
         </Header>
         <P
           variant={{ size: "base", theme: "dark", weight: "medium" }}

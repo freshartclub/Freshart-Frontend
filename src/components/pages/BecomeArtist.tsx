@@ -283,7 +283,7 @@ const BecomeArtist = () => {
                     Email *
                   </label>
 
-                  <div className="flex w-full justify-between  items-center gap-2 ">
+                  <div className="flex w-full lg:justify-evenly  items-center gap-2 ">
                     <input
                       {...register("email")}
                       onChange={(e) => setEmail(e.target.value)}
@@ -292,7 +292,7 @@ const BecomeArtist = () => {
                     />
                     <span
                       onClick={() => handleRevalidateEmail()}
-                      className="px-2 border border-zinc-800 rounded py-3 text-sm font-bold cursor-pointer"
+                      className="px-5 lg:px-2 border border-zinc-800 rounded py-3  text-sm font-bold cursor-pointer"
                     >
                       {sendMailPending ? "Sending Otp..." : `${validateEmail}`}
                     </span>
@@ -310,16 +310,16 @@ const BecomeArtist = () => {
                     Enter Otp
                   </label>
 
-                  <div className="flex  items-center gap-2 w-full justify-between">
+                  <div className="flex justify-between items-center gap-2 w-full lg:justify-evenly">
                     <input
-                      className="appearance-none border rounded w-[14vw]  py-3 px-5 text-gray-700 leading-tight focus:outline-none"
+                      className="appearance-none border rounded w-fit lg:w-[14vw]  py-3 px-5 text-gray-700 leading-tight focus:outline-none"
                       placeholder="Enter Otp"
                       ref={inputRef}
                     />
 
                     <span
                       onClick={validateOtp}
-                      className="px-5 border border-zinc-800 rounded py-3  text-sm font-bold cursor-pointer"
+                      className="lg:px-5 px-[2vw] border border-zinc-800 py-3 rounded lg:py-3 w-fit text-sm font-bold cursor-pointer"
                     >
                       {verifyOtpPending ? "Validating..." : `${validateotp}`}
                     </span>

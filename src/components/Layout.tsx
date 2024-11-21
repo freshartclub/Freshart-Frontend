@@ -36,10 +36,10 @@ const Layout: React.FC<LayoutProps> = ({
     RoleBaseNavBar = NavBar;
   }
 
-  // if (user !== "artist") {
-  //   navigate("/home");
-  // } else {
+  // if (user === "artist") {
   //   navigate("/artist-panel");
+  // } else if (user === "user") {
+  //   Navigate("/home");
   // }
   return (
     <div>

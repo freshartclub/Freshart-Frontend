@@ -1,11 +1,10 @@
 import profile from "./assets/a.jpg.png";
 
-const UserImage = ({ user }) => {
-  console.log(user.avatar);
+const UserImage = ({ user, url }) => {
   return (
     <div className="lg:w-[20%] md:w-[25%] w-full">
       <img
-        src={`${import.meta.env.VITE_SERVER_URL}/user${user?.avatar}`}
+        src={`${url}/users/${user.profile.mainImage}`}
         alt="user profile"
         className="w-full sm:w-auto"
       />

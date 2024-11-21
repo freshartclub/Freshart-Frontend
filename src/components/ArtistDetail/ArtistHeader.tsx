@@ -33,26 +33,6 @@ const ArtistHeader = ({ data }) => {
       ]
     : [];
 
-  // right now this cometing becuse we dont have much image in additional image
-  //   const mainImage = data?.artist?.profile?.mainImage
-  //   ? [{ src: data.artist.profile.mainImage, alt: "Main Image" }]
-  //   : [];
-
-  // const inProcessImage = data?.artist?.profile?.inProcessImage
-  //   ? [{ src: data.artist.profile.inProcessImage, alt: "In Process Image" }]
-  //   : [];
-
-  // const additionalImages = Array.isArray(
-  //   data?.artist?.profile?.additionalImages
-  // )
-  //   ? data.artist.profile.additionalImages.map((image, index) => ({
-  //       src: image,
-  //       alt: `Additional Image ${index + 1}`,
-  //     }))
-  //   : [];
-
-  // const images = [...mainImage, ...inProcessImage, ...additionalImages];
-
   return (
     <div className="lg:w-[80%] w-[90%] m-auto">
       <ul className="flex p-2 my-5 gap-4 text-xl text-[#2E4053] items-center">
@@ -72,7 +52,7 @@ const ArtistHeader = ({ data }) => {
 
         <li>
           <Link
-            to="/"
+            to="/all_artist"
             className="cursor-pointer hover:bg-[#E8DAEF] rounded-md transition-all duration-300"
           >
             <P

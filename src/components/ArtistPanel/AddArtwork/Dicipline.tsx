@@ -7,8 +7,6 @@ import { useEffect } from "react";
 const Dicipline = () => {
   const { setFieldValue, values } = useFormikContext();
 
-  console.log("this is value from discipline", values.artworkTags);
-
   const fields = [
     {
       id: "artworkdiscipline",

@@ -22,6 +22,10 @@ const ArtistNavBar = () => {
 
   const { mutate: logOut } = useLogOutMutation();
 
+  const url = "https://dev.freshartclub.com/images";
+
+  console.log(`${url}/${user.profile.mainImage}`);
+
   const handleLogOut = () => {
     try {
       logOut();
@@ -61,9 +65,13 @@ const ArtistNavBar = () => {
           <IoNotifications className="cursor-pointer" size="2em" />
           <span
             onClick={() => setIsToggelOpen(!isToogleOpen)}
-            className="w-12 h-12 rounded-full bg-red-200 flex items-center justify-center cursor-pointer"
+            className="w-12 h-12 rounded-full  flex items-center justify-center cursor-pointer"
           >
-            A
+            <img
+              src={`${url}/users/${user.profile.mainImage}`}
+              alt=""
+              className="w-full h-full object-cover rounded-full"
+            />
           </span>
         </div>
       </div>

@@ -4,7 +4,6 @@ import { generalPath } from "../../../utils/paths";
 
 async function fetchData() {
   const { data } = await axiosInstance.get(`${generalPath.getTechnic}`);
-  console.log("data is ", data);
   return data;
 }
 

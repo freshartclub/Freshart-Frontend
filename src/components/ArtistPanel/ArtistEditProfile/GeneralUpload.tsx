@@ -73,11 +73,12 @@ const GeneralUpload = () => {
     existingAdditionalVideo: data?.data?.artist?.profile?.additionalVideo || "",
 
     cvEntries: data?.data?.artist?.highlights?.cv || "",
+    highlights: data?.data?.artist?.highlights?.addHighlights || "",
+
     accounts: data?.data?.artist?.links || "",
     insignia: data?.data?.artist?.insignia || "",
 
     taxZipCode: data?.data?.artist?.invoice?.taxZipCode || "",
-    addHighlights: data?.data?.artist?.highlights?.addHighlights || "",
   };
 
   if (isLoading) {

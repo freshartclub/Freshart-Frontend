@@ -157,7 +157,7 @@ const ProductInfo = ({ data }: any) => {
     },
   ];
 
-  const commercialization_data = [
+  const purchaseData = [
     {
       heading: "Purchase Catalog: ",
       description: data?.data?.commercialization?.purchaseCatalog,
@@ -167,10 +167,7 @@ const ProductInfo = ({ data }: any) => {
       heading: "Artist Fees: ",
       description: `$ ${data?.data?.commercialization?.artistbaseFees}`,
     },
-    {
-      heading: "Downward Offer: ",
-      description: data?.data?.commercialization?.downwardOffer,
-    },
+
     {
       heading: "Upwork Offer: ",
       description: data?.data?.commercialization?.upworkOffer,
@@ -182,6 +179,18 @@ const ProductInfo = ({ data }: any) => {
     {
       heading: "Price By Request: ",
       description: data?.data?.commercialization?.priceRequest,
+    },
+  ];
+
+  const subscriptionData = [
+    {
+      heading: "Subscription Catalog: ",
+      description: data?.data?.commercialization?.subscriptionCatalog,
+    },
+
+    {
+      heading: "Purchase Option ",
+      description: ` ${data?.data?.commercialization?.purchaseOption}`,
     },
   ];
 
@@ -209,10 +218,6 @@ const ProductInfo = ({ data }: any) => {
     {
       heading: "Pin Code: ",
       description: data?.data?.inventoryShipping?.pCode,
-    },
-    {
-      heading: "Sku: ",
-      description: data?.data?.inventoryShipping?.sku,
     },
   ];
 
@@ -464,25 +469,53 @@ const ProductInfo = ({ data }: any) => {
         <TabPanel>
           <div className="flex gap-10 justify-between w-full mb-10">
             <div className="w-[32%] mt-8">
-              {commercialization_data.map((item, index) => (
-                <div key={index} className=" flex items-center">
-                  <Header
-                    variant={{ size: "small", theme: "dark", weight: "medium" }}
-                    className="w-48 my-1"
-                  >
-                    {item.heading}
-                  </Header>
-                  <P
-                    variant={{
-                      size: "small",
-                      weight: "medium",
-                    }}
-                    className=" text-[#999999]"
-                  >
-                    {item.description}
-                  </P>
-                </div>
-              ))}
+              {data?.data?.commercialization?.activeTab === "purchase"
+                ? purchaseData.map((item, index) => (
+                    <div key={index} className=" flex items-center">
+                      <Header
+                        variant={{
+                          size: "small",
+                          theme: "dark",
+                          weight: "medium",
+                        }}
+                        className="w-48 my-1"
+                      >
+                        {item.heading}
+                      </Header>
+                      <P
+                        variant={{
+                          size: "small",
+                          weight: "medium",
+                        }}
+                        className=" text-[#999999]"
+                      >
+                        {item.description}
+                      </P>
+                    </div>
+                  ))
+                : subscriptionData.map((item, index) => (
+                    <div key={index} className=" flex items-center">
+                      <Header
+                        variant={{
+                          size: "small",
+                          theme: "dark",
+                          weight: "medium",
+                        }}
+                        className="w-48 my-1"
+                      >
+                        {item.heading}
+                      </Header>
+                      <P
+                        variant={{
+                          size: "small",
+                          weight: "medium",
+                        }}
+                        className=" text-[#999999]"
+                      >
+                        {item.description}
+                      </P>
+                    </div>
+                  ))}
             </div>
           </div>
         </TabPanel>

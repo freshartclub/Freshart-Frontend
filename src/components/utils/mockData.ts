@@ -132,11 +132,6 @@ export const impactOption = [
 
 export const shipping_inventry = [
   {
-    name: "sku",
-    label: "SKU",
-    placeholder: "Type Product sku here...",
-  },
-  {
     name: "pCode",
     label: "Product Code",
     placeholder: "Product Code...",

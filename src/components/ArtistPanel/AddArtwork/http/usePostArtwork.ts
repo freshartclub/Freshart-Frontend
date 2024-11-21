@@ -3,10 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
 import { useNavigate, useSearchParams } from "react-router-dom";
-// import { ARTTIST_ENDPOINTS } from "../../../../http/apiEndPoints/Artist";
 import axiosInstance from "../../../utils/axios";
-
-let toastId: any;
 
 async function usePostArtWork(input: any) {
   console.log("this is input", input);

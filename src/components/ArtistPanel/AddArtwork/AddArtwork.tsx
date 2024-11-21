@@ -99,7 +99,7 @@ const AddArtwork = () => {
   const [mainVideo, setMainVideo] = useState(null);
   const [otherVideo, setOtherVideos] = useState([]);
   const [searchParams] = useSearchParams();
-  const [activeTab, setActiveTab] = useState("subscription");
+  const [activeTab, setActiveTab] = useState();
   const [newImage, setNewImage] = useState(null);
   const [newBackImage, setNewBackImage] = useState(null);
   const [newInProcessImage, setNewInProcessImage] = useState([]);
@@ -112,25 +112,6 @@ const AddArtwork = () => {
 
   const id = searchParams.get("id");
 
-  const buttonsData = [
-    {
-      label: "Revalidate",
-      value: "revalidate",
-      fn: () => console.log("Revalidate"),
-    },
-
-    {
-      label: "generate QR code",
-      value: "generate QR code",
-      fn: () => setQrVisible(!qrVisible),
-    },
-    {
-      label: "generate certificate of authenticity",
-      value: "generate",
-      fn: () => console.log("Authnecity of cetificate"),
-    },
-  ];
-
   const [initialValues, setInitialValues] = useState({
     artworkName: "",
     isArtProvider: "",
@@ -138,12 +119,7 @@ const AddArtwork = () => {
     artworkCreationYear: "",
     artworkSeries: "",
     productDescription: "",
-    // mainImage: "",
-    // backImage: "",
-    // inProcessImage: "",
-    // images: [],
-    // mainVideo: "",
-    // otherVideo: "",
+
     artworkTechnic: "",
     artworkTheme: "",
     artworkOrientation: "",
@@ -159,7 +135,6 @@ const AddArtwork = () => {
     discountAcceptation: "",
     textclass: "",
     vatAmount: "",
-    sku: "",
     pCode: "",
     location: "",
     barcode: "",
@@ -174,11 +149,11 @@ const AddArtwork = () => {
     artworkStyleType: [],
     colors: [],
     purchaseCatalog: "",
-    activeTab: activeTab,
+    // activeTab: "",
     subscriptionCatalog: "",
     subscriptionArtistFees: "",
     artistFees: "",
-    purchesOption: "",
+    purchaseOption: "",
     availableTo: "",
     dicountAcceptation: "",
     downwardOffer: "",
@@ -207,6 +182,7 @@ const AddArtwork = () => {
 
   useEffect(() => {
     if (id) {
+      setActiveTab(data?.data?.commercialization?.activeTab);
       setInitialValues((prevValues) => ({
         ...prevValues,
         // ...response.data.data,
@@ -265,7 +241,6 @@ const AddArtwork = () => {
         vatAmount: data?.data?.pricing?.vatAmount || "",
         artistFees: data?.data?.pricing?.artistFees || "",
 
-        sku: data?.data?.inventoryShipping?.sku || "",
         pCode: data?.data?.inventoryShipping?.pCode || "",
         location: data?.data?.inventoryShipping?.location || "",
 
@@ -275,10 +250,15 @@ const AddArtwork = () => {
         existingImage: data?.data?.media?.images || [],
         promotion: data?.data?.promotions?.promotion || "",
         promotionScore: data?.data?.promotions?.promotionScore || "",
-        isArtProvider: data?.data?.isArtProcider || "",
+        isArtProvider: data?.data?.isArtProvider || "",
+        subscriptionCatalog:
+          data?.data?.commercialization?.subscriptionCatalog || "",
+        purchaseOption: data?.data?.commercialization?.purchaseOption || "",
       }));
     }
   }, [id, data, inProcessImage, setInitialValues]);
+
+  console.log(activeTab);
 
   const { mutate, isPending } = usePostArtWorkMutation();
 
@@ -288,7 +268,7 @@ const AddArtwork = () => {
   const currentPageUrl = window.location.href;
 
   const handleGenerateQRCode = () => {
-    console.log("hello");
+    // console.log("hello");
     setQrVisible(true);
   };
 
@@ -365,8 +345,6 @@ const AddArtwork = () => {
     }
   };
 
-  console.log(initialValues.existingVideo, "daSzdfhgaDzxcgv");
-
   const onSubmit = async (values: any) => {
     console.log("onSubmit", values);
 
@@ -377,6 +355,7 @@ const AddArtwork = () => {
     values.images = images;
     values.mainVideo = newMainVideo;
     values.otherVideo = otherVideo;
+    values.activeTab = activeTab;
 
     const formData = new FormData();
 
@@ -445,6 +424,8 @@ const AddArtwork = () => {
     }
   }, [data]);
 
+  console.log(data?.data?.isArtProvider);
+
   if (isLoading) {
     return <Loader />;
   }
@@ -456,6 +437,7 @@ const AddArtwork = () => {
         enableReinitialize={true}
         // validationSchema={validationSchema}
         onSubmit={onSubmit}
+        validateOnChange={true}
       >
         {({ handleSubmit, values, errors, touched, setFieldValue }) => (
           <div
@@ -545,19 +527,17 @@ const AddArtwork = () => {
 
                     <div className="mb-4">
                       <label className="block text-sm sm:text-base text-[#203F58] font-semibold mb-2">
-                        Art Povider
+                        Art Provider
                       </label>
                       <Field
                         as="select"
+                        // id="Farmed"
+                        // name="framed"
                         id="isArtProvider"
                         name="isArtProvider"
                         className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
-                        // onChange={(e) => {
-                        //   setIsArtProvider(e.target.value);
-                        //   setFieldValue("isArtProvider", e.target.value);
-                        // }}
                       >
-                        <option value="" disabled selected>
+                        <option value="" disabled>
                           Select
                         </option>
                         <option value="yes">Yes</option>
@@ -1487,7 +1467,6 @@ const AddArtwork = () => {
                     </div>
 
                     <div className="">
-                      {" "}
                       {activeTab === "subscription" && (
                         <>
                           <div className="mt-4 space-y-2">
@@ -1495,7 +1474,7 @@ const AddArtwork = () => {
                               Subscription Catalog
                               <Field
                                 as="select"
-                                id="textclass"
+                                id="subscriptionCatalog"
                                 name="subscriptionCatalog"
                                 className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
                               >
@@ -1513,8 +1492,8 @@ const AddArtwork = () => {
                               Purches Option
                               <Field
                                 as="select"
-                                id="purchesOption"
-                                name="purchesOption"
+                                id="purchaseOption"
+                                name="purchaseOption"
                                 className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
                               >
                                 <option value="" disabled>
@@ -1537,8 +1516,8 @@ const AddArtwork = () => {
                               Purchase Catalog
                               <Field
                                 as="select"
-                                id="textclass"
-                                name="purchaseCatalog1"
+                                id="purchaseCatalog"
+                                name="purchaseCatalog"
                                 className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
                               >
                                 <option value="" disabled>
@@ -1555,8 +1534,8 @@ const AddArtwork = () => {
                               Artist Fees
                               <Field
                                 type="text"
-                                id="artistFees"
-                                name="artistFees"
+                                id="artistbaseFees"
+                                name="artistbaseFees"
                                 placeholder="20%"
                                 className="bg-[#E0E2E7] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5 "
                               ></Field>
@@ -1679,8 +1658,8 @@ const AddArtwork = () => {
                         Artist Base Fees
                         <div className="flex space-x-2">
                           <Field
-                            id="artistbaseFees"
-                            name="artistbaseFees"
+                            id="artistFees"
+                            name="artistFees"
                             placeholder="€ Artist Base Fees"
                             className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5"
                           />
@@ -1745,21 +1724,21 @@ const AddArtwork = () => {
                           />
                         </span>
                       ))}
-                    </div>
 
-                    <span>
-                      <label className="p-1 text-[14px] text-sm sm:text-base font-semibold">
-                        Location
-                      </label>
-                      <Field
-                        type="text"
-                        name="location"
-                        id="location"
-                        placeholder="India"
-                        value={values.location}
-                        className="bg-[#F9F9FC] border mb-2 border-gray-300 outline-none text-[#203F58] text-sm rounded-lg block w-full p-1 sm:p-2.5 "
-                      />
-                    </span>
+                      <span>
+                        <label className="p-1 text-[14px] text-sm sm:text-base font-semibold">
+                          Location
+                        </label>
+                        <Field
+                          type="text"
+                          name="location"
+                          id="location"
+                          placeholder="India"
+                          value={values.location}
+                          className="bg-[#F9F9FC] border mb-2 border-gray-300 outline-none text-[#203F58] text-sm rounded-lg block w-full p-1 sm:p-2.5 "
+                        />
+                      </span>
+                    </div>
                   </div>
                 </div>
                 {/* ------------------------ */}

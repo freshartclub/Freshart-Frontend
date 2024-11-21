@@ -90,10 +90,7 @@ const GeneralForm = ({ defaultValues }: { defaultValues: any }) => {
     setValue("language", data?.data?.artist?.language || []);
     setValue("gender", data?.data?.artist?.gender || "");
     setValue("accounts", data?.data?.artist?.links || "");
-    setValue(
-      "addHighlights",
-      data?.data?.artist?.highlights?.addHighlights || ""
-    );
+    setValue("highlights", data?.data?.artist?.highlights?.addHighlights || "");
 
     setValue("cvEntries", data?.data?.artist?.highlights?.cv || "");
 

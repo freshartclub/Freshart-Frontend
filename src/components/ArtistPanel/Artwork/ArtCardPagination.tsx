@@ -95,7 +95,7 @@ const ArtCardPagination: React.FC = () => {
       <div className="flex gap-2 flex-wrap justify-end pt-2">
         <div className="flex gap-2 items-center">
           <div className="w-[.8em] h-[.8em] rounded-full bg-[#00DE00] flex items-center"></div>
-          <p className="text-[14px] text-black">Approved</p>
+          <p className="text-[14px] text-black">Published</p>
         </div>
         <div className="flex gap-2 items-center">
           <div className="w-[.8em] h-[.8em] rounded-full bg-[#D8F002] flex items-center"></div>
