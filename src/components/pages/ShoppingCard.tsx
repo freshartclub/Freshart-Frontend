@@ -22,10 +22,10 @@ const ShoppingCard = ({ isOpen, onClose }: any) => {
     mutate(indexToRemove);
   };
 
-  const totalItems = data?.data?.cart.length;
+  const totalItems = data?.data?.cart?.length;
 
   const totalPrice = data?.data?.cart
-    .reduce((total: any, item: any) => {
+    ?.reduce((total: any, item: any) => {
       const itemPrice = parseFloat(item.pricing.basePrice.replace("$", ""));
       return total + itemPrice;
     }, 0)
@@ -57,7 +57,7 @@ const ShoppingCard = ({ isOpen, onClose }: any) => {
         </div>
 
         <div className="">
-          {data?.data?.cart.map((item: any, index: number) => (
+          {data?.data?.cart?.map((item: any, index: number) => (
             <div key={index} className="flex justify-between p-4 mb-1">
               <div
                 className="flex justify-between gap-10"
