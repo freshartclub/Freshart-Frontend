@@ -75,7 +75,7 @@ const SearchDropdown: FC<SearchDropdownProps> = ({
         </select>
 
         {/* New Ticket Button */}
-        <Link to="/new_ticket">
+        <Link to="/artist-panel/new_ticket">
           <button className="text-white bg-black p-4 rounded-md flex justify-center items-center gap-1 w-full sm:w-auto">
             <img className="bg-[#102030]" src={new_Ticket} alt="New Ticket" />
             New Ticket

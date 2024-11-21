@@ -22,7 +22,6 @@ const HomePage = () => {
   }
 
   const { data, isLoading } = useGetHomeData();
-  console.log("this a home data ", data);
 
   if (isLoading) {
     return <Loader />;

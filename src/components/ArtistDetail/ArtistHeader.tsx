@@ -24,12 +24,32 @@ const ArtistHeader = ({ data }) => {
     }
   };
 
+  // const images = data?.data
+  //   ? [
+  //       { src: data?.data.media?.mainImage, alt: "Main Image" },
+  //       { src: data?.data.media?.backImage, alt: "Back Image" },
+  //       { src: data?.data.media?.inProcessImage, alt: "In Process Image" },
+  //       ...additionalImage.map((item) => ({
+  //         src: item,
+  //         alt: "Additional Image",
+  //       })),
+  //     ]
+  //   : [];
+
+  const additionalImage = data?.artist?.profile?.additionalImage?.map(
+    (item, index) => item
+  );
+
   const images = data?.artist
     ? [
         { src: data?.artist?.profile?.mainImage, alt: "Main Image" },
         // we have to also add addtional images
         // { src: data?.artist?.profile?.backImage, alt: "Back Image" },
         { src: data?.artist?.profile?.inProcessImage, alt: "In Process Image" },
+        ...additionalImage.map((item) => ({
+          src: item,
+          alt: "Additional Image",
+        })),
       ]
     : [];
 

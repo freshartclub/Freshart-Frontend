@@ -36,14 +36,30 @@ const ArtistDescription = ({ data }) => {
     navigate("/circleblog");
   };
 
-  const aboutText = data?.artist?.aboutArtist?.about.replace(
-    /^<p>|<\/p>$/g,
+  console.log(
+    `${data?.url}/users/${data?.data?.artist?.insignia?.insigniaImage}`
+  );
+
+  const aboutText = data?.artist?.aboutArtist?.about?.replace(
+    /<\/?h2>|<\/?p>|<\/?div>/g,
     ""
   );
+
+  const highlightText = data?.artist?.highlights?.addHighlights?.replace(
+    /<\/?h2>|<\/?p>|<\/?div>/g,
+    ""
+  );
+
+  console.log(highlightText);
+
   return (
     <div>
       <div className="flex gap-5 sm:justify-end justify-center items-center my-4">
-        <img src={profile} alt="profile image" className="cursor-pointer" />
+        <img
+          src={`${data?.url}/users/${data?.artist?.profile?.mainImage}`}
+          alt="profile image"
+          className="cursor-pointer w-10 h-10 rounded-full object-cover"
+        />
         <Button
           variant={{
             fontSize: "base",
@@ -162,27 +178,17 @@ const ArtistDescription = ({ data }) => {
               variant={{ size: "base", theme: "dark", weight: "normal" }}
               className="leading-7 mb-7"
             >
-              Contrary to popular belief, Lorem Ipsum is not simply random text.
-              It has roots in a piece of classNameical Latin literature from 45
-              BC, making it over 2000 years old. Richard McClintock, a Latin
-              professor at Hampden-Sydney College in Virginia, looked up one of
-              the more obscure Latin words, consectetur, from a Lorem Ipsum
-              passage, and going through the cites of the word in classNameical
-              literature, discovered the undoubtable source. Lorem Ipsum comes
-              from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et
-              Malorum" (The Extremes of Good and Evil) by Cicero, written in 45
-              BC. This book is a treatise on the theory of ethics, very popular
-              during the Renaissance.{" "}
+              {highlightText}
             </P>
 
-            <P
+            {/* <P
               variant={{ size: "base", theme: "dark", weight: "normal" }}
               className="border-b pb-7"
             >
               Many desktop publishing packages and web page editors now use
               Lorem Ipsum as their default model text, and a search for 'lorem
               ipsum' will uncover many web sites still in their infancy.
-            </P>
+            </P> */}
 
             <div>
               <P
@@ -192,7 +198,7 @@ const ArtistDescription = ({ data }) => {
                 Credentials and Insignias Area
               </P>
               <div className="flex sm:flex-row flex-col sm:gap-0 gap-8 items-center shadow-2xl rounded-md xl:px-7 px-5 xl:py-4 sm:py-3 py-5">
-                {credential.map((item, index) => (
+                {data?.artist?.insignia?.map((item, index) => (
                   <div
                     key={index}
                     className={`flex flex-col gap-3 w-56 xl:px-6 px-4 justify-center items-center ${
@@ -201,7 +207,10 @@ const ArtistDescription = ({ data }) => {
                         : ""
                     }`}
                   >
-                    <img src={item.icon} alt="" />
+                    <img
+                      src={`${data?.url}/users/${item.insigniaImage}`}
+                      alt=""
+                    />
                     <P
                       variant={{
                         size: "base",
@@ -210,7 +219,7 @@ const ArtistDescription = ({ data }) => {
                       }}
                       className="text-center"
                     >
-                      {item.title}
+                      {item.credentialName}
                     </P>
                   </div>
                 ))}
@@ -251,7 +260,7 @@ const ArtistDescription = ({ data }) => {
                 Credentials and Insignias Area
               </P>
               <div className="flex sm:flex-row flex-col sm:gap-0 gap-8 items-center shadow-2xl rounded-md xl:px-7 px-5 xl:py-4 sm:py-3 py-5">
-                {credential.map((item, index) => (
+                {data?.artist?.insignia?.map((item, index) => (
                   <div
                     key={index}
                     className={`flex flex-col gap-3 w-56 xl:px-6 px-4 justify-center items-center ${
@@ -260,7 +269,10 @@ const ArtistDescription = ({ data }) => {
                         : ""
                     }`}
                   >
-                    <img src={item.icon} alt="" />
+                    <img
+                      src={`${data?.url}/users/${item.insigniaImage}`}
+                      alt=""
+                    />
                     <P
                       variant={{
                         size: "base",
@@ -269,7 +281,7 @@ const ArtistDescription = ({ data }) => {
                       }}
                       className="text-center"
                     >
-                      {item.title}
+                      {item.credentialName}
                     </P>
                   </div>
                 ))}
@@ -327,7 +339,7 @@ const ArtistDescription = ({ data }) => {
                 </P>
 
                 <div className="grid xl:grid-cols-4 lg:grid-cols-2 md:grid-cols-4 grid-cols-2 xl:gap-2 gap-5 items-center shadow-2xl rounded-md xl:py-10 py-5">
-                  {credential.map((item, index) => (
+                  {data?.artist?.insignia?.map((item, index) => (
                     <div
                       key={index}
                       className={`flex flex-col gap-3 justify-center items-center ${
@@ -336,7 +348,10 @@ const ArtistDescription = ({ data }) => {
                           : ""
                       }`}
                     >
-                      <img src={item.icon} alt="" />
+                      <img
+                        src={`${data?.url}/users/${item.insigniaImage}`}
+                        alt=""
+                      />
                       <P
                         variant={{
                           size: "base",
@@ -345,7 +360,7 @@ const ArtistDescription = ({ data }) => {
                         }}
                         className="text-center"
                       >
-                        {item.title}
+                        {item.credentialName}
                       </P>
                     </div>
                   ))}

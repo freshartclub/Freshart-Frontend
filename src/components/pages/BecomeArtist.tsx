@@ -283,7 +283,7 @@ const BecomeArtist = () => {
                     Email *
                   </label>
 
-                  <div className="flex w-full lg:justify-evenly  items-center gap-2 ">
+                  <div className="flex w-full lg:justify-start gap-2 ">
                     <input
                       {...register("email")}
                       onChange={(e) => setEmail(e.target.value)}
@@ -310,7 +310,7 @@ const BecomeArtist = () => {
                     Enter Otp
                   </label>
 
-                  <div className="flex justify-between items-center gap-2 w-full lg:justify-evenly">
+                  <div className="flex justify-between items-center gap-2 w-full lg:justify-start">
                     <input
                       className="appearance-none border rounded w-fit lg:w-[14vw]  py-3 px-5 text-gray-700 leading-tight focus:outline-none"
                       placeholder="Enter Otp"

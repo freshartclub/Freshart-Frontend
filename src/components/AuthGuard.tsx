@@ -13,7 +13,6 @@ const AuthGuard = ({ children }: AuthGuardProps) => {
   const currentPath = useLocation();
 
   if (isAuthorized && location.pathname === "/") {
-    console.log("hhey working fine");
     return <Navigate to="/home" replace />;
   }
 
