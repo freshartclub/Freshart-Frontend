@@ -39,7 +39,7 @@ const Artwork = () => {
   }
 
   return (
-    <div>
+    <div className="px-3 lg:px-0">
       <Header
         variant={{ size: "xl", theme: "dark", weight: "semiBold" }}
         className="mb-4 mt-4"
@@ -47,7 +47,7 @@ const Artwork = () => {
         Artworks
       </Header>
 
-      <div className="flex justify-end mb-4 gap-3 pb-3">
+      <div className="flex justify-end mb-4 gap-3 pb-3 ">
         <select
           className="border p-2 rounded-md text-sm"
           value={isArtProvider}
@@ -84,7 +84,7 @@ const Artwork = () => {
         </select>
       </div>
 
-      <div className="grid xl:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 ">
+      <div className="grid xl:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2 grid-cols-1  ">
         {filteredData && filteredData.length > 0 ? (
           filteredData.map((item: any, index: number) => (
             <div
@@ -94,7 +94,7 @@ const Artwork = () => {
               <img
                 src={`${data.url}/users/${item.media.mainImage}`}
                 alt="image"
-                className="w-[40vw] h-[50vh] object-cover cursor-pointer"
+                className="lg:w-[40vw] lg:h-[50vh] object-cover cursor-pointer "
               />
 
               {profile === "artist" && (

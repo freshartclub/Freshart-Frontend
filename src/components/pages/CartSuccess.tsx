@@ -4,8 +4,13 @@ import P from "../ui/P";
 import Button from "../ui/Button";
 import arrow from "../../assets/start icon.png";
 import download from "../../assets/primary-shape.png";
+import { useNavigate } from "react-router-dom";
 
 const CartSuccess = () => {
+  const navigate = useNavigate();
+  const continueToShpoing = () => {
+    navigate("/purchase");
+  };
   return (
     <div className="container mx-auto sm:px-6 px-3 lg:py-24 py-16">
       <div className="xl:w-[38%] lg:w-[47%] md:w-[74%] sm:w-[83%] w-full mx-auto flex flex-col ">
@@ -46,6 +51,7 @@ const CartSuccess = () => {
 
         <div className="flex sm:flex-row flex-col gap-5 mt-10 items-center">
           <Button
+            onClick={continueToShpoing}
             className="flex gap-2 border items-center 2xl:text-base text-sm"
             variant={{
               fontWeight: "500",

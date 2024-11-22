@@ -51,18 +51,23 @@ const ArtistNavBar = () => {
             {user?.artistName}
           </h1> */}
         </div>
-        <div className="flex items-center gap-8">
-          <div className="flex items-center gap-2">
-            <input
-              placeholder="Searsasach"
-              className="rounded outline-none px-2 py-1 border border-zinc-800"
-              type="text"
-            />
-            <IoMdSearch className="cursor-pointer" size="2em" />
+        <div className="flex items-center gap-8 ">
+          <div className=" hidden lg:block">
+            <div className="flex items-center gap-2">
+              <input
+                placeholder="Searsasach"
+                className="rounded outline-none  px-2 py-1 border border-zinc-800"
+                type="text"
+              />
+              <IoMdSearch className="cursor-pointer" size="2em" />
+            </div>
           </div>
 
-          <h1>Language</h1>
-          <IoNotifications className="cursor-pointer" size="2em" />
+          <h1 className="hidden lg:block">Language</h1>
+          <IoNotifications
+            className="cursor-pointer hidden lg:block"
+            size="2em"
+          />
           <span
             onClick={() => setIsToggelOpen(!isToogleOpen)}
             className="w-12 h-12 rounded-full  flex items-center justify-center cursor-pointer"

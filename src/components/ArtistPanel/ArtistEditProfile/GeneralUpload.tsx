@@ -86,8 +86,8 @@ const GeneralUpload = () => {
   }
 
   return (
-    <div className="flex gap-5 w-full mt-6">
-      <div className="shadow-xl p-5 relative w-[30%] h-fit flex flex-col items-center rounded-xl">
+    <div className="flex flex-col lg:flex-row gap-5 w-full mt-6">
+      <div className="shadow-xl p-5 relative lg:w-[30%] h-fit flex flex-col items-center rounded-xl">
         <div className="flex justify-center items-center">
           {/* Display the uploaded image or the default image fetched from the server */}
           {uploadedImage ? (

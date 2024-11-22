@@ -93,12 +93,15 @@ const ArtistProtfolioArtwork = ({ data }) => {
                   </h1>
                   <div>
                     <p className="text-[14px] text-[#696868]">
-                      {item?.additionalInfo?.height || null}
+                      {item?.additionalInfo?.height} x{" "}
+                      {item?.additionalInfo?.width}
                     </p>
                   </div>
                 </div>
                 <p className="text-[14px] text-[#696868]">
-                  {item?.owner?.artistName + " " + item?.owner?.artistSurname1}
+                  {data?.artist?.artistName +
+                    " " +
+                    data?.artist?.artistSurname1}
                 </p>
               </div>
             </div>

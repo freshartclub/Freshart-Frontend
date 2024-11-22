@@ -32,6 +32,7 @@ import QRCode from "react-qr-code";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import Dicipline from "./Dicipline";
+import { RenderAllPicklist } from "../../utils/RenderAllPicklist";
 
 const CustomYearPicker = ({
   field,
@@ -271,6 +272,9 @@ const AddArtwork = () => {
     // console.log("hello");
     setQrVisible(true);
   };
+
+  const picklist = RenderAllPicklist("Plans");
+  console.log(picklist);
 
   const handleFileChange = (e, setFile) => {
     const file = e.target.files?.[0];
@@ -1481,8 +1485,10 @@ const AddArtwork = () => {
                                 <option value="" disabled>
                                   Select
                                 </option>
-                                <option>Yes</option>
-                                <option>No</option>
+
+                                {picklist?.map((item, i) => (
+                                  <option>{item?.value}</option>
+                                ))}
                               </Field>
                             </label>
                           </div>

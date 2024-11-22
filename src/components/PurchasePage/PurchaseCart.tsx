@@ -136,7 +136,7 @@ const PurchaseCart = () => {
                   </tr>
                 </thead>
                 <tbody className="">
-                  {data?.data?.cart.map((table: any, index: number) => {
+                  {data?.data?.cart?.map((table: any, index: number) => {
                     const basePrice = parseFloat(
                       table.pricing.basePrice.replace("$", "")
                     );
@@ -179,6 +179,7 @@ const PurchaseCart = () => {
                         <td className="xl:px-6 lg:px-4 px-2 py-4 text-[#475156] font-medium">
                           {table.pricing.dpersentage}%
                         </td>
+
                         <td className="xl:px-6 lg:px-4 px-2 py-4 text-[#191C1F] font-semibold">
                           ${discountedPrice}
                         </td>

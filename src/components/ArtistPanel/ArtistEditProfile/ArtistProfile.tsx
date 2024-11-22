@@ -14,23 +14,12 @@ const ArtistProfile = () => {
   }
 
   return (
-    <div className="bg-white p-10 ">
+    <div className="bg-white p-10  ">
       <Header
         variant={{ size: "2xl", theme: "dark", weight: "semiBold" }}
         className="mt-6 flex gap-2 items-center"
       >
         Artist Profile
-        {/* <div>
-          <h1 className="text-[15px] flex items-center">
-            {" "}
-            <span
-              className={`w-[1vh] h-[1vh] border rounded-full ${
-                isActivated ? "bg-green-500" : "bg-gray-400"
-              }`}
-            ></span>{" "}
-            Under Maintenance
-          </h1>
-        </div> */}
       </Header>
 
       <nav className="flex" aria-label="Breadcrumb">

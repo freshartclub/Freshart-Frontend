@@ -10,6 +10,8 @@ export const ARTTIST_ENDPOINTS = {
   GetArtWorkListById: `${ARTIST_BASE_URl}/get-artwork`,
   AddArtWork: `${ARTIST_BASE_URl}/add-artwork`,
   GetHomeData: `${ARTIST_BASE_URl}/get-home-artworks`,
+  RecentArtWorks: `${ARTIST_BASE_URl}/add-to-recent`,
+  GetRecentArtworks: `${ARTIST_BASE_URl}/get-recent-view`,
 
   // GetArtistArtwork: `${ARTIST_BASE_URl}/get-artist-artwork `,
   // DeleteArtwork: `${ARTIST_BASE_URl}/delete-artist-artwork `,

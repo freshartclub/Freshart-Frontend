@@ -1,6 +1,4 @@
-import React from "react";
 import { useFieldArray, Controller } from "react-hook-form";
-import Button from "../../ui/Button";
 import { ARTIST_SOCIAL_LINKS } from "../../utils/mockData";
 
 const SocialMediaLinks = ({ control }) => {

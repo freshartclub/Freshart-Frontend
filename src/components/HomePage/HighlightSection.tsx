@@ -8,8 +8,9 @@ import "../../App.css";
 import like from "../../assets/like.png";
 import { useNavigate } from "react-router-dom";
 
-const HighlightSection = ({ data }) => {
+import postRecentArtworkMutation from "./http/postRecentView";
 
+const HighlightSection = ({ data }) => {
   const settings = {
     dots: true,
     infinite: true,
@@ -49,8 +50,11 @@ const HighlightSection = ({ data }) => {
     ],
   };
 
+  const { mutate, isPending } = postRecentArtworkMutation();
+
   const navigate = useNavigate();
   const handleRedirectToDescription = (id) => {
+    mutate(id);
     navigate(`/discover_more?id=${id}`);
     window.scroll(0, 0);
   };

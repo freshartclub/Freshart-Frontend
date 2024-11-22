@@ -284,10 +284,10 @@ const AplhaFilter = ({ query, data }: any) => {
 
   const handleLetterClick = (letter: string) => {
     const matchingArtists = data?.artists?.filter((artist) =>
-      artist.artistName.toLowerCase().startsWith(letter.toLowerCase())
+      artist?.artistName?.toLowerCase().startsWith(letter.toLowerCase())
     );
 
-    if (matchingArtists.length === 0) {
+    if (matchingArtists?.length === 0) {
       setSelectedLetter(null);
     } else {
       setSelectedLetter(letter);
@@ -329,36 +329,38 @@ const AplhaFilter = ({ query, data }: any) => {
       </div>
 
       <div className="grid xl:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5 mb-10">
-        {filteredItems?.map((item, index) => (
-          <div key={index} className=" text-center">
-            <div
-              className="mt-14 rounded-lg border border-[#FF536B] flex flex-col items-center"
-              onClick={() => handleArtistDetail(item?._id)}
-            >
-              <img
-                src={`${data.url}/users/${item.profile.mainImage}`}
-                alt="profile"
-                className="-mt-10 w-[10vh] h-[10vh] rounded-full object-cover"
-              />
-              <h1 className="text-xl my-1">{item.artistName}</h1>
-              <p className="text-sm mb-2">
-                {" "}
-                {Array.isArray(item?.aboutArtist?.discipline) &&
-                  item?.aboutArtist?.discipline.map((iw, i) => (
-                    <span key={i}>
-                      {iw.discipline}
-                      {i < item?.aboutArtist?.discipline.length - 1 && "| "}
-                    </span>
-                  ))}
-              </p>
-              <img
-                src={`${data.url}/users/${item.profile.inProcessImage}`}
-                alt="Artwork"
-                className="p-4 w-[30vw] h-[30vh] object-cover"
-              />
+        {filteredItems &&
+          filteredItems.length > 0 &&
+          filteredItems?.map((item, index) => (
+            <div key={index} className=" text-center">
+              <div
+                className="mt-14 rounded-lg border border-[#FF536B] flex flex-col items-center"
+                onClick={() => handleArtistDetail(item?._id)}
+              >
+                <img
+                  src={`${data.url}/users/${item?.profile?.mainImage}`}
+                  alt="profile"
+                  className="-mt-10 w-[10vh] h-[10vh] rounded-full object-cover"
+                />
+                <h1 className="text-xl my-1">{item?.artistName}</h1>
+                <p className="text-sm mb-2">
+                  {" "}
+                  {Array.isArray(item?.aboutArtist?.discipline) &&
+                    item?.aboutArtist?.discipline.map((iw, i) => (
+                      <span key={i}>
+                        {iw.discipline}
+                        {i < item?.aboutArtist?.discipline?.length - 1 && "| "}
+                      </span>
+                    ))}
+                </p>
+                <img
+                  src={`${data.url}/users/${item?.profile?.inProcessImage}`}
+                  alt="Artwork"
+                  className="p-4 w-[30vw] h-[30vh] object-cover"
+                />
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
 
       {/* Pagination Controls */}

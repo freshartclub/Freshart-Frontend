@@ -46,7 +46,7 @@ const ArtistHeader = ({ data }) => {
         // we have to also add addtional images
         // { src: data?.artist?.profile?.backImage, alt: "Back Image" },
         { src: data?.artist?.profile?.inProcessImage, alt: "In Process Image" },
-        ...additionalImage.map((item) => ({
+        ...additionalImage?.map((item) => ({
           src: item,
           alt: "Additional Image",
         })),

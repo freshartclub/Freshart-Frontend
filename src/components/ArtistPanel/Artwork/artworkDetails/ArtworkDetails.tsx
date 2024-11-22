@@ -32,12 +32,10 @@ const ArtworkDetails = () => {
       <ArtworkHeader artwork={artWork} />
 
       <div className="flex flex-col lg:flex-row mt-10">
-        {/* Left Side: Image and thumbnails */}
         <div className="lg:w-1/2">
           <ProductImage />
         </div>
 
-        {/* Right Side: Product Info */}
         <div className="lg:w-1/2">
           <ProductInfo />
         </div>

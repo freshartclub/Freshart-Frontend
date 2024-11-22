@@ -9,6 +9,7 @@ import order1 from "../../assets/order2.png";
 import Header from "../ui/Header";
 import home from "../../assets/home.png";
 import arrow from "../../assets/Vector.png";
+import { useGetOrder } from "./http/useGetOrder";
 
 const order_Data = [
   {
@@ -44,6 +45,9 @@ const order_Data = [
 ];
 
 const OrderPage = () => {
+  const { data, isPending } = useGetOrder();
+  console.log("this is artwork", data?.purchase);
+
   return (
     <div className="bg-[#EFEFF7] pb-10">
       <div className="container mx-auto md:px-6 px-3 pt-10">

@@ -5,6 +5,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import like from "../../assets/like.png";
+import { useGetRecentArtwork } from "./http/getRecentArtwork";
 
 const recentData = [
   {
@@ -77,36 +78,89 @@ const RecentSection = () => {
     ],
   };
 
+  const { data, isLoading } = useGetRecentArtwork();
+  console.log(data);
+
   return (
     <div className="bg-[#F5F2EB] py-24 mt-16">
       <div className="container mx-auto md:px-6 px-3">
         <h1 className="text-[30px] font-semibold mb-5 w-80 sm:w-full">
           Recent Viewed Artworks
         </h1>
-        <Slider {...settings}>
-          {recentData.map((item, index) => (
+
+        {data?.data?.length === 1 ? (
+          data?.data?.map((item, index) => (
             <div
               key={index}
-              className="sm:px-3 px-0 border-none outline-none relative"
+              className="sm:px-3 px-0 border-none outline-none w-[20rem] "
             >
-              <img src={item.image} alt="image" className="w-full h-full" />
+              <div className="relative">
+                <img
+                  src={`${data.url}/users/${item.media.mainImage}`}
+                  alt="image"
+                  className="w-[20rem] h-[50vh] object-cover"
+                />
 
-              <button className="absolute top-2 right-[28px] border border-[#FFD9DE] rounded-full px-3 py-3 bg-white cursor-pointer">
-                <img src={like} alt="like" className="w-[20px] h-[20px]" />
-              </button>
+                <span className="absolute border top-0 right-0 border-[#FFD9DE] rounded-full px-3 py-3 bg-white cursor-pointer">
+                  <img src={like} alt="like" className="w-[20px] h-[20px]" />
+                </span>
+              </div>
+
               <div className="mt-3">
-                <p className="text-[14px] text-[#696868]">{item.title}</p>
+                <p className="text-[14px] text-[#696868]">
+                  {item?.discipline?.artworkDiscipline}
+                </p>
                 <div className="flex justify-between items-center">
                   <h1 className="font-bold text-[20px] text-[#333333] xl:w-[80%] lg:w-[70%] w-[80%] line-clamp-2">
-                    {item.heading}
+                    {item?.artworkName}
                   </h1>
-                  <p className="text-[14px] text-[#696868]">{item.size}</p>
+                  <p className="text-[14px] text-[#696868]">
+                    {item.additionalInfo?.length}x{item.additionalInfo?.width}
+                  </p>
                 </div>
-                <p className="text-[14px] text-[#696868]">{item.para}</p>
+                <p className="text-[14px] text-[#696868]">
+                  {item.owner?.artistName}
+                </p>
               </div>
             </div>
-          ))}
-        </Slider>
+          ))
+        ) : (
+          <Slider {...settings}>
+            {data?.data?.map((item, index) => (
+              <div
+                key={index}
+                className="sm:px-3 px-0 border-none outline-none relative"
+              >
+                <img
+                  src={`${data.url}/users/${item.media.mainImage}`}
+                  alt="image"
+                  className="w-[20vw] h-[50vh] object-cover"
+                />
+
+                <button className="absolute top-2 right-[28px] border border-[#FFD9DE] rounded-full px-3 py-3 bg-white cursor-pointer">
+                  <img src={like} alt="like" className="w-[20px] h-[20px]" />
+                </button>
+                <div className="mt-3">
+                  <p className="text-[14px] text-[#696868]">
+                    {item?.discipline?.artworkDiscipline}
+                  </p>
+                  <div className="flex justify-between items-center">
+                    <h1 className="font-bold text-[20px] text-[#333333] xl:w-[80%] lg:w-[70%] w-[80%] line-clamp-2">
+                      {item?.artworkName}
+                    </h1>
+                    <p className="text-[14px] text-[#696868]">
+                      {" "}
+                      {item.additionalInfo?.length}x{item.additionalInfo?.width}
+                    </p>
+                  </div>
+                  <p className="text-[14px] text-[#696868]">
+                    {item.owner?.artistName}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </Slider>
+        )}
       </div>
     </div>
   );

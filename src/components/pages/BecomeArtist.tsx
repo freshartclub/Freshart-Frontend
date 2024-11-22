@@ -4,21 +4,17 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import P from "../ui/P";
 import Header from "../ui/Header";
 import browser from "../../assets/cloud-add.png";
-import Button from "../ui/Button";
-import arrow from "../../assets/arrow.png";
 import "react-phone-number-input/style.css";
 import PhoneInput from "react-phone-number-input";
 import Select from "react-select";
 
 import useBecomeAnArtistMutation from "../../http/artist/useBecomeAnArtistMutation";
 import { useEffect, useRef, useState } from "react";
-import { style } from "../utils/selectedField";
 import useSendOtp from "../../http/artist/useSendOtp";
 import useOtpVerifyMutationBecomeAnArtist from "../../http/artist/useOtpVerifyBecomeAnArtist";
 import { useGetDiscipline } from "./http/useGetDiscipline";
 import { useGetStyle } from "./http/useGetStyle";
-import { ARTIST_SOCIAL_LINKS } from "../utils/mockData";
-import SocialMediaLinks from "../ArtistPanel/ArtistEditProfile/GeneralSocial";
+
 import toast from "react-hot-toast";
 import { useGetSocialMediaPicklist } from "./http/useGetSocialMedia";
 import ThankYou from "./ThankYou";
@@ -81,7 +77,7 @@ const BecomeArtist = () => {
   const { data, isLoading } = useGetDiscipline();
   const { data: styleData, isLoading: styleLoading } = useGetStyle();
 
-  const dOption = data?.data.map((item) => {
+  const diciplineOption = data?.data.map((item) => {
     return item.disciplineName;
   });
 
@@ -360,7 +356,7 @@ const BecomeArtist = () => {
                     <option value="">Select Discipline</option>
                     {isLoading
                       ? "Loading..."
-                      : dOption?.map((item, i) => (
+                      : diciplineOption?.map((item, i) => (
                           <option className="text-black" value={item}>
                             {item}
                           </option>

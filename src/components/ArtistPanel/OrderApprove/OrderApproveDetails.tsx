@@ -6,11 +6,16 @@ import add from "../assets/add.png";
 import evidence3 from "../assets/evidence3.png";
 import select_file from "../assets/select_file.png";
 import select_img from "../assets/select_img.jpg";
+import { useGetArtistOrder } from "../Orders/http/useGetArtistOrder";
 
 const OrderApproveDetails = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
+
+  // const { data, isLoading } = useGetArtistOrder();
+
+  // console.log(data);
 
   const details = [
     {
@@ -94,7 +99,7 @@ const OrderApproveDetails = () => {
                 <div
                   key={index}
                   className="flex flex-col sm:flex-row justify-between md:items-center p-4 border-b-2  border-dashed  space-y-4"
-                               >
+                >
                   <div className="flex  flex-col  sm:flex-row items-center space-x-4">
                     <div className=" bg-gray-300 rounded-lg flex  items-center justify-center">
                       <img
@@ -119,8 +124,11 @@ const OrderApproveDetails = () => {
                   <div className="flex justify-center sm:flex-row items-center gap-4 ">
                     <img className="cursor-pointer" src={view}></img>
 
-                    <img className="cursor-pointer" onClick={() => openModal(product)}
-   src={edit}></img>
+                    <img
+                      className="cursor-pointer"
+                      onClick={() => openModal(product)}
+                      src={edit}
+                    ></img>
                   </div>
                 </div>
               ))}

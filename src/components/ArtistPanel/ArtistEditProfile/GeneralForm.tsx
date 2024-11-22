@@ -496,7 +496,7 @@ const GeneralForm = ({ defaultValues }: { defaultValues: any }) => {
                       <img
                         src={`${data.data.url}/users/${item.insigniaImage}`}
                         alt=""
-                        className="w-[10vw] h-[15vh] object-cover"
+                        className="lg:w-[10vw] lg:h-[15vh] object-cover"
                       />
                       <h1 className="text-center font-medium">
                         {item.credentialName}

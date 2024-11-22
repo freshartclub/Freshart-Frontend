@@ -2,7 +2,7 @@ import React from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 
 const Logistics = ({ control }) => {
-  //   const { register, errors } = useForm();
+  
   const {} = useFieldArray({
     control,
     name: "logistics",
@@ -74,11 +74,7 @@ const Logistics = ({ control }) => {
             >
               {label}
             </label>
-            {/* {errors.name && (
-              <div className="text-red-500 text-sm mt-1">
-                <div>{errors.name?.message}</div>
-              </div>
-            )} */}
+           
           </div>
         ))}
       </div>

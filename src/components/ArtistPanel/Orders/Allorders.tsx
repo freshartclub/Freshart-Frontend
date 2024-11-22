@@ -3,8 +3,12 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { useState } from "react";
 import PaginationTabs from "../ArtistDashboard/PaginationTabs";
 import { useNavigate } from "react-router-dom";
+import { useGetArtistOrder } from "./http/useGetArtistOrder";
 
 const Allorders = ({ orderDelail }: any) => {
+  const { data, isLoading } = useGetArtistOrder();
+  console.log(data?.purchase);
+
   const [currentPage, setCurrentPage] = useState(1);
   const recordPerPage = 10;
   const lastIndex = currentPage * recordPerPage;
@@ -21,6 +25,7 @@ const Allorders = ({ orderDelail }: any) => {
     { key: "product", label: "Product", colSpan: 2 },
     { key: "date", label: "Date", colSpan: 1 },
     { key: "customer", label: "Customer", colSpan: 2 },
+    { key: "orderType", label: "Order Type", colSpan: 1 },
     { key: "total", label: "Total", colSpan: 1 },
     { key: "payment", label: "Payment", colSpan: 1 },
     { key: "status", label: "Status", colSpan: 1 },
@@ -36,7 +41,7 @@ const Allorders = ({ orderDelail }: any) => {
   return (
     <>
       <div className="rounded-md border border-1 mt-3">
-        <div className="grid grid-cols-10 bg-[#F9F9FC] items-center my-auto h-10 p-2 border-b">
+        <div className="grid grid-cols-11 bg-[#F9F9FC] items-center my-auto h-10 p-2 border-b">
           {columns.map((column) => (
             <div
               key={column.key}
@@ -53,7 +58,7 @@ const Allorders = ({ orderDelail }: any) => {
           {records?.map((value: any, index: any) => (
             <div key={index}>
               <div
-                className=" grid grid-cols-10 h-auto pb-3 pt-3 "
+                className=" grid grid-cols-11 h-auto pb-3 pt-3 "
                 onClick={() => {
                   handelClickData(value);
                 }}
@@ -89,8 +94,15 @@ const Allorders = ({ orderDelail }: any) => {
                   <p className="text-black font-semibold text-[12px] md:text-[14px]">
                     {value.customername}
                   </p>
+
                   <p className="text-[10px] md:text-[12px]">
                     {value.customeremail}
+                  </p>
+                </div>
+
+                <div className="col-span-1">
+                  <p className="text-[12px] md:text-[14px] font-bold">
+                    ${value.totle}
                   </p>
                 </div>
 

@@ -6,42 +6,16 @@ import us_flag from "../../assets/Clip path group.png";
 import search from "../../assets/Search.png";
 import heart from "../../assets/Heart.png";
 import bag from "../../assets/Bag.png";
-// import profile from "../../assets/Avatar.png";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import P from "../ui/P";
 import Header from "../ui/Header";
 import selling from "../../assets/Images-cuate 1.png";
 import ShoppingCard from "../pages/ShoppingCard";
 import Button from "../ui/Button";
-import profile1 from "../../assets/profile_image.png";
 import { useAppSelector } from "../../store/typedReduxHooks";
 import useLogOutMutation from "../../http/auth/useLogOutMutation";
-import Loader from "../ui/Loader";
-
-const categories = [
-  {
-    title: "Category 1",
-    products: ["Products 01", "Products 02", "Products 03"],
-  },
-  {
-    title: "Category 2",
-    products: [
-      "Product 01",
-      "Product 02",
-      "Product 03",
-      "Product 04",
-      "Product 05",
-    ],
-  },
-  {
-    title: "Category 3",
-    products: ["Product 01", "Product 02", "Product 03"],
-  },
-  {
-    title: "Category 4",
-    products: ["Product 01", "Product 02"],
-  },
-];
+import { useGetDiscipline } from "../pages/http/useGetDiscipline";
+import { useGetPicklist } from "./http/getPickList";
 
 const mobile_links = [
   { path: "/", label: "Home" },
@@ -60,6 +34,37 @@ const NavBar = () => {
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const navigate = useNavigate();
+
+  const { data, isLoading } = useGetDiscipline();
+  const { data: seriesPickList, isLoading: seriesPickListLoading } =
+    useGetPicklist();
+
+  const disciplineData = data?.data?.map((item, i) => item);
+
+  const getOutDiscipline = disciplineData?.map(
+    (item, i) => item?.disciplineName
+  );
+  console.log(getOutDiscipline);
+  const selectSeriesPicklist = seriesPickList?.data?.filter(
+    (item) => item?.picklistName === "Series"
+  );
+
+  console.log(selectSeriesPicklist);
+
+  const categories = [
+    {
+      title: "Dicipline",
+      products: getOutDiscipline,
+    },
+    {
+      title: "Series",
+      products: selectSeriesPicklist?.map((item, i) => item?.picklist),
+    },
+    {
+      title: "Collection",
+      products: ["Product 01", "Product 02", "Product 03"],
+    },
+  ];
 
   const isArtist = useAppSelector((state) => state.user.isArtist);
   const user = useAppSelector((state) => state.user.user);
@@ -206,46 +211,93 @@ const NavBar = () => {
                   </div>
 
                   {isDropdownOpen && (
-                    <div
-                      id="mega-menu-dropdown"
-                      className="absolute z-10 top-[9rem] grid grid-cols-[1fr_1fr_1fr_1fr_4fr] gap-4 text-sm bg-white border rounded-lg shadow-md p-8"
-                    >
-                      {categories.map((category, index) => (
-                        <div key={index} className="text-gray-900 md:pb-4">
+                    <div className="">
+                      <div
+                        id="mega-menu-dropdown"
+                        className="absolute w-full left-0 z-10 top-[9rem] grid grid-cols-[1fr_1fr_1fr_1fr_4fr] gap-4 text-sm bg-white border rounded-lg shadow-md p-8"
+                      >
+                        <div className="text-gray-900 md:pb-4 flex  px-5 ">
                           <ul
-                            className="space-y-4"
+                            className="space-y-4 w-[10vw] "
                             aria-labelledby="mega-menu-dropdown-button"
                           >
                             <li>
                               <a href="#" className="uppercase font-bold">
-                                {category.title}
+                                Dicipline
                               </a>
                             </li>
-                            {category.products.map((product, prodIndex) => (
-                              <li key={prodIndex}>
-                                <a
-                                  href="#"
+
+                            {disciplineData?.map((item, i) => (
+                              <li>
+                                <Link
+                                  to={`${item.disciplineName}?option=subscription`}
                                   className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500"
                                 >
-                                  {product}
-                                </a>
+                                  {item?.disciplineName}
+                                </Link>
                               </li>
                             ))}
                           </ul>
-                        </div>
-                      ))}
 
-                      <div>
-                        <Header
-                          variant={{
-                            theme: "dark",
-                            weight: "bold",
-                          }}
-                          className="uppercase text-sm"
-                        >
-                          Top selling product
-                        </Header>
-                        <img src={selling} alt="selling product" />
+                          <ul
+                            className="space-y-4  px-5  w-[10vw] "
+                            aria-labelledby="mega-menu-dropdown-button"
+                          >
+                            <li>
+                              <a href="#" className="uppercase font-bold">
+                                Series
+                              </a>
+                            </li>
+
+                            {selectSeriesPicklist &&
+                              selectSeriesPicklist.length > 0 &&
+                              selectSeriesPicklist[0]?.picklist?.map(
+                                (item, i) => (
+                                  <li>
+                                    <h1
+                                      href="#"
+                                      className=" text-gray-500  dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500"
+                                    >
+                                      {item?.name}
+                                    </h1>
+                                  </li>
+                                )
+                              )}
+                          </ul>
+
+                          <ul
+                            className="space-y-4 mr-6"
+                            aria-labelledby="mega-menu-dropdown-button"
+                          >
+                            <li>
+                              <a href="#" className="uppercase font-bold">
+                                Collection
+                              </a>
+                            </li>
+
+                            <li>
+                              <a
+                                href="#"
+                                className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500"
+                              >
+                                Collection
+                              </a>
+                            </li>
+                          </ul>
+                        </div>
+
+                        <div>
+                          <Header
+                            variant={{
+                              theme: "dark",
+                              weight: "bold",
+                            }}
+                            className="uppercase text-sm w-[30vw] "
+                          >
+                            Top selling product
+                          </Header>
+                          <img src={selling} alt="selling product " />
+                        </div>
                       </div>
                     </div>
                   )}

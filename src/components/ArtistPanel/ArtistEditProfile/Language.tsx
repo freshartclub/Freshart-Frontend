@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FaAngleDown } from "react-icons/fa"; // Import down arrow icon
+import { FaAngleDown } from "react-icons/fa"; 
 
 export const options = [
   {
@@ -10,7 +10,7 @@ export const options = [
       { label: "EUR", value: "eur", symbol: "€" },
       { label: "GBP", value: "gbp", symbol: "£" },
     ],
-    selectedValue: "usd", // default value
+    selectedValue: "usd", 
   },
   {
     label: "Change Language",
@@ -32,7 +32,7 @@ export const options = [
         url: "https://cdn-icons-png.flaticon.com/128/197/197560.png",
       },
     ],
-    selectedValue: "es", // default value
+    selectedValue: "es", 
   },
 ];
 
@@ -56,10 +56,10 @@ const Language = () => {
           key={index}
           className="flex justify-between items-center p-4 border rounded-lg"
         >
-          {/* Label */}
+         
           <span className="text-black font-semibold">{option.label}</span>
 
-          {/* Currency Dropdown */}
+         
           {option.value === "currency" ? (
             <div className="flex items-center">
               <span className="text-lg font-semibold">
@@ -82,9 +82,9 @@ const Language = () => {
               </select>
             </div>
           ) : (
-            // Custom Language Dropdown
+            
             <div className="relative ">
-              {/* Button to show selected flag and down arrow */}
+              
               <button
                 className="flex items-center justify-between  p-2 "
                 onClick={() => setLanguageDropdownOpen(!isLanguageDropdownOpen)}
@@ -99,18 +99,11 @@ const Language = () => {
                     alt="Flag"
                     className="w-6 h-6"
                   />
-                  {/* <span className="text-sm md:text-base font-semibold">
-                    {
-                      option.choices.find(
-                        (choice) => choice.value === settings.language
-                      )?.label
-                    }
-                  </span> */}
+                 
                 </div>
                 <FaAngleDown className="text-gray-600" />
               </button>
 
-              {/* Dropdown options (hidden by default) */}
               {isLanguageDropdownOpen && (
                 <div className="absolute mt-1  bg-white border rounded shadow-md z-10">
                   {option.choices.map((choice, idx) => (

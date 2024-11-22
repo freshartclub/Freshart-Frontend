@@ -3,14 +3,14 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
 const Security = () => {
-  // Toggle visibility state for password fields
+  
   const [showPassword, setShowPassword] = useState({
     oldPassword: false,
     newPassword: false,
     confirmPassword: false,
   });
 
-  // Validation schema using Yup
+ 
   const validationSchema = Yup.object({
     oldPassword: Yup.string().required("Old password is required"),
     newPassword: Yup.string()
@@ -21,7 +21,7 @@ const Security = () => {
       .required("Confirm password is required"),
   });
 
-  // Toggle password visibility
+
   const togglePasswordVisibility = (field) => {
     setShowPassword((prevState) => ({
       ...prevState,
@@ -39,13 +39,13 @@ const Security = () => {
         }}
         validationSchema={validationSchema}
         onSubmit={(values) => {
-          // Handle form submission
-          console.log("Form data", values); // This prints the form data to the console
+         
+          console.log("Form data", values); 
         }}
       >
         {({ errors, touched }) => (
           <Form className="space-y-6">
-            {/* Old Password */}
+           
             <div className="relative">
               <Field
                 type={showPassword.oldPassword ? "text" : "password"}
@@ -63,9 +63,9 @@ const Security = () => {
                 onClick={() => togglePasswordVisibility("oldPassword")}
               >
                 {showPassword.oldPassword ? (
-                  <i className="bi bi-eye" /> /* Bootstrap Icon */
+                  <i className="bi bi-eye" /> 
                 ) : (
-                  <i className="bi bi-eye-slash" /> /* Bootstrap Icon */
+                  <i className="bi bi-eye-slash" /> 
                 )}
               </button>
               <ErrorMessage
@@ -75,7 +75,7 @@ const Security = () => {
               />
             </div>
 
-            {/* New Password */}
+           
             <div className="relative">
               <Field
                 type={showPassword.newPassword ? "text" : "password"}
@@ -93,9 +93,9 @@ const Security = () => {
                 onClick={() => togglePasswordVisibility("newPassword")}
               >
                 {showPassword.newPassword ? (
-                  <i className="bi bi-eye" /> /* Bootstrap Icon */
+                  <i className="bi bi-eye" /> 
                 ) : (
-                  <i className="bi bi-eye-slash" /> /* Bootstrap Icon */
+                  <i className="bi bi-eye-slash" /> 
                 )}
               </button>
               <ErrorMessage
@@ -105,7 +105,7 @@ const Security = () => {
               />
             </div>
 
-            {/* Confirm New Password */}
+            
             <div className="relative">
               <Field
                 type={showPassword.confirmPassword ? "text" : "password"}
@@ -123,9 +123,9 @@ const Security = () => {
                 onClick={() => togglePasswordVisibility("confirmPassword")}
               >
                 {showPassword.confirmPassword ? (
-                  <i className="bi bi-eye" /> /* Bootstrap Icon */
+                  <i className="bi bi-eye" /> 
                 ) : (
-                  <i className="bi bi-eye-slash" /> /* Bootstrap Icon */
+                  <i className="bi bi-eye-slash" /> 
                 )}
               </button>
               <ErrorMessage
@@ -135,7 +135,7 @@ const Security = () => {
               />
             </div>
 
-            {/* Save Changes Button */}
+            
             <div className="flex justify-end mt-4">
               <button
                 type="submit"

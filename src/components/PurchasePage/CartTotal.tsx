@@ -1,7 +1,9 @@
+import { useNavigate } from "react-router-dom";
 import Button from "../ui/Button";
 import Header from "../ui/Header";
 import P from "../ui/P";
 import rightarr from "./assets/ArrowRight.png";
+import usePostCheckOutMutation from "./http/usePostCheckOutMutation";
 
 const CartTotal = ({ data }) => {
   const discountAmounts = data?.data?.cart.map((item) => {
@@ -10,9 +12,11 @@ const CartTotal = ({ data }) => {
     const discountAmount = (basePrice * discountPercentage) / 100;
     return discountAmount;
   });
+  const navigate = useNavigate();
 
+  const { mutate, isPending } = usePostCheckOutMutation();
   const totalDiscountAmount = discountAmounts
-    .reduce((totalDiscount, item) => {
+    ?.reduce((totalDiscount, item) => {
       return totalDiscount + item;
     }, 0)
     .toFixed(2);
@@ -26,7 +30,7 @@ const CartTotal = ({ data }) => {
     }, 0)
     .toFixed(2);
 
-  // console.log(totalPrice);
+  console.log(data);
 
   const card_total = [
     {
@@ -46,6 +50,31 @@ const CartTotal = ({ data }) => {
       value: "$61.99",
     },
   ];
+
+  const artWorkId = data?.data?.cart?.map((item, i) => item?._id);
+  console.log(artWorkId);
+
+  const handleCheckOut = () => {
+    console.log("hello");
+    try {
+      const data = {
+        subTotal: totalPrice - totalDiscountAmount,
+        tax: 61.99,
+        shipping: 0,
+        orderType: "purchase",
+        items: [
+          {
+            id: artWorkId,
+            quantity: 1,
+          },
+        ],
+      };
+
+      mutate(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <>
       <div className="p-5 mb-8 border rounded-md">
@@ -54,7 +83,7 @@ const CartTotal = ({ data }) => {
         </Header>
 
         <div className="border-b-2 border-b-[#E4E7E9] pb-2">
-          {card_total.map((card, index) => (
+          {card_total?.map((card, index) => (
             <div key={index} className="flex justify-between my-3">
               <P
                 variant={{ size: "small", weight: "medium" }}
@@ -82,6 +111,7 @@ const CartTotal = ({ data }) => {
         </div>
 
         <Button
+          onClick={() => handleCheckOut()}
           variant={{ theme: "dark", rounded: "full" }}
           className="flex gap-2 items-center w-full justify-center xl:!py-5 lg:py-3"
         >

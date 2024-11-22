@@ -44,17 +44,17 @@ export default function Notification() {
               {item.paragraph}
             </p>
           </div>
-          {/* The toggles section for each section */}
+         
           <div className="bg-[#F4F6F8] px-4 py-10 rounded-lg shadow-md space-y-4 w-[60%]">
             {item.items.map((toggle, itemIndex) => (
               <div
                 key={itemIndex}
                 className="flex items-center justify-between"
               >
-                {/* Left-aligned label */}
+               
                 <span className="text-[#1C252E]">{toggle.label}</span>
 
-                {/* Right-aligned toggle button */}
+               
                 <button
                   onClick={() => handleToggleChange(sectionIndex, itemIndex)}
                   className={`${
@@ -74,7 +74,7 @@ export default function Notification() {
         </div>
       ))}
 
-      {/* Save Changes Button */}
+      
       <div className="flex justify-end">
         <button className="px-4 py-2 bg-[#102030] text-white rounded-md shadow ">
           Save changes

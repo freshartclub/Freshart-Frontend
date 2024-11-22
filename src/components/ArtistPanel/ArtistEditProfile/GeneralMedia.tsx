@@ -5,7 +5,7 @@ import {
   useFormContext,
   useForm,
 } from "react-hook-form";
-import Header from "../../ui/Header"; // Assuming this is your custom Header component
+import Header from "../../ui/Header"; 
 
 const GeneralMedia = ({ control, data, url }) => {
   const { setValue, getValues, watch } = useFormContext();

@@ -21,7 +21,7 @@ const ArtistPanel = () => {
     <>
       <div className=" flex w-full overflow-hidden">
         <Sidebar />
-        <div className="flex-1 sm:px-6 px-3 bg-zinc-100 ">
+        <div className="flex-1 sm:px-6 lg:px-3 bg-zinc-100 ">
           <Routes>
             <Route index element={<Dashboard />} />
             <Route path="artdashboard" element={<Dashboard />} />

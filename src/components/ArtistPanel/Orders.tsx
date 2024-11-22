@@ -8,9 +8,11 @@ import FilterBtn from "./Artwork/FilterBtn";
 import { IoIosArrowBack } from "react-icons/io";
 import { NavLink } from "react-router-dom";
 import { tabsContext } from "./Context/Context";
+
 const Orders = () => {
   const categorys = ["All Time", "12 Months", "30 Days", "7 Days", "24 Hour"];
   const [activeTab, setActiveTab] = useState("All Time");
+
   const filterData =
     activeTab === "All Time"
       ? orderDelail
@@ -58,7 +60,7 @@ const Orders = () => {
                     ? "bg-black text-white border rounded-md px-2 py-1"
                     : ""
                 }`}
-                onClick={() => handleTabs(category)} 
+                onClick={() => handleTabs(category)}
               >
                 <p>{category}</p>
               </div>

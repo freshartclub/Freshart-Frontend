@@ -3,21 +3,24 @@ import Select from "react-select";
 
 import Header from "../../ui/Header";
 import { useEffect } from "react";
+import { useGetDiscipline } from "../../pages/http/useGetDiscipline";
 
 const Dicipline = () => {
   const { setFieldValue, values } = useFormikContext();
+  const { data, isLoading } = useGetDiscipline();
+
+  const diciplineOption = data?.data.map((item) => {
+    return item.disciplineName;
+  });
+
+  console.log(diciplineOption);
 
   const fields = [
     {
       id: "artworkdiscipline",
       name: "artworkDiscipline",
       label: "Artwork discipline",
-      options: [
-        { value: "Dicipline 1", label: "Dicipline 1" },
-        { value: "Dicipline 2", label: "Dicipline 2" },
-        { value: "Dicipline 3", label: "Dicipline 3" },
-        { value: "Dicipline 4", label: "Dicipline 4" },
-      ],
+      options: diciplineOption,
     },
   ];
 
@@ -55,9 +58,9 @@ const Dicipline = () => {
               <option value="" disabled>
                 Select Discipline
               </option>
-              {options.map((option, index) => (
-                <option key={index} value={option.value}>
-                  {option.label}
+              {options?.map((option, index) => (
+                <option key={index} value={option}>
+                  {option}
                 </option>
               ))}
             </Field>
