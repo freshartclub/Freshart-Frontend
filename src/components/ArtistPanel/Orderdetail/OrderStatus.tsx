@@ -4,7 +4,7 @@ import { IoGiftOutline } from "react-icons/io5";
 import { GrDeliver } from "react-icons/gr";
 const OrderStatus = ({ order }: any) => {
   return (
-    <div className="p-5">
+    <div className="p-5 border shadow-md">
       <h2 className="text-[18px] text-black font-semibold">Order Status</h2>
       <div className="flex gap-2 mt-4 ">
         <div className="w-[2em] h-[2em] rounded-full bg-[#F9F7F6] text-blue-800 border-4 border-[#F0F1F3] flex items-center justify-center">
@@ -34,7 +34,7 @@ const OrderStatus = ({ order }: any) => {
         </div>
       </div>
 
-      <div className="flex gap-2 mt-4 ">
+      <div className="flex gap-2 mt-4  ">
         <div className="w-[2em] h-[2em] rounded-full bg-[#F9F7F6] text-black border-4 border-[#F0F1F3] flex items-center justify-center">
           <IoGiftOutline />
         </div>
