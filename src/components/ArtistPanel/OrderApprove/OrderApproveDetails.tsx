@@ -8,14 +8,23 @@ import select_file from "../assets/select_file.png";
 import select_img from "../assets/select_img.jpg";
 import { useGetArtistOrder } from "../Orders/http/useGetArtistOrder";
 
-const OrderApproveDetails = () => {
+const OrderApproveDetails = ({ data }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
 
-  // const { data, isLoading } = useGetArtistOrder();
+  console.log(data);
 
-  // console.log(data);
+  const discountAmounts = data?.data?.items?.artwork?.map((item) => {
+    const basePrice = parseFloat(item.pricing.basePrice.replace("$", ""));
+    const discountPercentage = item.pricing?.dpersentage || 0;
+    const discountAmount = (basePrice * discountPercentage) / 100;
+    return discountAmount;
+  });
+
+  console.log(data?.data?.user?.artistName);
+
+  // const { data, isLoading } = useGetArtistOrder();
 
   const details = [
     {
@@ -95,43 +104,47 @@ const OrderApproveDetails = () => {
           <div className="bg-white p-6 shadow-md border rounded-lg  mt-4">
             <h2 className="text-lg font-bold mb-4">Details</h2>
             <div className="space-y-4">
-              {details.map((product, index) => (
-                <div
-                  key={index}
-                  className="flex flex-col sm:flex-row justify-between md:items-center p-4 border-b-2  border-dashed  space-y-4"
-                >
-                  <div className="flex  flex-col  sm:flex-row items-center space-x-4">
-                    <div className=" bg-gray-300 rounded-lg flex  items-center justify-center">
-                      <img
-                        src={Approve_1}
-                        alt="product"
-                        className="rounded-md  w-40 h-40 sm:w-12 sm:h-12"
-                      />
+              {data?.data?.items &&
+                data?.data?.items?.length > 0 &&
+                data?.data?.items?.map((product, index) => (
+                  <div
+                    key={index}
+                    className="flex flex-col sm:flex-row justify-between md:items-center p-4 border-b-2  border-dashed  space-y-4"
+                  >
+                    <div className="flex  flex-col  sm:flex-row items-center space-x-4">
+                      <div className=" bg-gray-300 rounded-lg flex  items-center justify-center">
+                        <img
+                          src={`${data?.url}/users/${product?.artWork?.media?.mainImage}`}
+                          alt="product"
+                          className="rounded-md  w-40 h-40 sm:w-12 sm:h-12"
+                        />
+                      </div>
+                      <div className="flex flex-col  items-center md:items-start">
+                        <h3 className="font-semibold text-gray-800 text-md md:text-base ">
+                          {product?.artWork?.artworkName}
+                        </h3>
+                        <p className="text-sm text-gray-500">
+                          {product?.artWork?.inventoryShipping?.pCode}
+                        </p>
+                      </div>
                     </div>
-                    <div className="flex flex-col  items-center md:items-start">
-                      <h3 className="font-semibold text-gray-800 text-md md:text-base ">
-                        {product.name}
-                      </h3>
-                      <p className="text-sm text-gray-500">{product.sku}</p>
+                    <div className="items-center justify-center  flex flex-row  gap-2 lg:gap-20 ">
+                      <p className="text-gray-400 font-semibold">
+                        {` $ ${product?.artWork?.pricing?.basePrice}`}
+                      </p>
+                      <p className=" font-semibold">{product.discount}</p>
                     </div>
-                  </div>
-                  <div className="items-center justify-center  flex flex-row  gap-2 lg:gap-20 ">
-                    <p className="text-gray-400 font-semibold">
-                      {product.price}
-                    </p>
-                    <p className=" font-semibold">{product.discount}</p>
-                  </div>
-                  <div className="flex justify-center sm:flex-row items-center gap-4 ">
-                    <img className="cursor-pointer" src={view}></img>
+                    <div className="flex justify-center sm:flex-row items-center gap-4 ">
+                      <img className="cursor-pointer" src={view}></img>
 
-                    <img
-                      className="cursor-pointer"
-                      onClick={() => openModal(product)}
-                      src={edit}
-                    ></img>
+                      <img
+                        className="cursor-pointer"
+                        onClick={() => openModal(product)}
+                        src={edit}
+                      ></img>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
             </div>
 
             <div className="mt-6 p-4  rounded-lg  lg:ml-[70%]">
@@ -167,16 +180,23 @@ const OrderApproveDetails = () => {
           <div className="flex  justify-between items-center ">
             <h1 className="font-bold ">Customer Info</h1>
 
-            <img className="cursor-pointer" src={edit}></img>
+            {/* <img className="cursor-pointer" src={edit}></img> */}
           </div>
 
           <div className=" flex  flex-col sm:flex-row mt-8 gap-4 sm:gap-10 border-b-2 border-dashed ">
-            <div className="w-20 md:w-14">
-              <img className="rounded-full  w-20" src={Approve_1} alt="" />
+            <div className="w-20  md:w-14">
+              <img
+                className="rounded-full  w-20 "
+                src={`${data?.url}/users/${data?.data?.user?.profile?.mainImage}`}
+                alt=""
+              />
             </div>
             <div>
-              <p className="font-bold text-gray-600">{customer_info.name} </p>
-              <p className="text-gray-400 text-sm">{customer_info.email}</p>
+              <p className="font-bold text-gray-600">
+                {`${data?.data?.user?.artistName} 
+                ${data?.data?.user?.artistSurname1} ${data?.data?.user?.artistSurname2}`}
+              </p>
+              <p className="text-gray-400 text-sm">{data?.data?.user?.email}</p>
               <p className="text-gray-400">
                 {" "}
                 <span className="font-bold text-gray-400">

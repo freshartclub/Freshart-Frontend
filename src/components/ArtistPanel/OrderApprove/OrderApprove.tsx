@@ -2,8 +2,20 @@ import React from "react";
 import arrow from "../assets/orderApprove1.png";
 import print from "../assets/orderApprove2.png";
 import OrderApproveDetails from "./OrderApproveDetails";
+import { useSearchParams } from "react-router-dom";
+import { useGetOrderDetails } from "./https/useGetOrderDetails";
 
 const OrderApprove = () => {
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get("id");
+  const orderType = searchParams.get("orderType");
+  console.log(id);
+  console.log(orderType);
+
+  const { data, isLoading } = useGetOrderDetails(id, orderType);
+
+  console.log(data);
+
   const order = {
     order_id: "Order #6079",
     order_time: "12 Aug 2022 10:00 PM",
@@ -54,7 +66,7 @@ const OrderApprove = () => {
 
       {/*details & History & customer info*/}
 
-      <OrderApproveDetails />
+      <OrderApproveDetails data={data} />
     </div>
   );
 };

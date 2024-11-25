@@ -4,10 +4,13 @@ import { useState } from "react";
 import PaginationTabs from "../ArtistDashboard/PaginationTabs";
 import { useNavigate } from "react-router-dom";
 import { useGetArtistOrder } from "./http/useGetArtistOrder";
+import dayjs from "dayjs";
+import Loader from "../../ui/Loader";
 
 const Allorders = ({ orderDelail }: any) => {
   const { data, isLoading } = useGetArtistOrder();
   console.log(data?.purchase);
+  console.log(data);
 
   const [currentPage, setCurrentPage] = useState(1);
   const recordPerPage = 10;
@@ -34,10 +37,15 @@ const Allorders = ({ orderDelail }: any) => {
 
   const navigate = useNavigate();
 
-  const handelClickData = (order) => {
-    navigate("/artist-panel/order/orderDetail", { state: { order } });
+  const handelClickData = (value) => {
+    navigate(
+      `/artist-panel/order/approve-order?id=${value?._id}&orderType=${value?.orderType}`
+    );
   };
 
+  if (isLoading) {
+    return <Loader />;
+  }
   return (
     <>
       <div className="rounded-md border border-1 mt-3">
@@ -55,96 +63,97 @@ const Allorders = ({ orderDelail }: any) => {
         </div>
 
         <div className="bg-white p-2 over-x-scroll">
-          {records?.map((value: any, index: any) => (
-            <div key={index}>
-              <div
-                className=" grid grid-cols-11 h-auto pb-3 pt-3 "
-                onClick={() => {
-                  handelClickData(value);
-                }}
-              >
-                <div className="col-span-1">
-                  <p className="text-[12px] md:text-[14px] font-bold">
-                    {value.Orderid}
-                  </p>
-                </div>
-                <div className="col-span-2 flex gap-2">
-                  <div>
-                    <img
-                      src={value.image}
-                      alt="product image"
-                      className="w-[2em] h-[2.5em] rounded-xl"
-                    />
-                  </div>
-                  <div>
-                    <p className="text-black font-bold text-[12px] md:text-[14px]">
-                      {value.artname}
-                    </p>
-                    <p className="text-[10px] md:text-[14px]">
-                      {value.artsize}
+          {data?.purchase &&
+            data?.purchase.map((value: any, index: any) => (
+              <div key={index}>
+                <div className=" grid grid-cols-11 h-auto pb-3 pt-3 ">
+                  <div className="col-span-1">
+                    <p className="text-[12px] md:text-[14px] font-bold">
+                      {value.orderID}
                     </p>
                   </div>
-                </div>
-                <div className="col-span-1">
-                  <p className="text-[12px] md:text-[14px] font-bold">
-                    {value.date}
-                  </p>
-                </div>
-                <div className="col-span-2">
-                  <p className="text-black font-semibold text-[12px] md:text-[14px]">
-                    {value.customername}
-                  </p>
-
-                  <p className="text-[10px] md:text-[12px]">
-                    {value.customeremail}
-                  </p>
-                </div>
-
-                <div className="col-span-1">
-                  <p className="text-[12px] md:text-[14px] font-bold">
-                    ${value.totle}
-                  </p>
-                </div>
-
-                <div className="col-span-1">
-                  <p className="text-[12px] md:text-[14px] font-bold">
-                    ${value.totle}
-                  </p>
-                </div>
-
-                <div className="col-span-1">
-                  <p className="text-[12px] md:text-[14px] font-bold">
-                    {value.paymenttype}
-                  </p>
-                </div>
-                <div className="col-span-1">
-                  <div
-                    className={` w-fit rounded-lg py-0 px-2  ${
-                      value.status === "processing"
-                        ? "bg-[#FDF1E8] text-[#E46A11] "
-                        : value.status === "Shiped"
-                        ? "bg-[#E8F8FD] text-[#13B2E4]"
-                        : value.status === "cancelled"
-                        ? "bg-[#FEEDEC] text-[#F04438]"
-                        : "bg-[#E7F4EE] text-[#0D894F]"
-                    }`}
-                  >
-                    <p className="flex items-center pt-0 justify-center">
-                      {value.status}
+                  <div className="col-span-2 flex gap-2">
+                    <div>
+                      <img
+                        src={`${data?.url}/users/${value?.image}`}
+                        alt="product image"
+                        className="w-[2em] h-[2.5em] rounded-xl"
+                      />
+                    </div>
+                    <div>
+                      <p className="text-black font-bold text-[12px] md:text-[14px]">
+                        {value?.artWorkName}
+                      </p>
+                      <p className="text-[10px] md:text-[14px]">
+                        {value.artsize}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="col-span-1">
+                    <p className="text-[12px] md:text-[14px] font-bold">
+                      {dayjs(value?.createdAt).format("MMMM D, YYYY")}
                     </p>
                   </div>
-                </div>
+                  <div className="col-span-2">
+                    <p className="text-black font-semibold text-[12px] md:text-[14px]">
+                      {`${value?.artistName}${value?.artistSurname1}${value?.artistSurname2}`}
+                    </p>
 
-                <div className="col-span-1">
-                  <div className="flex gap-4">
-                    <LuEye className="text-[20px] hover:cursor-pointer" />
-                    <RiDeleteBin6Line className="text-[20px] hover:cursor-pointer" />
+                    <p className="text-[10px] md:text-[12px]">{value?.email}</p>
+                  </div>
+
+                  <div className="col-span-1">
+                    <p className="text-[12px] md:text-[14px] font-bold">
+                      {value?.orderType}
+                    </p>
+                  </div>
+
+                  <div className="col-span-1">
+                    <p className="text-[12px] md:text-[14px] font-bold">
+                      ${value?.subTotal}
+                    </p>
+                  </div>
+
+                  <div className="col-span-1">
+                    <p className="text-[12px] md:text-[14px] font-bold">
+                      {value.paymenttype}
+                    </p>
+                  </div>
+                  <div className="col-span-1">
+                    <div
+                      className={` w-fit rounded-lg py-0 px-2  ${
+                        value.status === "processing"
+                          ? "bg-[#FDF1E8] text-[#E46A11] "
+                          : value.status === "Shiped"
+                          ? "bg-[#E8F8FD] text-[#13B2E4]"
+                          : value.status === "cancelled"
+                          ? "bg-[#FEEDEC] text-[#F04438]"
+                          : "bg-[#E7F4EE] text-[#0D894F]"
+                      }`}
+                    >
+                      <p className="flex items-center pt-0 justify-center">
+                        {value.status}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="col-span-1">
+                    <div className="flex gap-4">
+                      <span
+                        onClick={() => {
+                          handelClickData(value);
+                        }}
+                      >
+                        <LuEye className="text-[20px] hover:cursor-pointer" />
+                      </span>
+
+                      <RiDeleteBin6Line className="text-[20px] hover:cursor-pointer" />
+                    </div>
                   </div>
                 </div>
+                <hr />
               </div>
-              <hr />
-            </div>
-          ))}
+            ))}
           <div>
             <PaginationTabs
               currentPage={currentPage}

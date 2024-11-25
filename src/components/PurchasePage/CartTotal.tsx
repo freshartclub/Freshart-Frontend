@@ -51,8 +51,20 @@ const CartTotal = ({ data }) => {
     },
   ];
 
-  const artWorkId = data?.data?.cart?.map((item, i) => item?._id);
+  const artWorkId = data?.data?.cart?.map((item) => item?._id);
   console.log(artWorkId);
+
+  let itemQu = {};
+
+  data?.data?.cart?.forEach((item) => {
+    console.log(item);
+    if (item?._id) {
+      console.log(item._id);
+      itemQu[item._id] = (itemQu[item._id] || 0) + item.quantity;
+    }
+  });
+
+  console.log(itemQu);
 
   const handleCheckOut = () => {
     console.log("hello");
@@ -62,19 +74,19 @@ const CartTotal = ({ data }) => {
         tax: 61.99,
         shipping: 0,
         orderType: "purchase",
-        items: [
-          {
-            id: artWorkId,
-            quantity: 1,
-          },
-        ],
+        items: Object.keys(itemQu).map((id) => ({
+          id: id,
+          quantity: itemQu[id],
+        })),
       };
 
+      console.log(data);
       mutate(data);
     } catch (error) {
       console.log(error);
     }
   };
+
   return (
     <>
       <div className="p-5 mb-8 border rounded-md">

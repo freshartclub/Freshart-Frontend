@@ -14,8 +14,8 @@ const OrderStatus = ({ order }: any) => {
           <p className="text-[16px] text-black font-semibold">Order Placed</p>
           <p className="text-[14px]">An order has been placed.</p>
           <p className="text-[14px]">
-            <span>{order.orderplaced[0].data}, </span>
-            <span>{order.orderplaced[0].time}</span>
+            <span>{order?.orderplaced?.data}, </span>
+            <span>{order?.orderplaced?.time}</span>
           </p>
         </div>
       </div>
@@ -28,8 +28,8 @@ const OrderStatus = ({ order }: any) => {
           <p className="text-[16px] text-black font-semibold">Processing</p>
           <p className="text-[14px]">Seller has proccessed your order.</p>
           <p className="text-[14px]">
-            <span>{order.processing[0].data}, </span>
-            <span>{order.processing[0].time}</span>
+            <span>{order?.processing?.data}, </span>
+            <span>{order?.processing?.time}</span>
           </p>
         </div>
       </div>
@@ -41,8 +41,8 @@ const OrderStatus = ({ order }: any) => {
         <div>
           <p className="text-[16px] text-black font-semibold">Packed</p>
           <p className="text-[14px]">
-            <span>{order.packed[0].data}, </span>
-            <span>{order.packed[0].time}</span>
+            <span>{order?.packed?.data}, </span>
+            <span>{order?.packed?.time}</span>
           </p>
         </div>
       </div>
@@ -54,8 +54,8 @@ const OrderStatus = ({ order }: any) => {
         <div>
           <p className="text-[16px] text-black font-semibold">Shipping</p>
           <p className="text-[14px]">
-            <span>{order.shipping[0].data}, </span>
-            <span>{order.shipping[0].time}</span>
+            <span>{order?.shipping?.data}, </span>
+            <span>{order?.shipping?.time}</span>
           </p>
         </div>
       </div>
@@ -65,8 +65,8 @@ const OrderStatus = ({ order }: any) => {
         <div>
           <p className="text-[16px] text-black font-semibold">Delivered</p>
           <p className="text-[14px]">
-            <span>{order.delivered[0].data}, </span>
-            <span>{order.delivered[0].time}</span>
+            <span>{order?.delivered?.data}, </span>
+            <span>{order?.delivered?.time}</span>
           </p>
         </div>
       </div>
