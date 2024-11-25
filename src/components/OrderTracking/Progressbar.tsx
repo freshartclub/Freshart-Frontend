@@ -9,7 +9,7 @@ const Progressbar = () => {
   return (
     <div>
       <ol className="flex items-center lg:w-[60%] w-full my-10 mx-auto">
-        <div className=" w-full ">
+        <div className=" w-full  ">
           <li className="flex w-full items-center text-blue-600 dark:text-blue-500 after:content-[''] after:w-full  after:border-b after:border-[#FF536B] after:border-4 after:inline-block dark:after:border-blue-800">
             <span className="flex items-center justify-center md:p-2 p-1 bg-[#FF536B] rounded-full shrink-0">
               <img src={check} alt="check" />

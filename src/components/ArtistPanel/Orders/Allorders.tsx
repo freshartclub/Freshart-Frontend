@@ -40,8 +40,8 @@ const Allorders = ({ orderDelail }: any) => {
 
   return (
     <>
-      <div className="rounded-md border border-1 mt-3">
-        <div className="grid grid-cols-11 bg-[#F9F9FC] items-center my-auto h-10 p-2 border-b">
+      <div className="rounded-md border border-1 mt-3  ">
+        <div className="grid grid-cols-11 bg-[#F9F9FC] items-center my-auto h-10 p-2 border-b  ">
           {columns.map((column) => (
             <div
               key={column.key}
