@@ -97,7 +97,7 @@ const SingleTicket = () => {
         </p>
       </div>
 
-      <div className="  flex flex-col gap-2 ">
+      <div className=" flex flex-col gap-2   h-[500px] overflow-y-auto  ">
         {data?.reply &&
           data?.reply?.length &&
           data?.reply.map((item, i) => (
@@ -114,7 +114,7 @@ const SingleTicket = () => {
               </span>
               </div>
               
-              <p className=" font-montserrat  text-sm font-medium  text-left  py-2 px-4">
+              <p className="font-montserrat text-sm font-medium  text-left  py-2 px-4 break-words ">
                 {item.message}
               </p>
             </div>
