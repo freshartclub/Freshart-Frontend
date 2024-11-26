@@ -29,6 +29,7 @@ import ArtistGuard from "./components/ArtistGuard";
 import NotFoundPage from "./components/pages/NotFoundPage";
 import ArtworkDetails from "./components/ArtistPanel/Artwork/artworkDetails/ArtworkDetails";
 import OrderApprove from "./components/ArtistPanel/OrderApprove/OrderApprove";
+import PaymentPage from "./components/Payment_page/PaymentPage";
 const SignUp = lazy(() => import("./components/pages/SignUp"));
 const ForgetPassword = lazy(() => import("./components/pages/ForgetPassword"));
 const ChangePassword = lazy(() => import("./components/pages/ChangePassword"));
@@ -468,6 +469,14 @@ const App: React.FC = () => {
               element={
                 <AuthGuard>
                   <ArtistDashboard />
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/payment_page"
+              element={
+                <AuthGuard>
+                  <PaymentPage />
                 </AuthGuard>
               }
             />

@@ -3,6 +3,7 @@ import P from "../ui/P";
 import ArtWork from "./ArtWork";
 import plus from "./assets/Plus.png";
 import BillingSection from "./BillingSection";
+import OrderHistory from "./OrderHistory";
 import Progressbar from "./Progressbar";
 
 const OrderDescription = () => {
@@ -70,6 +71,8 @@ const OrderDescription = () => {
         </div>
 
         <Progressbar />
+        <OrderHistory/>
+        
         <ArtWork />
         <BillingSection />
       </div>

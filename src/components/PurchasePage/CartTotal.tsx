@@ -6,36 +6,39 @@ import rightarr from "./assets/ArrowRight.png";
 import usePostCheckOutMutation from "./http/usePostCheckOutMutation";
 
 const CartTotal = ({ data }) => {
-  const discountAmounts = data?.data?.cart.map((item) => {
-    const basePrice = parseFloat(item.pricing.basePrice.replace("$", ""));
-    const discountPercentage = item.pricing?.dpersentage || 0;
-    const discountAmount = (basePrice * discountPercentage) / 100;
+  const discountAmounts = data?.data?.cart?.map((item) => {
+    const basePrice = parseFloat(
+      item?.item?.pricing?.basePrice?.replace("$", "")
+    );
+    const discountPercentage = item?.item?.pricing?.dpersentage || 0;
+    const discountAmount =
+      (basePrice * item?.quantity * discountPercentage) / 100;
     return discountAmount;
   });
+
   const navigate = useNavigate();
 
   const { mutate, isPending } = usePostCheckOutMutation();
+
   const totalDiscountAmount = discountAmounts
     ?.reduce((totalDiscount, item) => {
       return totalDiscount + item;
     }, 0)
     .toFixed(2);
 
-  // console.log(`Total Discount Amount: $${totalDiscountAmount}`);
-
   const totalPrice = data?.data?.cart
-    .reduce((total, item) => {
-      const itemPrice = parseFloat(item.pricing.basePrice.replace("$", ""));
-      return total + itemPrice;
+    ?.reduce((total, item) => {
+      const itemPrice = parseFloat(
+        item?.item?.pricing?.basePrice?.replace("$", "")
+      );
+      return total + itemPrice * item?.quantity;
     }, 0)
     .toFixed(2);
-
-  console.log(data);
 
   const card_total = [
     {
       title: "Sub-total",
-      value: `$ ${totalPrice}`,
+      value: `$ ${totalPrice}` || 0,
     },
     {
       title: "Shipping",
@@ -51,16 +54,16 @@ const CartTotal = ({ data }) => {
     },
   ];
 
-  const artWorkId = data?.data?.cart?.map((item) => item?._id);
+  const artWorkId = data?.data?.cart?.map((item) => item?.item?._id);
   console.log(artWorkId);
 
   let itemQu = {};
 
   data?.data?.cart?.forEach((item) => {
     console.log(item);
-    if (item?._id) {
+    if (item?.item?._id) {
       console.log(item._id);
-      itemQu[item._id] = (itemQu[item._id] || 0) + item.quantity;
+      itemQu[item?.item?._id] = (itemQu[item?.item?._id] || 0) + item.quantity;
     }
   });
 
@@ -68,10 +71,12 @@ const CartTotal = ({ data }) => {
 
   const handleCheckOut = () => {
     console.log("hello");
+    // navigate("/");
     try {
       const data = {
         subTotal: totalPrice - totalDiscountAmount,
-        tax: 61.99,
+        tax: 0,
+        discount: totalDiscountAmount,
         shipping: 0,
         orderType: "purchase",
         items: Object.keys(itemQu).map((id) => ({
@@ -80,7 +85,6 @@ const CartTotal = ({ data }) => {
         })),
       };
 
-      console.log(data);
       mutate(data);
     } catch (error) {
       console.log(error);

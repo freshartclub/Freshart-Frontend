@@ -9,7 +9,7 @@ import { LuSettings } from "react-icons/lu";
 const OrderInformation = ({ order }: any) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-x-4 mt-5">
-      <div className="bg-white border rounded-md p-5">
+      <div className="bg-white border shadow-md rounded-md p-5">
         <div className="flex gap-2">
           <h2 className="text-[18px] text-black font-semibold">Order</h2>
           <h2 className="text-[18px] text-black font-semibold">
@@ -65,7 +65,7 @@ const OrderInformation = ({ order }: any) => {
           </div>
         </div>
       </div>
-      <div className="bg-white border rounded-md p-5">
+      <div className="bg-white border rounded-md p-5 shadow-md">
         <h2 className="text-[18px] text-black font-semibold">Customer</h2>
         <div className="flex justify-between items-center mt-3">
           <div className="flex gap-2 items-center">
@@ -103,7 +103,7 @@ const OrderInformation = ({ order }: any) => {
           </div>
         </div>
       </div>
-      <div className="bg-white border rounded-md p-5">
+      <div className="bg-white border rounded-md p-5 shadow-md">
         <h2 className="text-[18px] text-black font-semibold">Document</h2>
         <div className="flex justify-between items-center mt-3">
           <div className="flex gap-2 items-center">

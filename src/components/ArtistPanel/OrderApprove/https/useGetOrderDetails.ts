@@ -13,7 +13,7 @@ export const useGetOrderDetails = (id, orderType) => {
   }
 
   return useQuery({
-    queryKey: [url],
+    queryKey: ["acceptOrder"],
     queryFn: () => fetchData(id, orderType),
   });
 };

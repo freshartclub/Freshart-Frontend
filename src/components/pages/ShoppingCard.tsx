@@ -13,6 +13,8 @@ const ShoppingCard = ({ isOpen, onClose }: any) => {
 
   const { mutate, isPending } = useGetCartItemsRemove();
 
+  console.log(data?.data?.cart);
+
   const handleCart = () => {
     navigate("/purchase_cart");
     onClose();
@@ -26,7 +28,9 @@ const ShoppingCard = ({ isOpen, onClose }: any) => {
 
   const totalPrice = data?.data?.cart
     ?.reduce((total: any, item: any) => {
-      const itemPrice = parseFloat(item.pricing.basePrice.replace("$", ""));
+      const itemPrice = parseFloat(
+        item?.item?.pricing?.basePrice?.replace("$", "")
+      );
       return total + itemPrice;
     }, 0)
     .toFixed(2);
@@ -64,15 +68,15 @@ const ShoppingCard = ({ isOpen, onClose }: any) => {
                 onClick={redirectToDetailPage}
               >
                 <img
-                  src={`${data?.url}/users/${item.media.mainImage}`}
+                  src={`${data?.url}/users/${item?.item?.media?.mainImage}`}
                   alt="cart image"
                   className="object-cover lg:w-[10vw] rounded"
                 />
                 <div className="flex flex-col justify-center">
                   <P variant={{ size: "base", theme: "dark", weight: "light" }}>
-                    {item?.artworkName}
+                    {item?.item?.artworkName}
                   </P>
-                  <div className="flex">
+                  <div className="flex justify-evenly gap-2">
                     <P
                       variant={{
                         size: "small",
@@ -80,7 +84,7 @@ const ShoppingCard = ({ isOpen, onClose }: any) => {
                         weight: "normal",
                       }}
                     >
-                      {item.quantity}
+                      Quantity {item?.quantity}
                     </P>
                     <P
                       variant={{
@@ -89,7 +93,7 @@ const ShoppingCard = ({ isOpen, onClose }: any) => {
                         weight: "normal",
                       }}
                     >
-                      {item.pricing?.basePrice}
+                      Price {item?.item?.pricing?.basePrice}
                     </P>
                   </div>
                 </div>

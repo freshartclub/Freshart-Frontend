@@ -37,7 +37,7 @@ const Login: React.FC = () => {
     try {
       await mutateAsync(data);
     } catch (error) {
-      console.error(error.message);
+      console.error(error?.message);
     }
   });
 

@@ -6,7 +6,8 @@ async function fetchData() {
   const { data } = await axiosInstance.get(
     `${ORDERS_ENDPOINTS.GetArtistOrder}`
   );
-  return data;
+
+  return [...data?.purchase, ...data?.subscription];
 }
 
 export const useGetArtistOrder = () => {

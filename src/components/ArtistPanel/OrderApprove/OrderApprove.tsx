@@ -4,6 +4,8 @@ import print from "../assets/orderApprove2.png";
 import OrderApproveDetails from "./OrderApproveDetails";
 import { useSearchParams } from "react-router-dom";
 import { useGetOrderDetails } from "./https/useGetOrderDetails";
+import usePostAcceptMutation from "./https/usePostAcceptMutation";
+import Loader from "../../ui/Loader";
 
 const OrderApprove = () => {
   const [searchParams] = useSearchParams();
@@ -13,13 +15,29 @@ const OrderApprove = () => {
   console.log(orderType);
 
   const { data, isLoading } = useGetOrderDetails(id, orderType);
+  const { mutate, isPending } = usePostAcceptMutation();
 
-  console.log(data);
+  const handleAccept = () => {
+    const newData = {
+      id,
+      orderType: orderType,
+      status: data?.data?.status,
+    };
+    try {
+      mutate(newData);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const order = {
     order_id: "Order #6079",
     order_time: "12 Aug 2022 10:00 PM",
   };
+
+  if (isLoading) {
+    return <Loader />;
+  }
   return (
     <div className="px-5 py-7 ">
       {/*Header section*/}
@@ -43,24 +61,29 @@ const OrderApprove = () => {
               src={print}
             />
           </div>
-          <div className="space-x-3">
-            <button
-              className="bg-[#22C55E]
+          {data?.data?.status === "accepted" ? null : (
+            <div className="flex gap-2">
+              <div className="space-x-3">
+                <button
+                  onClick={() => handleAccept()}
+                  className="bg-[#22C55E]
               py-2 px-2
              sm:py-3 sm:px-8 rounded-md text-white font-bold"
-            >
-              Accept
-            </button>
-          </div>
-          <div>
-            <button
-              className="bg-[#FF5630]
-          py-2 px-2
+                >
+                  {isPending ? "Accepting.." : "Accept"}
+                </button>
+              </div>
+              <div>
+                <button
+                  className="bg-[#FF5630]
+               py-2 px-2
              sm:py-3 sm:px-8 rounded-md  text-white font-bold "
-            >
-              Reject
-            </button>
-          </div>
+                >
+                  Reject
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

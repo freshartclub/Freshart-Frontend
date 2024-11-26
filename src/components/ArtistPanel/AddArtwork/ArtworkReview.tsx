@@ -20,7 +20,7 @@ const DiscoverMore = () => {
 
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
-  console.log(id);
+ 
   const { data, isLoading } = useGetArtWorkById(id);
   console.log("this is from more", data);
 
@@ -82,15 +82,16 @@ const DiscoverMore = () => {
       sliderRef.current.slickGoTo(index);
     }
   };
+  // console.log(data?.data.media);
 
-  const additionalImage = data?.data.media?.images.map((item, index) => item);
+  const additionalImage = data?.data.media?.images?.map((item, index) => item);
 
   const images = data?.data
     ? [
         { src: data?.data.media?.mainImage, alt: "Main Image" },
         { src: data?.data.media?.backImage, alt: "Back Image" },
         { src: data?.data.media?.inProcessImage, alt: "In Process Image" },
-        ...additionalImage.map((item) => ({
+        ...additionalImage?.map((item) => ({
           src: item,
           alt: "Additional Image",
         })),

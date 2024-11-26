@@ -7,12 +7,10 @@ import like from "./assets/like.png";
 import question from "./assets/question.png";
 import { RiH1 } from "react-icons/ri";
 import Button from "../../ui/Button";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import useGetPublishedArtwork from "./http/useGetPublishedArtwork";
 
 const DiscoverContent = ({ data }: any) => {
-  console.log("this is from dicover", data);
-
   const navigate = useNavigate();
 
   const { mutate, isPending } = useGetPublishedArtwork();
@@ -24,6 +22,8 @@ const DiscoverContent = ({ data }: any) => {
   const editArtwork = (id) => {
     navigate(`/artist-panel/artwork/add?id=${id}`);
   };
+
+  console.log(data?.status);
 
   const [searchParams] = useSearchParams();
 
@@ -60,16 +60,19 @@ const DiscoverContent = ({ data }: any) => {
                   {isPending ? "Publishing..." : "Publish"}
                 </Button>
               )}
-              <Button
-                onClick={() => editArtwork(data?._id)}
-                variant={{
-                  rounded: "full",
-                  theme: "light",
-                }}
-                className="text-sm border border-[#263238] w-full font-medium"
-              >
-                Continue Edit
-              </Button>
+
+              {data?.status === "draft" ? (
+                <Button
+                  onClick={() => editArtwork(data?._id)}
+                  variant={{
+                    rounded: "full",
+                    theme: "light",
+                  }}
+                  className="text-sm border border-[#263238] w-full font-medium"
+                >
+                  Continue Edit
+                </Button>
+              ) : null}
             </div>
             {/* <P variant={{ size: 'md', theme: 'dark', weight: 'normal' }} className="mt-5 ">
           (2021)

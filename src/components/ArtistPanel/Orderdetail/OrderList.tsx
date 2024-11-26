@@ -5,11 +5,11 @@ const OrderList = ({ order }: any) => {
     parseFloat(order.shippingrate);
 
   return (
-    <div className="">
+    <div className=" border shadow-md rounded-md">
       <h2 className="text-[18px] text-black font-semibold p-5">Order List</h2>
       <>
-        <div className="grid grid-cols-6 bg-gray-50 p-5">
-          <div className="col-span-2 ">
+        <div className="grid grid-cols-6  bg-gray-50 p-5 ">
+          <div className="col-span-2  ">
             <h2 className="text-[16px] font-bold ">Product</h2>
           </div>
           <div>
@@ -26,9 +26,9 @@ const OrderList = ({ order }: any) => {
           </div>
         </div>
         
-        <div className="grid grid-cols-6 bg-white p-5">
-          <div className="col-span-2 flex gap-2">
-            <div>
+        <div className="grid grid-cols-6 bg-white p-5  ">
+          <div className="col-span-2 flex  gap-2">
+            <div className="">
               <img
                 src={order.image}
                 alt="product image"
@@ -42,7 +42,7 @@ const OrderList = ({ order }: any) => {
               <p className="text-[10px] md:text-[14px]">{order.color}</p>
             </div>
           </div>
-          <div className="grid-cols-1">
+          <div className="grid-cols-1 ">
             <h2 className="text-[14px] text-[#FF536B] font-semibold">
               {order.Orderid}
             </h2>
@@ -50,7 +50,7 @@ const OrderList = ({ order }: any) => {
           <div className="grid-cols-1">
             <p className="text-[14px] font-semibold">{order.qty}</p>
           </div>
-          <div className="grid-cols-1">
+          <div className="grid-cols-1 ">
             <p className="text-[14px] font-semibold">${order.price}</p>
             <p className="text-[14px] text-black font-semibold pt-7">
               Subtotal

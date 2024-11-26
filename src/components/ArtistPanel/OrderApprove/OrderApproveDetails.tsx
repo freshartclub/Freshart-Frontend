@@ -7,11 +7,14 @@ import evidence3 from "../assets/evidence3.png";
 import select_file from "../assets/select_file.png";
 import select_img from "../assets/select_img.jpg";
 import { useGetArtistOrder } from "../Orders/http/useGetArtistOrder";
+import Loader from "../../ui/Loader";
+import { useNavigate } from "react-router-dom";
 
 const OrderApproveDetails = ({ data }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
+  const navigate = useNavigate();
 
   console.log(data);
 
@@ -97,6 +100,19 @@ const OrderApproveDetails = ({ data }) => {
       setSelectedImage(URL.createObjectURL(file));
     }
   };
+
+  console.log(data?.data);
+
+  const reviewArtWork = (id) => {
+    // Call your review artwork API here
+    navigate(
+      `/artist-panel/artwork/preview?id=${id}&preview=true&type=orderReview=true`
+    );
+  };
+
+  if (!data) {
+    return <Loader />;
+  }
   return (
     <div>
       <div className="flex flex-col lg:flex-row justify-between w-full gap-5">
@@ -124,18 +140,23 @@ const OrderApproveDetails = ({ data }) => {
                           {product?.artWork?.artworkName}
                         </h3>
                         <p className="text-sm text-gray-500">
+                          Product Code :{" "}
                           {product?.artWork?.inventoryShipping?.pCode}
                         </p>
                       </div>
                     </div>
-                    <div className="items-center justify-center  flex flex-row  gap-2 lg:gap-20 ">
+                    <div className="items-center justify-center   flex flex-row  gap-2 lg:gap-20 ">
                       <p className="text-gray-400 font-semibold">
                         {` $ ${product?.artWork?.pricing?.basePrice}`}
                       </p>
-                      <p className=" font-semibold">{product.discount}</p>
+                      <p className=" font-semibold">{product?.discount}</p>
                     </div>
                     <div className="flex justify-center sm:flex-row items-center gap-4 ">
-                      <img className="cursor-pointer" src={view}></img>
+                      <img
+                        onClick={() => reviewArtWork(product?.artWork?._id)}
+                        className="cursor-pointer"
+                        src={view}
+                      ></img>
 
                       <img
                         className="cursor-pointer"
@@ -149,28 +170,28 @@ const OrderApproveDetails = ({ data }) => {
 
             <div className="mt-6 p-4  rounded-lg  lg:ml-[70%]">
               <div className="flex justify-between  text-gray-400 mb-1 font-bold">
-                <span>Subtotal</span>
+                <span>Subtotal :</span>
                 <span className="font-semibold text-black">
-                  {summary.subtotal}
+                  $ {data?.data?.subTotal}
                 </span>
               </div>
               <div className="flex justify-between text-gray-400 mb-1 font-semibold">
-                <span>Shipping</span>
-                <span className="text-red-400">{summary.shipping}</span>
+                <span>Shipping :</span>
+                <span className="text-red-400">$ {data?.data?.shipping}</span>
               </div>
               <div className="flex justify-between text-gray-400 mb-1 font-semibold">
-                <span>Discount</span>
-                <span className="text-red-400">{summary.discount}</span>
+                <span>Discount :</span>
+                <span className="text-red-400">$ {data?.data?.discount}</span>
               </div>
               <div className="flex justify-between text-gray-400 mb-1">
-                <span>Taxes</span>
+                <span>Taxes:</span>
                 <span className="text-black font-semibold">
-                  {summary.taxes}
+                  $ {data?.data?.tax}
                 </span>
               </div>
               <div className="flex justify-between text-gray-800 font-semibold text-md mt-4">
                 <span>Total</span>
-                <span>{summary.total}</span>
+                <span>$ {data?.data?.subTotal}</span>
               </div>
             </div>
           </div>
@@ -197,13 +218,6 @@ const OrderApproveDetails = ({ data }) => {
                 ${data?.data?.user?.artistSurname1} ${data?.data?.user?.artistSurname2}`}
               </p>
               <p className="text-gray-400 text-sm">{data?.data?.user?.email}</p>
-              <p className="text-gray-400">
-                {" "}
-                <span className="font-bold text-gray-400">
-                  IP Address:
-                </span>{" "}
-                {customer_info.ipaddress}{" "}
-              </p>
 
               <div className="flex items-center mt-4 gap-2 mb-8">
                 <img src={add} alt="" />
@@ -237,6 +251,10 @@ const OrderApproveDetails = ({ data }) => {
               <span className=" text-black w-1/2">{delivery.tracking_no} </span>
             </div>
           </div>
+
+          <button className="px-2 py-2 border border-zinc-800 rounded-md bg-black text-white text-md mt-5">
+            Track Order
+          </button>
         </div>
       </div>
       <div className=" bg-[#fff] border shadow-lg mt-6 rounded-lg p-6 w-full">

@@ -9,7 +9,6 @@ import OrderStatus from "./OrderStatus";
 import { tabsContext } from "../Context/Context";
 import { NavLink } from "react-router-dom";
 import OrderList from "./OrderList";
-import { useGetOrderDetails } from "../OrderApprove/useGetOrderDetails";
 
 const OrderDetail = () => {
   const setActiveTab = useContext(tabsContext);

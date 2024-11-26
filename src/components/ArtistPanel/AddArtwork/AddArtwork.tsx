@@ -428,8 +428,6 @@ const AddArtwork = () => {
     }
   }, [data]);
 
-  console.log(data?.data?.isArtProvider);
-
   if (isLoading) {
     return <Loader />;
   }

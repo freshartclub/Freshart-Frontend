@@ -36,7 +36,7 @@ const DiscoverContent = ({ data }: any) => {
   };
 
   const checkCartItem = cartItem?.data?.cart?.filter((item) => {
-    return item?._id === data?._id;
+    return item?.item?._id === data?._id;
   });
 
   const addToWishList = (id) => {
@@ -47,7 +47,7 @@ const DiscoverContent = ({ data }: any) => {
     return item._id === data._id;
   });
 
-  console.log(checkWishlist);
+  console.log(wislistItem);
 
   // console.log(checkCartItem.length ? "hello" : "hey");
   return (

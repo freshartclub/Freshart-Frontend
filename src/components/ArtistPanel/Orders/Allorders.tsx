@@ -9,8 +9,6 @@ import Loader from "../../ui/Loader";
 
 const Allorders = ({ orderDelail }: any) => {
   const { data, isLoading } = useGetArtistOrder();
-  console.log(data?.purchase);
-  console.log(data);
 
   const [currentPage, setCurrentPage] = useState(1);
   const recordPerPage = 10;
@@ -36,6 +34,7 @@ const Allorders = ({ orderDelail }: any) => {
   ];
 
   const navigate = useNavigate();
+  const url = "https://dev.freshartclub.com/images";
 
   const handelClickData = (value) => {
     navigate(
@@ -48,8 +47,8 @@ const Allorders = ({ orderDelail }: any) => {
   }
   return (
     <>
-      <div className="rounded-md border border-1 mt-3">
-        <div className="grid grid-cols-11 bg-[#F9F9FC] items-center my-auto h-10 p-2 border-b">
+      <div className="rounded-md border border-1 mt-3  ">
+        <div className="grid grid-cols-11 bg-[#F9F9FC] items-center my-auto h-10 p-2 border-b  ">
           {columns.map((column) => (
             <div
               key={column.key}
@@ -63,8 +62,8 @@ const Allorders = ({ orderDelail }: any) => {
         </div>
 
         <div className="bg-white p-2 over-x-scroll">
-          {data?.purchase &&
-            data?.purchase.map((value: any, index: any) => (
+          {data &&
+            data?.map((value: any, index: any) => (
               <div key={index}>
                 <div className=" grid grid-cols-11 h-auto pb-3 pt-3 ">
                   <div className="col-span-1">
@@ -75,7 +74,7 @@ const Allorders = ({ orderDelail }: any) => {
                   <div className="col-span-2 flex gap-2">
                     <div>
                       <img
-                        src={`${data?.url}/users/${value?.image}`}
+                        src={`${url}/users/${value?.image}`}
                         alt="product image"
                         className="w-[2em] h-[2.5em] rounded-xl"
                       />
@@ -85,7 +84,7 @@ const Allorders = ({ orderDelail }: any) => {
                         {value?.artWorkName}
                       </p>
                       <p className="text-[10px] md:text-[14px]">
-                        {value.artsize}
+                        {`${value?.length} x ${value?.width} x ${value?.height} cm`}
                       </p>
                     </div>
                   </div>
@@ -122,7 +121,7 @@ const Allorders = ({ orderDelail }: any) => {
                   <div className="col-span-1">
                     <div
                       className={` w-fit rounded-lg py-0 px-2  ${
-                        value.status === "processing"
+                        value?.status === "processing"
                           ? "bg-[#FDF1E8] text-[#E46A11] "
                           : value.status === "Shiped"
                           ? "bg-[#E8F8FD] text-[#13B2E4]"
