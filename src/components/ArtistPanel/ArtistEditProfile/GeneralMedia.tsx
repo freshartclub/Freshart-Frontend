@@ -159,7 +159,7 @@ const GeneralMedia = ({ control, data, url }) => {
   };
 
   return (
-    <div className="p-6 mt-6 bg-white rounded-lg shadow-md">
+    <div className="p-6 mt-6 bg-white rounded-lg shadow-md border mb-4 ">
       <Header
         variant={{ theme: "dark", weight: "bold" }}
         className="text-xl mb-2"
@@ -187,7 +187,7 @@ const GeneralMedia = ({ control, data, url }) => {
               <input
                 type="file"
                 accept="image/*"
-                className="hidden"
+                className="hidden "
                 ref={mainImageInputRef}
                 onChange={(e) => handleMainImageChange(e)}
               />
@@ -209,11 +209,11 @@ const GeneralMedia = ({ control, data, url }) => {
                     &times;
                   </span>
                 </div>
-                <p className="text-center">
+                <p className="text-center text-xs md:text-base">
                   Drag and drop image here, or click to add image
                 </p>
                 <span
-                  className="bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer"
+                  className="bg-[#DEDEFA] text-sm md:text-base font-bold mt-2 p-3 px-4  rounded-md cursor-pointer"
                   onClick={triggerMainImageInput}
                 >
                   Add Image
@@ -253,11 +253,11 @@ const GeneralMedia = ({ control, data, url }) => {
                 ) : (
                   <div className="w-28 h-28 bg-gray-200 rounded-md mb-4" />
                 )}
-                <p className="text-center">
+                <p className="text-center text-xs md:text-base">
                   Drag and drop image here, or click to add image
                 </p>
                 <span
-                  className="bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer"
+                  className="bg-[#DEDEFA] font-bold mt-2 p-3 px-4 text-sm md:text-base rounded-md cursor-pointer"
                   onClick={triggerInProcessImageInput}
                 >
                   Add Image
@@ -282,7 +282,7 @@ const GeneralMedia = ({ control, data, url }) => {
             multiple
             onChange={(e) => handleAdditionalImageUpload(e)}
           />
-          <div className="flex flex-wrap gap-4">
+          <div className="flex flex-col sm:flex-row flex-wrap gap-4 items-center">
             {getValues("additionalImage") &&
               getValues("additionalImage").length > 0 &&
               getValues("additionalImage").map((field, i) => (
@@ -318,7 +318,7 @@ const GeneralMedia = ({ control, data, url }) => {
                 </div>
               ))}
           </div>
-          <p className="text-center  mt-4">Click to add additional images</p>
+          <p className="text-center text-xs md:text-base mt-4">Click to add additional images</p>
           <span
             className="bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer flex justify-center"
             onClick={() => document.querySelector("#photos-input").click()}
@@ -369,7 +369,7 @@ const GeneralMedia = ({ control, data, url }) => {
                     &times;
                   </span>
                 </div>
-                <p className="text-center">
+                <p className="text-center  text-sm md:text-base">
                   Drag and drop Video here, or click to add Video
                 </p>
                 <span
@@ -396,7 +396,7 @@ const GeneralMedia = ({ control, data, url }) => {
                 multiple
                 onChange={(e) => handleAdditionalVideoUpload(e)}
               />
-              <div className="flex flex-wrap gap-4">
+              <div className="flex flex-col md:flex-row items-center flex-wrap gap-4">
                 {getValues("additionalVideo") &&
                   getValues("additionalVideo").length > 0 &&
                   getValues("additionalVideo")?.map((field, i) => (

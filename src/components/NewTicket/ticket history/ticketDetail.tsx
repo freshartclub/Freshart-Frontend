@@ -9,6 +9,7 @@ import useGetPostArtistTicketReplyMutation from "./http/usePostReply";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { useGetTicketDetails } from "./http/useGetTicketDetails";
 import Loader from "../../ui/Loader";
+import { FaRegUserCircle } from "react-icons/fa";
 
 interface Ticket {
   ticketId: string;
@@ -47,7 +48,7 @@ const SingleTicket = () => {
     navigate(-1);
   };
 
-  console.log(data);
+  console.log("datadata",data);
 
   if (isLoading) {
     return <Loader />;
@@ -56,7 +57,7 @@ const SingleTicket = () => {
   return (
     <div className="container mx-auto sm:px-6 px-3 mt-[2rem] mb-[2rem]">
       <FaArrowLeftLong onClick={handleNavigate} className="cursor-pointer" />
-      <div className="flex justify-between items-center w-full p-2">
+      <div className="flex  justify-between items-center w-full p-2">
         <div className="flex items-center gap-2">
           <span className="w-2.5 h-2.5 bg-[#F8A53499] rounded-full"></span>
           <span className="font-semibold text-gray-800">
@@ -65,7 +66,7 @@ const SingleTicket = () => {
           <span className="text-[#84818A]">({data?.data?.ticketType})</span>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex  items-center gap-2">
           <span
             className={`${
               data?.data?.status === "In progress"
@@ -83,7 +84,7 @@ const SingleTicket = () => {
       </div>
 
       <div className="flex items-center gap-3">
-        <img src={artistImg} alt="People" className="w-10 h-10 object-cover" />
+        <img src={artistImg} alt="People" className="w-10 object-cover" />
         <span className="text-[#84818A] font-semibold">{user.artistName}</span>
       </div>
 
@@ -96,37 +97,46 @@ const SingleTicket = () => {
         </p>
       </div>
 
-      <div className="bg-[#919EAB29] p-2 flex flex-col gap-2 overflow-auto ">
+      <div className="  flex flex-col gap-2 ">
         {data?.reply &&
           data?.reply?.length &&
           data?.reply.map((item, i) => (
-            <div key={i} className="border ">
-              <span className="ml-3 text-[#84818A] text-[12px] border ">
-                {item.userType === "user" ? "Your Reply" : "Reply By - Admin"}
+            <div
+              key={i}
+              className={` p-3 ${
+                item.userType === "user" ? "bg-zinc-200" : " bg-white"
+              }`}
+            >
+              <div className="flex items-center gap-2 ">
+              <span><FaRegUserCircle /></span>
+              <span className=" text-sm font-semibold  ">
+                {item.userType === "user" ? `${user.artistName}` : `(admin) :`}
               </span>
-              <p className="text-[#676669] font-montserrat  text-sm font-medium leading-[17.07px] text-left ml-5 pr-4 py-2 px-3">
+              </div>
+              
+              <p className=" font-montserrat  text-sm font-medium  text-left  py-2 px-4">
                 {item.message}
               </p>
             </div>
           ))}
       </div>
 
-      <div className="py-2">
+      <div className="py-2 ">
         <h2 className="font-montserrat text-lg font-semibold mt-4">
           Reply to Ticket
         </h2>
-        <div className="flex flex-col gap-2 items-end rounded-md py-3 bg-gray-50 ">
+        <div className="flex flex-col gap-2 items-end rounded-md py-3  ">
           <textarea
-            className="border border-gray-300 rounded-lg p-2 w-full"
+            className="border border-gray-300 rounded-lg p-2 w-full "
             placeholder="Enter Your Message here..."
             onChange={(e) => setReply(e.target.value)}
             rows={4}
           />
           <button
             onClick={() => handleReply(data.data)}
-            className="bg-black text-white rounded-md px-4 py-2"
+            className="bg-black text-white rounded-lg px-4 py-2"
           >
-            {isPending ? "Loading..." : "Reply"}
+            {isPending ? "Loading..." : "Submit"}
           </button>
         </div>
       </div>

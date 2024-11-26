@@ -29,7 +29,7 @@ const CVForm: React.FC<CVFormProps> = ({ control }) => {
   };
 
   return (
-    <div className="p-4 mt-4 bg-white rounded-lg shadow-md max-w-full">
+    <div className="p-4 mt-4 bg-white rounded-lg shadow-md max-w-full border  mb-4">
       <h2 className="text-xl font-semibold mb-3 pb-3 text-[#1A1C21]">
         Highlight & CV
       </h2>
@@ -67,7 +67,7 @@ const CVForm: React.FC<CVFormProps> = ({ control }) => {
       </div>
 
       {cvEntries.map((cv, index) => (
-        <div key={cv.id} className="flex space-x-2 mb-3">
+        <div key={cv.id} className="flex flex-wrap space-x-2 mb-3 mt-4">
           {/* Year Input - Changed to Select */}
           <div className="flex flex-col">
             <label className="text-sm font-medium mb-1">Year</label>
@@ -126,7 +126,7 @@ const CVForm: React.FC<CVFormProps> = ({ control }) => {
             />
           </div>
 
-          <div className="flex flex-col">
+          <div className="flex flex-col ">
             <label className="text-sm font-medium mb-1">Scope</label>
             <select
               className="border border-gray-300 rounded-md px-1 py-1 w-20 outline-none"
@@ -143,7 +143,7 @@ const CVForm: React.FC<CVFormProps> = ({ control }) => {
           {/* Remove Button */}
           <button
             type="button"
-            className="text-red-600"
+            className="text-red-600 "
             onClick={() => remove(index)} // Function to remove a CV entry
           >
             ✕

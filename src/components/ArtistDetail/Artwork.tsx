@@ -47,7 +47,7 @@ const Artwork = () => {
         Artworks
       </Header>
 
-      <div className="flex justify-end mb-4 gap-3 pb-3 ">
+      <div className="flex flex-col sm:flex-row justify-end mb-4 gap-3 pb-3 ">
         <select
           className="border p-2 rounded-md text-sm"
           value={isArtProvider}
@@ -94,7 +94,7 @@ const Artwork = () => {
               <img
                 src={`${data.url}/users/${item.media.mainImage}`}
                 alt="image"
-                className="lg:w-[40vw] lg:h-[50vh] object-cover cursor-pointer "
+                className="w-full h-[300px] object-cover cursor-pointer "
               />
 
               {profile === "artist" && (
