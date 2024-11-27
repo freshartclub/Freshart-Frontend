@@ -133,7 +133,7 @@ const App: React.FC = () => {
   return (
     <AuthProvider>
       <Layout isAuthenticated={isAuthenticated}>
-        <h1>{t("ArtworkName")}</h1>
+        {/* <h1>{t("ArtworkName")}</h1> */}
         <Suspense fallback={<Loader />}>
           <Routes>
             {/* Public Routes */}

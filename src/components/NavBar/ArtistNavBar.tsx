@@ -29,8 +29,8 @@ const ArtistNavBar = () => {
   console.log(`${url}/${user.profile.mainImage}`);
 
   useEffect(() => {
-    i18n.changeLanguage("spanish");
-  }, []);
+    i18n.changeLanguage(language);
+  }, [language]);
 
   const handleLogOut = () => {
     try {
