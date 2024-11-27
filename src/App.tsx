@@ -17,6 +17,11 @@ import ArtistProfile from "./components/ArtistPanel/ArtistEditProfile/ArtistProf
 import Loader from "./components/ui/Loader";
 import TicketHistory from "./components/NewTicket/ticket history/TicketHistory";
 import SingleTicket from "./components/NewTicket/ticket history/ticketDetail";
+import { I18nProvider } from "./components/utils/i18n-provider.tsx";
+import { useTranslation } from "react-i18next";
+import "./components/utils/i18n.ts";
+
+// import "./i18n";
 
 const queryClient = new QueryClient();
 
@@ -114,15 +119,25 @@ const App: React.FC = () => {
   const { isLoading } = useCheckIsAuthorized();
   const [isAuthenticated] = useState<boolean>(false);
   const data = useAppSelector((state) => state.user.user);
+  const { t, i18n } = useTranslation();
+
+  // useEffect(() => {
+  //   console.log(t("welcome"));
+  //   console.log(i18n.language);
+
+  //   i18n.changeLanguage("nl");
+  // }, []);
 
   if (isLoading) return <Loader />;
 
   return (
     <AuthProvider>
       <Layout isAuthenticated={isAuthenticated}>
+        <h1>{t("ArtworkName")}</h1>
         <Suspense fallback={<Loader />}>
           <Routes>
             {/* Public Routes */}
+
             <Route path="/" element={<GetStarted />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignUp />} />

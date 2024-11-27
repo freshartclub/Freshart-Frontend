@@ -1,6 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { ARTTIST_ENDPOINTS } from "../../../../http/apiEndPoints/Artist";
 import axiosInstance from "../../../utils/axios";
 import { ORDERS_ENDPOINTS } from "../../../../http/apiEndPoints/Orders";
 let toastId: any;
@@ -8,7 +7,7 @@ let toastId: any;
 async function acceptOrder(newData) {
   return await axiosInstance.patch(
     `${ORDERS_ENDPOINTS.AcceptOrder}/${newData.id}?orderType=${newData.orderType}`,
-    newData.status
+    newData
   );
 }
 

@@ -9,11 +9,13 @@ import select_img from "../assets/select_img.jpg";
 import { useGetArtistOrder } from "../Orders/http/useGetArtistOrder";
 import Loader from "../../ui/Loader";
 import { useNavigate } from "react-router-dom";
+import { formateCurrency } from "../../utils/FormatCurrency";
 
 const OrderApproveDetails = ({ data }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [evidence, setEvidence] = useState(["evidence3"]);
   const navigate = useNavigate();
 
   console.log(data);
@@ -58,16 +60,6 @@ const OrderApproveDetails = ({ data }) => {
     total: "$349.77",
   };
 
-  const evidence = [
-    evidence3,
-    evidence3,
-    evidence3,
-    evidence3,
-    evidence3,
-    evidence3,
-    evidence3,
-  ];
-
   const customer_info = {
     name: "Jayvion Simon",
     email: "nannie.abernathy70@yahoo.com",
@@ -99,6 +91,10 @@ const OrderApproveDetails = ({ data }) => {
     if (file) {
       setSelectedImage(URL.createObjectURL(file));
     }
+  };
+
+  const handleEvidence = () => {
+    setEvidence([...evidence, "evidence2"]);
   };
 
   console.log(data?.data);
@@ -147,7 +143,10 @@ const OrderApproveDetails = ({ data }) => {
                     </div>
                     <div className="items-center justify-center   flex flex-row  gap-2 lg:gap-20 ">
                       <p className="text-gray-400 font-semibold">
-                        {` $ ${product?.artWork?.pricing?.basePrice}`}
+                        {formateCurrency(
+                          product?.artWork?.pricing?.basePrice,
+                          "$"
+                        )}
                       </p>
                       <p className=" font-semibold">{product?.discount}</p>
                     </div>
@@ -172,26 +171,30 @@ const OrderApproveDetails = ({ data }) => {
               <div className="flex justify-between  text-gray-400 mb-1 font-bold">
                 <span>Subtotal :</span>
                 <span className="font-semibold text-black">
-                  $ {data?.data?.subTotal}
+                  {formateCurrency(data?.data?.subTotal, "$")}
                 </span>
               </div>
               <div className="flex justify-between text-gray-400 mb-1 font-semibold">
                 <span>Shipping :</span>
-                <span className="text-red-400">$ {data?.data?.shipping}</span>
+                <span className="text-red-400">
+                  {formateCurrency(data?.data?.shipping, "$")}
+                </span>
               </div>
               <div className="flex justify-between text-gray-400 mb-1 font-semibold">
                 <span>Discount :</span>
-                <span className="text-red-400">$ {data?.data?.discount}</span>
+                <span className="text-red-400">
+                  {formateCurrency(data?.data?.discount, "$")}
+                </span>
               </div>
               <div className="flex justify-between text-gray-400 mb-1">
                 <span>Taxes:</span>
                 <span className="text-black font-semibold">
-                  $ {data?.data?.tax}
+                  {formateCurrency(data?.data?.tax, "$")}
                 </span>
               </div>
               <div className="flex justify-between text-gray-800 font-semibold text-md mt-4">
                 <span>Total</span>
-                <span>$ {data?.data?.subTotal}</span>
+                {formateCurrency(data?.data?.subTotal, "$")}
               </div>
             </div>
           </div>
@@ -270,7 +273,11 @@ const OrderApproveDetails = ({ data }) => {
             </div>
           ))}
         </div>
-        <button className=" text-sm font-bold  text-[#FF536B] ">
+
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className=" text-sm font-bold  text-[#FF536B] "
+        >
           {" "}
           + Add More
         </button>

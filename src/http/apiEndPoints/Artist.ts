@@ -12,6 +12,7 @@ export const ARTTIST_ENDPOINTS = {
   GetHomeData: `${ARTIST_BASE_URl}/get-home-artworks`,
   RecentArtWorks: `${ARTIST_BASE_URl}/add-to-recent`,
   GetRecentArtworks: `${ARTIST_BASE_URl}/get-recent-view`,
+  GetLanguage: `${ARTIST_BASE_URl}/get-language`,
 
   // GetArtistArtwork: `${ARTIST_BASE_URl}/get-artist-artwork `,
   // DeleteArtwork: `${ARTIST_BASE_URl}/delete-artist-artwork `,
@@ -20,7 +21,6 @@ export const ARTTIST_ENDPOINTS = {
   GetArtistTicketsDetails: `${ARTIST_BASE_URl}/ticket`,
   GetAllIncidents: `${ARTIST_BASE_URl}/get-all-incidents`,
   PatchFeedback: `${ARTIST_BASE_URl}/ticket-feedback`,
-
 
   GetAllArtist: `${ARTIST_BASE_URl}/get-all-artists`,
   addToCart: `${ARTIST_BASE_URl}/add-to-cart`,

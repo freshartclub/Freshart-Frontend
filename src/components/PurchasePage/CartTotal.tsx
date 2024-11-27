@@ -54,8 +54,10 @@ const CartTotal = ({ data }) => {
     },
   ];
 
-  const artWorkId = data?.data?.cart?.map((item) => item?.item?._id);
-  console.log(artWorkId);
+  const orderType = data?.data?.cart?.map(
+    (item) => item?.item?.commercialization?.activeTab
+  );
+  // console.log(orderType[0]);
 
   let itemQu = {};
 
@@ -71,14 +73,14 @@ const CartTotal = ({ data }) => {
 
   const handleCheckOut = () => {
     console.log("hello");
-    // navigate("/");
+    // navigate("/payment_page");
     try {
       const data = {
         subTotal: totalPrice - totalDiscountAmount,
         tax: 0,
         discount: totalDiscountAmount,
         shipping: 0,
-        orderType: "purchase",
+        orderType: orderType[0],
         items: Object.keys(itemQu).map((id) => ({
           id: id,
           quantity: itemQu[id],

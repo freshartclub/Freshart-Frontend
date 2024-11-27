@@ -35,7 +35,9 @@ const PaymentPage = () => {
     }, 0)
     .toFixed(2);
 
-  console.log(totalPrice);
+  const tax = 5;
+
+  const finalPrice = totalPrice - discountAmounts + tax;
 
   const {
     register,
@@ -74,8 +76,6 @@ const PaymentPage = () => {
     const shipping = 0; // Free shipping
     return subTotal + tax - discount + shipping;
   };
-
-  const total = calculateTotal();
 
   return (
     <div className="container mx-auto p-4">
@@ -241,7 +241,7 @@ const PaymentPage = () => {
                 <div>
                   <label className="block mb-1">Phone Number</label>
                   <input
-                    {...register("email", {
+                    {...register("phoneNumber", {
                       required: "phoneNumber is required",
                     })}
                     type="text"
@@ -491,12 +491,12 @@ const PaymentPage = () => {
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-[#5F6C72]">Tax</span>
-                  <span className="font-semibold">${61.99}</span>
+                  <span className="font-semibold">${tax}</span>
                 </div>
                 <hr className="my-2" />
                 <div className="flex justify-between ">
                   <span>Total</span>
-                  <span className="font-semibold">${totalPrice} USD</span>
+                  <span className="font-semibold">${finalPrice} USD</span>
                 </div>
               </div>
 

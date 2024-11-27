@@ -4,6 +4,7 @@ import { ARTTIST_ENDPOINTS } from "../../../../http/apiEndPoints/Artist";
 import axiosInstance from "../../../utils/axios";
 
 export const useGetTicket = () => {
+  const value = true;
   let url = `${ARTTIST_ENDPOINTS.GetArtistTickets}`;
 
   async function fetchData() {
@@ -12,6 +13,6 @@ export const useGetTicket = () => {
   }
   return useQuery({
     queryKey: ["like"],
-    queryFn: fetchData,
+    queryFn: () => fetchData(),
   });
 };

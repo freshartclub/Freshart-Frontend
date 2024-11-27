@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import logo from "../../assets/loginlogo.png";
 import { IoMdSearch } from "react-icons/io";
 import { IoNotifications } from "react-icons/io5";
@@ -9,12 +9,14 @@ import { useAppDispatch, useAppSelector } from "../../store/typedReduxHooks";
 import useLogOutMuttion from "../../http/auth/useLogOutMutation";
 import useLogOutMutation from "../../http/auth/useLogOutMutation";
 import { setIsArtist } from "../../store/userSlice/userSlice";
+import i18n from "../utils/i18n";
 
 const ArtistNavBar = () => {
   const [isToogleOpen, setIsToggelOpen] = useState(false);
   const [isSearchBar, setIsSeachBar] = useState(false);
   const navigate = useNavigate();
   const user = useAppSelector((state) => state.user.user);
+  const [language, setLanguage] = useState("eng");
 
   const dispatch = useAppDispatch();
   const profile = localStorage.getItem("profile");
@@ -26,12 +28,22 @@ const ArtistNavBar = () => {
 
   console.log(`${url}/${user.profile.mainImage}`);
 
+  useEffect(() => {
+    i18n.changeLanguage("spanish");
+  }, []);
+
   const handleLogOut = () => {
     try {
       logOut();
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleLanguageChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    setLanguage(event.target.value);
   };
 
   const handleProfile = () => {
@@ -63,7 +75,15 @@ const ArtistNavBar = () => {
             </div>
           </div>
 
-          <h1 className="hidden lg:block">Language</h1>
+          <select
+            value={language}
+            onChange={handleLanguageChange}
+            className="border p-2 rounded"
+          >
+            <option value="eng">English</option>
+            <option value="spanish">Spanish</option>
+          </select>
+
           <IoNotifications
             className="cursor-pointer hidden lg:block"
             size="2em"

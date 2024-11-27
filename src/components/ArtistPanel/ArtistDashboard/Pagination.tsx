@@ -7,6 +7,7 @@ import { useGetArtistOrder } from "../Orders/http/useGetArtistOrder";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
 import Loader from "../../ui/Loader";
+import { formateCurrency } from "../../utils/FormatCurrency";
 
 const Pagination = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -41,9 +42,9 @@ const Pagination = () => {
     );
   };
 
-  // if (isLoading) {
-  //   return <Loader />;
-  // }
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <>
@@ -89,14 +90,14 @@ const Pagination = () => {
                 </div>
 
                 <div className="col-span-1">
-                  <p className="text-[12px] md:text-[14px] font-bold">
+                  <p className="text-[12px] md:text-[14px] font-bold capitalize">
                     {value?.orderType}
                   </p>
                 </div>
 
                 <div className="col-span-1">
                   <p className="text-[12px] md:text-[14px] font-bold">
-                    $ {value?.subTotal}
+                    {formateCurrency(value?.subTotal, "$")}
                   </p>
                 </div>
 
@@ -115,7 +116,7 @@ const Pagination = () => {
 
                 <div className="col-span-2 ">
                   <div
-                    className={`w-fit rounded-lg py-0 px-2 ${
+                    className={`w-fit rounded-lg py-0 px-2 capitalize ${
                       value.status === "processing"
                         ? "bg-[#FDF1E8] text-[#E46A11]"
                         : value.status === "Shiped"

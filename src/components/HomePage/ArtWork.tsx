@@ -44,6 +44,8 @@ const ArtWork = ({ data }) => {
     ],
   };
 
+  console.log("this is from newArtwork", data);
+
   console.log(data?.newAdded);
   const navigate = useNavigate();
   const handleRedirectToDescription = (id) => {
