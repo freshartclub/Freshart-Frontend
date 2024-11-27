@@ -150,7 +150,7 @@ const TicketsList: FC<{
                         onClick={() => handleLike(ticket._id)}
                       >
                         <AiFillLike
-                          size="2em"
+                          size="1.5em"
                           color={
                             feedbackData[ticket._id]?.isLiked === "yes" ||
                             ticket?.ticketFeedback?.isLiked === "yes"
@@ -164,7 +164,7 @@ const TicketsList: FC<{
                         onClick={() => handleDisLike(ticket._id)}
                       >
                         <AiFillDislike
-                          size="2em"
+                          size="1.5em"
                           color={
                             feedbackData[ticket._id]?.isLiked === "no" ||
                             ticket?.ticketFeedback?.isLiked === "no"
@@ -178,8 +178,8 @@ const TicketsList: FC<{
 
                   {openTicketId === ticket._id && (
                     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                      <div className="bg-white p-6 rounded-lg w-1/3">
-                        <h2 className="text-xl mb-4">
+                      <div className="bg-white p-6 rounded-lg lg:w-1/3">
+                        <h2 className="  xl:text-xl mb-4">
                           We'd love your feedback!
                         </h2>
                         <textarea
@@ -193,10 +193,10 @@ const TicketsList: FC<{
                               },
                             }))
                           }
-                          className="w-full h-24 border rounded-lg p-2"
+                          className="text-sm w-full h-20 border rounded-lg p-2"
                           placeholder="Please leave your feedback..."
                         />
-                        <div className="mt-4 flex justify-between">
+                        <div className="mt-4 flex flex-col md:flex-row justify-center gap-4">
                           <button
                             onClick={handleCloseModal}
                             className="bg-gray-300 p-2 rounded"

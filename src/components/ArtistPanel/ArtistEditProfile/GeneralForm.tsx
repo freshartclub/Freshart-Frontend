@@ -143,7 +143,7 @@ const GeneralForm = ({ defaultValues }: { defaultValues: any }) => {
   }
 
   return (
-    <div className="w-[70%] flex shadow-lg justify-center items-center">
+    <div className="w-full md:w-[70%] flex shadow-lg justify-center items-center">
       <div className="rounded-md w-full bg-white">
         <div className="xl:p-4 lg:p-3 md:p-4 p-3 w-full">
           <FormProvider {...methods}>
@@ -486,7 +486,7 @@ const GeneralForm = ({ defaultValues }: { defaultValues: any }) => {
                 url={data?.data?.url}
               />
               <CVForm control={control} />
-              <div className="p-4 mt-4 bg-white rounded-lg shadow-md max-w-full">
+              <div className="p-4 mt-4 bg-white rounded-lg shadow-md max-w-full ">
                 <h2 className="text-xl font-semibold mb-3 text-[#1A1C21]">
                   Insignia
                 </h2>
