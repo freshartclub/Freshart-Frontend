@@ -30,6 +30,9 @@ import NotFoundPage from "./components/pages/NotFoundPage";
 import ArtworkDetails from "./components/ArtistPanel/Artwork/artworkDetails/ArtworkDetails";
 import OrderApprove from "./components/ArtistPanel/OrderApprove/OrderApprove";
 import PaymentPage from "./components/Payment_page/PaymentPage";
+import Faq from "./components/pages/Faq";
+import FaqDetails from "./components/FaqDetails/FaqDetails";
+import AboutUs from "./components/pages/AboutUs/AboutUs";
 const SignUp = lazy(() => import("./components/pages/SignUp"));
 const ForgetPassword = lazy(() => import("./components/pages/ForgetPassword"));
 const ChangePassword = lazy(() => import("./components/pages/ChangePassword"));
@@ -133,6 +136,8 @@ const App: React.FC = () => {
             <Route path="/terms" element={<TermAndCondition />} />
             <Route path="/become_artist" element={<BecomeArtist />} />
             <Route path="*" element={<NotFoundPage />} />
+            <Route path="/faq" element={<Faq />} />
+            <Route path="/about-us" element={<AboutUs />} />
 
             <Route
               path="/order-approve*"
