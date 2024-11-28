@@ -28,9 +28,9 @@ const ArtistNavBar = () => {
 
   console.log(`${url}/${user.profile.mainImage}`);
 
-  useEffect(() => {
-    i18n.changeLanguage(language);
-  }, [language]);
+  // useEffect(() => {
+  //   i18n.changeLanguage(language);
+  // }, [language]);
 
   const handleLogOut = () => {
     try {
@@ -40,11 +40,11 @@ const ArtistNavBar = () => {
     }
   };
 
-  const handleLanguageChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    setLanguage(event.target.value);
-  };
+  // const handleLanguageChange = (
+  //   event: React.ChangeEvent<HTMLSelectElement>
+  // ) => {
+  //   setLanguage(event.target.value);
+  // };
 
   const handleProfile = () => {
     navigate("/home", { replace: true });
@@ -77,7 +77,7 @@ const ArtistNavBar = () => {
 
           <select
             value={language}
-            onChange={handleLanguageChange}
+            // onChange={handleLanguageChange}
             className="border p-2 rounded"
           >
             <option value="eng">English</option>

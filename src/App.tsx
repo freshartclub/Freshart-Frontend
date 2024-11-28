@@ -38,6 +38,7 @@ import PaymentPage from "./components/Payment_page/PaymentPage";
 import Faq from "./components/pages/Faq";
 import FaqDetails from "./components/FaqDetails/FaqDetails";
 import AboutUs from "./components/pages/AboutUs/AboutUs";
+import KbDatabase from "./components/pages/KbDatabase.tsx";
 const SignUp = lazy(() => import("./components/pages/SignUp"));
 const ForgetPassword = lazy(() => import("./components/pages/ForgetPassword"));
 const ChangePassword = lazy(() => import("./components/pages/ChangePassword"));
@@ -152,6 +153,7 @@ const App: React.FC = () => {
             <Route path="/become_artist" element={<BecomeArtist />} />
             <Route path="*" element={<NotFoundPage />} />
             <Route path="/faq" element={<Faq />} />
+            <Route path="/kb-database" element={<KbDatabase />} />
             <Route path="/about-us" element={<AboutUs />} />
 
             <Route
