@@ -28,6 +28,8 @@ const TicketHistory: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [ticketsdata, setTickets] = useState<any[]>([]);
   const [totalPages, setTotalPages] = useState<number>(0);
+  const [activeTab, setActiveTab] = useState("all");
+  const now = dayjs();
 
   const ticketsPerPage = 10;
 
@@ -38,8 +40,6 @@ const TicketHistory: React.FC = () => {
       setCurrentPage(page);
     }
   };
-
-  const [activeTab, setActiveTab] = useState("all");
 
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
@@ -67,8 +67,6 @@ const TicketHistory: React.FC = () => {
     setCurrentPage(1);
   };
 
-  const now = dayjs();
-
   // const sortedTickets = [...data].sort((a, b) =>
   //   dayjs(b.createdAt).diff(dayjs(a.createdAt))
   // );
@@ -78,16 +76,21 @@ const TicketHistory: React.FC = () => {
   );
 
   const onGoingTicket = data?.filter((ticket) => {
-    return ticket.status.includes("In progress");
+    return ticket?.status?.includes("In progress");
   });
 
   const solvedTicket = data?.filter((ticket) => {
-    return ticket.status.includes("Finalise");
+    return ticket?.status?.includes("Finalise");
   });
 
   const thisWeek = data.filter((ticket) =>
     dayjs(ticket.createdAt).isAfter(now.startOf("week"))
   );
+
+  // const date = new Date();
+  // const dateString = date.toLocaleDateString();
+  // console.log(dateString);
+  // console.log(dayjs().isAfter(now.startOf("week")));
 
   const thisMonth = data.filter((ticket) =>
     dayjs(ticket.createdAt).isAfter(now.startOf("month"))

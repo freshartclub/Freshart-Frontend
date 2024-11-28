@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useGetArtistOrder } from "./http/useGetArtistOrder";
 import dayjs from "dayjs";
 import Loader from "../../ui/Loader";
+import { formateCurrency } from "../../utils/FormatCurrency";
 
 const Allorders = ({ orderDelail }: any) => {
   const { data, isLoading } = useGetArtistOrder();
@@ -47,13 +48,10 @@ const Allorders = ({ orderDelail }: any) => {
   }
   return (
     <>
-      <div className="rounded-md border border-1 mt-3  ">
-        <div className="grid grid-cols-11 bg-[#F9F9FC] items-center my-auto h-10 p-2 border-b  ">
+      <div className="rounded-md border border-1 mt-3 w-full ">
+        <div className="grid grid-cols-11  bg-[#F9F9FC] items-center my-auto h-10 p-2 border-b  ">
           {columns.map((column) => (
-            <div
-              key={column.key}
-              className={`col-span-${column.colSpan} text-left`}
-            >
+            <div key={column.key} className={`col-span-${column.colSpan} `}>
               <p className="font-semibold text-[16px] text-black">
                 {column.label}
               </p>
@@ -63,9 +61,10 @@ const Allorders = ({ orderDelail }: any) => {
 
         <div className="bg-white p-2 over-x-scroll">
           {data &&
+            data?.length > 0 &&
             data?.map((value: any, index: any) => (
               <div key={index}>
-                <div className=" grid grid-cols-11 h-auto pb-3 pt-3 ">
+                <div className="grid grid-cols-11 h-auto pb-3 pt-3 ">
                   <div className="col-span-1">
                     <p className="text-[12px] md:text-[14px] font-bold">
                       {value.orderID}
@@ -88,9 +87,10 @@ const Allorders = ({ orderDelail }: any) => {
                       </p>
                     </div>
                   </div>
+
                   <div className="col-span-1">
                     <p className="text-[12px] md:text-[14px] font-bold">
-                      {dayjs(value?.createdAt).format("MMMM D, YYYY")}
+                      {dayjs(value?.createdAt).format("MMM D, YYYY")}
                     </p>
                   </div>
                   <div className="col-span-2">
@@ -102,14 +102,14 @@ const Allorders = ({ orderDelail }: any) => {
                   </div>
 
                   <div className="col-span-1">
-                    <p className="text-[12px] md:text-[14px] font-bold">
+                    <p className="text-[12px] md:text-[14px] font-bold capitalize">
                       {value?.orderType}
                     </p>
                   </div>
 
                   <div className="col-span-1">
                     <p className="text-[12px] md:text-[14px] font-bold">
-                      ${value?.subTotal}
+                      {formateCurrency(value?.subTotal, "$")}
                     </p>
                   </div>
 
@@ -118,9 +118,9 @@ const Allorders = ({ orderDelail }: any) => {
                       {value.paymenttype}
                     </p>
                   </div>
-                  <div className="col-span-1">
+                  <div className="col-span-1 ">
                     <div
-                      className={` w-fit rounded-lg py-0 px-2  ${
+                      className={` w-fit rounded-lg py-0 px-2  capitalize  ${
                         value?.status === "processing"
                           ? "bg-[#FDF1E8] text-[#E46A11] "
                           : value.status === "Shiped"

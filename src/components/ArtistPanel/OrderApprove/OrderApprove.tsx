@@ -2,26 +2,26 @@ import React from "react";
 import arrow from "../assets/orderApprove1.png";
 import print from "../assets/orderApprove2.png";
 import OrderApproveDetails from "./OrderApproveDetails";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useGetOrderDetails } from "./https/useGetOrderDetails";
 import usePostAcceptMutation from "./https/usePostAcceptMutation";
 import Loader from "../../ui/Loader";
+import dayjs from "dayjs";
 
 const OrderApprove = () => {
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
   const orderType = searchParams.get("orderType");
-  console.log(id);
-  console.log(orderType);
+  const naviagte = useNavigate();
 
   const { data, isLoading } = useGetOrderDetails(id, orderType);
   const { mutate, isPending } = usePostAcceptMutation();
 
   const handleAccept = () => {
     const newData = {
-      id,
+      id: id,
       orderType: orderType,
-      status: data?.data?.status,
+      status: "accept",
     };
     try {
       mutate(newData);
@@ -35,6 +35,10 @@ const OrderApprove = () => {
     order_time: "12 Aug 2022 10:00 PM",
   };
 
+  const handleNavigate = () => {
+    naviagte("/artist-panel/order");
+  };
+
   if (isLoading) {
     return <Loader />;
   }
@@ -43,15 +47,17 @@ const OrderApprove = () => {
       {/*Header section*/}
       <div className="flex flex-col sm:flex-row justify-between">
         <div className="flex  gap-4 items-center mb-6">
-          <div>
+          <div onClick={() => handleNavigate()} className="cursor-pointer">
             <img src={arrow} />
           </div>
           <div className="">
             <div className="font-bold text-[#1C252E] text-lg mb-2">
-              {order.order_id}
+              Order ID : {data?.data?.orderID}
             </div>
 
-            <p className="text-[#919EAB] text-xs">{order.order_time} </p>
+            <p className="text-[#919EAB] text-xs">
+              {dayjs(data?.data?.createdAt).format("MMMM D, YYYY , HH:mm:ss")}
+            </p>
           </div>
         </div>
         <div className="flex gap-4 text-center ">

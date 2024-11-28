@@ -147,143 +147,153 @@ const OrderPage = () => {
         </div>
 
         <div className="flex flex-col gap-8">
-          {dataToRender?.map((item, index) => (
-            <>
-              <div
-                key={index}
-                className="flex flex-col sm:flex-row justify-between lg:gap-10 gap-5 bg-white p-4 rounded-md"
-              >
-                <div className="">
-                  <img
-                    src={`${data?.url}/users/${item?.items[0]?.artWork?.media?.mainImage}`}
-                    alt="order image"
-                    className="w-full"
-                  />
-                </div>
+          {dataToRender &&
+            dataToRender.lenght > 0 &&
+            dataToRender?.map((item, index) => (
+              <>
+                <div
+                  key={index}
+                  className="flex flex-col sm:flex-row justify-between lg:gap-10 gap-5 bg-white p-4 rounded-md"
+                >
+                  <div className="">
+                    <img
+                      src={`${data?.url}/users/${item?.items[0]?.artWork?.media?.mainImage}`}
+                      alt="order image"
+                      className="w-full"
+                    />
+                  </div>
 
-                <div className="sm:w-[80%] w-full">
-                  <div className="flex lg:flex-row flex-col justify-between">
-                    <Header
-                      variant={{
-                        size: "xl",
-                        theme: "dark",
-                        weight: "semiBold",
-                      }}
-                    >
-                      {item?.items[0].artWork?.artworkName}
-                    </Header>
-                    <div className="flex xl:gap-4">
-                      <P
+                  <div className="sm:w-[80%] w-full">
+                    <div className="flex lg:flex-row flex-col justify-between">
+                      <Header
                         variant={{
-                          size: "base",
+                          size: "xl",
                           theme: "dark",
-                          weight: "normal",
+                          weight: "semiBold",
                         }}
                       >
-                        {item?.orderID}
+                        {item?.items[0].artWork?.artworkName}
+                      </Header>
+                      <div className="flex xl:gap-4">
+                        <P
+                          variant={{
+                            size: "base",
+                            theme: "dark",
+                            weight: "normal",
+                          }}
+                        >
+                          {item?.orderID}
+                        </P>
+                        <P
+                          variant={{
+                            size: "base",
+                            theme: "dark",
+                            weight: "normal",
+                          }}
+                        ></P>
+                      </div>
+                    </div>
+                    <P
+                      variant={{
+                        size: "small",
+                        theme: "dark",
+                        weight: "normal",
+                      }}
+                      className="text-[#848484] my-1"
+                    >
+                      {item.para}
+                    </P>
+
+                    <P
+                      variant={{
+                        size: "base",
+                        theme: "dark",
+                        weight: "medium",
+                      }}
+                      className="mb-2"
+                    >
+                      $ {item?.subTotal}
+                    </P>
+
+                    <div className="flex gap-1 my-2">
+                      <P
+                        variant={{
+                          size: "small",
+                          theme: "dark",
+                          weight: "medium",
+                        }}
+                      >
+                        {item.order_place}
                       </P>
                       <P
                         variant={{
-                          size: "base",
+                          size: "small",
                           theme: "dark",
-                          weight: "normal",
+                          weight: "medium",
                         }}
-                      ></P>
+                        className="text-[#848484]"
+                      >
+                        Order Placed on :{" "}
+                        {dayjs(item?.createdAt).format("MMMM D, YYYY")}
+                      </P>
                     </div>
-                  </div>
-                  <P
-                    variant={{ size: "small", theme: "dark", weight: "normal" }}
-                    className="text-[#848484] my-1"
-                  >
-                    {item.para}
-                  </P>
 
-                  <P
-                    variant={{ size: "base", theme: "dark", weight: "medium" }}
-                    className="mb-2"
-                  >
-                    $ {item?.subTotal}
-                  </P>
-
-                  <div className="flex gap-1 my-2">
-                    <P
-                      variant={{
-                        size: "small",
-                        theme: "dark",
-                        weight: "medium",
-                      }}
-                    >
-                      {item.order_place}
-                    </P>
-                    <P
-                      variant={{
-                        size: "small",
-                        theme: "dark",
-                        weight: "medium",
-                      }}
-                      className="text-[#848484]"
-                    >
-                      Order Placed on :{" "}
-                      {dayjs(item?.createdAt).format("MMMM D, YYYY")}
-                    </P>
-                  </div>
-
-                  <div className="flex">
-                    <P
-                      variant={{
-                        size: "small",
-                        theme: "dark",
-                        weight: "medium",
-                      }}
-                    >
-                      Quantity : {item?.items[0].quantity}
-                    </P>
-
-                    <P
-                      variant={{
-                        size: "small",
-                        theme: "dark",
-                        weight: "medium",
-                      }}
-                      className="text-[#848484] ml-2"
-                    >
-                      {item.name}
-                    </P>
-                  </div>
-
-                  <div className="flex sm:flex-row flex-col justify-between  w-full mt-6 ">
-                    <div className="flex items-center sm:justify-center justify-between md:gap-5 ">
-                      <Button
+                    <div className="flex">
+                      <P
                         variant={{
-                          fontWeight: "500",
-                          thickness: "thick",
+                          size: "small",
+                          theme: "dark",
+                          weight: "medium",
                         }}
-                        className="border border-black rounded-md text-sm sm:px-6 sm:py-3 !p-2"
                       >
-                        Order Again
-                      </Button>
+                        Quantity : {item?.items[0].quantity}
+                      </P>
 
-                      <Button
-                        variant={{ fontWeight: "500" }}
-                        className="text-sm sm:px-6 sm:py-3 !p-2 "
-                      >
-                        Cancel
-                      </Button>
-                    </div>
-                    <div className="flex md:justify-end mt-2 sm:mt-0">
-                      <Button
-                        onClick={() => handleDetailPage()}
+                      <P
                         variant={{
-                          theme: "light",
-                          fontWeight: "600",
+                          size: "small",
+                          theme: "dark",
+                          weight: "medium",
                         }}
-                        className="text-[16px] text-[#FF536B] border border-gray-400 text-sm  sm:px-6 sm:py-3 !p-2 "
+                        className="text-[#848484] ml-2"
                       >
-                        View Order Details
-                      </Button>
+                        {item.name}
+                      </P>
                     </div>
-                  </div>
-                  {/* <div className="flex sm:justify-end justify-center mt-2 sm:mt-0">
+
+                    <div className="flex sm:flex-row flex-col justify-between  w-full mt-6 ">
+                      <div className="flex items-center sm:justify-center justify-between md:gap-5 ">
+                        <Button
+                          variant={{
+                            fontWeight: "500",
+                            thickness: "thick",
+                          }}
+                          className="border border-black rounded-md text-sm sm:px-6 sm:py-3 !p-2"
+                        >
+                          Order Again
+                        </Button>
+
+                        <Button
+                          variant={{ fontWeight: "500" }}
+                          className="text-sm sm:px-6 sm:py-3 !p-2 "
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                      <div className="flex md:justify-end mt-2 sm:mt-0">
+                        <Button
+                          onClick={() => handleDetailPage()}
+                          variant={{
+                            theme: "light",
+                            fontWeight: "600",
+                          }}
+                          className="text-[16px] text-[#FF536B] border border-gray-400 text-sm  sm:px-6 sm:py-3 !p-2 "
+                        >
+                          View Order Details
+                        </Button>
+                      </div>
+                    </div>
+                    {/* <div className="flex sm:justify-end justify-center mt-2 sm:mt-0">
                     <Button
                       variant={{
                         fontSize: "base",
@@ -295,10 +305,10 @@ const OrderPage = () => {
                       {item.view}
                     </Button>
                   </div> */}
+                  </div>
                 </div>
-              </div>
-            </>
-          ))}
+              </>
+            ))}
         </div>
       </div>
     </div>

@@ -2,7 +2,7 @@ import { Field, Formik } from "formik";
 import { useEffect, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import { TiPlus } from "react-icons/ti";
-import { useSearchParams } from "react-router-dom";
+import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import Select from "react-select";
 import image_icon from "../../../assets/image_icon.png";
 import video_icon from "../../../assets/video_icon.png";
@@ -33,6 +33,8 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import Dicipline from "./Dicipline";
 import { RenderAllPicklist } from "../../utils/RenderAllPicklist";
+import * as Yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 const CustomYearPicker = ({
   field,
@@ -42,13 +44,6 @@ const CustomYearPicker = ({
   showCalendar,
 }) => (
   <div className="relative w-full">
-    {/* <Field
-      type="text"
-      name="artistName"
-      placeholder="Type artist name here (if different from artist)..."
-      className="w-full bg-[#F9F9FC] text-sm sm:text-base border border-gray-300 rounded-md p-1 sm:p-3 outline-none"
-    /> */}
-
     <div
       onClick={toggleCalendar}
       className="bg-[#F9F9FC] mt-1 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5 text-left cursor-pointer"
@@ -76,22 +71,22 @@ const CustomYearPicker = ({
 
 const AddArtwork = () => {
   const [progress, setProgress] = useState(0);
-  const [isArtProvider, setIsArtProvider] = useState("");
 
   const [showCalendar, setShowCalendar] = useState(false);
   const [qrVisible, setQrVisible] = useState(false);
 
   const toggleCalendar = () => setShowCalendar(!showCalendar);
+  const navigate = useNavigate();
 
-  // const validationSchema = Yup.object({
-  //   name: Yup.string().required("Name is required"),
-  //   email: Yup.string()
-  //     .email("Invalid email format")
-  //     .required("Email is required"),
-  //   region: Yup.string().required("Region is required"),
-  //   subject: Yup.string().required("Subject is required"),
-  //   message: Yup.string().required("Message is required"),
-  // });
+  const validationSchema = Yup.object({
+    artworkName: Yup.string().required("Name is required"),
+    email: Yup.string()
+      .email("Invalid email format")
+      .required("Email is required"),
+    artworkCreationYear: Yup.number().required("Region is required"),
+    subject: Yup.string().required("Subject is required"),
+    message: Yup.string().required("Message is required"),
+  });
 
   const [mainImage, setMainImage] = useState(null);
   const [backImage, setBackImage] = useState(null);
@@ -259,8 +254,6 @@ const AddArtwork = () => {
     }
   }, [id, data, inProcessImage, setInitialValues]);
 
-  console.log(activeTab);
-
   const { mutate, isPending } = usePostArtWorkMutation();
 
   const { data: technicData, isLoading: technicLoading } = useGetTechnic();
@@ -269,13 +262,15 @@ const AddArtwork = () => {
   const currentPageUrl = window.location.href;
 
   const handleGenerateQRCode = () => {
-    // console.log("hello");
     setQrVisible(true);
   };
 
   const picklist = RenderAllPicklist("Plans");
-  console.log(picklist);
 
+  const handleNavigate = () => {
+    navigate("/artist-panel/artdashboard");
+    window.scrollTo(0, 0);
+  };
   const handleFileChange = (e, setFile) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -352,7 +347,6 @@ const AddArtwork = () => {
   const onSubmit = async (values: any) => {
     console.log("onSubmit", values);
 
-    // Assuming you want to add additional values like images and videos
     values.mainImage = newImage;
     values.backImage = newBackImage;
     values.inProcessImage = newInProcessImage;
@@ -437,7 +431,7 @@ const AddArtwork = () => {
       <Formik
         initialValues={initialValues}
         enableReinitialize={true}
-        // validationSchema={validationSchema}
+        validationSchema={validationSchema}
         onSubmit={onSubmit}
         validateOnChange={true}
       >
@@ -533,8 +527,6 @@ const AddArtwork = () => {
                       </label>
                       <Field
                         as="select"
-                        // id="Farmed"
-                        // name="framed"
                         id="isArtProvider"
                         name="isArtProvider"
                         className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
@@ -594,6 +586,7 @@ const AddArtwork = () => {
                             Select Series
                           </label>
                           <p className="text-[#5C59E8] text-sm sm:text-base flex items-center gap-[2px] cursor-pointer">
+                            {/* this is commeted for adding a new series */}
                             {/* <span className="border-b-2 border-b-[#5C59E8] ">
                             {" "}
                             <TiPlus />
@@ -1074,7 +1067,7 @@ const AddArtwork = () => {
                                       className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
                                       onClick={() =>
                                         removeExistingVideo(i, "Url")
-                                      } // Custom function to remove video from state
+                                      }
                                     >
                                       &times;
                                     </span>
@@ -1234,7 +1227,7 @@ const AddArtwork = () => {
                       {artwork_orientation.map((field) => (
                         <span key={field.name}>
                           <label className="p-1 text-[14px] text-[#203F58] font-semibold">
-                            {field.label}
+                            {field.label} (cm)
                           </label>
                           <Field
                             type="text"
@@ -1306,14 +1299,13 @@ const AddArtwork = () => {
                         {Framed_dimension.map((field) => (
                           <span key={field.name}>
                             <label className="p-1 text-[14px] text-[#203F58] font-semibold">
-                              {field.label}
+                              {field.label} (cm)
                             </label>
                             <Field
                               type="text"
                               name={field.name}
                               id={field.name}
                               placeholder={field.placeholder}
-                              // value={value}
                               className="bg-[#F9F9FC] border mb-2 border-gray-300 outline-none text-[#203F58] text-sm rounded-lg block w-full p-1 sm:p-2.5 "
                             />
                           </span>
@@ -1323,7 +1315,6 @@ const AddArtwork = () => {
                       <div className="">
                         <Select
                           options={options}
-                          // defaultValue={value}
                           placeholder="Select Artwork Style"
                           isMulti
                           name="artworkStyleType"
@@ -1759,9 +1750,12 @@ const AddArtwork = () => {
                 </div>
 
                 <div className="flex space-x-2 ">
-                  <button className="border border-[#7E98B5] rounded px-4 py-1 text-sm font-semibold">
+                  <span
+                    onClick={() => handleNavigate()}
+                    className="border border-[#7E98B5] rounded px-4 py-3 text-sm font-semibold cursor-pointer"
+                  >
                     ✕ Cancel
-                  </button>
+                  </span>
 
                   <div className="flex justify-end ">
                     <Button
