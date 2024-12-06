@@ -120,8 +120,9 @@ const OrderApproveDetails = ({ data }) => {
                 data?.data?.items?.length > 0 &&
                 data?.data?.items?.map((product, index) => (
                   <div
+                    onClick={() => openModal(product)}
                     key={index}
-                    className="flex flex-col sm:flex-row justify-between md:items-center p-4 border-b-2  border-dashed  space-y-4"
+                    className="flex flex-col sm:flex-row justify-between md:items-center p-4 border-b-2  border-dashed  space-y-4 cursor-pointer"
                   >
                     <div className="flex  flex-col  sm:flex-row items-center space-x-4">
                       <div className=" bg-gray-300 rounded-lg flex  items-center justify-center">
@@ -157,17 +158,19 @@ const OrderApproveDetails = ({ data }) => {
                         src={view}
                       ></img>
 
-                      <img
+                      {/* <img
                         className="cursor-pointer"
                         onClick={() => openModal(product)}
                         src={edit}
-                      ></img>
+                      ></img> */}
                     </div>
                   </div>
+
+                  
                 ))}
             </div>
 
-            <div className="mt-6 p-4  rounded-lg  lg:ml-[70%]">
+            <div className="mt-6 p-4  rounded-lg  lg:ml-[60%] 2xl:ml-[70%]">
               <div className="flex justify-between  text-gray-400 mb-1 font-bold">
                 <span>Subtotal :</span>
                 <span className="font-semibold text-black">
@@ -288,49 +291,26 @@ const OrderApproveDetails = ({ data }) => {
       {isModalOpen && (
         <div>
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-2/3 ">
-              <h2 className="text-lg font-bold"> Details</h2>
-              <p className="text-sm text-gray-400 font-semibold pb-4 border-b-2 mb-4 ">
-                Title, short description, image...
-              </p>
+            
+            <div className="bg-white p-6 rounded-lg shadow-lg w-1/3 ">
+              <h2 className="text-lg font-bold mb-6"> Details</h2>
 
-              <h2 className="text-sm font-semibold mb-2"> Short Description</h2>
+              <p className="font-semibold mb-2">Product Title</p>
+
+              <div>
+                <p className="font-semibold mb-1">Topic</p>
+                <select className="w-60 border rounded-md mb-4 p-2">
+                  <option value="">Item is not available</option>
+                  <option value="">Item is not available</option>
+                </select>
+              </div>
+
+              <h2 className="text- font-semibold mb-2"> Describe the reason</h2>
               <input
                 type="text"
-                placeholder="Ex: Adventure Seekers Expedition..."
-                className="h-12 w-full border rounded-lg p-2"
+                placeholder=""
+                className="h-20 w-full border rounded-lg p-2"
               ></input>
-
-              <h2 className="text-sm font-semibold mb-2 mt-4">
-                {" "}
-                upload your Shipment images{" "}
-              </h2>
-
-              <div className="flex flex-col items-center justify-center gap-x-4 bg-[#919EAB33] rounded-lg">
-                <div className="mt-20 flex flex-col items-center justify-center ">
-                  <input
-                    id="fileInput"
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    style={{ display: "none" }}
-                    onChange={handleFileSelect}
-                  ></input>
-                  <img src={select_file}></img>
-                  <h1 className="font-bold text-base mb-4">
-                    {" "}
-                    Drop or select file
-                  </h1>
-                  <p
-                    className="text-sm mb-10 text-gray-600 cursor-pointer"
-                    onClick={handleClick}
-                  >
-                    Drop files here or click to{" "}
-                    <span className="text-[#00A76F]">browse</span> through your
-                    machine.
-                  </p>
-                </div>
-              </div>
 
               <div className="flex flex-col sm:flex-row mt-6">
                 {selectedImage && (
@@ -348,12 +328,12 @@ const OrderApproveDetails = ({ data }) => {
                   onClick={closeModal}
                   className=" bg-white-500 text-black text-md px-2 py-2 rounded-lg border-2 font-bold"
                 >
-                  Remove all
+                  Reject
                 </button>
-                <button className="px-2 py-2 rounded-lg bg-black text-white text-md font-bold">
+                {/* <button className="px-2 py-2 rounded-lg bg-black text-white text-md font-bold">
                   {" "}
                   Upload
-                </button>
+                </button> */}
               </div>
             </div>
           </div>
