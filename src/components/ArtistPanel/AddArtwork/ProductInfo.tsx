@@ -29,6 +29,24 @@ interface DisciplineItem {
 const ProductInfo = ({ data }: any) => {
   console.log(data);
 
+  const currency = data?.data?.pricing?.currency;
+
+  const internalTags = Array.isArray(data?.data?.tags?.intTags)
+    ? data.data.tags.intTags.map((tag, i) => (
+        <span key={tag}>
+          {tag} {i < tag.length - 1 && " | "}
+        </span>
+      ))
+    : null;
+
+  const externlaTags = Array.isArray(data?.data?.tags?.intTags)
+    ? data.data.tags.extTags.map((tag, i) => (
+        <span key={tag}>
+          {tag} {i < tag.length - 1 && " | "}
+        </span>
+      ))
+    : null;
+
   const artworkStyles = Array.isArray(data?.data?.additionalInfo?.artworkStyle)
     ? data.data.additionalInfo.artworkStyle.map((iw, i) => (
         <span key={i}>
@@ -58,9 +76,13 @@ const ProductInfo = ({ data }: any) => {
 
   const overview_date = [
     {
-      head: "Author :",
-      name:
-        data?.data?.owner?.artistName + " " + data?.data?.owner?.artistSurname1,
+      head: "Art Provider :",
+      name: data?.data?.isArtProvider,
+    },
+
+    {
+      head: "Art Provider Name :",
+      name: data?.data?.provideArtistName || "N/A",
     },
 
     {
@@ -80,32 +102,18 @@ const ProductInfo = ({ data }: any) => {
       name: data?.data?.additionalInfo?.material,
     },
     {
-      head: "Width :",
+      head: "Artwork Width :",
       name: data?.data?.additionalInfo?.width,
     },
 
     {
-      head: "Height :",
+      head: "Artwork Height :",
       name: data?.data?.additionalInfo?.height,
     },
     {
-      head: "Length :",
+      head: "Artwork Length :",
       name: data?.data?.additionalInfo?.length,
     },
-    // {
-    //   head: "Colour :",
-    //   name: data?.data?.additionalInfo?.colors?.map((item, i) => (
-    //     <h1 className="">{item}</h1>
-    //   )),
-    // },
-    // {
-    //   head: "Author type :",
-    //   name: "Refugee",
-    // },
-    // {
-    //   head: "Painting Info :",
-    //   name: "Most Overview",
-    // },
   ];
 
   const artwork_detail = [
@@ -159,30 +167,24 @@ const ProductInfo = ({ data }: any) => {
 
   const purchaseData = [
     {
+      heading: "Selected Method: ",
+      description: data?.data?.commercialization?.activeTab,
+    },
+    {
       heading: "Purchase Catalog: ",
       description: data?.data?.commercialization?.purchaseCatalog,
     },
-
     {
-      heading: "Artist Fees: ",
-      description: `$ ${data?.data?.commercialization?.artistbaseFees}`,
-    },
-
-    {
-      heading: "Upwork Offer: ",
-      description: data?.data?.commercialization?.upworkOffer,
-    },
-    {
-      heading: "Accept Offer Min. Price: ",
-      description: `$ ${data?.data?.commercialization?.acceptOfferPrice}`,
-    },
-    {
-      heading: "Price By Request: ",
-      description: data?.data?.commercialization?.priceRequest,
+      heading: "Purchase Type: ",
+      description: data?.data?.commercialization?.purchaseType,
     },
   ];
 
   const subscriptionData = [
+    {
+      heading: "Selected Method: ",
+      description: data?.data?.commercialization?.activeTab,
+    },
     {
       heading: "Subscription Catalog: ",
       description: data?.data?.commercialization?.subscriptionCatalog,
@@ -196,56 +198,93 @@ const ProductInfo = ({ data }: any) => {
 
   const Pricing_data = [
     {
-      heading: "Artist Fees: ",
-      description: `$ ${data?.data?.pricing?.artistFees}`,
-    },
-    {
       heading: "Base Price: ",
       description: data?.data?.pricing?.basePrice,
     },
+
+    {
+      heading: "Artist Fees: ",
+      description: `${currency} ${data?.data?.pricing?.artistFees}`,
+    },
+
+    {
+      heading: "Accept Minimum Offer: ",
+      description:
+        `${currency} ${data?.data?.pricing?.acceptOfferPrice}` || "NA",
+    },
+
     {
       heading: "Discount Percentage: ",
       description: `${data?.data?.pricing?.dpersentage}%`,
     },
     {
       heading: "Vat Amount: ",
-      description: `$ ${data?.data?.pricing?.vatAmount}`,
-    },
-    {
-      heading: "Location: ",
-      description: data?.data?.inventoryShipping?.location,
-    },
-    {
-      heading: "Pin Code: ",
-      description: data?.data?.inventoryShipping?.pCode,
+      description: `${currency} ${data?.data?.pricing?.vatAmount}`,
     },
   ];
 
   const moreInfo_data = [
     {
-      heading: "Artwork Discipline: ",
-      description: `${data?.data?.discipline?.artworkDiscipline}`,
-    },
-    {
-      heading: "Artwork Tags: ",
-      description: `${data?.data?.discipline?.artworkTags}`,
-    },
-
-    {
-      heading: "Vat Amount: ",
+      heading: "Promotion: ",
       description: `${data?.data?.promotions?.promotion}`,
     },
     {
       heading: "Promotion Score: ",
-      description: data?.data?.promotions?.promotionScore,
+      description: `${data?.data?.promotions?.promotionScore}`,
     },
+
     {
       heading: "Available To: ",
-      description: data?.data?.restriction?.availableTo,
+      description: `${data?.data?.restriction?.availableTo}`,
     },
     {
       heading: "Discount Acceptation: ",
       description: data?.data?.restriction?.discountAcceptation,
+    },
+
+    {
+      heading: "External Tags: ",
+      description: externlaTags || "NA",
+    },
+    {
+      heading: "Internal Tags: ",
+      description: internalTags,
+    },
+  ];
+
+  const shipping_data = [
+    {
+      heading: "Location: ",
+      description: `${data?.data?.inventoryShipping?.location}`,
+    },
+    {
+      heading: "Product Code: ",
+      description: `${data?.data?.inventoryShipping?.pCode}`,
+    },
+
+    {
+      heading: "Package Material: ",
+      description: `${data?.data?.inventoryShipping?.packageMaterial}`,
+    },
+    {
+      heading: "Package Depth: ",
+      description: data?.data?.inventoryShipping?.packageDepth,
+    },
+    {
+      heading: "Package Height: ",
+      description: data?.data?.inventoryShipping?.packageHeight,
+    },
+    {
+      heading: "Package Width: ",
+      description: data?.data?.inventoryShipping?.packageWidth,
+    },
+    {
+      heading: "Package Weight: ",
+      description: data?.data?.inventoryShipping?.packageWeight,
+    },
+    {
+      heading: "Coming Soon: ",
+      description: data?.data?.inventoryShipping?.commingSoon || false,
     },
   ];
 
@@ -267,7 +306,9 @@ const ProductInfo = ({ data }: any) => {
           <Tab>Description</Tab>
           <Tab>Additional Information</Tab>
           <Tab>Commercialization</Tab>
-          <Tab>Pricing & Shipping</Tab>
+          <Tab>Pricing</Tab>
+          <Tab>Inventry & Shipping</Tab>
+
           <Tab>More Details</Tab>
         </TabList>
 
@@ -275,29 +316,17 @@ const ProductInfo = ({ data }: any) => {
           <div className="flex gap-8 justify-between my-10">
             <div className="w-[65%] ">
               <P
-                variant={{ size: "small", weight: "semiBold" }}
-                className="text-[#999999]"
+                variant={{ size: "xl", theme: "dark", weight: "medium" }}
+                className=""
               >
                 Product information
               </P>
               <Header
-                variant={{ size: "xl", theme: "dark", weight: "medium" }}
-                className="my-5"
+                variant={{ size: "small", theme: "dark", weight: "semibold" }}
+                className="my-5 text-[#999999]"
               >
                 {data?.data?.productDescription}
               </Header>
-              <P
-                variant={{ size: "base", theme: "dark", weight: "medium" }}
-                className="text-[#999999]"
-              >
-                If you relate, it’s clear you do need a change – but what’s an
-                easy and cost effective way of adding the magic back into your
-                home? The surprisingly simple yet overlooked way to reimagine
-                any space begins with your walls. Think about it – the empty
-                wall space you’ve been sitting opposite for weeks or even years
-                is the perfect blank canvas to begin expressing your unique
-                style and creativity.
-              </P>
             </div>
 
             <div className="w-[25%]">
@@ -375,12 +404,6 @@ const ProductInfo = ({ data }: any) => {
         <TabPanel>
           <div className="flex gap-10 justify-between w-full my-10">
             <div className="w-[32%]">
-              <Header
-                variant={{ size: "md", theme: "dark", weight: "semiBold" }}
-                className="mb-4"
-              >
-                Overview
-              </Header>
               {overview_date.map((item, index) => (
                 <div key={index} className="flex">
                   <P
@@ -399,7 +422,7 @@ const ProductInfo = ({ data }: any) => {
               ))}
             </div>
 
-            <div className="w-[32%] mt-8">
+            <div className="w-[32%] ">
               {artwork_detail.map((item, index) => (
                 <div key={index} className=" flex items-center">
                   <Header
@@ -421,7 +444,7 @@ const ProductInfo = ({ data }: any) => {
               ))}
             </div>
 
-            <div className="w-[32%] mt-8">
+            <div className="w-[32%] ">
               {highlight_data.map((item, index) => (
                 <div key={index} className=" flex items-center">
                   <Header
@@ -435,7 +458,7 @@ const ProductInfo = ({ data }: any) => {
                       size: "small",
                       weight: "medium",
                     }}
-                    className=" text-[#999999]"
+                    className=" text-[#999999] capitalize"
                   >
                     {item.description}
                   </P>
@@ -445,16 +468,16 @@ const ProductInfo = ({ data }: any) => {
           </div>
 
           <div>
-            <div className="flex gap-2 items-center">
+            <div className="flex flex-col ">
               <h1
                 variant={{ size: "small", theme: "dark" }}
-                className="w-48 my-1 font-semibold"
+                className="w-48 my-1 font-semibold "
               >
                 Hanging Description :
               </h1>
               <h1>{data?.data?.additionalInfo?.hangingDescription}</h1>
             </div>
-            <div className="flex gap-2 items-center">
+            <div className="flex  mt-3 flex-col">
               <h1
                 variant={{ size: "small", theme: "dark" }}
                 className="w-48 my-1 font-semibold"
@@ -478,7 +501,7 @@ const ProductInfo = ({ data }: any) => {
                           theme: "dark",
                           weight: "medium",
                         }}
-                        className="w-48 my-1"
+                        className="w-48 my-1 "
                       >
                         {item.heading}
                       </Header>
@@ -487,7 +510,7 @@ const ProductInfo = ({ data }: any) => {
                           size: "small",
                           weight: "medium",
                         }}
-                        className=" text-[#999999]"
+                        className=" text-[#999999] capitalize"
                       >
                         {item.description}
                       </P>
@@ -524,7 +547,32 @@ const ProductInfo = ({ data }: any) => {
           <div className="flex gap-10 justify-between w-full mb-10">
             <div className="w-[32%] mt-8">
               {Pricing_data.map((item, index) => (
-                <div key={index} className=" flex items-center">
+                <div key={index} className=" flex items-center gap-2">
+                  <Header
+                    variant={{ size: "small", theme: "dark", weight: "medium" }}
+                    className="w-48 my-1 "
+                  >
+                    {item.heading}
+                  </Header>
+                  <P
+                    variant={{
+                      size: "small",
+                      weight: "medium",
+                    }}
+                    className=" text-[#999999]"
+                  >
+                    {item.description}
+                  </P>
+                </div>
+              ))}
+            </div>
+          </div>
+        </TabPanel>
+        <TabPanel>
+          <div className="flex gap-10 justify-between w-full mb-10">
+            <div className="w-[32%] mt-8">
+              {shipping_data.map((item, index) => (
+                <div key={index} className="flex items-center">
                   <Header
                     variant={{ size: "small", theme: "dark", weight: "medium" }}
                     className="w-48 my-1"
@@ -545,7 +593,6 @@ const ProductInfo = ({ data }: any) => {
             </div>
           </div>
         </TabPanel>
-
         <TabPanel>
           <div className="flex gap-10 justify-between w-full mb-10">
             <div className="w-[32%] mt-8">

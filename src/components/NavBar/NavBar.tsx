@@ -16,6 +16,9 @@ import { useAppSelector } from "../../store/typedReduxHooks";
 import useLogOutMutation from "../../http/auth/useLogOutMutation";
 import { useGetDiscipline } from "../pages/http/useGetDiscipline";
 import { useGetPicklist } from "./http/getPickList";
+import Loader from "../ui/Loader";
+import { useGetCartItems } from "../pages/http/useGetCartItems";
+import useClickOutside from "../utils/useClickOutside";
 
 const mobile_links = [
   { path: "/", label: "Home" },
@@ -34,10 +37,17 @@ const NavBar = () => {
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [isToogleOpen, setIsToggelOpen] = useState(false);
 
-  const { data, isLoading } = useGetDiscipline();
+  const closePopup = useRef(null);
+  const dropDown = useRef(null);
+
   const { data: seriesPickList, isLoading: seriesPickListLoading } =
     useGetPicklist();
+  const { data: cartItem, isLoading: cartLoading } = useGetCartItems();
+
+  const { data, isLoading } = useGetDiscipline();
 
   const disciplineData = data?.data?.map((item, i) => item);
 
@@ -49,27 +59,18 @@ const NavBar = () => {
     (item) => item?.picklistName === "Series"
   );
 
-  console.log(selectSeriesPicklist);
-
-  const categories = [
-    {
-      title: "Dicipline",
-      products: getOutDiscipline,
-    },
-    {
-      title: "Series",
-      products: selectSeriesPicklist?.map((item, i) => item?.picklist),
-    },
-    {
-      title: "Collection",
-      products: ["Product 01", "Product 02", "Product 03"],
-    },
-  ];
-
   const isArtist = useAppSelector((state) => state.user.isArtist);
   const user = useAppSelector((state) => state.user.user);
 
   const url = "https://dev.freshartclub.com/images";
+
+  useEffect(() => {
+    if (isLoading || seriesPickListLoading || cartLoading) {
+      setLoading(true);
+    } else {
+      setLoading(false);
+    }
+  }, [isLoading, cartLoading, seriesPickListLoading]);
 
   useEffect(() => {
     const storedUserName = localStorage.getItem("userName");
@@ -84,6 +85,14 @@ const NavBar = () => {
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
+
+  useClickOutside(closePopup, () => {
+    setIsProfileDropdown(false);
+  });
+
+  useClickOutside(dropDown, () => {
+    setIsDropdownOpen(false);
+  });
 
   const handleProfile = () => {
     if (isArtist) {
@@ -211,7 +220,7 @@ const NavBar = () => {
                   </div>
 
                   {isDropdownOpen && (
-                    <div className="">
+                    <div ref={dropDown} className="">
                       <div
                         id="mega-menu-dropdown"
                         className="absolute w-full left-0 z-10 top-[9rem] grid grid-cols-[1fr_1fr_1fr_1fr_4fr] gap-4 text-sm bg-white border rounded-lg shadow-md p-8"
@@ -357,12 +366,22 @@ const NavBar = () => {
                 </Link>
 
                 <ShoppingCard isOpen={isSidebarOpen} onClose={toggleSidebar} />
-                <button onClick={toggleSidebar} className="focus:outline-none">
+                <button
+                  onClick={toggleSidebar}
+                  className="relative focus:outline-none"
+                >
                   <img
                     src={bag}
                     alt="bag"
-                    className="w-8 h-8 text-white mx-2"
+                    className="w-8 h-8 text-white mx-2 "
                   />
+                  <span className="absolute bg-red-300 w-4 h-4 right-0 top-0  rounded-full flex items-center justify-center">
+                    {cartItem?.data?.cart ? (
+                      <h1 className="text-sm font-semibold">
+                        {cartItem?.data?.cart?.length}
+                      </h1>
+                    ) : null}
+                  </span>
                 </button>
                 <button className="focus:outline-none">
                   <img
@@ -378,6 +397,7 @@ const NavBar = () => {
                 {isProfileDropdown && (
                   <>
                     <div
+                      ref={closePopup}
                       id="dropdownInformation"
                       className="absolute z-10 top-[8rem] bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600 pb-3"
                     >
@@ -469,7 +489,7 @@ const NavBar = () => {
                           Log out
                         </a>
 
-                        {/* Modal */}
+                        {/* LogOutt */}
                         {isModalOpen && (
                           <div
                             id="popup-modal"

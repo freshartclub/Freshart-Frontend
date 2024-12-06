@@ -28,7 +28,7 @@ const SingleTicket = () => {
   const navigate = useNavigate();
 
   const { data, isLoading } = useGetTicketDetails(id);
-  const { mutate, isPending } = useGetPostArtistTicketReplyMutation();
+  const { mutateAsync, isPending } = useGetPostArtistTicketReplyMutation();
 
   const handleReply = (ticket) => {
     const newData = {
@@ -41,7 +41,9 @@ const SingleTicket = () => {
     for (const key in newData) {
       formData.append(key, newData[key]);
     }
-    mutate(formData);
+    mutateAsync(formData).then(() => {
+      setReply("");
+    });
   };
 
   const handleNavigate = () => {
@@ -84,21 +86,21 @@ const SingleTicket = () => {
               }`}
             >
               <div className="flex flex-col sm:flex-row justify-between">
-              <div className="flex items-center  gap-2 ">
-                <span>
-                  <FaRegUserCircle />
-                </span>
-                <span className=" text-sm font-semibold  ">
-                  {item.userType === "user"
-                    ? `${user.artistName} (abc@gmail.com)`
-                    : `Eri Johnson wrote (admin) :`}
-                </span>
-              </div>
+                <div className="flex items-center  gap-2 ">
+                  <span>
+                    <FaRegUserCircle />
+                  </span>
+                  <span className=" text-sm font-semibold  ">
+                    {item.userType === "user"
+                      ? `${user.artistName} (abc@gmail.com)`
+                      : `Eri Johnson wrote (admin) :`}
+                  </span>
+                </div>
 
-              <div className="flex gap-3 text-xs">
-                <div className="font-semibold">04/11/2024</div>
-                <div className="font-semibold">08:36 PM</div>
-              </div>
+                <div className="flex gap-3 text-xs">
+                  <div className="font-semibold">04/11/2024</div>
+                  <div className="font-semibold">08:36 PM</div>
+                </div>
               </div>
 
               <div>
@@ -120,9 +122,10 @@ const SingleTicket = () => {
             placeholder="Enter Your Message here..."
             onChange={(e) => setReply(e.target.value)}
             rows={4}
+            value={reply}
           />
           <button
-            onClick={() => handleReply(data.data)}
+            onClick={() => handleReply(data?.data)}
             className="bg-black text-white rounded-lg px-4 py-2"
           >
             {isPending ? "Loading..." : "Submit"}

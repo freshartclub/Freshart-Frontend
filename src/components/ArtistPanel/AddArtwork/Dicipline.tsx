@@ -5,15 +5,13 @@ import Header from "../../ui/Header";
 import { useEffect } from "react";
 import { useGetDiscipline } from "../../pages/http/useGetDiscipline";
 
-const Dicipline = () => {
+const Dicipline = ({ query, setArtDicipline, artDicipline }) => {
   const { setFieldValue, values } = useFormikContext();
   const { data, isLoading } = useGetDiscipline();
 
   const diciplineOption = data?.data.map((item) => {
     return item.disciplineName;
   });
-
-  console.log(diciplineOption);
 
   const fields = [
     {
@@ -33,7 +31,7 @@ const Dicipline = () => {
   ];
 
   return (
-    <div className="bg-white w-full rounded-md p-4 border ">
+    <div className="bg-white w-full rounded-md  ">
       <Header
         variant={{ size: "md", theme: "dark", weight: "semiBold" }}
         className="mb-3"
@@ -53,6 +51,9 @@ const Dicipline = () => {
               as="select"
               id={id}
               name={name}
+              disabled={query}
+              onChange={(val) => setArtDicipline(val.target.value)}
+              value={artDicipline}
               className="block w-full p-1 sm:px-4 sm:py-2 bg-[#F9F9FC] outline-none border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
               <option value="" disabled>
@@ -67,7 +68,7 @@ const Dicipline = () => {
           </div>
         ))}
 
-        <div className="mb-4">
+        {/* <div className="mb-4">
           <label
             htmlFor="artworkTags"
             className="block text-sm sm:text-base font-semibold text-[#203F58] mb-2"
@@ -79,6 +80,7 @@ const Dicipline = () => {
             isMulti
             placeholder="Select Tags"
             name="artworkTags"
+            isDisabled={query ? true : false}
             value={
               values.artworkTags && values.artworkTags.length > 0
                 ? values.artworkTags.map((item) => ({
@@ -109,7 +111,7 @@ const Dicipline = () => {
               }),
             }}
           />
-        </div>
+        </div> */}
       </div>
     </div>
   );

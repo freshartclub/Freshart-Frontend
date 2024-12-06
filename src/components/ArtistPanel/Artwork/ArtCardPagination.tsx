@@ -34,7 +34,8 @@ const ArtCardPagination: React.FC = () => {
   const [artwork, setArtwork] = useState<ArtworkItem[] | null>(null);
   const [searchData, setSearchData] = useState<string>("");
 
-  const { data, isLoading } = useGetArtWorkList(setOriginalArtwork);
+  let selectedArtwork = "";
+  const { data, isLoading } = useGetArtWorkList(selectedArtwork);
 
   useEffect(() => {
     if (data) {
@@ -56,14 +57,11 @@ const ArtCardPagination: React.FC = () => {
     }
   };
 
+  const nPages = Math.ceil((artwork?.length || 0) / recordPerPage);
+  const numbers = [...Array(nPages + 1).keys()].slice(1);
   if (isLoading) {
     return <Loader />;
   }
-
-  const nPages = Math.ceil((artwork?.length || 0) / recordPerPage);
-  const numbers = [...Array(nPages + 1).keys()].slice(1);
-  console.log(nPages);
-  console.log("numbers", numbers);
 
   return (
     <div>
@@ -98,24 +96,24 @@ const ArtCardPagination: React.FC = () => {
           <p className="text-[14px] text-black">Published</p>
         </div>
         <div className="flex gap-2 items-center">
-          <div className="w-[.8em] h-[.8em] rounded-full bg-[#D8F002] flex items-center"></div>
-          <p className="text-[14px] text-black">Pending</p>
+          <div className="w-[.8em] h-[.8em] rounded-full bg-[#f0dd32] flex items-center"></div>
+          <p className="text-[14px] text-black">Draft</p>
         </div>
-        {/* <div className="flex gap-2 items-center">
-          <div className="w-[.8em] h-[.8em] rounded-full bg-[#EE1D52] flex items-center"></div>
-          <p className="text-[14px] text-black">Not Available</p>
-        </div> */}
+        <div className="flex gap-2 items-center">
+          <div className="w-[.8em] h-[.8em] rounded-full bg-orange-600 flex items-center"></div>
+          <p className="text-[14px] text-black">Subscription</p>
+        </div>
         {/* <div className="flex gap-2 items-center">
           <div className="w-[.8em] h-[.8em] rounded-full bg-[#FFA600] flex items-center"></div>
           <p className="text-[14px] text-black">In subscription</p>
         </div> */}
         <div className="flex gap-2 items-center">
           <div className="w-[.8em] h-[.8em] rounded-full   bg-[#EE1D52]   flex items-center"></div>
-          <p className="text-[14px] text-black">Rejected</p>
+          <p className="text-[14px] text-black">Not Available</p>
         </div>
         <div className="flex gap-2 items-center">
           <div className="w-[.8em] h-[.8em] rounded-full bg-[#696868] flex items-center"></div>
-          <p className="text-[14px] text-black">Darft</p>
+          <p className="text-[14px] text-black">Purchased</p>
         </div>
       </div>
 

@@ -12,6 +12,7 @@ import arrow from "../../assets/Vector.png";
 import { useGetOrder } from "./http/useGetOrder";
 import { useState } from "react";
 import dayjs from "dayjs";
+import Loader from "../ui/Loader";
 
 const order_Data = [
   {
@@ -48,15 +49,23 @@ const order_Data = [
 
 const OrderPage = () => {
   const [state, setState] = useState("purchase");
-  const { data, isPending } = useGetOrder();
+  const { data, isLoading } = useGetOrder();
   const navigate = useNavigate();
 
   const handleDetailPage = () => {
     navigate("/order_tracking");
   };
 
+  console.log(data);
+
   const dataToRender =
     state === "purchase" ? data?.purchase : data?.subscription;
+
+  console.log(dataToRender);
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <div className="bg-[#EFEFF7] pb-10">
@@ -148,7 +157,7 @@ const OrderPage = () => {
 
         <div className="flex flex-col gap-8">
           {dataToRender &&
-            dataToRender.lenght > 0 &&
+            dataToRender.length > 0 &&
             dataToRender?.map((item, index) => (
               <>
                 <div
@@ -157,9 +166,9 @@ const OrderPage = () => {
                 >
                   <div className="">
                     <img
-                      src={`${data?.url}/users/${item?.items[0]?.artWork?.media?.mainImage}`}
+                      src={`${data?.url}/users/${item?.artwork?.media}`}
                       alt="order image"
-                      className="w-full"
+                      className="w-[20vw] object-cover"
                     />
                   </div>
 
@@ -172,7 +181,7 @@ const OrderPage = () => {
                           weight: "semiBold",
                         }}
                       >
-                        {item?.items[0].artWork?.artworkName}
+                        {item?.artWork?.artworkName}
                       </Header>
                       <div className="flex xl:gap-4">
                         <P
@@ -246,7 +255,7 @@ const OrderPage = () => {
                           weight: "medium",
                         }}
                       >
-                        Quantity : {item?.items[0].quantity}
+                        Quantity : {item?.artwork?.quantity}
                       </P>
 
                       <P

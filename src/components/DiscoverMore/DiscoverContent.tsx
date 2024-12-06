@@ -208,13 +208,13 @@ const DiscoverContent = ({ data }: any) => {
             variant={{ size: "small", theme: "dark", weight: "medium" }}
             className="uppercase"
           >
-            SKU :
+            Product Code :
           </P>
           <P
             variant={{ size: "small", weight: "medium" }}
             className=" text-[#999999]"
           >
-            {data?.inventoryShipping?.sku}
+            {data?.inventoryShipping?.pCode}
           </P>
         </div>
         <div className="flex gap-2 my-2">
@@ -231,29 +231,7 @@ const DiscoverContent = ({ data }: any) => {
             {data?.discipline?.artworkDiscipline}
           </P>
         </div>
-        <div className="flex gap-2 my-2">
-          <P
-            variant={{ size: "small", theme: "dark", weight: "medium" }}
-            className="uppercase"
-          >
-            tags:
-          </P>
-          <P
-            variant={{ size: "small", weight: "medium" }}
-            className="capitalize text-[#999999] flex gap-2"
-          >
-            {Array.isArray(data?.discipline?.artworkTags) &&
-              data?.discipline?.artworkTags?.map((iw, i) => (
-                <span key={i}>
-                  {iw}
-                  {" |"}
-                </span>
-              ))}
-            {/* {data?.additionalInfo?.artworkStyle?.map((item, i) => (
-              <h1>{item}</h1>
-            ))} */}
-          </P>
-        </div>
+        <div className="flex gap-2 my-2"></div>
       </div>
     </div>
   );

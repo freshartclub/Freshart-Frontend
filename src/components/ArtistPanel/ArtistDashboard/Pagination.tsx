@@ -23,8 +23,6 @@ const Pagination = () => {
 
   const { data, isLoading } = useGetArtistOrder();
 
-  console.log(data);
-
   const headerData = [
     { title: "Products", span: 2 },
     { title: "Customer", span: 2 },

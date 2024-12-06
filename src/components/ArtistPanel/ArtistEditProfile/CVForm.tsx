@@ -14,7 +14,7 @@ interface CVFormProps {
   control: Control<any>;
 }
 
-const CVForm: React.FC<CVFormProps> = ({ control }) => {
+const CVForm: React.FC<CVFormProps> = ({ control, isActiveStatus }) => {
   const {
     fields: cvEntries,
     append,
@@ -25,13 +25,13 @@ const CVForm: React.FC<CVFormProps> = ({ control }) => {
   });
 
   const addMoreCv = () => {
-    append({ year: "", type: "", description: "", location: "", scope: "" });
+    append({ year: "", Type: "", Description: "", Location: "", Scope: "" });
   };
 
   return (
     <div className="p-4 mt-4 bg-white rounded-lg shadow-md max-w-full border  mb-4">
       <h2 className="text-xl font-semibold mb-3 pb-3 text-[#1A1C21]">
-        Highlight & CV
+        CV & Highlight
       </h2>
       <div className="w-full relative">
         <Controller
@@ -45,6 +45,7 @@ const CVForm: React.FC<CVFormProps> = ({ control }) => {
                 className="border border-[#E6E6E6] p-3 w-full rounded-md"
                 theme="snow"
                 placeholder="Write about yourself..."
+                readOnly={isActiveStatus !== "active"}
                 modules={{
                   toolbar: [
                     [{ header: "1" }, { header: "2" }, { font: [] }],
@@ -59,7 +60,7 @@ const CVForm: React.FC<CVFormProps> = ({ control }) => {
                 htmlFor="Hightlight"
                 className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
               >
-                About
+                Highlight
               </label>
             </div>
           )}
@@ -72,6 +73,7 @@ const CVForm: React.FC<CVFormProps> = ({ control }) => {
           <div className="flex flex-col">
             <label className="text-sm font-medium mb-1">Year</label>
             <select
+              disabled={isActiveStatus !== "active"}
               className="border border-gray-300 rounded-md px-1 py-1 w-20 outline-none"
               {...control.register(`cvEntries.${index}.year`)} // Register the select input
               defaultValue={cv.year} // Use default value
@@ -91,8 +93,9 @@ const CVForm: React.FC<CVFormProps> = ({ control }) => {
           <div className="flex flex-col">
             <label className="text-sm font-medium mb-1">Type</label>
             <select
+              disabled={isActiveStatus !== "active"}
               className="border border-gray-300 rounded-md px-1 py-1 w-24 outline-none"
-              {...control.register(`cvEntries.${index}.type`)} // Use control to register the input
+              {...control.register(`cvEntries.${index}.Type`)} // Use control to register the input
               defaultValue={cv.Type} // Set the default value from cv.Type
             >
               <option value="soloexhibition">Solo Exhibition</option>
@@ -110,7 +113,8 @@ const CVForm: React.FC<CVFormProps> = ({ control }) => {
               type="text"
               className="border border-gray-300 rounded-md px-1 py-1  outline-none "
               placeholder="Description"
-              {...control.register(`cvEntries.${index}.description`)} // Register the input
+              disabled={isActiveStatus !== "active"}
+              {...control.register(`cvEntries.${index}.Description`)} // Register the input
               defaultValue={cv.Description} // Use default value
             />
           </div>
@@ -119,9 +123,10 @@ const CVForm: React.FC<CVFormProps> = ({ control }) => {
             <label className="text-sm font-medium mb-1">Location</label>
             <input
               type="text"
+              disabled={isActiveStatus !== "active"}
               className="border border-gray-300 rounded-md px-1 py-1 w-24 outline-none"
               placeholder="Location"
-              {...control.register(`cvEntries.${index}.location`)} // Register the input
+              {...control.register(`cvEntries.${index}.Location`)} // Register the input
               defaultValue={cv.Location} // Use default value
             />
           </div>
@@ -129,8 +134,9 @@ const CVForm: React.FC<CVFormProps> = ({ control }) => {
           <div className="flex flex-col ">
             <label className="text-sm font-medium mb-1">Scope</label>
             <select
+              disabled={isActiveStatus !== "active"}
               className="border border-gray-300 rounded-md px-1 py-1 w-20 outline-none"
-              {...control.register(`cvEntries.${index}.scope`)} // Register the select input
+              {...control.register(`cvEntries.${index}.Scope`)} // Register the select input
               defaultValue={cv.Scope} // Use default value
             >
               <option value="">Scope</option>
@@ -142,6 +148,7 @@ const CVForm: React.FC<CVFormProps> = ({ control }) => {
 
           {/* Remove Button */}
           <button
+            disabled={isActiveStatus !== "active"}
             type="button"
             className="text-red-600 font-semibold mt-5 "
             onClick={() => remove(index)} // Function to remove a CV entry
@@ -154,6 +161,7 @@ const CVForm: React.FC<CVFormProps> = ({ control }) => {
       <div className="mt-3">
         <button
           type="button"
+          disabled={isActiveStatus !== "active"}
           onClick={addMoreCv}
           className="bg-[#102030] text-white px-3 py-2 rounded font-semibold"
         >

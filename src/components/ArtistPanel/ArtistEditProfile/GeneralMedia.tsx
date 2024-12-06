@@ -5,9 +5,9 @@ import {
   useFormContext,
   useForm,
 } from "react-hook-form";
-import Header from "../../ui/Header"; 
+import Header from "../../ui/Header";
 
-const GeneralMedia = ({ control, data, url }) => {
+const GeneralMedia = ({ control, data, url, isActiveStatus }) => {
   const { setValue, getValues, watch } = useFormContext();
 
   useEffect(() => {
@@ -21,11 +21,29 @@ const GeneralMedia = ({ control, data, url }) => {
 
   const {
     fields: videoFields,
-    append: appendVideo,
+
     remove: removeVideo,
   } = useFieldArray({
     control,
     name: "additionalVideo",
+  });
+
+  const {
+    fields: inProcessImageField,
+
+    remove: removeInProcessImage,
+  } = useFieldArray({
+    control,
+    name: "inProcessImage",
+  });
+
+  const {
+    fields: mainImageFields,
+    append: appendVideo,
+    remove: removeMainImage,
+  } = useFieldArray({
+    control,
+    name: "mainImage",
   });
 
   const {
@@ -133,6 +151,24 @@ const GeneralMedia = ({ control, data, url }) => {
     }
   };
 
+  const handleRemoveMainImage = async (typeFile: string) => {
+    if (typeFile === "File") {
+      removeMainImage("mainImage");
+    } else {
+      setExistingMainImage(null);
+      setValue("mainImage", "null");
+    }
+  };
+
+  const handleRemoveInProcessImage = async (typeFile: string) => {
+    if (typeFile === "File") {
+      removeInProcessImage("inProcessImage");
+    } else {
+      setExistingInProcessImage(null);
+      setValue("inProcessImage", "null");
+    }
+  };
+
   const removeAdditionalVideo = async (index: number, typeFile: string) => {
     if (typeFile === "File") {
       removeVideo("additionalVideo", index);
@@ -190,6 +226,7 @@ const GeneralMedia = ({ control, data, url }) => {
                 className="hidden "
                 ref={mainImageInputRef}
                 onChange={(e) => handleMainImageChange(e)}
+                disabled={isActiveStatus !== "active"}
               />
               <div className="bg-[#F9F9FC] border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
                 <div className="relative">
@@ -203,8 +240,12 @@ const GeneralMedia = ({ control, data, url }) => {
                     <div className="w-28 h-28 bg-gray-200 rounded-md mb-4" />
                   )}
                   <span
-                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer"
-                    onClick={(e) => setExistingMainImage()}
+                    className={`absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer ${
+                      isActiveStatus !== "active"
+                        ? "opacity-50 cursor-not-allowed"
+                        : ""
+                    }`}
+                    onClick={(e) => handleRemoveMainImage("Url")}
                   >
                     &times;
                   </span>
@@ -213,7 +254,9 @@ const GeneralMedia = ({ control, data, url }) => {
                   Drag and drop image here, or click to add image
                 </p>
                 <span
-                  className="bg-[#DEDEFA] text-sm md:text-base font-bold mt-2 p-3 px-4  rounded-md cursor-pointer"
+                  className={`bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer ${
+                    isActiveStatus !== "active" ? "pointer-events-none" : ""
+                  }`}
                   onClick={triggerMainImageInput}
                 >
                   Add Image
@@ -244,8 +287,12 @@ const GeneralMedia = ({ control, data, url }) => {
                       className="w-28 h-28 object-cover"
                     />
                     <span
-                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer"
-                      onClick={() => setExistingInProcessImage()}
+                      className={`absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer ${
+                        isActiveStatus !== "active"
+                          ? "opacity-50 cursor-not-allowed"
+                          : ""
+                      }`}
+                      onClick={() => handleRemoveInProcessImage("url")}
                     >
                       &times;
                     </span>
@@ -257,7 +304,9 @@ const GeneralMedia = ({ control, data, url }) => {
                   Drag and drop image here, or click to add image
                 </p>
                 <span
-                  className="bg-[#DEDEFA] font-bold mt-2 p-3 px-4 text-sm md:text-base rounded-md cursor-pointer"
+                  className={`bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer ${
+                    isActiveStatus !== "active" ? "pointer-events-none" : ""
+                  }`}
                   onClick={triggerInProcessImageInput}
                 >
                   Add Image
@@ -310,7 +359,11 @@ const GeneralMedia = ({ control, data, url }) => {
                     className="w-full h-full object-cover"
                   />
                   <span
-                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer"
+                    className={`absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer ${
+                      isActiveStatus !== "active"
+                        ? "opacity-50 cursor-not-allowed"
+                        : ""
+                    }`}
                     onClick={() => removeAdditionalImage(i, "Url")}
                   >
                     &times;
@@ -318,9 +371,13 @@ const GeneralMedia = ({ control, data, url }) => {
                 </div>
               ))}
           </div>
-          <p className="text-center text-xs md:text-base mt-4">Click to add additional images</p>
+          <p className="text-center text-xs md:text-base mt-4">
+            Click to add additional images
+          </p>
           <span
-            className="bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer flex justify-center"
+            className={`bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer flex items-center justify-center ${
+              isActiveStatus !== "active" ? "pointer-events-none" : ""
+            }`}
             onClick={() => document.querySelector("#photos-input").click()}
           >
             Add Image
@@ -363,7 +420,11 @@ const GeneralMedia = ({ control, data, url }) => {
                     <div className="w-28 h-28 bg-gray-200 rounded-md mb-4" />
                   )}
                   <span
-                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer"
+                    className={`absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer ${
+                      isActiveStatus !== "active"
+                        ? "opacity-50 cursor-not-allowed"
+                        : ""
+                    }`}
                     onClick={(e) => setExistingMainVideo()}
                   >
                     &times;
@@ -373,7 +434,9 @@ const GeneralMedia = ({ control, data, url }) => {
                   Drag and drop Video here, or click to add Video
                 </p>
                 <span
-                  className="bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer"
+                  className={`bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer ${
+                    isActiveStatus !== "active" ? "pointer-events-none" : ""
+                  }`}
                   onClick={triggerVideoInput}
                 >
                   Add Video
@@ -428,7 +491,11 @@ const GeneralMedia = ({ control, data, url }) => {
                           className="w-full h-full object-cover"
                         />
                         <span
-                          className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer"
+                          className={`absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer ${
+                            isActiveStatus !== "active"
+                              ? "opacity-50 cursor-not-allowed"
+                              : ""
+                          }`}
                           onClick={() =>
                             removeExistingAdditionalVideo(i, "Url")
                           }
@@ -441,7 +508,9 @@ const GeneralMedia = ({ control, data, url }) => {
               </div>
               <p className="text-center mt-4">Click to add additional Vidoes</p>
               <span
-                className="bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer flex items-center justify-center"
+                className={`bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer flex items-center justify-center ${
+                  isActiveStatus !== "active" ? "pointer-events-none" : ""
+                }`}
                 onClick={() => document.querySelector("#Videos-input").click()}
               >
                 Add Video

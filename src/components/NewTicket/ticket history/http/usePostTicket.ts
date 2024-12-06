@@ -23,7 +23,7 @@ const useGetPostArtistTicketMutation = () => {
     mutationFn: usePostTicket,
 
     onSuccess: async (res) => {
-      navigate("/tickets");
+      navigate("/artist-panel/ticket/tickets");
       toast.success(res.data.message, {
         duration: 3000,
       });

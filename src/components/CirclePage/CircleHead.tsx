@@ -9,7 +9,7 @@ const profile_data = [
   {
     img: profile,
     title: "Profile",
-    to: "/circle_page",
+    to: "/circle",
   },
   {
     img: profile2,
