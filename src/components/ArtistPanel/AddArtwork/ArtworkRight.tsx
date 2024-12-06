@@ -187,7 +187,6 @@ const ArtworkRight = ({ query }) => {
                 disabled={query}
                 id={id}
                 name={name}
-                disabled
                 value="Not Assigned"
                 className="block w-full p-1 sm:px-4 sm:py-2 bg-[#F9F9FC] outline-none border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
