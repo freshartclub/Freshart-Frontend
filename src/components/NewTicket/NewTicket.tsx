@@ -15,6 +15,8 @@ import {
   urgencyOption,
 } from "../utils/mockData";
 import { useAppSelector } from "../../store/typedReduxHooks";
+import { useGetArtistDetails } from "../UserProfile/http/useGetDetails";
+import Loader from "../ui/Loader";
 
 const NewTicket = () => {
   const validationSchema = Yup.object({
@@ -36,7 +38,8 @@ const NewTicket = () => {
 
   const user = useAppSelector((state) => state.user.user);
 
-  const requestedName = user.artistName;
+  const requestedName =
+    user.artistName + " " + user.artistSurname1 + " " + user.artistSurname2;
   console.log(requestedName);
 
   const initialValues = {
@@ -48,11 +51,14 @@ const NewTicket = () => {
     ticketType: "",
   };
 
-  // useEffect(() => {
-  //   if (requestedName) {
-  //     Formik.setFieldValue("requestedBy", requestedName);
-  //   }
-  // }, []);
+  const { data, isLoading } = useGetArtistDetails();
+
+  const name =
+    data?.data?.artist?.artistName +
+    " " +
+    data?.data?.artist?.artistSurname1 +
+    " " +
+    data?.data?.artist?.artistSurname2;
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();
@@ -81,6 +87,10 @@ const NewTicket = () => {
       console.log(error);
     }
   };
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <div className="container mx-auto sm:px-6 px-3">
@@ -119,6 +129,8 @@ const NewTicket = () => {
                     type="text"
                     placeholder="Requested By"
                     setFieldValue={requestedName}
+                    value={requestedName || name}
+                    readOnly
                     className="outline-[#FDB7DC] bg-[#FFD1D114] shadow border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-[#FDB7DC] focus:shadow-outline"
                   />
                   <ErrorMessage

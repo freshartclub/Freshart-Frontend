@@ -30,7 +30,7 @@ const ArtistProfile = () => {
         Artist Profile
         <span
           className={`text-sm ${
-            isActiveStatus === "acive"
+            isActiveStatus === "active"
               ? "bg-green-200 "
               : isActiveStatus === "under-review"
               ? "bg-yellow-200"
