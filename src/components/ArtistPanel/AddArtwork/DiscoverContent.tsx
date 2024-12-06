@@ -19,11 +19,13 @@ const DiscoverContent = ({ data }: any) => {
     mutate(id);
   };
 
+  const currency = data?.pricing?.currency;
+
   const editArtwork = (id) => {
     navigate(`/artist-panel/artwork/add?id=${id}`);
   };
 
-  console.log(data?.status);
+  console.log(currency);
 
   const [searchParams] = useSearchParams();
 
@@ -42,13 +44,13 @@ const DiscoverContent = ({ data }: any) => {
           <div className="flex md:flex-row flex-col gap-2 md:items-center ">
             <Header
               variant={{ size: "2xl", theme: "dark", weight: "bold" }}
-              className="w-[50%] items-center"
+              className="w-[50%] items-center capitalize"
             >
               {data?.artworkName}
             </Header>
 
             <div className="flex items-center gap-2 w-[50%]">
-              {data?.status === "published" ? null : (
+              {data?.status === "draft" ? (
                 <Button
                   onClick={() => handlePublishedArtwork(data?._id)}
                   variant={{
@@ -59,7 +61,7 @@ const DiscoverContent = ({ data }: any) => {
                 >
                   {isPending ? "Publishing..." : "Publish"}
                 </Button>
-              )}
+              ) : null}
 
               {data?.status === "draft" ? (
                 <Button
@@ -133,14 +135,14 @@ const DiscoverContent = ({ data }: any) => {
         </P>
       </div> */}
 
-      {/* <div className="flex lg:pb-5 pb-2 border-b lg:mt-2 gap-1">
-        <P variant={{ size: "base", theme: "dark", weight: "medium" }}>
-          Author :
+      <div className="flex gap-2 lg:mt-2 mt-1">
+        <P variant={{ size: "base", theme: "dark", weight: "normal" }}>
+          Art Work ID :
         </P>
         <P variant={{ size: "base", theme: "dark", weight: "normal" }}>
-          {data?.owner?.artistName + " " + data?.owner?.artistSurname1}
+          {data?.artworkId}
         </P>
-      </div> */}
+      </div>
 
       <div className="flex gap-2 lg:mt-2 mt-1">
         <P variant={{ size: "base", theme: "dark", weight: "normal" }}>
@@ -148,6 +150,18 @@ const DiscoverContent = ({ data }: any) => {
         </P>
         <P variant={{ size: "base", theme: "dark", weight: "normal" }}>
           {data?.artworkCreationYear}
+        </P>
+      </div>
+
+      <div className="flex gap-2 lg:mt-2 mt-1">
+        <P variant={{ size: "base", theme: "dark", weight: "normal" }}>
+          Art Work Series :
+        </P>
+        <P
+          className="capitalize"
+          variant={{ size: "base", theme: "dark", weight: "normal" }}
+        >
+          {data?.artworkSeries}
         </P>
       </div>
 
@@ -180,7 +194,7 @@ const DiscoverContent = ({ data }: any) => {
         variant={{ size: "xl", theme: "dark", weight: "semiBold" }}
         className="lg:my-4 my-2"
       >
-        {`$ ${data?.pricing?.basePrice}`}
+        {`${currency} ${data?.pricing?.basePrice}`}
       </Header>
 
       <div
@@ -254,13 +268,13 @@ const DiscoverContent = ({ data }: any) => {
             variant={{ size: "small", theme: "dark", weight: "medium" }}
             className="uppercase"
           >
-            SKU :
+            Product Code :
           </P>
           <P
             variant={{ size: "small", weight: "medium" }}
             className=" text-[#999999]"
           >
-            {data?.inventoryShipping?.sku}
+            {data?.inventoryShipping?.pCode}
           </P>
         </div>
         <div className="flex gap-2 my-2">
@@ -278,23 +292,23 @@ const DiscoverContent = ({ data }: any) => {
           </P>
         </div>
         <div className="flex gap-2 my-2">
-          <P
+          {/* <P
             variant={{ size: "small", theme: "dark", weight: "medium" }}
             className="uppercase"
           >
             tags:
-          </P>
+          </P> */}
           <P
             variant={{ size: "small", weight: "medium" }}
             className="capitalize text-[#999999] flex gap-2"
           >
-            {Array.isArray(data?.discipline?.artworkTags) &&
+            {/* {Array.isArray(data?.discipline?.artworkTags) &&
               data?.discipline?.artworkTags.map((iw, i) => (
                 <span key={i}>
                   {iw}
                   {" |"}
                 </span>
-              ))}
+              ))} */}
             {/* {data?.additionalInfo?.artworkStyle?.map((item, i) => (
               <h1>{item}</h1>
             ))} */}

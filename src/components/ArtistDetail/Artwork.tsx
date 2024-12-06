@@ -1,38 +1,61 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../ui/Header";
 import { useGetArtWorkList } from "./http/getArtWorkList";
 import Loader from "../ui/Loader";
 import { NavLink } from "react-router-dom";
 import edit from "../ArtistDetail/assets/edit.png";
 import deleteimg from "../ArtistDetail/assets/Container (2).png";
+import { ArtworkViewPopup } from "./Pop";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css"; // Swiper default styles
+import "swiper/css/navigation"; // If you're using navigation controls
+import "swiper/css/pagination"; // If you're using pagination
 
 const Artwork = () => {
-  const { data, isLoading } = useGetArtWorkList();
+  const [loading, setLoading] = useState(true);
+  const [selectedArtwork, setSelectedArtwork] = useState("series");
+
+  const { data, isLoading, refetch, isRefetching } =
+    useGetArtWorkList(selectedArtwork);
+
   const profile = localStorage.getItem("profile");
 
-  // State for selected filters
-  const [selectedDiscipline, setSelectedDiscipline] = useState("");
-  const [selectedSeries, setSelectedSeries] = useState("");
-  const [isArtProvider, setIsArtProvider] = useState();
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [action, setAction] = useState("");
+  const [selectedArtworkId, setSelectedArtworkId] = useState(null);
 
-  const disciplines = [
-    "Dicipline 1",
-    "Dicipline 2",
-    "Dicipline 3",
-    "Dicipline 4",
-  ];
-  const series = ["Series 1", "Series 2", "Series 3", "Series 4", "Series 5"];
+  const closePopup = () => {
+    setIsPopupOpen(false);
+  };
 
-  const filteredData = data?.data?.filter((item) => {
-    return (
-      (!selectedDiscipline ||
-        item.discipline?.artworkDiscipline === selectedDiscipline) &&
-      (!selectedSeries || item.artworkSeries === selectedSeries) &&
-      (!isArtProvider || item.isArtProvider === isArtProvider)
-    );
-  });
+  const handleAction = (actionType) => {
+    setAction(actionType);
+    console.log(`User selected: ${actionType}`);
+  };
 
-  console.log(filteredData);
+  useEffect(() => {
+    refetch();
+  }, [selectedArtwork]);
+
+  useEffect(() => {
+    if (isLoading) {
+      setLoading(true);
+    } else {
+      setLoading(false);
+    }
+  }, [isLoading, data]);
+  const handleArtworkSelect = (artwork) => {
+    const currentValue = artwork.target.innerHTML;
+    setSelectedArtwork(currentValue);
+  };
+
+  const handleArtworkClick = (artworkId) => {
+    console.log("this is form hadleArtwork function", artworkId);
+    setSelectedArtworkId(artworkId);
+    setIsPopupOpen(true); // Open the popup
+  };
+
+  console.log("check loading", isLoading);
 
   if (isLoading) {
     return <Loader />;
@@ -47,97 +70,148 @@ const Artwork = () => {
         Artworks
       </Header>
 
-      <div className="flex flex-col sm:flex-row justify-end mb-4 gap-3 pb-3 ">
-        <select
-          className="border p-2 rounded-md text-sm"
-          value={isArtProvider}
-          onChange={(e) => setIsArtProvider(e.target.value)}
+      <div className="flex flex-col sm:flex-row justify-start mb-4 gap-3 pb-3 ">
+        <span
+          onClick={handleArtworkSelect}
+          className="px-2 py-2 bg-white font-medium rounded cursor-pointer text-md"
         >
-          <option value="">Select Art Provider</option>
-          <option value="yes">Yes</option>
-        </select>
+          Series
+        </span>
+        <span
+          onClick={handleArtworkSelect}
+          className="px-2 py-2 bg-white font-medium rounded cursor-pointer text-md"
+        >
+          Discipline
+        </span>
+        <span
+          onClick={handleArtworkSelect}
+          className="px-2 py-2 bg-white font-medium rounded cursor-pointer text-md"
+        >
+          Art Provider
+        </span>
 
-        <select
-          className="border p-2 rounded-md text-sm"
-          value={selectedDiscipline}
-          onChange={(e) => setSelectedDiscipline(e.target.value)}
-        >
-          <option value="">Select Discipline</option>
-          {disciplines.map((discipline, idx) => (
-            <option key={idx} value={discipline}>
-              {discipline}
-            </option>
-          ))}
-        </select>
-
-        <select
-          className="border p-2 rounded-md text-sm"
-          value={selectedSeries}
-          onChange={(e) => setSelectedSeries(e.target.value)}
-        >
-          <option value="">Select Series</option>
-          {series.map((seriesItem, idx) => (
-            <option key={idx} value={seriesItem}>
-              {seriesItem}
-            </option>
-          ))}
-        </select>
+        <div className="flex gap-2 flex-wrap justify-end pt-2">
+          <div className="flex gap-2 items-center">
+            <div className="w-[.8em] h-[.8em] rounded-full bg-[#00DE00] flex items-center"></div>
+            <p className="text-[14px] text-black">Published</p>
+          </div>
+          <div className="flex gap-2 items-center">
+            <div className="w-[.8em] h-[.8em] rounded-full bg-[#f0dd32] flex items-center"></div>
+            <p className="text-[14px] text-black">Draft</p>
+          </div>
+          <div className="flex gap-2 items-center">
+            <div className="w-[.8em] h-[.8em] rounded-full bg-orange-600 flex items-center"></div>
+            <p className="text-[14px] text-black">Subscription</p>
+          </div>
+          {/* <div className="flex gap-2 items-center">
+          <div className="w-[.8em] h-[.8em] rounded-full bg-[#FFA600] flex items-center"></div>
+          <p className="text-[14px] text-black">In subscription</p>
+        </div> */}
+          <div className="flex gap-2 items-center">
+            <div className="w-[.8em] h-[.8em] rounded-full   bg-[#EE1D52]   flex items-center"></div>
+            <p className="text-[14px] text-black">Not Available</p>
+          </div>
+          <div className="flex gap-2 items-center">
+            <div className="w-[.8em] h-[.8em] rounded-full bg-[#696868] flex items-center"></div>
+            <p className="text-[14px] text-black">Purchased</p>
+          </div>
+        </div>
       </div>
 
-      <div className="grid xl:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2 grid-cols-1  ">
-        {filteredData && filteredData.length > 0 ? (
-          filteredData.map((item: any, index: number) => (
-            <div
-              key={index}
-              className="sm:px-3 px-0 border-none outline-none flex flex-col pb-5 justify-center relative"
-            >
-              <img
-                src={`${data.url}/users/${item.media.mainImage}`}
-                alt="image"
-                className="w-full h-[300px] object-cover cursor-pointer "
-              />
+      {isRefetching ? (
+        <Loader />
+      ) : (
+        <div>
+          {data?.data &&
+            data?.data?.length > 0 &&
+            data?.data?.map((item, i) => (
+              <div key={i} className="mb-5">
+                <h1 className="font-bold mb-5 mt-5 text-[20px] capitalize text-[#333333] xl:w-[80%] lg:w-[70%] w-[80%] line-clamp-2">
+                  {item?.groupName}
+                </h1>
 
-              {profile === "artist" && (
-                <div className="absolute bottom-0 left-0 right-0 top-0 h-full w-full overflow-hidden bg-[#D9D9D9] bg-fixed flex gap-10 items-center justify-center opacity-0 transition duration-300 ease-in-out hover:opacity-[0.7] hover:cursor-pointer">
-                  {item?.status === "draft" ? (
-                    <div className="flex gap-5">
-                      <NavLink to={`/artist-panel/artwork/add?id=${item._id}`}>
-                        <img src={edit} alt="edit" />{" "}
-                      </NavLink>
-                      <img src={deleteimg} alt="delete" />
+                <Swiper
+                  spaceBetween={20}
+                  slidesPerView={"auto"}
+                  autoplay={false}
+                  loop
+                >
+                  {item?.artworks?.map((art, idx) => (
+                    <div
+                      className={`bg-red-300 rounded-lg pb-5 border-b-4  ${
+                        art?.status === "published"
+                          ? "border-[#00DE00]"
+                          : art?.status === "pending"
+                          ? "border-[#D8F002]"
+                          : art?.status === "draft"
+                          ? "border-[#696868]"
+                          : art.status === "notAvailable"
+                          ? "border-[#e53a3a]"
+                          : "border-[#D8F002]"
+                      }`}
+                    >
+                      <SwiperSlide
+                        className={`w-fit rounded-lg pb-5 border-b-4  ${
+                          art?.status === "published"
+                            ? "border-[#00DE00]"
+                            : art?.status === "subscription"
+                            ? "border-orange-600"
+                            : art?.status === "draft"
+                            ? "border-[#f0dd32]"
+                            : art.status === "notAvailable"
+                            ? "border-[#e53a3a]"
+                            : art?.status === "purchased"
+                            ? "border-[#D8F002]"
+                            : null
+                        }`}
+                      >
+                        <img
+                          className="w-[20rem] h-[30rem] object-cover"
+                          src={`${data?.url}/users/${art?.media}`}
+                          alt=""
+                        />
+                        <p className="text-[14px] text-center text-zinc-800]">
+                          {art?.discipline?.artworkDiscipline}
+                        </p>
+                        <h1 className="font-semibold text-center text-[20px] text-black ">
+                          {art?.artworkName}
+                        </h1>
+                        <p className="text-[12px]  text-center text-zinc-800">
+                          {art?.artworkTechnic}
+                        </p>
+
+                        {profile === "artist" && (
+                          <div
+                            onClick={() => handleArtworkClick(art._id)}
+                            className="absolute  bottom-0 left-0 right-0 top-0 h-full w-full overflow-hidden bg-[#D9D9D9] bg-fixed flex gap-10 items-center justify-center opacity-0 transition duration-300 ease-in-out hover:opacity-[0.7] hover:cursor-pointer"
+                          >
+                            {item?.status === "draft" ? (
+                              <div className="flex gap-5">
+                                <NavLink
+                                  to={`/artist-panel/artwork/add?id=${item._id}`}
+                                >
+                                  <img src={edit} alt="edit" />{" "}
+                                </NavLink>
+                                <img src={deleteimg} alt="delete" />
+                              </div>
+                            ) : null}
+                          </div>
+                        )}
+                      </SwiperSlide>
                     </div>
-                  ) : null}
-                </div>
-              )}
-
-              <div className="mt-3">
-                <p className="text-[14px] text-[#696868]">
-                  {item.discipline?.artworkDiscipline}
-                </p>
-                <div className="flex justify-between items-center">
-                  <h1 className="font-bold text-[20px] text-[#333333] xl:w-[80%] lg:w-[70%] w-[80%] line-clamp-2">
-                    {item.artworkName}
-                  </h1>
-                  <div>
-                    <p className="text-[14px] text-[#696868]">
-                      {item?.additionalInfo.artworkTechnic}
-                    </p>
-                  </div>
-                </div>
-                <p className="text-[14px] text-[#696868]">
-                  {item?.isArtProvider
-                    ? item?.owner?.artistName +
-                      " " +
-                      item?.owner?.artistSurname1
-                    : null}
-                </p>
+                  ))}
+                </Swiper>
               </div>
-            </div>
-          ))
-        ) : (
-          <p>No artworks found matching the selected filters.</p>
-        )}
-      </div>
+            ))}
+        </div>
+      )}
+
+      <ArtworkViewPopup
+        isOpen={isPopupOpen}
+        onClose={closePopup}
+        onAction={handleAction}
+        id={selectedArtworkId}
+      />
     </div>
   );
 };

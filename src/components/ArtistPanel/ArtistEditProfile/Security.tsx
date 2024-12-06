@@ -1,16 +1,15 @@
 import { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import useChnagePasswordMutation from "./http/useChnagePasswordMutation";
 
 const Security = () => {
-  
   const [showPassword, setShowPassword] = useState({
     oldPassword: false,
     newPassword: false,
     confirmPassword: false,
   });
 
- 
   const validationSchema = Yup.object({
     oldPassword: Yup.string().required("Old password is required"),
     newPassword: Yup.string()
@@ -21,6 +20,23 @@ const Security = () => {
       .required("Confirm password is required"),
   });
 
+  const { mutateAsync, isPending } = useChnagePasswordMutation();
+
+  const onSubmit = (value, { resetForm }) => {
+    try {
+      const data = {
+        oldPassword: value.oldPassword,
+        newPassword: value.newPassword,
+        confirmPassword: value.confirmPassword,
+      };
+
+      mutateAsync(data).then(() => {
+        resetForm();
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const togglePasswordVisibility = (field) => {
     setShowPassword((prevState) => ({
@@ -38,14 +54,10 @@ const Security = () => {
           confirmPassword: "",
         }}
         validationSchema={validationSchema}
-        onSubmit={(values) => {
-         
-          console.log("Form data", values); 
-        }}
+        onSubmit={onSubmit}
       >
         {({ errors, touched }) => (
           <Form className="space-y-6">
-           
             <div className="relative">
               <Field
                 type={showPassword.oldPassword ? "text" : "password"}
@@ -63,9 +75,9 @@ const Security = () => {
                 onClick={() => togglePasswordVisibility("oldPassword")}
               >
                 {showPassword.oldPassword ? (
-                  <i className="bi bi-eye" /> 
+                  <i className="bi bi-eye" />
                 ) : (
-                  <i className="bi bi-eye-slash" /> 
+                  <i className="bi bi-eye-slash" />
                 )}
               </button>
               <ErrorMessage
@@ -75,7 +87,6 @@ const Security = () => {
               />
             </div>
 
-           
             <div className="relative">
               <Field
                 type={showPassword.newPassword ? "text" : "password"}
@@ -93,9 +104,9 @@ const Security = () => {
                 onClick={() => togglePasswordVisibility("newPassword")}
               >
                 {showPassword.newPassword ? (
-                  <i className="bi bi-eye" /> 
+                  <i className="bi bi-eye" />
                 ) : (
-                  <i className="bi bi-eye-slash" /> 
+                  <i className="bi bi-eye-slash" />
                 )}
               </button>
               <ErrorMessage
@@ -105,7 +116,6 @@ const Security = () => {
               />
             </div>
 
-            
             <div className="relative">
               <Field
                 type={showPassword.confirmPassword ? "text" : "password"}
@@ -123,9 +133,9 @@ const Security = () => {
                 onClick={() => togglePasswordVisibility("confirmPassword")}
               >
                 {showPassword.confirmPassword ? (
-                  <i className="bi bi-eye" /> 
+                  <i className="bi bi-eye" />
                 ) : (
-                  <i className="bi bi-eye-slash" /> 
+                  <i className="bi bi-eye-slash" />
                 )}
               </button>
               <ErrorMessage
@@ -135,13 +145,12 @@ const Security = () => {
               />
             </div>
 
-            
             <div className="flex justify-end mt-4">
               <button
                 type="submit"
                 className="bg-[#102030] text-white py-2 px-4 rounded hover:bg-[#0d1a26] transition duration-300"
               >
-                Save changes
+                {isPending ? "Saving..." : " Save changes"}
               </button>
             </div>
           </Form>

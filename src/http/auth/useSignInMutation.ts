@@ -6,6 +6,7 @@ import { setToken } from "../../components/utils/tokenHelper";
 import { useAppDispatch } from "../../store/typedReduxHooks";
 import {
   setIsArtist,
+  setIsArtProvider,
   setIsAuthorized,
   setProfile,
   updateUser,
@@ -29,9 +30,12 @@ const useSigInInMutation = () => {
 
     onSuccess: async (res, input) => {
       setToken(res.data.token, input.rememberMe);
-      dispatch(updateUser(res.data.user));
+      console.log(res?.data?.user);
+      dispatch(updateUser(res?.data?.user));
       dispatch(setIsAuthorized(true));
-      console.log("this is from sign in ", res.data);
+      dispatch(
+        setIsArtProvider(res?.data?.user?.commercilization?.artProvider)
+      );
 
       if (res.data.user.isActivated) {
         dispatch(setIsArtist(true));

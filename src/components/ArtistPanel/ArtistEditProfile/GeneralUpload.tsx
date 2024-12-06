@@ -3,14 +3,15 @@ import GeneralForm from "./GeneralForm";
 import upload from "./assets/Upload.png";
 import camera from "./assets/camera.png";
 import P from "../../ui/P";
-import { useGetArtistDetails } from "./http/useGetDetails";
+import { useGetArtistDetails } from "../../UserProfile/http/useGetDetails";
 import useGetSaveArtistDetailsMutation from "./http/useGetSaveArtistDetails";
 import Loader from "../../ui/Loader";
 
-const GeneralUpload = () => {
+const GeneralUpload = ({ isActiveStatus }) => {
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [newImage, setNewImage] = useState<string | null>(null);
   const [imgUrl, setImgUrl] = useState();
+  const [isEditInfo, setIsEditInfo] = useState();
 
   const { mutate, isPending } = useGetSaveArtistDetailsMutation();
   const { data, isLoading } = useGetArtistDetails();
@@ -79,6 +80,8 @@ const GeneralUpload = () => {
     insignia: data?.data?.artist?.insignia || "",
 
     taxZipCode: data?.data?.artist?.invoice?.taxZipCode || "",
+    documentName: data?.data?.document?.documentName || "",
+    isArtistEditInfoRequest: data?.data?.artist?.isArtistEditInfoRequest || "",
   };
 
   if (isLoading) {
@@ -150,7 +153,13 @@ const GeneralUpload = () => {
           </P>
           <label className="inline-flex items-center cursor-pointer">
             <input type="checkbox" className="sr-only peer" />
-            <div className="relative w-11 h-6 rounded-full peer dark:bg-[#00A76F] peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-gray-400 after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#00A76F]"></div>
+            <div
+              className={`relative w-11 h-6 rounded-full peer dark:bg-[#00A76F] peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-gray-400 after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#00A76F] ${
+                isActiveStatus !== "active"
+                  ? "pointer-events-none opacity-50"
+                  : ""
+              }`}
+            ></div>
           </label>
         </div>
 
@@ -158,7 +167,11 @@ const GeneralUpload = () => {
         <div className="text-center">
           <button
             onClick={handleUpdateProfile}
-            className="bg-[#FF563014] text-[#B71D18] px-4 py-2 rounded font-semibold mt-10"
+            className={`bg-[#FF563014] text-[#B71D18] px-4 py-2 rounded font-semibold mt-10 ${
+              isActiveStatus !== "active"
+                ? "pointer-events-none opacity-50"
+                : ""
+            }`}
           >
             Update Profile
           </button>
@@ -166,7 +179,7 @@ const GeneralUpload = () => {
       </div>
 
       {/* General Form */}
-      <GeneralForm defaultValues={defaultValues} />
+      <GeneralForm isActiveStatus={isActiveStatus} />
     </div>
   );
 };

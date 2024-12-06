@@ -1,52 +1,52 @@
 export const package_dimension = [
   {
-    name: "packageDimensionsWeight",
-    label: "Weight",
+    name: "packageWeight",
+    label: "Weight (kg)",
     placeholder: "Product weight...",
   },
   {
-    name: "packageDimensionsheight",
-    label: "Height",
+    name: "packageHeight",
+    label: "Height (cm)",
     placeholder: "Height (cm)...",
   },
   {
-    name: "packageDimensionslenght",
-    label: "Length",
+    name: "packageLength",
+    label: "Depth (cm)",
     placeholder: "Length (cm)...",
   },
   {
-    name: "packageDimensionswidth",
-    label: "Width",
+    name: "packageWidth",
+    label: "Width (cm)",
     placeholder: "Width (cm)...",
   },
 ];
 
 export const artwork_orientation = [
   {
-    name: "weight",
-    label: "Weight",
-    placeholder: "Product weight...ddd",
-  },
-  {
     name: "height",
-    label: "Height",
-    placeholder: "Height (cm)...dd",
-  },
-  {
-    name: "length",
-    label: "Length",
-    placeholder: "Length (cm)...",
+    label: "Height (cm)",
+    placeholder: "Height (cm)...",
   },
   {
     name: "width",
-    label: "Width",
+    label: "Width (cm)",
     placeholder: "Width (cm)...",
+  },
+  {
+    name: "length",
+    label: "Depth (cm)",
+    placeholder: "Depth (cm)...",
+  },
+  {
+    name: "weight",
+    label: "Weight (kg)",
+    placeholder: "Product weight...",
   },
 ];
 
 export const Framed_dimension = [
   { name: "frameHeight", label: "Frame Height", placeholder: "Height (cm)..." },
-  { name: "frameLength", label: "Frame Length", placeholder: "Length (cm)..." },
+  { name: "frameLength", label: "Frame Depth", placeholder: "Length (cm)..." },
   { name: "frameWidth", label: "Frame Width", placeholder: "Width (cm)..." },
 ];
 
@@ -135,6 +135,24 @@ export const shipping_inventry = [
     name: "pCode",
     label: "Product Code",
     placeholder: "Product Code...",
+  },
+];
+
+export const package_dimensions = [
+  {
+    name: "packageHeight",
+    label: " Package Height",
+    placeholder: "Height (cm)...",
+  },
+  {
+    name: "packageLength",
+    label: " Package Length",
+    placeholder: "Length (cm)...",
+  },
+  {
+    name: "packageWidth",
+    label: "  PackageWidth",
+    placeholder: "Width (cm)...",
   },
 ];
 

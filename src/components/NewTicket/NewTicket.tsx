@@ -3,7 +3,7 @@ import * as Yup from "yup";
 import Button from "../ui/Button";
 import Header from "../ui/Header";
 import P from "../ui/P";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
 import { useNavigate } from "react-router-dom";
 
@@ -14,6 +14,7 @@ import {
   urgencyData,
   urgencyOption,
 } from "../utils/mockData";
+import { useAppSelector } from "../../store/typedReduxHooks";
 
 const NewTicket = () => {
   const validationSchema = Yup.object({
@@ -21,14 +22,25 @@ const NewTicket = () => {
     // email: Yup.string()
     //   .email("Invalid email format")
     //   .required("Email is required"),
-    region: Yup.string().required("Region is required"),
-    subject: Yup.string().required("Subject is required"),
-    message: Yup.string().required("Message is required"),
+
+    subject: Yup.string().required("Title is required"),
+    message: Yup.string()
+      .required("Message is required")
+      .test(
+        "min-words",
+        "Message must be at least 10 words",
+        (value) => value && value.split(/\s+/).length >= 10
+      ),
+    ticketType: Yup.string().required("Ticket type is required"),
   });
 
+  const user = useAppSelector((state) => state.user.user);
+
+  const requestedName = user.artistName;
+  console.log(requestedName);
+
   const initialValues = {
-    // name: "",
-    // email: "",
+    requestedBy: "",
     region: "",
     subject: "",
     message: "",
@@ -36,14 +48,37 @@ const NewTicket = () => {
     ticketType: "",
   };
 
+  // useEffect(() => {
+  //   if (requestedName) {
+  //     Formik.setFieldValue("requestedBy", requestedName);
+  //   }
+  // }, []);
+
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();
   const { mutate, isPending } = useGetPostArtistTicketMutation();
-  const onSubmit = async (values: object) => {
+
+  const onSubmit = (values, action) => {
+    console.log("onSubmit", values);
+
     try {
-      mutate(values);
+      console.log("onSubmit", values);
+
+      const formData = new FormData();
+      Object.keys(values).forEach((key) => {
+        if (
+          key === "ticketImg" &&
+          fileInputRef.current &&
+          fileInputRef.current.files[0]
+        ) {
+          formData.append(key, fileInputRef.current.files[0]);
+        } else if (values[key] !== undefined) {
+          formData.append(key, values[key]);
+        }
+      });
+      mutate(formData);
     } catch (error) {
-      console.error(error);
+      console.log(error);
     }
   };
 
@@ -70,33 +105,8 @@ const NewTicket = () => {
             validationSchema={validationSchema}
             onSubmit={onSubmit}
           >
-            {({ setFieldValue, resetForm, setErrors }) => (
-              <Form className="bg-white my-4 p-6">
-                {/* <div className="mb-4">
-                  <label
-                    htmlFor="region"
-                    className="block mb-2 text-sm font-bold text-gray-900 dark:text-white"
-                  >
-                    Select Region*
-                  </label>
-                  <Field
-                    name="region"
-                    as="select"
-                    className="outline-[#FDB7DC] bg-[#FFD1D114] shadow border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-[#FDB7DC] focus:shadow-outline"
-                  >
-                    <option value="">Choose region</option>
-                    <option value="US">United States</option>
-                    <option value="CA">Canada</option>
-                    <option value="FR">France</option>
-                    <option value="DE">Germany</option>
-                  </Field>
-                  <ErrorMessage
-                    name="region"
-                    component="div"
-                    className="text-red-500 text-sm mt-1"
-                  />
-                </div> */}
-
+            {({ setFieldValue, resetForm, setErrors, handleSubmit }) => (
+              <Form onSubmit={handleSubmit} className="bg-white my-4 p-6">
                 <div className="mb-4">
                   <label
                     className="block text-gray-700 text-sm font-bold mb-2"
@@ -108,6 +118,7 @@ const NewTicket = () => {
                     name="requestedBy"
                     type="text"
                     placeholder="Requested By"
+                    setFieldValue={requestedName}
                     className="outline-[#FDB7DC] bg-[#FFD1D114] shadow border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-[#FDB7DC] focus:shadow-outline"
                   />
                   <ErrorMessage
@@ -122,7 +133,7 @@ const NewTicket = () => {
                     className="block text-gray-700 text-sm font-bold mb-2"
                     htmlFor="subject"
                   >
-                    Subject
+                    Title
                   </label>
                   <Field
                     name="subject"
@@ -138,7 +149,7 @@ const NewTicket = () => {
                 </div>
                 <div className="mb-4">
                   <label
-                    htmlFor="region"
+                    htmlFor="ticketType"
                     className="block mb-2 text-sm font-bold text-gray-900 "
                   >
                     Select Ticket Type*
@@ -169,14 +180,14 @@ const NewTicket = () => {
                       htmlFor="urgency"
                       className="block mb-2 text-sm font-bold text-gray-900 "
                     >
-                      Select Unrgency
+                      Select Urgency
                     </label>
                     <Field
                       name="urgency"
                       as="select"
                       className="outline-[#FDB7DC] bg-[#FFD1D114] shadow border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-[#FDB7DC] focus:shadow-outline"
                     >
-                      <option value="">Choose Urgency Type</option>
+                      {/* <option value="">Choose Urgency Type</option> */}
 
                       {urgencyOption.map((item, i) => {
                         return (
@@ -187,7 +198,7 @@ const NewTicket = () => {
                       })}
                     </Field>
                     <ErrorMessage
-                      name="ticketType"
+                      name="urgency"
                       component="div"
                       className="text-red-500 text-sm mt-1"
                     />
@@ -205,7 +216,7 @@ const NewTicket = () => {
                       as="select"
                       className="outline-[#FDB7DC] bg-[#FFD1D114] shadow border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-[#FDB7DC] focus:shadow-outline"
                     >
-                      <option value="">Choose Impact Type</option>
+                      {/* <option value="">Choose Impact Type</option> */}
 
                       {impactOption.map((item, i) => {
                         return (
@@ -216,7 +227,7 @@ const NewTicket = () => {
                       })}
                     </Field>
                     <ErrorMessage
-                      name="ticketType"
+                      name="impact"
                       component="div"
                       className="text-red-500 text-sm mt-1"
                     />
@@ -228,13 +239,13 @@ const NewTicket = () => {
                     htmlFor="message"
                     className="block mb-2 text-sm font-bold text-gray-900 "
                   >
-                    Your message
+                    Ticket Description
                   </label>
                   <Field
                     name="message"
                     as="textarea"
                     rows={5}
-                    placeholder="Write description here..."
+                    placeholder="Write description here minimum words should be at least 10 characters"
                     className="outline-[#FDB7DC] bg-[#FFD1D114] shadow border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-[#FDB7DC] focus:shadow-outline"
                   />
                   <ErrorMessage
@@ -279,26 +290,19 @@ const NewTicket = () => {
                   </div>
                 </div>
                 <div className="flex flex-row justify-end">
-                  <Button
+                  <button
                     type="submit"
-                    variant={{
-                      fontSize: "sm",
-                      thickness: "thick",
-                      fontWeight: "600",
-                      theme: "dark",
-                    }}
-                    className=" text-white py-2 px-10 rounded mr-4"
+                    className=" text-white rounded-md py-2 px-10  mr-4 bg-black"
                   >
                     {isPending ? "Loading..." : "Submit"}
-                  </Button>
+                  </button>
 
-                  <Button
-                    type="submit"
-                    variant={{
-                      fontSize: "sm",
-                      thickness: "thick",
-                      fontWeight: "600",
-                    }}
+                  <span
+                    // variant={{
+                    //   fontSize: "sm",
+                    //   thickness: "thick",
+                    //   fontWeight: "600",
+                    // }}
                     onClick={() => {
                       resetForm();
                       setErrors({});
@@ -306,10 +310,10 @@ const NewTicket = () => {
                         fileInputRef.current.value = "";
                       }
                     }}
-                    className="text-white py-2 px-10 rounded border-2 border-[#102030] text-[#102030]"
+                    className=" py-2 px-10 rounded border-2 border-[#102030] text-[#102030]"
                   >
                     Reset
-                  </Button>
+                  </span>
                 </div>
               </Form>
             )}

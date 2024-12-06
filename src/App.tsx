@@ -126,7 +126,6 @@ const App: React.FC = () => {
   const { isLoading } = useCheckIsAuthorized();
   const [isAuthenticated] = useState<boolean>(false);
   const data = useAppSelector((state) => state.user.user);
-  const { t, i18n } = useTranslation();
 
   // useEffect(() => {
   //   console.log(t("welcome"));
@@ -140,7 +139,6 @@ const App: React.FC = () => {
   return (
     <AuthProvider>
       <Layout isAuthenticated={isAuthenticated}>
-        {/* <h1>{t("ArtworkName")}</h1> */}
         <Suspense fallback={<Loader />}>
           <Routes>
             {/* Public Routes */}
@@ -419,7 +417,7 @@ const App: React.FC = () => {
               }
             />
             <Route
-              path="/circle_page"
+              path="/circle"
               element={
                 <AuthGuard>
                   <CirclePage />

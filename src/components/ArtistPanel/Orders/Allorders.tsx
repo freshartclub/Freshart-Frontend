@@ -11,6 +11,8 @@ import { formateCurrency } from "../../utils/FormatCurrency";
 const Allorders = ({ orderDelail }: any) => {
   const { data, isLoading } = useGetArtistOrder();
 
+  console.log("this is from orders", data);
+
   const [currentPage, setCurrentPage] = useState(1);
   const recordPerPage = 10;
   const lastIndex = currentPage * recordPerPage;

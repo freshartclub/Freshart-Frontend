@@ -13,12 +13,27 @@ import PhoneInput from "react-phone-number-input";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "react-phone-number-input/style.css";
+import { FaEye } from "react-icons/fa";
 
 import "react-country-state-city/dist/react-country-state-city.css";
 
-const GeneralForm = ({ defaultValues }: { defaultValues: any }) => {
+import dayjs from "dayjs";
+import MapWithAutocomplete, {
+  getCityStateFromZipCountry,
+} from "../../utils/MapWithAutocomplete";
+import countryList from "react-select-country-list";
+import { Country, State, City } from "country-state-city";
+
+import Select from "react-select";
+import Flag from "react-world-flags";
+
+const GeneralForm = ({ isActiveStatus }) => {
   const { data, isLoading } = useGetArtistDetails();
   const { mutate, isPending } = useGetSaveArtistDetailsMutation();
+  const [isEditInfo, setIsEditInfo] = useState(false);
+  const [isManagerDetails, setManagerDetails] = useState(null);
+  const [tags, setTags] = useState([]);
+  const options = useMemo(() => Country.getAllCountries(), []);
 
   const methods = useForm();
 
@@ -32,6 +47,10 @@ const GeneralForm = ({ defaultValues }: { defaultValues: any }) => {
     trigger,
     formState: { errors },
   } = methods;
+
+  useEffect(() => {
+    watch("country");
+  }, []);
 
   useEffect(() => {
     if (!data) return;
@@ -91,9 +110,90 @@ const GeneralForm = ({ defaultValues }: { defaultValues: any }) => {
     setValue("gender", data?.data?.artist?.gender || "");
     setValue("accounts", data?.data?.artist?.links || "");
     setValue("highlights", data?.data?.artist?.highlights?.addHighlights || "");
+    setValue("vatAmount", data?.data?.artist?.invoice?.vatAmount || "");
 
     setValue("cvEntries", data?.data?.artist?.highlights?.cv || "");
+    // we will have to fix it
+    setValue("documentName", data?.data?.artist?.documents?.documentName || []);
+    setValue("externalTags", data?.data?.artist?.otherTags?.extTags);
+    setValue(
+      "lastRevalidationDate",
+      dayjs(data?.data?.artist?.lastRevalidationDate).format("YYYY-MM-DD") || ""
+    );
 
+    setValue(
+      "nextRevalidationDate",
+      dayjs(data?.data?.artist?.nextRevalidationDate).format("YYYY-MM-DD") || ""
+    );
+
+    setValue(
+      "managerName",
+      data?.data?.artist?.managerDetails?.managerName || ""
+    );
+
+    setValue(
+      "managerLanguage",
+      data?.data?.artist?.managerDetails?.language || []
+    );
+
+    setValue(
+      "managerAddress",
+      data?.data?.artist?.managerDetails?.address?.address || ""
+    );
+    setValue(
+      "managerCity",
+      data?.data?.artist?.managerDetails?.address?.city || ""
+    );
+    setValue(
+      "managerCountry",
+      data?.data?.artist?.managerDetails?.address?.country || ""
+    );
+    setValue(
+      "managerState",
+      data?.data?.artist?.managerDetails?.address?.state || ""
+    );
+    setValue(
+      "managerZipCode",
+      data?.data?.artist?.managerDetails?.address?.zipCode || ""
+    );
+
+    setValue(
+      "managerEmail",
+      data?.data?.artist?.managerDetails?.managerEmail || ""
+    );
+    setValue(
+      "managerGender",
+      data?.data?.artist?.managerDetails?.managerGender || ""
+    );
+    setValue(
+      "managerPhone",
+      data?.data?.artist?.managerDetails?.managerPhone || ""
+    );
+
+    setValue(
+      "emergencyContactAddress",
+      data?.data?.artist?.emergencyInfo.emergencyContactAddress || ""
+    );
+
+    setValue(
+      "emergencyContactEmail",
+      data?.data?.artist?.emergencyInfo.emergencyContactEmail || ""
+    );
+
+    setValue(
+      "emergencyContactName",
+      data?.data?.artist?.emergencyInfo.emergencyContactName || ""
+    );
+
+    setValue(
+      "emergencyContactPhone",
+      data?.data?.artist?.emergencyInfo.emergencyContactPhone || ""
+    );
+
+    setValue(
+      "emergencyContactRelation",
+      data?.data?.artist?.emergencyInfo.emergencyContactRelation || ""
+    );
     setValue("additionalImage", []);
     setValue(
       "existingAdditionalImage",
@@ -111,10 +211,52 @@ const GeneralForm = ({ defaultValues }: { defaultValues: any }) => {
       "existingAdditionalVideo",
       data?.data?.artist?.profile?.additionalVideo
     );
+    setValue(
+      "isArtistEditInfoRequest",
+      setIsEditInfo(data?.data?.artist?.isArtistEditInfoRequest)
+    );
+    setManagerDetails(data?.data?.artist?.isManagerDetails);
   }, [data]);
+
+  const handlePDF = (file) => {
+    window.open(`http://localhost:5000/uploads/documents/${file}`, "_blank");
+  };
+
+  const handleTagChange = (e) => {
+    const inputValue = e.target.value;
+
+    const newTags = inputValue.split(/[\s,]+/);
+    // .filter((tag) => tag.startsWith("#") && tag.length > 1);
+    setTags(newTags);
+  };
+
+  const handleRemoveTags = (index) => {
+    console.log(index);
+    const newTags = tags.filter((_, i) => i !== index);
+    setTags(newTags);
+    setValue("externalTags", newTags);
+  };
+
+  const watchZip = watch("zip");
+  const watchCountry = watch("country");
+  const apiKey = import.meta.env.VITE_APP_GOOGLE_MAPS_API_KEY;
+
+  useEffect(() => {
+    if (watchCountry && watchZip && watchZip.length > 4) {
+      getCityStateFromZipCountry(watchCountry, watchZip, apiKey).then(
+        ({ state, city }) => {
+          setValue("city", city);
+          setValue("stateRegion", state);
+          console.log(state, city);
+        }
+      );
+    }
+  }, [watchCountry, watchZip]);
 
   const onSubmit = (data) => {
     console.log("OnSubmit", data);
+    console.log(data.additionalVide);
+
     const formData = new FormData();
 
     Object.keys(data).forEach((key) => {
@@ -130,6 +272,23 @@ const GeneralForm = ({ defaultValues }: { defaultValues: any }) => {
         formData.append(key, data[key]);
       }
     });
+
+    // if (
+    //   // data?.cvEntries !== getValues("cvEntries") ||
+    //   data.about !== defaultValues.about ||
+    //   data.highlights !== defaultValues.highlights ||
+    //   data.mainImage !== defaultValues.mainImage ||
+    //   // data.inProcessImage !== defaultValues.inProcessImage ||
+    //   // data.additionalVideo !== defaultValues.additionalVideo ||
+    //   data.mainVideo !== defaultValues.mainVideo
+    // ) {
+    //   console.log("im there");
+    //   formData.append("isArtistEditInfoRequest", "true");
+    // }
+
+    if (isManagerDetails) {
+      formData.append("isManagerDetails", "true");
+    }
 
     try {
       mutate(formData);
@@ -148,6 +307,9 @@ const GeneralForm = ({ defaultValues }: { defaultValues: any }) => {
         <div className="xl:p-4 lg:p-3 md:p-4 p-3 w-full">
           <FormProvider {...methods}>
             <form onSubmit={handleSubmit(onSubmit)}>
+              <h2 className="text-xl font-semibold mb-3 pb-3 text-[#1A1C21]">
+                General Information
+              </h2>
               <div className="flex flex-wrap justify-between w-full gap-4 mb-4">
                 <div className="md:w-[48%] w-full relative">
                   <input
@@ -156,6 +318,7 @@ const GeneralForm = ({ defaultValues }: { defaultValues: any }) => {
                     {...register("artistName", {
                       required: "Name is required",
                     })}
+                    disabled={isActiveStatus !== "active"}
                     className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-[#1C252E] outline-none"
                   />
                   <label
@@ -177,6 +340,7 @@ const GeneralForm = ({ defaultValues }: { defaultValues: any }) => {
                     {...register("artistSurname1", {
                       required: "Email is required",
                     })}
+                    disabled={isActiveStatus !== "active"}
                     className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-[#1C252E] outline-none"
                   />
                   <label
@@ -201,6 +365,7 @@ const GeneralForm = ({ defaultValues }: { defaultValues: any }) => {
                     {...register("artistSurname2", {
                       required: "Name is required",
                     })}
+                    disabled={isActiveStatus !== "active"}
                     className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-[#1C252E] outline-none"
                   />
                   <label
@@ -222,6 +387,7 @@ const GeneralForm = ({ defaultValues }: { defaultValues: any }) => {
                     {...register("nickName", {
                       required: "nickName is required",
                     })}
+                    disabled={isActiveStatus !== "active"}
                     className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-[#1C252E] outline-none"
                   />
                   <label
@@ -246,6 +412,7 @@ const GeneralForm = ({ defaultValues }: { defaultValues: any }) => {
                     {...register("email", {
                       required: "Name is required",
                     })}
+                    disabled={isActiveStatus !== "active"}
                     className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-[#1C252E] outline-none"
                   />
                   <label
@@ -268,6 +435,7 @@ const GeneralForm = ({ defaultValues }: { defaultValues: any }) => {
                     {...register("gender", {
                       required: "Gender is required",
                     })}
+                    disabled={isActiveStatus !== "active"}
                     className="border border-[#E6E6E6] p-3 w-full rounded-md focus:outline-none peer placeholder::font-montserrat font-normal text-left placeholder:text-[#1C252E] outline-none"
                   >
                     <option value="" label="Select a Gender" />
@@ -294,6 +462,7 @@ const GeneralForm = ({ defaultValues }: { defaultValues: any }) => {
                     {...register("language", {
                       required: "language is required",
                     })}
+                    disabled={isActiveStatus !== "active"}
                     className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-[#1C252E] outline-none"
                   />
                   <label
@@ -317,6 +486,7 @@ const GeneralForm = ({ defaultValues }: { defaultValues: any }) => {
                     placeholder="Enter phone number"
                     value={getValues("phoneNumber")}
                     onChange={(val) => setValue("phoneNumber", val)}
+                    disabled={isActiveStatus !== "active"}
                   />
                   <label
                     htmlFor="phoneNumber"
@@ -338,6 +508,7 @@ const GeneralForm = ({ defaultValues }: { defaultValues: any }) => {
                     {...register("address", {
                       required: "Address is required",
                     })}
+                    disabled={isActiveStatus !== "active"}
                     className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500"
                   />
                   <label
@@ -358,18 +529,23 @@ const GeneralForm = ({ defaultValues }: { defaultValues: any }) => {
                 <div className="md:w-[48%] w-full relative">
                   <select
                     {...register("country", {
-                      required: "Country is required",
+                      required: "country is required",
                     })}
+                    disabled={isActiveStatus !== "active"}
                     className="border border-[#E6E6E6] p-3 w-full rounded-md focus:outline-none peer placeholder::font-montserrat font-normal text-left placeholder:text-[#1C252E] outline-none"
                   >
-                    <option value="" label="Select a country" />
-                    <option value="United States" label="United States" />
-                    <option value="Canada" label="Canada" />
-                    <option value="Australia" label="Australia" />
-                    <option value="United Kingdom" label="United Kingdom" />
-                    <option value="Germany" label="Germany" />
-                    <option value="India" label="India" />
+                    {options?.map((item, i) => (
+                      <option key={i} value={item?.name}>
+                        {item?.name}
+                        <Flag
+                          code={item?.flag}
+                          alt={item?.flag}
+                          className="mr-2 w-5 h-5"
+                        />
+                      </option>
+                    ))}
                   </select>
+
                   <label
                     htmlFor="country"
                     className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
@@ -382,23 +558,24 @@ const GeneralForm = ({ defaultValues }: { defaultValues: any }) => {
                     </div>
                   )}
                 </div>
+
                 <div className="md:w-[48%] w-full relative">
                   <input
                     type="text"
-                    {...register("stateRegion", {
-                      required: "State/Region is required",
-                    })}
+                    // placeholder="Enter Your Zip Code"
+                    {...register("zip", { required: "Zip Code is required" })}
+                    disabled={isActiveStatus !== "active"}
                     className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
                   />
                   <label
-                    htmlFor="stateRegion"
+                    htmlFor="zip"
                     className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
                   >
-                    State/Region
+                    Zip Code
                   </label>
-                  {errors.stateRegion && (
+                  {errors.zip && (
                     <div className="text-red-500 text-sm mt-1">
-                      <div>{String(errors.stateRegion?.message || "")}</div>
+                      <div>{String(errors.zip?.message || "")}</div>
                     </div>
                   )}
                 </div>
@@ -410,6 +587,7 @@ const GeneralForm = ({ defaultValues }: { defaultValues: any }) => {
                     type="text"
                     // placeholder="Enter Your City"
                     {...register("city", { required: "City is required" })}
+                    disabled={isActiveStatus !== "active"}
                     className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-[#1C252E] outline-none"
                   />
                   <label
@@ -427,25 +605,34 @@ const GeneralForm = ({ defaultValues }: { defaultValues: any }) => {
                 <div className="md:w-[48%] w-full relative">
                   <input
                     type="text"
-                    // placeholder="Enter Your Zip Code"
-                    {...register("zip", { required: "Zip Code is required" })}
+                    {...register("stateRegion", {
+                      required: "State/Region is required",
+                    })}
+                    disabled={isActiveStatus !== "active"}
                     className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
                   />
                   <label
-                    htmlFor="zip"
+                    htmlFor="stateRegion"
                     className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
                   >
-                    Zip Code
+                    State/Region
                   </label>
-                  {errors.zip && (
+                  {errors.stateRegion && (
                     <div className="text-red-500 text-sm mt-1">
-                      <div>{String(errors.zip?.message || "")}</div>
+                      <div>{String(errors.stateRegion?.message || "")}</div>
                     </div>
                   )}
                 </div>
               </div>
 
+              {/* Cv And Highlight */}
+
+              <CVForm control={control} isActiveStatus={isActiveStatus} />
+
               <div className="w-full relative">
+                <h2 className="text-xl font-semibold mb-3 pb-3 text-[#1A1C21]">
+                  About
+                </h2>
                 <Controller
                   name="about"
                   control={control}
@@ -453,6 +640,7 @@ const GeneralForm = ({ defaultValues }: { defaultValues: any }) => {
                   render={({ field }) => (
                     <div className="relative">
                       <ReactQuill
+                        readOnly={isActiveStatus !== "active"}
                         {...field}
                         className="border border-[#E6E6E6] p-3 w-full rounded-md"
                         theme="snow"
@@ -463,7 +651,6 @@ const GeneralForm = ({ defaultValues }: { defaultValues: any }) => {
                             [{ list: "ordered" }, { list: "bullet" }],
                             ["bold", "italic", "underline"],
                             [{ align: [] }],
-                            ["link"],
                           ],
                         }}
                       />
@@ -478,14 +665,491 @@ const GeneralForm = ({ defaultValues }: { defaultValues: any }) => {
                 />
               </div>
 
-              <GeneralSocial control={control} />
-
               <GeneralMedia
                 control={control}
                 data={data?.data?.artist?.profile}
                 url={data?.data?.url}
+                isActiveStatus={isActiveStatus}
               />
-              <CVForm control={control} />
+              <Invoice control={control} />
+
+              <Logistics control={control} />
+
+              <div className="p-4 mt-4 bg-white rounded-lg shadow-md max-w-full">
+                <h2 className="text-xl font-semibold mb-3 text-[#1A1C21]">
+                  Others
+                </h2>
+                <div className="flex  flex-col gap-5">
+                  <div className="md:w-[48%] w-full relative flex flex-col gap-3 items-center">
+                    {/* Document Names */}
+                    {data?.data?.artist?.documents?.map((item, index) => (
+                      <div
+                        key={index}
+                        className="w-full flex gap-3 items-center"
+                      >
+                        <input
+                          type="text"
+                          value={item?.documentName}
+                          readOnly
+                          className="border border-[#E6E6E6] p-3 w-full rounded-md font-montserrat text-left placeholder:text-zinc-500 outline-none"
+                        />
+                        <label
+                          htmlFor={`documentName-${index}`}
+                          className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
+                        >
+                          Document Name {index + 1}
+                        </label>
+
+                        <span
+                          onClick={() => handlePDF(item?.uploadDocs)}
+                          className={`cursor-pointer flex flex-col justify-center ${
+                            isActiveStatus !== "active"
+                              ? "pointer-events-none"
+                              : ""
+                          }`}
+                        >
+                          <FaEye />
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className=" w-full relative">
+                    <input
+                      type="text"
+                      {...register("externalTags", {
+                        required: "ExternalTags",
+                      })}
+                      disabled={isActiveStatus !== "active"}
+                      className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder:text-zinc-500 outline-none"
+                      placeholder="Enter tags Start with # (separate with space or comma)"
+                      onChange={handleTagChange}
+                    />
+                    <label
+                      htmlFor="externalTags"
+                      className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
+                    >
+                      External Tags
+                    </label>
+
+                    <div className="mt-2">
+                      {tags.map((tag, index) => (
+                        <span
+                          key={index}
+                          className="bg-blue-100 border border-blue-800 px-2 py-1 rounded-full text-sm mr-2 mb-2"
+                        >
+                          {tag}
+                          <span
+                            onClick={() => handleRemoveTags(index)}
+                            className={`ml-3 text-black cursor-pointer ${
+                              isActiveStatus !== "active"
+                                ? "pointer-events-none"
+                                : ""
+                            }`}
+                          >
+                            X
+                          </span>
+                        </span>
+                      ))}
+                    </div>
+                    {errors.externalTags && (
+                      <div className="text-red-500 text-sm mt-1">
+                        <div>{String(errors.externalTags?.message || "")}</div>
+                      </div>
+                    )}
+                  </div>
+
+                  <h2 className="text-md font-semibold mb-3 text-[#1A1C21] ">
+                    Revalidation Information
+                  </h2>
+
+                  <div className="flex justify-between pointer-events-none">
+                    <div className="md:w-[48%] w-full relative">
+                      <input
+                        type="text"
+                        {...register("lastRevalidationDate", {})}
+                        className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
+                      />
+                      <label
+                        htmlFor="lastRevalidationDate"
+                        className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
+                      >
+                        Last Revalidation Date
+                      </label>
+                      {errors.lastRevalidationDate && (
+                        <div className="text-red-500 text-sm mt-1">
+                          <div>
+                            {String(errors.lastRevalidationDate?.message || "")}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="md:w-[48%] w-full relative">
+                      <input
+                        type="text"
+                        {...register("nextRevalidationDate", {})}
+                        className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
+                      />
+                      <label
+                        htmlFor="nextRevalidationDate"
+                        className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
+                      >
+                        Next Revalidation Date
+                      </label>
+                      {errors.nextRevalidationDate && (
+                        <div className="text-red-500 text-sm mt-1">
+                          <div>
+                            {String(errors.nextRevalidationDate?.message || "")}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <h2 className="text-md font-semibold mb-3 text-[#1A1C21]">
+                    Manager Information
+                  </h2>
+
+                  <div className="flex justify-between flex-wrap gap-3">
+                    <div className="md:w-[48%] w-full relative">
+                      <input
+                        disabled={isActiveStatus !== "active"}
+                        type="text"
+                        {...register("managerName", {})}
+                        className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
+                      />
+                      <label
+                        htmlFor="managerName"
+                        className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
+                      >
+                        Manager Name
+                      </label>
+                      {errors.managerName && (
+                        <div className="text-red-500 text-sm mt-1">
+                          <div>{String(errors.managerName?.message || "")}</div>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="md:w-[48%] w-full relative">
+                      <input
+                        disabled={isActiveStatus !== "active"}
+                        type="text"
+                        {...register("managerEmail", {})}
+                        className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
+                      />
+                      <label
+                        htmlFor="managerEmail"
+                        className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
+                      >
+                        Manager Email
+                      </label>
+                      {errors.managerEmail && (
+                        <div className="text-red-500 text-sm mt-1">
+                          <div>
+                            {String(errors.managerEmail?.message || "")}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="md:w-[48%] w-full relative">
+                      <input
+                        type="text"
+                        disabled={isActiveStatus !== "active"}
+                        {...register("managerPhone", {})}
+                        className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
+                      />
+                      <label
+                        htmlFor="managerPhone"
+                        className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
+                      >
+                        Manager Phone
+                      </label>
+                      {errors.managerPhone && (
+                        <div className="text-red-500 text-sm mt-1">
+                          <div>
+                            {String(errors.managerPhone?.message || "")}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="md:w-[48%] w-full relative">
+                      <input
+                        disabled={isActiveStatus !== "active"}
+                        type="text"
+                        {...register("managerGender", {})}
+                        className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
+                      />
+                      <label
+                        htmlFor="managerGender"
+                        className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
+                      >
+                        Manager Gender
+                      </label>
+                      {errors.managerGender && (
+                        <div className="text-red-500 text-sm mt-1">
+                          <div>
+                            {String(errors.managerGender?.message || "")}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="md:w-[48%] w-full relative">
+                      <input
+                        disabled={isActiveStatus !== "active"}
+                        type="text"
+                        {...register("managerLanguage", {})}
+                        className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
+                      />
+                      <label
+                        htmlFor="managerLanguage"
+                        className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
+                      >
+                        Manager Language
+                      </label>
+                      {errors.managerLanguage && (
+                        <div className="text-red-500 text-sm mt-1">
+                          <div>
+                            {String(errors.managerLanguage?.message || "")}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="md:w-[48%] w-full relative">
+                      <input
+                        disabled={isActiveStatus !== "active"}
+                        type="text"
+                        {...register("managerAddress", {})}
+                        className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
+                      />
+                      <label
+                        htmlFor="managerAddress"
+                        className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
+                      >
+                        Manager Address
+                      </label>
+                      {errors.managerAddress && (
+                        <div className="text-red-500 text-sm mt-1">
+                          <div>
+                            {String(errors.managerAddress?.message || "")}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="md:w-[48%] w-full relative">
+                      <input
+                        disabled={isActiveStatus !== "active"}
+                        type="text"
+                        {...register("managerCountry", {})}
+                        className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
+                      />
+                      <label
+                        htmlFor="managerCountry"
+                        className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
+                      >
+                        Manager Country
+                      </label>
+                      {errors.managerCountry && (
+                        <div className="text-red-500 text-sm mt-1">
+                          <div>
+                            {String(errors.managerCountry?.message || "")}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="md:w-[48%] w-full relative">
+                      <input
+                        disabled={isActiveStatus !== "active"}
+                        type="text"
+                        {...register("mangerZipCode", {})}
+                        className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
+                      />
+                      <label
+                        htmlFor="mangerZipCode"
+                        className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
+                      >
+                        Manager zipCode
+                      </label>
+                      {errors.mangerZipCode && (
+                        <div className="text-red-500 text-sm mt-1">
+                          <div>
+                            {String(errors.mangerZipCode?.message || "")}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="md:w-[48%] w-full relative">
+                      <input
+                        type="text"
+                        disabled={isActiveStatus !== "active"}
+                        {...register("managerState", {})}
+                        className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
+                      />
+                      <label
+                        htmlFor="state"
+                        className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
+                      >
+                        Manager state
+                      </label>
+                      {errors.managerState && (
+                        <div className="text-red-500 text-sm mt-1">
+                          <div>
+                            {String(errors.managerState?.message || "")}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="md:w-[48%] w-full relative">
+                      <input
+                        disabled={isActiveStatus !== "active"}
+                        type="text"
+                        {...register("managerCity", {})}
+                        className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
+                      />
+                      <label
+                        htmlFor="managerCity"
+                        className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
+                      >
+                        Manager City
+                      </label>
+                      {errors.managerCity && (
+                        <div className="text-red-500 text-sm mt-1">
+                          <div>{String(errors.managerCity?.message || "")}</div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <h2 className="text-md font-semibold mb-3 text-[#1A1C21]">
+                    Emergency Information
+                  </h2>
+
+                  <div className="flex justify-between flex-wrap gap-3 pointer-events-none">
+                    <div className="md:w-[48%] w-full relative">
+                      <input
+                        type="text"
+                        {...register("emergencyContactName", {})}
+                        className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
+                      />
+                      <label
+                        htmlFor="emergencyContactName"
+                        className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
+                      >
+                        Emergency Contact Name
+                      </label>
+                      {errors.emergencyContactName && (
+                        <div className="text-red-500 text-sm mt-1">
+                          <div>
+                            {String(errors.emergencyContactName?.message || "")}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="md:w-[48%] w-full relative">
+                      <input
+                        type="text"
+                        {...register("emergencyContactPhone", {})}
+                        className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
+                      />
+                      <label
+                        htmlFor="emergencyContactPhone"
+                        className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
+                      >
+                        Emergency Contact Phone
+                      </label>
+                      {errors.emergencyContactPhone && (
+                        <div className="text-red-500 text-sm mt-1">
+                          <div>
+                            {String(
+                              errors.emergencyContactPhone?.message || ""
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="md:w-[48%] w-full relative">
+                      <input
+                        type="text"
+                        {...register("emergencyContactEmail", {})}
+                        className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
+                      />
+                      <label
+                        htmlFor="emergencyContactEmail"
+                        className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
+                      >
+                        Emergency Contact Email
+                      </label>
+                      {errors.emergencyContactEmail && (
+                        <div className="text-red-500 text-sm mt-1">
+                          <div>
+                            {String(
+                              errors.emergencyContactEmail?.message || ""
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="md:w-[48%] w-full relative">
+                      <input
+                        type="text"
+                        {...register("emergencyContactAddress", {})}
+                        className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
+                      />
+                      <label
+                        htmlFor="emergencyContactAddress"
+                        className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
+                      >
+                        Emergency Contact Email
+                      </label>
+                      {errors.emergencyContactAddress && (
+                        <div className="text-red-500 text-sm mt-1">
+                          <div>
+                            {String(
+                              errors.emergencyContactAddress?.message || ""
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="md:w-[48%] w-full relative">
+                      <input
+                        type="text"
+                        {...register("emergencyContactRelation", {})}
+                        className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
+                      />
+                      <label
+                        htmlFor="emergencyContactRelation"
+                        className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
+                      >
+                        Emergency Contact Relation
+                      </label>
+                      {errors.emergencyContactRelation && (
+                        <div className="text-red-500 text-sm mt-1">
+                          <div>
+                            {String(
+                              errors.emergencyContactRelation?.message || ""
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <div className="p-4 mt-4 bg-white rounded-lg shadow-md max-w-full ">
                 <h2 className="text-xl font-semibold mb-3 text-[#1A1C21]">
                   Insignia
@@ -506,12 +1170,19 @@ const GeneralForm = ({ defaultValues }: { defaultValues: any }) => {
                 </div>
               </div>
 
-              <Invoice control={control} />
-              <Logistics control={control} />
+              <GeneralSocial
+                control={control}
+                isActiveStatus={isActiveStatus}
+              />
+
               <div className="flex flex-wrap justify-end items-center gap-4 mt-8">
                 <button
                   type="submit"
-                  className="bg-zinc-800 hover:bg-zinc-900 text-white font-medium py-2 px-4 rounded-md"
+                  className={`bg-zinc-800 hover:bg-zinc-900 text-white font-medium py-2 px-4 rounded-md ${
+                    isActiveStatus !== "active"
+                      ? "opacity-50 pointer-events-none"
+                      : ""
+                  }`}
                 >
                   {isPending ? `Loading...` : " Save Changes"}
                 </button>

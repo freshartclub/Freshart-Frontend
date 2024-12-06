@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import logo from "../../assets/loginlogo.png";
 import navigation_1 from "../../assets/navigation_1.png";
 
@@ -9,6 +9,8 @@ import { artistPanel } from "../utils/paths";
 import { useAppDispatch, useAppSelector } from "../../store/typedReduxHooks";
 import useLogOutMutation from "../../http/auth/useLogOutMutation";
 import { setIsArtist } from "../../store/userSlice/userSlice";
+import i18n from "../utils/i18n";
+import useClickOutside from "../utils/useClickOutside";
 
 const ArtistNavBar = () => {
   const [isToogleOpen, setIsToggelOpen] = useState(false);
@@ -17,18 +19,34 @@ const ArtistNavBar = () => {
 
   const navigate = useNavigate();
   const user = useAppSelector((state) => state.user.user);
+  const [language, setLanguage] = useState("eng");
+  const closePopup = useRef(null);
 
   const dispatch = useAppDispatch();
-  const url = "https://dev.freshartclub.com/images";
+  const profile = localStorage.getItem("profile");
+  const authToken = localStorage.getItem("auth_token");
 
   const { mutate: logOut } = useLogOutMutation();
 
   const countries = [
     { code: "GB", flag: "https://flagcdn.com/w320/gb.png", name: "English" },
-    { code: "US", flag: "https://flagcdn.com/w320/us.png", name: "English (US)" },
-    { code: "FR", flag: "https://flagcdn.com/w320/fr.png", name: "French" },
-    { code: "DE", flag: "https://flagcdn.com/w320/de.png", name: "German" },
+    {
+      code: "US",
+      flag: "https://flagcdn.com/w320/us.png",
+      name: "English (US)",
+    },
+    { code: "ES", flag: "https://flagcdn.com/w320/es.png", name: "Spanish" },
+    { code: "CA", flag: "https://flagcdn.com/w320/cat.png", name: "Catalan" },
   ];
+  useClickOutside(closePopup, () => {
+    setIsToggelOpen(false);
+  });
+
+  const url = "https://dev.freshartclub.com/images";
+
+  useEffect(() => {
+    i18n.changeLanguage(language);
+  }, [language]);
 
   const handleLogOut = () => {
     try {
@@ -71,12 +89,18 @@ const ArtistNavBar = () => {
             onClick={() => setIsLanguageOpen((prev) => !prev)}
           >
             <img
-              src={countries.find((country) => country.code === selectedCountry).flag}
+              src={
+                countries.find((country) => country.code === selectedCountry)
+                  .flag
+              }
               alt={`${selectedCountry} Flag`}
               className="w-6 h-4 rounded"
             />
             <span>
-              {countries.find((country) => country.code === selectedCountry).name}
+              {
+                countries.find((country) => country.code === selectedCountry)
+                  .name
+              }
             </span>
           </div>
 
@@ -89,9 +113,14 @@ const ArtistNavBar = () => {
                   onClick={() => {
                     setSelectedCountry(country.code);
                     setIsLanguageOpen(false);
+                    setLanguage(country.name);
                   }}
                 >
-                  <img src={country.flag} alt={country.name} className="w-6 h-4 rounded" />
+                  <img
+                    src={country.flag}
+                    alt={country.name}
+                    className="w-6 h-4 rounded"
+                  />
                   <span>{country.name}</span>
                 </div>
               ))}
@@ -100,7 +129,10 @@ const ArtistNavBar = () => {
         </div>
 
         {/* Notifications */}
-        <IoNotifications className="cursor-pointer hidden lg:block" size="1.5em" />
+        <IoNotifications
+          className="cursor-pointer hidden lg:block"
+          size="1.5em"
+        />
 
         {/* User Profile */}
         <span
@@ -124,7 +156,10 @@ const ArtistNavBar = () => {
 
         {/* Dropdown Menu */}
         {isToogleOpen && (
-          <div className="absolute z-10 top-20 right-5 flex flex-col gap-4 text-sm bg-white border rounded-lg shadow-md py-5 px-5">
+          <div
+            ref={closePopup}
+            className="absolute z-10 top-20 right-5 flex flex-col gap-4 text-sm bg-white border rounded-lg shadow-md py-5 px-5"
+          >
             <Link
               className="font-medium hover:bg-zinc-200 transition-all duration-200"
               to={artistPanel.artistEditProfile}

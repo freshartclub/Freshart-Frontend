@@ -13,6 +13,9 @@ export const ARTTIST_ENDPOINTS = {
   RecentArtWorks: `${ARTIST_BASE_URl}/add-to-recent`,
   GetRecentArtworks: `${ARTIST_BASE_URl}/get-recent-view`,
   GetLanguage: `${ARTIST_BASE_URl}/get-language`,
+  GetSMSOtp: `${ARTIST_BASE_URl}/sms-otp`,
+  VerifySMSOtp: `${ARTIST_BASE_URl}/verify-sms-otp`,
+  ArtistChangePassword: `${ARTIST_BASE_URl}/change-password`,
 
   // GetArtistArtwork: `${ARTIST_BASE_URl}/get-artist-artwork `,
   // DeleteArtwork: `${ARTIST_BASE_URl}/delete-artist-artwork `,
@@ -30,6 +33,8 @@ export const ARTTIST_ENDPOINTS = {
 
   addToWishList: `${ARTIST_BASE_URl}/item-to-wishlist`,
   getWishList: `${ARTIST_BASE_URl}/get-wishlist`,
+  usePatchSeries: `${ARTIST_BASE_URl}/add-series-to-artist`,
+  getSeries: `${ARTIST_BASE_URl}/get-series-list`,
 
   // GetArtistTicket: `${ARTIST_BASE_URl}/get
 };

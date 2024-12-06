@@ -2,7 +2,6 @@ import React from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 
 const Logistics = ({ control }) => {
-  
   const {} = useFieldArray({
     control,
     name: "logistics",
@@ -10,14 +9,29 @@ const Logistics = ({ control }) => {
 
   const logisticsData = [
     {
+      name: "logName",
+      label: "Logistic Name",
+      message: "Logistic Name is required",
+    },
+    {
       name: "logAddress",
       label: "Logistic Address",
       message: "Logistic Addressis required",
     },
     {
+      name: "logZipCode",
+      label: "Logistic ZipCode",
+      message: "Logistic ZipCodeis required",
+    },
+    {
       name: "logCity",
       label: "Logistic City",
       message: "Logistic City is required",
+    },
+    {
+      name: "logProvince",
+      label: "Logistic Province",
+      message: "Logistic Province is required",
     },
     {
       name: "logCountry",
@@ -29,37 +43,22 @@ const Logistics = ({ control }) => {
       label: "Logistic Email",
       message: "Logistic Email required",
     },
-
-    {
-      name: "logName",
-      label: "Logistic Name",
-      message: "Logistic Name is required",
-    },
-    {
-      name: "logNotes",
-      label: "Logistic Notes",
-      message: "Logistic Notes is required",
-    },
     {
       name: "logPhone",
       label: "Logistic Phone",
       message: "Logistic Phone is required",
     },
+
     {
-      name: "logProvince",
-      label: "Logistic Province",
-      message: "Logistic Province is required",
-    },
-    {
-      name: "logZipCode",
-      label: "Logistic ZipCode",
-      message: "Logistic ZipCodeis required",
+      name: "logNotes",
+      label: "Logistic Notes",
+      message: "Logistic Notes is required",
     },
   ];
 
   return (
     <div className="p-4 mt-4 bg-white rounded-lg shadow-md max-w-full border">
-      <h2 className="text-xl font-semibold mb-3 text-[#1A1C21]">Logistic</h2>
+      <h2 className="text-xl font-semibold mb-3 text-[#1A1C21]">Logistics</h2>
       <div className="flex flex-wrap justify-between w-full gap-4 mb-4">
         {logisticsData.map(({ name, label, message }) => (
           <div key={name} className="md:w-[48%] w-full relative">
@@ -74,7 +73,6 @@ const Logistics = ({ control }) => {
             >
               {label}
             </label>
-           
           </div>
         ))}
       </div>

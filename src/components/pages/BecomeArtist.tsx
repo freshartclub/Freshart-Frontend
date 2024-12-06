@@ -4,12 +4,12 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import P from "../ui/P";
 import Header from "../ui/Header";
 import browser from "../../assets/cloud-add.png";
-import "react-phone-number-input/style.css";
+// import "react-phone-number-input/style.css";
 import PhoneInput from "react-phone-number-input";
 import Select from "react-select";
 
 import useBecomeAnArtistMutation from "../../http/artist/useBecomeAnArtistMutation";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import useSendOtp from "../../http/artist/useSendOtp";
 import useOtpVerifyMutationBecomeAnArtist from "../../http/artist/useOtpVerifyBecomeAnArtist";
 import { useGetDiscipline } from "./http/useGetDiscipline";
@@ -18,6 +18,17 @@ import { useGetStyle } from "./http/useGetStyle";
 import toast from "react-hot-toast";
 import { useGetSocialMediaPicklist } from "./http/useGetSocialMedia";
 import ThankYou from "./ThankYou";
+
+import MapWithAutocomplete, {
+  getCityStateFromZipCountry,
+} from "../utils/MapWithAutocomplete";
+import EmailVerification from "./Pop";
+
+import PhoneVerification from "./PhoneVerification";
+
+import countryList from "react-select-country-list";
+import useGetPhone from "./http/useGetPhoneOtp";
+import usePhoneOtpVerify from "./http/useVerifyPhoneOtp";
 
 const BecomeArtist = () => {
   const validationSchema = Yup.object().shape({
@@ -46,11 +57,20 @@ const BecomeArtist = () => {
   const [geoLocation, setGeoLocation] = useState(null);
   const [countryCode, setCountryCode] = useState("");
   const [validateEmail, setValidateEmail] = useState("Verify Email");
+  const [validatePhone, setValidatePhone] = useState("Verify Phone");
   const [validateotp, setValidateotp] = useState("Validate Otp");
 
-  const [email, setEmail] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
 
-  const inputRef = useRef(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpenPhone, setIsModalOpenPhone] = useState(false);
+  const [verificationCode, setVerificationCode] = useState("");
+
+  const [phoneNumber, setPhoneNumber] = useState("");
+
+  const options = useMemo(() => countryList().getLabels(), []);
+
+  const [email, setEmail] = useState("");
 
   const {
     register,
@@ -71,6 +91,12 @@ const BecomeArtist = () => {
   const { mutateAsync: verifyOtp, isPending: verifyOtpPending } =
     useOtpVerifyMutationBecomeAnArtist();
 
+  const { mutateAsync: requestOtp, isPending: requestOtpPending } =
+    useGetPhone();
+
+  const { mutateAsync: verifyPhoneOtp, isPending: verifyPhoneOtpPending } =
+    usePhoneOtpVerify();
+
   const { data: socialMediaPicklist, isLoading: socialMediaPicklistLoading } =
     useGetSocialMediaPicklist();
 
@@ -82,8 +108,6 @@ const BecomeArtist = () => {
   });
 
   const watchEmail = watch("email");
-
-  const currentDicipline = watch("discipline");
 
   const GetOutSocialMedia = socialMediaPicklist?.data?.filter(
     (item) => item.picklistName === "Social Media"
@@ -114,11 +138,29 @@ const BecomeArtist = () => {
   }, []);
 
   useEffect(() => {
-    setValue("country", geoLocation?.country_name);
     setValue("city", geoLocation?.city);
     setValue("region", geoLocation?.region);
     setCountryCode(geoLocation?.country);
   }, [geoLocation]);
+
+  const zipCode = watch("zipCode");
+  const country = watch("country");
+  const apiKey = import.meta.env.VITE_APP_GOOGLE_MAPS_API_KEY;
+
+  useEffect(() => {
+    if (country && zipCode && zipCode.length > 4) {
+      getCityStateFromZipCountry(country, zipCode, apiKey).then(
+        ({ state, city }) => {
+          setValue("city", city);
+          setValue("region", state);
+          console.log(state, city);
+        }
+      );
+    }
+  }, [country, zipCode]);
+
+  const emails = getValues("email");
+  const phones = getValues("phone");
 
   const handleRevalidateEmail = async () => {
     const result = await trigger("email");
@@ -133,25 +175,56 @@ const BecomeArtist = () => {
     };
 
     sendMail(data).then(() => {
-      setValidateEmail("Resend");
+      setIsModalOpen(true);
+      setValidateEmail("Email Verified");
     });
   };
 
-  const validateOtp = () => {
+  const handleRevalidatePhone = async () => {
+    const result = await trigger("phone");
+
+    if (!result) {
+      return toast("Phone Number Is Not Valid");
+    }
+
     const data = {
-      otp: inputRef.current.value,
+      email: emails,
+      otp: verificationCode,
+    };
+
+    verifyPhoneOtp(data).then(() => {
+      setOtpSent(true);
+      setValidatePhone("Verified");
+      setIsModalOpenPhone(false);
+      setVerificationCode("");
+    });
+  };
+  const validateEmailOtp = () => {
+    const data = {
+      otp: verificationCode,
       email,
       isArtistRequest: true,
     };
 
-    if (data.otp !== inputRef.current.value) {
-      return alert("Please Verify Otp");
-    }
-
     verifyOtp(data).then(() => {
       setIsOtpVerify(true);
+      setIsModalOpen(false);
       setValidateotp("Validated");
     });
+  };
+
+  const handleSendOtp = () => {
+    try {
+      const data = {
+        email: emails,
+        phone: phones,
+      };
+      requestOtp(data).then(() => {
+        setIsModalOpen(true);
+      });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const onSubmit = handleSubmit(async (data) => {
@@ -196,6 +269,22 @@ const BecomeArtist = () => {
     }
   });
 
+  const handleCloseModel = () => {
+    setIsModalOpen(false);
+    if (!isOtpVerify) {
+      setValidateEmail("Verify Email");
+      setValidateotp("Validate Otp");
+      setIsOtpVerify(false);
+    }
+  };
+
+  const validateWebsite = (value) => {
+    if (!/^https:\/\//i.test(value)) {
+      return "URL must start with 'https://'";
+    }
+    return true;
+  };
+
   return (
     <>
       <div
@@ -239,7 +328,6 @@ const BecomeArtist = () => {
                     </span>
                   )}
                 </div>
-
                 <div className="mb-4 sm:w-[32%] w-full">
                   <label className="block text-gray-700 text-sm font-bold mb-2">
                     Aritst Surname 1
@@ -273,25 +361,33 @@ const BecomeArtist = () => {
                 </div>
               </div>
 
-              <div className="flex sm:flex-row flex-col justify-between">
-                <div className="sm:mb-4 mb-2 sm:w-[49%] w-full ">
+              <div className="flex sm:flex-row flex-col justify-between w-full">
+                <div className="sm:mb-4 mb-2 w-full">
                   <label className="block text-gray-700 text-sm font-bold mb-2">
                     Email *
                   </label>
 
-                  <div className="flex w-full lg:justify-start gap-2 ">
+                  <div className="flex w-full gap-2">
                     <input
                       {...register("email")}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="appearance-none border rounded lg:w-[16vw]  py-3 px-3 text-gray-700 leading-tight focus:outline-none"
+                      className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
                       placeholder="Enter email"
                     />
-                    <span
-                      onClick={() => handleRevalidateEmail()}
-                      className="px-5 lg:px-2 border border-zinc-800 rounded py-3  text-sm font-bold cursor-pointer"
-                    >
-                      {sendMailPending ? "Sending Otp..." : `${validateEmail}`}
-                    </span>
+
+                    <EmailVerification
+                      setVerificationCode={setVerificationCode}
+                      verificationCode={verificationCode}
+                      validateEmailOtp={validateEmailOtp}
+                      verifyOtpPending={verifyOtpPending}
+                      handleRevalidateEmail={handleRevalidateEmail}
+                      setIsModalOpen={setIsModalOpen}
+                      isModalOpen={isModalOpen}
+                      sendMailPending={sendMailPending}
+                      validateEmail={validateEmail}
+                      handleCloseModel={handleCloseModel}
+                      watchEmail={email}
+                    />
                   </div>
 
                   {errors.email && (
@@ -300,41 +396,40 @@ const BecomeArtist = () => {
                     </span>
                   )}
                 </div>
-
-                <div className="sm:mb-4 mb-2 sm:w-[49%] w-full ">
-                  <label className="block text-gray-700 text-sm font-bold mb-2">
-                    Enter Otp
-                  </label>
-
-                  <div className="flex justify-between items-center gap-2 w-full lg:justify-start">
-                    <input
-                      className="appearance-none border rounded w-fit lg:w-[14vw]  py-3 px-5 text-gray-700 leading-tight focus:outline-none"
-                      placeholder="Enter Otp"
-                      ref={inputRef}
-                    />
-
-                    <span
-                      onClick={validateOtp}
-                      className="lg:px-5 px-[2vw] border border-zinc-800 py-3 rounded lg:py-3 w-fit text-sm font-bold cursor-pointer"
-                    >
-                      {verifyOtpPending ? "Validating..." : `${validateotp}`}
-                    </span>
-                  </div>
-                </div>
               </div>
 
-              <div className="w-full ">
-                <div className="mb-4 sm:w-[49%] w-full">
+              <div className="mb-4 w-full">
+                <div className="sm:mb-4 mb-2 w-full">
                   <label className="block text-gray-700 text-sm font-bold mb-2">
                     Phone Number *
                   </label>
-                  <PhoneInput
-                    className="appearance-none border outline-none rounded  py-3 px-3 text-gray-700 leading-tight focus:outline-none"
-                    placeholder="Enter phone number"
-                    defaultCountry={countryCode}
-                    value={getValues("phone")}
-                    onChange={(val) => setValue("phone", val)}
-                  />
+                  <div className="flex  flex-row w-full gap-2">
+                    <PhoneInput
+                      className="appearance-none border outline-none rounded  py-3 px-3 w-full text-gray-700 leading-tight focus:outline-none"
+                      placeholder="Enter phone number"
+                      defaultCountry={countryCode}
+                      value={getValues("phone")}
+                      onChange={(val) => setValue("phone", val)}
+                      // style={{
+                      //   width: "",
+                      // }}
+                    />
+
+                    <PhoneVerification
+                      handleSendOtp={handleSendOtp}
+                      requestOtpPending={requestOtpPending}
+                      isModalOpenPhone={isModalOpenPhone}
+                      setIsModalOpenPhone={setIsModalOpenPhone}
+                      phoneNumber={phoneNumber}
+                      setPhoneNumber={setPhoneNumber}
+                      handleRevalidatePhone={handleRevalidatePhone}
+                      verifyPhoneOtpPending={verifyPhoneOtpPending}
+                      isOtpVerify={isOtpVerify}
+                      setVerificationCode={setVerificationCode}
+                      verificationCode={verificationCode}
+                      validatePhone={validatePhone}
+                    />
+                  </div>
 
                   {errors.phone && (
                     <span className="text-red-500 text-xs">
@@ -382,7 +477,7 @@ const BecomeArtist = () => {
                       <Select
                         {...field}
                         isMulti
-                        options={newStyle?.map((item, i) => ({
+                        options={newStyle?.map((item: string) => ({
                           value: item.styleName,
                           label: item.styleName,
                         }))}
@@ -403,14 +498,24 @@ const BecomeArtist = () => {
                 <label className="block text-gray-700 text-sm font-bold mb-2">
                   Country *
                 </label>
-                <input
+
+                <select
+                  className="block appearance-none w-full bg-white border px-4 py-3 pr-8 rounded leading-tight focus:outline-none"
                   {...register("country")}
-                  className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
-                  placeholder="Enter Country"
-                />
-                {errors.country && (
+                >
+                  <option value="" disabled>
+                    Select
+                  </option>
+                  {options?.map((item, i) => (
+                    <option key={i} value={item}>
+                      {item}
+                    </option>
+                  ))}
+                </select>
+
+                {errors.value && (
                   <span className="text-red-500 text-xs">
-                    {errors.country.message}
+                    {errors.value.message}
                   </span>
                 )}
               </div>
@@ -475,13 +580,15 @@ const BecomeArtist = () => {
                     className="block appearance-none w-full bg-white border px-4 py-3 pr-8 rounded leading-tight focus:outline-none"
                   >
                     <option value="">Select Social Media</option>
-                    {GetOutSocialMedia &&
-                      GetOutSocialMedia.length > 0 &&
+                    {socialMediaPicklistLoading ? (
+                      <option>Loding...</option>
+                    ) : (
                       GetOutSocialMedia[0]?.picklist?.map((item, index) => (
                         <option key={index} value={item.name}>
                           {item.name}
                         </option>
-                      ))}
+                      ))
+                    )}
                   </select>
                   {errors.socialMedia && (
                     <span className="text-red-500 text-xs">
@@ -492,10 +599,13 @@ const BecomeArtist = () => {
 
                 <div className="mb-4 sm:w-[49%] w-full">
                   <label className="block text-gray-700 text-sm font-bold mb-2">
-                    Links
+                    URL'S
                   </label>
                   <input
-                    {...register("website")}
+                    {...register("website", {
+                      required: "Website URL is required",
+                      validate: validateWebsite,
+                    })}
                     className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
                     placeholder="www.example.com"
                   />
@@ -506,7 +616,6 @@ const BecomeArtist = () => {
                   )}
                 </div>
               </div>
-              {/* <SocialMediaLinks control={control} /> */}
 
               <div className="mb-8 ">
                 <div className="border-2 border-dashed border-gray-300 p-6 rounded-lg text-center cursor-pointer  ">
@@ -549,7 +658,7 @@ const BecomeArtist = () => {
           </div>
         </div>
       </div>
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ">
+      <div className="absolute top-[50%] left-1/2 transform -translate-x-1/2 -translate-y-[45%] ">
         {popUp ? <ThankYou /> : null}
       </div>
     </>

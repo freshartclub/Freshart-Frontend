@@ -9,6 +9,7 @@ interface UserState {
   isArtist: boolean;
   profile: string;
   ticket: any;
+  isArtProvider: string;
 }
 
 const initialState: UserState = {
@@ -18,6 +19,7 @@ const initialState: UserState = {
   isArtist: false,
   profile: "user",
   ticket: null,
+  isArtProvider: "",
 };
 
 export const userSlice = createSlice({
@@ -46,6 +48,9 @@ export const userSlice = createSlice({
     setTicket: (state, action: PayloadAction<any>) => {
       state.ticket = action.payload;
     },
+    setIsArtProvider: (state, action: PayloadAction<any>) => {
+      state.isArtProvider = action.payload;
+    },
   },
 });
 
@@ -57,6 +62,7 @@ export const {
   setIsArtist,
   setProfile,
   setTicket,
+  setIsArtProvider,
 } = userSlice.actions;
 
 export const userReducer = userSlice.reducer;

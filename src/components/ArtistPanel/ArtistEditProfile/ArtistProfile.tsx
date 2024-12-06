@@ -1,13 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Header from "../../ui/Header";
 import dot from "./assets/dot.png";
 import GeneralUpload from "./GeneralUpload";
-import { useGetArtistDetails } from "./http/useGetDetails";
+import { useGetArtistDetails } from "../../UserProfile/http/useGetDetails";
 import Loader from "../../ui/Loader";
+import { useDispatch } from "react-redux";
 
 const ArtistProfile = () => {
-  const [isActivated, setIsActivated] = useState(true);
   const { data, isLoading } = useGetArtistDetails();
+
+  const [isActiveStatus, setIsActiveStatus] = useState("");
+
+  useEffect(() => {
+    if (data?.data?.artist?.isActivated !== undefined) {
+      setIsActiveStatus(data?.data?.artist?.profileStatus);
+    }
+  }, [data]);
 
   if (isLoading) {
     return <Loader />;
@@ -20,6 +28,26 @@ const ArtistProfile = () => {
         className="mt-6 flex gap-2 items-center"
       >
         Artist Profile
+        <span
+          className={`text-sm ${
+            isActiveStatus === "acive"
+              ? "bg-green-200 "
+              : isActiveStatus === "under-review"
+              ? "bg-yellow-200"
+              : isActiveStatus === "inactive"
+              ? "bg-red-200"
+              : null
+          }  px-2 flex items-center gap-1 rounded-md  `}
+        >
+          <span className="w-1.5 h-1.5 block bg-black rounded-full"></span>{" "}
+          {isActiveStatus === "active"
+            ? "Active"
+            : isActiveStatus === "under-review"
+            ? "Under-Review"
+            : isActiveStatus === "inactive"
+            ? "Inactive"
+            : null}
+        </span>
       </Header>
 
       <nav className="flex" aria-label="Breadcrumb">
@@ -43,7 +71,7 @@ const ArtistProfile = () => {
         </ol>
       </nav>
 
-      <GeneralUpload />
+      <GeneralUpload isActiveStatus={isActiveStatus} />
     </div>
   );
 };
