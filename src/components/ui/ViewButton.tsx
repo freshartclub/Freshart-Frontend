@@ -10,7 +10,7 @@ const ViewButton = ({ onClick }: any) => {
           fontWeight: "500",
           fontSize: "base",
         }}
-        className="sm:w-auto w-[47%] uppercase flex justify-center items-center py-2 sm:px-4 px-2 border border-[#FF725E] mt-4"
+        className="sm:w-auto w-[45%] uppercase flex justify-center items-center py-2 sm:px-4 px-2 border border-[#FF725E] mt-4"
         onClick={onClick}
       >
         View More

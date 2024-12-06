@@ -168,7 +168,7 @@ const FilterProductItem = () => {
   return (
     <>
       <div className="flex xl:flex-row flex-col gap-4 justify-between mt-7">
-        <div className="flex gap-1 md:gap-2 py-1 px-1 md:px-2 bg-white w-fit rounded-md border-gray-300 ">
+        <div className="flex gap-1 md:gap-2 py-1 px-1  md:px-2 bg-white w-fit rounded-md border-gray-300 ">
           {categoris.map((category, index) => (
             <div
               key={index}
@@ -187,7 +187,7 @@ const FilterProductItem = () => {
 
           {/* <UploadArtworkBtn path={"/artist-panel/artwork/add"} /> */}
           <NavLink
-            className="py-1 px-2 rounded-md border-gray-100 bg-[#FF536B] text-white flex gap-1 items-center h-fit"
+            className="py-1 px-2 rounded-md border-gray-100  bg-[#FF536B] text-white flex gap-1 items-center h-fit"
             to={"/artist-panel/artwork/add"}
           >
             <GoPlus /> Upload Artwork

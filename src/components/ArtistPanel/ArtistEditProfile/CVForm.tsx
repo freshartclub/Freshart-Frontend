@@ -143,7 +143,7 @@ const CVForm: React.FC<CVFormProps> = ({ control }) => {
           {/* Remove Button */}
           <button
             type="button"
-            className="text-red-600 "
+            className="text-red-600 font-semibold mt-5 "
             onClick={() => remove(index)} // Function to remove a CV entry
           >
             ✕

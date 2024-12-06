@@ -508,18 +508,19 @@ const BecomeArtist = () => {
               </div>
               {/* <SocialMediaLinks control={control} /> */}
 
-              <div className="mb-8">
-                <div className="border-2 border-dashed border-gray-300 p-6 rounded-lg text-center cursor-pointer">
+              <div className="mb-8 ">
+                <div className="border-2 border-dashed border-gray-300 p-6 rounded-lg text-center cursor-pointer  ">
                   <div className="flex justify-center items-center">
                     <img src={browser} alt="browse-icon" />
                   </div>
-                  <label className="block text-gray-700 sm:text-xl text-lg font-bold mb-2 text-center">
+                  <label className="block text-gray-700 sm:text-xl text-lg font-bold mb-2 text-center ">
                     Upload Your CV Here *
                   </label>
                   <input
                     {...register("uploadDocs", { required: true })}
                     type="file"
                     accept=".pdf,.doc,.docx,.xls,.xlsx"
+                    className=""
                     onChange={(event) => {
                       const file = event.target.files[0];
                       setUploadDocs(file);

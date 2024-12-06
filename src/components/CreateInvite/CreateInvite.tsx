@@ -65,7 +65,7 @@ const CreateInvite = () => {
                     value={formik.values.email}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus: -outline"
+                    className="appearance-none border  rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:-outline"
                     placeholder="admin@gmal.com"
                   />
                   {formik.touched.email && formik.errors.email && (
@@ -327,7 +327,7 @@ const CreateInvite = () => {
                 </div>
               </div>
 
-              <div className="flex items-center sm:gap-5 gap-2">
+              <div className="flex items-center sm:gap-5 gap-2 mt-2">
                 <Button
                   type="submit"
                   variant={{
@@ -337,7 +337,7 @@ const CreateInvite = () => {
                     fontWeight: "500",
                     thickness: "",
                   }}
-                  className="text-white py-2 sm:px-6 px-4 flex uppercase"
+                  className="text-white text-sm sm:text-base  py-2 sm:px-6 px-4 flex uppercase"
                 >
                   <span>COPY CODE</span>
                 </Button>
@@ -350,7 +350,7 @@ const CreateInvite = () => {
                     fontWeight: "500",
                     thickness: "",
                   }}
-                  className="text-white py-2 sm:px-6 px-4 flex uppercase"
+                  className="text-white bg-[#203F58] text-sm sm:text-base py-2 sm:px-6 px-4 flex uppercase"
                 >
                   <span>SEND LINK</span>
                 </Button>

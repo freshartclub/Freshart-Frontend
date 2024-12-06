@@ -39,6 +39,9 @@ import Faq from "./components/pages/Faq";
 import FaqDetails from "./components/FaqDetails/FaqDetails";
 import AboutUs from "./components/pages/AboutUs/AboutUs";
 import KbDatabase from "./components/pages/KbDatabase.tsx";
+import Circle from "./components/CIrcle/Circle.tsx";
+import Invoice from "./components/ArtistPanel/ArtistEditProfile/Invoice.tsx";
+import InvoicePdf from "./components/pages/InvoicePdf.tsx";
 const SignUp = lazy(() => import("./components/pages/SignUp"));
 const ForgetPassword = lazy(() => import("./components/pages/ForgetPassword"));
 const ChangePassword = lazy(() => import("./components/pages/ChangePassword"));
@@ -156,6 +159,16 @@ const App: React.FC = () => {
             <Route path="/kb-database" element={<KbDatabase />} />
             <Route path="/about-us" element={<AboutUs />} />
 
+            <Route
+              path="/invoice-pdf*"
+              element={
+                <AuthGuard>
+                  <ArtistGuard>
+                    <InvoicePdf />
+                  </ArtistGuard>
+                </AuthGuard>
+              }
+            />
             <Route
               path="/order-approve*"
               element={
@@ -410,6 +423,14 @@ const App: React.FC = () => {
               element={
                 <AuthGuard>
                   <CirclePage />
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/circle"
+              element={
+                <AuthGuard>
+                  <Circle />
                 </AuthGuard>
               }
             />

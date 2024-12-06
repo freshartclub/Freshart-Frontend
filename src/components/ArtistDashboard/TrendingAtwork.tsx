@@ -92,7 +92,7 @@ const TrendingAtwork = () => {
   return (
     <div className="container mx-auto md:px-6 px-3 mt-20">
       <div className="flex justify-between">
-        <h1 className="text-[30px] font-semibold mb-5 w-52 sm:w-full">
+        <h1 className="text-[25px]  md:text-[30px] font-semibold mb-5 w-52 sm:w-full">
           Trending Artwork
         </h1>
       </div>

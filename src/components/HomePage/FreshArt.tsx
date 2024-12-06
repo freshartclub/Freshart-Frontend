@@ -1,4 +1,5 @@
 import arrow from "../../assets/PinkArrow.png";
+import arrow_yellow from "../../assets/Arrow_yellow.png";
 import img1 from "../../assets/fresh1.png";
 import img2 from "../../assets/fresh2.png";
 import img3 from "../../assets/fresh3.png";
@@ -27,6 +28,7 @@ const FreshArt = () => {
       adminlogo: user,
       comment: "65 Comments",
       commentlogo: comment,
+      arrow_yellow: arrow_yellow,
     },
     {
       image: img2,
@@ -40,6 +42,7 @@ const FreshArt = () => {
       adminlogo: user,
       comment: "65 Comments",
       commentlogo: comment,
+      arrow_yellow: arrow_yellow,
     },
     {
       image: img3,
@@ -53,6 +56,7 @@ const FreshArt = () => {
       adminlogo: user,
       comment: "65 Comments",
       commentlogo: comment,
+      arrow_yellow: arrow_yellow,
     },
     {
       image: img4,
@@ -66,6 +70,7 @@ const FreshArt = () => {
       adminlogo: user,
       comment: "65 Comments",
       commentlogo: comment,
+      arrow_yellow: arrow_yellow,
     },
     {
       image: img5,
@@ -79,6 +84,7 @@ const FreshArt = () => {
       adminlogo: user,
       comment: "65 Comments",
       commentlogo: comment,
+      arrow_yellow: arrow_yellow,
     },
     {
       image: img6,
@@ -92,6 +98,7 @@ const FreshArt = () => {
       adminlogo: user,
       comment: "65 Comments",
       commentlogo: comment,
+      arrow_yellow: arrow_yellow,
     },
   ];
   const navigate = useNavigate();
@@ -149,7 +156,19 @@ const FreshArt = () => {
                 <h1 className="text-[23px] font-bold mb-2">{item.heading}</h1>
                 <button className="hover:text-[#E19D00] flex items-center space-x-2  text-pink font-bold text-[20px]">
                   <p>{item.btn}</p>
-                  <img src={item.arrow} alt="" className="mt-1" />
+
+                  <div className="relative inline-block">
+                    <img
+                      src={item.arrow}
+                      alt=""
+                      className="mt-1 transition-opacity duration-300 hover:opacity-0"
+                    />
+                    <img
+                      src={item.arrow_yellow}
+                      alt=""
+                      className="mt-1 absolute top-0 left-0 transition-opacity duration-300 opacity-0 hover:opacity-100"
+                    />
+                  </div>
                 </button>
               </div>
             </div>

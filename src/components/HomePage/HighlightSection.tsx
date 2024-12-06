@@ -61,7 +61,7 @@ const HighlightSection = ({ data }) => {
 
   return (
     <div className="container mx-auto md:px-6 px-3 mt-10">
-      <h1 className="text-[30px] font-semibold mb-5 w-52 sm:w-full">
+      <h1 className=" text-[25px]  md:text-[30px] font-semibold mb-5 w-1/2 sm:w-full">
         Highlighted for you
       </h1>
       <div>
@@ -116,7 +116,7 @@ const HighlightSection = ({ data }) => {
                   <img
                     src={`${data.url}/users/${item.media.mainImage}`}
                     alt="image"
-                    className="w-[20vw] h-[50vh] object-cover"
+                    className="w-full h-full md:w-[20vw] md:h-[50vh] object-cover"
                   />
 
                   <button className="absolute top-2 right-[28px] border border-[#FFD9DE] rounded-full px-3 py-3 bg-white cursor-pointer">

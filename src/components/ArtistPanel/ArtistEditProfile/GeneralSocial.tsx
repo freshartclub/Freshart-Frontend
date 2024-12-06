@@ -60,7 +60,7 @@ const SocialMediaLinks = ({ control }) => {
             </div>
             <button
               onClick={() => remove(index)}
-              className="hover:bg-red-300 px-4 py-3 mt-5 rounded-lg gap-1 bg-[#FCDAD7] text-[#F04438]"
+              className="hover:bg-red-300 px-5 py-3 mt-5 rounded-lg gap-1 bg-[#FCDAD7] text-[#F04438] "
               title="Remove account "
             >
               X

@@ -134,7 +134,7 @@ const RecentSection = () => {
                 <img
                   src={`${data.url}/users/${item.media.mainImage}`}
                   alt="image"
-                  className="w-[20vw] h-[50vh] object-cover"
+                  className="w-full md:w-[20vw] md:h-[50vh] object-cover"
                 />
 
                 <button className="absolute top-2 right-[28px] border border-[#FFD9DE] rounded-full px-3 py-3 bg-white cursor-pointer">

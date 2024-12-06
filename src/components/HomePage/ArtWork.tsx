@@ -56,12 +56,11 @@ const ArtWork = ({ data }) => {
   console.log(data);
 
   return (
-    <div className="bg-[#F5F2EB] py-24 mt-16">
-      <div className="container mx-auto md:px-6 px-3">
-        <h1 className="text-[30px] font-semibold mb-5 w-80 sm:w-full">
-          Newly Added Artworks
-        </h1>
-
+    <div className="bg-[#F5F2EB] py-24 px-2  sm:px-40 ">
+      <h1 className="text-[25px]  md:text-[30px] font-semibold mb-5 w-80 sm:w-full sm:ml-10 ">
+        Newly Added Artworks
+      </h1>
+      <div className="container   flex flex-col md:flex-row gap-10 sm:gap-4 sm:ml-10 ">
         {data?.newAdded?.length > 0 ? (
           data?.newAdded?.map((item, index) => (
             <div
@@ -72,7 +71,7 @@ const ArtWork = ({ data }) => {
               <img
                 src={`${data.url}/users/${item.media.mainImage}`}
                 alt="image"
-                className="w-[18vw] h-[50vh] object-cover"
+                className=" h-full w-full md:w-[18vw]  md:h-[50vh] object-cover"
               />
 
               <button className="absolute top-2 right-[75%] border border-[#FFD9DE] rounded-full px-3 py-3 bg-white cursor-pointer">

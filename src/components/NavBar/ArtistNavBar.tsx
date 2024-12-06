@@ -1,129 +1,152 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import logo from "../../assets/loginlogo.png";
+import navigation_1 from "../../assets/navigation_1.png";
+
 import { IoMdSearch } from "react-icons/io";
 import { IoNotifications } from "react-icons/io5";
 import { Link, useNavigate } from "react-router-dom";
 import { artistPanel } from "../utils/paths";
-import BackButton from "../ui/BackButton";
 import { useAppDispatch, useAppSelector } from "../../store/typedReduxHooks";
-import useLogOutMuttion from "../../http/auth/useLogOutMutation";
 import useLogOutMutation from "../../http/auth/useLogOutMutation";
 import { setIsArtist } from "../../store/userSlice/userSlice";
-import i18n from "../utils/i18n";
 
 const ArtistNavBar = () => {
   const [isToogleOpen, setIsToggelOpen] = useState(false);
-  const [isSearchBar, setIsSeachBar] = useState(false);
+  const [isLanguageOpen, setIsLanguageOpen] = useState(false);
+  const [selectedCountry, setSelectedCountry] = useState("GB");
+
   const navigate = useNavigate();
   const user = useAppSelector((state) => state.user.user);
-  const [language, setLanguage] = useState("eng");
 
   const dispatch = useAppDispatch();
-  const profile = localStorage.getItem("profile");
-  const authToken = localStorage.getItem("auth_token");
+  const url = "https://dev.freshartclub.com/images";
 
   const { mutate: logOut } = useLogOutMutation();
 
-  const url = "https://dev.freshartclub.com/images";
-
-  console.log(`${url}/${user.profile.mainImage}`);
-
-  // useEffect(() => {
-  //   i18n.changeLanguage(language);
-  // }, [language]);
+  const countries = [
+    { code: "GB", flag: "https://flagcdn.com/w320/gb.png", name: "English" },
+    { code: "US", flag: "https://flagcdn.com/w320/us.png", name: "English (US)" },
+    { code: "FR", flag: "https://flagcdn.com/w320/fr.png", name: "French" },
+    { code: "DE", flag: "https://flagcdn.com/w320/de.png", name: "German" },
+  ];
 
   const handleLogOut = () => {
     try {
       logOut();
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
-  // const handleLanguageChange = (
-  //   event: React.ChangeEvent<HTMLSelectElement>
-  // ) => {
-  //   setLanguage(event.target.value);
-  // };
-
   const handleProfile = () => {
     navigate("/home", { replace: true });
-    // dispatch(setIsArtist(false));
     localStorage.setItem("profile", "user");
   };
 
   return (
-    <div className="w-full  py-5 px-5 flex items-center gap-5 relative">
+    <div className="w-full py-5 px-5 flex items-center gap-5 relative justify-between">
+      {/* Logo */}
       <div className="overflow-hidden">
-        <img src={logo} alt="" />
+        <img src={logo} alt="Logo" />
       </div>
-      <div className="w-full flex  items-center gap-5 justify-between ">
-        <div>
-          {/* <h1 className="font-bold px-2 bg-red-200 py-2 rounded ">
-            {user?.artistName}
-          </h1> */}
-        </div>
-        <div className="flex items-center gap-8 ">
-          <div className=" hidden lg:block">
-            <div className="flex items-center gap-2">
-              <input
-                placeholder="Searsasach"
-                className="rounded outline-none  px-2 py-1 border border-zinc-800"
-                type="text"
-              />
-              <IoMdSearch className="cursor-pointer" size="2em" />
-            </div>
+
+      {/* Main Navbar */}
+      <div className="flex items-center gap-5">
+        {/* Search Bar */}
+        <div className="hidden lg:block">
+          <div className="flex items-center gap-2">
+            <input
+              placeholder="Search"
+              className="rounded outline-none px-2 py-1 border border-zinc-800 w-20"
+              type="text"
+            />
+            <IoMdSearch className="cursor-pointer" size="1.5em" />
           </div>
+        </div>
 
-          <select
-            value={language}
-            // onChange={handleLanguageChange}
-            className="border p-2 rounded"
-          >
-            <option value="eng">English</option>
-            <option value="spanish">Spanish</option>
-          </select>
-
-          <IoNotifications
-            className="cursor-pointer hidden lg:block"
-            size="2em"
-          />
-          <span
-            onClick={() => setIsToggelOpen(!isToogleOpen)}
-            className="w-12 h-12 rounded-full  flex items-center justify-center cursor-pointer"
+        {/* Country Selector */}
+        <div className="relative inline-block">
+          <div
+            className="flex items-center space-x-2 cursor-pointer"
+            onClick={() => setIsLanguageOpen((prev) => !prev)}
           >
             <img
-              src={`${url}/users/${user.profile.mainImage}`}
-              alt=""
-              className="w-full h-full object-cover rounded-full"
+              src={countries.find((country) => country.code === selectedCountry).flag}
+              alt={`${selectedCountry} Flag`}
+              className="w-6 h-4 rounded"
             />
-          </span>
-        </div>
-      </div>
+            <span>
+              {countries.find((country) => country.code === selectedCountry).name}
+            </span>
+          </div>
 
-      {isToogleOpen && (
-        <div className="absolute z-10 top-20 right-5 flex flex-col  gap-4 text-sm bg-white border rounded-lg shadow-md py-5 px-5">
-          <Link
-            className="font-medium hover:bg-zinc-200 transition-all duration-200"
-            to={artistPanel.artistEditProfile}
-            onClick={() => setIsToggelOpen(!isToogleOpen)}
-          >
-            Profile
-          </Link>
-          <button
-            className="font-medium hover:bg-zinc-200 "
-            onClick={handleProfile}
-          >
-            Switch To User Profile
-          </button>
-          <button
-            className="bg-red-300 py-2 rounded hover:bg-red-400 font-medium"
-            onClick={handleLogOut}
-          >
-            Sign Out
-          </button>
+          {isLanguageOpen && (
+            <div className="absolute mt-2 bg-white border rounded shadow-md z-10 w-40">
+              {countries.map((country) => (
+                <div
+                  key={country.code}
+                  className="flex items-center space-x-2 p-2 hover:bg-gray-100 cursor-pointer"
+                  onClick={() => {
+                    setSelectedCountry(country.code);
+                    setIsLanguageOpen(false);
+                  }}
+                >
+                  <img src={country.flag} alt={country.name} className="w-6 h-4 rounded" />
+                  <span>{country.name}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
-      )}
+
+        {/* Notifications */}
+        <IoNotifications className="cursor-pointer hidden lg:block" size="1.5em" />
+
+        {/* User Profile */}
+        <span
+          onClick={() => setIsToggelOpen(!isToogleOpen)}
+          className="rounded-full flex items-center justify-center cursor-pointer border p-1"
+        >
+          <img
+            src={`${url}/users/${user.profile.mainImage}`}
+            alt="User Profile"
+            className="w-8 h-8 object-cover rounded-full"
+          />
+          <p className="font-semibold ml-2">{user.artistName}</p>
+          <img
+            className={`ml-1 transition-transform duration-300 ${
+              isToogleOpen ? "rotate-180" : "rotate-0"
+            }`}
+            src={navigation_1}
+            alt="Toggle"
+          />
+        </span>
+
+        {/* Dropdown Menu */}
+        {isToogleOpen && (
+          <div className="absolute z-10 top-20 right-5 flex flex-col gap-4 text-sm bg-white border rounded-lg shadow-md py-5 px-5">
+            <Link
+              className="font-medium hover:bg-zinc-200 transition-all duration-200"
+              to={artistPanel.artistEditProfile}
+              onClick={() => setIsToggelOpen(false)}
+            >
+              Profile
+            </Link>
+            <button
+              className="font-medium hover:bg-zinc-200"
+              onClick={handleProfile}
+            >
+              Switch To User Profile
+            </button>
+            <button
+              className="bg-red-300 py-2 rounded hover:bg-red-400 font-medium"
+              onClick={handleLogOut}
+            >
+              Sign Out
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

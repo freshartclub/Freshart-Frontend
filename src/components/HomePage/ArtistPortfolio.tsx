@@ -108,7 +108,7 @@ const ArtistPortfolio = ({ data }) => {
                 <img
                   src={`${data.url}/users/${item?.profile?.inProcessImage}`}
                   alt="Artwork"
-                  className="p-4 w-[30vw] h-[30vh] object-cover"
+                  className="p-4 sm:w-[30vw] sm:h-[30vh] object-cover"
                 />
               </div>
             </div>
