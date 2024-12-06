@@ -136,11 +136,9 @@ const OrderApproveDetails = ({ data }) => {
                         className="cursor-pointer"
                         onClick={() => openModal(product)}
                         src={edit}
-                      ></img> */}
+                      ></img>
                     </div>
                   </div>
-
-                  
                 ))}
             </div>
 
@@ -299,7 +297,7 @@ const OrderApproveDetails = ({ data }) => {
                 <button className="px-2 py-2 rounded-lg bg-black text-white text-md font-bold">
                   {" "}
                   Upload
-                </button> */}
+                </button>
               </div>
             </div>
           </div>
