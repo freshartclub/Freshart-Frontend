@@ -45,7 +45,7 @@ const ArtistNavBar = () => {
   const url = "https://dev.freshartclub.com/images";
 
   useEffect(() => {
-    i18n.changeLanguage(language);
+    i18n.changeLanguage(language.toLocaleLowerCase());
   }, [language]);
 
   const handleLogOut = () => {
