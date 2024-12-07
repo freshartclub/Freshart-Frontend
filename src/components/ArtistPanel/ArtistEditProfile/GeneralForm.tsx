@@ -219,7 +219,7 @@ const GeneralForm = ({ isActiveStatus }) => {
   }, [data]);
 
   const handlePDF = (file) => {
-    window.open(`http://localhost:5000/uploads/documents/${file}`, "_blank");
+    window.open(`${data?.data?.url}/documents/${file}`, "_blank");
   };
 
   const handleTagChange = (e) => {
