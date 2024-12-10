@@ -6,4 +6,6 @@ export const ORDERS_ENDPOINTS = {
   GetArtistOrder: `${ARTIST_ORDER_URl}/get-artist-order`,
   GetArtistOrderDetails: `${ARTIST_ORDER_URl}/get-artist-single-order`,
   AcceptOrder: `${ARTIST_ORDER_URl}/accept-order-request`,
+  AddEvidence: `${ARTIST_ORDER_URl}/upload-evidence`,
+  CancelItem: `${ARTIST_ORDER_URl}/cancel-particular-item`,
 };

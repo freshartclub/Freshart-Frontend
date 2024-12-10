@@ -751,7 +751,7 @@ const AddArtwork = () => {
                     }}
                     className="cursor-pointer gap-2 bg-black text-white text-[12px] md:text-[16px] px-2 py-2 lg:px-4 lg:py-3 rounded-lg hover:bg-gray-800"
                   >
-                    Generate Certificate Of Authenticity
+                    {t("Generate Certificate Of Authenticity")}
                   </h1>
                 </div>
               </div>
@@ -772,7 +772,7 @@ const AddArtwork = () => {
 
                     <div className="mb-4">
                       <label className="block  text-sm sm:text-base text-[#203F58] font-semibold mb-2">
-                        Artwork name *
+                       {t("Artwork Name *")}
                       </label>
                       <Field
                         type="text"
@@ -792,7 +792,7 @@ const AddArtwork = () => {
                     {isArtProvider === "Yes" ? (
                       <div className="mb-4">
                         <label className="block text-sm sm:text-base text-[#203F58] font-semibold mb-2">
-                          Art Provider
+                          {t("Art Provider")}
                         </label>
                         <Field
                           as="select"
@@ -802,7 +802,7 @@ const AddArtwork = () => {
                           className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
                         >
                           <option value="" disabled>
-                            Select
+                            {t("Select")}
                           </option>
                           <option value="yes">Yes</option>
                           <option value="no">No</option>
@@ -818,7 +818,7 @@ const AddArtwork = () => {
                     {values.isArtProvider === "yes" ? (
                       <div className="mb-4">
                         <label className="block text-sm sm:text-base text-[#203F58] font-semibold mb-2">
-                          Artist name
+                          {t("Artist name")}
                         </label>
                         <Field
                           type="text"
@@ -840,7 +840,7 @@ const AddArtwork = () => {
                     <div className="mb-4 flex flex-col lg:flex-row  gap-2 w-full">
                       <div className="w-full">
                         <label className="block text-sm sm:text-base text-[#203F58] font-semibold mb-2">
-                          Artwork creation year *
+                          {t("Artwork Creation Year *")}
                         </label>
 
                         <Field
@@ -856,7 +856,7 @@ const AddArtwork = () => {
                       <div className="w-full">
                         <div className="flex justify-between mb-1">
                           <label className="block text-sm sm:text-base text-[#203F58] font-semibold ">
-                            Select Series *
+                            {t("Select Series *")}
                           </label>
                           <p className="text-[#5C59E8] text-sm sm:text-base flex items-center gap-[2px] cursor-pointer">
                             {/* this is commeted for adding a new series */}
@@ -890,7 +890,7 @@ const AddArtwork = () => {
                           className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
                         >
                           <option value="" disabled selected>
-                            Select type
+                            {t("Select type")}
                           </option>
                           {seriesData?.seriesList?.map((series, index) => (
                             <option key={index}>{series}</option>
@@ -901,7 +901,7 @@ const AddArtwork = () => {
 
                     <>
                       <label className="block text-sm sm:text-base mb-2 font-semibold text-[#203F58]">
-                        Artwork Description
+                        {t("Artwork Description")}
                       </label>
                       <Field
                         as="textarea"
@@ -929,7 +929,7 @@ const AddArtwork = () => {
                       }}
                       className="text-[18px] text-black font-semibold mb-4"
                     >
-                      Media
+                      {t("Media")}
                     </Header>
 
                     <div className="bg-white p-4 rounded-md mt-4">
@@ -943,7 +943,7 @@ const AddArtwork = () => {
                             }}
                             className="mb-2 text-[#203F58]"
                           >
-                            Main Photo
+                           {t("Main Photo")}
                           </Header>
                           <input
                             type="file"
@@ -988,7 +988,7 @@ const AddArtwork = () => {
                               }}
                               className="text-center"
                             >
-                              Drag and drop image here, or click add image
+                              {t("Drag and drop image here, or click add image")}
                             </P>
                             <span
                               onClick={() =>
@@ -998,7 +998,7 @@ const AddArtwork = () => {
                               }
                               className="bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer"
                             >
-                              Add Image
+                             {t("Add Image")}
                             </span>
                           </div>
                         </div>
@@ -1012,7 +1012,7 @@ const AddArtwork = () => {
                             }}
                             className="mb-2 text-[#203F58]"
                           >
-                            Back Photo
+                            {t("Back Photo")}
                           </Header>
                           <input
                             type="file"
@@ -1059,7 +1059,7 @@ const AddArtwork = () => {
                               }}
                               className="text-center"
                             >
-                              Drag and drop image here, or click add image
+                             {t("Drag and drop image here, or click add image")}
                             </P>
                             <span
                               onClick={() =>
@@ -1069,7 +1069,7 @@ const AddArtwork = () => {
                               }
                               className="bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer"
                             >
-                              Add Image
+                              {t("Add Image")}
                             </span>
                           </div>
                         </div>
@@ -1083,7 +1083,7 @@ const AddArtwork = () => {
                             }}
                             className="mb-2 text-[#203F58]"
                           >
-                            Inprocess Photo
+                            {t("Inprocess Photo")}
                           </Header>
                           <input
                             type="file"
@@ -1131,7 +1131,7 @@ const AddArtwork = () => {
                               }}
                               className="text-center"
                             >
-                              Drag and drop image here, or click add image
+                              {t("Drag and drop image here, or click add image")}
                             </P>
                             <span
                               onClick={() =>
@@ -1141,7 +1141,7 @@ const AddArtwork = () => {
                               }
                               className="bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer"
                             >
-                              Add Image
+                              {t("Add Image")}
                             </span>
                           </div>
                         </div>
@@ -1157,7 +1157,7 @@ const AddArtwork = () => {
                             }}
                             className="mb-2 text-[#203F58]"
                           >
-                            Details photos (max 3 images)
+                            {t("Details Photos (max 3 images)")}
                           </Header>
                           <input
                             type="file"
@@ -1236,7 +1236,7 @@ const AddArtwork = () => {
                               }}
                               className="text-center"
                             >
-                              Drag and drop image here, or click add image
+                              {t("Drag and drop image here, or click add image")}
                             </P>
                             <span
                               onClick={() =>
@@ -1246,7 +1246,7 @@ const AddArtwork = () => {
                               }
                               className="bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer"
                             >
-                              Add Images
+                              {t("Add Images")}
                             </span>
                           </div>
                         </div>
@@ -1262,7 +1262,7 @@ const AddArtwork = () => {
                             }}
                             className="mb-2 text-[#203F58]"
                           >
-                            Main Video
+                            {t("Main Video")}
                           </Header>
                           <input
                             type="file"
@@ -1307,7 +1307,7 @@ const AddArtwork = () => {
                               }}
                               className="text-center"
                             >
-                              Drag and drop image here, or click add image
+                              {t("Drag and drop image here, or click add image")}
                             </P>
                             <span
                               onClick={() =>
@@ -1317,7 +1317,7 @@ const AddArtwork = () => {
                               }
                               className="bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer"
                             >
-                              Add Video
+                              {t("Add Video")}
                             </span>
                           </div>
                         </div>
@@ -1331,7 +1331,7 @@ const AddArtwork = () => {
                             }}
                             className="mb-2 text-[#203F58]"
                           >
-                            Other Video
+                            {t("Other Video")}
                           </Header>
                           <input
                             type="file"
@@ -1403,7 +1403,7 @@ const AddArtwork = () => {
                               }}
                               className="text-center"
                             >
-                              Drag and drop image here, or click add image
+                              {t("Drag and drop image here, or click add image")}
                             </P>
                             <span
                               onClick={() =>
@@ -1413,7 +1413,7 @@ const AddArtwork = () => {
                               }
                               className="bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer"
                             >
-                              Add Videos
+                              {t("Add Videos")}
                             </span>
                           </div>
                         </div>
@@ -1432,7 +1432,7 @@ const AddArtwork = () => {
                       }}
                       className="mb-4"
                     >
-                      Descriptive Information & Categorization
+                      {t("Descriptive Information And Categorization")}
                     </Header>
 
                     <Dicipline
@@ -1443,7 +1443,7 @@ const AddArtwork = () => {
 
                     <div className="grid md:grid-cols-2 gap-3 mb-4 mt-3">
                       <label className="text-[#203F58] text-sm sm:text-base font-semibold">
-                        Artwork technic
+                        {t("Artwork Technic")}
                         <Field
                           as="select"
                           id="artworkTechnic"

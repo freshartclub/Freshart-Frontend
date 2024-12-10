@@ -50,118 +50,168 @@ const Allorders = ({ orderDelail }: any) => {
   }
   return (
     <>
-      <div className="rounded-md border border-1 mt-3 w-full ">
-        <div className="grid grid-cols-11  bg-[#F9F9FC] items-center my-auto h-10 p-2 border-b  ">
-          {columns.map((column) => (
-            <div key={column.key} className={`col-span-${column.colSpan} `}>
-              <p className="font-semibold text-[16px] text-black">
-                {column.label}
-              </p>
+      <div className="rounded-md border border-1 mt-3 w-full overflow-x-auto">
+        {/* Mobile view - card layout */}
+        <div className="block lg:hidden bg-white">
+          {data && data?.length > 0 && data?.map((value: any, index: any) => (
+            <div key={index} className="p-4 border-b">
+              <div className="flex items-center justify-between mb-2">
+                <p className="font-bold text-sm">Order #{value.orderID}</p>
+                <div className={`rounded-lg py-1 px-2 text-xs capitalize ${
+                  value?.status === "pending" ? "bg-[#FDF1E8] text-[#E46A11]"
+                  : value.status === "success" ? "bg-[#E8F8FD] text-[#13B2E4]"
+                  : value.status === "cancelled" ? "bg-[#FEEDEC] text-[#F04438]"
+                  : "bg-[#E7F4EE] text-[#0D894F]"
+                }`}>
+                  {value.status}
+                </div>
+              </div>
+              
+              <div className="flex gap-3 mb-3">
+                <img 
+                  src={`${url}/users/${value?.image}`}
+                  alt="product"
+                  className="w-20 h-20 rounded-lg object-cover"
+                />
+                <div>
+                  <p className="font-bold text-sm">{value?.artWorkName}</p>
+                  <p className="text-xs text-gray-600">{`${value?.length} x ${value?.width} x ${value?.height} cm`}</p>
+                  <p className="text-sm mt-1">{formateCurrency(value?.subTotal, "$")}</p>
+                </div>
+              </div>
+
+              <div className="space-y-1 mb-3">
+                <p className="text-sm"><span className="font-semibold">Customer:</span> {`${value?.artistName}${value?.artistSurname1}${value?.artistSurname2}`}</p>
+                <p className="text-sm"><span className="font-semibold">Date:</span> {dayjs(value?.createdAt).format("MMM D, YYYY")}</p>
+                <p className="text-sm"><span className="font-semibold">Order Type:</span> {value?.orderType}</p>
+                <p className="text-sm"><span className="font-semibold">Payment:</span> {value.paymenttype}</p>
+              </div>
+
+              <div className="flex gap-4 justify-end">
+                <button onClick={() => handelClickData(value)} className="p-2 hover:bg-gray-100 rounded-full">
+                  <LuEye className="text-xl" />
+                </button>
+                <button className="p-2 hover:bg-gray-100 rounded-full">
+                  <RiDeleteBin6Line className="text-xl" />
+                </button>
+              </div>
             </div>
           ))}
         </div>
 
-        <div className="bg-white p-2 over-x-scroll">
-          {data &&
-            data?.length > 0 &&
-            data?.map((value: any, index: any) => (
-              <div key={index}>
-                <div className="grid grid-cols-11 h-auto pb-3 pt-3 ">
-                  <div className="col-span-1">
-                    <p className="text-[12px] md:text-[14px] font-bold">
-                      {value.orderID}
-                    </p>
-                  </div>
-                  <div className="col-span-2 flex gap-2">
-                    <div>
-                      <img
-                        src={`${url}/users/${value?.image}`}
-                        alt="product image"
-                        className="w-[2em] h-[2.5em] rounded-xl"
-                      />
-                    </div>
-                    <div>
-                      <p className="text-black font-bold text-[12px] md:text-[14px]">
-                        {value?.artWorkName}
-                      </p>
-                      <p className="text-[10px] md:text-[14px]">
-                        {`${value?.length} x ${value?.width} x ${value?.height} cm`}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="col-span-1">
-                    <p className="text-[12px] md:text-[14px] font-bold">
-                      {dayjs(value?.createdAt).format("MMM D, YYYY")}
-                    </p>
-                  </div>
-                  <div className="col-span-2">
-                    <p className="text-black font-semibold text-[12px] md:text-[14px]">
-                      {`${value?.artistName}${value?.artistSurname1}${value?.artistSurname2}`}
-                    </p>
-
-                    <p className="text-[10px] md:text-[12px]">{value?.email}</p>
-                  </div>
-
-                  <div className="col-span-1">
-                    <p className="text-[12px] md:text-[14px] font-bold capitalize">
-                      {value?.orderType}
-                    </p>
-                  </div>
-
-                  <div className="col-span-1">
-                    <p className="text-[12px] md:text-[14px] font-bold">
-                      {formateCurrency(value?.subTotal, "$")}
-                    </p>
-                  </div>
-
-                  <div className="col-span-1">
-                    <p className="text-[12px] md:text-[14px] font-bold">
-                      {value.paymenttype}
-                    </p>
-                  </div>
-                  <div className="col-span-1 ">
-                    <div
-                      className={` w-fit rounded-lg py-0 px-2  capitalize  ${
-                        value?.status === "processing"
-                          ? "bg-[#FDF1E8] text-[#E46A11] "
-                          : value.status === "Shiped"
-                          ? "bg-[#E8F8FD] text-[#13B2E4]"
-                          : value.status === "cancelled"
-                          ? "bg-[#FEEDEC] text-[#F04438]"
-                          : "bg-[#E7F4EE] text-[#0D894F]"
-                      }`}
-                    >
-                      <p className="flex items-center pt-0 justify-center">
-                        {value.status}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="col-span-1">
-                    <div className="flex gap-4">
-                      <span
-                        onClick={() => {
-                          handelClickData(value);
-                        }}
-                      >
-                        <LuEye className="text-[20px] hover:cursor-pointer" />
-                      </span>
-
-                      <RiDeleteBin6Line className="text-[20px] hover:cursor-pointer" />
-                    </div>
-                  </div>
-                </div>
-                <hr />
+        {/* Desktop view - table layout */}
+        <div className="hidden lg:block min-w-[1000px]">
+          <div className="grid grid-cols-11 bg-[#F9F9FC] items-center my-auto h-10 p-2 border-b">
+            {columns.map((column) => (
+              <div key={column.key} className={`col-span-${column.colSpan}`}>
+                <p className="font-semibold text-sm xl:text-base text-black">
+                  {column.label}
+                </p>
               </div>
             ))}
-          <div>
-            <PaginationTabs
-              currentPage={currentPage}
-              setCurrentPage={setCurrentPage}
-              nPages={nPages}
-              numbers={numbers}
-            />
+          </div>
+
+          <div className="bg-white p-2">
+            {data &&
+              data?.length > 0 &&
+              data?.map((value: any, index: any) => (
+                <div key={index}>
+                  <div className="grid grid-cols-11 h-auto pb-3 pt-3">
+                    <div className="col-span-1">
+                      <p className="text-xs xl:text-sm font-bold">
+                        {value.orderID}
+                      </p>
+                    </div>
+                    <div className="col-span-2 flex gap-2">
+                      <div>
+                        <img
+                          src={`${url}/users/${value?.image}`}
+                          alt="product image"
+                          className="w-10 h-12 rounded-xl object-cover"
+                        />
+                      </div>
+                      <div>
+                        <p className="text-black font-bold text-xs xl:text-sm">
+                          {value?.artWorkName}
+                        </p>
+                        <p className="text-xs">
+                          {`${value?.length} x ${value?.width} x ${value?.height} cm`}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="col-span-1">
+                      <p className="text-xs xl:text-sm font-bold">
+                        {dayjs(value?.createdAt).format("MMM D, YYYY")}
+                      </p>
+                    </div>
+                    <div className="col-span-2">
+                      <p className="text-black font-semibold text-xs xl:text-sm">
+                        {`${value?.artistName}${value?.artistSurname1}${value?.artistSurname2}`}
+                      </p>
+                      <p className="text-xs">{value?.email}</p>
+                    </div>
+
+                    <div className="col-span-1">
+                      <p className="text-xs xl:text-sm font-bold capitalize">
+                        {value?.orderType}
+                      </p>
+                    </div>
+
+                    <div className="col-span-1">
+                      <p className="text-xs xl:text-sm font-bold">
+                        {formateCurrency(value?.subTotal, "$")}
+                      </p>
+                    </div>
+
+                    <div className="col-span-1">
+                      <p className="text-xs xl:text-sm font-bold">
+                        {value.paymenttype}
+                      </p>
+                    </div>
+                    <div className="col-span-1">
+                      <div
+                        className={`w-fit rounded-lg py-1 px-2 capitalize text-xs xl:text-sm ${
+                          value?.status === "pending"
+                            ? "bg-[#FDF1E8] text-[#E46A11]"
+                            : value.status === "success"
+                            ? "bg-[#E8F8FD] text-[#13B2E4]"
+                            : value.status === "cancelled"
+                            ? "bg-[#FEEDEC] text-[#F04438]"
+                            : "bg-[#E7F4EE] text-[#0D894F]"
+                        }`}
+                      >
+                        <p className="flex items-center justify-center">
+                          {value.status}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="col-span-1">
+                      <div className="flex gap-4">
+                        <button
+                          onClick={() => handelClickData(value)}
+                          className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+                        >
+                          <LuEye className="text-xl" />
+                        </button>
+                        <button className="p-1 hover:bg-gray-100 rounded-full transition-colors">
+                          <RiDeleteBin6Line className="text-xl" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <hr />
+                </div>
+              ))}
+            <div>
+              <PaginationTabs
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+                nPages={nPages}
+                numbers={numbers}
+              />
+            </div>
           </div>
         </div>
       </div>

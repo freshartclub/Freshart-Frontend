@@ -3,6 +3,7 @@ import AplhaFilter from "./AplhaFilter";
 import BannerSection from "./BannerSection";
 import FilterSection from "./FilterSection";
 import { useGetAllArtist } from "./https/useGetAllArtist";
+import Loader from "../ui/Loader";
 
 const AllArtist = () => {
   const [query, setQuery] = useState("");
@@ -13,7 +14,9 @@ const AllArtist = () => {
 
   const { data, isLoading } = useGetAllArtist();
 
-  console.log(data);
+  if(isLoading){
+    return <Loader/>
+  }
   return (
     <div>
       <BannerSection />

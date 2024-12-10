@@ -15,12 +15,15 @@ import Support from "../pages/Support";
 import NewTicket from "../NewTicket/NewTicket";
 import Settings from "./ArtistEditProfile/Settings";
 import OrderApprove from "./OrderApprove/OrderApprove";
+import { useState } from "react";
 
 const ArtistPanel = () => {
+  
+ 
   return (
     <>
       <div className=" flex w-full overflow-hidden">
-        <Sidebar />
+        <Sidebar  />
         <div className="flex-1 sm:px-6 lg:px-3 bg-zinc-100 ">
           <Routes>
             <Route index element={<Dashboard />} />

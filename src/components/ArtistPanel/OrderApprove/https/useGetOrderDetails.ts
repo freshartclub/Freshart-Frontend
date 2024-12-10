@@ -6,6 +6,7 @@ export const useGetOrderDetails = (id, orderType) => {
   const url = `${ORDERS_ENDPOINTS.GetArtistOrderDetails}`;
 
   async function fetchData(id, orderType) {
+    
     const { data } = await axiosInstance.get(
       `${url}/${id}?orderType=${orderType}`
     );

@@ -6,6 +6,7 @@ import img3 from "../../assets/Trending3.png";
 import wishlist_like from "../../assets/whishlist_like.png";
 import Header from "../ui/Header";
 import arrow_bread from "../../assets/arrow_bread.png";
+import { useGetWishList } from "../DiscoverMore/http/useGetWishList";
 
 const trendingData = [
   {
@@ -58,7 +59,13 @@ const trendingData = [
   },
 ];
 
+
+
 const Wishlist = () => {
+
+  const {data , isLoading} = useGetWishList()
+
+console.log(data)
   return (
     <div className="container mx-auto md:px-6 px-3 my-10">
       <ul className="flex p-2 gap-3 text-xl text-[#2E4053] items-center">
@@ -88,7 +95,7 @@ const Wishlist = () => {
             className="cursor-pointer hover:bg-[#E8DAEF] rounded-md transition-all duration-300"
           >
             <P variant={{ size: "small", theme: "dark", weight: "normal" }}>
-              Order
+              Wishlist
             </P>
           </Link>
         </li>

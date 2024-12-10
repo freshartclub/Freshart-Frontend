@@ -11,6 +11,7 @@ import useLogOutMutation from "../../http/auth/useLogOutMutation";
 import { setIsArtist } from "../../store/userSlice/userSlice";
 import i18n from "../utils/i18n";
 import useClickOutside from "../utils/useClickOutside";
+import { GiHamburgerMenu } from "react-icons/gi";
 
 const ArtistNavBar = () => {
   const [isToogleOpen, setIsToggelOpen] = useState(false);
@@ -63,9 +64,10 @@ const ArtistNavBar = () => {
 
   return (
     <div className="w-full py-5 px-5 flex items-center gap-5 relative justify-between">
+     {/* <GiHamburgerMenu size="2em" /> */}
       {/* Logo */}
-      <div className="overflow-hidden">
-        <img src={logo} alt="Logo" />
+      <div className="overflow-hidden ">
+        <img className="w-[8rem]  lg:block left-[20%] top-[50%] lg:w-full object-cover"  src={logo} alt="Logo" />
       </div>
 
       {/* Main Navbar */}
@@ -85,18 +87,21 @@ const ArtistNavBar = () => {
         {/* Country Selector */}
         <div className="relative inline-block">
           <div
-            className="flex items-center space-x-2 cursor-pointer"
+            className="flex   items-center space-x-2 cursor-pointer"
             onClick={() => setIsLanguageOpen((prev) => !prev)}
           >
+            <div >
             <img
               src={
                 countries.find((country) => country.code === selectedCountry)
                   .flag
               }
               alt={`${selectedCountry} Flag`}
-              className="w-6 h-4 rounded"
+              className="w-6 h-4 rounded "
             />
-            <span>
+            </div>
+          
+            <span className="hidden lg:block">
               {
                 countries.find((country) => country.code === selectedCountry)
                   .name
@@ -142,9 +147,9 @@ const ArtistNavBar = () => {
           <img
             src={`${url}/users/${user.profile.mainImage}`}
             alt="User Profile"
-            className="w-8 h-8 object-cover rounded-full"
+            className="w-8 h-8 object-cover rounded-full "
           />
-          <p className="font-semibold ml-2">{user.artistName}</p>
+          <p className="font-semibold ml-2 hidden lg:block">{user.artistName}</p>
           <img
             className={`ml-1 transition-transform duration-300 ${
               isToogleOpen ? "rotate-180" : "rotate-0"
@@ -158,7 +163,7 @@ const ArtistNavBar = () => {
         {isToogleOpen && (
           <div
             ref={closePopup}
-            className="absolute z-10 top-20 right-5 flex flex-col gap-4 text-sm bg-white border rounded-lg shadow-md py-5 px-5"
+            className="absolute  z-10 top-20 right-5 flex flex-col gap-4 text-sm bg-white border rounded-lg shadow-md py-5 px-5"
           >
             <Link
               className="font-medium hover:bg-zinc-200 transition-all duration-200"

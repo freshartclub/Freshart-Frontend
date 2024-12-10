@@ -94,19 +94,7 @@ const Sidebar: React.FC = () => {
     setOpenSubmenu(openSubmenu === key ? null : key);
   };
 
-  // useEffect(() => {
-  //   const handleResize = () => {
-  //     if (window.innerWidth >= 768) {
-  //       setIsOpen(false);
-  //     }
-  //   };
 
-  //   handleResize();
-
-  //   window.addEventListener("resize", handleResize);
-
-  //   return () => window.removeEventListener("resize", handleResize);
-  // }, []);
 
   return (
     <div className={`flex transition-width duration-300 relative `}>

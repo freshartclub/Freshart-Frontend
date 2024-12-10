@@ -37,6 +37,7 @@ const ArtCardPagination: React.FC = () => {
   let selectedArtwork = "";
   const { data, isLoading } = useGetArtWorkList(selectedArtwork);
 
+
   useEffect(() => {
     if (data) {
       setOriginalArtwork(data.data);

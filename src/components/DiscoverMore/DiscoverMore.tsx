@@ -28,9 +28,9 @@ const DiscoverMore = () => {
 
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
-  console.log(id);
+
   const { data, isLoading } = useGetArtWorkById(id);
-  console.log("this is from more", data);
+ 
 
   const settings = {
     dots: false,
@@ -79,7 +79,7 @@ const DiscoverMore = () => {
           </li>
           <img src={arrow} alt="Home icon" className="w-[4px] h-[6px] mr-2" />
           <li>
-            <Link to="/" className="rounded-md transition-all flex">
+            <Link to="/purchase" className="rounded-md transition-all flex">
               <P
                 variant={{ size: "small", theme: "dark", weight: "medium" }}
                 className="text-[#FF536B]"

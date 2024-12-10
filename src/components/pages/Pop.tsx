@@ -66,13 +66,13 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({
             <div className="flex justify-between">
               <span
                 onClick={validateEmailOtp}
-                className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+                className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 cursor-pointer"
               >
                 {verifyOtpPending ? " Verifying" : "Verify Code"}
               </span>
               <span
                 onClick={() => handleCloseModel()}
-                className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"
+                className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 cursor-pointer"
               >
                 Close
               </span>
