@@ -238,6 +238,9 @@ const GeneralForm = ({ isActiveStatus }) => {
     setValue("externalTags", newTags);
   };
 
+  const countryValue  = getValues("country")
+ 
+
   const watchZip = watch("zip");
   const watchCountry = watch("country");
   const apiKey = import.meta.env.VITE_APP_GOOGLE_MAPS_API_KEY;
@@ -528,7 +531,7 @@ const GeneralForm = ({ isActiveStatus }) => {
 
               <div className="flex flex-wrap justify-between w-full gap-4 mb-4">
                 <div className="md:w-[48%] w-full relative">
-                 <CustomDropdown control={control} options={options}/>
+                 <CustomDropdown control={control} options={options} countryValue={countryValue}/>
 
                   <label
                     htmlFor="country"

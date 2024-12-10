@@ -1,16 +1,25 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Controller } from 'react-hook-form';
 
-const CustomDropdown = ({ options, control }) => {
+const CustomDropdown = ({ options, control , countryValue }) => {
   const [selectedValue, setSelectedValue] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+
+
+  useEffect(() => {
+    if (countryValue) {
+      const prefilledOption = options.data.find(item => item.label.toLowerCase() === countryValue.toLowerCase());
+      setSelectedValue(prefilledOption); 
+    }
+  }, [countryValue, options]);
+
 
   const toggleDropdown = () => setIsOpen(!isOpen);
 
   const handleSelect = (item) => {
     setSelectedValue(item);
-    setSearchTerm('');  // Clear search term when item is selected
+    setSearchTerm('');
     setIsOpen(false);
   };
 
