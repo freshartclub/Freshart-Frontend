@@ -30,6 +30,8 @@ import countryList from "react-select-country-list";
 import useGetPhone from "./http/useGetPhoneOtp";
 import usePhoneOtpVerify from "./http/useVerifyPhoneOtp";
 
+import CustomDropdown from "./CustomDropdown";
+
 const BecomeArtist = () => {
   const validationSchema = Yup.object().shape({
     artistName: Yup.string().required("Artist Name is required"),
@@ -68,7 +70,7 @@ const BecomeArtist = () => {
 
   const [phoneNumber, setPhoneNumber] = useState("");
 
-  const options = useMemo(() => countryList().getLabels(), []);
+  const options = useMemo(() => countryList(), []);
 
   const [email, setEmail] = useState("");
 
@@ -499,19 +501,12 @@ const BecomeArtist = () => {
                   Country *
                 </label>
 
-                <select
-                  className="block appearance-none w-full bg-white border px-4 py-3 pr-8 rounded leading-tight focus:outline-none"
+                {/* <div
+                  className="block  appearance-none w-full bg-white border px-4 py-3 pr-8 rounded leading-tight focus:outline-none"
                   {...register("country")}
-                >
-                  <option value="" disabled>
-                    Select
-                  </option>
-                  {options?.map((item, i) => (
-                    <option key={i} value={item}>
-                      {item}
-                    </option>
-                  ))}
-                </select>
+                > */}
+                <CustomDropdown control={control} options={options} />
+                {/* </div> */}
 
                 {errors.value && (
                   <span className="text-red-500 text-xs">

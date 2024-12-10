@@ -15,6 +15,7 @@ import useAddToCartMutation from "../DiscoverMore/http/useAddToCartMutation";
 const PaymentPage = () => {
   const { data, isLoading } = useGetCartItems();
   const { mutate, isPending } = useAddToCartMutation();
+  
 
   const discountAmounts = data?.data?.cart?.map((item) => {
     const basePrice = parseFloat(

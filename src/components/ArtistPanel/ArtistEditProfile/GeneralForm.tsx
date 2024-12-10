@@ -26,6 +26,7 @@ import { Country, State, City } from "country-state-city";
 
 import Select from "react-select";
 import Flag from "react-world-flags";
+import CustomDropdown from "../../pages/CustomDropdown";
 
 const GeneralForm = ({ isActiveStatus }) => {
   const { data, isLoading } = useGetArtistDetails();
@@ -33,7 +34,7 @@ const GeneralForm = ({ isActiveStatus }) => {
   const [isEditInfo, setIsEditInfo] = useState(false);
   const [isManagerDetails, setManagerDetails] = useState(null);
   const [tags, setTags] = useState([]);
-  const options = useMemo(() => Country.getAllCountries(), []);
+  const options = useMemo(() => countryList(), []);
 
   const methods = useForm();
 
@@ -527,24 +528,7 @@ const GeneralForm = ({ isActiveStatus }) => {
 
               <div className="flex flex-wrap justify-between w-full gap-4 mb-4">
                 <div className="md:w-[48%] w-full relative">
-                  <select
-                    {...register("country", {
-                      required: "country is required",
-                    })}
-                    disabled={isActiveStatus !== "active"}
-                    className="border border-[#E6E6E6] p-3 w-full rounded-md focus:outline-none peer placeholder::font-montserrat font-normal text-left placeholder:text-[#1C252E] outline-none"
-                  >
-                    {options?.map((item, i) => (
-                      <option key={i} value={item?.name}>
-                        {item?.name}
-                        <Flag
-                          code={item?.flag}
-                          alt={item?.flag}
-                          className="mr-2 w-5 h-5"
-                        />
-                      </option>
-                    ))}
-                  </select>
+                 <CustomDropdown control={control} options={options}/>
 
                   <label
                     htmlFor="country"
