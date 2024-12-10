@@ -1,6 +1,10 @@
 import { IoIosArrowBack } from "react-icons/io";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import P from "../ui/P";
+import home from "../../assets/home.png";
+// import image from "assets/Image.png";
+// import image2 from "assets/Image1.png";
+import arrow from "../../assets/arrow_22.png";
 
 const ArtBreadcrumbs = () => {
   const breadcrumbs = [
@@ -8,48 +12,54 @@ const ArtBreadcrumbs = () => {
       label: "Home",
       link: "/",
       isLast: false,
+      img: home,
     },
     {
-      label: "Shopping Card",
-      link: "",
+      label: "Purchase Cart",
+      link: "/purchase_cart",
       isLast: false,
+      img: arrow,
     },
     {
-      label: "Checkout ",
+      label: "Checkout",
       link: "",
       isLast: true,
+      img: arrow,
     },
   ];
 
   return (
     <div className="flex gap-2 items-start">
-      {breadcrumbs.map((breadcrumb, index) => (
-        <div className="flex items-center" key={index}>
-          {/* Link for non-last breadcrumb items */}
-          {!breadcrumb.isLast ? (
-            <>
-              <P variant={{ size: "base", theme: "dark", weight: "semiBold" }}>
-                <NavLink
-                  to={breadcrumb.link}
-                  className="text-[#FF536B] text-sm md:text-md font-semibold"
+      <ul className="flex p-2 gap-4 text-xl text-[#2E4053] items-center">
+        {breadcrumbs.map((item, i) => (
+          <div>
+            <li>
+              <Link
+                to={item?.link}
+                className="rounded-md transition-all flex items-center"
+              >
+                <img
+                  src={item.img}
+                  alt="Home icon"
+                  className={`${
+                    item?.label === "Home"
+                      ? "w-[14px] h-[14px] mr-2"
+                      : " w-[6px] h-[8px] mr-1"
+                  }`}
+                />
+                <P
+                  variant={{ size: "small", theme: "dark", weight: "medium" }}
+                  className={`${
+                    item?.label === "Home" ? "text-[#FF536B]" : ""
+                  }`}
                 >
-                  {breadcrumb.label}
-                </NavLink>
-              </P>
-              <span className="mx-2">
-                <IoIosArrowBack />
-              </span>
-            </>
-          ) : (
-            <P
-              variant={{ size: "base", theme: "dark", weight: "semiBold" }}
-              className="md:text-[18px]  text-sm hover:cursor-pointer"
-            >
-              {breadcrumb.label}
-            </P>
-          )}
-        </div>
-      ))}
+                  {item?.label}
+                </P>
+              </Link>
+            </li>
+          </div>
+        ))}
+      </ul>
     </div>
   );
 };

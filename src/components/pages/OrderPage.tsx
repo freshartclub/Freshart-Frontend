@@ -13,6 +13,7 @@ import { useGetOrder } from "./http/useGetOrder";
 import { useState } from "react";
 import dayjs from "dayjs";
 import Loader from "../ui/Loader";
+import { setLocale } from "yup";
 
 const order_Data = [
   {
@@ -52,8 +53,10 @@ const OrderPage = () => {
   const { data, isLoading } = useGetOrder();
   const navigate = useNavigate();
 
-  const handleDetailPage = () => {
-    navigate("/order_tracking");
+  const handleDetailPage = (item) => {
+    console.log(item);
+    localStorage.setItem("artworkId", item?.artwork?._id);
+    navigate(`/order_tracking?id=${item?._id}&orderType=${item?.orderType}`);
   };
 
   console.log(data);
@@ -291,7 +294,7 @@ const OrderPage = () => {
                       </div>
                       <div className="flex md:justify-end mt-2 sm:mt-0">
                         <Button
-                          onClick={() => handleDetailPage()}
+                          onClick={() => handleDetailPage(item)}
                           variant={{
                             theme: "light",
                             fontWeight: "600",

@@ -23,8 +23,6 @@ import "./components/utils/i18n.ts";
 
 // import "./i18n";
 
-const queryClient = new QueryClient();
-
 // Lazy loading the components
 import GetStarted from "./components/GetStarted/GetStarted";
 import LoginPage from "./components/pages/Login";
@@ -156,6 +154,7 @@ const App: React.FC = () => {
             <Route path="/faq" element={<Faq />} />
             <Route path="/kb-database" element={<KbDatabase />} />
             <Route path="/about-us" element={<AboutUs />} />
+            {/* <Route path="/artist-panel/*" element={<NotFoundPage />} /> */}
 
             <Route
               path="/invoice-pdf*"

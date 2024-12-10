@@ -8,4 +8,5 @@ export const ORDERS_ENDPOINTS = {
   AcceptOrder: `${ARTIST_ORDER_URl}/accept-order-request`,
   AddEvidence: `${ARTIST_ORDER_URl}/upload-evidence`,
   CancelItem: `${ARTIST_ORDER_URl}/cancel-particular-item`,
+  GetOrderDetails: `${ARTIST_ORDER_URl}/get-user-single-order`,
 };

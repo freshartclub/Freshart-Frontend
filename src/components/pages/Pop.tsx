@@ -35,9 +35,9 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({
     <div className="flex flex-col items-center ">
       <span
         onClick={handleRevalidateEmail}
-        className={
-          "text-black border border-zinc-600 py-3 w-[9rem] px-4 pr-0 rounded cursor-pointer"
-        }
+        className={`text-black border border-zinc-600 py-2 w-[9rem] px-4 pr-0 rounded cursor-pointer ${
+          validateEmail === "Email Verified" ? "pointer-events-none" : ""
+        }`}
       >
         {sendMailPending ? "Sending..." : validateEmail}
       </span>

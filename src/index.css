@@ -221,3 +221,21 @@
     left: 76% !important;
   }
 }
+
+.react-international-phone-input {
+  width: 100%;
+  padding: 20px;
+}
+
+.react-international-phone-input .inputStyle {
+  padding-top: 10px;
+}
+
+.react-international-phone-country-selector-button {
+  padding: 20px;
+}
+
+/* .react-international-phone-flag-width {
+  width: "24px";
+} */
+/* .react-international-phone-flag-height': '24px' */

@@ -224,14 +224,13 @@ const PurchaseCart = () => {
                             </P>
                           </td>
                           <td className="xl:px-6 lg:px-4 px-2 py-4 text-[#475156] font-medium">
-                            <span className="flex items-center gap-2 border border-zinc-900 px-2 rounded-md bg-black text-white">
+                            <span className="flex justify-between py-1 border border-zinc-900 px-2 rounded-md bg-black text-white">
                               <FaMinus
                                 onClick={() =>
                                   handleRemoveQuantity(table?.item?._id)
                                 }
                                 className="cursor-pointer   w-[20px] h-[20px] sm:w-[16px] sm:h-[16px]"
                               />
-                              {/* Quantity display */}
                               {table?.quantity}
                               <FaPlus
                                 onClick={() => handleAdd(table?.item?._id)}

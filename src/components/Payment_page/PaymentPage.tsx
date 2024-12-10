@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
 import Header from "../ui/Header";
 import ArtBreadcrumbs1 from "./ArtBreadcrumbs1";
 import { useForm } from "react-hook-form";
@@ -11,11 +11,14 @@ import payment_4 from "../ArtistPanel/assets/payment_4.png";
 import payment_5 from "../ArtistPanel/assets/payment_5.png";
 import { useGetCartItems } from "../pages/http/useGetCartItems";
 import useAddToCartMutation from "../DiscoverMore/http/useAddToCartMutation";
+import CustomDropdown from "../pages/CustomDropdown";
+import countryList from "react-select-country-list";
 
 const PaymentPage = () => {
   const { data, isLoading } = useGetCartItems();
   const { mutate, isPending } = useAddToCartMutation();
-  
+  const [isCheckBox, setIsCheckBox] = useState(false);
+  const options = useMemo(() => countryList(), []);
 
   const discountAmounts = data?.data?.cart?.map((item) => {
     const basePrice = parseFloat(
@@ -44,6 +47,7 @@ const PaymentPage = () => {
     register,
     handleSubmit,
     formState: { errors },
+    control,
   } = useForm();
 
   const onSubmit = (data: any) => {
@@ -76,6 +80,11 @@ const PaymentPage = () => {
     const tax = 61.99; // Fixed tax
     const shipping = 0; // Free shipping
     return subTotal + tax - discount + shipping;
+  };
+
+  const handleCheck = (val) => {
+    setIsCheckBox(val.target.checked);
+    console.log(val.target.value);
   };
 
   return (
@@ -129,15 +138,13 @@ const PaymentPage = () => {
                 <div>
                   <label className="block mb-1">Company Name (Optional)</label>
                   <input
-                    {...register("lastName", {
-                      required: "Last Name is required",
-                    })}
+                    {...register("companyName")}
                     type="text"
                     className="w-full p-2 border border-gray-300 rounded-lg"
                   />
-                  {errors.lastName && (
+                  {errors.companyName && (
                     <p className="text-red-500">
-                      {String(errors.lastName.message)}
+                      {String(errors.companyName.message)}
                     </p>
                   )}
                 </div>
@@ -163,16 +170,11 @@ const PaymentPage = () => {
               <div className="grid  grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-4">
                 <div>
                   <label className="block mb-1">Country</label>
-                  <select
-                    {...register("country", {
-                      required: "Country is required",
-                    })}
-                    className="w-full p-2 border border-gray-300 rounded-lg"
-                  >
-                    <option value="">Select Country</option>
-                    <option value="US">United States</option>
-                    <option value="CA">Canada</option>
-                  </select>
+                  <CustomDropdown
+                    control={control}
+                    options={options}
+                    name="country"
+                  />
                   {errors.country && (
                     <p className="text-red-500">
                       {String(errors.country.message)}
@@ -261,6 +263,7 @@ const PaymentPage = () => {
                   type="checkbox"
                   id="shipToDifferentAddress"
                   className="w-4 h-4"
+                  onChange={(val) => handleCheck(val)}
                 />
                 <label
                   htmlFor="shipToDifferentAddress"
@@ -269,6 +272,129 @@ const PaymentPage = () => {
                   Ship into different address
                 </label>
               </div>
+              {/* this is for shipping */}
+              {isCheckBox ? (
+                <div>
+                  <Header
+                    variant={{ size: "xl", theme: "dark", weight: "bold" }}
+                    className="text-black mb-8 "
+                  >
+                    Shipping Information
+                  </Header>
+
+                  <div className="mb-4">
+                    <label className="block mb-1">Address</label>
+                    <input
+                      {...register("shippingAddress", {
+                        required: "Address is required",
+                      })}
+                      type="text"
+                      className="w-full p-2 border border-gray-300 rounded-lg"
+                    />
+                    {errors.address && (
+                      <p className="text-red-500">
+                        {String(errors.address.message)}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Country, City, and Zip Code  */}
+                  <div className="grid  grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-4">
+                    <div>
+                      <label className="block mb-1">Country</label>
+                      <CustomDropdown
+                        control={control}
+                        options={options}
+                        name="shippingCountry"
+                      />
+                      {errors.shippingCountry && (
+                        <p className="text-red-500">
+                          {String(errors.shippingCountry.message)}
+                        </p>
+                      )}
+                    </div>
+                    <div>
+                      <label className="block mb-1">Region/State</label>
+                      <input
+                        {...register("shippingState", {
+                          required: "State is required",
+                        })}
+                        type="text"
+                        className="w-full p-2 border border-gray-300 rounded-lg"
+                      />
+                      {errors.shippingState && (
+                        <p className="text-red-500">
+                          {String(errors.shippingState.message)}
+                        </p>
+                      )}
+                    </div>
+                    <div>
+                      <label className="block mb-1">City</label>
+                      <input
+                        {...register("shippingCity", {
+                          required: "City is required",
+                        })}
+                        type="text"
+                        className="w-full p-2 border border-gray-300 rounded-lg"
+                      />
+                      {errors.shippingCity && (
+                        <p className="text-red-500">
+                          {String(errors.shippingCity.message)}
+                        </p>
+                      )}
+                    </div>
+                    <div>
+                      <label className="block mb-1">Zip Code</label>
+                      <input
+                        {...register("shippingZipCode", {
+                          required: "Zip Code is required",
+                        })}
+                        type="text"
+                        className="w-full p-2 border border-gray-300 rounded-lg"
+                      />
+                      {errors.shippingZipCode && (
+                        <p className="text-red-500">
+                          {String(errors.shippingZipCode.message)}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                      <label className="block mb-1">Email</label>
+                      <input
+                        {...register("shippingEmail", {
+                          required: "email is required",
+                        })}
+                        type="text"
+                        className="w-full p-2 border border-gray-300 rounded-lg"
+                      />
+                      {errors.shippingEmail && (
+                        <p className="text-red-500">
+                          {String(errors.shippingEmail.message)}
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block mb-1">Phone Number</label>
+                      <input
+                        {...register("shippingPhoneNumber", {
+                          required: "phoneNumber is required",
+                        })}
+                        type="text"
+                        className="w-full p-2 border border-gray-300 rounded-lg"
+                      />
+                      {errors.shippingPhoneNumber && (
+                        <p className="text-red-500">
+                          {String(errors.shippingPhoneNumber.message)}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ) : null}
 
               {/* Payment Options */}
 
@@ -360,7 +486,7 @@ const PaymentPage = () => {
 
                 {/* Card Details */}
                 {/* {['Credit Card'].includes(watch('paymentOption')) && ( */}
-                <>
+                {/* <>
                   <div className="grid md:grid-cols-2 gap-4 mb-4">
                     <div>
                       <label className="block mb-1">Name on Card</label>
@@ -424,7 +550,7 @@ const PaymentPage = () => {
                       )}
                     </div>
                   </div>
-                </>
+                </> */}
                 {/* )} */}
               </div>
 

@@ -65,16 +65,6 @@ export const getCityStateFromZipCountry = async (
 const MapWithAutocomplete = ({ paddingX, paddingY, ...props }) => {
   const [center, setCenter] = useState(defaultCenter);
 
-  console.log("hello");
-
-  //   const handlePlaceSelect = (place) => {
-  //     const location = place.geometry.location;
-  //     setCenter({
-  //       lat: location.lat(),
-  //       lng: location.lng(),
-  //     });
-  //   };
-
   return (
     <Autocomplete
       apiKey={import.meta.env.VITE_APP_GOOGLE_MAPS_API_KEY}

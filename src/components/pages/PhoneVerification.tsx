@@ -37,8 +37,8 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
         onClick={handleSendOtp}
         className={`${
           isOtpVerify
-            ? "border-zinc-600 text-black py-3 px-4 rounded border cursor-pointer w-[8rem]"
-            : "border-zinc-600 text-black py-3 px-4 rounded border cursor-pointer pointer-events-none opacity-40 w-[8rem]"
+            ? "border-zinc-600 text-black py-2 px-4 rounded border cursor-pointer w-[8rem]"
+            : "border-zinc-600 text-black py-2 px-4 rounded border cursor-pointer pointer-events-none opacity-40 w-[8rem]"
         }`}
       >
         {requestOtpPending ? "Sending..." : "Send Code"}

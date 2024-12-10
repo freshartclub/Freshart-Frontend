@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import home from "../../assets/home.png";
 import arrow from "../../assets/arrow_22.png";
 import P from "../ui/P";
@@ -6,8 +6,27 @@ import Button from "../ui/Button";
 import export_icon from "../../assets/export.png";
 import invoice from "../../assets/invoice.png";
 import OrderDescription from "./OrderDescription";
+import { useGetOrderDetails } from "./http/useGetOrderDetails";
+import Loader from "../ui/Loader";
 
 const OrderTracking = () => {
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get("id");
+  const orderType = searchParams.get("orderType");
+  const artworkId = localStorage.getItem("artworkId");
+
+  const values = {
+    artworkId,
+    orderId: id,
+    orderType,
+  };
+
+  const { data, isLoading } = useGetOrderDetails(values);
+
+  // if (isLoading) {
+  //   return <Loader />;
+  // }
+
   return (
     <div className="bg-[#EFEFF7] pb-10">
       <div className="container mx-auto sm:px-6 px-3 ">
