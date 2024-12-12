@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Header from "../ui/Header";
 import P from "../ui/P";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
@@ -16,6 +16,7 @@ import mastercard from "./assets/mastercard.png";
 import view1 from "./assets/viewArrow.png";
 import dots from "./assets/DotsThree.png";
 import copy from "./assets/Copy.png";
+import { useAppSelector } from "../../store/typedReduxHooks";
 
 const order_data = [
   {
@@ -77,6 +78,21 @@ const getStatusColor = (status: any) => {
 const colors = ["bg-[#EAF6FE]", "bg-[#FFF3EB]", "bg-[#EAF7E9]"];
 
 const UserDescription = ({ user }) => {
+  const isArtist = useAppSelector((state) => state.user.isArtist);
+  const navigate = useNavigate();
+
+  console.log(user.role);
+
+  const handleProfile = () => {
+    if (user.role === "artist") {
+      navigate("/artist-panel/user/settings", { replace: true });
+      localStorage.setItem("profile", "artist");
+    } else {
+      navigate("/edit_profile", { replace: true });
+      localStorage.setItem("profile", "user");
+    }
+  };
+
   const personal_info = [
     {
       title: "Name",
@@ -172,13 +188,14 @@ const UserDescription = ({ user }) => {
             <TabPanel className="">
               <div className="p-4">
                 <div className="flex justify-end">
-                  <Button
+                  <button
+                    onClick={handleProfile}
                     variant={{ fontSize: "sm", theme: "dark", weight: "500" }}
-                    className="flex gap-2 items-center justify-center"
+                    className="flex gap-2 items-center justify-center bg-black text-white px-2 py-2"
                   >
                     <img src={edit} alt="edit" />
                     Edit profile
-                  </Button>
+                  </button>
                 </div>
                 <Header
                   variant={{ size: "lg", theme: "dark", weight: "semiBold" }}

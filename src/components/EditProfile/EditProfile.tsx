@@ -34,7 +34,7 @@ const EditProfile = () => {
             />
             <li>
               <Link
-                to="/products"
+                to="/user_profile"
                 className="cursor-pointer hover:bg-[#E8DAEF] rounded-md transition-all duration-300"
               >
                 <P

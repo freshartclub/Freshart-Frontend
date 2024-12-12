@@ -1,137 +1,161 @@
-import Header from "../ui/Header";
-import Button from "../ui/Button";
-import eye from "../../assets/view.png";
-import eyeclose from "../../assets/hidden.png";
 import { useState } from "react";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import useChnagePasswordMutation from "../ArtistPanel/ArtistEditProfile/http/useChnagePasswordMutation";
 
 const ChangePassword = () => {
-  const [newPassword, setNewPassword] = useState("");
-  const [newPasswordType, setNewPasswordType] = useState("password");
-  const [confirmPasswordType, setConfirmPasswordType] = useState("password");
-  const [currentPasswordType, setCurrentPasswordType] = useState("password");
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPasswordIcon, setNewPasswordIcon] = useState(eyeclose);
-  const [confirmPasswordIcon, setConfirmPasswordIcon] = useState(eyeclose);
-  const [currentPasswordIcon, setCurrentPasswordIcon] = useState(eyeclose);
+  const [showPassword, setShowPassword] = useState({
+    oldPassword: false,
+    newPassword: false,
+    confirmPassword: false,
+  });
 
-  const handleNewPasswordToggle = () => {
-    if (newPasswordType === "password") {
-      setNewPasswordIcon(eye);
-      setNewPasswordType("text");
-    } else {
-      setNewPasswordIcon(eyeclose);
-      setNewPasswordType("password");
+  const validationSchema = Yup.object({
+    oldPassword: Yup.string().required("Old password is required"),
+    newPassword: Yup.string()
+      .min(6, "Password must be at least 6 characters")
+      .required("New password is required"),
+    confirmPassword: Yup.string()
+      .oneOf([Yup.ref("newPassword"), null], "Passwords must match")
+      .required("Confirm password is required"),
+  });
+
+  const { mutateAsync, isPending } = useChnagePasswordMutation();
+
+  const onSubmit = (value, { resetForm }) => {
+    try {
+      const data = {
+        oldPassword: value.oldPassword,
+        newPassword: value.newPassword,
+        confirmPassword: value.confirmPassword,
+      };
+
+      mutateAsync(data).then(() => {
+        resetForm();
+      });
+    } catch (error) {
+      console.error(error);
     }
   };
 
-  const handleConfirmPasswordToggle = () => {
-    if (confirmPasswordType === "password") {
-      setConfirmPasswordIcon(eye);
-      setConfirmPasswordType("text");
-    } else {
-      setConfirmPasswordIcon(eyeclose);
-      setConfirmPasswordType("password");
-    }
-  };
-
-  const handleCurrentPasswordToggle = () => {
-    if (currentPasswordType === "password") {
-      setCurrentPasswordIcon(eye);
-      setCurrentPasswordType("text");
-    } else {
-      setCurrentPasswordIcon(eyeclose);
-      setCurrentPasswordType("password");
-    }
+  const togglePasswordVisibility = (field) => {
+    setShowPassword((prevState) => ({
+      ...prevState,
+      [field]: !prevState[field],
+    }));
   };
 
   return (
-    <div className=" shadow-xl my-10">
-      <div className="rounded-md bg-white border border-[#E6E6E6]">
-        <Header
-          variant={{ size: "xl", theme: "dark", weight: "semiBold" }}
-          className="border-b xl:p-4 lg:p-3 md:p-2 p-2"
-        >
-          Change Password
-        </Header>
-
-        <div className="xl:p-6 lg:p-4 md:p-6 p-4">
-          <div className="">
-            <label htmlFor="newPassword" className="mb-2 text-gray-700">
-              Current Password
-            </label>
-            <div className="flex w-full">
-              <input
-                type={currentPasswordType}
-                id="currentPassword"
-                name="currentPassword"
-                placeholder="Current Password"
-                value={currentPassword}
-                onChange={(e) => setCurrentPassword(e.target.value)}
-                autoComplete="current-password"
-                className="border border-[#D3D3D3] p-2 w-full rounded-md focus:outline-none"
+    <div className="p-4 md:p-6 mx-auto rounded-lg shadow-xl bg-white">
+      <Formik
+        initialValues={{
+          oldPassword: "",
+          newPassword: "",
+          confirmPassword: "",
+        }}
+        validationSchema={validationSchema}
+        onSubmit={onSubmit}
+      >
+        {({ errors, touched }) => (
+          <Form className="space-y-6">
+            <div className="relative">
+              <Field
+                type={showPassword.oldPassword ? "text" : "password"}
+                name="oldPassword"
+                placeholder="Old password"
+                className={`w-full px-4 py-3 border ${
+                  errors.oldPassword && touched.oldPassword
+                    ? "border-red-500"
+                    : "border-[#919EAB33]"
+                } rounded-md focus:outline-none focus:ring-2 focus:ring-black`}
               />
-              <img
-                src={currentPasswordIcon}
-                alt="eye"
-                className="w-[24px] h-[24px] mt-2 -ml-10 cursor-pointer"
-                onClick={handleCurrentPasswordToggle}
+              <button
+                type="button"
+                className="absolute right-3 top-3 text-[#637381]"
+                onClick={() => togglePasswordVisibility("oldPassword")}
+              >
+                {showPassword.oldPassword ? (
+                  <i className="bi bi-eye" />
+                ) : (
+                  <i className="bi bi-eye-slash" />
+                )}
+              </button>
+              <ErrorMessage
+                name="oldPassword"
+                component="div"
+                className="text-red-500 text-xs"
               />
             </div>
-          </div>
 
-          <div className="w-full my-5 flex md:flex-row flex-col md:gap-5">
-            <div className="mb-5 md:mb-0 flex flex-col md:w-[49%] w-full">
-              <label htmlFor="newPassword" className="mb-2 text-gray-700">
-                New Password
-              </label>
-              <div className="flex w-full">
-                <input
-                  type={newPasswordType}
-                  id="newPassword" // Added id for linking with the label
-                  name="newPassword"
-                  placeholder="New Password"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  autoComplete="current-password"
-                  className="border border-[#D3D3D3] p-2 w-full rounded-md focus:outline-none"
-                />
-                <img
-                  src={newPasswordIcon}
-                  alt="eye"
-                  className="w-[24px] h-[24px] mt-2 -ml-10 cursor-pointer"
-                  onClick={handleNewPasswordToggle}
-                />
-              </div>
+            <div className="relative">
+              <Field
+                type={showPassword.newPassword ? "text" : "password"}
+                name="newPassword"
+                placeholder="New password"
+                className={`w-full px-4 py-3 border ${
+                  errors.newPassword && touched.newPassword
+                    ? "border-red-500"
+                    : "border-[#919EAB33]"
+                } rounded-md focus:outline-none focus:ring-2 focus:ring-black`}
+              />
+              <button
+                type="button"
+                className="absolute right-3 top-3 text-[#637381]"
+                onClick={() => togglePasswordVisibility("newPassword")}
+              >
+                {showPassword.newPassword ? (
+                  <i className="bi bi-eye" />
+                ) : (
+                  <i className="bi bi-eye-slash" />
+                )}
+              </button>
+              <ErrorMessage
+                name="newPassword"
+                component="div"
+                className="text-red-500 text-xs"
+              />
             </div>
 
-            <div className=" flex flex-col md:w-[49%] w-full">
-              <label htmlFor="newPassword" className="mb-2 text-gray-700">
-                Confirm Password
-              </label>
-              <div className="flex w-full">
-                <input
-                  type={confirmPasswordType}
-                  placeholder="Confirm Password"
-                  className="border border-[#D3D3D3] p-2 w-full rounded-md focus:outline-none"
-                />
-                <img
-                  src={confirmPasswordIcon}
-                  alt="eye"
-                  className="w-[24px] h-[24px] mt-2 -ml-10 cursor-pointer"
-                  onClick={handleConfirmPasswordToggle}
-                />
-              </div>
+            <div className="relative">
+              <Field
+                type={showPassword.confirmPassword ? "text" : "password"}
+                name="confirmPassword"
+                placeholder="Confirm new password"
+                className={`w-full px-4 py-3 border ${
+                  errors.confirmPassword && touched.confirmPassword
+                    ? "border-red-500"
+                    : "border-[#919EAB33]"
+                } rounded-md focus:outline-none focus:ring-2 focus:ring-black`}
+              />
+              <button
+                type="button"
+                className="absolute right-3 top-3 text-[#637381]"
+                onClick={() => togglePasswordVisibility("confirmPassword")}
+              >
+                {showPassword.confirmPassword ? (
+                  <i className="bi bi-eye" />
+                ) : (
+                  <i className="bi bi-eye-slash" />
+                )}
+              </button>
+              <ErrorMessage
+                name="confirmPassword"
+                component="div"
+                className="text-red-500 text-xs"
+              />
             </div>
-          </div>
 
-          <Button
-            variant={{ fontSize: "base", fontWeight: "600", theme: "dark" }}
-            className="rounded-full"
-          >
-            Change Password
-          </Button>
-        </div>
-      </div>
+            <div className="flex justify-end mt-4">
+              <button
+                type="submit"
+                className="bg-[#102030] text-white py-2 px-4 rounded hover:bg-[#0d1a26] transition duration-300"
+              >
+                {isPending ? "Saving..." : " Save changes"}
+              </button>
+            </div>
+          </Form>
+        )}
+      </Formik>
     </div>
   );
 };

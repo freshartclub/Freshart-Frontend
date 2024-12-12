@@ -68,7 +68,6 @@ const Support = () => {
   };
 
   const { data, isLoading } = useGetAllIncidents();
-  console.log(data);
 
   dayjs.extend(isBetween);
 
@@ -82,8 +81,6 @@ const Support = () => {
     return incidentStart.isBetween(startOfDay, endOfDay, null, "[]");
   });
 
-  console.log(newIncident);
-
   const location = useLocation();
   const isArtistProfile = location.pathname.includes("/artist-panel");
 
@@ -92,11 +89,15 @@ const Support = () => {
       <div className="container mx-auto md:px-6 px-3">
         <div className="bg-[#E9E4DF] border-2 border-[#FF536B] p-4 mb-4 rounded-md mt-6">
           <h3 className="font-semibold">Important Notice:</h3>
-          {newIncident?.map((item, i) => (
-            <p className="mt-1" key={i}>
-              {item?.description?.replace(/(^<p>|<\/p>$)/g, "")}
-            </p>
-          ))}
+          {isLoading ? (
+            <h1>Loading...</h1>
+          ) : (
+            newIncident?.map((item, i) => (
+              <p className="mt-1" key={i}>
+                {item?.description?.replace(/(^<p>|<\/p>$)/g, "")}
+              </p>
+            ))
+          )}
         </div>
         <div className="flex sm:flex-row flex-col justify-between my-10 w-full">
           <div className="md:w-[70%] w-full">

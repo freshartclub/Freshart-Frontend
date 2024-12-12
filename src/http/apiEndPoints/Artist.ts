@@ -16,6 +16,11 @@ export const ARTTIST_ENDPOINTS = {
   GetSMSOtp: `${ARTIST_BASE_URl}/sms-otp`,
   VerifySMSOtp: `${ARTIST_BASE_URl}/verify-sms-otp`,
   ArtistChangePassword: `${ARTIST_BASE_URl}/change-password`,
+  AddBillingAddress: `${ARTIST_BASE_URl}/add-billing-address`,
+  GetBillingAddress: `${ARTIST_BASE_URl}/get-billing-address`,
+  SetDefaultAddress: `${ARTIST_BASE_URl}/set-default-address`,
+  RemoveBillingAddress: `${ARTIST_BASE_URl}/remove-billing-address`,
+  UpdateBillingAddress: `${ARTIST_BASE_URl}/update-billing-address`,
 
   // GetArtistArtwork: `${ARTIST_BASE_URl}/get-artist-artwork `,
   // DeleteArtwork: `${ARTIST_BASE_URl}/delete-artist-artwork `,

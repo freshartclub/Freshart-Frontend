@@ -40,7 +40,10 @@ const UserProfile = () => {
           </li>
           <img src={arrow} alt="Home icon" className="w-[4px] h-[6px] mr-1" />
           <li>
-            <Link className="cursor-pointer hover:bg-[#E8DAEF] rounded-md transition-all duration-300">
+            <Link
+              to="/user_profile"
+              className="cursor-pointer hover:bg-[#E8DAEF] rounded-md transition-all duration-300"
+            >
               <P
                 variant={{ size: "small", theme: "dark", weight: "semiBold" }}
                 className="text-[#203F58]"

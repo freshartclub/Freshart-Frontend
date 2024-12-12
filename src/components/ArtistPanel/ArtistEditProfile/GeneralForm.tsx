@@ -173,7 +173,7 @@ const GeneralForm = ({ isActiveStatus }) => {
 
     setValue(
       "emergencyContactAddress",
-      data?.data?.artist?.emergencyInfo.emergencyContactAddress || ""
+      data?.data?.artist?.emergencyInfo?.emergencyContactAddress || ""
     );
 
     setValue(

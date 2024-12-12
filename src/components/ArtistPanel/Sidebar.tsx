@@ -94,8 +94,6 @@ const Sidebar: React.FC = () => {
     setOpenSubmenu(openSubmenu === key ? null : key);
   };
 
-
-
   return (
     <div className={`flex transition-width duration-300 relative `}>
       <div

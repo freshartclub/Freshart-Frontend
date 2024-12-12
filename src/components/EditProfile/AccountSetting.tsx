@@ -1,10 +1,56 @@
 import { Formik, Form, Field } from "formik";
 import Header from "../ui/Header";
 import Button from "../ui/Button";
-import profileimage from "./assets/profileimage.png";
+// import profileimage from "./assets/profileimage.png";
 import P from "../ui/P";
+import { useEffect, useRef, useState } from "react";
+import { useGetArtistDetails } from "../UserProfile/http/useGetDetails";
+import { PhoneInput } from "react-international-phone";
+import "react-international-phone/style.css";
 
 const AccountSetting = () => {
+  const [profileImage, setProfileImage] = useState(null);
+  const triggerImg = useRef(null);
+  const [initialValues, setInitialValues] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    profileImage: "",
+    phoneNumber: "",
+  });
+
+  const { data, isLoading } = useGetArtistDetails();
+
+  console.log(data?.data);
+
+  const url = data?.data?.url;
+
+  useEffect(() => {
+    if (data?.data) {
+      setInitialValues((prev) => ({
+        ...prev,
+        firstName: data?.data?.artist?.artistName,
+        lastName: data?.data?.artist?.artistSurname2,
+        email: data?.data?.artist?.email,
+        phoneNumber: data?.data?.artist?.phone,
+      }));
+      setProfileImage(`${url}/users/${data?.data?.artist?.profile?.mainImage}`);
+    }
+  }, [data]);
+
+  const triggerInput = () => {
+    triggerImg.current.click();
+  };
+
+  const handleImageChnage = (e) => {
+    console.log(e.target.files?.[0]);
+    const file = e.target.files?.[0];
+
+    if (file) {
+      const img = URL.createObjectURL(file);
+      setProfileImage(img);
+    }
+  };
   return (
     <div className=" shadow-xl my-10">
       <div className="rounded-md bg-white border border-[#E6E6E6]">
@@ -18,12 +64,8 @@ const AccountSetting = () => {
         <div className="xl:p-6 lg:p-4 md:p-6 p-4">
           <div className="w-full">
             <Formik
-              initialValues={{
-                firstName: "",
-                lastName: "",
-                email: "",
-                phoneNumber: "",
-              }}
+              initialValues={initialValues}
+              enableReinitialize={true}
               onSubmit={(values, { resetForm }) => {
                 console.log(".....", values);
 
@@ -86,11 +128,13 @@ const AccountSetting = () => {
                         >
                           Phone Number
                         </label>
-                        <Field
-                          type="text"
+                        <PhoneInput
+                          className="appearance-none  outline-none rounded py-1   w-full text-gray-700 leading-tight focus:outline-none"
+                          placeholder="Enter phone number"
                           name="phoneNumber"
-                          placeholder="(603 555-0123)"
-                          className="border border-[#D3D3D3] p-2 w-full rounded-md focus:outline-none"
+                          // defaultCountry={countryCode}
+                          // value={getValues("phone")}
+                          // onChange={(val) => setValue("phone", val)}
                         />
                       </div>
 
@@ -119,32 +163,28 @@ const AccountSetting = () => {
                       </div>
                     </div>
 
-                    <div className="md:w-[30%] w-full mt-10 ">
+                    <div className="md:w-[30%] w-full  flex flex-col justify-center items-center ">
                       <img
-                        src={profileimage}
+                        src={profileImage}
                         alt="Profile"
                         className="mx-auto"
                       />
-                      <Button
-                        type="button"
-                        variant={{
-                          fontSize: "md",
-                          theme: "light",
-                          fontWeight: "500",
-                          rounded: "large",
-                        }}
-                        className="flex items-center border-2 mt-2 border-black rounded-full"
-                      >
-                        <P
-                          variant={{
-                            size: "base",
-                            theme: "dark",
-                            weight: "semiBold",
-                          }}
+                      <span className="flex items-center rounded-full">
+                        <input
+                          onChange={(e) => handleImageChnage(e)}
+                          type="file"
+                          ref={triggerImg}
+                          accept="image/png, image/jpeg"
+                          className="hidden"
+                        />
+
+                        <span
+                          className={`bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer`}
+                          onClick={triggerInput}
                         >
-                          Choose Image
-                        </P>
-                      </Button>
+                          Add Image
+                        </span>
+                      </span>
                     </div>
                   </div>
                 </Form>

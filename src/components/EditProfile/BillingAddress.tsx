@@ -1,15 +1,57 @@
-import { Field, Form, Formik } from "formik";
+import { useState, useMemo, useEffect } from "react";
+import { useForm, Controller } from "react-hook-form";
 import Header from "../ui/Header";
 import Button from "../ui/Button";
 import P from "../ui/P";
 import Select from "react-select";
+import { useGetArtistDetails } from "../UserProfile/http/useGetDetails";
+import countryList from "react-select-country-list";
+import CustomDropdown from "../pages/CustomDropdown";
+import { PhoneInput } from "react-international-phone";
+import "react-international-phone/style.css";
+import { getCityStateFromZipCountry } from "../utils/MapWithAutocomplete";
 
 const BillingAddress = () => {
-  const countryOptions = [
-    { value: "us", label: "United States" },
-    { value: "ca", label: "Canada" },
-    { value: "uk", label: "United Kingdom" },
-  ];
+  const options = useMemo(() => countryList(), []);
+
+  const [initialValues, setInitialValues] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    companyName: "",
+    streetAddress: "",
+    country: "",
+    zipCode: "",
+    state: "",
+    city: "",
+  });
+
+  const { control, watch, handleSubmit, setValue, reset, getValues } = useForm({
+    defaultValues: initialValues,
+  });
+
+  const { data, isLoading } = useGetArtistDetails();
+  const watchCountry = watch("country");
+  const watchZip = watch("zipCode");
+  const apiKey = import.meta.env.VITE_APP_GOOGLE_MAPS_API_KEY;
+
+  useEffect(() => {
+    if (watchCountry && watchZip && watchZip.length > 4) {
+      getCityStateFromZipCountry(watchCountry, watchZip, apiKey).then(
+        ({ state, city }) => {
+          setValue("city", city);
+          setValue("state", state);
+        }
+      );
+    }
+  }, [watchCountry, watchZip]);
+
+  useEffect(() => {
+    if (data) {
+      setValue("firstName", "Rachit");
+    }
+  }, [data]);
 
   const stateOptions = [
     { value: "chocolate", label: "Chocolate" },
@@ -17,9 +59,14 @@ const BillingAddress = () => {
     { value: "vanilla", label: "Vanilla" },
   ];
 
+  const onSubmit = (data) => {
+    console.log(data);
+    reset();
+  };
+
   return (
     <div>
-      <div className=" shadow-xl my-10">
+      <div className="shadow-xl my-10">
         <div className="rounded-md bg-white border border-[#E6E6E6]">
           <Header
             variant={{ size: "xl", theme: "dark", weight: "semiBold" }}
@@ -29,210 +76,238 @@ const BillingAddress = () => {
           </Header>
 
           <div className="xl:p-6 lg:p-4 md:p-6 p-4">
-            <div className="w-full">
-              <Formik
-                initialValues={{
-                  firstName: "",
-                  lastName: "",
-                  email: "",
-                  phone: "",
-                  companyName: "",
-                  streetAddress: "",
-                  country: "",
-                  zipCode: "",
-                  state: "",
-                }}
-                onSubmit={(values, { resetForm }) => {
-                  resetForm();
-                }}
-              >
-                {({ isSubmitting, setFieldValue }) => (
-                  <Form>
-                    <div className="flex md:flex-row flex-col md:gap-4 w-full">
-                      <div className="sm:my-3 my-1 w-full">
-                        <label
-                          htmlFor="firstName"
-                          className="block mb-2 text-sm font-semibold text-gray-700 text-left"
-                        >
-                          First Name
-                        </label>
-                        <Field
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <div className="w-full">
+                <div className="flex md:flex-row flex-col md:gap-4 w-full">
+                  <div className="sm:my-3 my-1 w-full">
+                    <label
+                      htmlFor="firstName"
+                      className="block mb-2 text-sm font-semibold text-gray-700 text-left"
+                    >
+                      First Name
+                    </label>
+                    <Controller
+                      name="firstName"
+                      control={control}
+                      render={({ field }) => (
+                        <input
+                          {...field}
                           type="text"
-                          name="firstName"
                           placeholder="Dianne"
                           className="border border-[#D3D3D3] p-2 w-full rounded-md focus:outline-none"
                         />
-                      </div>
+                      )}
+                    />
+                  </div>
 
-                      <div className="sm:my-3 my-1 w-full">
-                        <label
-                          htmlFor="lastName"
-                          className="block mb-2 text-sm font-semibold text-gray-700 text-left"
-                        >
-                          Last Name
-                        </label>
-                        <Field
+                  <div className="sm:my-3 my-1 w-full">
+                    <label
+                      htmlFor="lastName"
+                      className="block mb-2 text-sm font-semibold text-gray-700 text-left"
+                    >
+                      Last Name
+                    </label>
+                    <Controller
+                      name="lastName"
+                      control={control}
+                      render={({ field }) => (
+                        <input
+                          {...field}
                           type="text"
-                          name="lastName"
                           placeholder="Russell"
                           className="border border-[#D3D3D3] p-2 w-full rounded-md focus:outline-none"
                         />
-                      </div>
+                      )}
+                    />
+                  </div>
 
-                      <div className="sm:my-3 my-1 w-full">
-                        <label
-                          htmlFor="companyName"
-                          className="block mb-2 text-sm font-semibold text-gray-700 text-left"
-                        >
-                          Company Name
-                        </label>
-                        <Field
+                  <div className="sm:my-3 my-1 w-full">
+                    <label
+                      htmlFor="companyName"
+                      className="block mb-2 text-sm font-semibold text-gray-700 text-left"
+                    >
+                      Company Name
+                    </label>
+                    <Controller
+                      name="companyName"
+                      control={control}
+                      render={({ field }) => (
+                        <input
+                          {...field}
                           type="text"
-                          name="companyName"
                           placeholder="Zakirsoft"
                           className="border border-[#D3D3D3] p-2 w-full rounded-md focus:outline-none"
                         />
-                      </div>
-                    </div>
+                      )}
+                    />
+                  </div>
+                </div>
 
-                    <div className="sm:my-3 my-1 w-full">
-                      <label
-                        htmlFor="streetAddress"
-                        className="block mb-2 text-sm font-semibold text-gray-700 text-left"
-                      >
-                        Street Address
-                      </label>
-                      <Field
-                        type="text"
-                        name="streetAddress"
-                        placeholder="4140 Parl"
-                        className="border border-[#D3D3D3] p-2 w-full rounded-md focus:outline-none"
-                      />
-                    </div>
-
-                    <div className="flex md:flex-row flex-col md:gap-4 w-full">
-                      <div className="sm:my-3 my-1 w-full">
-                        <label
-                          htmlFor="country"
-                          className="block mb-2 text-sm font-semibold text-gray-700 text-left"
-                        >
-                          Country/Region
-                        </label>
-
-                        <Select
-                          name="country"
-                          options={countryOptions}
-                          placeholder="Select a country"
-                          className="rounded-md focus:outline-none text-left"
-                          styles={{
-                            control: (provided) => ({
-                              ...provided,
-                              padding: "2px",
-                            }),
-                          }}
-                          onChange={(option) =>
-                            setFieldValue("country", option)
-                          }
-                        />
-                      </div>
-
-                      <div className="sm:my-3 my-1 w-full">
-                        <label
-                          htmlFor="state"
-                          className="block mb-2 text-sm font-semibold text-gray-700 text-left"
-                        >
-                          States
-                        </label>
-                        <Select
-                          name="state"
-                          options={stateOptions}
-                          placeholder="Select a state"
-                          className="rounded-md focus:outline-none text-left"
-                          styles={{
-                            control: (provided) => ({
-                              ...provided,
-                              padding: "2px",
-                            }),
-                          }}
-                          onChange={(option) => setFieldValue("state", option)}
-                        />
-                      </div>
-
-                      <div className="sm:my-3 my-1 w-full">
-                        <label
-                          htmlFor="zipCode"
-                          className="block mb-2 text-sm font-semibold text-gray-700 text-left"
-                        >
-                          Zip Code
-                        </label>
-                        <Field
+                <div className="flex md:flex-row flex-col md:gap-4 w-full">
+                  <div className="sm:my-3 my-1 w-full">
+                    <label
+                      htmlFor="email"
+                      className="block mb-2 text-sm font-semibold text-gray-700 text-left"
+                    >
+                      Email
+                    </label>
+                    <Controller
+                      name="email"
+                      control={control}
+                      render={({ field }) => (
+                        <input
+                          {...field}
                           type="text"
-                          name="zipCode"
-                          placeholder="200033"
-                          className="border border-[#D3D3D3] p-2 w-full rounded-md focus:outline-none"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="flex md:flex-row flex-col md:gap-4 w-full">
-                      <div className="sm:my-3 my-1 w-full">
-                        <label
-                          htmlFor="email"
-                          className="block mb-2 text-sm font-semibold text-gray-700 text-left"
-                        >
-                          Email
-                        </label>
-                        <Field
-                          type="text"
-                          name="email"
                           placeholder="dianne.russell@gmail.com"
                           className="border border-[#D3D3D3] p-2 w-full rounded-md focus:outline-none"
                         />
-                      </div>
+                      )}
+                    />
+                  </div>
 
-                      <div className="sm:my-3 my-1 w-full">
-                        <label
-                          htmlFor="phone"
-                          className="block mb-2 text-sm font-semibold text-gray-700 text-left"
-                        >
-                          Phone Number
-                        </label>
-                        <Field
+                  <div className="sm:my-3 my-1 w-full">
+                    <label
+                      htmlFor="phone"
+                      className="block mb-2 text-sm font-semibold text-gray-700 text-left"
+                    >
+                      Phone Number
+                    </label>
+                    <PhoneInput
+                      className="appearance-none  outline-none rounded py-1   w-full text-gray-700 leading-tight focus:outline-none"
+                      placeholder="Enter phone number"
+                      // defaultCountry={countryCode}
+                      value={getValues("phone")}
+                      onChange={(val) => setValue("phone", val)}
+                    />
+                  </div>
+                </div>
+
+                <div className="flex md:flex-row flex-col md:gap-4 w-full">
+                  <div className="sm:my-3 my-1 w-full">
+                    <label
+                      htmlFor="country"
+                      className="block mb-2 text-sm font-semibold text-gray-700 text-left"
+                    >
+                      Country
+                    </label>
+                    <CustomDropdown
+                      control={control}
+                      name="country"
+                      options={options}
+                    />
+                  </div>
+
+                  <div className="sm:my-3 my-1 w-full">
+                    <label
+                      htmlFor="zipCode"
+                      className="block mb-2 text-sm font-semibold text-gray-700 text-left"
+                    >
+                      Zip Code
+                    </label>
+                    <Controller
+                      name="zipCode"
+                      control={control}
+                      render={({ field }) => (
+                        <input
+                          {...field}
                           type="text"
-                          name="phone"
-                          placeholder="(603 555-0123)"
+                          placeholder="200033"
                           className="border border-[#D3D3D3] p-2 w-full rounded-md focus:outline-none"
                         />
-                      </div>
-                    </div>
+                      )}
+                    />
+                  </div>
+                </div>
 
-                    <div className="flex mt-5">
-                      <Button
-                        type="submit"
-                        variant={{
-                          fontSize: "md",
-                          theme: "dark",
-                          fontWeight: "500",
-                          rounded: "full",
-                        }}
-                        className="flex items-center !px-6"
-                        disabled={isSubmitting}
-                      >
-                        <P
-                          variant={{
-                            size: "base",
-                            theme: "light",
-                            weight: "semiBold",
-                          }}
-                        >
-                          Save Changes
-                        </P>
-                      </Button>
-                    </div>
-                  </Form>
-                )}
-              </Formik>
-            </div>
+                <div className="flex md:flex-row flex-col md:gap-4 w-full">
+                  <div className="sm:my-3 my-1 w-full">
+                    <label
+                      htmlFor="state"
+                      className="block mb-2 text-sm font-semibold text-gray-700 text-left"
+                    >
+                      States
+                    </label>
+                    <Controller
+                      name="state"
+                      control={control}
+                      render={({ field }) => (
+                        <input
+                          {...field}
+                          type="text"
+                          placeholder="Enter your state"
+                          className="border border-[#D3D3D3] p-2 w-full rounded-md focus:outline-none"
+                        />
+                      )}
+                    />
+                  </div>
+
+                  <div className="sm:my-3 my-1 w-full">
+                    <label
+                      htmlFor="city"
+                      className="block mb-2 text-sm font-semibold text-gray-700 text-left"
+                    >
+                      City
+                    </label>
+                    <Controller
+                      name="city"
+                      control={control}
+                      render={({ field }) => (
+                        <input
+                          {...field}
+                          type="text"
+                          placeholder="Enter your city"
+                          className="border border-[#D3D3D3] p-2 w-full rounded-md focus:outline-none"
+                        />
+                      )}
+                    />
+                  </div>
+                </div>
+
+                <div className="sm:my-3 my-1 w-full">
+                  <label
+                    htmlFor="streetAddress"
+                    className="block mb-2 text-sm font-semibold text-gray-700 text-left"
+                  >
+                    Street Address
+                  </label>
+                  <Controller
+                    name="streetAddress"
+                    control={control}
+                    render={({ field }) => (
+                      <input
+                        {...field}
+                        type="text"
+                        placeholder="4140 Parl"
+                        className="border border-[#D3D3D3] p-2 w-full rounded-md focus:outline-none"
+                      />
+                    )}
+                  />
+                </div>
+
+                <div className="flex mt-5">
+                  <Button
+                    type="submit"
+                    variant={{
+                      fontSize: "md",
+                      theme: "dark",
+                      fontWeight: "500",
+                      rounded: "full",
+                    }}
+                    className="flex items-center !px-6"
+                  >
+                    <P
+                      variant={{
+                        size: "base",
+                        theme: "light",
+                        weight: "semiBold",
+                      }}
+                    >
+                      Save Changes
+                    </P>
+                  </Button>
+                </div>
+              </div>
+            </form>
           </div>
         </div>
       </div>
