@@ -34,7 +34,10 @@ import QRCode from "react-qr-code";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import Dicipline from "./Dicipline";
-import { RenderAllPicklist } from "../../utils/RenderAllPicklist";
+import {
+  RenderAllPicklist,
+  RenderAllPicklists,
+} from "../../utils/RenderAllPicklist";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useTranslation } from "react-i18next";
@@ -43,6 +46,7 @@ import { SeriesPop } from "./SeriesPop";
 import { useGetArtistDetails } from "../ArtistEditProfile/http/useGetDetails";
 import { useGetSeries } from "./http/useGetSeries";
 import { FaSolarPanel } from "react-icons/fa";
+import { useGetArtWorkStyle } from "./http/useGetArtWorkStyle";
 
 const CustomYearPicker = ({
   field,
@@ -82,6 +86,13 @@ const AddArtwork = () => {
 
   const [showCalendar, setShowCalendar] = useState(false);
   const [qrVisible, setQrVisible] = useState(false);
+  const [suggestions, setSuggestions] = useState([
+    "#example1",
+    "#example2",
+    "#example3",
+    "#example4",
+    "#example5",
+  ]);
 
   const toggleCalendar = () => setShowCalendar(!showCalendar);
   const navigate = useNavigate();
@@ -97,7 +108,7 @@ const AddArtwork = () => {
     provideArtistName: Yup.string().required("Provide artist name is required"),
 
     artworkSeries: Yup.string().nullable(), // Optional field
-    productDescription: Yup.string().nullable(), // Optional field
+    productDescription: Yup.string().required(), // Optional field
 
     artworkTechnic: Yup.string().nullable(), // Optional field
     artworkTheme: Yup.string().nullable(), // Optional field
@@ -225,6 +236,8 @@ const AddArtwork = () => {
   const [externalTags, setExternalTags] = useState([]);
   const [loading, setLoading] = useState(true);
   const [artDicipline, setArtDicipline] = useState("");
+  const [purchaseCatlogValue, setPurchaseCatlogValue] = useState(null);
+  const [subscriptionCatlogValue, setsubscriptionCatlogValue] = useState(null);
 
   const [newOtherVideo, setNewOtherVideo] = useState([]);
 
@@ -242,13 +255,25 @@ const AddArtwork = () => {
 
   const { data: userData, isLoading: userIsLoading } = useGetArtistDetails();
   const userID = userData?.data?.artist?._id;
+  const vatAmount = userData?.data?.artist?.invoice?.vatAmount;
   const isArtProvider = userData?.data?.artist?.commercilization?.artProvider;
 
   const { data: technicData, isLoading: technicLoading } = useGetTechnic();
 
   const { data: themeData, isLoading: themeLoading } = useGetTheme();
-  const { data: seriesData, isLoading: seriesLoading } = useGetSeries(userID);
+
+  const { data: artworkStyleList, isLoading: artworkStyleloading } =
+    useGetArtWorkStyle();
+
+  console.log(artworkStyleList);
+  const {
+    data: seriesData,
+    isLoading: seriesLoading,
+    refetch,
+  } = useGetSeries(userID);
   const { mutate, isPending } = usePostArtWorkMutation();
+
+  console.log(seriesData);
 
   const [initialValues, setInitialValues] = useState({
     artworkName: "",
@@ -272,7 +297,7 @@ const AddArtwork = () => {
     discounttype: "",
     discountAcceptation: "",
     textclass: "",
-    vatAmount: seriesData?.vatAmount,
+    vatAmount: vatAmount,
     acceptOfferPrice: "",
     pCode: "",
     location: "",
@@ -327,6 +352,10 @@ const AddArtwork = () => {
   });
 
   useEffect(() => {
+    refetch();
+  }, [userID]);
+
+  useEffect(() => {
     if (
       isLoading ||
       userIsLoading ||
@@ -352,6 +381,14 @@ const AddArtwork = () => {
     (item) =>
       item.discipline &&
       item.discipline.some((newItem) =>
+        newItem.disciplineName.includes(artDicipline)
+      )
+  );
+
+  const newArtworkStyle = artworkStyleList?.data?.filter(
+    (item) =>
+      item?.discipline &&
+      item?.discipline.some((newItem) =>
         newItem.disciplineName.includes(artDicipline)
       )
   );
@@ -433,7 +470,7 @@ const AddArtwork = () => {
         subscriptionCatalog:
           data?.data?.commercialization?.subscriptionCatalog || "",
         purchaseOption: data?.data?.commercialization?.purchaseOption || "",
-        vatAmount: seriesData?.vatAmount || "",
+        vatAmount: vatAmount || "",
         intTags: data?.data?.intTags || [],
         extTags: data?.data?.extTags || [],
         currency: data?.data?.pricing?.currency || "",
@@ -450,19 +487,6 @@ const AddArtwork = () => {
   const url = `https://dev.freshartclub.com/discover_more?id=${id}?referral=${"QR"}`;
 
   const currentPageUrl = url;
-
-  const handleAddTag = (e) => {
-    const tagValue = e.target.value.trim();
-    if (tagValue && !internalTags.includes(tagValue)) {
-      setInternalTags((prevTags) => [...prevTags, tagValue]);
-
-      e.target.value = "";
-    }
-  };
-
-  const handleRemoveTag = (index) => {
-    setInternalTags((prevTags) => prevTags.filter((_, i) => i !== index));
-  };
 
   const handleAddExternalTag = (e) => {
     const tagValue = e.target.value.trim();
@@ -489,7 +513,30 @@ const AddArtwork = () => {
 
   const { t, i18n } = useTranslation();
 
-  const picklist = RenderAllPicklist("Plans");
+  const picklist = RenderAllPicklists([
+    "Commercialization Options",
+    "Currency",
+    "Package Material",
+    "Emotions",
+    "Colors",
+    "Artwork Available To",
+    "Artwork Discount Options",
+  ]);
+
+  const picklistMap = picklist.reduce((acc, item: any) => {
+    acc[item?.fieldName] = item?.picklist;
+    return acc;
+  }, {});
+
+  const purOption = picklistMap["Commercialization Options"];
+  const currency = picklistMap["Currency"];
+  const packMaterial = picklistMap["Package Material"];
+  const emotions = picklistMap["Emotions"];
+  const colors = picklistMap["Colors"];
+  const availableTo = picklistMap["Artwork Available To"];
+  const discountAcceptation = picklistMap["Artwork Discount Options"];
+
+  // console.log(purOption);
 
   const handleNavigate = () => {
     navigate("/artist-panel/artdashboard");
@@ -567,6 +614,8 @@ const AddArtwork = () => {
       setInitialValues({ ...initialValues });
     }
   };
+
+  console.log(data);
 
   const onSubmit = async (values: any) => {
     console.log("onSubmit", values);
@@ -650,7 +699,10 @@ const AddArtwork = () => {
   }, [data]);
 
   const handleCheckArtistFee = (values) => {
+    console.log(values);
+
     const catalogType = values.target.id;
+    const catalogValue = values.target.value;
 
     let updatedValues = { ...initialValues };
 
@@ -660,11 +712,11 @@ const AddArtwork = () => {
       );
 
       if (selectedCatalog) {
-        console.log("Subscription", selectedCatalog);
         updatedValues = {
           ...updatedValues,
           artistFees: selectedCatalog.artistFees,
-          // subscriptionCatalog: selectedCatalog.subscriptionCatalog,
+
+          // subscriptionCatalog: selectedCatalog.catalogName,
         };
       }
     } else if (catalogType === "purchaseCatalog") {
@@ -673,11 +725,12 @@ const AddArtwork = () => {
       );
 
       if (selectedCatalog) {
+        console.log(selectedCatalog);
         updatedValues = {
           ...updatedValues,
           artistFees: selectedCatalog.artistFees,
           // If necessary, update purchaseCatalog here
-          // purchaseCatalog: selectedCatalog.purchaseCatalog,
+          // purchaseCatalog: selectedCatalog.catalogName,
         };
       }
     }
@@ -700,7 +753,14 @@ const AddArtwork = () => {
         onSubmit={onSubmit}
         validateOnChange={true}
       >
-        {({ handleSubmit, values, errors, touched, setFieldValue }) => (
+        {({
+          handleSubmit,
+          values,
+          errors,
+          touched,
+          setFieldValue,
+          setValues,
+        }) => (
           <div
             className={`${
               qrVisible ? "py-10 bg-white blur-sm" : "py-10 bg-white"
@@ -772,7 +832,7 @@ const AddArtwork = () => {
 
                     <div className="mb-4">
                       <label className="block  text-sm sm:text-base text-[#203F58] font-semibold mb-2">
-                       {t("Artwork Name *")}
+                        {t("Artwork Name *")}
                       </label>
                       <Field
                         type="text"
@@ -859,19 +919,23 @@ const AddArtwork = () => {
                             {t("Select Series *")}
                           </label>
                           <p className="text-[#5C59E8] text-sm sm:text-base flex items-center gap-[2px] cursor-pointer">
-                            {/* this is commeted for adding a new series */}
-                            <span className="border-b-2 border-b-[#5C59E8] ">
-                              {" "}
-                              <TiPlus />
-                            </span>{" "}
                             <span
+                              onClick={() => setIsPopupOpen(true)}
+                              className=" "
+                            >
+                              {" "}
+                              <TiPlus size="1.2em" />
+                            </span>{" "}
+                            {/* <span
                               onClick={() => setIsPopupOpen(true)}
                               className={`border-b border-b-[#5C59E8] font-semibold ${
                                 query ? "pointer-events-none opacity-50 " : ""
                               }`}
+
+
                             >
                               Create New Series
-                            </span>
+                            </span> */}
                           </p>
                         </div>
 
@@ -896,6 +960,11 @@ const AddArtwork = () => {
                             <option key={index}>{series}</option>
                           ))}
                         </Field>
+                        {touched.artworkSeries && errors.artworkSeries ? (
+                          <div className="error text-red-500 mt-1 text-sm">
+                            {errors.artworkSeries}
+                          </div>
+                        ) : null}
                       </div>
                     </div>
 
@@ -943,7 +1012,7 @@ const AddArtwork = () => {
                             }}
                             className="mb-2 text-[#203F58]"
                           >
-                           {t("Main Photo")}
+                            {t("Main Photo")}
                           </Header>
                           <input
                             type="file"
@@ -988,7 +1057,9 @@ const AddArtwork = () => {
                               }}
                               className="text-center"
                             >
-                              {t("Drag and drop image here, or click add image")}
+                              {t(
+                                "Drag and drop image here, or click add image"
+                              )}
                             </P>
                             <span
                               onClick={() =>
@@ -998,7 +1069,7 @@ const AddArtwork = () => {
                               }
                               className="bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer"
                             >
-                             {t("Add Image")}
+                              {t("Add Image")}
                             </span>
                           </div>
                         </div>
@@ -1059,7 +1130,9 @@ const AddArtwork = () => {
                               }}
                               className="text-center"
                             >
-                             {t("Drag and drop image here, or click add image")}
+                              {t(
+                                "Drag and drop image here, or click add image"
+                              )}
                             </P>
                             <span
                               onClick={() =>
@@ -1131,7 +1204,9 @@ const AddArtwork = () => {
                               }}
                               className="text-center"
                             >
-                              {t("Drag and drop image here, or click add image")}
+                              {t(
+                                "Drag and drop image here, or click add image"
+                              )}
                             </P>
                             <span
                               onClick={() =>
@@ -1236,7 +1311,9 @@ const AddArtwork = () => {
                               }}
                               className="text-center"
                             >
-                              {t("Drag and drop image here, or click add image")}
+                              {t(
+                                "Drag and drop image here, or click add image"
+                              )}
                             </P>
                             <span
                               onClick={() =>
@@ -1307,7 +1384,9 @@ const AddArtwork = () => {
                               }}
                               className="text-center"
                             >
-                              {t("Drag and drop image here, or click add image")}
+                              {t(
+                                "Drag and drop image here, or click add image"
+                              )}
                             </P>
                             <span
                               onClick={() =>
@@ -1403,7 +1482,9 @@ const AddArtwork = () => {
                               }}
                               className="text-center"
                             >
-                              {t("Drag and drop image here, or click add image")}
+                              {t(
+                                "Drag and drop image here, or click add image"
+                              )}
                             </P>
                             <span
                               onClick={() =>
@@ -1501,7 +1582,10 @@ const AddArtwork = () => {
 
                     <div className="mt-5">
                       <Select
-                        options={options}
+                        options={newArtworkStyle?.map((item) => ({
+                          value: item?.styleName,
+                          label: item?.styleName,
+                        }))}
                         placeholder="Select Artwork Style"
                         isMulti
                         isDisabled={query ? true : false}
@@ -1531,7 +1615,7 @@ const AddArtwork = () => {
 
                     <div className="mt-3 mb-2">
                       <Select
-                        options={options_1}
+                        options={emotions ? emotions : []}
                         defaultValue={value}
                         placeholder="Emotions"
                         isMulti
@@ -1563,7 +1647,7 @@ const AddArtwork = () => {
 
                     <div className="mb-3">
                       <Select
-                        options={options_2}
+                        options={colors ? colors : []}
                         placeholder="Select Color"
                         name="colors"
                         isDisabled={query ? true : false}
@@ -1606,52 +1690,12 @@ const AddArtwork = () => {
                         disabled={query}
                         className="bg-[#F9F9FC] mt-1 border mb-3 border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
                       >
-                        <option value="" disabled>
-                          Select
-                        </option>
-                        <option>Yes </option>
                         <option>No</option>
+                        <option>Yes </option>
                       </Field>
                     </label>
 
                     {/* tags */}
-
-                    <label className="text-[#203F58] text-sm sm:text-base font-semibold ">
-                      Tags Internal
-                      <div className="flex flex-wrap gap-2 mt-1">
-                        <input
-                          type="text"
-                          id="intTags"
-                          name="intTags"
-                          disabled={query}
-                          className="bg-[#F9F9FC] border mb-3 border-gray-300 outline-none  text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5"
-                          placeholder="Enter tags (e.g., #example)"
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") {
-                              e.preventDefault();
-                              handleAddTag(e);
-                            }
-                          }}
-                        />
-                      </div>
-                      <div className="mt-2 mb-3">
-                        {internalTags.map((tag, index) => (
-                          <span
-                            key={index}
-                            id="intTags"
-                            className="bg-blue-100 border border-blue-800 px-2 py-1 rounded-full text-sm mr-2 mb-2 w-fit"
-                          >
-                            {tag}
-                            <span
-                              onClick={() => handleRemoveTag(index)}
-                              className="ml-2 cursor-pointer text-black"
-                            >
-                              X
-                            </span>
-                          </span>
-                        ))}
-                      </div>
-                    </label>
 
                     <label className="text-[#203F58] text-sm sm:text-base font-semibold ">
                       Tags External
@@ -1671,6 +1715,24 @@ const AddArtwork = () => {
                           }}
                         />
                       </div>
+                      {/* {picklist && picklist.length > 0 && (
+                        <div className="bg-white border border-gray-300 rounded-lg mt-1 p-2">
+                          <ul>
+                            {picklist.map((suggestion, index) => (
+                              <li
+                                key={index}
+                                className="cursor-pointer text-gray-700 hover:bg-gray-200 p-1"
+                                onClick={() => {
+                                  setFieldValue(suggestion);
+                                  handleAddExternalTag();
+                                }}
+                              >
+                                {suggestion.value}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )} */}
                       <div className="mt-2 mb-3">
                         {externalTags.map((tag, index) => (
                           <span
@@ -1841,6 +1903,7 @@ const AddArtwork = () => {
                     <div className="flex border-b  border-gray-300">
                       <span
                         onClick={() => setActiveTab("subscription")}
+                        // onChange={() => setPurchaseCatlogValue(null)}
                         className={`py-2 font-bold ${
                           activeTab === "subscription"
                             ? "border-b-4 border-black"
@@ -1850,7 +1913,11 @@ const AddArtwork = () => {
                         Subscription
                       </span>
                       <span
-                        onClick={() => setActiveTab("purchase")}
+                        onClick={() => {
+                          setActiveTab("purchase");
+                          setPurchaseCatlogValue(null);
+                        }}
+                        // onChange={() => setPurchaseCatlogValue(null)}
                         className={`py-2 mx-8 font-bold ${
                           activeTab === "purchase"
                             ? "border-b-4 border-black"
@@ -1867,19 +1934,56 @@ const AddArtwork = () => {
                           <div className="mt-4 space-y-2">
                             <label className="text-[#203F58] text-sm sm:text-base font-semibold ">
                               Subscription Catalog
-                              <Field
+                              <select
+                                name="subscriptionCatalog"
+                                id="subscriptionCatalog"
+                                value={
+                                  subscriptionCatlogValue
+                                    ? subscriptionCatlogValue
+                                    : values.subscriptionCatalog
+                                }
+                                // onClick={handleCheckArtistFee}
+                                onChange={(val) => {
+                                  handleCheckArtistFee(val);
+
+                                  setsubscriptionCatlogValue(val.target.value);
+                                  setFieldValue(
+                                    "subscriptionCatalog",
+                                    val.target.value
+                                  );
+                                }}
+                                className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
+                              >
+                                <option value="">Select</option>
+
+                                {seriesData?.subscriptionCatalog?.map(
+                                  (series, index) => (
+                                    <option
+                                      key={index}
+                                      // label={series?.catalogName}
+                                      value={series?.catalogName}
+                                    >
+                                      {series?.catalogName}
+                                    </option>
+                                  )
+                                )}
+                              </select>
+                              {/* <Field
                                 as="select"
                                 id="subscriptionCatalog"
                                 name="subscriptionCatalog"
+                                // onClick={handleCheckArtistFee}
                                 disabled={query}
                                 onChange={(e) => {
-                                  setFieldValue(
-                                    "subscriptionCatalog",
-                                    e.target.value
-                                  );
+                                  // setFieldValue(
+                                  //   "subscriptionCatalog",
+                                  //   e.target.value
+                                  // );
                                   handleCheckArtistFee(e);
+                                  setPurchaseCatlogValue(null);
+                                  setsubscriptionCatlogValue(e.target.value);
                                 }}
-                                // value={values.subscriptionCatalog}
+                                value={subscriptionCatlogValue}
                                 className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
                               >
                                 <option value="" disabled>
@@ -1896,7 +2000,7 @@ const AddArtwork = () => {
                                     </option>
                                   )
                                 )}
-                              </Field>
+                              </Field> */}
                             </label>
                           </div>
 
@@ -1928,18 +2032,52 @@ const AddArtwork = () => {
                           <div className="space-y-2">
                             <label className="text-[#203F58] text-sm sm:text-base font-semibold ">
                               Purchase Catalog
-                              <Field
+                              <select
+                                name="purchaseCatalog"
+                                id="purchaseCatalog"
+                                value={
+                                  purchaseCatlogValue
+                                    ? purchaseCatlogValue
+                                    : values.purchaseCatalog
+                                }
+                                onChange={(val) => {
+                                  handleCheckArtistFee(val);
+                                  setPurchaseCatlogValue(val.target.value);
+                                  setFieldValue(
+                                    "purchaseCatalog",
+                                    val.target.value
+                                  );
+
+                                  setsubscriptionCatlogValue("");
+                                }}
+                                className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
+                              >
+                                <option value="">Select</option>
+                                {seriesData?.purchaseCatalog?.map(
+                                  (item, index) => (
+                                    <option
+                                      // label={item?.catalogNameabel}
+                                      value={item?.catalogName}
+                                      key={index}
+                                    >
+                                      {item?.catalogName}
+                                    </option>
+                                  )
+                                )}
+                              </select>
+                              {/* <Field
                                 as="select"
                                 id="purchaseCatalog"
                                 name="purchaseCatalog"
                                 disabled={query}
                                 onChange={(e) => {
-                                  setFieldValue(
-                                    "purchaseCatalog",
-                                    e.target.value
-                                  );
                                   handleCheckArtistFee(e);
+                                  setsubscriptionCatlogValue(null);
+
+                                  setPurchaseCatlogValue(e.target.value);
                                 }}
+                                // onClick={handleCheckArtistFee}
+                                value={purchaseCatlogValue}
                                 className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
                               >
                                 <option value="" disabled>
@@ -1947,12 +2085,15 @@ const AddArtwork = () => {
                                 </option>
                                 {seriesData?.purchaseCatalog?.map(
                                   (item, index) => (
-                                    <option key={index}>
+                                    <option
+                                      value={item?.catalogName}
+                                      key={index}
+                                    >
                                       {item?.catalogName}
                                     </option>
                                   )
                                 )}
-                              </Field>
+                              </Field> */}
                             </label>
                           </div>
 
@@ -2075,7 +2216,7 @@ const AddArtwork = () => {
 
                           {values.purchaseType === "Downword Offer" ? (
                             <label className="text-[#203F58] text-sm sm:text-base font-semibold">
-                              Accpet Minimum Price
+                              Accept Offer Minimum Price
                               <Field
                                 type="text"
                                 name="acceptOfferPrice"
@@ -2143,7 +2284,7 @@ const AddArtwork = () => {
                           id="vatAmount"
                           name="vatAmount"
                           placeholder="Type VAT amount..."
-                          value={values.vatAmount}
+                          value={vatAmount}
                           readOnly={true}
                           className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5"
                         />

@@ -20,7 +20,7 @@ const ArtistNavBar = () => {
 
   const navigate = useNavigate();
   const user = useAppSelector((state) => state.user.user);
-  const [language, setLanguage] = useState("eng");
+  const [language, setLanguage] = useState("english");
   const closePopup = useRef(null);
 
   const dispatch = useAppDispatch();
@@ -42,6 +42,8 @@ const ArtistNavBar = () => {
   useClickOutside(closePopup, () => {
     setIsToggelOpen(false);
   });
+
+  console.log(language.toLocaleLowerCase());
 
   const url = "https://dev.freshartclub.com/images";
 
@@ -89,7 +91,7 @@ const ArtistNavBar = () => {
         </div>
 
         {/* Country Selector */}
-        <div className="relative inline-block">
+        {/* <div className="relative inline-block">
           <div
             className="flex   items-center space-x-2 cursor-pointer"
             onClick={() => setIsLanguageOpen((prev) => !prev)}
@@ -136,7 +138,7 @@ const ArtistNavBar = () => {
               ))}
             </div>
           )}
-        </div>
+        </div> */}
 
         {/* Notifications */}
         <IoNotifications
@@ -155,7 +157,7 @@ const ArtistNavBar = () => {
             className="w-8 h-8 object-cover rounded-full "
           />
           <p className="font-semibold ml-2 hidden lg:block">
-            {user.artistName}
+            {user.artistName} {user.artistSurname1} {user.artistSurname2}
           </p>
           <img
             className={`ml-1 transition-transform duration-300 ${
@@ -170,7 +172,7 @@ const ArtistNavBar = () => {
         {isToogleOpen && (
           <div
             ref={closePopup}
-            className="absolute  z-10 top-20 right-5 flex flex-col gap-4 text-sm bg-white border rounded-lg shadow-md py-5 px-5"
+            className="absolute  z-10 top-20 right-5 flex flex-col gap-4 text-sm bg-white border rounded-lg shadow-md py-5 px-6"
           >
             <Link
               className="font-medium hover:bg-zinc-200 transition-all duration-200"
@@ -179,6 +181,39 @@ const ArtistNavBar = () => {
             >
               Profile
             </Link>
+
+            <Link
+              className="font-medium hover:bg-zinc-200 transition-all duration-200"
+              to={artistPanel.artistprofileOther}
+              onClick={() => setIsToggelOpen(false)}
+            >
+              Language
+            </Link>
+
+            <Link
+              className="font-medium hover:bg-zinc-200 transition-all duration-200"
+              to={artistPanel.artistprofileOther}
+              onClick={() => setIsToggelOpen(false)}
+            >
+              Password
+            </Link>
+
+            <Link
+              className="font-medium hover:bg-zinc-200 transition-all duration-200"
+              to={artistPanel.artistprofileOther}
+              onClick={() => setIsToggelOpen(false)}
+            >
+              Currency
+            </Link>
+
+            <Link
+              className="font-medium hover:bg-zinc-200 transition-all duration-200"
+              to={artistPanel.artistprofileOther}
+              onClick={() => setIsToggelOpen(false)}
+            >
+              Notification
+            </Link>
+
             <button
               className="font-medium hover:bg-zinc-200"
               onClick={handleProfile}
@@ -186,10 +221,11 @@ const ArtistNavBar = () => {
               Switch To User Profile
             </button>
             <button
-              className="bg-red-300 py-2 rounded hover:bg-red-400 font-medium"
+              className="bg-red-300 flex flex-col items-center justify-center gap-1 py-2 rounded hover:bg-red-400 font-medium"
               onClick={handleLogOut}
             >
-              Sign Out
+              <span>Sign Out</span>
+              <span className="text-[12px]">{user.email}</span>
             </button>
           </div>
         )}

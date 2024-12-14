@@ -109,7 +109,7 @@ const ArtworkRight = ({ query }) => {
               <option value="no">No</option>
             </Field>
           </div>
-
+          {/* 
           <div className="mb-4">
             <label
               htmlFor="promotionscore"
@@ -130,7 +130,7 @@ const ArtworkRight = ({ query }) => {
               id="myRange"
             />
             <span className="ml-2">{values.promotionScore}</span>
-          </div>
+          </div> */}
         </div>
 
         <div className="bg-white rounded-lg shadow-md p-6 mt-4 border border-[#E0E2E7]">

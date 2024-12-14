@@ -58,8 +58,8 @@ const SearchDropdown: FC<SearchDropdownProps> = ({
           className="border p-3 sm:p-4 rounded-lg text-sm font-bold text-[#203F58] w-full sm:w-auto outline-none"
         >
           <option value="All Tickets">Select Priority</option>
-          <option value="New Tickets">New Tickets</option>
-          <option value="On-Going Tickets">On-Going Tickets</option>
+          <option value="New Tickets">Requested Ticket</option>
+          <option value="On-Going Tickets">Dispatched Ticket</option>
           <option value="Resolved Tickets">Resolved Tickets</option>
         </select>
 

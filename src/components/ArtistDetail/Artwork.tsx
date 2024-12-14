@@ -87,7 +87,7 @@ const Artwork = () => {
           onClick={handleArtworkSelect}
           className="px-2 py-2 bg-white font-medium rounded cursor-pointer text-md"
         >
-          Art Provider
+          Artist Name
         </span>
 
         <div className="flex gap-2 flex-wrap justify-end pt-2">
@@ -138,7 +138,7 @@ const Artwork = () => {
                 >
                   {item?.artworks?.map((art, idx) => (
                     <div
-                      className={`bg-red-300 rounded-lg pb-5 border-b-4  ${
+                      className={`bg-red-300 rounded-lg pb-5 border-4  ${
                         art?.status === "published"
                           ? "border-[#00DE00]"
                           : art?.status === "pending"
@@ -151,7 +151,7 @@ const Artwork = () => {
                       }`}
                     >
                       <SwiperSlide
-                        className={`w-fit rounded-lg pb-5 border-b-4  ${
+                        className={`w-fit rounded-lg pb-5 border-4 overflow-hidden ${
                           art?.status === "published"
                             ? "border-[#00DE00]"
                             : art?.status === "subscription"
@@ -166,7 +166,7 @@ const Artwork = () => {
                         }`}
                       >
                         <img
-                          className="w-[20rem] h-[30rem] object-cover"
+                          className="w-[20rem] h-[20rem] object-cover"
                           src={`${data?.url}/users/${art?.media}`}
                           alt=""
                         />

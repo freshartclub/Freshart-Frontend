@@ -27,6 +27,7 @@ import { Country, State, City } from "country-state-city";
 import Select from "react-select";
 import Flag from "react-world-flags";
 import CustomDropdown from "../../pages/CustomDropdown";
+import Dicipline from "./Dicipline";
 
 const GeneralForm = ({ isActiveStatus }) => {
   const { data, isLoading } = useGetArtistDetails();
@@ -112,6 +113,7 @@ const GeneralForm = ({ isActiveStatus }) => {
     setValue("accounts", data?.data?.artist?.links || "");
     setValue("highlights", data?.data?.artist?.highlights?.addHighlights || "");
     setValue("vatAmount", data?.data?.artist?.invoice?.vatAmount || "");
+    setValue("discipline", data?.data?.artist?.aboutArtist?.discipline || "");
 
     setValue("cvEntries", data?.data?.artist?.highlights?.cv || "");
     // we will have to fix it
@@ -217,7 +219,25 @@ const GeneralForm = ({ isActiveStatus }) => {
       setIsEditInfo(data?.data?.artist?.isArtistEditInfoRequest)
     );
     setManagerDetails(data?.data?.artist?.isManagerDetails);
+    setValue(
+      "style",
+      data?.data?.artist?.aboutArtist?.discipline?.map((item) =>
+        item?.style?.map((opt) => {
+          return { value: opt, label: opt };
+        })
+      ) || []
+    );
+
+    style: data?.data?.artist?.aboutArtist?.discipline?.map((item) =>
+      item?.style?.map((opt) => {
+        return { value: opt, label: opt };
+      })
+    );
   }, [data]);
+
+  // console.log(getValues("discipline"));
+
+  // console.log(getValues("style"));
 
   const handlePDF = (file) => {
     window.open(`${data?.data?.url}/documents/${file}`, "_blank");
@@ -265,7 +285,11 @@ const GeneralForm = ({ isActiveStatus }) => {
     Object.keys(data).forEach((key) => {
       if (Array.isArray(data[key])) {
         data[key].forEach((item) => {
-          if (key === "cvEntries" || key === "accounts") {
+          if (
+            key === "cvEntries" ||
+            key === "accounts" ||
+            key === "discipline"
+          ) {
             formData.append(key, JSON.stringify(item));
           } else {
             formData.append(key, item);
@@ -276,18 +300,9 @@ const GeneralForm = ({ isActiveStatus }) => {
       }
     });
 
-    // if (
-    //   // data?.cvEntries !== getValues("cvEntries") ||
-    //   data.about !== defaultValues.about ||
-    //   data.highlights !== defaultValues.highlights ||
-    //   data.mainImage !== defaultValues.mainImage ||
-    //   // data.inProcessImage !== defaultValues.inProcessImage ||
-    //   // data.additionalVideo !== defaultValues.additionalVideo ||
-    //   data.mainVideo !== defaultValues.mainVideo
-    // ) {
-    //   console.log("im there");
-    //   formData.append("isArtistEditInfoRequest", "true");
-    // }
+    for (let [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
 
     if (isManagerDetails) {
       formData.append("isManagerDetails", "true");
@@ -305,14 +320,44 @@ const GeneralForm = ({ isActiveStatus }) => {
   }
 
   return (
-    <div className="w-full md:w-[70%] flex shadow-lg justify-center items-center">
+    <div className="w-full md:w-full flex shadow-lg justify-center items-center">
       <div className="rounded-md w-full bg-white">
         <div className="xl:p-4 lg:p-3 md:p-4 p-3 w-full">
           <FormProvider {...methods}>
             <form onSubmit={handleSubmit(onSubmit)}>
-              <h2 className="text-xl font-semibold mb-3 pb-3 text-[#1A1C21]">
-                General Information
-              </h2>
+              <div className="flex  justify-between mb-3 pb-3">
+                <h2 className="text-xl font-semibold  text-[#1A1C21]">
+                  General Information
+                </h2>
+
+                <span
+                  className={`text-sm ${
+                    isActiveStatus === "active"
+                      ? "bg-green-200 "
+                      : isActiveStatus === "under-review"
+                      ? "bg-yellow-200"
+                      : isActiveStatus === "inactive"
+                      ? "bg-red-200"
+                      : null
+                  }  px-2 flex items-center gap-1 rounded-md  `}
+                >
+                  <span className="w-1.5 h-1.5 block bg-black rounded-full"></span>{" "}
+                  {isActiveStatus === "active"
+                    ? "Active"
+                      ? "Published"
+                      : ""
+                    : isActiveStatus === "under-review"
+                    ? "Pending Approval"
+                    : ""
+                    ? "Under-Review"
+                    : isActiveStatus === "inactive"
+                    ? "Draft"
+                    : ""
+                    ? "Inactive"
+                    : null}
+                </span>
+              </div>
+
               <div className="flex flex-wrap justify-between w-full gap-4 mb-4">
                 <div className="md:w-[48%] w-full relative">
                   <input
@@ -535,6 +580,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                     options={options}
                     countryValue={countryValue}
                     name="country"
+                    isActiveStatus={isActiveStatus}
                   />
 
                   <label
@@ -654,6 +700,44 @@ const GeneralForm = ({ isActiveStatus }) => {
                     </div>
                   )}
                 />
+
+                <div className="p-4 mt-4 bg-white rounded-lg shadow-md max-w-full ">
+                  <h2 className="text-xl font-medium mb-3 text-[#1A1C21]">
+                    Insignia
+                  </h2>
+                  <div className="flex gap-3 items-center justify-center">
+                    {data?.data?.artist?.insignia?.map((item, i) => (
+                      <div>
+                        <img
+                          src={`${data.data.url}/users/${item.insigniaImage}`}
+                          alt=""
+                          className="lg:w-[10vw] lg:h-[15vh] object-cover"
+                        />
+                        <h1 className="text-center font-medium">
+                          {item.credentialName}
+                        </h1>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <GeneralSocial
+                  control={control}
+                  isActiveStatus={isActiveStatus}
+                />
+
+                <Dicipline
+                  control={control}
+                  isActiveStatus={isActiveStatus}
+                  prefillValues={getValues("discipline")}
+                  watch={watch}
+                />
+
+                {/* <div className="p-4 mt-4 bg-white rounded-lg shadow-md max-w-full ">
+                  <h2 className="text-xl font-medium mb-3 text-[#1A1C21]">
+                    Add Dicipline
+                  </h2>
+                </div> */}
               </div>
 
               <GeneralMedia
@@ -1140,31 +1224,6 @@ const GeneralForm = ({ isActiveStatus }) => {
                   </div>
                 </div>
               </div>
-
-              <div className="p-4 mt-4 bg-white rounded-lg shadow-md max-w-full ">
-                <h2 className="text-xl font-semibold mb-3 text-[#1A1C21]">
-                  Insignia
-                </h2>
-                <div className="flex gap-3 items-center justify-center">
-                  {data?.data?.artist?.insignia?.map((item, i) => (
-                    <div>
-                      <img
-                        src={`${data.data.url}/users/${item.insigniaImage}`}
-                        alt=""
-                        className="lg:w-[10vw] lg:h-[15vh] object-cover"
-                      />
-                      <h1 className="text-center font-medium">
-                        {item.credentialName}
-                      </h1>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <GeneralSocial
-                control={control}
-                isActiveStatus={isActiveStatus}
-              />
 
               <div className="flex flex-wrap justify-end items-center gap-4 mt-8">
                 <button

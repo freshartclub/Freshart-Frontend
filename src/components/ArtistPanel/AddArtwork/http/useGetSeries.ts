@@ -18,5 +18,6 @@ export const useGetSeries = (userID) => {
   return useQuery({
     queryKey: ["GetSeries"],
     queryFn: () => fetchData(userID),
+    enabled: true,
   });
 };

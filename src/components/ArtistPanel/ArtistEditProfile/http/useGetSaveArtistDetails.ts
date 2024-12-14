@@ -23,7 +23,7 @@ const useGetSaveArtistDetailsMutation = () => {
 
     onSuccess: async (res) => {
       queryClient.invalidateQueries({
-        queryKey: [ARTTIST_ENDPOINTS.GetArtistDetials],
+        queryKey: ["ntohing"],
         refetchType: "all",
       });
 

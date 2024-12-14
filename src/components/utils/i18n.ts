@@ -12,8 +12,8 @@ i18n
     ns: ["translation"],
     defaultNS: "translation",
     backend: {
-      loadPath: `https://dev.freshartclub.com/images/lang/{{lng}}.json`,
-      // loadPath: `http://localhost:5000/uploads/lang/{{lng}}.json`,
+      // loadPath: `https://dev.freshartclub.com/images/lang/{{lng}}.json`,
+      loadPath: `http://localhost:5000/uploads/lang/{{lng}}.json`,
     },
   });
 

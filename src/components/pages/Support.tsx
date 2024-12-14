@@ -20,6 +20,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useGetAllIncidents } from "../NewTicket/ticket history/http/useGetAllIncidents";
 import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
+import { useGetFaq } from "./http/useGetFaq";
+import { useGetKbDataBase } from "./http/useGetKbDataBase";
 
 const assist_Data = [
   {
@@ -69,6 +71,10 @@ const Support = () => {
 
   const { data, isLoading } = useGetAllIncidents();
 
+  const { data: faqData, isLoading: faqLoading } = useGetFaq();
+
+  const { data: kbData, isLoading: KbLoding } = useGetKbDataBase();
+
   dayjs.extend(isBetween);
 
   const now = dayjs();
@@ -83,22 +89,33 @@ const Support = () => {
 
   const location = useLocation();
   const isArtistProfile = location.pathname.includes("/artist-panel");
+  const handleKbDatabse = () => {
+    navigate(`/artist-panel/kb-database`);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleFaq = () => {
+    navigate(`/artist-panel/faq`);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
     <div>
       <div className="container mx-auto md:px-6 px-3">
-        <div className="bg-[#E9E4DF] border-2 border-[#FF536B] p-4 mb-4 rounded-md mt-6">
-          <h3 className="font-semibold">Important Notice:</h3>
-          {isLoading ? (
-            <h1>Loading...</h1>
-          ) : (
-            newIncident?.map((item, i) => (
-              <p className="mt-1" key={i}>
-                {item?.description?.replace(/(^<p>|<\/p>$)/g, "")}
-              </p>
-            ))
-          )}
-        </div>
+        {newIncident?.lnegth > 0 ? (
+          <div className="bg-[#E9E4DF] border-2 border-[#FF536B] p-4 mb-4 rounded-md mt-6">
+            <h3 className="font-semibold">Important Notice:</h3>
+            {isLoading ? (
+              <h1>Loading...</h1>
+            ) : (
+              newIncident?.map((item, i) => (
+                <p className="mt-1" key={i}>
+                  {item?.description?.replace(/(^<p>|<\/p>$)/g, "")}
+                </p>
+              ))
+            )}
+          </div>
+        ) : null}
         <div className="flex sm:flex-row flex-col justify-between my-10 w-full">
           <div className="md:w-[70%] w-full">
             <Button
@@ -158,8 +175,9 @@ const Support = () => {
           <div className="grid xl:grid-cols-4 md:grid-cols-3 grid-cols-1  gap-4">
             {assist_Data.map((item, index) => (
               <div
+                onClick={() => handleKbDatabse()}
                 key={index}
-                className="bg-white flex p-4 border-2 border-[#FFD8DD] shadow-lg"
+                className="bg-white flex p-4 border-2 border-[#FFD8DD] shadow-lg cursor-pointer"
               >
                 <img className="w-8 h-8" src={item.image} alt="image" />
                 <P
@@ -182,47 +200,28 @@ const Support = () => {
           >
             Popular Topics
           </Header>
-          <div className="grid xl:grid-cols-3 md:grid-cols-2 justify-between px-3 gap-10">
-            <div className="">
-              <ul className="list-disc">
-                <li className="mb-5  font-normal">How do I return my item?</li>
-                <li className="mb-5  font-normal">
-                  What is Clicons Returns Policy?
-                </li>
-                <li className="mb-5  font-normal">
-                  How long is the refund process?
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <ul className="list-disc">
-                <li className="mb-5  font-normal">
-                  What are the 'Delivery Timelines'?
-                </li>
-                <li className="mb-5  font-normal">
-                  What is 'Discover Your Daraz Campaign 2022'?
-                </li>
-                <li className="mb-5  font-normal">
-                  What is the Voucher & Gift Offer in this Campaign?
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <ul className="list-disc">
-                <li className="mb-5  font-normal">
-                  How to cancel Clicon Order.
-                </li>
-                <li className="mb-5  font-normal">
-                  Ask the Digital and Device Community
-                </li>
-                <li className="mb-5  font-normal">
-                  How to change my shop name?
-                </li>
-              </ul>
-            </div>
+          <div className="grid xl:grid-cols-3 md:grid-cols-2 justify-between px-3 gap-5">
+            {faqData?.data &&
+              faqData?.data?.length > 0 &&
+              faqData?.data?.map((item, index) => (
+                <div
+                  onClick={() => handleFaq()}
+                  key={index}
+                  className="cursor-pointer"
+                >
+                  <h3 className="font-semibold">{item.faqQues}</h3>
+                  {/* <p>{item.faqAns}</p> */}
+                </div>
+              ))}
           </div>
+        </div>
+        <div className="flex justify-center mb-3">
+          <button
+            onClick={() => handleFaq()}
+            className=" bg-black text-white px-4 py-2 rounded-md "
+          >
+            View All
+          </button>
         </div>
       </div>
 

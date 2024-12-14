@@ -90,9 +90,8 @@ const GeneralUpload = ({ isActiveStatus }) => {
 
   return (
     <div className="flex flex-col lg:flex-row gap-5 w-full mt-6">
-      <div className="shadow-xl p-5 relative lg:w-[30%] h-fit flex flex-col items-center rounded-xl">
-        <div className="flex justify-center items-center">
-          {/* Display the uploaded image or the default image fetched from the server */}
+      {/* <div className="shadow-xl p-5 relative lg:w-[30%] h-fit flex flex-col items-center rounded-xl"> */}
+      {/* <div className="flex justify-center items-center">
           {uploadedImage ? (
             <img
               src={uploadedImage} // This can either be the uploaded image or the fetched image URL
@@ -102,10 +101,10 @@ const GeneralUpload = ({ isActiveStatus }) => {
           ) : (
             <img src={upload} alt="default" className="object-contain" />
           )}
-        </div>
+        </div> */}
 
-        {/* Uploading New Image */}
-        {!uploadedImage && (
+      {/* Uploading New Image */}
+      {/* {!uploadedImage && (
           <P
             variant={{ size: "base", theme: "light", weight: "normal" }}
             className="absolute top-20 justify-center flex flex-col items-center gap-3"
@@ -126,9 +125,9 @@ const GeneralUpload = ({ isActiveStatus }) => {
               />
             </label>
           </P>
-        )}
+        )} */}
 
-        <P
+      {/* <P
           variant={{ size: "base", weight: "normal" }}
           className="text-center text-[#919EAB] mt-10"
         >
@@ -139,9 +138,9 @@ const GeneralUpload = ({ isActiveStatus }) => {
           className="text-center text-[#919EAB]"
         >
           Max size of 3.1 MB
-        </P>
+        </P> */}
 
-        <div className="flex justify-center gap-6 mt-10">
+      {/* <div className="flex justify-center gap-6 mt-10">
           <P
             variant={{
               size: "base",
@@ -161,10 +160,10 @@ const GeneralUpload = ({ isActiveStatus }) => {
               }`}
             ></div>
           </label>
-        </div>
+        </div> */}
 
-        {/* Update Button */}
-        <div className="text-center">
+      {/* Update Button */}
+      {/* <div className="text-center">
           <button
             onClick={handleUpdateProfile}
             className={`bg-[#FF563014] text-[#B71D18] px-4 py-2 rounded font-semibold mt-10 ${
@@ -175,10 +174,9 @@ const GeneralUpload = ({ isActiveStatus }) => {
           >
             Update Profile
           </button>
-        </div>
-      </div>
+        </div> */}
+      {/* </div> */}
 
-      {/* General Form */}
       <GeneralForm isActiveStatus={isActiveStatus} />
     </div>
   );

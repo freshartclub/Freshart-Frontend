@@ -16,14 +16,14 @@ import NewTicket from "../NewTicket/NewTicket";
 import Settings from "./ArtistEditProfile/Settings";
 import OrderApprove from "./OrderApprove/OrderApprove";
 import { useState } from "react";
+import KbDatabase from "../pages/KbDatabase";
+import Faq from "../pages/Faq";
 
 const ArtistPanel = () => {
-  
- 
   return (
     <>
       <div className=" flex w-full overflow-hidden">
-        <Sidebar  />
+        <Sidebar />
         <div className="flex-1 sm:px-6 lg:px-3 bg-zinc-100 ">
           <Routes>
             <Route index element={<Dashboard />} />
@@ -41,6 +41,8 @@ const ArtistPanel = () => {
             <Route path="ticket/tickets" element={<TicketHistory />} />
             <Route path="/ticket" element={<Support />} />
             <Route path="/new_ticket" element={<NewTicket />} />
+            <Route path="/kb-database" element={<KbDatabase />} />
+            <Route path="/faq" element={<Faq />} />
 
             <Route path="/ticket_detail" element={<SingleTicket />} />
             <Route path="artwork/preview" element={<ArtworkReview />} />

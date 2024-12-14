@@ -21,7 +21,7 @@ const TicketsList: FC<{
 }> = ({ tickets, currentPage, totalPages, onPageChange, isLoading }) => {
   const navigate = useNavigate();
   const [feedbackData, setFeedbackData] = useState<{
-    [key: string]: { feedback: string; isLiked: string };
+    [key: string]: { feedback: string; isLiked: boolean };
   }>({});
   const [openTicketId, setOpenTicketId] = useState<string | null>(null);
 
@@ -40,7 +40,7 @@ const TicketsList: FC<{
   const handleLike = (ticketId: string) => {
     setFeedbackData((prevData) => ({
       ...prevData,
-      [ticketId]: { ...prevData[ticketId], isLiked: "yes" },
+      [ticketId]: { ...prevData[ticketId], isLiked: true },
     }));
     setOpenTicketId(ticketId);
   };
@@ -48,7 +48,7 @@ const TicketsList: FC<{
   const handleDisLike = (ticketId: string) => {
     setFeedbackData((prevData) => ({
       ...prevData,
-      [ticketId]: { ...prevData[ticketId], isLiked: "no" },
+      [ticketId]: { ...prevData[ticketId], isLiked: false },
     }));
     setOpenTicketId(ticketId);
   };
@@ -80,10 +80,10 @@ const TicketsList: FC<{
         tickets?.map((ticket) => {
           let imageSrc;
           switch (ticket.status) {
-            case "New Tickets":
+            case "Requested":
               imageSrc = blue;
               break;
-            case "On-Going Tickets":
+            case "Dispatched":
               imageSrc = orange;
               break;
             case "Resolved Tickets":
@@ -123,8 +123,19 @@ const TicketsList: FC<{
                   </div>
                 </div>
               </div>
-              <div className="text-[16px] ml-[7px] font-semibold mt-[2px] mb-[3px]">
+              <div className="text-[16px] flex justify-between ml-[7px] font-semibold mt-[2px] mb-[3px]">
                 {ticket.subject}
+                <span
+                  className={`border px-3 py-1 rounded-md  ${
+                    ticket?.status === "Finalise"
+                      ? "border-red-300"
+                      : ticket?.status === "Created"
+                      ? "border-zinc-300"
+                      : "border-green-300"
+                  }`}
+                >
+                  {ticket?.status}
+                </span>
               </div>
               <div className="text-xs sm:text-sm mb-4 w-[90%] px-2">
                 {ticket.message}
@@ -152,8 +163,8 @@ const TicketsList: FC<{
                         <AiFillLike
                           size="1.5em"
                           color={
-                            feedbackData[ticket._id]?.isLiked === "yes" ||
-                            ticket?.ticketFeedback?.isLiked === "yes"
+                            feedbackData[ticket._id]?.isLiked === true ||
+                            ticket?.ticketFeedback?.isLiked === true
                               ? "green"
                               : "gray"
                           }
@@ -166,8 +177,8 @@ const TicketsList: FC<{
                         <AiFillDislike
                           size="1.5em"
                           color={
-                            feedbackData[ticket._id]?.isLiked === "no" ||
-                            ticket?.ticketFeedback?.isLiked === "no"
+                            feedbackData[ticket._id]?.isLiked === false ||
+                            ticket?.ticketFeedback?.isLiked === false
                               ? "red"
                               : "gray"
                           }

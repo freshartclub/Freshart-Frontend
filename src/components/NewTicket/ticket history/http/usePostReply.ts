@@ -12,7 +12,12 @@ const useGetPostArtistTicketReplyMutation = () => {
   const usePostTicketReply = async (input: any) => {
     return await axiosInstance.post(
       `${ARTTIST_ENDPOINTS.PostTicket}/${id}`,
-      input
+      input,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
     );
   };
 

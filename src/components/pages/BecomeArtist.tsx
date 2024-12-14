@@ -522,6 +522,7 @@ const BecomeArtist = () => {
                     control={control}
                     options={options}
                     name="country"
+                    isActiveStatus="active"
                   />
                   {/* </div> */}
 

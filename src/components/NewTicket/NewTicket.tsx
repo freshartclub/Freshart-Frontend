@@ -49,6 +49,8 @@ const NewTicket = () => {
     message: "",
     ticketImg: null,
     ticketType: "",
+    urgency: "",
+    impact: "",
   };
 
   const { data, isLoading } = useGetArtistDetails();

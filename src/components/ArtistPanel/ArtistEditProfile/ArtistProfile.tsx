@@ -28,26 +28,6 @@ const ArtistProfile = () => {
         className="mt-6 flex gap-2 items-center"
       >
         Artist Profile
-        <span
-          className={`text-sm ${
-            isActiveStatus === "active"
-              ? "bg-green-200 "
-              : isActiveStatus === "under-review"
-              ? "bg-yellow-200"
-              : isActiveStatus === "inactive"
-              ? "bg-red-200"
-              : null
-          }  px-2 flex items-center gap-1 rounded-md  `}
-        >
-          <span className="w-1.5 h-1.5 block bg-black rounded-full"></span>{" "}
-          {isActiveStatus === "active"
-            ? "Active"
-            : isActiveStatus === "under-review"
-            ? "Under-Review"
-            : isActiveStatus === "inactive"
-            ? "Inactive"
-            : null}
-        </span>
       </Header>
 
       <nav className="flex" aria-label="Breadcrumb">

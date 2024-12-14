@@ -1,6 +1,40 @@
 import { useEffect, useState } from "react";
 import { useGetPickListMutation } from "./http/useGetPickListMutation";
 
+export const RenderAllPicklists = (fields: string[]) => {
+  const [picklist, setPicklist] = useState([]);
+  const { data } = useGetPickListMutation();
+
+  useEffect(() => {
+    if (!fields || fields.length === 0) {
+      setPicklist([]);
+      return;
+    }
+
+    const groupedPicklist =
+      data && data.length > 0
+        ? fields.map((field) => {
+            const matchedField = data.find(
+              (item: any) => item?.picklistName === field
+            );
+            return {
+              fieldName: field,
+              picklist: matchedField?.picklist
+                ? matchedField.picklist.map((picklistItem: any) => ({
+                    label: picklistItem.name,
+                    value: picklistItem.name,
+                  }))
+                : [],
+            };
+          })
+        : [];
+
+    setPicklist(groupedPicklist);
+  }, [data]);
+
+  return picklist;
+};
+
 export const RenderAllPicklist = (field: string) => {
   const [picklst, setPicklist] = useState([]);
   const { data } = useGetPickListMutation();

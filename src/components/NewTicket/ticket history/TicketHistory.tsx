@@ -186,7 +186,7 @@ const TicketHistory: React.FC = () => {
                 role="tab"
                 aria-selected={activeTab === "new"}
               >
-                new
+                Requested
               </button>
             </li>
             <li className="flex items-center" role="presentation">
@@ -199,7 +199,7 @@ const TicketHistory: React.FC = () => {
                 role="tab"
                 aria-selected={activeTab === "On-Going"}
               >
-                On-Going
+                Dispatched
               </button>
             </li>
             <li className="flex items-center" role="presentation">

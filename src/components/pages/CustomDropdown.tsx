@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Controller } from "react-hook-form";
 
-const CustomDropdown = ({ options, control, countryValue, name }) => {
+const CustomDropdown = ({
+  options,
+  control,
+  countryValue,
+  name,
+  isActiveStatus,
+}) => {
   const [selectedValue, setSelectedValue] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -37,7 +43,11 @@ const CustomDropdown = ({ options, control, countryValue, name }) => {
             <button
               onClick={toggleDropdown}
               type="button"
-              className="flex items-center w-full px-4 py-2  text-gray-700 rounded-md border hover:bg-gray-300 focus:outline-none"
+              className={`flex items-center w-full px-4 py-2 text-gray-700 rounded-md border ${
+                isActiveStatus !== "active"
+                  ? " pointer-events-none bg-gray-100"
+                  : ""
+              } focus:outline-none`}
               {...field}
             >
               {selectedValue ? (

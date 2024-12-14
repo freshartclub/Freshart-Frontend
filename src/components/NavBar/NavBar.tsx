@@ -54,7 +54,7 @@ const NavBar = () => {
   const getOutDiscipline = disciplineData?.map(
     (item, i) => item?.disciplineName
   );
-  console.log(getOutDiscipline);
+
   const selectSeriesPicklist = seriesPickList?.data?.filter(
     (item) => item?.picklistName === "Series"
   );
