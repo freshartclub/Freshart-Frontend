@@ -172,7 +172,8 @@ const ProductInfo = ({ data }: any) => {
     },
     {
       heading: "Purchase Catalog: ",
-      description: data?.data?.commercialization?.purchaseCatalog,
+      description:
+        data?.data?.commercialization?.publishingCatalog?.catalogName,
     },
     {
       heading: "Purchase Type: ",
@@ -187,7 +188,8 @@ const ProductInfo = ({ data }: any) => {
     },
     {
       heading: "Subscription Catalog: ",
-      description: data?.data?.commercialization?.subscriptionCatalog,
+      description:
+        data?.data?.commercialization?.publishingCatalog?.catalogName,
     },
 
     {
@@ -244,11 +246,11 @@ const ProductInfo = ({ data }: any) => {
 
     {
       heading: "External Tags: ",
-      description: externlaTags.length ? externlaTags : "N/A",
+      description: externlaTags && externlaTags.length ? externlaTags : "N/A",
     },
     {
       heading: "Internal Tags: ",
-      description: internalTags.length ? internalTags : "N/A",
+      description: internalTags && internalTags.length ? internalTags : "N/A",
     },
   ];
 

@@ -674,12 +674,26 @@ const AddArtwork = () => {
 
   useEffect(() => {
     if (data && id) {
-      setMainImage(`${data?.url}/users/${data?.data?.media?.mainImage}`);
-      setBackImage(`${data?.url}/users/${data?.data?.media?.backImage}`);
-      setInProcessImage(
-        `${data?.url}/users/${data?.data?.media?.inProcessImage}`
+      setMainImage(
+        data?.data?.media?.mainImage
+          ? `${data?.url}/users/${data?.data?.media?.mainImage}`
+          : null
       );
-      setMainVideo(`${data?.url}/videos/${data?.data?.media?.mainVideo}`);
+      setBackImage(
+        data?.data?.media?.backImage
+          ? `${data?.url}/users/${data?.data?.media?.backImage}`
+          : null
+      );
+      setInProcessImage(
+        data?.data?.media?.inProcessImage
+          ? `${data?.url}/users/${data?.data?.media?.inProcessImage}`
+          : null
+      );
+      setMainVideo(
+        data?.data?.media?.mainVideo
+          ? `${data?.url}/videos/${data?.data?.media?.mainVideo}`
+          : null
+      );
     }
   }, [data]);
 

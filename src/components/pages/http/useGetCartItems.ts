@@ -5,7 +5,7 @@ import { ARTTIST_ENDPOINTS } from "../../../http/apiEndPoints/Artist";
 import { useAppSelector } from "../../../store/typedReduxHooks";
 
 export const useGetCartItems = () => {
-  const isAuthorized = useAppSelector((state) => state.user.isArtist);
+  const isAuthorized = useAppSelector((state) => state.user.isAuthorized);
 
   let url = `${ARTTIST_ENDPOINTS.cartItems}`;
   if (!isAuthorized) {
