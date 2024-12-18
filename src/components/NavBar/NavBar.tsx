@@ -80,7 +80,7 @@ const NavBar = () => {
   }, []);
 
   const token = localStorage.getItem("auth_token");
-  const isAuthorized = useAppSelector((state) => state.user.isArtist);
+  const isAuthorized = useAppSelector((state) => state.user.isAuthorized);
   const { mutate: logOut } = useLogOutMutation();
 
   const toggleMenu = () => {
@@ -133,6 +133,8 @@ const NavBar = () => {
       console.log(error);
     }
   };
+
+  console.log(isAuthorized);
 
   return (
     <>

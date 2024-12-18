@@ -20,9 +20,9 @@ const DiscoverMore = () => {
 
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
- 
-  const { data, isLoading } = useGetArtWorkById(id);
-  console.log("this is from more", data);
+  const preview = searchParams.get("preview") || false;
+
+  const { data, isLoading } = useGetArtWorkById(id, preview);
 
   const settings = {
     dots: false,
@@ -82,7 +82,6 @@ const DiscoverMore = () => {
       sliderRef.current.slickGoTo(index);
     }
   };
-  // console.log(data?.data.media);
 
   const additionalImage = data?.data.media?.images?.map((item, index) => item);
 

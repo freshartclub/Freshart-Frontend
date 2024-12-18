@@ -36,11 +36,8 @@ const Layout: React.FC<LayoutProps> = ({
     RoleBaseNavBar = NavBar;
   }
 
-  // if (user === "artist") {
-  //   navigate("/artist-panel");
-  // } else if (user === "user") {
-  //   Navigate("/home");
-  // }
+  console.log(isAuthorized);
+
   return (
     <div>
       {isLoginPage || isSignUpPage || isForgetPassword ? (

@@ -30,9 +30,10 @@ const useSigInInMutation = () => {
 
     onSuccess: async (res, input) => {
       setToken(res.data.token, input.rememberMe);
-      console.log(res?.data?.user);
+
       dispatch(updateUser(res?.data?.user));
       dispatch(setIsAuthorized(true));
+
       dispatch(
         setIsArtProvider(res?.data?.user?.commercilization?.artProvider)
       );

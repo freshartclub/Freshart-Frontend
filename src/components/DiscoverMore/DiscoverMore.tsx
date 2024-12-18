@@ -1,14 +1,5 @@
 import { useRef } from "react";
-import slider1 from "./assets/slide_1.png";
-import slider2 from "./assets/slider2.png";
-import slider3 from "./assets/slider3.png";
-import slider4 from "./assets/slider4.png";
-import slider5 from "./assets/slider5.png";
-import slide_1 from "./assets/slider1.png";
-import slide_2 from "./assets/slide_2.png";
-import slide_3 from "./assets/slide_3.png";
-import slide_4 from "./assets/slide_4.png";
-import slide_5 from "./assets/slide_5.png";
+
 import Slider from "react-slick";
 import eye from "./assets/eye.png";
 import share from "./assets/share.png";
@@ -28,9 +19,9 @@ const DiscoverMore = () => {
 
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
+  let preview = false;
 
-  const { data, isLoading } = useGetArtWorkById(id);
- 
+  const { data, isLoading } = useGetArtWorkById(id, preview);
 
   const settings = {
     dots: false,
