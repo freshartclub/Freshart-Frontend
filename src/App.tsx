@@ -27,7 +27,7 @@ import "./components/utils/i18n.ts";
 import GetStarted from "./components/GetStarted/GetStarted";
 import LoginPage from "./components/pages/Login";
 import HomePage from "./components/HomePage/HomePage";
-import { useAppSelector } from "./store/typedReduxHooks";
+import { useAppDispatch, useAppSelector } from "./store/typedReduxHooks";
 import ArtistGuard from "./components/ArtistGuard";
 import NotFoundPage from "./components/pages/NotFoundPage";
 import ArtworkDetails from "./components/ArtistPanel/Artwork/artworkDetails/ArtworkDetails";
@@ -40,6 +40,9 @@ import KbDatabase from "./components/pages/KbDatabase.tsx";
 import Circle from "./components/CIrcle/Circle.tsx";
 import Invoice from "./components/ArtistPanel/ArtistEditProfile/Invoice.tsx";
 import InvoicePdf from "./components/pages/InvoicePdf.tsx";
+import i18n from "./components/utils/i18n.ts";
+import { useDispatch } from "react-redux";
+import { setLanguage } from "./store/userSlice/userSlice.ts";
 const SignUp = lazy(() => import("./components/pages/SignUp"));
 const ForgetPassword = lazy(() => import("./components/pages/ForgetPassword"));
 const ChangePassword = lazy(() => import("./components/pages/ChangePassword"));
@@ -124,13 +127,17 @@ const App: React.FC = () => {
   const { isLoading } = useCheckIsAuthorized();
   const [isAuthenticated] = useState<boolean>(false);
   const data = useAppSelector((state) => state.user.user);
+  const dispatch = useAppDispatch();
+  const lng = useAppSelector((state) => state.user.language);
 
-  // useEffect(() => {
-  //   console.log(t("welcome"));
-  //   console.log(i18n.language);
-
-  //   i18n.changeLanguage("nl");
-  // }, []);
+  useEffect(() => {
+    const language = localStorage.getItem("language");
+    if (language) {
+      i18n.changeLanguage(language.toLocaleLowerCase());
+    } else {
+      i18n.changeLanguage("english");
+    }
+  }, [lng]);
 
   if (isLoading) return <Loader />;
 

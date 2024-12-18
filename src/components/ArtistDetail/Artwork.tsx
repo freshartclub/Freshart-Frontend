@@ -127,7 +127,7 @@ const Artwork = () => {
             data?.data?.map((item, i) => (
               <div key={i} className="mb-5">
                 <h1 className="font-bold mb-5 mt-5 text-[20px] capitalize text-[#333333] xl:w-[80%] lg:w-[70%] w-[80%] line-clamp-2">
-                  {item?.groupName}
+                  {item?.groupName || "No Name"}
                 </h1>
 
                 <Swiper
@@ -135,6 +135,7 @@ const Artwork = () => {
                   slidesPerView={"auto"}
                   autoplay={false}
                   loop
+                  pagination={{ clickable: true }}
                 >
                   {item?.artworks?.map((art, idx) => (
                     <div

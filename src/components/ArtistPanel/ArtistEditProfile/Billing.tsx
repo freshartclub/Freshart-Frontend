@@ -129,7 +129,7 @@ const Billing = () => {
                               onClick={() => handleUpdate(address, i)}
                               className="text-sm font-medium hover:bg-gray-300 p-2 rounded-md"
                             >
-                              {removeIspending ? "Updating..." : "Update"}
+                              Update
                             </button>
                             <button
                               onClick={() => handleRemove(address?._id, i)}

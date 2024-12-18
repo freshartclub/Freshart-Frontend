@@ -28,6 +28,7 @@ import Select from "react-select";
 import Flag from "react-world-flags";
 import CustomDropdown from "../../pages/CustomDropdown";
 import Dicipline from "./Dicipline";
+import Commercilization from "./Commercilization";
 
 const GeneralForm = ({ isActiveStatus }) => {
   const { data, isLoading } = useGetArtistDetails();
@@ -118,7 +119,10 @@ const GeneralForm = ({ isActiveStatus }) => {
     setValue("cvEntries", data?.data?.artist?.highlights?.cv || "");
     // we will have to fix it
     setValue("documentName", data?.data?.artist?.documents?.documentName || []);
-    setValue("externalTags", data?.data?.artist?.otherTags?.extTags);
+    setValue(
+      "externalTags",
+      `#${data?.data?.artist?.otherTags?.extTags} ` || []
+    );
     setValue(
       "lastRevalidationDate",
       dayjs(data?.data?.artist?.lastRevalidationDate).format("YYYY-MM-DD") || ""
@@ -180,22 +184,22 @@ const GeneralForm = ({ isActiveStatus }) => {
 
     setValue(
       "emergencyContactEmail",
-      data?.data?.artist?.emergencyInfo.emergencyContactEmail || ""
+      data?.data?.artist?.emergencyInfo?.emergencyContactEmail || ""
     );
 
     setValue(
       "emergencyContactName",
-      data?.data?.artist?.emergencyInfo.emergencyContactName || ""
+      data?.data?.artist?.emergencyInfo?.emergencyContactName || ""
     );
 
     setValue(
       "emergencyContactPhone",
-      data?.data?.artist?.emergencyInfo.emergencyContactPhone || ""
+      data?.data?.artist?.emergencyInfo?.emergencyContactPhone || ""
     );
 
     setValue(
       "emergencyContactRelation",
-      data?.data?.artist?.emergencyInfo.emergencyContactRelation || ""
+      data?.data?.artist?.emergencyInfo?.emergencyContactRelation || ""
     );
     setValue("additionalImage", []);
     setValue(
@@ -228,16 +232,49 @@ const GeneralForm = ({ isActiveStatus }) => {
       ) || []
     );
 
-    style: data?.data?.artist?.aboutArtist?.discipline?.map((item) =>
-      item?.style?.map((opt) => {
-        return { value: opt, label: opt };
-      })
+    setValue(
+      "publishingCatalog",
+      data?.data?.artist?.commercilization?.publishingCatalog || []
+    );
+    setValue(
+      "artProvider",
+      data?.data?.artist?.commercilization?.artProvider || ""
+    );
+    setValue(
+      "artistLevel",
+      data?.data?.artist?.commercilization?.artistLevel || ""
+    );
+
+    setValue(
+      "artistPlus",
+      data?.data?.artist?.commercilization?.artistPlus || ""
+    );
+
+    setValue(
+      "customOrder",
+      data?.data?.artist?.commercilization?.customOrder || ""
+    );
+
+    setValue(
+      "maxNumberOfArtwork",
+      data?.data?.artist?.commercilization?.maxNumberOfArtwork || ""
+    );
+
+    setValue(
+      "minNumberOfArtwork",
+      data?.data?.artist?.commercilization?.minNumberOfArtwork || ""
+    );
+
+    setValue(
+      "scorePlatform",
+      data?.data?.artist?.commercilization?.scorePlatform || ""
+    );
+
+    setValue(
+      "scoreProfessional",
+      data?.data?.artist?.commercilization?.scoreProfessional || ""
     );
   }, [data]);
-
-  // console.log(getValues("discipline"));
-
-  // console.log(getValues("style"));
 
   const handlePDF = (file) => {
     window.open(`${data?.data?.url}/documents/${file}`, "_blank");
@@ -278,7 +315,9 @@ const GeneralForm = ({ isActiveStatus }) => {
 
   const onSubmit = (data) => {
     console.log("OnSubmit", data);
-    console.log(data.additionalVide);
+
+    delete data.insignia;
+    delete data.publishingCatalog;
 
     const formData = new FormData();
 
@@ -749,6 +788,7 @@ const GeneralForm = ({ isActiveStatus }) => {
               <Invoice control={control} />
 
               <Logistics control={control} />
+              <Commercilization control={control} />
 
               <div className="p-4 mt-4 bg-white rounded-lg shadow-md max-w-full">
                 <h2 className="text-xl font-semibold mb-3 text-[#1A1C21]">
@@ -1043,19 +1083,19 @@ const GeneralForm = ({ isActiveStatus }) => {
                       <input
                         disabled={isActiveStatus !== "active"}
                         type="text"
-                        {...register("mangerZipCode", {})}
+                        {...register("managerZipCode", {})}
                         className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
                       />
                       <label
-                        htmlFor="mangerZipCode"
+                        htmlFor="managerZipCode"
                         className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
                       >
                         Manager zipCode
                       </label>
-                      {errors.mangerZipCode && (
+                      {errors.managerZipCode && (
                         <div className="text-red-500 text-sm mt-1">
                           <div>
-                            {String(errors.mangerZipCode?.message || "")}
+                            {String(errors.managerZipCode?.message || "")}
                           </div>
                         </div>
                       )}

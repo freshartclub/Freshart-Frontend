@@ -1,5 +1,9 @@
-import { useState } from "react";
-import { FaAngleDown } from "react-icons/fa"; 
+import { useEffect, useState } from "react";
+import { FaAngleDown } from "react-icons/fa";
+
+import { useDispatch } from "react-redux";
+import { setLanguage } from "../../../store/userSlice/userSlice";
+import { useAppDispatch } from "../../../store/typedReduxHooks";
 
 export const options = [
   {
@@ -10,7 +14,7 @@ export const options = [
       { label: "EUR", value: "eur", symbol: "€" },
       { label: "GBP", value: "gbp", symbol: "£" },
     ],
-    selectedValue: "usd", 
+    selectedValue: "usd",
   },
   {
     label: "Change Language",
@@ -32,8 +36,19 @@ export const options = [
         url: "https://cdn-icons-png.flaticon.com/128/197/197560.png",
       },
     ],
-    selectedValue: "es", 
+    selectedValue: "es",
   },
+];
+
+export const countries = [
+  { code: "GB", flag: "https://flagcdn.com/w320/gb.png", name: "English" },
+  {
+    code: "US",
+    flag: "https://flagcdn.com/w320/us.png",
+    name: "English (US)",
+  },
+  { code: "ES", flag: "https://flagcdn.com/w320/es.png", name: "Spanish" },
+  { code: "CA", flag: "https://flagcdn.com/w320/cat.png", name: "Catalan" },
 ];
 
 const Language = () => {
@@ -42,11 +57,36 @@ const Language = () => {
     language: "en",
   });
 
+  const [languageSettings, setLanguageSettings] = useState("");
+  const [currencySettings, setCurrencySettings] = useState("");
+  const [code, setCode] = useState("");
+
+  const dispatch = useAppDispatch();
+
   const [isLanguageDropdownOpen, setLanguageDropdownOpen] = useState(false);
 
+  const getLanguage = localStorage.getItem("language");
+  const getCurrency = localStorage.getItem("currency");
+  const getLangCode = localStorage.getItem("langCode");
+
   const handleSelectChange = (value: string, key: string) => {
+    setCode(key.toLocaleLowerCase());
+    setLanguageSettings(value);
     setSettings((prev) => ({ ...prev, [key]: value }));
     setLanguageDropdownOpen(false);
+  };
+
+  useEffect(() => {
+    setLanguageSettings(getLanguage || "en");
+    setCurrencySettings(getCurrency || "usd");
+    setCode(getLangCode || "en");
+  }, []);
+
+  const handleSaveChanges = () => {
+    localStorage.setItem("language", languageSettings);
+    localStorage.setItem("currency", currencySettings);
+    localStorage.setItem("langCode", code);
+    dispatch(setLanguage(languageSettings));
   };
 
   return (
@@ -56,10 +96,8 @@ const Language = () => {
           key={index}
           className="flex justify-between items-center p-4 border rounded-lg"
         >
-         
           <span className="text-black font-semibold">{option.label}</span>
 
-         
           {option.value === "currency" ? (
             <div className="flex items-center">
               <span className="text-lg font-semibold">
@@ -68,59 +106,50 @@ const Language = () => {
                 )?.symbol || ""}
               </span>
               <select
-                value={settings.currency}
-                onChange={(e) =>
-                  handleSelectChange(e.target.value, option.value)
-                }
+                value={currencySettings}
+                onChange={(e) => setCurrencySettings(e.target.value)}
                 className="rounded-md p-2 ml-2 focus:outline-none w-20 md:w-32"
               >
                 {option.choices.map((choice, idx) => (
-                  <option key={idx} value={choice.value}>
+                  <option key={idx} value={choice.label}>
                     {choice.label}
                   </option>
                 ))}
               </select>
             </div>
           ) : (
-            
             <div className="relative ">
-              
               <button
                 className="flex items-center justify-between  p-2 "
                 onClick={() => setLanguageDropdownOpen(!isLanguageDropdownOpen)}
               >
                 <div className="flex items-center space-x-2">
                   <img
-                    src={
-                      option.choices.find(
-                        (choice) => choice.value === settings.language
-                      )?.url
-                    }
+                    src={`https://flagcdn.com/w320/${code}.png`}
                     alt="Flag"
                     className="w-6 h-6"
                   />
-                 
                 </div>
                 <FaAngleDown className="text-gray-600" />
               </button>
 
               {isLanguageDropdownOpen && (
                 <div className="absolute mt-1  bg-white border rounded shadow-md z-10">
-                  {option.choices.map((choice, idx) => (
+                  {countries?.map((choice, idx) => (
                     <button
                       key={idx}
                       className="flex items-center  p-2 hover:bg-gray-100 focus:outline-none"
                       onClick={() =>
-                        handleSelectChange(choice.value, option.value)
+                        handleSelectChange(choice.name, choice.code)
                       }
                     >
                       <img
-                        src={choice.url}
-                        alt={choice.label}
+                        src={choice.flag}
+                        alt={choice.name}
                         className="w-6 h-6"
                       />
 
-                      <span className="ml-2">{choice.label}</span>
+                      <span className="ml-2">{choice.name}</span>
                     </button>
                   ))}
                 </div>
@@ -131,7 +160,10 @@ const Language = () => {
       ))}
 
       <div className="mt-3 flex justify-end">
-        <button className="bg-[#102030] text-white px-4 py-2 rounded font-semibold">
+        <button
+          onClick={handleSaveChanges}
+          className="bg-[#102030] text-white px-4 py-2 rounded font-semibold"
+        >
           Save Changes
         </button>
       </div>

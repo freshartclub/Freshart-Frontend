@@ -192,7 +192,7 @@ const ProductInfo = ({ data }: any) => {
 
     {
       heading: "Purchase Option ",
-      description: ` ${data?.data?.commercialization?.purchaseOption}`,
+      description: ` ${data?.data?.commercialization?.purchaseOption}` || "N/A",
     },
   ];
 
@@ -226,29 +226,29 @@ const ProductInfo = ({ data }: any) => {
   const moreInfo_data = [
     {
       heading: "Promotion: ",
-      description: `${data?.data?.promotions?.promotion}`,
+      description: `${data?.data?.promotions?.promotion}` || "N/A",
     },
     {
       heading: "Promotion Score: ",
-      description: `${data?.data?.promotions?.promotionScore}`,
+      description: `${data?.data?.promotions?.promotionScore}` || "N/A",
     },
 
     {
       heading: "Available To: ",
-      description: `${data?.data?.restriction?.availableTo}`,
+      description: `${data?.data?.restriction?.availableTo}` || "N/A",
     },
     {
       heading: "Discount Acceptation: ",
-      description: data?.data?.restriction?.discountAcceptation,
+      description: data?.data?.restriction?.discountAcceptation || "N/A",
     },
 
     {
       heading: "External Tags: ",
-      description: externlaTags || "NA",
+      description: externlaTags.length ? externlaTags : "N/A",
     },
     {
       heading: "Internal Tags: ",
-      description: internalTags,
+      description: internalTags.length ? internalTags : "N/A",
     },
   ];
 

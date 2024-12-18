@@ -16,6 +16,7 @@ import usePostCancelItem from "./https/usePostCancelItem";
 
 import { useGetOrderDetails } from "./https/useGetOrderDetails";
 import { MdCancel } from "react-icons/md";
+import { BiSolidImageAdd } from "react-icons/bi";
 
 const OrderApproveDetails = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -32,8 +33,7 @@ const OrderApproveDetails = () => {
   const apiId = searchParams.get("id");
   const apiOrderType = searchParams.get("orderType");
 
-  const { data,  isRefetching } = useGetOrderDetails(apiId, apiOrderType);
-
+  const { data, isRefetching } = useGetOrderDetails(apiId, apiOrderType);
 
   const discountAmounts = data?.data?.items?.map((item) => {
     const basePrice = parseFloat(
@@ -73,8 +73,6 @@ const OrderApproveDetails = () => {
   const { mutateAsync, isPending } = usePostEvidenceMutation();
   const { mutateAsync: cancelItemMutation, isPending: cancelItemPending } =
     usePostCancelItem();
-
-  
 
   const delivery = {
     shipping: "DHL",
@@ -249,17 +247,30 @@ const OrderApproveDetails = () => {
                                   />
                                 );
                               })}
+                              {product?.evidenceImg?.map(
+                                (img, i) =>
+                                  img?.length > 3 && (
+                                    <BiSolidImageAdd
+                                      onClick={() => {
+                                        setOrderType(data?.data?.orderType);
+                                        setId(data?.data?._id);
+                                        openModal(product);
+                                      }}
+                                      size="2.5em"
+                                    />
+                                  )
+                              )}
                             </div>
                           ) : (
                             <span
-                              className="cursor-pointer w-full sm:w-[8rem] bg-black text-white font-medium text-xs sm:text-sm p-1.5 sm:p-2 rounded-md inline-block text-center mb-2"
+                              className="cursor-pointer w-full sm:w-[8rem]  font-medium text-xs sm:text-sm p-1.5 sm:p-2 rounded-md inline-block text-center mb-2"
                               onClick={() => {
                                 setOrderType(data?.data?.orderType);
                                 setId(data?.data?._id);
                                 openModal(product);
                               }}
                             >
-                              + Evidence
+                              <BiSolidImageAdd size="2.5em" />
                             </span>
                           )}
                         </td>
@@ -274,7 +285,7 @@ const OrderApproveDetails = () => {
                                   setOrderModal(true);
                                 }}
                               >
-                               <MdCancel size="1.5em" />
+                                <MdCancel size="2em" />
                               </span>
                             ) : (
                               <span className="cursor-pointer w-full sm:w-[5.5rem] bg-red-300 text-black pointer-events-none font-medium text-xs sm:text-sm p-1.5 sm:p-2 rounded-md inline-block text-center">

@@ -43,13 +43,11 @@ const ArtistNavBar = () => {
     setIsToggelOpen(false);
   });
 
-  console.log(language.toLocaleLowerCase());
-
   const url = "https://dev.freshartclub.com/images";
 
-  useEffect(() => {
-    i18n.changeLanguage(language.toLocaleLowerCase());
-  }, [language]);
+  // useEffect(() => {
+  //   i18n.changeLanguage(language.toLocaleLowerCase());
+  // }, [language]);
 
   const handleLogOut = () => {
     try {
@@ -79,7 +77,7 @@ const ArtistNavBar = () => {
       {/* Main Navbar */}
       <div className="flex items-center gap-5">
         {/* Search Bar */}
-        <div className="hidden lg:block">
+        {/* <div className="hidden lg:block">
           <div className="flex items-center gap-2">
             <input
               placeholder="Search"
@@ -88,7 +86,7 @@ const ArtistNavBar = () => {
             />
             <IoMdSearch className="cursor-pointer" size="1.5em" />
           </div>
-        </div>
+        </div> */}
 
         {/* Country Selector */}
         {/* <div className="relative inline-block">

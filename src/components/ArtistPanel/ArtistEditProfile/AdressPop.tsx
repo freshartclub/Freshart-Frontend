@@ -259,6 +259,7 @@ const AdressPop = ({ setCheckBox, newData = {}, setUpdateData }) => {
                         name="country"
                         options={options}
                         countryValue={countryValue}
+                        isActiveStatus="active"
                       />
                     </div>
                     <div className="sm:my-3 my-1 w-full">

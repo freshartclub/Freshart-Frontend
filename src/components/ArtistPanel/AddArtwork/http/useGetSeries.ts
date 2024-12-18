@@ -9,7 +9,6 @@ async function fetchData(userID) {
     `${ARTTIST_ENDPOINTS.getSeries}/${userID}`
   );
 
-  console.log("this is from seris", data);
   return data;
 }
 

@@ -2,7 +2,6 @@ import Sidebar from "./Sidebar";
 import { Route, Routes } from "react-router-dom";
 import Dashboard from "./ArtistDashboard/Dashboard";
 import Artwork from "../ArtistDetail/Artwork";
-import AddArtwork from "./AddArtwork/AddArtwork";
 import Orders from "./Orders";
 import OrdersDetail from "./Orderdetail/OrderDetails";
 import ArtistProfile from "./ArtistEditProfile/ArtistProfile";
@@ -18,6 +17,8 @@ import OrderApprove from "./OrderApprove/OrderApprove";
 import { useState } from "react";
 import KbDatabase from "../pages/KbDatabase";
 import Faq from "../pages/Faq";
+import AddArtwork2 from "./AddArtwork/AddArtwork2";
+import AddArtwork from "./AddArtwork/AddArtwork";
 
 const ArtistPanel = () => {
   return (

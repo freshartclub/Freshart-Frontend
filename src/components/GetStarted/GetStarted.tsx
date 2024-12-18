@@ -21,9 +21,12 @@ const GetStarted = () => {
     if (isAuthorized && currentPath === "/" && profile === "user") {
       navigate("/home", { replace: true });
     } else if (isAuthorized && currentPath === "/" && profile === "artist") {
+      console.log("hai");
       navigate("/artist-panel", { replace: true });
     }
   }, [isAuthorized, currentPath, navigate]);
+
+  console.log(isAuthorized, currentPath, profile);
 
   return (
     <div>

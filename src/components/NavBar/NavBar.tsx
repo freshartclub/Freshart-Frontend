@@ -80,6 +80,7 @@ const NavBar = () => {
   }, []);
 
   const token = localStorage.getItem("auth_token");
+  const isAuthorized = useAppSelector((state) => state.user.isArtist);
   const { mutate: logOut } = useLogOutMutation();
 
   const toggleMenu = () => {
@@ -178,7 +179,7 @@ const NavBar = () => {
 
       <nav className="bg-[#102030] py-8 xl:px-28 px-8">
         <div className="flex justify-between">
-          {token ? (
+          {token && isAuthorized ? (
             <>
               {" "}
               <div className="hidden  lg:flex xl:space-x-6 lg:space-x-0 text-white ">
