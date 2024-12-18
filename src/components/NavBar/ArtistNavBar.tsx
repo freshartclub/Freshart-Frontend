@@ -57,6 +57,8 @@ const ArtistNavBar = () => {
     }
   };
 
+  console.log("Artist Navbar");
+
   const handleProfile = () => {
     navigate("/home", { replace: true });
     localStorage.setItem("profile", "user");
