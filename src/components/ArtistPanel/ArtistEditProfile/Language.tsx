@@ -4,6 +4,7 @@ import { FaAngleDown } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { setLanguage } from "../../../store/userSlice/userSlice";
 import { useAppDispatch } from "../../../store/typedReduxHooks";
+import toast from "react-hot-toast";
 
 export const options = [
   {
@@ -87,6 +88,7 @@ const Language = () => {
     localStorage.setItem("currency", currencySettings);
     localStorage.setItem("langCode", code);
     dispatch(setLanguage(languageSettings));
+    toast("Settings updated");
   };
 
   return (
