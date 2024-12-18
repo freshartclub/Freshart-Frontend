@@ -1,6 +1,6 @@
 // import { Field, Formik } from "formik";
 import { jsPDF } from "jspdf";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import { BsBackspace } from "react-icons/bs";
 import { TiPlus } from "react-icons/ti";
@@ -39,6 +39,7 @@ import { useGetArtWorkStyle } from "./http/useGetArtWorkStyle";
 import { useGetSeries } from "./http/useGetSeries";
 import { SeriesPop } from "./SeriesPop";
 import { Controller, useForm } from "react-hook-form";
+import html2canvas from "html2canvas";
 
 const AddArtwork = () => {
   const [progress, setProgress] = useState(0);
@@ -131,6 +132,11 @@ const AddArtwork = () => {
   const [artDicipline, setArtDicipline] = useState("");
   const [purchaseCatlogValue, setPurchaseCatlogValue] = useState(null);
   const [subscriptionCatlogValue, setsubscriptionCatlogValue] = useState(null);
+  const [hasBackImg, setHasBackImg] = useState(true);
+  const [hasInProcessImg, setHasInProcessImg] = useState(true);
+  const [hasMainVideo, setHasMainVideo] = useState(true);
+  const [hasMainImg, setHasMainImg] = useState(true);
+  const qrCodeRef = useRef(null);
 
   const [newOtherVideo, setNewOtherVideo] = useState([]);
 
@@ -496,12 +502,14 @@ const AddArtwork = () => {
     navigate("/artist-panel/artdashboard");
     window.scrollTo(0, 0);
   };
+
   const handleFileChange = (e, setFile) => {
     const file = e.target.files?.[0];
     if (file) {
       setNewImage(file);
       const imageUrl = URL.createObjectURL(file);
       setMainImage(imageUrl);
+      setHasMainImg(true);
     }
   };
 
@@ -511,6 +519,7 @@ const AddArtwork = () => {
       setNewBackImage(file);
       const imageUrl = URL.createObjectURL(file);
       setBackImage(imageUrl);
+      setHasBackImg(true);
     }
   };
 
@@ -520,6 +529,7 @@ const AddArtwork = () => {
       setNewInProcessImage(file);
       const imageUrl = URL.createObjectURL(file);
       setInProcessImage(imageUrl);
+      setHasInProcessImg(true);
     }
   };
 
@@ -539,6 +549,7 @@ const AddArtwork = () => {
       setNewMainVideo(file);
       const videoUrl = URL.createObjectURL(file);
       setMainVideo(videoUrl);
+      setHasMainVideo(true);
     }
   };
 
@@ -586,6 +597,11 @@ const AddArtwork = () => {
     values.vatAmount = vatAmount;
     values.artistFees = catalogPrice;
 
+    values.hasMainImg = hasMainImg;
+    values.hasBackImg = hasBackImg;
+    values.hasInProcessImg = hasInProcessImg;
+    values.hasMainVideo = hasMainVideo;
+
     const formData = new FormData();
 
     Object.keys(values).forEach((key) => {
@@ -606,12 +622,6 @@ const AddArtwork = () => {
       }
     });
 
-    // formData.forEach((element, index) => {
-    //   console.log("Index:", index, "Value:", element);
-    // });
-
-    console.log(purchaseCatlogValue);
-
     const newData = {
       id: id,
       data: formData,
@@ -631,18 +641,24 @@ const AddArtwork = () => {
   const removeImage = (name: string, index: number, typeFile: string) => {
     if (name === "mainImage") {
       setMainImage(null);
+      setHasMainImg(false);
     } else if (name === "backImage") {
+      setHasBackImg(false);
       setBackImage(null);
     } else if (name === "inProcessImage") {
+      setHasInProcessImg(false);
       setInProcessImage(null);
     } else if (name === "images") {
       if (typeFile === "File") {
         setImages(images.filter((_, i) => i !== index));
       }
     } else if (name === "mainvideo") {
+      setHasMainVideo(false);
       setMainVideo(null);
     }
   };
+
+  console.log(hasMainImg);
 
   const removeExistingImage = (index: number, typeFile: string) => {
     console.log(index, typeFile);
@@ -710,29 +726,21 @@ const AddArtwork = () => {
   };
 
   const handleDownloadPDF = async () => {
-    const link = document.getElementById("linkInput").value;
-    console.log(link);
     setIsLoadingPdf(true);
-    setErrorMessage("");
 
     try {
-      const response = await axios.get(link);
+      const canvas = await html2canvas(qrCodeRef.current);
+      const dataUrl = canvas.toDataURL("image/png");
 
-      const data = response.data;
-
-      const doc = new jsPDF();
-
-      const extractedText = data.replace(/<[^>]+>/g, "");
-
-      doc.text(extractedText, 20, 30);
-
-      doc.save("link-data.pdf");
-
-      setIsLoadingPdf(false);
+      const link = document.createElement("a");
+      link.href = dataUrl;
+      link.download = "qr-code.png";
+      link.click();
     } catch (error) {
-      setErrorMessage("Failed to fetch the link data.");
-      setIsLoadingPdf(false);
+      setErrorMessage("Failed to download QR code.");
     }
+
+    setIsLoadingPdf(false);
   };
 
   if (loading) {
@@ -2366,6 +2374,7 @@ const AddArtwork = () => {
                 maxWidth: 200,
                 width: "100%",
               }}
+              ref={qrCodeRef}
             >
               <QRCode
                 size={256}

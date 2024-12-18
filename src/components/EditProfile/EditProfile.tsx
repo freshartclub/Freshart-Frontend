@@ -13,7 +13,7 @@ const EditProfile = () => {
         <div className="xl:w-[70%] lg:w-[95%] w-full mx-auto">
           <ul className="flex p-2 gap-3 text-xl text-[#2E4053] items-center pt-10">
             <li>
-              <Link to="/" className="rounded-md transition-all flex">
+              <Link to="/home" className="rounded-md transition-all flex">
                 <img
                   src={home}
                   alt="Home icon"

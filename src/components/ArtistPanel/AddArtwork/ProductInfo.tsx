@@ -268,7 +268,7 @@ const ProductInfo = ({ data }: any) => {
     },
     {
       heading: "Package Depth: ",
-      description: data?.data?.inventoryShipping?.packageDepth,
+      description: data?.data?.inventoryShipping?.packageLength,
     },
     {
       heading: "Package Height: ",
