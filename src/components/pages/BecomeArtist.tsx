@@ -210,6 +210,7 @@ const BecomeArtist = () => {
       setVerificationCode("");
     });
   };
+
   const validateEmailOtp = () => {
     const data = {
       otp: verificationCode,
@@ -233,7 +234,7 @@ const BecomeArtist = () => {
         phone: phones,
       };
       requestOtp(data).then(() => {
-        setIsModalOpen(true);
+        setIsModalOpenPhone(true);
       });
     } catch (error) {
       console.error(error);
