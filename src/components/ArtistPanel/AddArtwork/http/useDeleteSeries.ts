@@ -8,10 +8,9 @@ import { ARTTIST_ENDPOINTS } from "../../../../http/apiEndPoints/Artist";
 
 async function useDeleteSeries(input: any) {
   console.log("this is input", input);
-  return await axiosInstance.patch(
-    `${ARTTIST_ENDPOINTS.useDeleteSeries}`,
-    input
-  );
+  return await axiosInstance.patch(`${ARTTIST_ENDPOINTS.useDeleteSeries}`, {
+    name: input,
+  });
 }
 
 const useDeleteSeriesMutation = () => {

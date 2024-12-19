@@ -35,6 +35,35 @@ export const RenderAllPicklists = (fields: string[]) => {
   return picklist;
 };
 
+export const RenderAllSinglePicklist = (fields: string[]) => {
+  const [picklist, setPicklist] = useState([]);
+  const { data } = useGetPickListMutation();
+
+  useEffect(() => {
+    if (!fields || fields.length === 0) {
+      setPicklist([]);
+      return;
+    }
+
+    const groupedPicklist =
+      data && data.length > 0
+        ? fields.map((field) => {
+            const matchedField = data.find(
+              (item: any) => item?.picklistName === field
+            );
+            return {
+              fieldName: field,
+              picklist: matchedField?.picklist,
+            };
+          })
+        : [];
+
+    setPicklist(groupedPicklist);
+  }, [data]);
+
+  return picklist;
+};
+
 export const RenderAllPicklist = (field: string) => {
   const [picklst, setPicklist] = useState([]);
   const { data } = useGetPickListMutation();

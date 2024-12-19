@@ -32,7 +32,10 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { useTranslation } from "react-i18next";
 import * as Yup from "yup";
-import { RenderAllPicklists } from "../../utils/RenderAllPicklist";
+import {
+  RenderAllPicklists,
+  RenderAllSinglePicklist,
+} from "../../utils/RenderAllPicklist";
 import { useGetArtistDetails } from "../ArtistEditProfile/http/useGetDetails";
 import Dicipline from "./Dicipline";
 import { useGetArtWorkStyle } from "./http/useGetArtWorkStyle";
@@ -227,7 +230,7 @@ const AddArtwork = () => {
     dicountAcceptation: "",
     downwardOffer: "",
     upworkOffer: "",
-    purchaseType: "",
+    purchaseType: {},
     priceRequest: "",
     artistbaseFees: "",
     dpersentage: "",
@@ -318,15 +321,7 @@ const AddArtwork = () => {
         data?.data?.restriction?.discountAcceptation || ""
       );
       setValue("provideArtistName", data?.data?.provideArtistName || "");
-      setValue(
-        "artworkSeries",
-        data?.data?.artworkSeries
-          ? {
-              value: data?.data?.artworkSeries,
-              label: data?.data?.artworkSeries,
-            }
-          : ""
-      );
+      setValue("artworkSeries", data?.data?.artworkSeries);
       setValue("artworkCreationYear", data?.data?.artworkCreationYear || "");
       setValue("artworkName", data?.data?.artworkName || "");
       setValue("productDescription", data?.data?.productDescription || "");
@@ -394,8 +389,13 @@ const AddArtwork = () => {
       );
       setValue(
         "purchaseType",
-        data?.data?.commercialization?.purchaseType || ""
+        data?.data?.commercialization?.purchaseType
+          ? {
+              value: data.data.commercialization.purchaseType,
+            }
+          : {}
       );
+
       setValue(
         "downwardOffer",
         data?.data?.commercialization?.downwardOffer || ""
@@ -461,8 +461,6 @@ const AddArtwork = () => {
     }
   }, [id, data, inProcessImage, setInitialValues, seriesData]);
 
-  console.log(getValues("artworkSeries"));
-
   const url = `https://dev.freshartclub.com/discover_more?id=${id}?referral=${"QR"}`;
 
   const currentPageUrl = url;
@@ -502,6 +500,16 @@ const AddArtwork = () => {
     "Artwork Discount Options",
   ]);
 
+  const dPicklist = RenderAllSinglePicklist([
+    "Artwork Discount Options",
+    "Artwork Available To",
+  ]);
+
+  const picklistMapD = dPicklist.reduce((acc, item: any) => {
+    acc[item?.fieldName] = item?.picklist;
+    return acc;
+  }, {});
+
   const picklistMap = picklist.reduce((acc, item: any) => {
     acc[item?.fieldName] = item?.picklist;
     return acc;
@@ -515,9 +523,7 @@ const AddArtwork = () => {
   const availableTo = picklistMap["Artwork Available To"];
   const discountAcceptation = picklistMap["Artwork Discount Options"];
 
-  // console.log(availableTo);
-
-  // console.log(purOption);
+  console.log(purOption);
 
   const handleNavigate = () => {
     navigate("/artist-panel/artdashboard");
@@ -690,8 +696,6 @@ const AddArtwork = () => {
     }
   };
 
-  // const [value, setValue] = useState(null);
-
   useEffect(() => {
     if (data && id) {
       setMainImage(
@@ -734,10 +738,6 @@ const AddArtwork = () => {
       );
 
       setCatalogPrice(selectedCatalog?.artistFees);
-
-      // if (selectedCatalog) {
-      //   updatedValues.artistFees = selectedCatalog.artistFees;
-      // }
     }
 
     if (JSON.stringify(updatedValues) !== JSON.stringify(initialValues)) {
@@ -777,35 +777,26 @@ const AddArtwork = () => {
     setIsLoadingPdf(false);
   };
 
-  const toggleDropdown = () => {
-    setIsDropdownOpen((prev) => !prev);
-  };
-
-  const seriesOptions = seriesData?.seriesList?.map((item, i) => ({
-    value: item,
-    label: item,
-  }));
+  const seriesOptions = seriesData?.seriesList?.map((item, i) => item);
 
   const handleSelectOption = (selectedOption) => {
-    if (
-      !selectedOptions.some((option) => option.value === selectedOption.value)
-    ) {
-      const newSelectedOptions = [...selectedOptions, selectedOption];
-      setSelectedOptions(newSelectedOptions);
-      onChange(newSelectedOptions);
+    if (selectedOption) {
+      setValue("artworkSeries", selectedOption);
     }
   };
 
-  // Function to handle option removal
   const handleRemoveSeries = (value) => {
-    const updatedOptions = selectedOptions.filter(
-      (item) => item.value !== value
-    );
-    setSelectedOptions(updatedOptions);
-    onChange(updatedOptions);
+    try {
+      seriesDelete(value);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  console.log(seriesData);
+  const handleDropDown = () => {
+    setDropdownOpen(!isDropdownOpen);
+  };
+
   if (loading) {
     return <Loader />;
   }
@@ -979,51 +970,46 @@ const AddArtwork = () => {
 
                     <div className="relative w-full">
                       <div className="flex flex-col mb-1">
-                        <label className="block text-sm sm:text-base text-[#203F58] font-semibold">
-                          {t("Select Series")}
-                        </label>
                         {/* Display the selected value as an input field */}
-                        <div
-                          className={`relative bg-[#F9F9FC] mt-1 border border-gray-300 rounded-lg p-2.5 cursor-pointer ${
-                            query ? "opacity-50" : ""
-                          }`}
-                          onClick={() =>
-                            !query && setDropdownOpen(!isDropdownOpen)
-                          } // Toggle dropdown on click
-                        >
-                          <span className="text-sm text-gray-800 truncate">
-                            {t("Select type")}
-                          </span>
-
-                          {/* Show the delete button only if a selection is made */}
-                          {value && (
-                            <AiOutlineClose
-                              onClick={(e) => {
-                                e.stopPropagation(); // Prevent dropdown from closing
-                                handleRemoveSeries();
-                              }}
-                              className="absolute right-2 top-1/2 transform -translate-y-1/2 text-red-500 cursor-pointer"
-                            />
-                          )}
-                        </div>
+                        <input
+                          {...register("artworkSeries", {
+                            required: "Series is required",
+                          })}
+                          value={getValues("artworkSeries")}
+                          type="text"
+                          readOnly="true"
+                          className="w-full bg-[#F9F9FC] border cursor-pointer  border-gray-300 rounded-md  p-1 sm:p-3 outline-none text-sm sm:text-base"
+                          onClick={handleDropDown}
+                          autoComplete="off"
+                          placeholder="Select Series"
+                        />
                       </div>
 
                       {/* Display the dropdown options if it's open */}
                       {isDropdownOpen && !query && (
                         <div className="absolute top-full left-0 w-full mt-2 bg-white border border-gray-300 rounded-lg shadow-lg">
-                          <ul className="max-h-60 overflow-y-auto">
+                          <ul className="max-h-60 overflow-y-auto flex flex-col gap-2 p-2">
                             {seriesOptions.map((option) => (
-                              <li
-                                key={option.value}
-                                onClick={() => handleSelectOption(option)}
-                                className={`flex justify-between items-center py-1 px-2 text-sm cursor-pointer hover:bg-blue-100 ${
-                                  value?.value === option.value
-                                    ? "bg-blue-100"
-                                    : ""
-                                }`}
-                              >
-                                <span>{option.label}</span>
-                              </li>
+                              <div className="flex justify-between  ">
+                                <li
+                                  key={option.value}
+                                  onClick={() => {
+                                    handleDropDown();
+                                    handleSelectOption(option);
+                                  }}
+                                  className={`flex justify-between w-full items-center py-1 px-2 text-sm cursor-pointer hover:bg-blue-100 `}
+                                >
+                                  <span className="cursor-pointer w-full">
+                                    {option}
+                                  </span>
+                                </li>
+                                <span
+                                  onClick={() => handleRemoveSeries(option)}
+                                  className="cursor-pointer  bg-black px-2 rounded-md text-white"
+                                >
+                                  Delete
+                                </span>
+                              </div>
                             ))}
                           </ul>
                         </div>
@@ -2107,17 +2093,27 @@ const AddArtwork = () => {
                         <label className="text-[#203F58] sm:text-base font-semibold ">
                           Purchase Type
                           <select
-                            as="select"
                             id="purchaseType"
                             {...register("purchaseType")}
+                            value={getValues("purchaseType")?.value || ""}
+                            onChange={(e) =>
+                              setValue("purchaseType", {
+                                value: e.target.value,
+                                label:
+                                  e.target.options[e.target.selectedIndex].text,
+                              })
+                            }
                             disabled={query}
-                            className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
+                            className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg block w-full p-1 sm:p-2.5"
                           >
                             <option value="">Select</option>
-                            <option>Fixed Price</option>
-                            <option>Downword Offer</option>
-                            <option>Upword Offer</option>
-                            <option>Price By Request</option>
+                            {purOption
+                              ? purOption.map((item, i) => (
+                                  <option key={i} value={item?.value}>
+                                    {item?.value}
+                                  </option>
+                                ))
+                              : []}
                           </select>
                         </label>
                       </div>
@@ -2312,9 +2308,7 @@ const AddArtwork = () => {
                       // name="location"
                       id="location"
                       placeholder="India"
-                      {...register("location", {
-                        required: "Location is required", // Validation rule
-                      })}
+                      {...register("location")}
                       readOnly={query ? true : false}
                       className="bg-[#F9F9FC] border mb-2 border-gray-300 outline-none text-[#203F58] text-sm rounded-lg block w-full p-1 sm:p-2.5"
                     />
