@@ -17,6 +17,7 @@ import {
 import { useAppSelector } from "../../store/typedReduxHooks";
 import { useGetArtistDetails } from "../UserProfile/http/useGetDetails";
 import Loader from "../ui/Loader";
+import { RenderAllPicklists } from "../utils/RenderAllPicklist";
 
 const NewTicket = () => {
   const validationSchema = Yup.object({
@@ -54,6 +55,22 @@ const NewTicket = () => {
   };
 
   const { data, isLoading } = useGetArtistDetails();
+
+  const picklist = RenderAllPicklists([
+    "Ticket Type",
+    "Ticket Impact",
+    "Ticket Priority",
+    "Ticket Urgency",
+  ]);
+
+  const picklistMap = picklist.reduce((acc, item: any) => {
+    acc[item?.fieldName] = item?.picklist;
+    return acc;
+  }, {});
+
+  const ticketType = picklistMap["Ticket Type"];
+  const ticketImpact = picklistMap["Ticket Priority"];
+  const ticketUrgency = picklistMap["Ticket Urgency"];
 
   const name =
     data?.data?.artist?.artistName +
@@ -174,12 +191,13 @@ const NewTicket = () => {
                     className="outline-[#FDB7DC] bg-[#FFD1D114] shadow border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-[#FDB7DC] focus:shadow-outline"
                   >
                     <option value="">Choose Ticket Type</option>
-                    <option value="Login">Login</option>
-                    <option value="Feature Request">Feature Request</option>
-                    <option value="Bug">Bug</option>
-                    <option value="Account Recovery">Account Recovery</option>
-                    <option value="Payment">Payment</option>
-                    <option value="Data Sync">Data Sync</option>
+                    {ticketType
+                      ? ticketType?.map((item, i) => (
+                          <option key={i} value={item?.value}>
+                            {item.value}
+                          </option>
+                        ))
+                      : null}
                   </Field>
                   <ErrorMessage
                     name="ticketType"
@@ -203,13 +221,13 @@ const NewTicket = () => {
                     >
                       {/* <option value="">Choose Urgency Type</option> */}
 
-                      {urgencyOption.map((item, i) => {
-                        return (
-                          <option key={i} value={item.value}>
-                            {item.label}
-                          </option>
-                        );
-                      })}
+                      {ticketUrgency
+                        ? ticketUrgency?.map((item, i) => (
+                            <option key={i} value={item?.value}>
+                              {item.value}
+                            </option>
+                          ))
+                        : null}
                     </Field>
                     <ErrorMessage
                       name="urgency"
@@ -232,13 +250,13 @@ const NewTicket = () => {
                     >
                       {/* <option value="">Choose Impact Type</option> */}
 
-                      {impactOption.map((item, i) => {
-                        return (
-                          <option key={i} value={item.value}>
-                            {item.label}
-                          </option>
-                        );
-                      })}
+                      {ticketImpact
+                        ? ticketImpact?.map((item, i) => (
+                            <option key={i} value={item?.value}>
+                              {item.value}
+                            </option>
+                          ))
+                        : null}
                     </Field>
                     <ErrorMessage
                       name="impact"

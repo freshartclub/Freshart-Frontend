@@ -68,7 +68,7 @@ const Commercilization = ({ control }) => {
             <input
               readOnly
               type="text"
-              {...control.register(name, { required: message })}
+              {...control.register(name)}
               className="border pointer-events-none border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-[#1C252E] outline-none"
             />
             <label
@@ -77,11 +77,6 @@ const Commercilization = ({ control }) => {
             >
               {label}
             </label>
-            {/* {errors.name && (
-              <div className="text-red-500 text-sm mt-1">
-                <div>{errors.name?.message}</div>
-              </div>
-            )} */}
           </div>
         ))}
       </div>

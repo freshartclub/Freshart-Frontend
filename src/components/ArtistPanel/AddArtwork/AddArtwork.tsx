@@ -40,6 +40,8 @@ import { useGetSeries } from "./http/useGetSeries";
 import { SeriesPop } from "./SeriesPop";
 import { Controller, useForm } from "react-hook-form";
 import html2canvas from "html2canvas";
+import { AiOutlineClose } from "react-icons/ai";
+import useDeleteSeriesMutation from "./http/useDeleteSeries";
 
 const AddArtwork = () => {
   const [progress, setProgress] = useState(0);
@@ -137,6 +139,9 @@ const AddArtwork = () => {
   const [hasMainVideo, setHasMainVideo] = useState(true);
   const [hasMainImg, setHasMainImg] = useState(true);
   const qrCodeRef = useRef(null);
+  // const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const [selectedOptions, setSelectedOptions] = useState([]);
 
   const [newOtherVideo, setNewOtherVideo] = useState([]);
 
@@ -161,6 +166,9 @@ const AddArtwork = () => {
 
   const { data: themeData, isLoading: themeLoading } = useGetTheme();
 
+  const { mutate: seriesDelete, isPending: isSeriesPendingDelete } =
+    useDeleteSeriesMutation();
+
   const { data: artworkStyleList, isLoading: artworkStyleloading } =
     useGetArtWorkStyle();
 
@@ -169,6 +177,7 @@ const AddArtwork = () => {
     isLoading: seriesLoading,
     refetch,
   } = useGetSeries(userID);
+
   const { mutate, isPending } = usePostArtWorkMutation();
 
   const [initialValues, setInitialValues] = useState({
@@ -309,7 +318,15 @@ const AddArtwork = () => {
         data?.data?.restriction?.discountAcceptation || ""
       );
       setValue("provideArtistName", data?.data?.provideArtistName || "");
-      setValue("artworkSeries", data?.data?.artworkSeries || "");
+      setValue(
+        "artworkSeries",
+        data?.data?.artworkSeries
+          ? {
+              value: data?.data?.artworkSeries,
+              label: data?.data?.artworkSeries,
+            }
+          : ""
+      );
       setValue("artworkCreationYear", data?.data?.artworkCreationYear || "");
       setValue("artworkName", data?.data?.artworkName || "");
       setValue("productDescription", data?.data?.productDescription || "");
@@ -444,6 +461,8 @@ const AddArtwork = () => {
     }
   }, [id, data, inProcessImage, setInitialValues, seriesData]);
 
+  console.log(getValues("artworkSeries"));
+
   const url = `https://dev.freshartclub.com/discover_more?id=${id}?referral=${"QR"}`;
 
   const currentPageUrl = url;
@@ -495,6 +514,8 @@ const AddArtwork = () => {
   const colors = picklistMap["Colors"];
   const availableTo = picklistMap["Artwork Available To"];
   const discountAcceptation = picklistMap["Artwork Discount Options"];
+
+  // console.log(availableTo);
 
   // console.log(purOption);
 
@@ -636,6 +657,7 @@ const AddArtwork = () => {
     watch("emotions");
     watch("isArtProvider");
     watch("hangingAvailable");
+    watch("artworkSeries");
   }, []);
 
   const removeImage = (name: string, index: number, typeFile: string) => {
@@ -657,8 +679,6 @@ const AddArtwork = () => {
       setMainVideo(null);
     }
   };
-
-  console.log(hasMainImg);
 
   const removeExistingImage = (index: number, typeFile: string) => {
     console.log(index, typeFile);
@@ -757,6 +777,35 @@ const AddArtwork = () => {
     setIsLoadingPdf(false);
   };
 
+  const toggleDropdown = () => {
+    setIsDropdownOpen((prev) => !prev);
+  };
+
+  const seriesOptions = seriesData?.seriesList?.map((item, i) => ({
+    value: item,
+    label: item,
+  }));
+
+  const handleSelectOption = (selectedOption) => {
+    if (
+      !selectedOptions.some((option) => option.value === selectedOption.value)
+    ) {
+      const newSelectedOptions = [...selectedOptions, selectedOption];
+      setSelectedOptions(newSelectedOptions);
+      onChange(newSelectedOptions);
+    }
+  };
+
+  // Function to handle option removal
+  const handleRemoveSeries = (value) => {
+    const updatedOptions = selectedOptions.filter(
+      (item) => item.value !== value
+    );
+    setSelectedOptions(updatedOptions);
+    onChange(updatedOptions);
+  };
+
+  console.log(seriesData);
   if (loading) {
     return <Loader />;
   }
@@ -778,17 +827,6 @@ const AddArtwork = () => {
             <ArtBreadcrumbs />
 
             <div className="flex flex-col lg:flex-row w-fit gap-4 flex-wrap mt-4 md:lg-0">
-              <h1
-                variant={{
-                  fontSize: "base",
-                  theme: "dark",
-                  fontWeight: "500",
-                }}
-                className="cursor-pointer gap-2 bg-black text-white text-[12px] md:text-[16px] px-2 py-2 lg:px-4 lg:py-3 rounded-lg hover:bg-gray-800"
-              >
-                {t("Revalidate")}
-              </h1>
-
               {query ? (
                 <h1
                   variant={{
@@ -908,7 +946,7 @@ const AddArtwork = () => {
 
                     <Controller
                       name="artworkCreationYear"
-                      control={control} // React Hook Form control object
+                      control={control}
                       defaultValue=""
                       render={({ field }) => (
                         <CustomYearPicker
@@ -927,13 +965,9 @@ const AddArtwork = () => {
                         {t("Select Series")}
                       </label>
                       <p className="text-[#5C59E8] text-sm sm:text-base flex items-center gap-[2px] cursor-pointer">
-                        <span
-                          onClick={() => setIsPopupOpen(true)}
-                          className=" "
-                        >
-                          {" "}
+                        <span onClick={() => setIsPopupOpen(true)}>
                           <TiPlus size="1.2em" />
-                        </span>{" "}
+                        </span>
                       </p>
                     </div>
 
@@ -941,24 +975,60 @@ const AddArtwork = () => {
                       isOpen={isPopupOpen}
                       onClose={closePopup}
                       onAction={handleAction}
-                      userID={userID}
                     />
 
-                    <select
-                      {...register("artworkSeries")}
-                      as="select"
-                      id="artworkSeries"
-                      name="artworkSeries"
-                      disabled={query}
-                      className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
-                    >
-                      <option value="" disabled selected>
-                        {t("Select type")}
-                      </option>
-                      {seriesData?.seriesList?.map((series, index) => (
-                        <option key={index}>{series}</option>
-                      ))}
-                    </select>
+                    <div className="relative w-full">
+                      <div className="flex flex-col mb-1">
+                        <label className="block text-sm sm:text-base text-[#203F58] font-semibold">
+                          {t("Select Series")}
+                        </label>
+                        {/* Display the selected value as an input field */}
+                        <div
+                          className={`relative bg-[#F9F9FC] mt-1 border border-gray-300 rounded-lg p-2.5 cursor-pointer ${
+                            query ? "opacity-50" : ""
+                          }`}
+                          onClick={() =>
+                            !query && setDropdownOpen(!isDropdownOpen)
+                          } // Toggle dropdown on click
+                        >
+                          <span className="text-sm text-gray-800 truncate">
+                            {t("Select type")}
+                          </span>
+
+                          {/* Show the delete button only if a selection is made */}
+                          {value && (
+                            <AiOutlineClose
+                              onClick={(e) => {
+                                e.stopPropagation(); // Prevent dropdown from closing
+                                handleRemoveSeries();
+                              }}
+                              className="absolute right-2 top-1/2 transform -translate-y-1/2 text-red-500 cursor-pointer"
+                            />
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Display the dropdown options if it's open */}
+                      {isDropdownOpen && !query && (
+                        <div className="absolute top-full left-0 w-full mt-2 bg-white border border-gray-300 rounded-lg shadow-lg">
+                          <ul className="max-h-60 overflow-y-auto">
+                            {seriesOptions.map((option) => (
+                              <li
+                                key={option.value}
+                                onClick={() => handleSelectOption(option)}
+                                className={`flex justify-between items-center py-1 px-2 text-sm cursor-pointer hover:bg-blue-100 ${
+                                  value?.value === option.value
+                                    ? "bg-blue-100"
+                                    : ""
+                                }`}
+                              >
+                                <span>{option.label}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
 
@@ -1920,7 +1990,7 @@ const AddArtwork = () => {
                       setCatalogPrice(0);
                     }}
                     // onChange={() => setPurchaseCatlogValue(null)}
-                    className={`py-2 font-bold ${
+                    className={`py-2 font-bold cursor-pointer ${
                       activeTab === "subscription"
                         ? "border-b-4 border-black"
                         : "text-gray-500"
@@ -1937,7 +2007,7 @@ const AddArtwork = () => {
                       setCatalogPrice(0);
                     }}
                     // onChange={() => setPurchaseCatlogValue(null)}
-                    className={`py-2 mx-8 font-bold ${
+                    className={`py-2 mx-8 font-bold cursor-pointer ${
                       activeTab === "purchase"
                         ? "border-b-4 border-black"
                         : "text-gray-500"
@@ -2322,7 +2392,12 @@ const AddArtwork = () => {
             </div>
             {/* ------------------------ */}
 
-            <ArtworkRight query={query} control={control} />
+            <ArtworkRight
+              query={query}
+              control={control}
+              discountAcceptation={discountAcceptation}
+              availableTo={availableTo}
+            />
           </div>
 
           <div className="  bg-white pt-40 flex flex-col sm:flex-row items-center justify-between border border-dotted rounded  py-2 w-full">

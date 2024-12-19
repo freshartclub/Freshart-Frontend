@@ -1,23 +1,24 @@
 export const package_dimension = [
   {
-    name: "packageWeight",
-    label: "Weight (kg)",
-    placeholder: "Product weight...",
-  },
-  {
     name: "packageHeight",
     label: "Height (cm)",
     placeholder: "Height (cm)...",
   },
+  {
+    name: "packageWidth",
+    label: "Width (cm)",
+    placeholder: "Width (cm)...",
+  },
+
   {
     name: "packageLength",
     label: "Depth (cm)",
     placeholder: "Length (cm)...",
   },
   {
-    name: "packageWidth",
-    label: "Width (cm)",
-    placeholder: "Width (cm)...",
+    name: "packageWeight",
+    label: "Weight (kg)",
+    placeholder: "Product weight...",
   },
 ];
 
@@ -45,9 +46,13 @@ export const artwork_orientation = [
 ];
 
 export const Framed_dimension = [
-  { name: "frameHeight", label: "Frame Height", placeholder: "Height (cm)..." },
-  { name: "frameLength", label: "Frame Depth", placeholder: "Length (cm)..." },
-  { name: "frameWidth", label: "Frame Width", placeholder: "Width (cm)..." },
+  {
+    name: "frameHeight",
+    label: "Framed Height",
+    placeholder: "Height (cm)...",
+  },
+  { name: "frameLength", label: "Framed Depth", placeholder: "Length (cm)..." },
+  { name: "frameWidth", label: "Framed Width", placeholder: "Width (cm)..." },
 ];
 
 export const options = [

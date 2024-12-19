@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -15,12 +15,16 @@ import upload_image from "../../assets/Upload_image.png";
 import UploadImage from "../ui/UploadImage";
 import useCompleteRegistration from "../../http/artist/useCompleteRegistration";
 import { useAppSelector } from "../../store/typedReduxHooks";
+import CustomDropdown from "./CustomDropdown";
+import countryList from "react-select-country-list";
+import { getCityStateFromZipCountry } from "../utils/MapWithAutocomplete";
 
 const RegistrationProcess = () => {
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
   const { mutateAsync, isPending } = useCompleteRegistration();
 
   const { userId } = useAppSelector((state) => state.user);
+  const options = useMemo(() => countryList(), []);
 
   const countryOptions = [
     { value: "us", label: "United States" },
@@ -45,19 +49,17 @@ const RegistrationProcess = () => {
 
   const redirectToTermAndCondition = () => {
     window.scrollTo(0, 0);
-    navigate("/terms");
+    window.open("/terms", "_blank");
   };
 
   const validationSchema = Yup.object({
     artistName: Yup.string().required("Name is required"),
-    artistSurname1: Yup.string().required("Surname 1 is required"),
-    artistSurname2: Yup.string().required("Surname 2 is required"),
-    // country: Yup.object().required("Country is required"),
-    zipCode: Yup.string().required("zipCodeis required"),
+    artistSurname1: Yup.string().required("Surname1 is required"),
+    country: Yup.string().required("Country is required"),
+    zipCode: Yup.string().required("ZipCode is required"),
     city: Yup.string().required("City is required"),
     state: Yup.string().required("state is required"),
-    // gender: Yup.object().required("Gender is required"),
-    dob: Yup.date().required("Date of Birth is required"),
+    gender: Yup.string().required("Gender is required"),
     terms: Yup.boolean().oneOf(
       [true],
       "You must accept the terms and conditions"
@@ -69,22 +71,36 @@ const RegistrationProcess = () => {
     control,
     handleSubmit,
     formState: { errors, isSubmitting, isValid },
+    watch,
+    setValue,
   } = useForm({
     resolver: yupResolver(validationSchema),
     defaultValues: {
       artistName: "",
       artistSurname1: "",
-      artistSurname2: "",
-
       country: "",
       zipCode: "",
       city: "",
       state: "",
       gender: "",
-      dob: "",
       terms: false,
     },
   });
+
+  const zipCode = watch("zipCode");
+  const country = watch("country");
+  const apiKey = import.meta.env.VITE_APP_GOOGLE_MAPS_API_KEY;
+
+  useEffect(() => {
+    if (country && zipCode && zipCode.length > 4) {
+      getCityStateFromZipCountry(country, zipCode, apiKey).then(
+        ({ state, city }) => {
+          setValue("city", city);
+          setValue("state", state);
+        }
+      );
+    }
+  }, [country, zipCode]);
 
   const onSubmit = handleSubmit(async (data) => {
     const formData = new FormData();
@@ -92,7 +108,7 @@ const RegistrationProcess = () => {
     Object.keys(data).forEach((key) => {
       formData.append(key, data[key]);
     });
-    formData.append("avatar", selectedFile);
+    formData.append("mainImage", selectedFile);
 
     const newData = {
       data: formData,
@@ -143,12 +159,12 @@ const RegistrationProcess = () => {
                 <form className="w-full">
                   <div className="md:p-10 p-3 rounded-xl bg-white shadow-2xl">
                     <div className="flex md:flex-row flex-col justify-between">
-                      <div className="sm:my-3 my-1 md:w-[32%] w-full">
+                      <div className="sm:my-3 my-1 sm:w-[49%] w-full">
                         <label
                           htmlFor="artistName"
                           className="block mb-2 text-sm font-semibold text-gray-700 text-left"
                         >
-                          Name
+                          Name *
                         </label>
                         <input
                           {...register("artistName")}
@@ -163,12 +179,12 @@ const RegistrationProcess = () => {
                         )}
                       </div>
 
-                      <div className="sm:my-3 my-1 md:w-[32%] w-full">
+                      <div className="sm:my-3 my-1 sm:w-[49%] w-full">
                         <label
                           htmlFor="artistSurname1"
                           className="block mb-2 text-sm font-semibold text-gray-700 text-left"
                         >
-                          Surname 1
+                          Surname 1 *
                         </label>
                         <input
                           {...register("artistSurname1")}
@@ -182,8 +198,10 @@ const RegistrationProcess = () => {
                           </p>
                         )}
                       </div>
+                    </div>
 
-                      <div className="sm:my-3 my-1 md:w-[32%] w-full">
+                    <div className="flex sm:flex-row flex-col justify-between">
+                      <div className="sm:my-3 my-1 sm:w-[49%] w-full">
                         <label
                           htmlFor="artistSurname2"
                           className="block mb-2 text-sm font-semibold text-gray-700 text-left"
@@ -202,6 +220,30 @@ const RegistrationProcess = () => {
                           </p>
                         )}
                       </div>
+
+                      <div className="sm:my-3 my-1 sm:w-[49%] w-full">
+                        <label
+                          htmlFor="gender"
+                          className="block mb-2 text-sm font-semibold text-gray-700 text-left"
+                        >
+                          Gender *
+                        </label>
+
+                        <select
+                          {...register("gender")}
+                          className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
+                        >
+                          <option value="">Select Gender</option>
+                          <option value="male">Male</option>
+                          <option value="female">Female</option>
+                          <option value="other">Other</option>
+                        </select>
+                        {errors.gender && (
+                          <p className="text-red-500 text-sm text-left">
+                            {errors.gender.message}
+                          </p>
+                        )}
+                      </div>
                     </div>
 
                     <div className="flex sm:flex-row flex-col justify-between">
@@ -212,11 +254,11 @@ const RegistrationProcess = () => {
                         >
                           Country
                         </label>
-                        <input
-                          {...register("country")}
-                          className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
-                          placeholder="Enter Country
-"
+                        <CustomDropdown
+                          control={control}
+                          options={options}
+                          name="country"
+                          isActiveStatus="active"
                         />
                         {errors.country && (
                           <p className="text-red-500 text-sm text-left">
@@ -252,7 +294,7 @@ const RegistrationProcess = () => {
                           htmlFor="city"
                           className="block mb-2 text-sm font-semibold text-gray-700 text-left"
                         >
-                          City
+                          City *
                         </label>
                         <input
                           {...register("city")}
@@ -272,7 +314,7 @@ const RegistrationProcess = () => {
                           htmlFor="state"
                           className="block mb-2 text-sm font-semibold text-gray-700 text-left"
                         >
-                          Province
+                          Province *
                         </label>
                         <input
                           {...register("state")}
@@ -283,48 +325,6 @@ const RegistrationProcess = () => {
                         {errors.state && (
                           <p className="text-red-500 text-sm text-left">
                             {errors.state.message}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="flex sm:flex-row flex-col justify-between">
-                      <div className="sm:my-3 my-1 sm:w-[49%] w-full">
-                        <label
-                          htmlFor="gender"
-                          className="block mb-2 text-sm font-semibold text-gray-700 text-left"
-                        >
-                          Gender
-                        </label>
-                        <input
-                          {...register("gender")}
-                          className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
-                          placeholder="Enter Gender
-"
-                        />
-                        {errors.gender && (
-                          <p className="text-red-500 text-sm text-left">
-                            {errors.gender.message}
-                          </p>
-                        )}
-                      </div>
-
-                      <div className="sm:my-3 my-1 sm:w-[49%] w-full">
-                        <label
-                          htmlFor="dob"
-                          className="block mb-2 text-sm font-semibold text-gray-700 text-left"
-                        >
-                          Date of Birth
-                        </label>
-                        <input
-                          {...register("dob")}
-                          type="date"
-                          className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
-                          placeholder=""
-                        />
-                        {errors.dob && (
-                          <p className="text-red-500 text-sm text-left">
-                            {errors.dob.message}
                           </p>
                         )}
                       </div>

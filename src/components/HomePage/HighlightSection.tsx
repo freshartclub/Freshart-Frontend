@@ -69,7 +69,7 @@ const HighlightSection = ({ data }) => {
           data?.highlighted?.map((item, index) => (
             <div
               key={index}
-              className="sm:px-3 px-0 border-none outline-none relative "
+              className="sm:px-3 px-0 border-none outline-none relative cursor-pointer"
               onClick={() => handleRedirectToDescription(item?._id)}
             >
               <img
@@ -110,7 +110,7 @@ const HighlightSection = ({ data }) => {
               data?.highlighted.map((item, index) => (
                 <div
                   key={index}
-                  className="sm:px-3 px-0 border-none outline-none relative "
+                  className="sm:px-3 px-0 border-none outline-none relative cursor-pointer"
                   onClick={() => handleRedirectToDescription(item?._id)}
                 >
                   <img

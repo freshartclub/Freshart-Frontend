@@ -6,18 +6,18 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import axiosInstance from "../../../utils/axios";
 import { ARTTIST_ENDPOINTS } from "../../../../http/apiEndPoints/Artist";
 
-async function usePostSeries(input: any) {
-  // console.log("this is input", id);
+async function useDeleteSeries(input: any) {
+  console.log("this is input", input);
   return await axiosInstance.patch(
-    `${ARTTIST_ENDPOINTS.usePatchSeries}`,
+    `${ARTTIST_ENDPOINTS.useDeleteSeries}`,
     input
   );
 }
 
-const usePostSeriesMutation = () => {
+const useDeleteSeriesMutation = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: usePostSeries,
+    mutationFn: useDeleteSeries,
 
     onSuccess: async (res) => {
       queryClient.invalidateQueries({
@@ -34,4 +34,4 @@ const usePostSeriesMutation = () => {
   });
 };
 
-export default usePostSeriesMutation;
+export default useDeleteSeriesMutation;

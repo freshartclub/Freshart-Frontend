@@ -49,17 +49,13 @@ const NavBar = () => {
 
   const { data, isLoading } = useGetDiscipline();
 
-  const disciplineData = data?.data?.map((item, i) => item);
-
-  const getOutDiscipline = disciplineData?.map(
-    (item, i) => item?.disciplineName
-  );
+  const disciplineData = data?.data ? data?.data?.map((item, i) => item) : [];
 
   const selectSeriesPicklist = seriesPickList?.data?.filter(
     (item) => item?.picklistName === "Series"
   );
 
-  const isArtist = useAppSelector((state) => state.user.isArtist);
+  const isArtist = useAppSelector((state) => state?.user?.isArtist);
   const user = useAppSelector((state) => state.user.user);
 
   const url = "https://dev.freshartclub.com/images";

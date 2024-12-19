@@ -39,6 +39,7 @@ export const ARTTIST_ENDPOINTS = {
   addToWishList: `${ARTIST_BASE_URl}/item-to-wishlist`,
   getWishList: `${ARTIST_BASE_URl}/get-wishlist`,
   usePatchSeries: `${ARTIST_BASE_URl}/add-series-to-artist`,
+  useDeleteSeries: `${ARTIST_BASE_URl}/delete-series-to-artist`,
   getSeries: `${ARTIST_BASE_URl}/get-series-list`,
 
   // GetArtistTicket: `${ARTIST_BASE_URl}/get

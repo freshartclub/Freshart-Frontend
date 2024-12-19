@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -46,6 +46,10 @@ const SignUp = () => {
       console.error(error.message);
     }
   });
+
+  const handleTerms = () => {
+    window.open("/terms", "_blank");
+  };
 
   return (
     <div className="bg-[#F9F7F6]">
@@ -113,12 +117,6 @@ const SignUp = () => {
                 )}
               </div>
 
-              <div className="my-5">
-                <Link to="/" className="text-md text-red-500 hover:underline">
-                  Invitation Code?
-                </Link>
-              </div>
-
               <div className="flex text-left items-start">
                 <input
                   type="checkbox"
@@ -127,13 +125,19 @@ const SignUp = () => {
                 />
                 <p className="ml-3 font-medium tracking-tight leading-1">
                   By signing up, I have read and agree to
-                  <Link to="/terms" className="text-red-600 mx-1">
+                  <span
+                    onClick={handleTerms}
+                    className="text-red-600 mx-1  cursor-pointer hover:underline"
+                  >
                     Terms
-                  </Link>
-                  and
-                  <Link to="/" className="text-red-600 ml-1">
+                  </span>
+                  &
+                  <span
+                    onClick={handleTerms}
+                    className="text-red-600 ml-1 cursor-pointer hover:underline"
+                  >
                     Privacy Policy.
-                  </Link>
+                  </span>
                 </p>
               </div>
               {errors.terms && (
@@ -161,103 +165,19 @@ const SignUp = () => {
                 </Button>
               </div>
 
-              <div>
-                <div className="flex items-center my-4">
-                  <span className="flex-grow sm:w-[20%] w-[28%] 2xl:ml-10 md:mr-0 mr-2 border-2 border-t border-gray-300"></span>
-                  <P
-                    variant={{ theme: "dark", weight: "semiBold" }}
-                    className="lg:mx-4 md:mx-2 mx-0 md:text-base text-sm"
-                  >
-                    Or continue with
-                  </P>
-                  <span className="flex-grow sm:w-[20%] w-[28%] lg:mr-10 md:ml-0 ml-2 border-2 border-t border-gray-300"></span>
-                </div>
-
-                <div className="grid grid-cols-1 gap-2 mt-4 xl:grid-cols-3 lg:grid-cols-2 md:grid-cols-1 sm:grid-cols-3 lg:gap-4 lg:mt-6">
-                  <Button
-                    variant={{
-                      theme: "light",
-                      rounded: "full",
-                      fontWeight: "500",
-                      thickness: "moderate",
-                      fontSize: "base",
-                    }}
-                    className={`flex justify-center border border-[#102030]`}
-                  >
-                    <img src={google} alt="Google" className="" />
-                    <P
-                      variant={{
-                        size: "base",
-                        theme: "dark",
-                        weight: "medium",
-                      }}
-                      className="ml-1 mt-[2px]"
-                    >
-                      Google
-                    </P>
-                  </Button>
-
-                  <Button
-                    variant={{
-                      theme: "light",
-                      rounded: "full",
-                      fontWeight: "500",
-                      thickness: "moderate",
-                      fontSize: "base",
-                    }}
-                    className={`flex justify-center border border-[#102030]`}
-                  >
-                    <img src={apple} alt="Apple" className="ml-2" />
-                    <P
-                      variant={{
-                        size: "base",
-                        theme: "dark",
-                        weight: "medium",
-                      }}
-                      className="ml-2 mt-[2px]"
-                    >
-                      Apple ID
-                    </P>
-                  </Button>
-
-                  <Button
-                    variant={{
-                      theme: "light",
-                      rounded: "full",
-                      fontWeight: "500",
-                      thickness: "moderate",
-                      fontSize: "base",
-                    }}
-                    className={`flex justify-center border border-[#102030]`}
-                  >
-                    <img src={facebook} alt="Facebook" className="" />
-                    <P
-                      variant={{
-                        size: "base",
-                        theme: "dark",
-                        weight: "medium",
-                      }}
-                      className="ml-1 mt-[2px]"
-                    >
-                      Facebook
-                    </P>
-                  </Button>
-                </div>
-
-                <div className="flex sm:flex-row flex-col mt-5 place-content-center">
-                  <P
-                    variant={{ theme: "dark", weight: "medium" }}
-                    className="md:text-base text-sm"
-                  >
-                    Already have an account?
-                  </P>
-                  <Link
-                    to="/login"
-                    className="font-bold uppercase sm:mt-0 mt-2 ml-1 md:text-base text-sm"
-                  >
-                    Sign In
-                  </Link>
-                </div>
+              <div className="flex sm:flex-row flex-col mt-5 place-content-center">
+                <P
+                  variant={{ theme: "dark", weight: "medium" }}
+                  className="md:text-base text-sm"
+                >
+                  Already have an account?
+                </P>
+                <Link
+                  to="/login"
+                  className="font-bold uppercase sm:mt-0 mt-2 ml-1 md:text-base text-sm"
+                >
+                  Sign In
+                </Link>
               </div>
             </form>
           </div>

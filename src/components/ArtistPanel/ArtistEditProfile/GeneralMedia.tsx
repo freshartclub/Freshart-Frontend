@@ -6,8 +6,10 @@ import {
   useForm,
 } from "react-hook-form";
 import Header from "../../ui/Header";
+import image_icon from "../../../assets/image_icon.png";
+import video_icon from "../../../assets/video_icon.png";
 
-const GeneralMedia = ({ control, data, url, isActiveStatus }) => {
+const GeneralMedia = ({ control, data, url, isActiveStatus  }) => {
   const { setValue, getValues, watch } = useFormContext();
 
   useEffect(() => {
@@ -72,10 +74,16 @@ const GeneralMedia = ({ control, data, url, isActiveStatus }) => {
   const [inProcessImageChanged, setInProcessImageChanged] = useState(false);
 
   useEffect(() => {
-    setExistingMainImage(`${url}/users/${data?.mainImage}`);
+    setExistingMainImage(
+      data?.mainImage ? `${url}/users/${data?.mainImage}` : null
+    );
     setExistingAdditionalImage(data?.additionalImage);
-    setExistingInProcessImage(`${url}/users/${data?.inProcessImage}`);
-    setExistingMainVideo(`${url}/videos/${data?.mainVideo}`);
+    setExistingInProcessImage(
+      data?.inProcessImage ? `${url}/users/${data?.inProcessImage}` : null
+    );
+    setExistingMainVideo(
+      data?.mainVideo ? `${url}/videos/${data?.mainVideo}` : null
+    );
     setExistingAdditionalVideo(data?.additionalVideo);
   }, []);
 
@@ -237,10 +245,15 @@ const GeneralMedia = ({ control, data, url, isActiveStatus }) => {
                       className="w-28 h-28 object-cover"
                     />
                   ) : (
-                    <div className="w-28 h-28 bg-gray-200 rounded-md mb-4" />
+                    <img
+                      src={image_icon}
+                      className="w-28 h-28 bg-gray-200 rounded-md mb-4"
+                    />
                   )}
                   <span
-                    className={`absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer ${
+                    className={`absolute top-1 ${
+                      existingMainImage ? "block" : "hidden"
+                    } right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer ${
                       isActiveStatus !== "active"
                         ? "opacity-50 cursor-not-allowed"
                         : ""
@@ -298,13 +311,16 @@ const GeneralMedia = ({ control, data, url, isActiveStatus }) => {
                     </span>
                   </div>
                 ) : (
-                  <div className="w-28 h-28 bg-gray-200 rounded-md mb-4" />
+                  <img
+                    src={image_icon}
+                    className="w-28 h-28 bg-gray-200 rounded-md mb-4"
+                  />
                 )}
                 <p className="text-center text-xs md:text-base">
                   Drag and drop image here, or click to add image
                 </p>
                 <span
-                  className={`bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer ${
+                  className={`bg-[#DEDEFA]  font-bold mt-2 p-3 px-4 rounded-md cursor-pointer ${
                     isActiveStatus !== "active" ? "pointer-events-none" : ""
                   }`}
                   onClick={triggerInProcessImageInput}
@@ -371,6 +387,10 @@ const GeneralMedia = ({ control, data, url, isActiveStatus }) => {
                 </div>
               ))}
           </div>
+          <img
+            src={image_icon}
+            className="w-28 h-28 bg-gray-200 rounded-md mb-4"
+          />
           <p className="text-center text-xs md:text-base mt-4">
             Click to add additional images
           </p>
@@ -417,10 +437,15 @@ const GeneralMedia = ({ control, data, url, isActiveStatus }) => {
                       className="w-28 h-28 object-cover"
                     />
                   ) : (
-                    <div className="w-28 h-28 bg-gray-200 rounded-md mb-4" />
+                    <img
+                      src={video_icon}
+                      className="w-28 h-28 bg-gray-200 rounded-md mb-4"
+                    />
                   )}
                   <span
-                    className={`absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer ${
+                    className={`absolute ${
+                      existingMainVideo ? "block" : "hidden"
+                    } top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer ${
                       isActiveStatus !== "active"
                         ? "opacity-50 cursor-not-allowed"
                         : ""
@@ -434,7 +459,7 @@ const GeneralMedia = ({ control, data, url, isActiveStatus }) => {
                   Drag and drop Video here, or click to add Video
                 </p>
                 <span
-                  className={`bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer ${
+                  className={`bg-[#DEDEFA]  font-bold mt-2 p-3 px-4 rounded-md cursor-pointer ${
                     isActiveStatus !== "active" ? "pointer-events-none" : ""
                   }`}
                   onClick={triggerVideoInput}
@@ -506,6 +531,11 @@ const GeneralMedia = ({ control, data, url, isActiveStatus }) => {
                     )
                   )}
               </div>
+              <img
+                src={video_icon}
+                className="w-28 h-28 bg-gray-200 rounded-md mb-4 align-content-center"
+              />
+
               <p className="text-center mt-4">Click to add additional Vidoes</p>
               <span
                 className={`bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer flex items-center justify-center ${

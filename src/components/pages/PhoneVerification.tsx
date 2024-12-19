@@ -13,6 +13,7 @@ interface PhoneVerificationProps {
   validatePhone: string;
   requestOtpPending: boolean;
   verifyPhoneOtpPending: boolean;
+  validateEmail: string;
 }
 
 const PhoneVerification: React.FC<PhoneVerificationProps> = ({
@@ -28,6 +29,7 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
   validatePhone,
   requestOtpPending,
   verifyPhoneOtpPending,
+  validateEmail,
 }) => {
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -36,12 +38,12 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
       <span
         onClick={handleSendOtp}
         className={`${
-          isOtpVerify
+          isOtpVerify || validateEmail === "Email Verified"
             ? "border-zinc-600 text-black py-2 px-4 rounded border cursor-pointer w-[8rem]"
             : "border-zinc-600 text-black py-2 px-4 rounded border cursor-pointer pointer-events-none opacity-40 w-[8rem]"
         }`}
       >
-        {requestOtpPending ? "Sending..." : "Send Code"}
+        {requestOtpPending ? "Sending..." : validatePhone}
       </span>
 
       {isModalOpenPhone && (

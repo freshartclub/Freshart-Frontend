@@ -1,24 +1,24 @@
 import { Controller } from "react-hook-form";
 import Header from "../../ui/Header";
 
+const ArtworkRight = ({ query, control, discountAcceptation, availableTo }) => {
+  const availableToOptions = availableTo?.map((item) => item.value) || [];
+  const discountAcceptationOptions =
+    discountAcceptation?.map((item) => item.value) || [];
 
-const ArtworkRight = ({ query, control }) => {
   const restrictions = [
     {
       id: "restrictions",
       name: "availableTo",
-      label: "Restrictions",
-      options: [
-        "Not Available To Guest",
-        "Available To All",
-        "Available Only Guest",
-      ],
+      label: "Available To",
+      options: availableToOptions.length > 0 ? availableToOptions : [],
     },
     {
-      id: "dicountAcceptation",
+      id: "discountAcceptation",
       name: "discountAcceptation",
       label: "Discount Acceptation",
-      options: ["Promotions", "Only Artist"],
+      options:
+        discountAcceptationOptions.length > 0 ? discountAcceptationOptions : [],
     },
   ];
 
@@ -60,7 +60,6 @@ const ArtworkRight = ({ query, control }) => {
                     disabled={query}
                     className="block w-full p-1 sm:px-4 sm:py-2 bg-[#F9F9FC] outline-none border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >
-                    <option value="">Select {label}</option>
                     {options.map((option, index) => (
                       <option key={index} value={option}>
                         {option}
@@ -73,7 +72,6 @@ const ArtworkRight = ({ query, control }) => {
           ))}
         </div>
 
-    
         <div className="bg-white rounded-lg shadow-md p-6 mt-4 border border-[#E0E2E7]">
           <Header
             variant={{ size: "md", theme: "dark", weight: "semiBold" }}
@@ -96,8 +94,8 @@ const ArtworkRight = ({ query, control }) => {
                   <select
                     {...field}
                     id={id}
-                    disabled={query}
-                    className="block w-full p-1 sm:px-4 sm:py-2 bg-[#F9F9FC] outline-none border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    disabled
+                    className="block  w-full p-1 sm:px-4 sm:py-2 bg-[#F9F9FC] outline-none border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >
                     <option value="Not Assigned">Not Assigned</option>
                     {options.map((option, index) => (
@@ -111,8 +109,6 @@ const ArtworkRight = ({ query, control }) => {
             </div>
           ))}
         </div>
-
-    
       </div>
     </div>
   );

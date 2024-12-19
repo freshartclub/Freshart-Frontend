@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import usePostSeriesMutation from "./http/usePostSeries";
 
-export const SeriesPop = ({ isOpen, onClose, onAction, userID }) => {
+export const SeriesPop = ({ isOpen, onClose, onAction }) => {
   if (!isOpen) return null;
   const [series, setSeries] = useState("");
   const { mutateAsync, isPending } = usePostSeriesMutation();
@@ -11,7 +11,6 @@ export const SeriesPop = ({ isOpen, onClose, onAction, userID }) => {
     setSeries(value);
   };
 
-  console.log(series);
   const handleSaveSeries = () => {
     if (!series.trim()) {
       alert("Series name cannot be empty.");
@@ -20,7 +19,6 @@ export const SeriesPop = ({ isOpen, onClose, onAction, userID }) => {
 
     const data = {
       seriesName: series.trim(),
-      userID: userID,
     };
 
     try {
@@ -38,7 +36,7 @@ export const SeriesPop = ({ isOpen, onClose, onAction, userID }) => {
   };
 
   return (
-    <div className="fixed inset-0 flex justify-center items-center bg-gray-600 bg-opacity-50">
+    <div className="fixed z-50 inset-0 flex justify-center items-center bg-gray-600 bg-opacity-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-1/3 relative">
         <h2 className="text-md font-bold mb-4">Enter New Series Name</h2>
         <input

@@ -102,7 +102,7 @@ const Support = () => {
   return (
     <div>
       <div className="container mx-auto md:px-6 px-3">
-        {newIncident?.lnegth > 0 ? (
+        {newIncident && newIncident?.length > 0 ? (
           <div className="bg-[#E9E4DF] border-2 border-[#FF536B] p-4 mb-4 rounded-md mt-6">
             <h3 className="font-semibold">Important Notice:</h3>
             {isLoading ? (

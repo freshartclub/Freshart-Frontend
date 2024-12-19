@@ -1,4 +1,4 @@
-import { Controller, useForm } from "react-hook-form";
+import { Controller, set, useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import P from "../ui/P";
@@ -32,6 +32,7 @@ import useGetPhone from "./http/useGetPhoneOtp";
 import usePhoneOtpVerify from "./http/useVerifyPhoneOtp";
 
 import CustomDropdown from "./CustomDropdown";
+import { useAppSelector } from "../../store/typedReduxHooks";
 
 const BecomeArtist = () => {
   const validationSchema = Yup.object().shape({
@@ -56,10 +57,10 @@ const BecomeArtist = () => {
 
   const [isOtpVerify, setIsOtpVerify] = useState(false);
   const [popUp, setPopUp] = useState(false);
-  const [geoLocation, setGeoLocation] = useState(null);
-  const [countryCode, setCountryCode] = useState("");
+
+  const [countryCode, setCountryCode] = useState("in");
   const [validateEmail, setValidateEmail] = useState("Verify Email");
-  const [validatePhone, setValidatePhone] = useState("Verify Phone");
+  const [validatePhone, setValidatePhone] = useState("Send Code");
   const [validateotp, setValidateotp] = useState("Validate Otp");
   const [filterStyle, setFilterStyle] = useState(null);
   const [validateError, setValidateError] = useState("");
@@ -119,6 +120,27 @@ const BecomeArtist = () => {
     (item) => item.picklistName === "Social Media"
   );
 
+  const user = useAppSelector((state) => state.user.user);
+  console.log(user);
+
+  useEffect(() => {
+    if (user) {
+      setValue("artistName", user?.artistName);
+      setValue("artistSurname1", user?.artistSurname1);
+      setValue("artistSurname2", user?.artistSurname2);
+      setValue("email", user?.email);
+      setValue("phone", user?.phone);
+      setValue("zipCode", user?.address?.zipCode);
+      setValue("city", user?.address?.city);
+      setValue("region", user?.address?.state);
+      setValue("country", user?.address?.country);
+
+      setValidateEmail(
+        user?.isEmailVerified ? "Email Verified" : "Verify Email"
+      );
+    }
+  }, [user]);
+
   useEffect(() => {
     if (watchDicipline) {
       const newStyle = styleData?.data?.filter(
@@ -133,28 +155,6 @@ const BecomeArtist = () => {
       setValue("style", "");
     }
   }, [watchDicipline]);
-
-  // useEffect(() => {
-  //   watch("phone");
-  //   watch("email");
-  //   if (!errors.email) {
-  //     setEmail(getValues("email"));
-  //   }
-
-  //   const getGeoLocation = async () => {
-  //     const request = await fetch("https://ipapi.co/json");
-  //     const jsonResponse = await request.json();
-  //     setGeoLocation(jsonResponse);
-  //   };
-
-  //   getGeoLocation();
-  // }, []);
-
-  // useEffect(() => {
-  //   setValue("city", geoLocation?.city);
-  //   setValue("region", geoLocation?.region);
-  //   setCountryCode(geoLocation?.country);
-  // }, [geoLocation]);
 
   const zipCode = watch("zipCode");
   const country = watch("country");
@@ -171,6 +171,10 @@ const BecomeArtist = () => {
     }
   }, [country, zipCode]);
 
+  useEffect(() => {
+    watch("phone");
+  }, []);
+
   const emails = getValues("email");
   const phones = getValues("phone");
 
@@ -182,14 +186,17 @@ const BecomeArtist = () => {
     }
 
     const data = {
-      email,
+      email: emails || email,
       isArtistRequest: true,
     };
 
     sendMail(data).then(() => {
       setIsModalOpen(true);
+      setVerificationCode("");
     });
   };
+
+  console.log(email);
 
   const handleRevalidatePhone = async () => {
     const result = await trigger("phone");
@@ -206,6 +213,7 @@ const BecomeArtist = () => {
     verifyPhoneOtp(data).then(() => {
       setOtpSent(true);
       setValidatePhone("Verified");
+
       setIsModalOpenPhone(false);
       setVerificationCode("");
     });
@@ -224,6 +232,7 @@ const BecomeArtist = () => {
       setIsModalOpen(false);
       setValidateEmail("Email Verified");
       setValidateotp("Validated");
+      setVerificationCode("");
     });
   };
 
@@ -233,6 +242,7 @@ const BecomeArtist = () => {
         email: emails,
         phone: phones,
       };
+      console.log(data);
       requestOtp(data).then(() => {
         setIsModalOpenPhone(true);
       });
@@ -426,7 +436,7 @@ const BecomeArtist = () => {
                       <PhoneInput
                         className="appearance-none  outline-none rounded py-1   w-full text-gray-700 leading-tight focus:outline-none"
                         placeholder="Enter phone number"
-                        // defaultCountry={countryCode}
+                        defaultCountry={countryCode}
                         value={getValues("phone")}
                         onChange={(val) => setValue("phone", val)}
                       />
@@ -444,6 +454,7 @@ const BecomeArtist = () => {
                         setVerificationCode={setVerificationCode}
                         verificationCode={verificationCode}
                         validatePhone={validatePhone}
+                        validateEmail={validateEmail}
                       />
                     </div>
 

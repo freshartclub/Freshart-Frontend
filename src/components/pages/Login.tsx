@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import loginImage from "../../assets/login.png";
@@ -19,11 +19,13 @@ const Login: React.FC = () => {
   const [newPasswordIcon, setNewPasswordIcon] = React.useState(eyeclose);
   const [newPasswordType, setNewPasswordType] = React.useState("password");
   const { mutateAsync, isPending } = useSignInMutation();
+  const [rememberMe, setRememberMe] = useState(false);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm();
 
   const handleNewPasswordToggle = () => {
@@ -33,13 +35,30 @@ const Login: React.FC = () => {
     setNewPasswordIcon((prevIcon) => (prevIcon === eyeclose ? eye : eyeclose));
   };
 
+  useEffect(() => {
+    const storedEmail = localStorage.getItem("email");
+    if (storedEmail) {
+      setValue("email", storedEmail);
+      setRememberMe(true);
+    }
+  }, [setValue]);
+
   const onSubmit = handleSubmit(async (data) => {
+    if (rememberMe) {
+      localStorage.setItem("email", data.email);
+    } else {
+      localStorage.removeItem("email");
+    }
     try {
       await mutateAsync(data);
     } catch (error) {
       console.error(error?.message);
     }
   });
+
+  const handleRememberMeChange = () => {
+    setRememberMe(!rememberMe);
+  };
 
   return (
     <div className="container mx-auto md:px-6 px-3">
@@ -124,6 +143,8 @@ const Login: React.FC = () => {
               <input
                 type="checkbox"
                 className="form-checkbox h-4 w-4 text-blue-600"
+                checked={rememberMe}
+                onChange={handleRememberMeChange}
               />
               <span className="ml-2 text-sm text-gray-700">Remember me</span>
             </label>
@@ -135,60 +156,19 @@ const Login: React.FC = () => {
             </Link>
           </div>
 
-          <div>
-            <div className="flex items-center my-4">
-              <span className="flex-grow sm:w-[20%] w-[28%] lg:ml-10 md:mr-0 mr-2 border-2 border-t border-gray-300"></span>
-              <P
-                variant={{ theme: "dark", weight: "semiBold" }}
-                className="lg:mx-4 md:mx-2 mx-0 md:text-base text-sm"
-              >
-                Or continue with
-              </P>
-              <span className="flex-grow sm:w-[20%] w-[28%] lg:mr-10 md:ml-0 ml-2 border-2 border-t border-gray-300"></span>
-            </div>
-
-            <div className="grid grid-cols-1 gap-2 mt-4 xl:grid-cols-3 lg:grid-cols-2 md:grid-cols-1 sm:grid-cols-3 lg:gap-4 lg:mt-6">
-              {/* Social login buttons */}
-              <Button
-                variant={{
-                  theme: "light",
-                  rounded: "full",
-                  fontWeight: "500",
-                  thickness: "moderate",
-                  fontSize: "base",
-                }}
-                className={`flex justify-center border border-[#102030]`}
-                type="button" // Ensure this is set correctly
-              >
-                <img src={google} alt="Google" className="ml-2" />
-                <P
-                  variant={{
-                    size: "base",
-                    theme: "dark",
-                    weight: "medium",
-                  }}
-                  className="ml-1 mt-[2px]"
-                >
-                  Google
-                </P>
-              </Button>
-              {/* Repeat for other social login buttons... */}
-            </div>
-
-            <div className="flex sm:flex-row flex-col mt-5 justify-center">
-              <P
-                variant={{ theme: "dark", weight: "medium" }}
-                className="md:text-base text-sm"
-              >
-                Don’t have an account?
-              </P>
-              <Link
-                to="/signup"
-                className="font-bold uppercase ml-1 md:text-base text-sm"
-              >
-                Sign Up
-              </Link>
-            </div>
+          <div className="flex sm:flex-row flex-col mt-5 justify-center">
+            <P
+              variant={{ theme: "dark", weight: "medium" }}
+              className="md:text-base text-sm"
+            >
+              Don’t have an account?
+            </P>
+            <Link
+              to="/signup"
+              className="font-bold uppercase ml-1 md:text-base text-sm"
+            >
+              Sign Up
+            </Link>
           </div>
         </div>
         <div className="my-auto">

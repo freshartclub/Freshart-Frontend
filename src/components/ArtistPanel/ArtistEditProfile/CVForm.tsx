@@ -1,6 +1,7 @@
 import React from "react";
 import { useFieldArray, Control, Controller } from "react-hook-form";
 import ReactQuill from "react-quill";
+import { options } from "./Language";
 
 interface CVEntry {
   year: string;
@@ -14,7 +15,12 @@ interface CVFormProps {
   control: Control<any>;
 }
 
-const CVForm: React.FC<CVFormProps> = ({ control, isActiveStatus }) => {
+const CVForm: React.FC<CVFormProps> = ({
+  control,
+  isActiveStatus,
+  eventScope,
+  eventType,
+}) => {
   const {
     fields: cvEntries,
     append,
@@ -23,6 +29,9 @@ const CVForm: React.FC<CVFormProps> = ({ control, isActiveStatus }) => {
     control,
     name: "cvEntries",
   });
+
+  console.log(eventType);
+  console.log(eventScope);
 
   const addMoreCv = () => {
     append({ year: "", Type: "", Description: "", Location: "", Scope: "" });
@@ -98,12 +107,14 @@ const CVForm: React.FC<CVFormProps> = ({ control, isActiveStatus }) => {
               {...control.register(`cvEntries.${index}.Type`)} // Use control to register the input
               defaultValue={cv.Type} // Set the default value from cv.Type
             >
-              <option value="soloexhibition">Solo Exhibition</option>
-              <option value="groupexhibition">Group Exhibition</option>
-              <option value="collection">Collection</option>{" "}
-              <option value="awards">Awards</option>
-              <option value="press&bibliography">Press & Bibliography</option>
-              <option value="seduction">SEduction</option>
+              <option value="">Select</option>
+              {eventType &&
+                eventType?.map((item, i) => (
+                  <option key={i} value={item.value}>
+                    {" "}
+                    {item?.value}
+                  </option>
+                ))}
             </select>
           </div>
 
@@ -139,10 +150,13 @@ const CVForm: React.FC<CVFormProps> = ({ control, isActiveStatus }) => {
               {...control.register(`cvEntries.${index}.Scope`)} // Register the select input
               defaultValue={cv.Scope} // Use default value
             >
-              <option value="">Scope</option>
-              <option value="Local">Local</option>
-              <option value="National">National</option>
-              <option value="International">International</option>
+              <option value="">Select</option>
+              {eventScope &&
+                eventScope?.map((item, i) => (
+                  <option key={i} value={item.value}>
+                    {item?.value}
+                  </option>
+                ))}
             </select>
           </div>
 

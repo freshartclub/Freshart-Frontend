@@ -50,7 +50,6 @@ const Artwork = () => {
   };
 
   const handleArtworkClick = (artworkId) => {
-    console.log("this is form hadleArtwork function", artworkId);
     setSelectedArtworkId(artworkId);
     setIsPopupOpen(true); // Open the popup
   };
@@ -117,14 +116,12 @@ const Artwork = () => {
           </div>
         </div>
       </div>
-
       {isRefetching ? (
         <Loader />
       ) : (
         <div>
-          {data?.data &&
-            data?.data?.length > 0 &&
-            data?.data?.map((item, i) => (
+          {data?.data && data?.data.length > 0 ? (
+            data?.data.map((item, i) => (
               <div key={i} className="mb-5">
                 <h1 className="font-bold mb-5 mt-5 text-[20px] capitalize text-[#333333] xl:w-[80%] lg:w-[70%] w-[80%] line-clamp-2">
                   {item?.groupName || "No Name"}
@@ -139,14 +136,15 @@ const Artwork = () => {
                 >
                   {item?.artworks?.map((art, idx) => (
                     <div
-                      className={`bg-red-300 rounded-lg pb-5 border-4  ${
+                      key={idx}
+                      className={`bg-red-300 rounded-lg pb-5 border-4 ${
                         art?.status === "published"
                           ? "border-[#00DE00]"
                           : art?.status === "pending"
                           ? "border-[#D8F002]"
                           : art?.status === "draft"
                           ? "border-[#696868]"
-                          : art.status === "notAvailable"
+                          : art?.status === "notAvailable"
                           ? "border-[#e53a3a]"
                           : "border-[#D8F002]"
                       }`}
@@ -177,21 +175,21 @@ const Artwork = () => {
                         <h1 className="font-semibold text-center text-[20px] text-black ">
                           {art?.artworkName}
                         </h1>
-                        <p className="text-[12px]  text-center text-zinc-800">
+                        <p className="text-[12px] text-center text-zinc-800">
                           {art?.artworkTechnic}
                         </p>
 
                         {profile === "artist" && (
                           <div
                             onClick={() => handleArtworkClick(art._id)}
-                            className="absolute  bottom-0 left-0 right-0 top-0 h-full w-full overflow-hidden bg-[#D9D9D9] bg-fixed flex gap-10 items-center justify-center opacity-0 transition duration-300 ease-in-out hover:opacity-[0.7] hover:cursor-pointer"
+                            className="absolute bottom-0 left-0 right-0 top-0 h-full w-full overflow-hidden bg-[#D9D9D9] bg-fixed flex gap-10 items-center justify-center opacity-0 transition duration-300 ease-in-out hover:opacity-[0.7] hover:cursor-pointer"
                           >
                             {item?.status === "draft" ? (
                               <div className="flex gap-5">
                                 <NavLink
                                   to={`/artist-panel/artwork/add?id=${item._id}`}
                                 >
-                                  <img src={edit} alt="edit" />{" "}
+                                  <img src={edit} alt="edit" />
                                 </NavLink>
                                 <img src={deleteimg} alt="delete" />
                               </div>
@@ -203,7 +201,19 @@ const Artwork = () => {
                   ))}
                 </Swiper>
               </div>
-            ))}
+            ))
+          ) : (
+            <div className="flex flex-col items-center justify-center h-[300px] border border-zinc-300">
+              <p className="text-lg text-center font-medium mb-4">
+                You don't have any artwork yet.
+              </p>
+              <NavLink to="/artist-panel/artwork/add">
+                <button className="px-6 py-2 bg-zinc-800 text-white rounded-lg">
+                  Add Artwork
+                </button>
+              </NavLink>
+            </div>
+          )}
         </div>
       )}
 

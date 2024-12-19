@@ -29,9 +29,10 @@ import Flag from "react-world-flags";
 import CustomDropdown from "../../pages/CustomDropdown";
 import Dicipline from "./Dicipline";
 import Commercilization from "./Commercilization";
+import { RenderAllPicklists } from "../../utils/RenderAllPicklist";
 
 const GeneralForm = ({ isActiveStatus }) => {
-  const { data, isLoading } = useGetArtistDetails();
+  const { data, isLoading, isFetching } = useGetArtistDetails();
   const { mutate, isPending } = useGetSaveArtistDetailsMutation();
   const [isEditInfo, setIsEditInfo] = useState(false);
   const [isManagerDetails, setManagerDetails] = useState(null);
@@ -276,6 +277,8 @@ const GeneralForm = ({ isActiveStatus }) => {
     );
   }, [data]);
 
+  console.log(data?.data?.artist?.gender);
+
   const handlePDF = (file) => {
     window.open(`${data?.data?.url}/documents/${file}`, "_blank");
   };
@@ -353,6 +356,23 @@ const GeneralForm = ({ isActiveStatus }) => {
       console.error("Error:", error);
     }
   };
+
+  const picklist = RenderAllPicklists([
+    "Event Type",
+    "Event Scope",
+    "Gender",
+    "Language",
+  ]);
+
+  const picklistMap = picklist.reduce((acc, item: any) => {
+    acc[item?.fieldName] = item?.picklist;
+    return acc;
+  }, {});
+
+  const gender = picklistMap["Gender"];
+  const eventType = picklistMap["Event Type"];
+  const eventScope = picklistMap["Event Scope"];
+  const language = picklistMap["Language"];
 
   if (isLoading) {
     return <Loader />;
@@ -448,10 +468,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                 <div className="md:w-[48%] w-full relative">
                   <input
                     type="text"
-                    // placeholder="Fullname"
-                    {...register("artistSurname2", {
-                      required: "Name is required",
-                    })}
+                    {...register("artistSurname2")}
                     disabled={isActiveStatus !== "active"}
                     className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-[#1C252E] outline-none"
                   />
@@ -461,19 +478,12 @@ const GeneralForm = ({ isActiveStatus }) => {
                   >
                     Artist Surname2
                   </label>
-                  {errors.artistSurname2 && (
-                    <div className="text-red-500 text-sm mt-1">
-                      <div>{String(errors.artistSurname2?.message || "")}</div>
-                    </div>
-                  )}
                 </div>
                 <div className="md:w-[48%] w-full relative">
                   <input
                     type="text"
                     // placeholder="Enter Your Email id"
-                    {...register("nickName", {
-                      required: "nickName is required",
-                    })}
+                    {...register("nickName")}
                     disabled={isActiveStatus !== "active"}
                     className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-[#1C252E] outline-none"
                   />
@@ -483,11 +493,6 @@ const GeneralForm = ({ isActiveStatus }) => {
                   >
                     Nickname
                   </label>
-                  {errors.nickName && (
-                    <div className="text-red-500 text-sm mt-1">
-                      <div>{String(errors.nickName?.message || "")}</div>
-                    </div>
-                  )}
                 </div>
               </div>
 
@@ -525,10 +530,12 @@ const GeneralForm = ({ isActiveStatus }) => {
                     disabled={isActiveStatus !== "active"}
                     className="border border-[#E6E6E6] p-3 w-full rounded-md focus:outline-none peer placeholder::font-montserrat font-normal text-left placeholder:text-[#1C252E] outline-none"
                   >
-                    <option value="" label="Select a Gender" />
-                    <option value="Female" label="Female" />
-                    <option value="Male" label="Male" />
-                    <option value="Other" label="Other" />
+                    {gender &&
+                      gender.map((item, i) => (
+                        <option key={i} value={item?.value}>
+                          {item?.label}
+                        </option>
+                      ))}
                   </select>
                   <label
                     htmlFor="gender"
@@ -543,15 +550,20 @@ const GeneralForm = ({ isActiveStatus }) => {
                   )}
                 </div>
                 <div className="md:w-[48%] w-full relative">
-                  <input
-                    type="text"
-                    // placeholder="Enter Your Email id"
+                  <select
                     {...register("language", {
                       required: "language is required",
                     })}
                     disabled={isActiveStatus !== "active"}
                     className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-[#1C252E] outline-none"
-                  />
+                  >
+                    {language &&
+                      language.map((item, i) => (
+                        <option key={i} value={item?.value}>
+                          {item?.label}
+                        </option>
+                      ))}
+                  </select>
                   <label
                     htmlFor="language"
                     className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
@@ -703,7 +715,12 @@ const GeneralForm = ({ isActiveStatus }) => {
 
               {/* Cv And Highlight */}
 
-              <CVForm control={control} isActiveStatus={isActiveStatus} />
+              <CVForm
+                control={control}
+                isActiveStatus={isActiveStatus}
+                eventScope={eventScope}
+                eventType={eventType}
+              />
 
               <div className="w-full relative">
                 <h2 className="text-xl font-semibold mb-3 pb-3 text-[#1A1C21]">
@@ -832,9 +849,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                   <div className=" w-full relative">
                     <input
                       type="text"
-                      {...register("externalTags", {
-                        required: "ExternalTags",
-                      })}
+                      {...register("externalTags")}
                       disabled={isActiveStatus !== "active"}
                       className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder:text-zinc-500 outline-none"
                       placeholder="Enter tags Start with # (separate with space or comma)"

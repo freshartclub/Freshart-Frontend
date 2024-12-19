@@ -9,6 +9,7 @@ import {
   removeUser,
   setIsArtist,
   setIsAuthorized,
+  updateUser,
 } from "../../store/userSlice/userSlice";
 import { useAppDispatch, useAppSelector } from "../../store/typedReduxHooks";
 
@@ -36,6 +37,7 @@ const useLogOutMutation = () => {
       dispatch(setIsAuthorized(false));
 
       dispatch(setIsArtist(false));
+      dispatch(updateUser(null));
 
       toast.dismiss(toastId);
       toast.success(res.data.message);

@@ -92,7 +92,7 @@ const RecentSection = () => {
           data?.data?.map((item, index) => (
             <div
               key={index}
-              className="sm:px-3 px-0 border-none outline-none w-[20rem] "
+              className="sm:px-3 px-0 border-none outline-none w-[20rem] cursor-pointer"
             >
               <div className="relative">
                 <img
@@ -129,7 +129,7 @@ const RecentSection = () => {
             {data?.data?.map((item, index) => (
               <div
                 key={index}
-                className="sm:px-3 px-0 border-none outline-none relative"
+                className="sm:px-3 px-0 border-none outline-none relative cursor-pointer"
               >
                 <img
                   src={`${data.url}/users/${item.media.mainImage}`}
