@@ -6,14 +6,10 @@ import DiscoverContent from "./DiscoverContent";
 import ProductInfo from "./ProductInfo";
 import SelectedSection from "./SelectedSection";
 import { Link, useSearchParams } from "react-router-dom";
-// import arrow from "../../assets/arrow_22.png";
-// import home from "../../assets/home.png";
 import Loader from "../../ui/Loader";
 import { useGetArtWorkById } from "./http/useGetArtworkById";
 import P from "../../ui/P";
 import Button from "../../ui/Button";
-// import "slick-carousel/slick/slick.css";
-// import "slick-carousel/slick/slick-theme.css";
 
 const DiscoverMore = () => {
   const sliderRef = useRef<Slider>(null);
@@ -120,7 +116,6 @@ const DiscoverMore = () => {
           <div className="flex md:flex-row flex-col gap-4 md:w-[50%] w-full md:items-center">
             <div className="flex md:flex-col flex-row md:gap-0 gap-2 w-[15%] lg:ml-4 ">
               {images.map((thumb, index) => {
-                console.log(thumb);
                 return (
                   <img
                     key={index}
