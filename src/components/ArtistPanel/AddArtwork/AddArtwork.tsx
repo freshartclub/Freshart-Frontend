@@ -314,11 +314,22 @@ const AddArtwork = () => {
         data?.data?.commercialization?.purchaseCatalog || ""
       );
 
-      setValue("availableTo", data?.data?.restriction?.availableTo || "");
+      setValue(
+        "availableTo",
+        data?.data?.restriction?.availableTo
+          ? {
+              value: data?.data?.restriction?.availableTo,
+            }
+          : {}
+      );
       setValue("collectionList", data?.data?.collectionList || "");
       setValue(
         "discountAcceptation",
-        data?.data?.restriction?.discountAcceptation || ""
+        data?.data?.restriction?.discountAcceptation
+          ? {
+              value: data?.data?.restriction?.discountAcceptation,
+            }
+          : {}
       );
       setValue("provideArtistName", data?.data?.provideArtistName || "");
       setValue("artworkSeries", data?.data?.artworkSeries);
@@ -2391,6 +2402,8 @@ const AddArtwork = () => {
               control={control}
               discountAcceptation={discountAcceptation}
               availableTo={availableTo}
+              getValue={getValues}
+              setValue={setValue}
             />
           </div>
 

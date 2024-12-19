@@ -1,7 +1,14 @@
 import { Controller } from "react-hook-form";
 import Header from "../../ui/Header";
 
-const ArtworkRight = ({ query, control, discountAcceptation, availableTo }) => {
+const ArtworkRight = ({
+  query,
+  control,
+  discountAcceptation,
+  availableTo,
+  getValue,
+  setValue,
+}) => {
   const availableToOptions = availableTo?.map((item) => item.value) || [];
   const discountAcceptationOptions =
     discountAcceptation?.map((item) => item.value) || [];
@@ -11,14 +18,13 @@ const ArtworkRight = ({ query, control, discountAcceptation, availableTo }) => {
       id: "restrictions",
       name: "availableTo",
       label: "Available To",
-      options: availableToOptions.length > 0 ? availableToOptions : [],
+      options: availableToOptions,
     },
     {
       id: "discountAcceptation",
       name: "discountAcceptation",
       label: "Discount Acceptation",
-      options:
-        discountAcceptationOptions.length > 0 ? discountAcceptationOptions : [],
+      options: discountAcceptationOptions,
     },
   ];
 
@@ -53,13 +59,16 @@ const ArtworkRight = ({ query, control, discountAcceptation, availableTo }) => {
               <Controller
                 control={control}
                 name={name}
+                defaultValue={getValue(name)}
                 render={({ field }) => (
                   <select
-                    {...field}
+                    {...field.value}
+                    onChange={(e) => setValue(field.name, e.target.value)}
                     id={id}
                     disabled={query}
                     className="block w-full p-1 sm:px-4 sm:py-2 bg-[#F9F9FC] outline-none border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >
+                    <option value="">Select</option>
                     {options.map((option, index) => (
                       <option key={index} value={option}>
                         {option}
@@ -90,14 +99,14 @@ const ArtworkRight = ({ query, control, discountAcceptation, availableTo }) => {
               <Controller
                 control={control}
                 name={name}
+                defaultValue={getValue(name)} // Set default value here
                 render={({ field }) => (
                   <select
-                    {...field}
+                    {...field.value}
                     id={id}
-                    disabled
+                    disabled={query}
                     className="block  w-full p-1 sm:px-4 sm:py-2 bg-[#F9F9FC] outline-none border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >
-                    <option value="Not Assigned">Not Assigned</option>
                     {options.map((option, index) => (
                       <option key={index} value={option}>
                         {option}
