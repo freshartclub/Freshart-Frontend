@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import Button from "../ui/Button";
 import Header from "../ui/Header";
 import P from "../ui/P";
@@ -6,7 +5,7 @@ import rightarr from "./assets/ArrowRight.png";
 import usePostCheckOutMutation from "./http/usePostCheckOutMutation";
 
 const CartTotal = ({ data }) => {
-  const discountAmounts = data?.data?.cart?.map((item) => {
+  const discountAmounts = data?.cart?.map((item) => {
     const basePrice = parseFloat(
       item?.item?.pricing?.basePrice?.replace("$", "")
     );
@@ -16,8 +15,6 @@ const CartTotal = ({ data }) => {
     return discountAmount;
   });
 
-  const navigate = useNavigate();
-
   const { mutate, isPending } = usePostCheckOutMutation();
 
   const totalDiscountAmount = discountAmounts
@@ -26,7 +23,7 @@ const CartTotal = ({ data }) => {
     }, 0)
     .toFixed(2);
 
-  const totalPrice = data?.data?.cart
+  const totalPrice = data?.cart
     ?.reduce((total, item) => {
       const itemPrice = parseFloat(
         item?.item?.pricing?.basePrice?.replace("$", "")
@@ -54,26 +51,19 @@ const CartTotal = ({ data }) => {
     },
   ];
 
-  const orderType = data?.data?.cart?.map(
+  const orderType = data?.cart?.map(
     (item) => item?.item?.commercialization?.activeTab
   );
-  // console.log(orderType[0]);
 
   let itemQu = {};
 
-  data?.data?.cart?.forEach((item) => {
-    console.log(item);
+  data?.cart?.forEach((item) => {
     if (item?.item?._id) {
-      console.log(item._id);
       itemQu[item?.item?._id] = (itemQu[item?.item?._id] || 0) + item.quantity;
     }
   });
 
-  console.log(itemQu);
-
   const handleCheckOut = () => {
-    console.log("hello");
-    // navigate("/payment_page");
     try {
       const data = {
         subTotal: totalPrice - totalDiscountAmount,
@@ -131,16 +121,22 @@ const CartTotal = ({ data }) => {
         <Button
           onClick={() => handleCheckOut()}
           variant={{ theme: "dark", rounded: "full" }}
-          className="flex gap-2 items-center w-full justify-center xl:!py-5 lg:py-3"
+          className={`${
+            data?.cart?.length === 0 && "pointer-events-none opacity-50"
+          } flex gap-2 items-center w-full justify-center xl:!py-5 lg:py-3`}
         >
           <P variant={{ size: "base", theme: "light", weight: "medium" }}>
-            Proceed to Checkout
+            {isPending ? "Processing..." : "Proceed to Checkout"}
           </P>
           <img src={rightarr} alt="" />
         </Button>
       </div>
 
-      <div className="border rounded-md ">
+      <div
+        className={`border rounded-md ${
+          data?.cart?.length === 0 && "pointer-events-none opacity-50"
+        }`}
+      >
         <Header
           variant={{ size: "md", weight: "semiBold", theme: "dark" }}
           className="p-5 border-b-2 border-b-[#E4E7E9]"

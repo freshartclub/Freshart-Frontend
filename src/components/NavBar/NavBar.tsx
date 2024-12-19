@@ -130,8 +130,6 @@ const NavBar = () => {
     }
   };
 
-  console.log(isAuthorized);
-
   return (
     <>
       <div className="bg-gray-100">

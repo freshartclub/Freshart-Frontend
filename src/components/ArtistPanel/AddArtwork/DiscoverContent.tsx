@@ -1,13 +1,12 @@
+import { useNavigate, useSearchParams } from "react-router-dom";
+import Button from "../../ui/Button";
 import Header from "../../ui/Header";
 import P from "../../ui/P";
 import cart from "./assets/cart.png";
-import mark from "./assets/offer.png";
-import wishlist from "./assets/wishlist.png";
 import like from "./assets/like.png";
+import mark from "./assets/offer.png";
 import question from "./assets/question.png";
-import { RiH1 } from "react-icons/ri";
-import Button from "../../ui/Button";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import wishlist from "./assets/wishlist.png";
 import useGetPublishedArtwork from "./http/useGetPublishedArtwork";
 
 const DiscoverContent = ({ data }: any) => {
@@ -25,18 +24,15 @@ const DiscoverContent = ({ data }: any) => {
     navigate(`/artist-panel/artwork/add?id=${id}`);
   };
 
-  console.log(currency);
-
   const [searchParams] = useSearchParams();
-
   const preview = searchParams.get("preview") === "true";
-  console.log(preview);
 
   const maxLength = 100;
   const description =
     data?.productDescription && data.productDescription.length > maxLength
       ? `${data.productDescription.slice(0, maxLength)}...`
       : data?.productDescription;
+
   return (
     <div>
       <section className="flex md:items-center flex-col md:flex-row justify-between border-b pb-2 gap-1">
