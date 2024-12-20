@@ -12,6 +12,8 @@ import OrderList from "./OrderList";
 
 const OrderDetail = () => {
   const setActiveTab = useContext(tabsContext);
+
+  const order = {};
   return (
     <div className="px-5 py-7">
       <div>

@@ -9,6 +9,7 @@ const Dicipline = ({
   artDicipline,
   control,
   errors,
+  getOutDiscipline,
 }) => {
   const { data, isLoading } = useGetDiscipline();
 
@@ -21,7 +22,7 @@ const Dicipline = ({
       id: "artworkdiscipline",
       name: "artworkDiscipline",
       label: "Artwork discipline",
-      options: diciplineOption,
+      options: getOutDiscipline,
     },
   ];
 

@@ -16,8 +16,6 @@ const ArtworkRight = ({
   const firstValueAvaliableTo = availableTo?.[0]?.value || null;
   const firstValueDiscountAcceptance = discountAcceptation?.[0]?.value || null;
 
-  console.log(firstValueDiscountAcceptance);
-
   const restrictions = [
     {
       id: "restrictions",

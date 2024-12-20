@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Header from "../ui/Header";
 import ArtBreadcrumbs1 from "./ArtBreadcrumbs1";
 import { useForm } from "react-hook-form";
@@ -13,12 +13,53 @@ import { useGetCartItems } from "../pages/http/useGetCartItems";
 import useAddToCartMutation from "../DiscoverMore/http/useAddToCartMutation";
 import CustomDropdown from "../pages/CustomDropdown";
 import countryList from "react-select-country-list";
+import { useGetBillingAddress } from "../ArtistPanel/ArtistEditProfile/http/useGetBillingAddress";
+import { PhoneInput } from "react-international-phone";
 
 const PaymentPage = () => {
   const { data, isLoading } = useGetCartItems();
   const { mutate, isPending } = useAddToCartMutation();
   const [isCheckBox, setIsCheckBox] = useState(false);
   const options = useMemo(() => countryList(), []);
+
+  const { data: billingData, isLoading: billingLoading } =
+    useGetBillingAddress();
+
+  // console.log(billingData);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    control,
+    setValue,
+    getValues,
+  } = useForm();
+
+  useEffect(() => {
+    if (billingData) {
+      setValue("firstName", billingData[0]?.billingDetails?.billingFirstName);
+      setValue("lastName", billingData[0]?.billingDetails?.billingLastName);
+      setValue("email", billingData[0]?.billingDetails?.billingEmail);
+      setValue("phone", billingData[0]?.billingDetails?.billingPhone);
+      setValue(
+        "companyName",
+        billingData[0]?.billingDetails?.billingCompanyName
+      );
+      setValue("address", billingData[0]?.billingDetails?.billingAddress);
+      setValue("country", billingData[0]?.billingDetails?.billingCountry);
+      setValue("zipCode", billingData[0]?.billingDetails?.billingZipCode);
+      setValue("state", billingData[0]?.billingDetails?.billingState);
+      setValue("city", billingData[0]?.billingDetails?.billingCity);
+      setValue(
+        "addressType",
+        billingData[0]?.billingDetails?.billingAddressType
+      );
+      // setId(billingData[0]?._id);
+    }
+  }, [billingData]);
+
+  const countryValue = getValues("country");
 
   const discountAmounts = data?.data?.cart?.map((item) => {
     const basePrice = parseFloat(
@@ -42,13 +83,6 @@ const PaymentPage = () => {
   const tax = 5;
 
   const finalPrice = totalPrice - discountAmounts + tax;
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    control,
-  } = useForm();
 
   const onSubmit = (data: any) => {
     console.log(data);
@@ -150,21 +184,40 @@ const PaymentPage = () => {
                 </div>
               </div>
 
-              {/* Address Section */}
+              <div className="grid md:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label className="block mb-1">Email</label>
+                  <input
+                    {...register("email", { required: "email is required" })}
+                    type="text"
+                    className="w-full p-2 border border-gray-300 rounded-lg"
+                  />
+                  {errors.email && (
+                    <p className="text-red-500">
+                      {String(errors.email.message)}
+                    </p>
+                  )}
+                </div>
 
-              <div className="mb-4">
-                <label className="block mb-1">Address</label>
-                <input
-                  {...register("address", { required: "Address is required" })}
-                  type="text"
-                  className="w-full p-2 border border-gray-300 rounded-lg"
-                />
-                {errors.address && (
-                  <p className="text-red-500">
-                    {String(errors.address.message)}
-                  </p>
-                )}
+                <div>
+                  <label className="block mb-1">Phone Number</label>
+                  <PhoneInput
+                    className="appearance-none  outline-none rounded py-1   w-full text-gray-700 leading-tight focus:outline-none"
+                    placeholder="Enter phone number"
+                    defaultCountry="in"
+                    value={getValues("phone")}
+                    onChange={(val) => setValue("phone", val)}
+                  />
+
+                  {errors.phoneNumber && (
+                    <p className="text-red-500">
+                      {String(errors.phoneNumber.message)}
+                    </p>
+                  )}
+                </div>
               </div>
+
+              {/* Address Section */}
 
               {/* Country, City, and Zip Code  */}
               <div className="grid  grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-4">
@@ -174,6 +227,8 @@ const PaymentPage = () => {
                     control={control}
                     options={options}
                     name="country"
+                    isActiveStatus="active"
+                    countryValue={countryValue}
                   />
                   {errors.country && (
                     <p className="text-red-500">
@@ -184,7 +239,7 @@ const PaymentPage = () => {
                 <div>
                   <label className="block mb-1">Region/State</label>
                   <input
-                    {...register("region/state", {
+                    {...register("state", {
                       required: "State is required",
                     })}
                     type="text"
@@ -226,36 +281,18 @@ const PaymentPage = () => {
                 </div>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-4 mb-4">
-                <div>
-                  <label className="block mb-1">Email</label>
-                  <input
-                    {...register("email", { required: "email is required" })}
-                    type="text"
-                    className="w-full p-2 border border-gray-300 rounded-lg"
-                  />
-                  {errors.email && (
-                    <p className="text-red-500">
-                      {String(errors.email.message)}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block mb-1">Phone Number</label>
-                  <input
-                    {...register("phoneNumber", {
-                      required: "phoneNumber is required",
-                    })}
-                    type="text"
-                    className="w-full p-2 border border-gray-300 rounded-lg"
-                  />
-                  {errors.phoneNumber && (
-                    <p className="text-red-500">
-                      {String(errors.phoneNumber.message)}
-                    </p>
-                  )}
-                </div>
+              <div className="mb-4">
+                <label className="block mb-1">Address</label>
+                <input
+                  {...register("address", { required: "Address is required" })}
+                  type="text"
+                  className="w-full p-2 border border-gray-300 rounded-lg"
+                />
+                {errors.address && (
+                  <p className="text-red-500">
+                    {String(errors.address.message)}
+                  </p>
+                )}
               </div>
 
               <div className=" items-center space-x-2 mb-10">
@@ -282,20 +319,40 @@ const PaymentPage = () => {
                     Shipping Information
                   </Header>
 
-                  <div className="mb-4">
-                    <label className="block mb-1">Address</label>
-                    <input
-                      {...register("shippingAddress", {
-                        required: "Address is required",
-                      })}
-                      type="text"
-                      className="w-full p-2 border border-gray-300 rounded-lg"
-                    />
-                    {errors.address && (
-                      <p className="text-red-500">
-                        {String(errors.address.message)}
-                      </p>
-                    )}
+                  <div className="grid md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                      <label className="block mb-1">Email</label>
+                      <input
+                        {...register("shippingEmail", {
+                          required: "Email is required",
+                        })}
+                        type="text"
+                        className="w-full p-2 border border-gray-300 rounded-lg"
+                      />
+                      {errors.shippingEmail && (
+                        <p className="text-red-500">
+                          {String(errors.shippingEmail.message)}
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block mb-1">Phone Number</label>
+
+                      <PhoneInput
+                        className="appearance-none  outline-none rounded py-1   w-full text-gray-700 leading-tight focus:outline-none"
+                        placeholder="Enter phone number"
+                        defaultCountry="in"
+                        value={getValues("shippingPhoneNumber")}
+                        onChange={(val) => setValue("shippingPhoneNumber", val)}
+                      />
+
+                      {errors.shippingPhoneNumber && (
+                        <p className="text-red-500">
+                          {String(errors.shippingPhoneNumber.message)}
+                        </p>
+                      )}
+                    </div>
                   </div>
 
                   {/* Country, City, and Zip Code  */}
@@ -306,6 +363,8 @@ const PaymentPage = () => {
                         control={control}
                         options={options}
                         name="shippingCountry"
+                        isActiveStatus="active"
+                        // countryValue={countryValue}
                       />
                       {errors.shippingCountry && (
                         <p className="text-red-500">
@@ -360,38 +419,20 @@ const PaymentPage = () => {
                     </div>
                   </div>
 
-                  <div className="grid md:grid-cols-2 gap-4 mb-4">
-                    <div>
-                      <label className="block mb-1">Email</label>
-                      <input
-                        {...register("shippingEmail", {
-                          required: "email is required",
-                        })}
-                        type="text"
-                        className="w-full p-2 border border-gray-300 rounded-lg"
-                      />
-                      {errors.shippingEmail && (
-                        <p className="text-red-500">
-                          {String(errors.shippingEmail.message)}
-                        </p>
-                      )}
-                    </div>
-
-                    <div>
-                      <label className="block mb-1">Phone Number</label>
-                      <input
-                        {...register("shippingPhoneNumber", {
-                          required: "phoneNumber is required",
-                        })}
-                        type="text"
-                        className="w-full p-2 border border-gray-300 rounded-lg"
-                      />
-                      {errors.shippingPhoneNumber && (
-                        <p className="text-red-500">
-                          {String(errors.shippingPhoneNumber.message)}
-                        </p>
-                      )}
-                    </div>
+                  <div className="mb-4">
+                    <label className="block mb-1">Address</label>
+                    <input
+                      {...register("shippingAddress", {
+                        required: "Address is required",
+                      })}
+                      type="text"
+                      className="w-full p-2 border border-gray-300 rounded-lg"
+                    />
+                    {errors.address && (
+                      <p className="text-red-500">
+                        {String(errors.address.message)}
+                      </p>
+                    )}
                   </div>
                 </div>
               ) : null}

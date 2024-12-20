@@ -277,6 +277,12 @@ const AddArtwork = () => {
     }
   }, [isLoading, userIsLoading, technicLoading, themeLoading, seriesLoading]);
 
+  const getOutDiscipline = seriesData?.discipline?.map(
+    (item, i) => item?.discipline
+  );
+
+  const getOutStyle = seriesData?.discipline?.map((item, i) => item?.style);
+
   const newTechnic = technicData?.data?.filter(
     (item) =>
       item.discipline &&
@@ -293,13 +299,13 @@ const AddArtwork = () => {
       )
   );
 
-  const newArtworkStyle = artworkStyleList?.data?.filter(
-    (item) =>
-      item?.discipline &&
-      item?.discipline.some((newItem) =>
-        newItem.disciplineName.includes(artDicipline)
-      )
-  );
+  const newArtworkStyle =
+    seriesData?.discipline?.find((item) => item?.discipline === artDicipline)
+      ?.style || [];
+
+  useEffect(() => {
+    setValue("artworkStyleType", "");
+  }, [artDicipline]);
 
   useEffect(() => {
     if (id) {
@@ -515,8 +521,6 @@ const AddArtwork = () => {
   const colors = picklistMap["Colors"];
   const availableTo = picklistMap["Artwork Available To"];
   const discountAcceptation = picklistMap["Artwork Discount Options"];
-
-  console.log(purOption);
 
   const handleNavigate = () => {
     navigate("/artist-panel/artdashboard");
@@ -744,8 +748,6 @@ const AddArtwork = () => {
       setInitialValues(updatedValues);
     }
   };
-
-  console.log(seriesData);
 
   const handleCopy = () => {
     const copyText = document.getElementById("linkInput");
@@ -1533,6 +1535,7 @@ const AddArtwork = () => {
                   artDicipline={artDicipline}
                   control={control}
                   errors={errors}
+                  getOutDiscipline={getOutDiscipline}
                 />
 
                 <div className="grid md:grid-cols-2 gap-3 mb-4 mt-3">
@@ -1605,8 +1608,8 @@ const AddArtwork = () => {
                 <div className="mt-5">
                   <Select
                     options={newArtworkStyle?.map((item) => ({
-                      value: item?.styleName,
-                      label: item?.styleName,
+                      value: item,
+                      label: item,
                     }))}
                     placeholder="Select Artwork Style"
                     isMulti
@@ -2390,14 +2393,7 @@ const AddArtwork = () => {
             />
           </div>
 
-          <div className="  bg-white pt-40 flex flex-col sm:flex-row items-center justify-between border border-dotted rounded  py-2 w-full">
-            <div className="flex items-center">
-              {/* <span className="font-semibold mr-2">Product Completion</span>
-              <span className="text-red-500 bg-[#FDE7E9] px-2 py-1 text-sm rounded">
-                {progress}%
-              </span> */}
-            </div>
-
+          <div className="  bg-white pt-40 flex flex-col sm:flex-row items-center justify-end border border-dotted rounded  py-2 w-full">
             {!query ? (
               <div className="flex space-x-2 ">
                 <span
@@ -2483,13 +2479,12 @@ const AddArtwork = () => {
                 <button
                   onClick={handleDownloadPDF}
                   className="bg-black text-white px-2 py-2 rounded-md text-md cursor-pointer hover:bg-green-600 transition"
-                  disabled={isLoading} // Disable the button while loading
+                  disabled={isLoading}
                 >
                   {isLoadingPdf ? "Downloading PDF..." : "Download PDF"}
                 </button>
               </div>
 
-              {/* Success message */}
               {copySuccess && (
                 <p className="mt-2 text-green-500 font-semibold">
                   {copySuccess}

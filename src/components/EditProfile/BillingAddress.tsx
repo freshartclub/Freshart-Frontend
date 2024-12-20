@@ -83,7 +83,7 @@ const BillingAddress = () => {
     }
   }, [billingData]);
 
-  console.log(getValues("country"));
+  const countryValue = getValues("country");
 
   // console.log(billingData?.billingDetails?.billingFirstName);
 
@@ -231,6 +231,7 @@ const BillingAddress = () => {
                       name="country"
                       options={options}
                       isActiveStatus="active"
+                      countryValue={countryValue}
                     />
                   </div>
 

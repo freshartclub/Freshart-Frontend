@@ -177,18 +177,18 @@ const ProductInfo = ({ data }: any) => {
 
     {
       heading: "Artist Fees: ",
-      description: `${currency} ${data?.data?.pricing?.artistFees}`,
+      description: `${currency} ${data?.data?.pricing?.artistFees}` || "N/A",
     },
 
     {
       heading: "Accept Minimum Offer: ",
       description:
-        `${currency} ${data?.data?.pricing?.acceptOfferPrice}` || "NA",
+        `${currency} ${data?.data?.pricing?.acceptOfferPrice}` || "N/A",
     },
 
     {
       heading: "Discount Percentage: ",
-      description: `${data?.data?.pricing?.dpersentage}%`,
+      description: `${data?.data?.pricing?.dpersentage}%` || "N/A",
     },
     {
       heading: "Vat Amount: ",
@@ -197,15 +197,6 @@ const ProductInfo = ({ data }: any) => {
   ];
 
   const moreInfo_data = [
-    {
-      heading: "Promotion: ",
-      description: `${data?.data?.promotions?.promotion}` || "N/A",
-    },
-    {
-      heading: "Promotion Score: ",
-      description: `${data?.data?.promotions?.promotionScore}` || "N/A",
-    },
-
     {
       heading: "Available To: ",
       description: `${data?.data?.restriction?.availableTo}` || "N/A",
@@ -237,27 +228,27 @@ const ProductInfo = ({ data }: any) => {
 
     {
       heading: "Package Material: ",
-      description: `${data?.data?.inventoryShipping?.packageMaterial}`,
+      description: `${data?.data?.inventoryShipping?.packageMaterial}` || "N/A",
     },
     {
       heading: "Package Depth: ",
-      description: data?.data?.inventoryShipping?.packageLength,
+      description: data?.data?.inventoryShipping?.packageLength || "N/A",
     },
     {
       heading: "Package Height: ",
-      description: data?.data?.inventoryShipping?.packageHeight,
+      description: data?.data?.inventoryShipping?.packageHeight || "N/A",
     },
     {
       heading: "Package Width: ",
-      description: data?.data?.inventoryShipping?.packageWidth,
+      description: data?.data?.inventoryShipping?.packageWidth || "N/A",
     },
     {
       heading: "Package Weight: ",
-      description: data?.data?.inventoryShipping?.packageWeight,
+      description: data?.data?.inventoryShipping?.packageWeight || "N/A",
     },
     {
       heading: "Coming Soon: ",
-      description: data?.data?.inventoryShipping?.commingSoon || false,
+      description: data?.data?.inventoryShipping?.commingSoon || "N/A",
     },
   ];
 

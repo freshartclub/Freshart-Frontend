@@ -18,6 +18,8 @@ const DiscoverContent = ({ data }: any) => {
     mutate(id);
   };
 
+  console.log(data);
+
   const currency = data?.pricing?.currency;
 
   const editArtwork = (id) => {
@@ -92,47 +94,10 @@ const DiscoverContent = ({ data }: any) => {
             </P>
           </div>
         </div>
-        {/* <div className="flex gap-2">
-          <Button
-            variant={{
-              fontSize: "md",
-              rounded: "full",
-              theme: "dark",
-              fontWeight: "600",
-            }}
-            className="flex justify-center border border-[#263238] w-full md:w-fit"
-          >
-            Publish
-          </Button>
-          <Button
-            variant={{
-              rounded: "full",
-              theme: "light",
-              fontWeight: "600",
-            }}
-            className="2xl:text-md text-base border border-[#263238] w-full "
-          >
-            Continue Edit
-          </Button>
-        </div> */}
       </section>
-      {/* <div className="flex gap-2">
-        <Header
-          variant={{ theme: "dark", weight: "bold" }}
-          className="xl:text-3xl text-xl"
-        >
-          {data?.artworkName}
-        </Header>
-        <P
-          variant={{ size: "md", theme: "dark", weight: "normal" }}
-          className="mt-5 "
-        >
-          ({data?.artworkCreationYear})
-        </P>
-      </div> */}
 
       <div className="flex gap-2 lg:mt-2 mt-1">
-        <P variant={{ size: "base", theme: "dark", weight: "normal" }}>
+        <P variant={{ size: "base", theme: "dark", weight: "medium" }}>
           Art Work ID :
         </P>
         <P variant={{ size: "base", theme: "dark", weight: "normal" }}>
@@ -141,7 +106,7 @@ const DiscoverContent = ({ data }: any) => {
       </div>
 
       <div className="flex gap-2 lg:mt-2 mt-1">
-        <P variant={{ size: "base", theme: "dark", weight: "normal" }}>
+        <P variant={{ size: "base", theme: "dark", weight: "medium" }}>
           Years of creation :
         </P>
         <P variant={{ size: "base", theme: "dark", weight: "normal" }}>
@@ -149,12 +114,12 @@ const DiscoverContent = ({ data }: any) => {
         </P>
       </div>
 
-      <div className="flex gap-2 lg:mt-2 mt-1">
-        <P variant={{ size: "base", theme: "dark", weight: "normal" }}>
+      <div className="flex gap-2 lg:mt-2 mt-1 ">
+        <P variant={{ size: "base", theme: "dark", weight: "medium" }}>
           Art Work Series :
         </P>
         <P
-          className="capitalize"
+          className="capitalize "
           variant={{ size: "base", theme: "dark", weight: "normal" }}
         >
           {data?.artworkSeries}
@@ -175,8 +140,8 @@ const DiscoverContent = ({ data }: any) => {
         {description}
       </P>
 
-      <div className="flex">
-        <P variant={{ size: "base", theme: "dark", weight: "normal" }}>
+      <div className="flex ">
+        <P variant={{ size: "base", theme: "dark", weight: "medium" }}>
           Size :{" "}
         </P>
         <P variant={{ size: "base", theme: "dark", weight: "normal" }}>
