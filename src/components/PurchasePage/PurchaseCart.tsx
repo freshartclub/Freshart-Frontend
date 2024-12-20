@@ -89,7 +89,7 @@ const PurchaseCart = () => {
     <div className="container mx-auto px-6 sm:px-3 mt-4">
       <ul className="flex p-2 gap-4 text-xl text-[#2E4053] items-center">
         <li>
-          <Link to="/" className="rounded-md transition-all flex">
+          <Link to="/home" className="rounded-md transition-all flex">
             <img
               src={home}
               alt="Home icon"

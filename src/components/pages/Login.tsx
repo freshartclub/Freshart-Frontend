@@ -161,15 +161,21 @@ const Login: React.FC = () => {
               variant={{ theme: "dark", weight: "medium" }}
               className="md:text-base text-sm"
             >
-              Don’t have an account?
+              Don’t have account ?{" "}
+              <Link
+                to="/become_artist"
+                className="hover:underline decoration-red-700  cursor-pointer"
+              >
+                Become an Artist{" "}
+              </Link>
             </P>
-            <Link
-              to="/signup"
-              className="font-bold uppercase ml-1 md:text-base text-sm"
-            >
-              Sign Up
-            </Link>
           </div>
+          <Link
+            to="/signup"
+            className="font-bold uppercase ml-1 md:text-base text-sm"
+          >
+            Sign Up
+          </Link>
         </div>
         <div className="my-auto">
           <img src={loginImage} alt="Login" />

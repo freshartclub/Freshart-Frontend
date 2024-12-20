@@ -13,18 +13,25 @@ const ArtworkRight = ({
   const discountAcceptationOptions =
     discountAcceptation?.map((item) => item.value) || [];
 
+  const firstValueAvaliableTo = availableTo?.[0]?.value || null;
+  const firstValueDiscountAcceptance = discountAcceptation?.[0]?.value || null;
+
+  console.log(firstValueDiscountAcceptance);
+
   const restrictions = [
     {
       id: "restrictions",
       name: "availableTo",
       label: "Available To",
       options: availableToOptions,
+      firstValue: firstValueAvaliableTo,
     },
     {
       id: "discountAcceptation",
       name: "discountAcceptation",
       label: "Discount Acceptation",
       options: discountAcceptationOptions,
+      firstValue: firstValueDiscountAcceptance,
     },
   ];
 
@@ -48,7 +55,7 @@ const ArtworkRight = ({
           >
             Restrictions
           </Header>
-          {restrictions.map(({ id, name, label, options }) => (
+          {restrictions.map(({ id, name, label, options, firstValue }) => (
             <div key={id} className="mb-4">
               <label
                 htmlFor={id}
@@ -59,11 +66,10 @@ const ArtworkRight = ({
               <Controller
                 control={control}
                 name={name}
-                defaultValue={getValue(name)}
+                defaultValue={setValue(name, firstValue)}
                 render={({ field }) => (
                   <select
-                    {...field.value}
-                    onChange={(e) => setValue(field.name, e.target.value)}
+                    {...field}
                     id={id}
                     disabled={query}
                     className="block w-full p-1 sm:px-4 sm:py-2 bg-[#F9F9FC] outline-none border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"

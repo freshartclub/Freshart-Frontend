@@ -14,6 +14,8 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "react-phone-number-input/style.css";
 import { FaEye } from "react-icons/fa";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 import "react-country-state-city/dist/react-country-state-city.css";
 
@@ -30,6 +32,7 @@ import CustomDropdown from "../../pages/CustomDropdown";
 import Dicipline from "./Dicipline";
 import Commercilization from "./Commercilization";
 import { RenderAllPicklists } from "../../utils/RenderAllPicklist";
+import SelectDateBtn from "../ArtistDashboard/SelectDateBtn";
 
 const GeneralForm = ({ isActiveStatus }) => {
   const { data, isLoading, isFetching } = useGetArtistDetails();
@@ -829,7 +832,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                           htmlFor={`documentName-${index}`}
                           className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
                         >
-                          Document Name {index + 1}
+                          Documents
                         </label>
 
                         <span
@@ -895,17 +898,23 @@ const GeneralForm = ({ isActiveStatus }) => {
 
                   <div className="flex justify-between pointer-events-none">
                     <div className="md:w-[48%] w-full relative">
-                      <input
-                        type="text"
-                        {...register("lastRevalidationDate", {})}
-                        className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
-                      />
+                      <div className="flex items-center">
+                        <input
+                          type="text"
+                          {...register("lastRevalidationDate", {})}
+                          className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none pr-10" // Add padding to the right
+                        />
+
+                        {/* <SelectDateBtn /> */}
+                      </div>
+
                       <label
                         htmlFor="lastRevalidationDate"
                         className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
                       >
                         Last Revalidation Date
                       </label>
+
                       {errors.lastRevalidationDate && (
                         <div className="text-red-500 text-sm mt-1">
                           <div>

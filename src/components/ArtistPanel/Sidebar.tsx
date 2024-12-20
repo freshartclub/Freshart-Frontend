@@ -33,12 +33,12 @@ export const sections = [
   },
   {
     key: "user",
-    label: "User",
+    label: "Artist",
     icon: user,
     path: "edit-artistprofile",
     submenu: [
-      { key: "profile", label: "Profile", path: "edit-artistprofile" },
-      { key: "settings", label: "Settings", path: "user/settings" },
+      { key: "profile", label: "Artist Profile", path: "edit-artistprofile" },
+      // { key: "settings", label: "User Settings", path: "user/settings" },
     ],
   },
   {

@@ -9,7 +9,7 @@ import Header from "../../ui/Header";
 import image_icon from "../../../assets/image_icon.png";
 import video_icon from "../../../assets/video_icon.png";
 
-const GeneralMedia = ({ control, data, url, isActiveStatus  }) => {
+const GeneralMedia = ({ control, data, url, isActiveStatus }) => {
   const { setValue, getValues, watch } = useFormContext();
 
   useEffect(() => {
@@ -85,7 +85,7 @@ const GeneralMedia = ({ control, data, url, isActiveStatus  }) => {
       data?.mainVideo ? `${url}/videos/${data?.mainVideo}` : null
     );
     setExistingAdditionalVideo(data?.additionalVideo);
-  }, []);
+  }, [data]);
 
   const handleMainImageChange = (e) => {
     const file = e.target.files?.[0];

@@ -23,41 +23,6 @@ import isBetween from "dayjs/plugin/isBetween";
 import { useGetFaq } from "./http/useGetFaq";
 import { useGetKbDataBase } from "./http/useGetKbDataBase";
 
-const assist_Data = [
-  {
-    image: truck,
-    title: "Track Order",
-  },
-  {
-    image: lock,
-    title: "Reset Password",
-  },
-  {
-    image: credit,
-    title: "Payment Option",
-  },
-  {
-    image: user,
-    title: "User & Account",
-  },
-  {
-    image: stack,
-    title: "Wishlist & Compare",
-  },
-  {
-    image: notepad,
-    title: "Shipping & Billing",
-  },
-  {
-    image: shopping,
-    title: "Shoping Cart & Wallet",
-  },
-  {
-    image: store,
-    title: "Sell on Clicon",
-  },
-];
-
 const Support = () => {
   const navigate = useNavigate();
 
@@ -77,6 +42,10 @@ const Support = () => {
 
   dayjs.extend(isBetween);
 
+  console.log(kbData);
+
+  const KbTitle = kbData?.data?.map((item, i) => item?.kbTitle) || [];
+
   const now = dayjs();
   const startOfDay = now.startOf("day");
   const endOfDay = now.endOf("day");
@@ -89,15 +58,58 @@ const Support = () => {
 
   const location = useLocation();
   const isArtistProfile = location.pathname.includes("/artist-panel");
-  const handleKbDatabse = () => {
-    navigate(`/artist-panel/kb-database`);
+
+  const handleKbDatabse = (link) => {
+    navigate(`/artist-panel/kb-database/`);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
-
   const handleFaq = () => {
     navigate(`/artist-panel/faq`);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+  const assist_Data = [
+    {
+      image: truck,
+      title: "Track Order",
+      link: KbTitle,
+    },
+    {
+      image: lock,
+      title: "Reset Password",
+      link: KbTitle,
+    },
+    {
+      image: credit,
+      title: "Payment Option",
+      link: KbTitle,
+    },
+    {
+      image: user,
+      title: "User & Account",
+      link: KbTitle,
+    },
+    {
+      image: stack,
+      title: "Wishlist & Compare",
+      link: KbTitle,
+    },
+    {
+      image: notepad,
+      title: "Shipping & Billing",
+      link: KbTitle,
+    },
+    {
+      image: shopping,
+      title: "Shoping Cart & Wallet",
+      link: KbTitle,
+    },
+    {
+      image: store,
+      title: "Sell on Clicon",
+      link: KbTitle,
+    },
+  ];
 
   return (
     <div>
@@ -175,7 +187,7 @@ const Support = () => {
           <div className="grid xl:grid-cols-4 md:grid-cols-3 grid-cols-1  gap-4">
             {assist_Data.map((item, index) => (
               <div
-                onClick={() => handleKbDatabse()}
+                onClick={() => handleKbDatabse(item)}
                 key={index}
                 className="bg-white flex p-4 border-2 border-[#FFD8DD] shadow-lg cursor-pointer"
               >

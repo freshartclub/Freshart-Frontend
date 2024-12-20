@@ -85,7 +85,7 @@ const UserDescription = ({ user }) => {
 
   const handleProfile = () => {
     if (user.role === "artist") {
-      navigate("/artist-panel/user/settings", { replace: true });
+      navigate("/artist-panel/edit-artistprofile", { replace: true });
       localStorage.setItem("profile", "artist");
     } else {
       navigate("/edit_profile", { replace: true });

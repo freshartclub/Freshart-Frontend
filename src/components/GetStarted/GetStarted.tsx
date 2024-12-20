@@ -10,9 +10,10 @@ import LearnMoreSection from "./LearnMoreSection";
 import ThirdSection from "./ThirdSection";
 import { useNavigate, useLocation } from "react-router-dom";
 import { replace } from "formik";
+import Loader from "../ui/Loader";
 
 const GetStarted = () => {
-  const isAuthorized = useAppSelector((state) => state.user.isArtist);
+  const isAuthorized = useAppSelector((state) => state.user.isAuthorized);
   const navigate = useNavigate();
   const currentPath = useLocation().pathname;
   const profile = localStorage.getItem("profile");
@@ -21,12 +22,9 @@ const GetStarted = () => {
     if (isAuthorized && currentPath === "/" && profile === "user") {
       navigate("/home", { replace: true });
     } else if (isAuthorized && currentPath === "/" && profile === "artist") {
-      console.log("hai");
       navigate("/artist-panel", { replace: true });
     }
   }, [isAuthorized, currentPath, navigate]);
-
-  console.log(isAuthorized, currentPath, profile);
 
   return (
     <div>

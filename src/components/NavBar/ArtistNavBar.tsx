@@ -57,8 +57,6 @@ const ArtistNavBar = () => {
     }
   };
 
-  console.log("Artist Navbar");
-
   const handleProfile = () => {
     navigate("/home", { replace: true });
     localStorage.setItem("profile", "user");
@@ -187,10 +185,10 @@ const ArtistNavBar = () => {
               to={artistPanel.artistprofileOther}
               onClick={() => setIsToggelOpen(false)}
             >
-              Language
+              User Settings
             </Link>
 
-            <Link
+            {/* <Link
               className="font-medium hover:bg-zinc-200 transition-all duration-200"
               to={artistPanel.artistprofileOther}
               onClick={() => setIsToggelOpen(false)}
@@ -204,7 +202,7 @@ const ArtistNavBar = () => {
               onClick={() => setIsToggelOpen(false)}
             >
               Currency
-            </Link>
+            </Link> */}
 
             <Link
               className="font-medium hover:bg-zinc-200 transition-all duration-200"
