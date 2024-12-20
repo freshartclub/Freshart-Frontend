@@ -98,15 +98,15 @@ const UserDescription = ({ user }) => {
       title: "Name",
       value:
         `${user?.artistName} ${user?.artistSurname1} ${user?.artistSurname2}` ||
-        "edit ",
+        "N/A",
     },
     {
       title: "Email",
-      value: `${user?.email}`,
+      value: `${user?.email}` || "N/A",
     },
     {
       title: "Phone No",
-      value: `${user?.phone}`,
+      value: `${user?.phone}` || "N/A",
     },
     {
       title: "Counrty",
@@ -114,7 +114,7 @@ const UserDescription = ({ user }) => {
     },
     {
       title: "Language",
-      value: `${user?.language}`,
+      value: `${user?.language}` || "N/A",
     },
   ];
 

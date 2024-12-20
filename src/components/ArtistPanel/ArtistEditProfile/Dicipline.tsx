@@ -41,7 +41,6 @@ const Dicipline = ({ control, isActiveStatus, prefillValues, watch }) => {
 
   const getPrefilledStyles = (index) => {
     if (prefillValues && prefillValues[index]) {
-      console.log(prefillValues[index].style);
       return prefillValues[index].style || [];
     }
     return [];

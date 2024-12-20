@@ -22,9 +22,11 @@ import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
 import { useGetFaq } from "./http/useGetFaq";
 import { useGetKbDataBase } from "./http/useGetKbDataBase";
+import { useState } from "react";
 
 const Support = () => {
   const navigate = useNavigate();
+  const [getSearchValue, setSearchValue] = useState("");
 
   const handleSubmitButton = () => {
     const submitTicket = isArtistProfile
@@ -42,8 +44,6 @@ const Support = () => {
 
   dayjs.extend(isBetween);
 
-  console.log(kbData);
-
   const KbTitle = kbData?.data?.map((item, i) => item?.kbTitle) || [];
 
   const now = dayjs();
@@ -60,54 +60,57 @@ const Support = () => {
   const isArtistProfile = location.pathname.includes("/artist-panel");
 
   const handleKbDatabse = (link) => {
-    navigate(`/artist-panel/kb-database/`);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (isArtistProfile) {
+      navigate(`/artist-panel/kb-database/${link}`);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      navigate(`/kb-database`);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   };
+
   const handleFaq = () => {
-    navigate(`/artist-panel/faq`);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (isArtistProfile) {
+      navigate(`/artist-panel/faq`);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      navigate(`/faq`);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   };
 
   const assist_Data = [
     {
       image: truck,
       title: "Track Order",
-      link: KbTitle,
     },
     {
       image: lock,
       title: "Reset Password",
-      link: KbTitle,
     },
     {
       image: credit,
       title: "Payment Option",
-      link: KbTitle,
     },
     {
       image: user,
       title: "User & Account",
-      link: KbTitle,
     },
     {
       image: stack,
       title: "Wishlist & Compare",
-      link: KbTitle,
     },
     {
       image: notepad,
       title: "Shipping & Billing",
-      link: KbTitle,
     },
     {
       image: shopping,
       title: "Shoping Cart & Wallet",
-      link: KbTitle,
     },
     {
       image: store,
       title: "Sell on Clicon",
-      link: KbTitle,
     },
   ];
 
@@ -154,6 +157,7 @@ const Support = () => {
                   type="text"
                   placeholder="Enter your question or keyword"
                   className="w-[90%] outline-none"
+                  onChange={(e) => setSearchValue(e.target.value)}
                 ></input>
               </div>
               <Button
@@ -260,7 +264,7 @@ const Support = () => {
             </Header>
           </div>
 
-          <div className="grid md:grid-cols-2 grid-cols-1 justify-between gap-10 ">
+          <div className="flex justify-center">
             <div className="flex flex-col md:flex-row bg-white py-8 pl-8">
               <div className="bg-[#d1dde9] w-[120px] h-[80px] p-2 flex items-center justify-center mr-5">
                 <BsFillTicketPerforatedFill size="3em" />
@@ -295,11 +299,11 @@ const Support = () => {
               </div>
             </div>
 
-            <div className="flex flex-col md:flex-row bg-white py-8 pl-8">
-              <div className="bg-green-100 w-[120px] h-[80px] p-2  flex items-center justify-center mr-5">
+            {/* <div className="flex flex-col md:flex-row bg-white py-8 pl-8"> */}
+            {/* <div className="bg-green-100 w-[120px] h-[80px] p-2  flex items-center justify-center mr-5">
                 <FaWhatsapp size="3em" color="green" />
-              </div>
-              <div>
+              </div> */}
+            {/* <div>
                 <Header
                   variant={{ size: "xl", theme: "dark", weight: "semiBold" }}
                   className="mb-3"
@@ -313,12 +317,7 @@ const Support = () => {
                   we are available online from 9:00 AM to 5:00 PM (GMT95:45)
                   Talk with use now
                 </P>
-                {/* <P
-                  variant={{ weight: "semiBold", theme: "dark", size: "md" }}
-                  className="mb-3"
-                >
-                  Support@clicon.com
-                </P> */}
+               
                 <Button
                   variant={{ fontSize: "base", fontWeight: "500" }}
                   className="uppercase flex bg-[#FF536B] text-white mt-8"
@@ -326,8 +325,8 @@ const Support = () => {
                   Start Chat
                   <img src={arrow} alt="arrow" className="mt-1 ml-2" />
                 </Button>
-              </div>
-            </div>
+              </div> */}
+            {/* </div> */}
           </div>
           <div className="flex items-center justify-center py-5">
             <Link

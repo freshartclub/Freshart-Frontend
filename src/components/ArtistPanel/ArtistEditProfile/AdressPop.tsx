@@ -16,7 +16,7 @@ import { GiCancel } from "react-icons/gi";
 import Loader from "../../ui/Loader";
 import useBillingMutation from "./http/useBillingMutation";
 
-const AdressPop = ({ setCheckBox, newData = {}, setUpdateData }) => {
+const AdressPop = ({ setCheckBox, newData = {}, setUpdateData, addAdress }) => {
   const options = useMemo(() => countryList(), []);
   const [id, setId] = useState(null);
 
@@ -39,7 +39,7 @@ const AdressPop = ({ setCheckBox, newData = {}, setUpdateData }) => {
   });
 
   useEffect(() => {
-    if (!newData) return;
+    if (!newData || addAdress) return;
     setValue("firstName", newData?.billingDetails?.billingFirstName);
     setValue("lastName", newData?.billingDetails?.billingLastName);
     setValue("email", newData?.billingDetails?.billingEmail);
@@ -75,7 +75,6 @@ const AdressPop = ({ setCheckBox, newData = {}, setUpdateData }) => {
   }, [watchCountry, watchZip]);
 
   const onSubmit = (data) => {
-    console.log(data);
     const newValue = {
       id,
       data,
@@ -216,6 +215,7 @@ const AdressPop = ({ setCheckBox, newData = {}, setUpdateData }) => {
                       <PhoneInput
                         className="appearance-none outline-none rounded py-1 w-full text-gray-700 leading-tight focus:outline-none"
                         placeholder="Enter phone number"
+                        defaultCountry="in"
                         value={getValues("phone")}
                         onChange={(val) => setValue("phone", val)}
                       />

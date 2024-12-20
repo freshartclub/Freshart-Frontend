@@ -55,7 +55,7 @@ const Commercilization = ({ control }) => {
     },
   ];
 
-  console.log(fields);
+
 
   return (
     <div className="p-4 mx-auto border border-custom-gray bg-white rounded-md shadow-custom mb-4 mt-4">

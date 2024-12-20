@@ -6,15 +6,13 @@ import { ARTTIST_ENDPOINTS } from "../../../../http/apiEndPoints/Artist";
 import axiosInstance from "../../../utils/axios";
 
 async function usePostBilling(input: any) {
-  console.log("this is input", input);
   if (input?.id) {
-    console.log("hello id");
+    console.log("haan yeh wala");
     return await axiosInstance.post(
       `${ARTTIST_ENDPOINTS.AddBillingAddress}/${input.id}`,
       input.data
     );
   } else {
-    console.log("diffrentone");
     return await axiosInstance.post(
       ARTTIST_ENDPOINTS.AddBillingAddress,
       input.data

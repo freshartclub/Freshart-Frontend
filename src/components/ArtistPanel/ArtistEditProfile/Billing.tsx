@@ -10,6 +10,7 @@ const Billing = () => {
   const [checkBox, setCheckBox] = useState(false);
   const [activeActionPop, setActiveActionPop] = useState(null);
   const [updateData, setUpdateData] = useState(null);
+  const [addAdress, setAddAdress] = useState(false);
 
   const { data, isLoading } = useGetBillingAddress();
 
@@ -17,12 +18,6 @@ const Billing = () => {
 
   const { mutateAsync: removeMutatation, isPending: removeIspending } =
     useRemoveBillingMutation();
-
-  console.log(data);
-  const cards = [
-    { type: "Mastercard", number: "**** **** **** 5678", icon: "" },
-    { type: "Visa", number: "**** **** **** 1234", default: true },
-  ];
 
   const handleRemove = (id, i) => {
     removeMutatation(id).then(() => {
@@ -32,12 +27,15 @@ const Billing = () => {
 
   const handleUpdate = (value, i) => {
     setCheckBox(true);
+    setAddAdress(false);
     setUpdateData(value);
+
     setActiveActionPop(activeActionPop === i ? null : i);
   };
 
   const handleAddress = () => {
     setCheckBox(true);
+    setAddAdress(true);
   };
 
   const handleDefault = (id, i) => {
@@ -47,8 +45,6 @@ const Billing = () => {
   };
 
   const toggleActionPop = (addressId) => {
-    console.log(addressId);
-
     setActiveActionPop(activeActionPop === addressId ? null : addressId);
   };
 
@@ -150,6 +146,7 @@ const Billing = () => {
               setCheckBox={setCheckBox}
               newData={updateData}
               setUpdateData={setUpdateData}
+              addAdress={addAdress}
             />
           )}
         </div>

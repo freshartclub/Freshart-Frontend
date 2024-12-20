@@ -78,14 +78,13 @@ const CVForm: React.FC<CVFormProps> = ({
 
       {cvEntries.map((cv, index) => (
         <div key={cv.id} className="flex flex-wrap space-x-2 mb-3 mt-4">
-          {/* Year Input - Changed to Select */}
           <div className="flex flex-col">
             <label className="text-sm font-medium mb-1">Year</label>
             <select
               disabled={isActiveStatus !== "active"}
               className="border border-gray-300 rounded-md px-1 py-1 w-20 outline-none"
-              {...control.register(`cvEntries.${index}.year`)} // Register the select input
-              defaultValue={cv.year} // Use default value
+              {...control.register(`cvEntries.${index}.year`)}
+              defaultValue={cv.year}
             >
               <option value="">Year</option>
               {Array.from({ length: 10 }, (_, i) => {
@@ -104,8 +103,8 @@ const CVForm: React.FC<CVFormProps> = ({
             <select
               disabled={isActiveStatus !== "active"}
               className="border border-gray-300 rounded-md px-1 py-1 w-24 outline-none"
-              {...control.register(`cvEntries.${index}.Type`)} // Use control to register the input
-              defaultValue={cv.Type} // Set the default value from cv.Type
+              {...control.register(`cvEntries.${index}.Type`)}
+              defaultValue={cv.Type}
             >
               <option value="">Select</option>
               {eventType &&

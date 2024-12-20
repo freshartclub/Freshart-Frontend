@@ -10,9 +10,21 @@ import CustomDropdown from "../pages/CustomDropdown";
 import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
 import { getCityStateFromZipCountry } from "../utils/MapWithAutocomplete";
+import useBillingMutation from "../ArtistPanel/ArtistEditProfile/http/useBillingMutation";
+import { useAppSelector } from "../../store/typedReduxHooks";
+import { useGetBillingAddress } from "../ArtistPanel/ArtistEditProfile/http/useGetBillingAddress";
 
 const BillingAddress = () => {
   const options = useMemo(() => countryList(), []);
+
+  const [countryCode, setCountryCode] = useState("in");
+  const [id, setId] = useState(null);
+
+  const { mutateAsync, isPending } = useBillingMutation();
+  const { data: billingData, isLoading: billingLoading } =
+    useGetBillingAddress();
+
+  const userId = useAppSelector((state) => state?.user?.user?._id);
 
   const [initialValues, setInitialValues] = useState({
     firstName: "",
@@ -20,7 +32,7 @@ const BillingAddress = () => {
     email: "",
     phone: "",
     companyName: "",
-    streetAddress: "",
+    address: "",
     country: "",
     zipCode: "",
     state: "",
@@ -32,6 +44,7 @@ const BillingAddress = () => {
   });
 
   const { data, isLoading } = useGetArtistDetails();
+
   const watchCountry = watch("country");
   const watchZip = watch("zipCode");
   const apiKey = import.meta.env.VITE_APP_GOOGLE_MAPS_API_KEY;
@@ -48,20 +61,43 @@ const BillingAddress = () => {
   }, [watchCountry, watchZip]);
 
   useEffect(() => {
-    if (data) {
-      setValue("firstName", "Rachit");
+    if (billingData) {
+      setValue("firstName", billingData[0]?.billingDetails?.billingFirstName);
+      setValue("lastName", billingData[0]?.billingDetails?.billingLastName);
+      setValue("email", billingData[0]?.billingDetails?.billingEmail);
+      setValue("phone", billingData[0]?.billingDetails?.billingPhone);
+      setValue(
+        "companyName",
+        billingData[0]?.billingDetails?.billingCompanyName
+      );
+      setValue("address", billingData[0]?.billingDetails?.billingAddress);
+      setValue("country", billingData[0]?.billingDetails?.billingCountry);
+      setValue("zipCode", billingData[0]?.billingDetails?.billingZipCode);
+      setValue("state", billingData[0]?.billingDetails?.billingState);
+      setValue("city", billingData[0]?.billingDetails?.billingCity);
+      setValue(
+        "addressType",
+        billingData[0]?.billingDetails?.billingAddressType
+      );
+      setId(billingData[0]?._id);
     }
-  }, [data]);
+  }, [billingData]);
 
-  const stateOptions = [
-    { value: "chocolate", label: "Chocolate" },
-    { value: "strawberry", label: "Strawberry" },
-    { value: "vanilla", label: "Vanilla" },
-  ];
+  console.log(getValues("country"));
+
+  // console.log(billingData?.billingDetails?.billingFirstName);
 
   const onSubmit = (data) => {
     console.log(data);
-    reset();
+    try {
+      const newValue = {
+        id,
+        data,
+      };
+      mutateAsync(newValue);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -175,7 +211,7 @@ const BillingAddress = () => {
                     <PhoneInput
                       className="appearance-none  outline-none rounded py-1   w-full text-gray-700 leading-tight focus:outline-none"
                       placeholder="Enter phone number"
-                      // defaultCountry={countryCode}
+                      defaultCountry={countryCode}
                       value={getValues("phone")}
                       onChange={(val) => setValue("phone", val)}
                     />
@@ -194,6 +230,7 @@ const BillingAddress = () => {
                       control={control}
                       name="country"
                       options={options}
+                      isActiveStatus="active"
                     />
                   </div>
 
@@ -265,13 +302,13 @@ const BillingAddress = () => {
 
                 <div className="sm:my-3 my-1 w-full">
                   <label
-                    htmlFor="streetAddress"
+                    htmlFor="address"
                     className="block mb-2 text-sm font-semibold text-gray-700 text-left"
                   >
                     Street Address
                   </label>
                   <Controller
-                    name="streetAddress"
+                    name="address"
                     control={control}
                     render={({ field }) => (
                       <input
@@ -302,7 +339,7 @@ const BillingAddress = () => {
                         weight: "semiBold",
                       }}
                     >
-                      Save Changes
+                      {isPending ? "Saving..." : "Save Changes"}
                     </P>
                   </Button>
                 </div>
