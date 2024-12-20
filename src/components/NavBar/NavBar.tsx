@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import logo from "../../assets/Logo01 1.png";
-import call from "../../assets/PhoneCall 1.png";
-import down from "../../assets/downarrow.png";
-import us_flag from "../../assets/Clip path group.png";
-import search from "../../assets/Search.png";
+// import call from "../../assets/PhoneCall 1.png";
+// import down from "../../assets/downarrow.png";
+// import us_flag from "../../assets/Clip path group.png";
+// import search from "../../assets/Search.png";
 import heart from "../../assets/Heart.png";
 import bag from "../../assets/Bag.png";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import P from "../ui/P";
 import Header from "../ui/Header";
 import selling from "../../assets/Images-cuate 1.png";
@@ -16,7 +16,7 @@ import { useAppSelector } from "../../store/typedReduxHooks";
 import useLogOutMutation from "../../http/auth/useLogOutMutation";
 import { useGetDiscipline } from "../pages/http/useGetDiscipline";
 import { useGetPicklist } from "./http/getPickList";
-import Loader from "../ui/Loader";
+// import Loader from "../ui/Loader";
 import { useGetCartItems } from "../pages/http/useGetCartItems";
 import useClickOutside from "../utils/useClickOutside";
 
@@ -34,23 +34,18 @@ const NavBar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isProfileDropdown, setIsProfileDropdown] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [userName, setUserName] = useState("");
-  const [email, setEmail] = useState("");
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
-  const [isToogleOpen, setIsToggelOpen] = useState(false);
+
+  const url = "https://dev.freshartclub.com/images";
 
   const closePopup = useRef(null);
-  const dropDown = useRef(null);
+  const dropDownPopup = useRef(null);
 
-  const { data: seriesPickList, isLoading: seriesPickListLoading } =
-    useGetPicklist();
-  const { data: cartItem, isLoading: cartLoading } = useGetCartItems();
+  const { data: seriesPickList } = useGetPicklist();
+  const { data: cartItem } = useGetCartItems();
+  const { data } = useGetDiscipline();
 
-  const { data, isLoading } = useGetDiscipline();
-
-  const disciplineData = data?.data ? data?.data?.map((item, i) => item) : [];
-
+  const disciplineData = data?.data ? data?.data?.map((item) => item) : [];
   const selectSeriesPicklist = seriesPickList?.data?.filter(
     (item) => item?.picklistName === "Series"
   );
@@ -58,38 +53,29 @@ const NavBar = () => {
   const isArtist = useAppSelector((state) => state?.user?.isArtist);
   const user = useAppSelector((state) => state.user.user);
 
-  const url = "https://dev.freshartclub.com/images";
-
-  useEffect(() => {
-    if (isLoading || seriesPickListLoading || cartLoading) {
-      setLoading(true);
-    } else {
-      setLoading(false);
-    }
-  }, [isLoading, cartLoading, seriesPickListLoading]);
-
-  useEffect(() => {
-    const storedUserName = localStorage.getItem("userName");
-    const storedEmail = localStorage.getItem("userEmail");
-    if (storedUserName) setUserName(storedUserName);
-    if (storedEmail) setEmail(storedEmail);
-  }, []);
-
   const token = localStorage.getItem("auth_token");
   const isAuthorized = useAppSelector((state) => state.user.isAuthorized);
   const { mutate: logOut } = useLogOutMutation();
-
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
-  };
 
   useClickOutside(closePopup, () => {
     setIsProfileDropdown(false);
   });
 
-  useClickOutside(dropDown, () => {
-    setIsDropdownOpen(false);
-  });
+  const handleClickOutside = (event) => {
+    if (
+      dropDownPopup.current &&
+      !dropDownPopup.current.contains(event.target)
+    ) {
+      setIsDropdownOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
 
   const handleProfile = () => {
     if (isArtist) {
@@ -105,97 +91,32 @@ const NavBar = () => {
     navigate("/home");
   };
 
-  const toggleDropdown = () => {
-    setIsDropdownOpen((prevState) => !prevState);
-  };
-
   const toggleSidebar = () => {
     setIsSidebarOpen((prev) => !prev);
-  };
-
-  const toggleProfile = () => {
-    setIsProfileDropdown((prevStateForProfile) => !prevStateForProfile);
   };
 
   const toggleModal = () => {
     setIsModalOpen((Modalprev) => !Modalprev);
   };
 
-  const redirectModalToHomepage = () => {
-    setIsModalOpen((Modalprev) => !Modalprev);
-    try {
-      logOut();
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   return (
     <>
-      <div className="bg-gray-100">
-        <div className="container mx-auto lg:px-6 px-3 flex flex-col lg:flex-row justify-between items-center py-2">
-          <div className="flex items-center mb-2 lg:mb-0">
-            <img src={call} alt="call icon" className="mr-2" />
-            <P
-              variant={{ size: "base", weight: "medium", theme: "dark" }}
-              className=" text-[#102030]"
-            >
-              (219) 555-0114
-            </P>
-          </div>
-          <div className="text-center mb-2 lg:mb-0">
-            <P variant={{ size: "base", theme: "dark", weight: "medium" }}>
-              Free shipping over $55 • Happiness guarantee • Delivery in 3-6
-              business days
-            </P>
-          </div>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center mx-3">
-              <img src={us_flag} alt="US flag" className="mr-1" />
-              <P
-                variant={{ size: "base", theme: "dark", weight: "medium" }}
-                className="text-sm"
-              >
-                Eng
-              </P>
-              <img src={down} alt="arrow" className="ml-2" />
-            </div>
-            <div className="flex items-center mx-3">
-              <P
-                variant={{ size: "base", theme: "dark", weight: "medium" }}
-                className="text-sm"
-              >
-                USD
-              </P>
-              <img src={down} alt="arrow" className="ml-2" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <nav className="bg-[#102030] py-8 xl:px-28 px-8">
+      <nav className="bg-[#102030] py-6 px-10">
         <div className="flex justify-between">
           {token && isAuthorized ? (
             <>
-              {" "}
-              <div className="hidden  lg:flex xl:space-x-6 lg:space-x-0 text-white ">
+              <div className="hidden lg:flex lg:gap-2 xl:space-x-6 lg:space-x-0 text-white">
                 <Link
                   to="/home"
                   className="group mt-3 font-semibold text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
                 >
-                  <div className="relative inline-block px-2">
-                    Home
-                    <div className="absolute left-0 top-6 transform -translate-y-1/2 h-3 w-0.5 bg-[#E19D00] hidden group-hover:block"></div>
-                    <div className="absolute right-0 -bottom-2 h-3.5 w-0.5 bg-[#E19D00] hidden group-hover:block"></div>
-                  </div>
+                  Home
                 </Link>
-                <Link
-                  to="#"
-                  className="group mt-3 font-semibold text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
-                  id="mega-menu-dropdown-button"
-                  onClick={toggleDropdown}
-                >
-                  <div className="relative flex px-2">
+                <div className="cursor-pointer" ref={dropDownPopup}>
+                  <span
+                    className="group mt-3 font-semibold text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300 flex px-2"
+                    onClick={() => setIsDropdownOpen((prev) => !prev)}
+                  >
                     Subscribe
                     <svg
                       className="w-2.5 h-2.5 ml-1 mt-2"
@@ -212,29 +133,20 @@ const NavBar = () => {
                         d="m1 1 4 4 4-4"
                       />
                     </svg>
-                    <div className="absolute left-0 top-6 transform -translate-y-1/2 h-3 w-0.5 bg-[#E19D00] hidden group-hover:block "></div>
-                    <div className="absolute right-0 -bottom-2 h-3.5 w-0.5 bg-[#E19D00] hidden group-hover:block"></div>
-                  </div>
-
-                  {isDropdownOpen && (
-                    <div ref={dropDown} className="">
+                    {isDropdownOpen && (
                       <div
-                        id="mega-menu-dropdown"
-                        className="absolute w-full left-0 z-10 top-[9rem] grid grid-cols-[1fr_1fr_1fr_1fr_4fr] gap-4 text-sm bg-white border rounded-lg shadow-md p-8"
+                        onClick={(e) => e.stopPropagation()}
+                        className="absolute w-full left-0 z-10 top-[5.6rem] grid grid-cols-[1fr_1fr_1fr_1fr_4fr] gap-4 text-sm bg-white border shadow-md p-8"
                       >
-                        <div className="text-gray-900 md:pb-4 flex  px-5 ">
-                          <ul
-                            className="space-y-4 w-[10vw] "
-                            aria-labelledby="mega-menu-dropdown-button"
-                          >
-                            <li>
-                              <a href="#" className="uppercase font-bold">
-                                Dicipline
-                              </a>
-                            </li>
+                        <div className="text-gray-900 md:pb-4 flex px-5">
+                          <ul className="space-y-4 w-[10vw]">
+                            <li className="uppercase font-bold">Discipline</li>
 
                             {disciplineData?.map((item, i) => (
-                              <li>
+                              <li
+                                key={i}
+                                onClick={() => setIsDropdownOpen(false)}
+                              >
                                 <Link
                                   to={`${item.disciplineName}?option=subscription`}
                                   className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500"
@@ -249,21 +161,17 @@ const NavBar = () => {
                             className="space-y-4  px-5  w-[10vw] "
                             aria-labelledby="mega-menu-dropdown-button"
                           >
-                            <li>
-                              <a href="#" className="uppercase font-bold">
-                                Series
-                              </a>
-                            </li>
+                            <li className="uppercase font-bold">Series</li>
 
                             {selectSeriesPicklist &&
                               selectSeriesPicklist.length > 0 &&
                               selectSeriesPicklist[0]?.picklist?.map(
                                 (item, i) => (
-                                  <li>
-                                    <h1
-                                      href="#"
-                                      className=" text-gray-500  dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500"
-                                    >
+                                  <li
+                                    key={i}
+                                    onClick={() => setIsDropdownOpen(false)}
+                                  >
+                                    <h1 className=" text-gray-500  dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500">
                                       {item?.name}
                                     </h1>
                                   </li>
@@ -275,17 +183,10 @@ const NavBar = () => {
                             className="space-y-4 mr-6"
                             aria-labelledby="mega-menu-dropdown-button"
                           >
-                            <li>
-                              <a href="#" className="uppercase font-bold">
-                                Collection
-                              </a>
-                            </li>
+                            <li className="uppercase font-bold">Collection</li>
 
-                            <li>
-                              <a
-                                href="#"
-                                className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500"
-                              >
+                            <li onClick={() => setIsDropdownOpen(false)}>
+                              <a className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500">
                                 Collection
                               </a>
                             </li>
@@ -305,55 +206,42 @@ const NavBar = () => {
                           <img src={selling} alt="selling product " />
                         </div>
                       </div>
-                    </div>
-                  )}
-                </Link>
-
+                    )}
+                  </span>
+                </div>
                 <Link
                   to="/purchase"
                   className="group mt-3 font-semibold text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
                 >
-                  <div className="relative inline-block px-2">
-                    Purchase
-                    <div className="absolute left-0 top-6 transform -translate-y-1/2 h-3 w-0.5 bg-[#E19D00] hidden group-hover:block"></div>
-                    <div className="absolute right-0 -bottom-2 h-3.5 w-0.5 bg-[#E19D00] hidden group-hover:block"></div>
-                  </div>
+                  Purchase
                 </Link>
                 <Link
                   to="/all_artist"
                   className="group mt-3 font-semibold text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
                 >
-                  <div className="relative inline-block px-2">
-                    Artist
-                    <div className="absolute left-0 top-6 transform -translate-y-1/2 h-3 w-0.5 bg-[#E19D00] hidden group-hover:block"></div>
-                    <div className="absolute right-0 -bottom-2 h-3.5 w-0.5 bg-[#E19D00] hidden group-hover:block"></div>
-                  </div>
+                  Artist
                 </Link>
                 <Link
                   to="/blog"
                   className="group mt-3 font-semibold text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
                 >
-                  <div className="relative inline-block px-2">
-                    Blog
-                    <div className="absolute left-0 top-6 transform -translate-y-1/2 h-3 w-0.5 bg-[#E19D00] hidden group-hover:block"></div>
-                    <div className="absolute right-0 -bottom-2 h-3.5 w-0.5 bg-[#E19D00] hidden group-hover:block"></div>
-                  </div>
+                  Blog
                 </Link>
               </div>
               <div
                 className="flex items-center justify-center "
-                onClick={redirectToHomepage}
+                onClick={() => navigate("/home")}
               >
                 <img src={logo} alt="logo" className="" />
               </div>
               <div className="lg:flex hidden space-x-4  justify-end mt-3">
-                <Link to="/" className="focus:outline-none">
+                {/* <Link to="/" className="focus:outline-none">
                   <img
                     src={search}
                     alt="search"
                     className="w-8 h-8 text-white mx-2"
                   />
-                </Link>
+                </Link> */}
                 <Link to="/wishlist" className="focus:outline-none">
                   <img
                     src={heart}
@@ -380,113 +268,86 @@ const NavBar = () => {
                     ) : null}
                   </span>
                 </button>
-                <button className="focus:outline-none">
+                <button
+                  ref={closePopup}
+                  className="focus:outline-none relative"
+                >
                   <img
                     src={`${url}/users/${user?.profile?.mainImage}`}
                     alt="profile"
-                    onClick={toggleProfile}
-                    id="dropdownInformationButton"
-                    data-dropdown-toggle="dropdownInformation"
+                    onClick={() => setIsProfileDropdown((prev) => !prev)}
                     className=" text-white mx-2 rounded-full object-cover w-8 h-8"
                   />
-                </button>
-
-                {isProfileDropdown && (
-                  <>
-                    <div
-                      ref={closePopup}
-                      id="dropdownInformation"
-                      className="absolute z-10 top-[8rem] bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600 pb-3"
-                    >
-                      <div className="px-4 py-3 text-sm text-gray-900 dark:text-white">
-                        <div className="flex justify-between gap-3 items-center">
-                          <div>
-                            <P
-                              variant={{
-                                size: "base",
-                                theme: "dark",
-                                weight: "normal",
-                              }}
-                            >
-                              {userName ?? ""}
-                            </P>
-                            <P
-                              variant={{
-                                size: "base",
-                                theme: "dark",
-                                weight: "normal",
-                              }}
-                              className="font-medium truncate"
-                            >
-                              {email ?? ""}
-                            </P>
-                          </div>
-                        </div>
-                      </div>
+                  {isProfileDropdown && (
+                    <div className="absolute w-[13rem] right-0 z-10 top-[4rem] bg-white divide-y divide-gray-100 rounded-md shadow dark:bg-gray-700 dark:divide-gray-600 pb-3">
                       <ul
-                        className="text-sm"
+                        className="text-sm flex flex-col gap-4 p-4"
                         aria-labelledby="dropdownInformationButton"
                       >
                         <Link
+                          className="text-left"
                           to="/user_profile"
-                          className="block px-4 py-2 text-sm"
                           onClick={(prev) => setIsProfileDropdown(!prev)}
                         >
                           View Profile
                         </Link>
                         <Link
+                          className="text-left"
                           to="/account_setting"
-                          className="block px-4 py-2 text-sm"
-                          oonClick={(prev) => setIsProfileDropdown(!prev)}
+                          onClick={(prev) => setIsProfileDropdown(!prev)}
                         >
                           Account Settings
                         </Link>
                         <Link
+                          className="text-left"
                           to="/wishlist"
-                          className="block px-4 py-2 text-sm"
                           onClick={(prev) => setIsProfileDropdown(!prev)}
                         >
                           Favourites ArtWork
                         </Link>
                         {isArtist ? (
-                          <button
-                            className="block px-4 py-2 text-sm"
-                            onClick={handleProfile}
-                          >
+                          <button className="text-left" onClick={handleProfile}>
                             Switch To Artist Profile
                           </button>
                         ) : null}
-                        <Link
-                          to="/create_invite"
-                          className="block px-4 py-2 text-sm"
-                        >
+                        <Link className="text-left" to="/create_invite">
                           Create Invite
                         </Link>
                         <Link
+                          className="text-left"
                           to="/order"
-                          className="block px-4 py-2 text-sm"
                           onClick={(prev) => setIsProfileDropdown(!prev)}
                         >
                           My Orders
                         </Link>
                         <Link
+                          className="text-left"
                           onClick={(prev) => setIsProfileDropdown(!prev)}
                           to="/support"
-                          className="block px-4 py-2 text-sm"
                         >
                           Support
                         </Link>
                       </ul>
 
-                      <div className="">
+                      <div className="pt-2">
                         <a
-                          onClick={toggleModal}
-                          className="block px-4 py-2 text-sm cursor-pointer"
+                          className="cursor-pointer flex items-center justify-center"
+                          onClick={() => setIsModalOpen((prev) => !prev)}
                         >
-                          Log out
+                          <Button
+                            variant={{
+                              fontSize: "md",
+                              theme: "dark",
+                              fontWeight: "400",
+                              rounded: "md",
+                            }}
+                            type="button"
+                            className="mx-2 w-full bg-red-600 text-white border border-transparent"
+                          >
+                            Log Out
+                          </Button>
                         </a>
 
-                        {/* LogOutt */}
                         {isModalOpen && (
                           <div
                             id="popup-modal"
@@ -582,7 +443,10 @@ const NavBar = () => {
                                       fontWeight: "400",
                                       rounded: "md",
                                     }}
-                                    onClick={redirectModalToHomepage}
+                                    onClick={() => {
+                                      setIsModalOpen((prev) => !prev);
+                                      logOut();
+                                    }}
                                     type="button"
                                     className="mx-2 bg-red-600 text-white border border-transparent w-40"
                                   >
@@ -595,12 +459,12 @@ const NavBar = () => {
                         )}
                       </div>
                     </div>
-                  </>
-                )}
+                  )}
+                </button>
               </div>
               <div className="lg:hidden relative">
                 <button
-                  onClick={toggleMenu}
+                  onClick={() => setIsOpen(!isOpen)}
                   className="text-white focus:outline-none"
                 >
                   <svg
