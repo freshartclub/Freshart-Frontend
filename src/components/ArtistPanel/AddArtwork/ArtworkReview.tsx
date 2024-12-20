@@ -20,6 +20,8 @@ const DiscoverMore = () => {
 
   const { data, isLoading } = useGetArtWorkById(id, preview);
 
+  console.log(data);
+
   const settings = {
     dots: false,
     arrow: false,
@@ -83,9 +85,12 @@ const DiscoverMore = () => {
 
   const images = data?.data
     ? [
-        { src: data?.data.media?.mainImage, alt: "Main Image" },
-        { src: data?.data.media?.backImage, alt: "Back Image" },
-        { src: data?.data.media?.inProcessImage, alt: "In Process Image" },
+        { src: data?.data.media?.mainImage || null, alt: "Main Image" },
+        { src: data?.data.media?.backImage || null, alt: "Back Image" },
+        {
+          src: data?.data.media?.inProcessImage || null,
+          alt: "In Process Image",
+        },
         ...additionalImage?.map((item) => ({
           src: item,
           alt: "Additional Image",

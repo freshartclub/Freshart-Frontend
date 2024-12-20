@@ -22,14 +22,15 @@ const ArtworkRight = ({
       name: "availableTo",
       label: "Available To",
       options: availableToOptions,
-      firstValue: firstValueAvaliableTo,
+      firstValue: getValue("availableTo") || firstValueAvaliableTo,
     },
     {
       id: "discountAcceptation",
       name: "discountAcceptation",
       label: "Discount Acceptation",
       options: discountAcceptationOptions,
-      firstValue: firstValueDiscountAcceptance,
+      firstValue:
+        getValue("discountAcceptation") || firstValueDiscountAcceptance,
     },
   ];
 

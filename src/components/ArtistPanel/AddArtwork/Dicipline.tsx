@@ -10,6 +10,7 @@ const Dicipline = ({
   control,
   errors,
   getOutDiscipline,
+  setValue
 }) => {
   const { data, isLoading } = useGetDiscipline();
 
@@ -59,6 +60,7 @@ const Dicipline = ({
                     onChange={(val) => {
                       field.onChange(val);
                       setArtDicipline(val.target.value);
+                      setValue("artworkStyleType", "")
                     }}
                     value={artDicipline}
                     className="block w-full p-1 sm:px-4 sm:py-2 bg-[#F9F9FC] outline-none border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"

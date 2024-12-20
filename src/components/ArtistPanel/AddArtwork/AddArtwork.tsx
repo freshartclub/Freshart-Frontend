@@ -69,6 +69,7 @@ const AddArtwork = () => {
     setValue,
     getValues,
     watch,
+    setError,
   } = useForm({
     reValidateMode: "onChange",
     // resolver: yupResolver(validationSchema),
@@ -303,9 +304,7 @@ const AddArtwork = () => {
     seriesData?.discipline?.find((item) => item?.discipline === artDicipline)
       ?.style || [];
 
-  useEffect(() => {
-    setValue("artworkStyleType", "");
-  }, [artDicipline]);
+  console.log(seriesData);
 
   useEffect(() => {
     if (id) {
@@ -523,7 +522,7 @@ const AddArtwork = () => {
   const discountAcceptation = picklistMap["Artwork Discount Options"];
 
   const handleNavigate = () => {
-    navigate("/artist-panel/artdashboard");
+    navigate("/artist-panel/artwork");
     window.scrollTo(0, 0);
   };
 
@@ -668,7 +667,21 @@ const AddArtwork = () => {
     watch("hangingAvailable");
     watch("artworkSeries");
     watch("purchaseType");
+    watch("existingImage");
+    watch("packageHeight");
   }, []);
+
+  let h2 = 21;
+
+  useEffect(() => {
+    const packageHeight = getValues("packageHeight");
+    if (packageHeight < h2) {
+      setError("packageHeight", {
+        type: "manual",
+        message: "Height must be less than Catalog",
+      });
+    }
+  }, [getValues, setError, h2]);
 
   const removeImage = (name: string, index: number, typeFile: string) => {
     if (name === "mainImage") {
@@ -690,13 +703,14 @@ const AddArtwork = () => {
     }
   };
 
+  const newImages = getValues("existingImage");
+
   const removeExistingImage = (index: number, typeFile: string) => {
     console.log(index, typeFile);
     if (typeFile === "Url") {
-      initialValues.existingImage = initialValues.existingImage.filter(
-        (_, i) => i !== index
-      );
-      setInitialValues({ ...initialValues });
+      const filteredimg = newImages.filter((_, i) => i !== index);
+
+      setValue("existingImage", filteredimg);
     }
   };
 
@@ -1298,9 +1312,9 @@ const AddArtwork = () => {
                                 </div>
                               );
                             })}
-                          {initialValues.existingImage &&
-                          initialValues.existingImage.length > 0 ? (
-                            initialValues.existingImage?.map((img, i) => {
+                          {getValues("existingImage") &&
+                          getValues("existingImage").length > 0 ? (
+                            getValues("existingImage")?.map((img, i) => {
                               return (
                                 <div key={i} className="relative">
                                   <img
@@ -1536,6 +1550,7 @@ const AddArtwork = () => {
                   control={control}
                   errors={errors}
                   getOutDiscipline={getOutDiscipline}
+                  setValue={setValue}
                 />
 
                 <div className="grid md:grid-cols-2 gap-3 mb-4 mt-3">
@@ -2304,7 +2319,7 @@ const AddArtwork = () => {
                       type="text"
                       // name="location"
                       id="location"
-                      placeholder="India"
+                      placeholder="Enter Your Location"
                       {...register("location")}
                       readOnly={query ? true : false}
                       className="bg-[#F9F9FC] border mb-2 border-gray-300 outline-none text-[#203F58] text-sm rounded-lg block w-full p-1 sm:p-2.5"
