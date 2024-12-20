@@ -165,20 +165,26 @@ const SignUp = () => {
                 </Button>
               </div>
 
-              <div className="flex sm:flex-row flex-col mt-5 place-content-center">
+              <div className="flex sm:flex-row flex-col mt-5 justify-center">
                 <P
                   variant={{ theme: "dark", weight: "medium" }}
                   className="md:text-base text-sm"
                 >
-                  Already have an account?
+                  Don’t have account ?{" "}
+                  <Link
+                    to="/become_artist"
+                    className="hover:underline decoration-red-700  cursor-pointer"
+                  >
+                    Become an Artist{" "}
+                  </Link>
                 </P>
-                <Link
-                  to="/login"
-                  className="font-bold uppercase sm:mt-0 mt-2 ml-1 md:text-base text-sm"
-                >
-                  Sign In
-                </Link>
               </div>
+              <Link
+                to="/login"
+                className="font-bold uppercase ml-1 md:text-base text-sm"
+              >
+                Sign IN
+              </Link>
             </form>
           </div>
           <div>

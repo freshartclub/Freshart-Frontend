@@ -10,7 +10,6 @@ import Loader from "../ui/Loader";
 const UserProfile = () => {
   const { user } = useAppSelector((state) => state.user);
   const url = "https://dev.freshartclub.com/images";
-  console.log(user);
 
   if (!user) {
     return <Loader />;

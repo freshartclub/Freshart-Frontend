@@ -314,22 +314,11 @@ const AddArtwork = () => {
         data?.data?.commercialization?.purchaseCatalog || ""
       );
 
-      setValue(
-        "availableTo",
-        data?.data?.restriction?.availableTo
-          ? {
-              value: data?.data?.restriction?.availableTo,
-            }
-          : {}
-      );
+      setValue("availableTo", data?.data?.restriction?.availableTo);
       setValue("collectionList", data?.data?.collectionList || "");
       setValue(
         "discountAcceptation",
         data?.data?.restriction?.discountAcceptation
-          ? {
-              value: data?.data?.restriction?.discountAcceptation,
-            }
-          : {}
       );
       setValue("provideArtistName", data?.data?.provideArtistName || "");
       setValue("artworkSeries", data?.data?.artworkSeries);
@@ -398,14 +387,7 @@ const AddArtwork = () => {
         "purchaseCatalog",
         data?.data?.commercialization?.purchaseCatalog || ""
       );
-      setValue(
-        "purchaseType",
-        data?.data?.commercialization?.purchaseType
-          ? {
-              value: data.data.commercialization.purchaseType,
-            }
-          : {}
-      );
+      setValue("purchaseType", data?.data?.commercialization?.purchaseType);
 
       setValue(
         "downwardOffer",
@@ -650,6 +632,7 @@ const AddArtwork = () => {
           if (item instanceof File) {
             formData.append(key, item);
           } else {
+            console.log(key, value, "this is from formdata loop");
             formData.append(key, JSON.stringify(item));
           }
         });
@@ -657,8 +640,13 @@ const AddArtwork = () => {
         formData.append(key, value);
       } else {
         formData.append(key, value);
+        console.log(key, value, "this is from outside loop");
       }
     });
+
+    for (let [name, value] of formData.entries()) {
+      console.log(name, value);
+    }
 
     const newData = {
       id: id,
@@ -675,6 +663,7 @@ const AddArtwork = () => {
     watch("isArtProvider");
     watch("hangingAvailable");
     watch("artworkSeries");
+    watch("purchaseType");
   }, []);
 
   const removeImage = (name: string, index: number, typeFile: string) => {
@@ -755,6 +744,8 @@ const AddArtwork = () => {
       setInitialValues(updatedValues);
     }
   };
+
+  console.log(seriesData);
 
   const handleCopy = () => {
     const copyText = document.getElementById("linkInput");
@@ -1035,6 +1026,7 @@ const AddArtwork = () => {
                   </label>
                   <textarea
                     {...register("productDescription")}
+                    rows={6}
                     name="productDescription"
                     placeholder="Type product description here..."
                     readOnly={query ? true : false}
@@ -2106,23 +2098,14 @@ const AddArtwork = () => {
                           <select
                             id="purchaseType"
                             {...register("purchaseType")}
-                            value={getValues("purchaseType")?.value || ""}
-                            onChange={(e) =>
-                              setValue("purchaseType", {
-                                value: e.target.value,
-                                label:
-                                  e.target.options[e.target.selectedIndex].text,
-                              })
-                            }
+                            value={getValues("purchaseType") || ""}
                             disabled={query}
                             className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg block w-full p-1 sm:p-2.5"
                           >
                             <option value="">Select</option>
                             {purOption
                               ? purOption.map((item, i) => (
-                                  <option key={i} value={item?.value}>
-                                    {item?.value}
-                                  </option>
+                                  <option key={i}>{item?.value}</option>
                                 ))
                               : []}
                           </select>

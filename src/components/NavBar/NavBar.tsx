@@ -19,10 +19,13 @@ import { useGetPicklist } from "./http/getPickList";
 import Loader from "../ui/Loader";
 import { useGetCartItems } from "../pages/http/useGetCartItems";
 import useClickOutside from "../utils/useClickOutside";
+import { FaUserCircle } from "react-icons/fa";
 
 const mobile_links = [
-  { path: "/", label: "Home" },
-  { path: "/", label: "Subscribe" },
+  { path: "/home", label: "Home" },
+  { path: "/user_profile", label: "Profile" },
+
+  { path: "/purchase", label: "Subscribe" },
   { path: "/purchase", label: "Purchase" },
   { path: "/all_artist", label: "Artist" },
   { path: "/blog", label: "Blog" },
@@ -347,7 +350,7 @@ const NavBar = () => {
                 <img src={logo} alt="logo" className="" />
               </div>
               <div className="lg:flex hidden space-x-4  justify-end mt-3">
-                <Link to="/" className="focus:outline-none">
+                <Link to="/home" className="focus:outline-none">
                   <img
                     src={search}
                     alt="search"
@@ -381,14 +384,23 @@ const NavBar = () => {
                   </span>
                 </button>
                 <button className="focus:outline-none">
-                  <img
-                    src={`${url}/users/${user?.profile?.mainImage}`}
-                    alt="profile"
-                    onClick={toggleProfile}
-                    id="dropdownInformationButton"
-                    data-dropdown-toggle="dropdownInformation"
-                    className=" text-white mx-2 rounded-full object-cover w-8 h-8"
-                  />
+                  {user?.profile?.mainImage ? (
+                    <img
+                      src={`${url}/users/${user?.profile?.mainImage}`}
+                      alt="Profile"
+                      alt="profile"
+                      onClick={toggleProfile}
+                      id="dropdownInformationButton"
+                      data-dropdown-toggle="dropdownInformation"
+                      className=" text-white mx-2 rounded-full object-cover w-8 h-8"
+                    />
+                  ) : (
+                    <FaUserCircle
+                      onClick={toggleProfile}
+                      size="2em"
+                      color="white"
+                    />
+                  )}
                 </button>
 
                 {isProfileDropdown && (
@@ -490,7 +502,7 @@ const NavBar = () => {
                         {isModalOpen && (
                           <div
                             id="popup-modal"
-                            className="fixed inset-0 z-50 flex justify-center items-center w-full h-full bg-black bg-opacity-50"
+                            className="fixed inset-0 z-100 flex justify-center items-center w-full h-full bg-black bg-opacity-50"
                           >
                             <div className="relative p-4 w-full max-w-md max-h-full">
                               <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
@@ -651,6 +663,12 @@ const NavBar = () => {
                 {link.label}
               </Link>
             ))}
+            <span
+              onClick={() => setIsModalOpen(true)}
+              className="cursor-pointer py-2"
+            >
+              Log Out
+            </span>
           </div>
         )}
       </nav>

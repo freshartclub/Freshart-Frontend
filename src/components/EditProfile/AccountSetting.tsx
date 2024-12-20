@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { useGetArtistDetails } from "../UserProfile/http/useGetDetails";
 import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
+import image_icon from "../../assets/image_icon.png";
 
 const AccountSetting = () => {
   const [profileImage, setProfileImage] = useState(null);
@@ -34,7 +35,11 @@ const AccountSetting = () => {
         email: data?.data?.artist?.email,
         phoneNumber: data?.data?.artist?.phone,
       }));
-      setProfileImage(`${url}/users/${data?.data?.artist?.profile?.mainImage}`);
+      setProfileImage(
+        data?.data?.artist?.profile?.mainImage
+          ? `${url}/users/${data?.data?.artist?.profile?.mainImage}`
+          : null
+      );
     }
   }, [data]);
 
@@ -165,7 +170,7 @@ const AccountSetting = () => {
 
                     <div className="md:w-[30%] w-full  flex flex-col justify-center items-center ">
                       <img
-                        src={profileImage}
+                        src={profileImage || image_icon}
                         alt="Profile"
                         className="mx-auto"
                       />
