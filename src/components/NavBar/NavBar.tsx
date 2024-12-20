@@ -19,6 +19,7 @@ import { useGetPicklist } from "./http/getPickList";
 // import Loader from "../ui/Loader";
 import { useGetCartItems } from "../pages/http/useGetCartItems";
 import useClickOutside from "../utils/useClickOutside";
+import { FaUserCircle } from "react-icons/fa";
 
 const mobile_links = [
   { path: "/", label: "Home" },
@@ -272,12 +273,20 @@ const NavBar = () => {
                   ref={closePopup}
                   className="focus:outline-none relative"
                 >
-                  <img
-                    src={`${url}/users/${user?.profile?.mainImage}`}
-                    alt="profile"
-                    onClick={() => setIsProfileDropdown((prev) => !prev)}
-                    className=" text-white mx-2 rounded-full object-cover w-8 h-8"
-                  />
+                  {user?.profile?.mainImage ? (
+                    <img
+                      src={`${url}/users/${user?.profile?.mainImage}`}
+                      alt="Profile"
+                      onClick={() => setIsProfileDropdown((prev) => !prev)}
+                      className=" text-white mx-2 rounded-full object-cover w-8 h-8"
+                    />
+                  ) : (
+                    <FaUserCircle
+                      onClick={() => setIsProfileDropdown((prev) => !prev)}
+                      size="2em"
+                      color="white"
+                    />
+                  )}
                   {isProfileDropdown && (
                     <div className="absolute w-[13rem] right-0 z-10 top-[4rem] bg-white divide-y divide-gray-100 rounded-md shadow dark:bg-gray-700 dark:divide-gray-600 pb-3">
                       <ul

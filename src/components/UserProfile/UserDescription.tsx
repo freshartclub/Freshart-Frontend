@@ -188,14 +188,16 @@ const UserDescription = ({ user }) => {
             <TabPanel className="">
               <div className="p-4">
                 <div className="flex justify-end">
-                  <button
-                    onClick={handleProfile}
-                    variant={{ fontSize: "sm", theme: "dark", weight: "500" }}
-                    className="flex gap-2 items-center justify-center bg-black text-white px-2 py-2"
-                  >
-                    <img src={edit} alt="edit" />
-                    Edit profile
-                  </button>
+                  {user.role === "artist" ? null : (
+                    <button
+                      onClick={handleProfile}
+                      variant={{ fontSize: "sm", theme: "dark", weight: "500" }}
+                      className="flex gap-2 items-center justify-center bg-black text-white px-2 py-2"
+                    >
+                      <img src={edit} alt="edit" />
+                      Edit profile
+                    </button>
+                  )}
                 </div>
                 <Header
                   variant={{ size: "lg", theme: "dark", weight: "semiBold" }}
