@@ -1,4 +1,3 @@
-import profile from "./assets/a.jpg.png";
 import { FaUserCircle } from "react-icons/fa";
 const UserImage = ({ user, url }) => {
   return (
@@ -7,7 +6,6 @@ const UserImage = ({ user, url }) => {
         <img
           src={`${url}/users/${user?.profile?.mainImage}`}
           alt="Profile"
-          alt="user profile"
           className="w-full sm:w-auto"
         />
       ) : (
