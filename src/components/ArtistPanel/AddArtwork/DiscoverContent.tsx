@@ -126,12 +126,18 @@ const DiscoverContent = ({ data }: any) => {
         </P>
       </div>
 
-      <P
-        variant={{ size: "base", theme: "dark", weight: "normal" }}
-        className="lg:mt-2 mt-1"
-      >
-        Newyork, USA
-      </P>
+      <div className="flex gap-2 lg:mt-2 mt-1 ">
+        <P variant={{ size: "base", theme: "dark", weight: "medium" }}>
+          Location :
+        </P>
+
+        <P
+          variant={{ size: "base", theme: "dark", weight: "normal" }}
+          // className="lg:mt-2 mt-1"
+        >
+          Newyork, USA
+        </P>
+      </div>
 
       <P
         variant={{ size: "base", theme: "dark", weight: "normal" }}

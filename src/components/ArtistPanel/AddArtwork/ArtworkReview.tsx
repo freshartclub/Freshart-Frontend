@@ -20,11 +20,9 @@ const DiscoverMore = () => {
 
   const { data, isLoading } = useGetArtWorkById(id, preview);
 
-  console.log(data);
-
   const settings = {
     dots: false,
-    arrow: false,
+    arrows: false,
     infinite: true,
     speed: 1000,
     slidesToShow: 1,
@@ -39,7 +37,7 @@ const DiscoverMore = () => {
           slidesToScroll: 1,
           infinite: true,
           dots: false,
-          arrow: false,
+          arrows: false,
         },
       },
       {
@@ -49,7 +47,7 @@ const DiscoverMore = () => {
           slidesToScroll: 1,
           infinite: true,
           dots: false,
-          arrow: false,
+          arrows: false,
         },
       },
       {
@@ -59,17 +57,7 @@ const DiscoverMore = () => {
           slidesToScroll: 1,
           infinite: true,
           dots: false,
-          arrow: false,
-        },
-      },
-      {
-        breakpoint: 150,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-          infinite: true,
-          dots: false,
-          arrow: false,
+          arrows: false,
         },
       },
     ],
@@ -83,24 +71,51 @@ const DiscoverMore = () => {
 
   const additionalImage = data?.data.media?.images?.map((item, index) => item);
 
+  const additionalVideo = data?.data.media?.otherVideo?.map((item) => item);
+
+  const url2 = "https://dev.freshartclub.com/images/videos";
+
+  console.log(data?.url);
+
   const images = data?.data
     ? [
-        { src: data?.data.media?.mainImage || null, alt: "Main Image" },
-        { src: data?.data.media?.backImage || null, alt: "Back Image" },
         {
-          src: data?.data.media?.inProcessImage || null,
+          src: data?.data.media?.mainImage ? data?.data.media?.mainImage : null,
+          alt: "Main Image",
+        },
+        {
+          src: data?.data.media?.backImage ? data?.data.media?.backImage : null,
+          alt: "Back Image",
+        },
+        {
+          src: data?.data.media?.inProcessImage
+            ? data?.data.media?.inProcessImage
+            : null,
           alt: "In Process Image",
+        },
+        {
+          src: data?.data.media?.mainVideo ? data?.data.media?.mainVideo : null,
+          alt: "Main Video",
         },
         ...additionalImage?.map((item) => ({
           src: item,
           alt: "Additional Image",
         })),
-      ]
+        ...additionalVideo?.map((item) => ({
+          src: item,
+          alt: "Video",
+          type: "video",
+        })),
+      ].filter((image) => image.src !== null)
     : [];
+
+  console.log(images);
+  // const filteredMedia = images?.filter((item) => item.src !== null);
 
   if (isLoading) {
     return <Loader />;
   }
+
   return (
     <>
       <div className="container mx-auto md:px-6 px-3">
@@ -117,41 +132,82 @@ const DiscoverMore = () => {
           </li>
         </ul>
 
-        <div className="flex md:flex-row flex-col  gap-10 mt-10">
-          <div className="flex md:flex-row flex-col gap-4 md:w-[50%] w-full md:items-center">
-            <div className="flex md:flex-col flex-row md:gap-0 gap-2 w-[15%] lg:ml-4 ">
-              {images.map((thumb, index) => {
-                return (
-                  <img
-                    key={index}
-                    src={`${data?.url}/users/${thumb.src}`}
-                    alt={thumb.alt}
-                    className="mb-4 lg:w-20 w-24 h-24 lg:h-24"
-                    onClick={() => handleThumbnailClick(index)}
-                  />
-                );
+        <div className="flex lg:flex-row  flex-col gap-10 mt-10">
+          <div className="flex lg:flex-row flex-col gap-4 lg:w-[50%] w-full items-center mb-2">
+            <div className="flex lg:justify-start justify-center flex-row lg:flex-col lg:max-h-[60vh] lg:h-[60vh] lg:overflow-y-auto  gap-2 w-[15%] lg:ml-4">
+              {images?.map((thumb, index) => {
+                const isVideo = thumb.src && thumb.src.endsWith(".mp4");
+                if (thumb.src) {
+                  return isVideo ? (
+                    <video
+                      key={index}
+                      src={`${url2}/${thumb.src}`}
+                      className="mb-4 lg:w-20 w-24 h-24 lg:h-24 cursor-pointer object-cover"
+                      onClick={() => handleThumbnailClick(index)}
+                    />
+                  ) : (
+                    <img
+                      key={index}
+                      src={`${data?.url}/users/${thumb.src}`}
+                      alt={thumb.alt}
+                      className="mb-4 lg:w-20 w-24 h-24 lg:h-24 cursor-pointer object-cover"
+                      onClick={() => handleThumbnailClick(index)}
+                    />
+                  );
+                }
+                return null;
               })}
             </div>
 
-            <div className="flex-1 md:w-[70%] w-[50vw]">
-              <Slider {...settings} ref={sliderRef} className="discover_more">
-                {images.map((slide, index) => (
-                  <div key={index}>
-                    <img
-                      src={`${data?.url}/users/${slide.src}`}
-                      alt={`Slide ${index + 1}`}
-                      className="md:w-[40vw] w-full h-[50vh] md:h-[70vh] object-cover overflow-y-hidden"
-                    />
-                  </div>
-                ))}
-              </Slider>
+            <div className="flex-1 md:w-[70%] w-[50vw] ">
+              {images.length > 1 ? (
+                <Slider {...settings} ref={sliderRef} className="discover_more">
+                  {images.map(
+                    (slide, index) =>
+                      slide.src && (
+                        <div key={index} className="">
+                          {slide.src.endsWith(".mp4") ? ( // Check if it's a video
+                            <video
+                              src={`${url2}/${slide.src}`}
+                              className="mx-auto object-cover h-[20rem] md:h-[60vh] lg:h-[60vh]"
+                              controls
+                            />
+                          ) : (
+                            <img
+                              src={`${data?.url}/users/${slide.src}`}
+                              alt={`Slide ${index + 1}`}
+                              className="mx-auto object-cover h-[20rem] md:h-[60vh] lg:h-[60vh]"
+                            />
+                          )}
+                        </div>
+                      )
+                  )}
+                </Slider>
+              ) : (
+                images[0]?.src &&
+                (images[0].src.endsWith(".mp4") ? (
+                  <video
+                    src={`${url2}/${images[0].src}`}
+                    className="md:w-[40vw] w-full h-[50vh] md:h-[70vh] object-cover overflow-y-hidden"
+                    controls
+                    autoPlay={true}
+                  />
+                ) : (
+                  <img
+                    src={`${data?.url}/users/${images[0]?.src}`}
+                    alt="Single Image"
+                    className="md:w-[40vw] w-full h-[50vh] md:h-[70vh] object-cover overflow-y-hidden"
+                  />
+                ))
+              )}
             </div>
           </div>
 
-          <div className="md:w-[50%] w-full ">
+          <div className="md:w-[50%] w-full">
             <DiscoverContent data={data?.data} />
           </div>
         </div>
+
         <div className="flex justify-center md:w-[50%] w-full gap-10 mb-10">
           <div className="flex gap-1">
             <img src={eye} alt="eye" className="w-[19px] h-[12px] mt-1" />

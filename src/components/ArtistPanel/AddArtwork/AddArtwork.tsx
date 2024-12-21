@@ -45,6 +45,7 @@ import { Controller, useForm } from "react-hook-form";
 import html2canvas from "html2canvas";
 import { AiOutlineClose } from "react-icons/ai";
 import useDeleteSeriesMutation from "./http/useDeleteSeries";
+import toast from "react-hot-toast";
 
 const AddArtwork = () => {
   const [progress, setProgress] = useState(0);
@@ -62,16 +63,19 @@ const AddArtwork = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
-    formState,
+    formState: { errors, isValid },
+
     touched,
     control,
     setValue,
     getValues,
     watch,
     setError,
+    trigger,
+    clearErrors,
   } = useForm({
     reValidateMode: "onChange",
+    mode: "onChange",
     // resolver: yupResolver(validationSchema),
   });
 
@@ -303,8 +307,6 @@ const AddArtwork = () => {
   const newArtworkStyle =
     seriesData?.discipline?.find((item) => item?.discipline === artDicipline)
       ?.style || [];
-
-  console.log(seriesData);
 
   useEffect(() => {
     if (id) {
@@ -603,60 +605,150 @@ const AddArtwork = () => {
     }
   };
 
+  // const watchPackageHeight = watch("packageHeight");
+  // const watchPackageWeight = watch("packageWeight");
+  // const watchPackageWidth = watch("packageWidth");
+  // const watchPackageDepth = watch("packageLength");
+  // const watchBasePrice = watch("basePrice");
+
+  const [packageHeightError, setPackageHeightError] = useState(null);
+  const [packageWidthError, setPackageWidthError] = useState(null);
+  const [packageDepthError, setPackageDepthError] = useState(null);
+  const [basePriceError, setBasePriceError] = useState(null);
+  const [packageWeightError, setPackageWeightError] = useState(null);
+
+  const packageHeight = getValues("packageHeight");
+  const packageWeight = getValues("packageWeight");
+  const packageWidth = getValues("packageWidth");
+  const packageDepth = getValues("packageLength");
+  const basePrice = parseInt(getValues("basePrice"));
+
+  useEffect(() => {
+    if (activeTab === "purchase") {
+      const purchaseItem = seriesData?.purchaseCatalog?.find(
+        (item) => item?._id === getValues("purchaseCatalog")
+      );
+
+      if (purchaseItem && purchaseItem.details) {
+        const { maxHeight, maxWeight, maxWidth, maxDepth, maxPrice } =
+          purchaseItem.details;
+
+        setBasePriceError(maxPrice ? maxPrice : null);
+        setPackageHeightError(maxHeight ? maxHeight : null);
+        setPackageWeightError(maxWeight ? maxWeight : null);
+        setPackageWidthError(maxWidth ? maxWidth : null);
+        setPackageDepthError(maxDepth ? maxDepth : null);
+      }
+    } else if (activeTab === "subscription") {
+      const subscriptionItem = seriesData?.purchaseCatalog?.find(
+        (item) => item?._id === getValues("subscriptionCatalog")
+      );
+
+      if (subscriptionItem && subscriptionItem.details) {
+        const { maxHeight, maxWeight, maxWidth, maxDepth, maxPrice } =
+          subscriptionItem.details;
+
+        setBasePriceError(maxPrice ? maxPrice : null);
+        setPackageHeightError(maxHeight ? maxHeight : null);
+        setPackageWeightError(maxWeight ? maxWeight : null);
+        setPackageWidthError(maxWidth ? maxWidth : null);
+        setPackageDepthError(maxDepth ? maxDepth : null);
+
+        if (maxHeight !== undefined && packageHeight >= maxHeight) {
+          setPackageHeightError(maxHeight);
+        }
+
+        if (maxWeight !== undefined && packageWeight >= maxWeight) {
+          setPackageWeightError(maxWeight);
+        }
+
+        if (maxWidth !== undefined && packageWidth >= maxWidth) {
+          setPackageWidthError(maxWidth);
+        }
+
+        if (maxDepth !== undefined && packageDepth >= maxDepth) {
+          setPackageDepthError(maxDepth);
+        }
+
+        if (maxPrice !== undefined && basePrice >= maxPrice) {
+          setBasePriceError(maxPrice);
+        }
+      }
+    }
+  }, [
+    activeTab,
+    watch("purchaseCatalog"),
+    getValues("basePrice"),
+    watch("subscriptionCatalog"),
+    getValues("subscriptionCatalog"),
+    watch("purchaseType"),
+    watch("purchaseOption"),
+  ]);
+
   const onSubmit = handleSubmit(async (values: any) => {
     console.log("onSubmit", values);
 
-    values.mainImage = newImage;
-    values.backImage = newBackImage;
-    values.inProcessImage = newInProcessImage;
-    values.images = images;
-    values.mainVideo = newMainVideo;
-    values.otherVideo = otherVideo;
-    values.activeTab = activeTab;
-    values.intTags = internalTags;
-    values.extTags = externalTags;
-    values.isArtProvider = isArtProvider;
-    values.artworkDiscipline = artDicipline;
-    values.vatAmount = vatAmount;
-    values.artistFees = catalogPrice;
+    if (
+      values.basePrice === basePriceError &&
+      values.packageDepth === packageDepthError &&
+      values.packageHeight === packageHeightError &&
+      values.packageWidth === packageWidthError &&
+      values.packageWeight === packageWeightError
+    ) {
+      values.mainImage = newImage;
+      values.backImage = newBackImage;
+      values.inProcessImage = newInProcessImage;
+      values.images = images;
+      values.mainVideo = newMainVideo;
+      values.otherVideo = otherVideo;
+      values.activeTab = activeTab;
+      values.intTags = internalTags;
+      values.extTags = externalTags;
+      values.isArtProvider = isArtProvider;
+      values.artworkDiscipline = artDicipline;
+      values.vatAmount = vatAmount;
+      values.artistFees = catalogPrice;
 
-    values.hasMainImg = hasMainImg;
-    values.hasBackImg = hasBackImg;
-    values.hasInProcessImg = hasInProcessImg;
-    values.hasMainVideo = hasMainVideo;
+      values.hasMainImg = hasMainImg;
+      values.hasBackImg = hasBackImg;
+      values.hasInProcessImg = hasInProcessImg;
+      values.hasMainVideo = hasMainVideo;
 
-    const formData = new FormData();
+      const formData = new FormData();
 
-    Object.keys(values).forEach((key) => {
-      const value = values[key];
+      Object.keys(values).forEach((key) => {
+        const value = values[key];
 
-      if (Array.isArray(value)) {
-        value.forEach((item) => {
-          if (item instanceof File) {
-            formData.append(key, item);
-          } else {
-            console.log(key, value, "this is from formdata loop");
-            formData.append(key, JSON.stringify(item));
-          }
-        });
-      } else if (value instanceof File) {
-        formData.append(key, value);
-      } else {
-        formData.append(key, value);
-        console.log(key, value, "this is from outside loop");
+        if (Array.isArray(value)) {
+          value.forEach((item) => {
+            if (item instanceof File) {
+              formData.append(key, item);
+            } else {
+              console.log(key, value, "this is from formdata loop");
+              formData.append(key, JSON.stringify(item));
+            }
+          });
+        } else if (value instanceof File) {
+          formData.append(key, value);
+        } else {
+          formData.append(key, value);
+          console.log(key, value, "this is from outside loop");
+        }
+      });
+
+      for (let [name, value] of formData.entries()) {
+        console.log(name, value);
       }
-    });
 
-    for (let [name, value] of formData.entries()) {
-      console.log(name, value);
+      const newData = {
+        id: id,
+        data: formData,
+      };
+
+      mutate(newData);
+    } else {
+      return toast("Please Check Base Price & Package Dimesions Values");
     }
-
-    const newData = {
-      id: id,
-      data: formData,
-    };
-
-    mutate(newData);
   });
 
   useEffect(() => {
@@ -669,19 +761,17 @@ const AddArtwork = () => {
     watch("purchaseType");
     watch("existingImage");
     watch("packageHeight");
+    watch("packageWeight");
+    watch("packageWidth");
+    watch("packageLength");
+    watch("basePrice");
   }, []);
 
-  let h2 = 21;
+  // console.log(isValid);
+  // console.log(errors);
+  // console.log(getValues("basePrice"));
 
-  useEffect(() => {
-    const packageHeight = getValues("packageHeight");
-    if (packageHeight < h2) {
-      setError("packageHeight", {
-        type: "manual",
-        message: "Height must be less than Catalog",
-      });
-    }
-  }, [getValues, setError, h2]);
+  // console.log(packageHeightError);
 
   const removeImage = (name: string, index: number, typeFile: string) => {
     if (name === "mainImage") {
@@ -1395,7 +1485,7 @@ const AddArtwork = () => {
                           <div className="relative ">
                             <video
                               src={mainVideo}
-                              className="w-28 max-h-28 object-cover mb-4"
+                              className="w-28 max-h-32 object-cover mb-4"
                               controls
                             />
                             <span
@@ -1995,6 +2085,11 @@ const AddArtwork = () => {
                       setCatalogPrice(null);
                       setActiveTab("subscription");
                       setCatalogPrice(0);
+                      setPackageWeightError(null);
+                      setPackageDepthError(null);
+                      setPackageWidthError(null);
+                      setPackageHeightError(null);
+                      setBasePriceError(null);
                     }}
                     // onChange={() => setPurchaseCatlogValue(null)}
                     className={`py-2 font-bold cursor-pointer ${
@@ -2012,6 +2107,11 @@ const AddArtwork = () => {
                       setValue("subscriptionCatalog", "");
                       setValue("purchaseOption", "");
                       setCatalogPrice(0);
+                      setPackageWeightError(null);
+                      setPackageDepthError(null);
+                      setPackageWidthError(null);
+                      setPackageHeightError(null);
+                      setBasePriceError(null);
                     }}
                     // onChange={() => setPurchaseCatlogValue(null)}
                     className={`py-2 mx-8 font-bold cursor-pointer ${
@@ -2036,7 +2136,7 @@ const AddArtwork = () => {
                             {...register("subscriptionCatalog")}
                             onChange={(val) => {
                               handleCheckArtistFee(val);
-
+                              setValue("purchaseOption", "");
                               setsubscriptionCatlogValue(val.target.value);
                             }}
                             className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
@@ -2092,6 +2192,7 @@ const AddArtwork = () => {
                               setPurchaseCatlogValue(val.target.value);
 
                               setsubscriptionCatlogValue("");
+                              setValue("purchaseType", "");
                             }}
                             className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
                           >
@@ -2168,6 +2269,33 @@ const AddArtwork = () => {
                     </select>
                   </label>
 
+                  {activeTab === "subscription" &&
+                  watch("subscriptionCatalog") ? (
+                    <div className="flex items-center border border-zinc-500 w-full py-3 px-4 bg-yellow-100 text-yellow-800">
+                      {/* Warning Icon */}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="w-6 h-6 mr-2"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M12 9v2m0 4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"
+                        />
+                      </svg>
+
+                      {/* Warning Message */}
+                      <span>
+                        Price must be less than or equal to the specified
+                        amount. {basePriceError}
+                      </span>
+                    </div>
+                  ) : null}
+
                   {activeTab === "subscription" ? (
                     <label className="text-[#203F58] text-sm sm:text-base font-semibold ">
                       Base Price
@@ -2195,59 +2323,96 @@ const AddArtwork = () => {
                 {watch("purchaseType") === "Downword Offer" ||
                 watch("purchaseType") === "Fixed Price" ||
                 watch("purchaseType") === "Price By Request" ? (
-                  <span>
-                    <label className="text-[#203F58] text-sm sm:text-base font-semibold">
-                      Base Price{" "}
-                    </label>
-                    <div className="flex space-x-2">
-                      <input
-                        {...register("basePrice")}
-                        type="text"
-                        name="basePrice"
-                        id="basePrice"
-                        placeholder="€ Type base price here..."
-                        // value={values.basePrice}
-                        readOnly={query ? true : false}
-                        className="bg-[#F9F9FC] border mb-3 border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5"
-                      />
-                    </div>
+                  <>
+                    {activeTab === "purchase" && watch("purchaseCatalog") ? (
+                      <div className="flex items-center border border-zinc-500 w-full py-3 px-4 bg-yellow-100 text-yellow-800">
+                        {/* Warning Icon */}
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="w-6 h-6 mr-2"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M12 9v2m0 4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"
+                          />
+                        </svg>
 
-                    {/* Discount Percentage Field */}
-                    <div
-                      className={`${
-                        getValues("purchaseType") === "Downword Offer"
-                          ? "grid md:grid-cols-2 gap-3"
-                          : "w-full"
-                      } grid md:grid-cols-2 gap-3`}
-                    >
+                        {/* Warning Message */}
+                        <span>
+                          Price must be less than or equal to the specified
+                          amount. {basePriceError}
+                        </span>
+                      </div>
+                    ) : null}
+
+                    <span>
                       <label className="text-[#203F58] text-sm sm:text-base font-semibold">
-                        Discount Percentage
+                        Base Price{" "}
+                      </label>
+
+                      <div className="flex flex-col space-x-2">
                         <input
-                          {...register("dpersentage")}
+                          {...register("basePrice", {
+                            required: "Base Price is Required",
+                          })}
                           type="text"
-                          name="dpersentage"
-                          id="dpersentage"
-                          placeholder="$ 00  %"
+                          name="basePrice"
+                          id="basePrice"
+                          placeholder="€ Type base price here..."
+                          // value={values.basePrice}
                           readOnly={query ? true : false}
                           className="bg-[#F9F9FC] border mb-3 border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5"
                         />
-                      </label>
 
-                      {watch("purchaseType") === "Downword Offer" ? (
+                        {activeTab === "purchase" && errors.basePrice ? (
+                          <div className="error text-red-500 mt-1 text-sm">
+                            {errors.basePrice.message}
+                          </div>
+                        ) : null}
+                      </div>
+
+                      {/* Discount Percentage Field */}
+                      <div
+                        className={`${
+                          getValues("purchaseType") === "Downword Offer"
+                            ? "grid md:grid-cols-2 gap-3"
+                            : "w-full"
+                        } grid md:grid-cols-2 gap-3`}
+                      >
                         <label className="text-[#203F58] text-sm sm:text-base font-semibold">
-                          Accept Offer Minimum Price
+                          Discount Percentage
                           <input
-                            {...register("acceptOfferPrice")}
+                            {...register("dpersentage")}
                             type="text"
-                            id="acceptOfferPrice"
-                            placeholder="Eur "
+                            name="dpersentage"
+                            id="dpersentage"
+                            placeholder="$ 00  %"
                             readOnly={query ? true : false}
                             className="bg-[#F9F9FC] border mb-3 border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5"
                           />
                         </label>
-                      ) : null}
-                    </div>
-                  </span>
+
+                        {watch("purchaseType") === "Downword Offer" ? (
+                          <label className="text-[#203F58] text-sm sm:text-base font-semibold">
+                            Accept Offer Minimum Price
+                            <input
+                              {...register("acceptOfferPrice")}
+                              type="text"
+                              id="acceptOfferPrice"
+                              placeholder="Eur "
+                              readOnly={query ? true : false}
+                              className="bg-[#F9F9FC] border mb-3 border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5"
+                            />
+                          </label>
+                        ) : null}
+                      </div>
+                    </span>
+                  </>
                 ) : null}
 
                 <div className="grid md:grid-cols-2 gap-3">
@@ -2342,10 +2507,9 @@ const AddArtwork = () => {
                       className="bg-[#F9F9FC] mt-1 border mb-3 border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
                     >
                       <option value="">Select</option>
-                      <option>Plastic</option>
-                      <option>Corton</option>
-                      <option>Tube</option>
-                      <option>Wood</option>
+                      {packMaterial?.map((item, i) => (
+                        <option>{item.value}</option>
+                      ))}
                     </select>
                     {errors.packageMaterial ? (
                       <div className="error text-red-500 mt-1 text-sm">
@@ -2353,6 +2517,46 @@ const AddArtwork = () => {
                       </div>
                     ) : null}
                   </label>
+                </div>
+
+                <div className="flex items-center border border-zinc-500 w-full py-3 px-4 mb-3 bg-yellow-100 text-yellow-800">
+                  {/* Warning Icon */}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-6 h-6 mr-2"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M12 9v2m0 4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"
+                    />
+                  </svg>
+
+                  {/* Warning Message */}
+                  <span>
+                    The following values must be less than or equal to the
+                    specified limits:
+                    <ul className="list-disc ml-5 mt-2">
+                      <li>
+                        Height must be less than or equal to{" "}
+                        {packageHeightError}
+                      </li>
+                      <li>
+                        Width must be less than or equal to {packageWidthError}
+                      </li>
+                      <li>
+                        Depth must be less than or equal to {packageDepthError}
+                      </li>
+                      <li>
+                        Weight must be less than or equal to{" "}
+                        {packageWeightError}
+                      </li>
+                    </ul>
+                  </span>
                 </div>
 
                 <div className="flex  items-center justify-between mb-4 ">
@@ -2427,6 +2631,7 @@ const AddArtwork = () => {
                       fontWeight: "600",
                       theme: "dark",
                     }}
+                    // disabled={!isValid}
                     className=" text-white py-2 px-4 rounded"
                   >
                     {isPending ? "Previewing..." : "Save & Preview"}
@@ -2439,24 +2644,24 @@ const AddArtwork = () => {
       </div>
 
       {qrVisible && (
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-blue-50 w-[40vw] h-[55vh]">
-          <div className="flex  flex-col justify-center items-center">
-            <h1 className="font-bold text-lg text-center mt-3">Qr Code</h1>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-blue-50 w-[80%] sm:w-[60%] md:w-[50%] lg:w-[40%] h-[80vh] sm:h-[75vh] md:h-[75vh] lg:h-[75vh] p-4 rounded-lg shadow-lg">
+          <div className="flex flex-col justify-center items-center">
+            <h1 className="font-bold text-lg text-center mt-3">QR Code</h1>
             <img
               src={logoIcon}
-              alt=""
-              className=" object-cover w-[40%] h-[6%] px-3 py-5"
+              alt="Logo"
+              className="object-cover w-[40%] h-[6%] px-3 py-5"
             />
           </div>
 
           <span
             onClick={() => setQrVisible(false)}
-            className=" absolute right-5 top-5 cursor-pointer"
+            className="absolute right-5 top-5 cursor-pointer"
           >
-            <BsBackspace size="2em" />{" "}
+            <BsBackspace size="2em" />
           </span>
 
-          <div className="flex flex-col justify-between ">
+          <div className="flex flex-col justify-between mt-6">
             <div
               style={{
                 height: "auto",
@@ -2465,35 +2670,36 @@ const AddArtwork = () => {
                 width: "100%",
               }}
               ref={qrCodeRef}
+              className="flex justify-center"
             >
               <QRCode
                 size={256}
                 style={{ height: "auto", maxWidth: "100%", width: "100%" }}
                 value={currentPageUrl}
-                viewBox={`0 0 256 256`}
+                viewBox="0 0 256 256"
               />
             </div>
 
-            <div className="flex flex-col items-center mt-6 ">
+            <div className="flex flex-col items-center mt-6">
               <input
                 type="text"
                 value={url}
                 id="linkInput"
                 readOnly
-                className="w-[70%] p-3 text-lg border border-gray-300 rounded-md mb-4"
+                className="w-[80%] sm:w-[70%] p-3 text-lg border border-gray-300 rounded-md mb-4"
               />
 
-              <div className="flex justify-between gap-3">
+              <div className="flex flex-col sm:flex-row justify-between gap-3">
                 <button
                   onClick={handleCopy}
-                  className="bg-black text-white px-2 rounded-md text-md cursor-pointer hover:bg-blue-600 transition"
+                  className="bg-black text-white px-4 py-2 rounded-md text-md cursor-pointer hover:bg-blue-600 transition mb-2 sm:mb-0"
                 >
                   Copy Link
                 </button>
 
                 <button
                   onClick={handleDownloadPDF}
-                  className="bg-black text-white px-2 py-2 rounded-md text-md cursor-pointer hover:bg-green-600 transition"
+                  className="bg-black text-white px-4 py-2 rounded-md text-md cursor-pointer hover:bg-green-600 transition"
                   disabled={isLoading}
                 >
                   {isLoadingPdf ? "Downloading PDF..." : "Download PDF"}

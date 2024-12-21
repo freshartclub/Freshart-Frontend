@@ -130,8 +130,9 @@ const ProductInfo = ({ data }: any) => {
         </TabList>
 
         <TabPanel>
-          <div className="flex gap-8 justify-between my-10">
-            <div className="w-[65%] ">
+          <div className="flex flex-col md:flex-row gap-8 justify-between my-10">
+            {/* Product Information Section */}
+            <div className="w-full md:w-[65%]">
               <P
                 variant={{ size: "small", weight: "semiBold" }}
                 className="text-[#999999]"
@@ -144,86 +145,97 @@ const ProductInfo = ({ data }: any) => {
               >
                 {data?.data?.productDescription}
               </Header>
-              <P
-                variant={{ size: "base", theme: "dark", weight: "medium" }}
-                className="text-[#999999]"
-              >
-                If you relate, it’s clear you do need a change – but what’s an
-                easy and cost effective way of adding the magic back into your
-                home? The surprisingly simple yet overlooked way to reimagine
-                any space begins with your walls. Think about it – the empty
-                wall space you’ve been sitting opposite for weeks or even years
-                is the perfect blank canvas to begin expressing your unique
-                style and creativity.
-              </P>
             </div>
 
-            <div className="w-[25%]">
-              <div className="flex items-center gap-5 my-5">
-                <img src={delivery} alt="" />
-                <div>
-                  <P
-                    variant={{ size: "base", weight: "medium", theme: "dark" }}
-                  >
-                    Delivery 2-5 days
-                  </P>
-                  <P
-                    variant={{ size: "base", weight: "medium" }}
-                    className="text-[#999999]"
-                  >
-                    Get free shipping over $65.
-                  </P>
+            {/* Features Section */}
+            <div className="w-full md:w-[25%]">
+              <div className="flex flex-col gap-5">
+                {/* Delivery Info */}
+                <div className="flex items-center gap-5">
+                  <img src={delivery} alt="Delivery" className="w-8 h-8" />
+                  <div>
+                    <P
+                      variant={{
+                        size: "base",
+                        weight: "medium",
+                        theme: "dark",
+                      }}
+                    >
+                      Delivery 2-5 days
+                    </P>
+                    <P
+                      variant={{ size: "base", weight: "medium" }}
+                      className="text-[#999999]"
+                    >
+                      Get free shipping over $65.
+                    </P>
+                  </div>
                 </div>
-              </div>
 
-              <div className="flex items-center gap-5 my-5">
-                <img src={secure} alt="" />
-                <div>
-                  <P
-                    variant={{ size: "base", weight: "medium", theme: "dark" }}
-                  >
-                    100% secure payment
-                  </P>
-                  <P
-                    variant={{ size: "base", weight: "medium" }}
-                    className="text-[#999999]"
-                  >
-                    Your payment information is safe.
-                  </P>
+                {/* Secure Payment Info */}
+                <div className="flex items-center gap-5">
+                  <img src={secure} alt="Secure Payment" className="w-8 h-8" />
+                  <div>
+                    <P
+                      variant={{
+                        size: "base",
+                        weight: "medium",
+                        theme: "dark",
+                      }}
+                    >
+                      100% secure payment
+                    </P>
+                    <P
+                      variant={{ size: "base", weight: "medium" }}
+                      className="text-[#999999]"
+                    >
+                      Your payment information is safe.
+                    </P>
+                  </div>
                 </div>
-              </div>
 
-              <div className="flex items-center gap-5 my-5">
-                <img src={print} alt="" />
-                <div>
-                  <P
-                    variant={{ size: "base", weight: "medium", theme: "dark" }}
-                  >
-                    Premium paper printed
-                  </P>
-                  <P
-                    variant={{ size: "base", weight: "medium" }}
-                    className="text-[#999999]"
-                  >
-                    Printed on premium paper (250 g/m²).
-                  </P>
+                {/* Premium Paper Info */}
+                <div className="flex items-center gap-5">
+                  <img src={print} alt="Premium Paper" className="w-8 h-8" />
+                  <div>
+                    <P
+                      variant={{
+                        size: "base",
+                        weight: "medium",
+                        theme: "dark",
+                      }}
+                    >
+                      Premium paper printed
+                    </P>
+                    <P
+                      variant={{ size: "base", weight: "medium" }}
+                      className="text-[#999999]"
+                    >
+                      Printed on premium paper (250 g/m²).
+                    </P>
+                  </div>
                 </div>
-              </div>
 
-              <div className="flex items-center gap-5 my-5">
-                <img src={return1} alt="" />
-                <div>
-                  <P
-                    variant={{ size: "base", weight: "medium", theme: "dark" }}
-                  >
-                    Easy Returns
-                  </P>
-                  <P
-                    variant={{ size: "base", weight: "medium" }}
-                    className="text-[#999999]"
-                  >
-                    Risk-free 30-day returns.
-                  </P>
+                {/* Easy Returns Info */}
+                <div className="flex items-center gap-5">
+                  <img src={return1} alt="Easy Returns" className="w-8 h-8" />
+                  <div>
+                    <P
+                      variant={{
+                        size: "base",
+                        weight: "medium",
+                        theme: "dark",
+                      }}
+                    >
+                      Easy Returns
+                    </P>
+                    <P
+                      variant={{ size: "base", weight: "medium" }}
+                      className="text-[#999999]"
+                    >
+                      Risk-free 30-day returns.
+                    </P>
+                  </div>
                 </div>
               </div>
             </div>
@@ -231,8 +243,9 @@ const ProductInfo = ({ data }: any) => {
         </TabPanel>
 
         <TabPanel>
-          <div className="flex gap-10 w-full my-10">
-            <div className="w-[32%]">
+          <div className="flex flex-col md:flex-row gap-10 w-full my-10">
+            {/* Overview Section */}
+            <div className="w-full md:w-[32%]">
               <Header
                 variant={{ size: "md", theme: "dark", weight: "semiBold" }}
                 className="mb-4"
@@ -257,7 +270,8 @@ const ProductInfo = ({ data }: any) => {
               ))}
             </div>
 
-            <div className="w-[32%]">
+            {/* Artwork Details Section */}
+            <div className="w-full md:w-[32%]">
               {artwork_detail.map((item, index) => (
                 <div key={index} className="my-5">
                   <Header
@@ -278,7 +292,8 @@ const ProductInfo = ({ data }: any) => {
               ))}
             </div>
 
-            <div className="w-[32%]">
+            {/* Highlights Section */}
+            <div className="w-full md:w-[32%]">
               <Header
                 variant={{ size: "md", theme: "dark", weight: "semiBold" }}
               >
@@ -298,16 +313,16 @@ const ProductInfo = ({ data }: any) => {
         </TabPanel>
 
         <TabPanel>
-          <div className="flex gap-10 my-10">
-            <div className="w-[20%]">
+          <div className="flex flex-col md:flex-row gap-10 my-10">
+            {/* Profile Section */}
+            <div className="w-full md:w-[20%]">
               <div className="bg-white shadow-2xl lg:max-w-xs sm:w-[90%] w-full p-5">
-                <div className="">
+                <div>
                   <img
                     src={`${data?.url}/users/${data?.data?.owner?.profile?.mainImage}`}
                     alt="Profile"
                     className="object-cover w-full h-full"
                   />
-
                   {/* Profile Details */}
                   <div className="mt-4 text-center">
                     <Header
@@ -327,20 +342,9 @@ const ProductInfo = ({ data }: any) => {
                     >
                       {data?.data?.owner?.aboutArtist?.discipline?.map(
                         (item: DisciplineItem, i) => (
-                          <h1 className="">
-                            {item.discipline}
-                            {/* {i < item?.discipline?.length - 1 && "|"} */}
-                          </h1>
+                          <h1 key={i}>{item.discipline}</h1>
                         )
                       )}
-
-                      {/* {Array.isArray(item?.aboutArtist?.discipline) &&
-                  item?.aboutArtist?.discipline.map((iw, i) => (
-                    <span key={i}>
-                      {iw.discipline}
-                      {i < item?.aboutArtist?.discipline.length - 1 && "| "}
-                    </span>
-                  ))}  */}
                     </P>
                   </div>
                 </div>
@@ -386,14 +390,14 @@ const ProductInfo = ({ data }: any) => {
                       }}
                       className="my-1"
                     >
-                      {`${data?.data?.owner?.address?.country},${data?.data?.owner?.address?.city}`}
+                      {`${data?.data?.owner?.address?.country}, ${data?.data?.owner?.address?.city}`}
                     </P>
                   </div>
                 </div>
 
                 {/* Social and Action Icons */}
                 <div className="flex justify-between items-center mt-2">
-                  <div className="flex ">
+                  <div className="flex">
                     <div className="relative w-12 h-12 border-4 border-white rounded-full overflow-hidden">
                       <img
                         src={circle1}
@@ -440,8 +444,9 @@ const ProductInfo = ({ data }: any) => {
               </div>
             </div>
 
-            <div className="w-[75%]">
-              <div className="border mt-8 p-4 ">
+            {/* Content Section */}
+            <div className="w-full md:w-[75%]">
+              <div className="border mt-8 p-4">
                 <Header
                   variant={{ size: "lg", theme: "dark", weight: "semiBold" }}
                   className="mb-3 uppercase"
@@ -479,7 +484,7 @@ const ProductInfo = ({ data }: any) => {
                 </div>
               </div>
 
-              <div className="border mt-8 p-4 ">
+              <div className="border mt-8 p-4">
                 <Header
                   variant={{ size: "lg", theme: "dark", weight: "semiBold" }}
                   className="mb-4 uppercase"

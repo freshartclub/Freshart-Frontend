@@ -21,32 +21,33 @@ interface HandleLikeClickParams {
 }
 
 const CommonCardData = ({ heading, highlightData }: HandleLikeClickParams) => {
-  const [isLiked, setIsLiked] = useState(false);
+  const [likes, setLikes] = useState<{ [key: number]: boolean }>({});
 
+  // Slider settings
   const settings = {
     dots: true,
-    infinite: true,
+    infinite: highlightData?.artworks?.length > 1,
     speed: 500,
-    slidesToShow: 4,
+    slidesToShow: highlightData?.artworks?.length === 1 ? 1 : 4,
     slidesToScroll: 1,
-    autoplay: true,
+    autoplay: highlightData?.artworks?.length > 1,
     autoplaySpeed: 2000,
     responsive: [
       {
         breakpoint: 1024,
         settings: {
-          slidesToShow: 3,
+          slidesToShow: highlightData?.artworks?.length === 1 ? 1 : 3,
           slidesToScroll: 1,
-          infinite: true,
+          infinite: highlightData?.artworks?.length > 1,
           dots: true,
         },
       },
       {
         breakpoint: 768,
         settings: {
-          slidesToShow: 2,
+          slidesToShow: highlightData?.artworks?.length === 1 ? 1 : 2,
           slidesToScroll: 1,
-          infinite: true,
+          infinite: highlightData?.artworks?.length > 1,
           dots: true,
         },
       },
@@ -55,7 +56,7 @@ const CommonCardData = ({ heading, highlightData }: HandleLikeClickParams) => {
         settings: {
           slidesToShow: 1,
           slidesToScroll: 1,
-          infinite: true,
+          infinite: highlightData?.artworks?.length > 1,
           dots: true,
         },
       },
@@ -63,83 +64,163 @@ const CommonCardData = ({ heading, highlightData }: HandleLikeClickParams) => {
   };
 
   const navigate = useNavigate();
+
   const handleRedirectToDescription = (id) => {
     navigate(`/discover_more?id=${id}`);
     window.scroll(0, 0);
   };
-  const handleLikeClick = () => {
-    setIsLiked(!isLiked);
+
+  const handleLikeClick = (index: number) => {
+    setLikes((prevLikes) => ({
+      ...prevLikes,
+      [index]: !prevLikes[index],
+    }));
   };
-  return (
-    <>
-      <div className="my-10">
-        <h1 className="text-[30px] font-semibold mb-5 w-52 sm:w-full">
-          {heading}
-        </h1>
-        <Slider {...settings}>
-          {highlightData &&
-            highlightData?.artworks?.length > 0 &&
-            highlightData?.artworks?.map((item, index) => (
-              <div
-                key={index}
-                className="sm:px-3 px-0 border-none outline-none relative"
+
+  const renderContent =
+    highlightData?.artworks?.length === 1 ? (
+      <div
+        key={0}
+        className="sm:px-3 px-0 border-none outline-none relative  lg:w-[30vw] xl:w-[20vw] md:w-[30vw] sm:w-[50vw]"
+      >
+        <div className="relative">
+          <img
+            src={`${highlightData?.url}/users/${highlightData?.artworks[0]?.media?.mainImage}`}
+            alt="image"
+            className="lg:w-[35vw] md:w-[35vw]  object-cover h-[40vh]"
+            onClick={() =>
+              handleRedirectToDescription(highlightData?.artworks[0]?._id)
+            }
+          />
+          <button
+            onClick={() => handleLikeClick(0)}
+            className={`absolute top-2 right-2 border rounded-full px-3 py-3 cursor-pointer
+                  ${likes[0] ? "bg-[#FFD9DE]" : "bg-white"} transition-all`}
+          >
+            <img
+              src={like}
+              alt="like"
+              className={`w-[20px] h-[20px] ${
+                likes[0] ? "filter brightness-0 saturate-100" : ""
+              }`}
+            />
+          </button>
+        </div>
+        <div className="mt-3">
+          {/* Artwork Style */}
+          <p className="text-[14px] text-[#696868] mb-1">
+            {Array.isArray(
+              highlightData?.artworks[0]?.additionalInfo?.artworkStyle
+            ) &&
+              highlightData?.artworks[0]?.additionalInfo?.artworkStyle.map(
+                (iw, i) => (
+                  <span key={i}>
+                    {iw}
+                    {i <
+                      highlightData?.artworks[0]?.additionalInfo?.artworkStyle
+                        .length -
+                        1 && ", "}
+                  </span>
+                )
+              )}
+          </p>
+
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-1">
+            <h1 className="font-bold text-[16px] sm:text-[20px] text-[#333333] sm:w-[70%] w-full line-clamp-2">
+              {highlightData?.artworks[0]?.artworkName}
+            </h1>
+
+            <div className="mt-2 sm:mt-0">
+              <p className="text-[12px] sm:text-[14px] text-[#696868]">
+                {highlightData?.artworks[0]?.additionalInfo?.length || null}x
+                {highlightData?.artworks[0]?.additionalInfo?.width || null}
+              </p>
+            </div>
+          </div>
+
+          <p className="text-[12px] sm:text-[14px] text-[#696868] mb-1">
+            {highlightData?.data?.owner?.artistName +
+              " " +
+              highlightData?.data?.owner?.artistSurname1}
+          </p>
+
+          <p className="text-[14px] font-bold text-[#333333]">
+            {highlightData?.artworks[0]?.pricing?.currency +
+              " " +
+              highlightData?.artworks[0]?.pricing?.basePrice}
+          </p>
+        </div>
+      </div>
+    ) : (
+      <Slider {...settings}>
+        {highlightData?.artworks?.map((item, index) => (
+          <div
+            key={index}
+            className="sm:px-3 px-0 border-none outline-none relative"
+          >
+            <div className="relative">
+              <img
+                src={`${highlightData?.url}/users/${item?.media?.mainImage}`}
+                alt="image"
+                className="w-full object-cover h-[40vh] cursor-pointer"
+                onClick={() => handleRedirectToDescription(item?._id)}
+              />
+              <button
+                onClick={() => handleLikeClick(index)}
+                className={`absolute top-2 right-2 border rounded-full px-3 py-3 cursor-pointer
+                  ${likes[index] ? "bg-[#FFD9DE]" : "bg-white"} transition-all`}
               >
                 <img
-                  src={`${highlightData?.url}/users/${item.media?.mainImage}`}
-                  alt="image"
-                  className="w-[35vw] object-cover h-[40vh]"
-                  onClick={() => handleRedirectToDescription(item?._id)}
+                  src={like}
+                  alt="like"
+                  className={`w-[20px] h-[20px] ${
+                    likes[index] ? "filter brightness-0 saturate-100" : ""
+                  }`}
                 />
-                <button
-                  onClick={handleLikeClick}
-                  className={`absolute top-2 right-[28px] border rounded-full px-3 py-3 cursor-pointer
-        ${isLiked ? "bg-[#FFD9DE]" : "bg-white"} transition-all`}
-                >
-                  <img
-                    src={like}
-                    alt="like"
-                    className={`w-[20px] h-[20px] ${
-                      isLiked ? "filter brightness-0 saturate-100" : ""
-                    }`}
-                  />
-                </button>
-                <div className="mt-3">
-                  <p className="text-[14px] text-[#696868]">
-                    {Array.isArray(item?.additionalInfo?.artworkStyle) &&
-                      item?.additionalInfo?.artworkStyle.map((iw, i) => (
-                        <span className="" key={i}>
-                          {iw}
-                          {i < item.additionalInfo.artworkStyle.length - 1 &&
-                            ", "}
-                        </span>
-                      ))}
-                  </p>
-                  <div className="flex justify-between items-center">
-                    <h1 className="font-bold text-[20px] text-[#333333] xl:w-[80%] lg:w-[70%] w-[80%] line-clamp-2">
-                      {item.artworkName}
-                    </h1>
-                    <div>
-                      <p className="text-[14px] text-[#696868]">
-                        {item?.additionalInfo?.length ||
-                          null + "x" + item?.additionalInfo?.width ||
-                          null}
-                      </p>
-                    </div>
-                  </div>
-                  <p className="text-[14px] text-[#696868]">
-                    {highlightData?.data?.owner?.artistName +
-                      " " +
-                      highlightData?.data?.owner?.artistSurname1}
-                  </p>
-                  <p className="text-[14px] font-bold">
-                    {"$ " + item?.pricing?.basePrice}
-                  </p>
-                </div>
+              </button>
+            </div>
+            <div className="mt-3">
+              <p className="text-[14px] text-[#696868]">
+                {Array.isArray(item?.additionalInfo?.artworkStyle) &&
+                  item?.additionalInfo?.artworkStyle.map((iw, i) => (
+                    <span key={i}>
+                      {iw}
+                      {i < item?.additionalInfo?.artworkStyle.length - 1 &&
+                        ", "}
+                    </span>
+                  ))}
+              </p>
+              <div className="flex flex-col sm:flex-row sm:justify-between justify-center sm:items-center gap-2">
+                <h1 className="font-bold text-[16px] sm:text-[20px] text-[#333333] sm:w-[70%] w-full line-clamp-2">
+                  {item?.artworkName}
+                </h1>
+                <p className="text-[12px] sm:text-[14px] text-[#696868] sm:w-auto w-full">
+                  {item?.additionalInfo?.length || null}x
+                  {item?.additionalInfo?.width || null}
+                </p>
               </div>
-            ))}
-        </Slider>
-      </div>
-    </>
+
+              <p className="text-[14px] text-[#696868]">
+                {highlightData?.data?.owner?.artistName +
+                  " " +
+                  highlightData?.data?.owner?.artistSurname1}
+              </p>
+              <p className="text-[14px] font-bold">
+                {item?.pricing?.currency + " " + item?.pricing?.basePrice}
+              </p>
+            </div>
+          </div>
+        ))}
+      </Slider>
+    );
+
+  return (
+    <div className="my-10">
+      <h1 className="text-[30px] font-semibold mb-5 w-52 sm:w-full">
+        {heading}
+      </h1>
+      {renderContent}
+    </div>
   );
 };
 

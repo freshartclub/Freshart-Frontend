@@ -6,6 +6,8 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import like from "../../assets/like.png";
 import { useGetRecentArtwork } from "./http/getRecentArtwork";
+import postRecentArtworkMutation from "./http/postRecentView";
+import { useNavigate } from "react-router-dom";
 
 const recentData = [
   {
@@ -79,7 +81,16 @@ const RecentSection = () => {
   };
 
   const { data, isLoading } = useGetRecentArtwork();
-  console.log(data);
+  console.log("this is from recent artwork", data);
+
+  // const { mutate, isPending } = postRecentArtworkMutation();
+  const navigate = useNavigate();
+  const handleRedirectToDescription = (id) => {
+    console.log("gvdsfkma", id);
+    // mutate(id);
+    navigate(`/discover_more?id=${id}`);
+    window.scroll(0, 0);
+  };
 
   return (
     <div className="bg-[#F5F2EB] py-24 mt-16">
@@ -92,19 +103,18 @@ const RecentSection = () => {
           data?.data?.map((item, index) => (
             <div
               key={index}
-              className="sm:px-3 px-0 border-none outline-none w-[20rem] cursor-pointer"
+              className="sm:px-3 px-0 z-50 border-none outline-none w-[20rem] cursor-pointer relative"
+              onClick={() => handleRedirectToDescription(item?._id)}
             >
-              <div className="relative">
-                <img
-                  src={`${data.url}/users/${item.media.mainImage}`}
-                  alt="image"
-                  className="w-[20rem] h-[50vh] object-cover"
-                />
+              <img
+                src={`${data.url}/users/${item.media.mainImage}`}
+                alt="image"
+                className="w-[20rem] h-[50vh] object-cover"
+              />
 
-                <span className="absolute border top-0 right-0 border-[#FFD9DE] rounded-full px-3 py-3 bg-white cursor-pointer">
-                  <img src={like} alt="like" className="w-[20px] h-[20px]" />
-                </span>
-              </div>
+              <span className="absolute border top-0 right-0 border-[#FFD9DE] rounded-full px-3 py-3 bg-white cursor-pointer">
+                <img src={like} alt="like" className="w-[20px] h-[20px]" />
+              </span>
 
               <div className="mt-3">
                 <p className="text-[14px] text-[#696868]">

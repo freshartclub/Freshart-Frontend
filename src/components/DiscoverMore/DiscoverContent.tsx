@@ -120,7 +120,7 @@ const DiscoverContent = ({ data }: any) => {
         variant={{ size: "xl", theme: "dark", weight: "semiBold" }}
         className="lg:my-4 my-2"
       >
-        {`$ ${data?.pricing?.basePrice}`}
+        {`${data?.pricing?.currency} ${data?.pricing?.basePrice}`}
       </Header>
 
       <div className="flex md:flex-row flex-col xl:gap-10 gap-2">

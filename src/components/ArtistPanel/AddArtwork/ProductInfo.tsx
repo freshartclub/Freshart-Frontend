@@ -277,8 +277,8 @@ const ProductInfo = ({ data }: any) => {
         </TabList>
 
         <TabPanel>
-          <div className="flex gap-8 justify-between my-10">
-            <div className="w-[65%] ">
+          <div className="flex flex-col lg:flex-row gap-8 justify-between my-10">
+            <div className="lg:w-[65%] w-full">
               <P
                 variant={{ size: "xl", theme: "dark", weight: "medium" }}
                 className=""
@@ -293,9 +293,10 @@ const ProductInfo = ({ data }: any) => {
               </Header>
             </div>
 
-            <div className="w-[25%]">
-              <div className="flex items-center gap-5 my-5">
-                <img src={delivery} alt="" />
+            <div className="lg:w-[25%] w-full">
+              {/* Delivery Information */}
+              <div className="flex items-start gap-5 my-5">
+                <img src={delivery} alt="" className="w-8 h-8" />
                 <div>
                   <P
                     variant={{ size: "base", weight: "medium", theme: "dark" }}
@@ -311,8 +312,9 @@ const ProductInfo = ({ data }: any) => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-5 my-5">
-                <img src={secure} alt="" />
+              {/* Secure Payment Information */}
+              <div className="flex items-start gap-5 my-5">
+                <img src={secure} alt="" className="w-8 h-8" />
                 <div>
                   <P
                     variant={{ size: "base", weight: "medium", theme: "dark" }}
@@ -328,8 +330,9 @@ const ProductInfo = ({ data }: any) => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-5 my-5">
-                <img src={print} alt="" />
+              {/* Premium Paper Information */}
+              <div className="flex items-start gap-5 my-5">
+                <img src={print} alt="" className="w-8 h-8" />
                 <div>
                   <P
                     variant={{ size: "base", weight: "medium", theme: "dark" }}
@@ -345,8 +348,9 @@ const ProductInfo = ({ data }: any) => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-5 my-5">
-                <img src={return1} alt="" />
+              {/* Return Information */}
+              <div className="flex items-start gap-5 my-5">
+                <img src={return1} alt="" className="w-8 h-8" />
                 <div>
                   <P
                     variant={{ size: "base", weight: "medium", theme: "dark" }}
@@ -366,10 +370,12 @@ const ProductInfo = ({ data }: any) => {
         </TabPanel>
 
         <TabPanel>
-          <div className="flex gap-10 justify-between w-full my-10">
-            <div className="w-[32%]">
+          {/* Flex container for the three columns */}
+          <div className="flex flex-col lg:flex-row gap-10 justify-between w-full my-10">
+            {/* Overview Data Column */}
+            <div className="lg:w-[32%] w-full">
               {overview_date.map((item, index) => (
-                <div key={index} className="flex">
+                <div key={index} className="flex ">
                   <P
                     variant={{ size: "small", theme: "dark", weight: "medium" }}
                     className="w-48 my-1"
@@ -386,9 +392,10 @@ const ProductInfo = ({ data }: any) => {
               ))}
             </div>
 
-            <div className="w-[32%] ">
+            {/* Artwork Details Column */}
+            <div className="lg:w-[32%] w-full">
               {artwork_detail.map((item, index) => (
-                <div key={index} className=" flex items-center">
+                <div key={index} className="flex  items-center">
                   <Header
                     variant={{ size: "small", theme: "dark", weight: "medium" }}
                     className="w-48 my-1"
@@ -396,11 +403,8 @@ const ProductInfo = ({ data }: any) => {
                     {item.heading}
                   </Header>
                   <P
-                    variant={{
-                      size: "small",
-                      weight: "medium",
-                    }}
-                    className=" text-[#999999]"
+                    variant={{ size: "small", weight: "medium" }}
+                    className="text-[#999999]"
                   >
                     {item.description}
                   </P>
@@ -408,9 +412,10 @@ const ProductInfo = ({ data }: any) => {
               ))}
             </div>
 
-            <div className="w-[32%] ">
+            {/* Highlight Data Column */}
+            <div className="lg:w-[32%] w-full">
               {highlight_data.map((item, index) => (
-                <div key={index} className=" flex items-center">
+                <div key={index} className="flex  items-center">
                   <Header
                     variant={{ size: "small", theme: "dark", weight: "medium" }}
                     className="w-48 my-1"
@@ -418,11 +423,8 @@ const ProductInfo = ({ data }: any) => {
                     {item.heading}
                   </Header>
                   <P
-                    variant={{
-                      size: "small",
-                      weight: "medium",
-                    }}
-                    className=" text-[#999999] capitalize"
+                    variant={{ size: "small", weight: "medium" }}
+                    className="text-[#999999] capitalize"
                   >
                     {item.description}
                   </P>
@@ -431,57 +433,35 @@ const ProductInfo = ({ data }: any) => {
             </div>
           </div>
 
-          <div>
-            <div className="flex flex-col ">
-              <h1
-                variant={{ size: "small", theme: "dark" }}
-                className="w-48 my-1 font-semibold "
-              >
-                Hanging Description :
-              </h1>
-              <h1>{data?.data?.additionalInfo?.hangingDescription}</h1>
-            </div>
-            <div className="flex  mt-3 flex-col">
-              <h1
-                variant={{ size: "small", theme: "dark" }}
-                className="w-48 my-1 font-semibold"
-              >
-                Framed Description :
-              </h1>
-              <h1>{data?.data?.additionalInfo?.framedDescription}</h1>
-            </div>
+          <div className="flex flex-col my-5">
+            <h1
+              variant={{ size: "small", theme: "dark" }}
+              className="font-semibold"
+            >
+              Hanging Description:
+            </h1>
+            <h1>{data?.data?.additionalInfo?.hangingDescription}</h1>
+          </div>
+
+          {/* Framed Description Section */}
+          <div className="flex flex-col my-5">
+            <h1
+              variant={{ size: "small", theme: "dark" }}
+              className="font-semibold"
+            >
+              Framed Description:
+            </h1>
+            <h1>{data?.data?.additionalInfo?.framedDescription}</h1>
           </div>
         </TabPanel>
 
         <TabPanel>
-          <div className="flex gap-10 justify-between w-full mb-10">
-            <div className="w-[32%] mt-8">
+          <div className="flex flex-col lg:flex-row gap-10 justify-between w-full mb-10">
+            <div className="lg:w-[32%] w-full mt-8">
+              {/* Conditional rendering based on activeTab */}
               {data?.data?.commercialization?.activeTab === "purchase"
                 ? purchaseData.map((item, index) => (
-                    <div key={index} className=" flex items-center">
-                      <Header
-                        variant={{
-                          size: "small",
-                          theme: "dark",
-                          weight: "medium",
-                        }}
-                        className="w-48 my-1 "
-                      >
-                        {item.heading}
-                      </Header>
-                      <P
-                        variant={{
-                          size: "small",
-                          weight: "medium",
-                        }}
-                        className=" text-[#999999] capitalize"
-                      >
-                        {item.description}
-                      </P>
-                    </div>
-                  ))
-                : subscriptionData.map((item, index) => (
-                    <div key={index} className=" flex items-center">
+                    <div key={index} className="flex items-center ">
                       <Header
                         variant={{
                           size: "small",
@@ -497,7 +477,30 @@ const ProductInfo = ({ data }: any) => {
                           size: "small",
                           weight: "medium",
                         }}
-                        className=" text-[#999999]"
+                        className="text-[#999999] capitalize"
+                      >
+                        {item.description}
+                      </P>
+                    </div>
+                  ))
+                : subscriptionData.map((item, index) => (
+                    <div key={index} className="flex items-center mb-5">
+                      <Header
+                        variant={{
+                          size: "small",
+                          theme: "dark",
+                          weight: "medium",
+                        }}
+                        className="w-48 my-1"
+                      >
+                        {item.heading}
+                      </Header>
+                      <P
+                        variant={{
+                          size: "small",
+                          weight: "medium",
+                        }}
+                        className="text-[#999999]"
                       >
                         {item.description}
                       </P>
@@ -509,12 +512,13 @@ const ProductInfo = ({ data }: any) => {
 
         <TabPanel>
           <div className="flex gap-10 justify-between w-full mb-10">
-            <div className="w-[32%] mt-8">
+            <div className="lg:w-[32%] w-full mt-8">
+              {/* Iterate through Pricing_data */}
               {Pricing_data.map((item, index) => (
-                <div key={index} className=" flex items-center gap-2">
+                <div key={index} className="flex items-center gap-2 ">
                   <Header
                     variant={{ size: "small", theme: "dark", weight: "medium" }}
-                    className="w-48 my-1 "
+                    className="lg:w-48 my-1"
                   >
                     {item.heading}
                   </Header>
@@ -523,7 +527,7 @@ const ProductInfo = ({ data }: any) => {
                       size: "small",
                       weight: "medium",
                     }}
-                    className=" text-[#999999]"
+                    className="text-[#999999]"
                   >
                     {item.description}
                   </P>
@@ -532,14 +536,16 @@ const ProductInfo = ({ data }: any) => {
             </div>
           </div>
         </TabPanel>
+
         <TabPanel>
-          <div className="flex gap-10 justify-between w-full mb-10">
-            <div className="w-[32%] mt-8">
+          <div className="flex flex-wrap gap-10 justify-between w-full mb-10">
+            <div className="lg:w-[32%] w-full mt-8">
+              {/* Iterate through shipping_data */}
               {shipping_data.map((item, index) => (
-                <div key={index} className="flex items-center">
+                <div key={index} className="flex items-center  gap-3">
                   <Header
                     variant={{ size: "small", theme: "dark", weight: "medium" }}
-                    className="w-48 my-1"
+                    className="lg:w-48 my-1"
                   >
                     {item.heading}
                   </Header>
@@ -548,7 +554,7 @@ const ProductInfo = ({ data }: any) => {
                       size: "small",
                       weight: "medium",
                     }}
-                    className=" text-[#999999]"
+                    className="text-[#999999]"
                   >
                     {item.description}
                   </P>
@@ -557,11 +563,12 @@ const ProductInfo = ({ data }: any) => {
             </div>
           </div>
         </TabPanel>
+
         <TabPanel>
-          <div className="flex gap-10 justify-between w-full mb-10">
-            <div className="w-[32%] mt-8">
+          <div className="flex flex-wrap gap-10 justify-between w-full mb-10">
+            <div className="mt-8 w-full sm:w-1/2 lg:w-1/3">
               {moreInfo_data.map((item, index) => (
-                <div key={index} className=" flex items-center">
+                <div key={index} className="flex items-start ">
                   <Header
                     variant={{ size: "small", theme: "dark", weight: "medium" }}
                     className="w-48 my-1"
@@ -573,7 +580,7 @@ const ProductInfo = ({ data }: any) => {
                       size: "small",
                       weight: "medium",
                     }}
-                    className=" text-[#999999]"
+                    className="text-[#999999] flex-1"
                   >
                     {item.description}
                   </P>

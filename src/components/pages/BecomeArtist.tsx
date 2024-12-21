@@ -64,6 +64,7 @@ const BecomeArtist = () => {
   const [validateotp, setValidateotp] = useState("Validate Otp");
   const [filterStyle, setFilterStyle] = useState(null);
   const [validateError, setValidateError] = useState("");
+  const [geoLocation, setGeoLocation] = useState(null);
 
   const [otpSent, setOtpSent] = useState(false);
 
@@ -140,6 +141,25 @@ const BecomeArtist = () => {
       );
     }
   }, [user]);
+
+  // useEffect(() => {
+  //   watch("phone");
+  //   watch("email");
+  //   if (!errors.email) {
+  //     setEmail(getValues("email"));
+  //   }
+  //   const getGeoLocation = async () => {
+  //     const request = await fetch("https://ipapi.co/json");
+  //     const jsonResponse = await request.json();
+  //     setGeoLocation(jsonResponse);
+  //   };
+  //   getGeoLocation();
+  // }, []);
+  // useEffect(() => {
+  //   setValue("city", geoLocation?.city);
+  //   setValue("region", geoLocation?.region);
+  //   setCountryCode(geoLocation?.country);
+  // }, [geoLocation]);
 
   useEffect(() => {
     if (watchDicipline) {
