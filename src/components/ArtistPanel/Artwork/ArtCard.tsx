@@ -9,13 +9,13 @@ const ArtCard = ({ record, data }: any) => {
         className={`bg-white rounded-lg pb-5 border-b-4  ${
           record?.status === "published"
             ? "border-[#00DE00]"
-            : record?.status === "pending"
-            ? "border-[#D8F002]"
-            : record?.status === "draft"
+            : record?.status === "purchased"
             ? "border-[#696868]"
             : record.status === "notAvailable"
             ? "border-[#e53a3a]"
-            : "border-[#D8F002]"
+            : record?.status === "draft"
+            ? "border-[#f0dd32]"
+            : ""
         }`}
       >
         <div className="flex justify-center relative overflow-hidden bg-cover bg-no-repeat">

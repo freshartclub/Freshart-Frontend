@@ -177,9 +177,6 @@ const AddArtwork = () => {
   const { mutate: seriesDelete, isPending: isSeriesPendingDelete } =
     useDeleteSeriesMutation();
 
-  const { data: artworkStyleList, isLoading: artworkStyleloading } =
-    useGetArtWorkStyle();
-
   const {
     data: seriesData,
     isLoading: seriesLoading,
@@ -687,13 +684,12 @@ const AddArtwork = () => {
 
   const onSubmit = handleSubmit(async (values: any) => {
     console.log("onSubmit", values);
-
     if (
-      values.basePrice === basePriceError &&
-      values.packageDepth === packageDepthError &&
-      values.packageHeight === packageHeightError &&
-      values.packageWidth === packageWidthError &&
-      values.packageWeight === packageWeightError
+      String(values.basePrice) < String(basePriceError) &&
+      parseInt(values.packageLength) < packageDepthError &&
+      String(values.packageHeight) < String(packageHeightError) &&
+      parseInt(values.packageWidth) < packageWidthError &&
+      String(values.packageWeight) < String(packageWeightError)
     ) {
       values.mainImage = newImage;
       values.backImage = newBackImage;
@@ -747,6 +743,7 @@ const AddArtwork = () => {
 
       mutate(newData);
     } else {
+      console.log("Base price or package dimensions check failed");
       return toast("Please Check Base Price & Package Dimesions Values");
     }
   });
@@ -1115,7 +1112,9 @@ const AddArtwork = () => {
                                   onClick={() => handleRemoveSeries(option)}
                                   className="cursor-pointer  bg-black px-2 rounded-md text-white"
                                 >
-                                  Delete
+                                  {isSeriesPendingDelete
+                                    ? "Deleting.."
+                                    : "Delete"}
                                 </span>
                               </div>
                             ))}

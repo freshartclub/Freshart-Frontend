@@ -10,10 +10,12 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css"; // Swiper default styles
 import "swiper/css/navigation"; // If you're using navigation controls
 import "swiper/css/pagination"; // If you're using pagination
+import { useAppSelector } from "../../store/typedReduxHooks";
 
 const Artwork = () => {
   const [loading, setLoading] = useState(true);
   const [selectedArtwork, setSelectedArtwork] = useState("series");
+  const isArtProvider = useAppSelector((state) => state.user.isArtProvider);
 
   const { data, isLoading, refetch, isRefetching } =
     useGetArtWorkList(selectedArtwork);
@@ -76,18 +78,22 @@ const Artwork = () => {
         >
           Series
         </span>
+
         <span
           onClick={handleArtworkSelect}
           className="px-2 py-2 bg-white font-medium rounded cursor-pointer text-md"
         >
           Discipline
         </span>
-        <span
-          onClick={handleArtworkSelect}
-          className="px-2 py-2 bg-white font-medium rounded cursor-pointer text-md"
-        >
-          Artist Name
-        </span>
+
+        {isArtProvider === "Yes" ? (
+          <span
+            onClick={handleArtworkSelect}
+            className="px-2 py-2 bg-white font-medium rounded cursor-pointer text-md"
+          >
+            Artist Name
+          </span>
+        ) : null}
 
         <div className="flex gap-2 flex-wrap justify-end pt-2">
           <div className="flex gap-2 items-center">
