@@ -252,7 +252,7 @@ const RegistrationProcess = () => {
                           htmlFor="country"
                           className="block mb-2 text-sm font-semibold text-gray-700 text-left"
                         >
-                          Country
+                          Country *
                         </label>
                         <CustomDropdown
                           control={control}
@@ -272,7 +272,7 @@ const RegistrationProcess = () => {
                           htmlFor="zipCode"
                           className="block mb-2 text-sm font-semibold text-gray-700 text-left"
                         >
-                          Zipcode
+                          Zipcode *
                         </label>
                         <input
                           {...register("zipCode")}
