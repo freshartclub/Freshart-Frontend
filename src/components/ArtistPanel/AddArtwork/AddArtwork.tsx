@@ -46,6 +46,7 @@ import html2canvas from "html2canvas";
 import { AiOutlineClose } from "react-icons/ai";
 import useDeleteSeriesMutation from "./http/useDeleteSeries";
 import toast from "react-hot-toast";
+import { useAppSelector } from "../../../store/typedReduxHooks";
 
 const AddArtwork = () => {
   const [progress, setProgress] = useState(0);
@@ -155,6 +156,7 @@ const AddArtwork = () => {
 
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [action, setAction] = useState("");
+  //  const isArtProvider = useAppSelector((state) => state.user.isArtProvider);
 
   const closePopup = () => {
     setIsPopupOpen(false);
@@ -168,7 +170,7 @@ const AddArtwork = () => {
   const { data: userData, isLoading: userIsLoading } = useGetArtistDetails();
   const userID = userData?.data?.artist?._id;
   const vatAmount = userData?.data?.artist?.invoice?.vatAmount;
-  const isArtProvider = userData?.data?.artist?.commercilization?.artProvider;
+  const isArtProvider = useAppSelector((state) => state.user.isArtProvider);
 
   const { data: technicData, isLoading: technicLoading } = useGetTechnic();
 
@@ -985,7 +987,7 @@ const AddArtwork = () => {
                   ) : null}
                 </div>
 
-                {getValues("isArtProvider") === "Yes" ? (
+                {isArtProvider === "Yes" ? (
                   <div className="mb-4">
                     <label className="block text-sm sm:text-base text-[#203F58] font-semibold mb-2">
                       {t("Art Provider")}
@@ -1004,11 +1006,11 @@ const AddArtwork = () => {
                       <option value="yes">Yes</option>
                       <option value="no">No</option>
                     </select>
-                    {touched.isArtProvider && errors.provideArtistName ? (
+                    {/* {touched.isArtProvider && errors.provideArtistName ? (
                       <div className="error text-red-500 mt-1 text-sm">
                         {errors.isArtProvider}
                       </div>
-                    ) : null}
+                    ) : null} */}
                   </div>
                 ) : null}
 

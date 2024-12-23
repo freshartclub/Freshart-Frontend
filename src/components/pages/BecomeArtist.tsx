@@ -114,7 +114,7 @@ const BecomeArtist = () => {
     return item.disciplineName;
   });
 
-  const watchEmail = watch("email");
+  const watchEmail = "email";
   const watchDicipline = watch("discipline");
 
   const GetOutSocialMedia = socialMediaPicklist?.data?.filter(
@@ -128,7 +128,7 @@ const BecomeArtist = () => {
       setValue("artistName", user?.artistName);
       setValue("artistSurname1", user?.artistSurname1);
       setValue("artistSurname2", user?.artistSurname2);
-      // setValue("email", user?.email);
+      setValue("email", user?.email);
       setValue("phone", user?.phone);
       setValue("zipCode", user?.address?.zipCode);
       setValue("city", user?.address?.city);
@@ -273,7 +273,7 @@ const BecomeArtist = () => {
       return toast("Please Verify Otp");
     }
 
-    if (email !== watchEmail) {
+    if (email !== watchEmail || getValues("email")) {
       setValidateEmail("Verify Email");
       setValidateotp("Validate Otp");
       setIsOtpVerify(false);
