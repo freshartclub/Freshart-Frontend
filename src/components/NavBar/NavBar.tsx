@@ -20,6 +20,7 @@ import { useGetPicklist } from "./http/getPickList";
 import { useGetCartItems } from "../pages/http/useGetCartItems";
 import useClickOutside from "../utils/useClickOutside";
 import { FaUserCircle } from "react-icons/fa";
+import { useGetArtistDetails } from "../UserProfile/http/useGetDetails";
 
 const mobile_links = [
   { path: "/", label: "Home" },
@@ -48,11 +49,15 @@ const NavBar = () => {
 
   const { data: cartItem, isLoading: cartLoading } = useGetCartItems();
 
-  const { data: disciplineData, isLoading } = useGetDiscipline();
+  const { data: disciplineData, isLoading: artistLoading } = useGetDiscipline();
 
   const selectSeriesPicklist = seriesPickList?.data?.filter(
     (item) => item?.picklistName === "Series"
   );
+
+  const { data: artistData, isLoading } = useGetArtistDetails();
+
+  useEffect(() => {}, [artistData]);
 
   const isArtist = useAppSelector((state) => state?.user?.isArtist) || null;
   const user = useAppSelector((state) => state.user.user);

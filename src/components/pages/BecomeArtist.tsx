@@ -122,7 +122,6 @@ const BecomeArtist = () => {
   );
 
   const user = useAppSelector((state) => state.user.user);
-  console.log(user);
 
   useEffect(() => {
     if (user) {
@@ -140,7 +139,7 @@ const BecomeArtist = () => {
         user?.isEmailVerified ? "Email Verified" : "Verify Email"
       );
     }
-  }, [user]);
+  }, []);
 
   // useEffect(() => {
   //   watch("phone");
@@ -216,8 +215,6 @@ const BecomeArtist = () => {
     });
   };
 
-  console.log(email);
-
   const handleRevalidatePhone = async () => {
     const result = await trigger("phone");
 
@@ -233,7 +230,7 @@ const BecomeArtist = () => {
     verifyPhoneOtp(data).then(() => {
       setOtpSent(true);
       setValidatePhone("Verified");
-
+      setIsOtpVerify(true);
       setIsModalOpenPhone(false);
       setVerificationCode("");
     });
