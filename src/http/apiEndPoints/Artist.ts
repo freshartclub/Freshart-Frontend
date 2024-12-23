@@ -21,6 +21,7 @@ export const ARTTIST_ENDPOINTS = {
   SetDefaultAddress: `${ARTIST_BASE_URl}/set-default-address`,
   RemoveBillingAddress: `${ARTIST_BASE_URl}/remove-billing-address`,
   UpdateBillingAddress: `${ARTIST_BASE_URl}/update-billing-address`,
+  PatchRevalidation: `${ARTIST_BASE_URl}/revalidate-profile`,
 
   // GetArtistArtwork: `${ARTIST_BASE_URl}/get-artist-artwork `,
   // DeleteArtwork: `${ARTIST_BASE_URl}/delete-artist-artwork `,

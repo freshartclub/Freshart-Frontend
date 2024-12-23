@@ -453,7 +453,7 @@ const AddArtwork = () => {
       );
       setValue(
         "comingSoon",
-        data?.data?.inventoryShipping?.comingSoon || false
+        data?.data?.inventoryShipping?.comingSoon || Boolean
       );
     }
   }, [id, data, inProcessImage, setInitialValues, seriesData]);
@@ -1113,7 +1113,7 @@ const AddArtwork = () => {
                                   className="cursor-pointer  bg-black px-2 rounded-md text-white"
                                 >
                                   {isSeriesPendingDelete
-                                    ? "Deleting.."
+                                    ? "Loading.."
                                     : "Delete"}
                                 </span>
                               </div>
@@ -2047,7 +2047,7 @@ const AddArtwork = () => {
                     >
                       <option value="">Select type</option>
                       <option>Square </option>
-                      <option>Rectengle</option>
+                      <option>Rectangle</option>
                       <option>Circle</option>
                       <option>Star</option>
                     </select>

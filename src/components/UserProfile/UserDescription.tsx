@@ -96,9 +96,9 @@ const UserDescription = ({ user }) => {
   const personal_info = [
     {
       title: "Name",
-      value:
-        `${user?.artistName} ${user?.artistSurname1} ${user?.artistSurname2}` ||
-        "N/A",
+      value: user?.artistName
+        ? `${user?.artistName} ${user?.artistSurname1} ${user?.artistSurname2}`
+        : "N/A",
     },
     {
       title: "Email",

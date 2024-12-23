@@ -91,8 +91,8 @@ const AdressPop = ({ setCheckBox, newData = {}, setUpdateData, addAdress }) => {
   }
 
   return (
-    <div className="relative flex justify-center items-center min-h-[50vh] z-[9999] ">
-      <div className="absolute lg:top-[-100%] lg:left-[25%] bottom-0 left-0 w-full sm:w-[200%] lg:w-[100%] xl:w-[90%] max-w-[600px]">
+    <div className="relative flex justify-center items-center min-h-[50vh] z-[99999] ">
+      <div className="absolute  lg:top-[-110%] lg:left-[25%] bottom-0 left-0 w-full sm:w-[200%] lg:w-[100%] xl:w-[90%] max-w-[600px]">
         <div className="shadow-xl my-10 ">
           <div className="rounded-md w-full bg-white border border-[#E6E6E6]">
             <div className="flex px-3 justify-between items-center py-4">

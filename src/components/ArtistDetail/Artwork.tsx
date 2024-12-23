@@ -56,8 +56,6 @@ const Artwork = () => {
     setIsPopupOpen(true); // Open the popup
   };
 
-  console.log("check loading", isLoading);
-
   if (isLoading) {
     return <Loader />;
   }

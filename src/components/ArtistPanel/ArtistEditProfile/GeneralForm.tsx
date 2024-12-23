@@ -33,10 +33,13 @@ import Dicipline from "./Dicipline";
 import Commercilization from "./Commercilization";
 import { RenderAllPicklists } from "../../utils/RenderAllPicklist";
 import SelectDateBtn from "../ArtistDashboard/SelectDateBtn";
+import useRevalidationMutation from "./http/useRevalidationMutation";
 
 const GeneralForm = ({ isActiveStatus }) => {
   const { data, isLoading, isFetching } = useGetArtistDetails();
   const { mutate, isPending } = useGetSaveArtistDetailsMutation();
+  const { mutate: revalidationMutation, isPending: revalidationPending } =
+    useRevalidationMutation();
   const [isEditInfo, setIsEditInfo] = useState(false);
   const [isManagerDetails, setManagerDetails] = useState(null);
   const [tags, setTags] = useState([]);
@@ -299,6 +302,14 @@ const GeneralForm = ({ isActiveStatus }) => {
     const newTags = tags.filter((_, i) => i !== index);
     setTags(newTags);
     setValue("externalTags", newTags);
+  };
+
+  const handleRevelidate = () => {
+    try {
+      revalidationMutation();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const countryValue = getValues("country");
@@ -896,7 +907,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                     Revalidation Information
                   </h2>
 
-                  <div className="flex justify-between pointer-events-none">
+                  <div className="flex justify-between items-center gap-5 pointer-events-none">
                     <div className="md:w-[48%] w-full relative">
                       <div className="flex items-center">
                         <input
@@ -944,6 +955,18 @@ const GeneralForm = ({ isActiveStatus }) => {
                         </div>
                       )}
                     </div>
+
+                    {new Date(getValues("nextRevalidationDate")) <=
+                    new Date() ? (
+                      <div className="md:w-[48%] w-full relative">
+                        <span
+                          onClick={handleRevelidate}
+                          className="border border-[#E6E6E6] bg-black text-white p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
+                        >
+                          {revalidationPending ? "Lodaing..." : "Revalidate"}
+                        </span>
+                      </div>
+                    ) : null}
                   </div>
 
                   <h2 className="text-md font-semibold mb-3 text-[#1A1C21]">

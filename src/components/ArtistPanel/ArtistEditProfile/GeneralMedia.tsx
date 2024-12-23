@@ -387,13 +387,17 @@ const GeneralMedia = ({ control, data, url, isActiveStatus }) => {
                 </div>
               ))}
           </div>
-          <img
-            src={image_icon}
-            className="w-28 h-28 bg-gray-200 rounded-md mb-4"
-          />
-          <p className="text-center text-xs md:text-base mt-4">
-            Click to add additional images
-          </p>
+          {getValues("additionalImage") || existingAdditionalImage ? null : (
+            <>
+              <img
+                src={image_icon}
+                className="w-28 h-28 bg-gray-200 rounded-md mb-4"
+              />
+              <p className="text-center text-xs md:text-base mt-4">
+                Click to add additional images
+              </p>
+            </>
+          )}
           <span
             className={`bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer flex items-center justify-center ${
               isActiveStatus !== "active" ? "pointer-events-none" : ""
@@ -410,7 +414,7 @@ const GeneralMedia = ({ control, data, url, isActiveStatus }) => {
             variant={{ size: "lg", weight: "semiBold" }}
             className="mb-4 text-[#203F58] mt-5"
           >
-            Vidoes
+            Videos
           </Header>
 
           <div className="grid lg:grid-cols-1 gap-4">
@@ -531,12 +535,13 @@ const GeneralMedia = ({ control, data, url, isActiveStatus }) => {
                     )
                   )}
               </div>
-              <img
-                src={video_icon}
-                className="w-28 h-28 bg-gray-200 rounded-md mb-4 align-content-center"
-              />
 
-              <p className="text-center mt-4">Click to add additional Vidoes</p>
+
+              {
+                existingAdditionalVideo || getValues("additionalVideo") ? null : <>
+                </>
+              }
+             
               <span
                 className={`bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer flex items-center justify-center ${
                   isActiveStatus !== "active" ? "pointer-events-none" : ""

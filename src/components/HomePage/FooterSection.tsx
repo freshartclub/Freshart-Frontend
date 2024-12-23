@@ -20,7 +20,7 @@ const FooterSection = () => {
 
   return (
     <>
-      <footer className="bg-[#102030] text-white pt-16 pb-6">
+      <footer className="bg-[#102030] text-white pt-16 pb-6 z-[5]">
         {/* {0 ? <h1>H111</h1> : null} */}
         <div className="container mx-auto px-6 lg:px-10">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">

@@ -115,9 +115,9 @@ const NavBar = () => {
     setIsModalOpen((Modalprev) => !Modalprev);
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  // if (loading) {
+  //   return <div>Loading...</div>;
+  // }
 
   return (
     <>
