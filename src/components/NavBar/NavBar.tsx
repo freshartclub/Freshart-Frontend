@@ -35,6 +35,7 @@ const NavBar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isProfileDropdown, setIsProfileDropdown] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   const url = "https://dev.freshartclub.com/images";
@@ -42,18 +43,27 @@ const NavBar = () => {
   const closePopup = useRef(null);
   const dropDownPopup = useRef(null);
 
-  const { data: seriesPickList } = useGetPicklist();
-  const { data: cartItem } = useGetCartItems();
-  const { data } = useGetDiscipline();
+  const { data: seriesPickList, isLoading: seriesPickListLoading } =
+    useGetPicklist();
 
-  const disciplineData = data?.data ? data?.data?.map((item) => item) : [];
+  const { data: cartItem, isLoading: cartLoading } = useGetCartItems();
+
+  const { data: disciplineData, isLoading } = useGetDiscipline();
+
   const selectSeriesPicklist = seriesPickList?.data?.filter(
     (item) => item?.picklistName === "Series"
   );
 
-  const isArtist = useAppSelector((state) => state?.user?.isArtist);
+  const isArtist = useAppSelector((state) => state?.user?.isArtist) || null;
   const user = useAppSelector((state) => state.user.user);
 
+  useEffect(() => {
+    if (isLoading || seriesPickListLoading || cartLoading) {
+      setLoading(true);
+    } else {
+      setLoading(false);
+    }
+  }, [isLoading, cartLoading, seriesPickListLoading]);
   const token = localStorage.getItem("auth_token");
   const isAuthorized = useAppSelector((state) => state.user.isAuthorized);
   const { mutate: logOut } = useLogOutMutation();
@@ -100,6 +110,10 @@ const NavBar = () => {
     setIsModalOpen((Modalprev) => !Modalprev);
   };
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <>
       <nav className="bg-[#102030] py-6 px-10">
@@ -143,19 +157,21 @@ const NavBar = () => {
                           <ul className="space-y-4 w-[10vw]">
                             <li className="uppercase font-bold">Discipline</li>
 
-                            {disciplineData?.map((item, i) => (
-                              <li
-                                key={i}
-                                onClick={() => setIsDropdownOpen(false)}
-                              >
-                                <Link
-                                  to={`${item.disciplineName}?option=subscription`}
-                                  className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500"
-                                >
-                                  {item?.disciplineName}
-                                </Link>
-                              </li>
-                            ))}
+                            {disciplineData && disciplineData.length > 0
+                              ? disciplineData?.map((item, i) => (
+                                  <li
+                                    key={i}
+                                    onClick={() => setIsDropdownOpen(false)}
+                                  >
+                                    <Link
+                                      to={`${item.disciplineName}?option=subscription`}
+                                      className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500"
+                                    >
+                                      {item?.disciplineName}
+                                    </Link>
+                                  </li>
+                                ))
+                              : null}
                           </ul>
 
                           <ul

@@ -32,7 +32,7 @@ const UploadImage = ({
         <img
           src={URL.createObjectURL(selectedFile)}
           alt="uploaded image"
-          className="w-[200px] h-[200px] cursor-pointer rounded-full"
+          className="w-[200px] h-[200px] cursor-pointer rounded-full object-cover"
           onClick={handleImageClick} // Click to re-trigger file selection
         />
       ) : (

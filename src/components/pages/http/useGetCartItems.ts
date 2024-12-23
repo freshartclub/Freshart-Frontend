@@ -8,9 +8,7 @@ export const useGetCartItems = () => {
   const isAuthorized = useAppSelector((state) => state.user.isAuthorized);
 
   let url = `${ARTTIST_ENDPOINTS.cartItems}`;
-  if (!isAuthorized) {
-    return [];
-  }
+
   async function fetchData() {
     const { data } = await axiosInstance.get(url);
     return data;

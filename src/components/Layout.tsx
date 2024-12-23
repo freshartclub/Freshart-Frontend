@@ -36,8 +36,6 @@ const Layout: React.FC<LayoutProps> = ({
     RoleBaseNavBar = NavBar;
   }
 
-  console.log(isAuthorized);
-
   return (
     <div>
       {isLoginPage || isSignUpPage || isForgetPassword ? (

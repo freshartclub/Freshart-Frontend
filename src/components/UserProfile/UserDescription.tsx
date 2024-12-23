@@ -102,19 +102,19 @@ const UserDescription = ({ user }) => {
     },
     {
       title: "Email",
-      value: `${user?.email}` || "N/A",
+      value: user?.email ? `${user?.email}` : "N/A",
     },
     {
       title: "Phone No",
-      value: `${user?.phone}` || "N/A",
+      value: user?.phone ? `${user?.phone}` : "N/A",
     },
     {
       title: "Counrty",
-      value: `${user?.address?.country}`,
+      value: user?.address?.country ? `${user?.address?.country}` : "N/A",
     },
     {
       title: "Language",
-      value: `${user?.language}` || "N/A",
+      value: user?.language ? `${user?.language}` : "N/A",
     },
   ];
 
