@@ -685,11 +685,11 @@ const AddArtwork = () => {
   const onSubmit = handleSubmit(async (values: any) => {
     console.log("onSubmit", values);
     if (
-      String(values.basePrice) < String(basePriceError) &&
+      parseInt(values.basePrice) < basePriceError &&
       parseInt(values.packageLength) < packageDepthError &&
-      String(values.packageHeight) < String(packageHeightError) &&
+      parseInt(values.packageHeight) < packageHeightError &&
       parseInt(values.packageWidth) < packageWidthError &&
-      String(values.packageWeight) < String(packageWeightError)
+      parseInt(values.packageWeight) < packageWeightError
     ) {
       values.mainImage = newImage;
       values.backImage = newBackImage;
