@@ -1114,9 +1114,7 @@ const AddArtwork = () => {
                                   onClick={() => handleRemoveSeries(option)}
                                   className="cursor-pointer  bg-black px-2 rounded-md text-white"
                                 >
-                                  {isSeriesPendingDelete
-                                    ? "Loading.."
-                                    : "Delete"}
+                                  Delete
                                 </span>
                               </div>
                             ))}

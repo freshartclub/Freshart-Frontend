@@ -65,6 +65,7 @@ const BecomeArtist = () => {
   const [filterStyle, setFilterStyle] = useState(null);
   const [validateError, setValidateError] = useState("");
   const [geoLocation, setGeoLocation] = useState(null);
+  const [isValidateEmail, setIsValidateEmail] = useState(false);
 
   const [otpSent, setOtpSent] = useState(false);
 
@@ -138,6 +139,7 @@ const BecomeArtist = () => {
       setValidateEmail(
         user?.isEmailVerified ? "Email Verified" : "Verify Email"
       );
+      setIsValidateEmail(user?.isEmailVerified ? true : false);
     }
   }, []);
 
@@ -250,6 +252,7 @@ const BecomeArtist = () => {
       setValidateEmail("Email Verified");
       setValidateotp("Validated");
       setVerificationCode("");
+      setIsValidateEmail(true);
     });
   };
 
@@ -259,7 +262,7 @@ const BecomeArtist = () => {
         email: emails,
         phone: phones,
       };
-      console.log(data);
+
       requestOtp(data).then(() => {
         setIsModalOpenPhone(true);
       });
@@ -273,14 +276,17 @@ const BecomeArtist = () => {
       return toast("Please Verify Otp");
     }
 
-    if (email !== watchEmail || getValues("email")) {
-      setValidateEmail("Verify Email");
-      setValidateotp("Validate Otp");
-      setIsOtpVerify(false);
-      return toast("Email Is Changed Re-Verify Please");
+    // if (email !== watchEmail || getValues("email")) {
+    //   setValidateEmail("Verify Email");
+    //   setValidateotp("Validate Otp");
+    //   setIsOtpVerify(false);
+    //   return toast("Email Is Changed Re-Verify Please");
+    // }
+
+    if (!otpSent || !isValidateEmail) {
+      return toast("Please Verify Email and Phone Number");
     }
 
-    console.log("onSumbit", data);
     const formData = new FormData();
 
     Object.keys(data).forEach((key) => {
@@ -301,13 +307,9 @@ const BecomeArtist = () => {
       }
     });
 
-    try {
-      await mutateAsync(formData).then(() => {
-        setPopUp(true);
-      });
-    } catch (error) {
-      console.error(error.message);
-    }
+    await mutateAsync(formData).then(() => {
+      setPopUp(true);
+    });
   });
 
   const handleCloseModel = () => {
