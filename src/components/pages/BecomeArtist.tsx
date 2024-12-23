@@ -192,6 +192,10 @@ const BecomeArtist = () => {
     }
   }, [country, zipCode]);
 
+  console.log(getValues("country"));
+  const countryLable = countryList().getData();
+  console.log(countryLable);
+
   useEffect(() => {
     watch("phone");
   }, []);
@@ -651,7 +655,7 @@ const BecomeArtist = () => {
                       })}
                       onChange={(val) => validateWebsite(val)}
                       className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
-                      placeholder="www.example.com"
+                      placeholder="http://www.example.com"
                     />
 
                     <span className="text-red-500 text-xs">

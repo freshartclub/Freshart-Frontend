@@ -47,6 +47,7 @@ import { AiOutlineClose } from "react-icons/ai";
 import useDeleteSeriesMutation from "./http/useDeleteSeries";
 import toast from "react-hot-toast";
 import { useAppSelector } from "../../../store/typedReduxHooks";
+import { useGetMediaSupport } from "./http/useGetMediaSupport";
 
 const AddArtwork = () => {
   const [progress, setProgress] = useState(0);
@@ -178,6 +179,9 @@ const AddArtwork = () => {
 
   const { mutate: seriesDelete, isPending: isSeriesPendingDelete } =
     useDeleteSeriesMutation();
+
+  const { data: getMediaSupport, isLoading: getMediaSupportLoding } =
+    useGetMediaSupport();
 
   const {
     data: seriesData,
@@ -480,7 +484,6 @@ const AddArtwork = () => {
 
   const handleAction = (actionType) => {
     setAction(actionType);
-    console.log(`User selected: ${actionType}`);
   };
 
   const handleGenerateQRCode = () => {
@@ -521,6 +524,16 @@ const AddArtwork = () => {
   const colors = picklistMap["Colors"];
   const availableTo = picklistMap["Artwork Available To"];
   const discountAcceptation = picklistMap["Artwork Discount Options"];
+
+  const disciplineValue = watch("discipline");
+
+  const getMaterial = getMediaSupport?.data?.filter(
+    (item) =>
+      item.discipline &&
+      item.discipline.some((newItem) =>
+        newItem.disciplineName.includes(artDicipline)
+      )
+  );
 
   const handleNavigate = () => {
     navigate("/artist-panel/artwork");
@@ -639,7 +652,7 @@ const AddArtwork = () => {
         setPackageDepthError(maxDepth ? maxDepth : null);
       }
     } else if (activeTab === "subscription") {
-      const subscriptionItem = seriesData?.purchaseCatalog?.find(
+      const subscriptionItem = seriesData?.subscriptionCatalog?.find(
         (item) => item?._id === getValues("subscriptionCatalog")
       );
 
@@ -653,25 +666,25 @@ const AddArtwork = () => {
         setPackageWidthError(maxWidth ? maxWidth : null);
         setPackageDepthError(maxDepth ? maxDepth : null);
 
-        if (maxHeight !== undefined && packageHeight >= maxHeight) {
-          setPackageHeightError(maxHeight);
-        }
+        // if (maxHeight !== undefined && packageHeight >= maxHeight) {
+        //   setPackageHeightError(maxHeight);
+        // }
 
-        if (maxWeight !== undefined && packageWeight >= maxWeight) {
-          setPackageWeightError(maxWeight);
-        }
+        // if (maxWeight !== undefined && packageWeight >= maxWeight) {
+        //   setPackageWeightError(maxWeight);
+        // }
 
-        if (maxWidth !== undefined && packageWidth >= maxWidth) {
-          setPackageWidthError(maxWidth);
-        }
+        // if (maxWidth !== undefined && packageWidth >= maxWidth) {
+        //   setPackageWidthError(maxWidth);
+        // }
 
-        if (maxDepth !== undefined && packageDepth >= maxDepth) {
-          setPackageDepthError(maxDepth);
-        }
+        // if (maxDepth !== undefined && packageDepth >= maxDepth) {
+        //   setPackageDepthError(maxDepth);
+        // }
 
-        if (maxPrice !== undefined && basePrice >= maxPrice) {
-          setBasePriceError(maxPrice);
-        }
+        // if (maxPrice !== undefined && basePrice >= maxPrice) {
+        //   setBasePriceError(maxPrice);
+        // }
       }
     }
   }, [
@@ -759,11 +772,12 @@ const AddArtwork = () => {
     watch("artworkSeries");
     watch("purchaseType");
     watch("existingImage");
-    watch("packageHeight");
-    watch("packageWeight");
-    watch("packageWidth");
-    watch("packageLength");
-    watch("basePrice");
+    // watch("packageHeight");
+    // watch("packageWeight");
+    // watch("packageWidth");
+    // watch("packageLength");
+    // watch("basePrice");
+    watch("framed");
   }, []);
 
   // console.log(isValid);
@@ -1895,14 +1909,14 @@ const AddArtwork = () => {
                         required: "Material type is required",
                       })}
                       disabled={query}
-                      className="bg-[#F9F9FC]  mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
+                      className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5"
                     >
                       <option value="">Select type</option>
-                      <option>Paper</option>
-                      <option>Watercolor Paper</option>
-                      <option>Mixed Media Paper</option>
-                      <option>Glaze Paper</option>
-                      <option>Drawing Paper</option>
+                      {getMaterial?.map((item, index) => (
+                        <option key={index} value={item?.mediaName}>
+                          {item?.mediaName}
+                        </option>
+                      ))}
                     </select>
                     {errors.material ? (
                       <div className="error text-red-500 mt-1 text-sm">
@@ -1998,41 +2012,56 @@ const AddArtwork = () => {
                     ) : null}
                   </label>
 
-                  <label className="text-[#203F58] text-sm sm:text-base  font-semibold ">
-                    Framed Description
-                    <textarea
-                      type="text"
-                      id="framedDescription"
-                      // name="framedDescription"
-                      {...register("framedDescription", {
-                        required: "Framed description is required",
-                      })}
-                      placeholder="Type Framed description here. . ."
-                      readOnly={query ? true : false}
-                      className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5 pb-10 "
-                    />
-                  </label>
-
-                  <div className="grid grid-cols-3 mb-4 gap-3 ">
-                    {Framed_dimension?.map((field) => (
-                      <span key={field.name}>
-                        <label className="p-1 text-[14px] text-[#203F58] font-semibold">
-                          {field.label} (cm)
-                        </label>
-                        <input
-                          {...register(field.name, {
-                            required: field.required ? field.required : "",
+                  {getValues("framed") === "Yes" ? (
+                    <>
+                      <label className="text-[#203F58] text-sm sm:text-base font-semibold">
+                        Framed Description
+                        <textarea
+                          id="framedDescription"
+                          {...register("framedDescription", {
+                            required: "Framed description is required",
                           })}
-                          type="text"
-                          name={field.name}
-                          id={field.name}
+                          placeholder="Type Framed description here..."
                           readOnly={query ? true : false}
-                          placeholder={field.placeholder}
-                          className="bg-[#F9F9FC] border mb-2 border-gray-300 outline-none text-[#203F58] text-sm rounded-lg block w-full p-1 sm:p-2.5 "
+                          className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5 pb-10"
                         />
-                      </span>
-                    ))}
-                  </div>
+                        {errors?.framedDescription && (
+                          <div className="error text-red-500 mt-1 text-sm">
+                            {errors?.framedDescription?.message}
+                          </div>
+                        )}
+                      </label>
+
+                      <div className="grid grid-cols-3 mb-4 gap-3 ">
+                        {Framed_dimension?.map((field) => (
+                          <span key={field.name}>
+                            <label className="p-1 text-[14px] text-[#203F58] font-semibold">
+                              {field.label} (cm)
+                            </label>
+                            <input
+                              {...register(field.name, {
+                                required: `${field.label} is required`, // Dynamic required message
+                              })}
+                              type="text"
+                              name={field.name}
+                              id={field.name}
+                              readOnly={query ? true : false}
+                              placeholder={field.placeholder}
+                              className="bg-[#F9F9FC] border mb-2 border-gray-300 outline-none text-[#203F58] text-sm rounded-lg block w-full p-1 sm:p-2.5"
+                            />
+
+                            {/* Access errors dynamically based on field.name */}
+                            {errors?.[field.name] && (
+                              <div className="error text-red-500 mt-1 text-sm">
+                                {errors?.[field.name]?.message}
+                              </div>
+                            )}
+                          </span>
+                        ))}
+                      </div>
+                    </>
+                  ) : null}
+
                   <label className="text-[#203F58] text-sm sm:text-base font-semibold  ">
                     Artwork orientation
                     <select

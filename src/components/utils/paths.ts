@@ -17,4 +17,5 @@ export const generalPath = {
   getFaq: "api/general/get-general-faq-list",
   getKbDataBase: "api/general/get-general-kb-list",
   getArtworkStyle: "api/general/list-style",
+  getMediaSupport: "api/general/list-media",
 };
