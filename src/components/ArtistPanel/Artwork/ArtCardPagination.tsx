@@ -37,7 +37,6 @@ const ArtCardPagination: React.FC = () => {
   let selectedArtwork = "";
   const { data, isLoading } = useGetArtWorkList(selectedArtwork);
 
-
   useEffect(() => {
     if (data) {
       setOriginalArtwork(data.data);
@@ -101,7 +100,15 @@ const ArtCardPagination: React.FC = () => {
           <p className="text-[14px] text-black">Draft</p>
         </div>
         <div className="flex gap-2 items-center">
-          <div className="w-[.8em] h-[.8em] rounded-full bg-orange-600 flex items-center"></div>
+          <div className="w-[.8em] h-[.8em] rounded-full bg-[#D8F002] flex items-center"></div>
+          <p className="text-[14px] text-black">Pending</p>
+        </div>
+        <div className="flex gap-2 items-center">
+          <div className="w-[.8em] h-[.8em] rounded-full bg-[#ac329e] flex items-center"></div>
+          <p className="text-[14px] text-black">Modified</p>
+        </div>
+        <div className="flex gap-2 items-center">
+          <div className="w-[.8em] h-[.8em] rounded-full bg-blue-600 flex items-center"></div>
           <p className="text-[14px] text-black">Subscription</p>
         </div>
         {/* <div className="flex gap-2 items-center">

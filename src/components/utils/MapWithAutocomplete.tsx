@@ -30,7 +30,6 @@ export const getCityStateFromZipCountry = async (
   apiKey: string
 ) => {
   try {
-    console.log(zipCode, country, apiKey);
     const response = await axios.get(
       `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
         zipCode + "," + country
@@ -41,7 +40,6 @@ export const getCityStateFromZipCountry = async (
       throw new Error(`Geocoding API Error: ${response.data.status}`);
     }
     const results = response.data.results[0];
-    console.log(results);
 
     const addressComponents = results.address_components;
 
@@ -53,8 +51,8 @@ export const getCityStateFromZipCountry = async (
       component.types.includes("administrative_area_level_1")
     )?.long_name;
 
-    console.log("City:", city);
-    console.log("State:", state);
+    // console.log("City:", city);
+    // console.log("State:", state);
     return { city, state };
   } catch (error) {
     console.error("Error fetching City and State:", error);
@@ -62,26 +60,26 @@ export const getCityStateFromZipCountry = async (
   }
 };
 
-const MapWithAutocomplete = ({ paddingX, paddingY, ...props }) => {
-  const [center, setCenter] = useState(defaultCenter);
+// const MapWithAutocomplete = ({ paddingX, paddingY, ...props }) => {
+//   const [center, setCenter] = useState(defaultCenter);
 
-  return (
-    <Autocomplete
-      apiKey={import.meta.env.VITE_APP_GOOGLE_MAPS_API_KEY}
-      //   onPlaceSelected={handlePlaceSelect}
-      libraries={["places"]}
-      {...props}
-      style={{
-        width: "100%",
-        border: "1px solid",
-        padding: `${paddingX} ${paddingY}`,
-      }}
-      options={{
-        types: [], // Limit search results to cities
-        // componentRestrictions: { country: "us" }, // Restrict search results to United States only
-      }}
-    />
-  );
-};
+//   return (
+//     <Autocomplete
+//       apiKey={import.meta.env.VITE_APP_GOOGLE_MAPS_API_KEY}
+//       //   onPlaceSelected={handlePlaceSelect}
+//       libraries={["places"]}
+//       {...props}
+//       style={{
+//         width: "100%",
+//         border: "1px solid",
+//         padding: `${paddingX} ${paddingY}`,
+//       }}
+//       options={{
+//         types: [], // Limit search results to cities
+//         // componentRestrictions: { country: "us" }, // Restrict search results to United States only
+//       }}
+//     />
+//   );
+// };
 
-export default MapWithAutocomplete;
+// export default MapWithAutocomplete;

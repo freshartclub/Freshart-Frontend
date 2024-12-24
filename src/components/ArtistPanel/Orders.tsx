@@ -23,7 +23,6 @@ const Orders = () => {
   };
   const Active = useContext(tabsContext);
 
-  console.log(activeTab);
   return (
     <div className="py-7">
       <div>

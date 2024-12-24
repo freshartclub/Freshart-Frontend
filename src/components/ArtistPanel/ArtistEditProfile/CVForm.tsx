@@ -30,9 +30,6 @@ const CVForm: React.FC<CVFormProps> = ({
     name: "cvEntries",
   });
 
-  console.log(eventType);
-  console.log(eventScope);
-
   const addMoreCv = () => {
     append({ year: "", Type: "", Description: "", Location: "", Scope: "" });
   };

@@ -65,7 +65,7 @@ const HighlightSection = ({ data }) => {
         Highlighted for you
       </h1>
       <div>
-        {data?.highlighted?.length < 4 ? (
+        {data?.highlighted?.length > 4 ? (
           data?.highlighted?.map((item, index) => (
             <div
               key={index}

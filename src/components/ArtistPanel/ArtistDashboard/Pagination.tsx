@@ -38,7 +38,7 @@ const Pagination = () => {
     );
   };
 
-  const nPages = Math.ceil((data?.data?.length || 0) / recordPerPage);
+  const nPages = Math.ceil((data?.length || 0) / recordPerPage);
   const numbers = [...Array(nPages).keys()].map((num) => num + 1);
 
   if (isLoading) {
@@ -64,7 +64,10 @@ const Pagination = () => {
             data.map((value, index) => (
               <div key={index}>
                 <div className="grid grid-cols-11  h-auto pb-3 pt-3 bg-white ">
-                  <div className="col-span-2 flex gap-2">
+                  <div
+                    onClick={() => handelClickData(value)}
+                    className="col-span-2 flex gap-2 cursor-pointer"
+                  >
                     <div>
                       <img
                         src={`${url}/users/${value?.image}`}

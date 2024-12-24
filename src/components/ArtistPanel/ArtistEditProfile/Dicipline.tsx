@@ -28,14 +28,6 @@ const Dicipline = ({ control, isActiveStatus, prefillValues, watch }) => {
         )
     );
 
-    console.log(
-      fields?.map((item) =>
-        item?.style.map((style) => {
-          return style;
-        })
-      )
-    );
-
     return availableStyles;
   };
 

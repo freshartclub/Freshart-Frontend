@@ -11,8 +11,6 @@ import { formateCurrency } from "../../utils/FormatCurrency";
 const Allorders = ({ orderDelail }: any) => {
   const { data, isLoading } = useGetArtistOrder();
 
-  console.log("this is from orders", data);
-
   const [currentPage, setCurrentPage] = useState(1);
   const recordPerPage = 10;
   const lastIndex = currentPage * recordPerPage;
@@ -53,50 +51,85 @@ const Allorders = ({ orderDelail }: any) => {
       <div className="rounded-md border border-1 mt-3 w-full overflow-x-auto">
         {/* Mobile view - card layout */}
         <div className="block lg:hidden bg-white">
-          {data && data?.length > 0 && data?.map((value: any, index: any) => (
-            <div key={index} className="p-4 border-b">
-              <div className="flex items-center justify-between mb-2">
-                <p className="font-bold text-sm">Order #{value.orderID}</p>
-                <div className={`rounded-lg py-1 px-2 text-xs capitalize ${
-                  value?.status === "pending" ? "bg-[#FDF1E8] text-[#E46A11]"
-                  : value.status === "success" ? "bg-[#E8F8FD] text-[#13B2E4]"
-                  : value.status === "cancelled" ? "bg-[#FEEDEC] text-[#F04438]"
-                  : "bg-[#E7F4EE] text-[#0D894F]"
-                }`}>
-                  {value.status}
+          {data && data?.length > 0 ? (
+            data?.map((value: any, index: any) => (
+              <div key={index} className="p-4 border-b">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="font-bold text-sm">Order #{value.orderID}</p>
+                  <div
+                    className={`rounded-lg py-1 px-2 text-xs capitalize ${
+                      value?.status === "pending"
+                        ? "bg-[#FDF1E8] text-[#E46A11]"
+                        : value.status === "success"
+                        ? "bg-[#E8F8FD] text-[#13B2E4]"
+                        : value.status === "cancelled"
+                        ? "bg-[#FEEDEC] text-[#F04438]"
+                        : "bg-[#E7F4EE] text-[#0D894F]"
+                    }`}
+                  >
+                    {value.status}
+                  </div>
+                </div>
+
+                <div className="flex gap-3 mb-3">
+                  <img
+                    src={`${url}/users/${value?.image}`}
+                    alt="product"
+                    className="w-20 h-20 rounded-lg object-cover"
+                  />
+                  <div>
+                    <p className="font-bold text-sm">{value?.artWorkName}</p>
+                    <p className="text-xs text-gray-600">{`${value?.length} x ${value?.width} x ${value?.height} cm`}</p>
+                    <p className="text-sm mt-1">
+                      {formateCurrency(value?.subTotal, "$")}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-1 mb-3">
+                  <p className="text-sm">
+                    <span className="font-semibold">Customer:</span>{" "}
+                    {`${value?.artistName}${value?.artistSurname1}${value?.artistSurname2}`}
+                  </p>
+                  <p className="text-sm">
+                    <span className="font-semibold">Date:</span>{" "}
+                    {dayjs(value?.createdAt).format("MMM D, YYYY")}
+                  </p>
+                  <p className="text-sm">
+                    <span className="font-semibold">Order Type:</span>{" "}
+                    {value?.orderType}
+                  </p>
+                  <p className="text-sm">
+                    <span className="font-semibold">Payment:</span>{" "}
+                    {value.paymenttype}
+                  </p>
+                </div>
+
+                <div className="flex gap-4 justify-end">
+                  <button
+                    onClick={() => handelClickData(value)}
+                    className="p-2 hover:bg-gray-100 rounded-full"
+                  >
+                    <LuEye className="text-xl" />
+                  </button>
+                  <button className="p-2 hover:bg-gray-100 rounded-full">
+                    <RiDeleteBin6Line className="text-xl" />
+                  </button>
                 </div>
               </div>
-              
-              <div className="flex gap-3 mb-3">
-                <img 
-                  src={`${url}/users/${value?.image}`}
-                  alt="product"
-                  className="w-20 h-20 rounded-lg object-cover"
-                />
-                <div>
-                  <p className="font-bold text-sm">{value?.artWorkName}</p>
-                  <p className="text-xs text-gray-600">{`${value?.length} x ${value?.width} x ${value?.height} cm`}</p>
-                  <p className="text-sm mt-1">{formateCurrency(value?.subTotal, "$")}</p>
-                </div>
-              </div>
-
-              <div className="space-y-1 mb-3">
-                <p className="text-sm"><span className="font-semibold">Customer:</span> {`${value?.artistName}${value?.artistSurname1}${value?.artistSurname2}`}</p>
-                <p className="text-sm"><span className="font-semibold">Date:</span> {dayjs(value?.createdAt).format("MMM D, YYYY")}</p>
-                <p className="text-sm"><span className="font-semibold">Order Type:</span> {value?.orderType}</p>
-                <p className="text-sm"><span className="font-semibold">Payment:</span> {value.paymenttype}</p>
-              </div>
-
-              <div className="flex gap-4 justify-end">
-                <button onClick={() => handelClickData(value)} className="p-2 hover:bg-gray-100 rounded-full">
-                  <LuEye className="text-xl" />
-                </button>
-                <button className="p-2 hover:bg-gray-100 rounded-full">
-                  <RiDeleteBin6Line className="text-xl" />
-                </button>
-              </div>
+            ))
+          ) : (
+            <div className="flex flex-col items-center justify-center bg-white h-[300px] border border-zinc-300">
+              <p className="text-lg text-center font-medium mb-4">
+                You don't have any Order yet.
+              </p>
+              {/* <NavLink to="/artist-panel/artwork/add">
+                  <button className="px-6 py-2 bg-zinc-800 text-white rounded-lg">
+                    Add Artwork
+                  </button>
+                </NavLink> */}
             </div>
-          ))}
+          )}
         </div>
 
         {/* Desktop view - table layout */}
@@ -112,8 +145,7 @@ const Allorders = ({ orderDelail }: any) => {
           </div>
 
           <div className="bg-white p-2">
-            {data &&
-              data?.length > 0 &&
+            {data && data?.length > 0 ? (
               data?.map((value: any, index: any) => (
                 <div key={index}>
                   <div className="grid grid-cols-11 h-auto pb-3 pt-3">
@@ -203,7 +235,19 @@ const Allorders = ({ orderDelail }: any) => {
                   </div>
                   <hr />
                 </div>
-              ))}
+              ))
+            ) : (
+              <div className="flex flex-col items-center justify-center bg-white h-[300px] border border-zinc-300">
+                <p className="text-lg text-center font-medium mb-4">
+                  You don't have any Order yet.
+                </p>
+                {/* <NavLink to="/artist-panel/artwork/add">
+                    <button className="px-6 py-2 bg-zinc-800 text-white rounded-lg">
+                      Add Artwork
+                    </button>
+                  </NavLink> */}
+              </div>
+            )}
             <div>
               <PaginationTabs
                 currentPage={currentPage}

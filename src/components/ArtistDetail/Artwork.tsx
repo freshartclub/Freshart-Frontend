@@ -25,6 +25,7 @@ const Artwork = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [action, setAction] = useState("");
   const [selectedArtworkId, setSelectedArtworkId] = useState(null);
+  const [status, setStatus] = useState(null);
 
   const closePopup = () => {
     setIsPopupOpen(false);
@@ -32,7 +33,6 @@ const Artwork = () => {
 
   const handleAction = (actionType) => {
     setAction(actionType);
-    console.log(`User selected: ${actionType}`);
   };
 
   useEffect(() => {
@@ -51,9 +51,10 @@ const Artwork = () => {
     setSelectedArtwork(currentValue);
   };
 
-  const handleArtworkClick = (artworkId) => {
+  const handleArtworkClick = (artworkId, status) => {
     setSelectedArtworkId(artworkId);
-    setIsPopupOpen(true); // Open the popup
+    setIsPopupOpen(true);
+    setStatus(status);
   };
 
   if (isLoading) {
@@ -103,7 +104,15 @@ const Artwork = () => {
             <p className="text-[14px] text-black">Draft</p>
           </div>
           <div className="flex gap-2 items-center">
-            <div className="w-[.8em] h-[.8em] rounded-full bg-orange-600 flex items-center"></div>
+            <div className="w-[.8em] h-[.8em] rounded-full bg-[#D8F002] flex items-center"></div>
+            <p className="text-[14px] text-black">Pending</p>
+          </div>
+          <div className="flex gap-2 items-center">
+            <div className="w-[.8em] h-[.8em] rounded-full bg-[#ac329e] flex items-center"></div>
+            <p className="text-[14px] text-black">Modified</p>
+          </div>
+          <div className="flex gap-2 items-center">
+            <div className="w-[.8em] h-[.8em] rounded-full bg-blue-600 flex items-center"></div>
             <p className="text-[14px] text-black">Subscription</p>
           </div>
           {/* <div className="flex gap-2 items-center">
@@ -148,6 +157,10 @@ const Artwork = () => {
                           ? "border-[#D8F002]"
                           : art?.status === "draft"
                           ? "border-[#696868]"
+                          : art?.status === "pending"
+                          ? "border-[#D8F002]"
+                          : art?.status === "modified"
+                          ? "border-[#ac329e]"
                           : art?.status === "notAvailable"
                           ? "border-[#e53a3a]"
                           : "border-[#D8F002]"
@@ -157,8 +170,12 @@ const Artwork = () => {
                         className={`w-fit rounded-lg pb-5 border-4 overflow-hidden ${
                           art?.status === "published"
                             ? "border-[#00DE00]"
+                            : art?.status === "pending"
+                            ? "border-[#D8F002]"
+                            : art?.status === "modified"
+                            ? "border-[#ac329e]"
                             : art?.status === "subscription"
-                            ? "border-orange-600"
+                            ? "border-blue-600"
                             : art?.status === "draft"
                             ? "border-[#f0dd32]"
                             : art.status === "notAvailable"
@@ -185,7 +202,9 @@ const Artwork = () => {
 
                         {profile === "artist" && (
                           <div
-                            onClick={() => handleArtworkClick(art._id)}
+                            onClick={() =>
+                              handleArtworkClick(art._id, art?.status)
+                            }
                             className="absolute bottom-0 left-0 right-0 top-0 h-full w-full overflow-hidden bg-[#D9D9D9] bg-fixed flex gap-10 items-center justify-center opacity-0 transition duration-300 ease-in-out hover:opacity-[0.7] hover:cursor-pointer"
                           >
                             {item?.status === "draft" ? (
@@ -226,6 +245,7 @@ const Artwork = () => {
         onClose={closePopup}
         onAction={handleAction}
         id={selectedArtworkId}
+        status={status}
       />
     </div>
   );

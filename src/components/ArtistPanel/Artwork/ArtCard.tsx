@@ -9,13 +9,17 @@ const ArtCard = ({ record, data }: any) => {
         className={`bg-white rounded-lg pb-5 border-b-4  ${
           record?.status === "published"
             ? "border-[#00DE00]"
-            : record?.status === "purchased"
-            ? "border-[#696868]"
-            : record.status === "notAvailable"
-            ? "border-[#e53a3a]"
+            : record?.status === "pending"
+            ? "border-[#D8F002]"
             : record?.status === "draft"
-            ? "border-[#f0dd32]"
-            : ""
+            ? "border-[#696868]"
+            : record?.status === "pending"
+            ? "border-[#D8F002]"
+            : record?.status === "modified"
+            ? "border-[#ac329e]"
+            : record?.status === "notAvailable"
+            ? "border-[#e53a3a]"
+            : "border-[#D8F002]"
         }`}
       >
         <div className="flex justify-center relative overflow-hidden bg-cover bg-no-repeat">
@@ -44,7 +48,11 @@ const ArtCard = ({ record, data }: any) => {
                 ? "bg-[#D8F002]"
                 : record?.status === "draft"
                 ? "bg-[#696868]"
-                : record.status === "notAvailable"
+                : record?.status === "pending"
+                ? "bg-[#D8F002]"
+                : record?.status === "modified"
+                ? "bg-[#ac329e]"
+                : record?.status === "notAvailable"
                 ? "bg-[#e53a3a]"
                 : "bg-[#D8F002]"
             }`}

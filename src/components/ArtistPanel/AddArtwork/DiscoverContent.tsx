@@ -18,7 +18,7 @@ const DiscoverContent = ({ data }: any) => {
     mutate(id);
   };
 
-  console.log(data);
+  const status = data?.data?.status;
 
   const currency = data?.pricing?.currency;
 

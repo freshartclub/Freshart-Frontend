@@ -1,11 +1,9 @@
 import { useNavigate } from "react-router-dom";
 
-export const ArtworkViewPopup = ({ isOpen, onClose, onAction, id }) => {
+export const ArtworkViewPopup = ({ isOpen, onClose, onAction, id, status }) => {
   if (!isOpen) return null;
 
   const navigate = useNavigate();
-
-  console.log(id);
 
   const handleViewOnly = () => {
     navigate(`/artist-panel/artwork/add?id=${id}&view=true`);
@@ -33,12 +31,15 @@ export const ArtworkViewPopup = ({ isOpen, onClose, onAction, id }) => {
           Would you like to view the artwork or preview it?
         </p>
         <div className="flex justify-end gap-4">
-          <button
-            className="px-4 py-2 bg-zinc-800 text-white rounded-md"
-            onClick={handleEdit}
-          >
-            Edit
-          </button>
+          {status === "modified" ? null : (
+            <button
+              className="px-4 py-2 bg-zinc-800 text-white rounded-md"
+              onClick={handleEdit}
+            >
+              Edit
+            </button>
+          )}
+
           <button
             className="px-4 py-2 bg-blue-500 text-white rounded-md"
             onClick={handleViewOnly}

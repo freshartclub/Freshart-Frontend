@@ -20,9 +20,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import "react-country-state-city/dist/react-country-state-city.css";
 
 import dayjs from "dayjs";
-import MapWithAutocomplete, {
-  getCityStateFromZipCountry,
-} from "../../utils/MapWithAutocomplete";
+import { getCityStateFromZipCountry } from "../../utils/MapWithAutocomplete";
 import countryList from "react-select-country-list";
 import { Country, State, City } from "country-state-city";
 
@@ -34,6 +32,7 @@ import Commercilization from "./Commercilization";
 import { RenderAllPicklists } from "../../utils/RenderAllPicklist";
 import SelectDateBtn from "../ArtistDashboard/SelectDateBtn";
 import useRevalidationMutation from "./http/useRevalidationMutation";
+import Autocomplete from "react-google-autocomplete";
 
 const GeneralForm = ({ isActiveStatus }) => {
   const { data, isLoading, isFetching } = useGetArtistDetails();
@@ -44,6 +43,7 @@ const GeneralForm = ({ isActiveStatus }) => {
   const [isManagerDetails, setManagerDetails] = useState(null);
   const [tags, setTags] = useState([]);
   const options = useMemo(() => countryList(), []);
+  const [searchResult, setSearchResult] = useState(null);
 
   const methods = useForm();
 
@@ -113,7 +113,7 @@ const GeneralForm = ({ isActiveStatus }) => {
     setValue("stateRegion", data?.data?.artist?.address?.state || "");
     setValue("zip", data?.data?.artist?.address?.zipCode || "");
     setValue("phoneNumber", data?.data?.artist?.phone || "");
-    setValue("address", data?.data?.artist?.address?.residentialAddress || "");
+    // setValue("address", data?.data?.artist?.address?.residentialAddress || "");
     setValue("email", data?.data?.artist?.email || "");
     setValue("about", data?.data?.artist?.aboutArtist?.about || "");
     setValue("language", data?.data?.artist?.language || []);
@@ -281,9 +281,9 @@ const GeneralForm = ({ isActiveStatus }) => {
       "scoreProfessional",
       data?.data?.artist?.commercilization?.scoreProfessional || ""
     );
-  }, [data]);
 
-  console.log(data?.data?.artist?.gender);
+    setSearchResult(data?.data?.artist?.address?.residentialAddress || "");
+  }, [data]);
 
   const handlePDF = (file) => {
     window.open(`${data?.data?.url}/documents/${file}`, "_blank");
@@ -324,7 +324,7 @@ const GeneralForm = ({ isActiveStatus }) => {
         ({ state, city }) => {
           setValue("city", city);
           setValue("stateRegion", state);
-          console.log(state, city);
+          // console.log(state, city);
         }
       );
     }
@@ -355,6 +355,8 @@ const GeneralForm = ({ isActiveStatus }) => {
         formData.append(key, data[key]);
       }
     });
+
+    formData.append("address", searchResult);
 
     for (let [key, value] of formData.entries()) {
       console.log(key, value);
@@ -387,6 +389,28 @@ const GeneralForm = ({ isActiveStatus }) => {
   const eventType = picklistMap["Event Type"];
   const eventScope = picklistMap["Event Scope"];
   const language = picklistMap["Language"];
+
+  const placesSelected = (places: google.maps.places.PlaceResult) => {
+    const address_comp = [
+      "street_number",
+      "route",
+      "locality",
+      "administrative_area_level_2",
+    ];
+
+    const comp = address_comp
+      .map(
+        (type) =>
+          places.address_components?.find((c) => c.types.includes(type))
+            ?.long_name
+      )
+      .filter(Boolean);
+
+    // const fullAddress = comp.filter(Boolean).join(", ");
+    const fullAddress = places?.formatted_address;
+
+    setSearchResult(fullAddress);
+  };
 
   if (isLoading) {
     return <Loader />;
@@ -510,8 +534,8 @@ const GeneralForm = ({ isActiveStatus }) => {
                 </div>
               </div>
 
-              <div className="w-full gap-4 mb-4">
-                <div className="md:w-[48%] lg:w-full w-full relative">
+              <div className="flex flex-wrap justify-between w-full gap-4 mb-4">
+                <div className="md:w-[48%] w-full relative">
                   <input
                     type="text"
                     // placeholder="Fullname"
@@ -530,6 +554,28 @@ const GeneralForm = ({ isActiveStatus }) => {
                   {errors.email && (
                     <div className="text-red-500 text-sm mt-1">
                       <div>{String(errors.email?.message || "")}</div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="md:w-[48%] w-full relative">
+                  <PhoneInput
+                    className="appearance-none border flex outline-none rounded  py-3 px-3 text-gray-700 leading-tight text-sm"
+                    placeholder="Enter phone number"
+                    value={getValues("phoneNumber")}
+                    onChange={(val) => setValue("phoneNumber", val)}
+                    disabled={isActiveStatus !== "active"}
+                  />
+                  <label
+                    htmlFor="phoneNumber"
+                    className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
+                  >
+                    Phone Number
+                  </label>
+
+                  {errors.phoneNumber && (
+                    <div className="text-red-500 text-sm mt-1">
+                      <div>{String(errors.phoneNumber?.message || "")}</div>
                     </div>
                   )}
                 </div>
@@ -587,52 +633,6 @@ const GeneralForm = ({ isActiveStatus }) => {
                   {errors.language && (
                     <div className="text-red-500 text-sm mt-1">
                       <div>{String(errors.language?.message || "")}</div>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div className="flex flex-wrap justify-between w-full gap-4 mb-4">
-                <div className="md:w-[48%] w-full relative">
-                  <PhoneInput
-                    className="appearance-none border flex outline-none rounded  py-3 px-3 text-gray-700 leading-tight text-sm"
-                    placeholder="Enter phone number"
-                    value={getValues("phoneNumber")}
-                    onChange={(val) => setValue("phoneNumber", val)}
-                    disabled={isActiveStatus !== "active"}
-                  />
-                  <label
-                    htmlFor="phoneNumber"
-                    className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
-                  >
-                    Phone Number
-                  </label>
-
-                  {errors.phoneNumber && (
-                    <div className="text-red-500 text-sm mt-1">
-                      <div>{String(errors.phoneNumber?.message || "")}</div>
-                    </div>
-                  )}
-                </div>
-
-                <div className="md:w-[48%] w-full relative">
-                  <input
-                    type="text"
-                    {...register("address", {
-                      required: "Address is required",
-                    })}
-                    disabled={isActiveStatus !== "active"}
-                    className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500"
-                  />
-                  <label
-                    htmlFor="address"
-                    className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
-                  >
-                    Address
-                  </label>
-                  {errors.address && (
-                    <div className="text-red-500 text-sm mt-1">
-                      <div>{String(errors.address?.message || "")}</div>
                     </div>
                   )}
                 </div>
@@ -722,6 +722,35 @@ const GeneralForm = ({ isActiveStatus }) => {
                   {errors.stateRegion && (
                     <div className="text-red-500 text-sm mt-1">
                       <div>{String(errors.stateRegion?.message || "")}</div>
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div className="flex  w-full gap-4 mb-4">
+                <div className=" w-full relative">
+                  <Autocomplete
+                    className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500"
+                    value={searchResult}
+                    apiKey={import.meta.env.VITE_APP_GOOGLE_MAPS_API_KEY}
+                    onChange={(e) => {
+                      setSearchResult(e.target.value);
+                    }}
+                    onPlaceSelected={placesSelected}
+                    options={{
+                      types: [],
+                    }}
+                  />
+
+                  <label
+                    htmlFor="address"
+                    className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
+                  >
+                    Address
+                  </label>
+
+                  {errors.address && (
+                    <div className="text-red-500 text-sm mt-1">
+                      <div>{String(errors.address?.message || "")}</div>
                     </div>
                   )}
                 </div>

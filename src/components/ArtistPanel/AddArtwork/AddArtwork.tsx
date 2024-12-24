@@ -48,6 +48,7 @@ import useDeleteSeriesMutation from "./http/useDeleteSeries";
 import toast from "react-hot-toast";
 import { useAppSelector } from "../../../store/typedReduxHooks";
 import { useGetMediaSupport } from "./http/useGetMediaSupport";
+import usePostModifyArtworkMutation from "./http/usePostModifyArtwork";
 
 const AddArtwork = () => {
   const [progress, setProgress] = useState(0);
@@ -190,6 +191,9 @@ const AddArtwork = () => {
   } = useGetSeries(userID);
 
   const { mutate, isPending } = usePostArtWorkMutation();
+
+  const { mutate: modifyMuatate, isPending: modifyIsPending } =
+    usePostModifyArtworkMutation();
 
   const [initialValues, setInitialValues] = useState({
     artworkName: "",
@@ -464,6 +468,9 @@ const AddArtwork = () => {
     }
   }, [id, data, inProcessImage, setInitialValues, seriesData]);
 
+  const status = data?.data?.status;
+
+  // console.log();
   const url = `https://dev.freshartclub.com/discover_more?id=${id}?referral=${"QR"}`;
 
   const currentPageUrl = url;
@@ -665,26 +672,6 @@ const AddArtwork = () => {
         setPackageWeightError(maxWeight ? maxWeight : null);
         setPackageWidthError(maxWidth ? maxWidth : null);
         setPackageDepthError(maxDepth ? maxDepth : null);
-
-        // if (maxHeight !== undefined && packageHeight >= maxHeight) {
-        //   setPackageHeightError(maxHeight);
-        // }
-
-        // if (maxWeight !== undefined && packageWeight >= maxWeight) {
-        //   setPackageWeightError(maxWeight);
-        // }
-
-        // if (maxWidth !== undefined && packageWidth >= maxWidth) {
-        //   setPackageWidthError(maxWidth);
-        // }
-
-        // if (maxDepth !== undefined && packageDepth >= maxDepth) {
-        //   setPackageDepthError(maxDepth);
-        // }
-
-        // if (maxPrice !== undefined && basePrice >= maxPrice) {
-        //   setBasePriceError(maxPrice);
-        // }
       }
     }
   }, [
@@ -695,6 +682,8 @@ const AddArtwork = () => {
     getValues("subscriptionCatalog"),
     watch("purchaseType"),
     watch("purchaseOption"),
+    id,
+    data,
   ]);
 
   const onSubmit = handleSubmit(async (values: any) => {
@@ -756,7 +745,11 @@ const AddArtwork = () => {
         data: formData,
       };
 
-      mutate(newData);
+      if (status === "published") {
+        modifyMuatate(newData);
+      } else {
+        mutate(newData);
+      }
     } else {
       console.log("Base price or package dimensions check failed");
       return toast("Please Check Base Price & Package Dimesions Values");
@@ -2651,19 +2644,35 @@ const AddArtwork = () => {
                 </span>
 
                 <div className="flex justify-end ">
-                  <Button
-                    type="submit"
-                    variant={{
-                      fontSize: "md",
-                      thickness: "thick",
-                      fontWeight: "600",
-                      theme: "dark",
-                    }}
-                    // disabled={!isValid}
-                    className=" text-white py-2 px-4 rounded"
-                  >
-                    {isPending ? "Previewing..." : "Save & Preview"}
-                  </Button>
+                  {status === "published" ? (
+                    <Button
+                      type="submit"
+                      variant={{
+                        fontSize: "md",
+                        thickness: "thick",
+                        fontWeight: "600",
+                        theme: "dark",
+                      }}
+                      // disabled={!isValid}
+                      className=" text-white py-2 px-4 rounded"
+                    >
+                      {modifyIsPending ? "Modifying..." : "Modify Artwork"}
+                    </Button>
+                  ) : (
+                    <Button
+                      type="submit"
+                      variant={{
+                        fontSize: "md",
+                        thickness: "thick",
+                        fontWeight: "600",
+                        theme: "dark",
+                      }}
+                      // disabled={!isValid}
+                      className=" text-white py-2 px-4 rounded"
+                    >
+                      {isPending ? "Previewing..." : "Save & Preview"}
+                    </Button>
+                  )}
                 </div>
               </div>
             ) : null}
