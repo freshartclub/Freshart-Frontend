@@ -18,6 +18,10 @@ import { useAppSelector } from "../../store/typedReduxHooks";
 import CustomDropdown from "./CustomDropdown";
 import countryList from "react-select-country-list";
 import { getCityStateFromZipCountry } from "../utils/MapWithAutocomplete";
+import {
+  RenderAllPicklist,
+  RenderAllPicklists,
+} from "../utils/RenderAllPicklist";
 
 const RegistrationProcess = () => {
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
@@ -101,6 +105,17 @@ const RegistrationProcess = () => {
       );
     }
   }, [country, zipCode]);
+
+  const picklist = RenderAllPicklists(["Gender"]);
+
+  const picklistMap = picklist.reduce((acc, item: any) => {
+    acc[item?.fieldName] = item?.picklist;
+    return acc;
+  }, {});
+
+  const gender = picklistMap["Gender"];
+
+  console.log(gender);
 
   const onSubmit = handleSubmit(async (data) => {
     const formData = new FormData();
@@ -233,10 +248,13 @@ const RegistrationProcess = () => {
                           {...register("gender")}
                           className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
                         >
-                          <option value="">Select Gender</option>
-                          <option value="male">Male</option>
-                          <option value="female">Female</option>
-                          <option value="other">Other</option>
+                          <option value="">Select</option>
+                          {gender &&
+                            gender.map((item, i) => (
+                              <option key={i} value={item?.value}>
+                                {item?.value}
+                              </option>
+                            ))}
                         </select>
                         {errors.gender && (
                           <p className="text-red-500 text-sm text-left">

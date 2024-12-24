@@ -423,7 +423,8 @@ const BecomeArtist = () => {
                       <input
                         {...register("email")}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="appearance-none border rounded w-full  px-3 text-gray-700 leading-tight focus:outline-none"
+                        disabled={isValidateEmail}
+                        className={`appearance-none border rounded w-full  px-3 text-gray-700 leading-tight focus:outline-none `}
                         placeholder="Enter email"
                       />
 

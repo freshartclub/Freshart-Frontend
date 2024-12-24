@@ -36,21 +36,15 @@ const ArtistDescription = ({ data }) => {
     navigate("/circleblog");
   };
 
-  console.log(
-    `${data?.url}/users/${data?.data?.artist?.insignia?.insigniaImage}`
-  );
-
   const aboutText = data?.artist?.aboutArtist?.about?.replace(
-    /<\/?h2>|<\/?p>|<\/?div>/g,
+    /<\/?(h2|p|div|li|strong|blockquote)>|&nbsp;|«|»/g,
     ""
   );
 
   const highlightText = data?.artist?.highlights?.addHighlights?.replace(
-    /<\/?h2>|<\/?p>|<\/?div>/g,
+    /<\/?(h2|p|div|li|strong|blockquote)>|&nbsp;|«|»/g,
     ""
   );
-
-  console.log(highlightText);
 
   return (
     <div>

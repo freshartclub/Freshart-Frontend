@@ -27,16 +27,13 @@ const VerifySignUpMutation = () => {
     mutationFn: verifyOtp,
 
     onSuccess: async (res, input) => {
-      console.log(res.data);
       setToken(res.data.token, input.rememberMe);
-
+      navigate("/priceandplans");
       dispatch(forgotPasswordUserId({ userId: res.data.id }));
       dispatch(setIsAuthorized(true));
       localStorage.setItem("profile", "user");
       toast.dismiss(toastId);
       toast.success(res.data.message);
-
-      navigate("/priceandplans");
     },
     onError: (res) => {
       toast.error(res.response.data.message);
