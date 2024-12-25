@@ -592,9 +592,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                   >
                     {gender &&
                       gender.map((item, i) => (
-                        <option key={i} value={item?.value}>
-                          {item?.label}
-                        </option>
+                        <option key={i}>{item?.label}</option>
                       ))}
                   </select>
                   <label

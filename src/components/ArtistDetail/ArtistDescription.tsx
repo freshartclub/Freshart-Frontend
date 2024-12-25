@@ -141,7 +141,7 @@ const ArtistDescription = ({ data }) => {
               fontWeight: "500",
               rounded: "full",
             }}
-            className="!py-2"
+            className="py-2"
             onClick={redirectToCircle}
           >
             Circle

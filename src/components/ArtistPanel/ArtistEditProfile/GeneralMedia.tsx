@@ -23,6 +23,7 @@ const GeneralMedia = ({ control, data, url, isActiveStatus }) => {
 
   const {
     fields: videoFields,
+    append: appendVideo,
 
     remove: removeVideo,
   } = useFieldArray({
@@ -39,11 +40,7 @@ const GeneralMedia = ({ control, data, url, isActiveStatus }) => {
     name: "inProcessImage",
   });
 
-  const {
-    fields: mainImageFields,
-    append: appendVideo,
-    remove: removeMainImage,
-  } = useFieldArray({
+  const { fields: mainImageFields, remove: removeMainImage } = useFieldArray({
     control,
     name: "mainImage",
   });
@@ -123,9 +120,12 @@ const GeneralMedia = ({ control, data, url, isActiveStatus }) => {
   };
 
   const handleAdditionalVideoUpload = (e) => {
+    console.log("vidoe");
     const files = e.target.files;
 
     Array.from(files).forEach((val) => {
+      console.log(val);
+
       appendVideo(val);
     });
   };
@@ -536,12 +536,16 @@ const GeneralMedia = ({ control, data, url, isActiveStatus }) => {
                   )}
               </div>
 
-
-              {
-                existingAdditionalVideo || getValues("additionalVideo") ? null : <>
+              {existingAdditionalVideo ||
+              getValues("additionalVideo") ? null : (
+                <>
+                  <img
+                    src={video_icon}
+                    className="w-28 h-28 bg-gray-200 rounded-md mb-4"
+                  />
                 </>
-              }
-             
+              )}
+
               <span
                 className={`bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer flex items-center justify-center ${
                   isActiveStatus !== "active" ? "pointer-events-none" : ""

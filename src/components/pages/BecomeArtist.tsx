@@ -33,6 +33,7 @@ import usePhoneOtpVerify from "./http/useVerifyPhoneOtp";
 
 import CustomDropdown from "./CustomDropdown";
 import { useAppSelector } from "../../store/typedReduxHooks";
+import { getCountries } from "react-phone-number-input";
 
 const BecomeArtist = () => {
   const validationSchema = Yup.object().shape({
@@ -58,7 +59,7 @@ const BecomeArtist = () => {
   const [isOtpVerify, setIsOtpVerify] = useState(false);
   const [popUp, setPopUp] = useState(false);
 
-  const [countryCode, setCountryCode] = useState("in");
+  const [countryCode, setCountryCode] = useState("es");
   const [validateEmail, setValidateEmail] = useState("Verify Email");
   const [validatePhone, setValidatePhone] = useState("Send Code");
   const [validateotp, setValidateotp] = useState("Validate Otp");
@@ -66,6 +67,7 @@ const BecomeArtist = () => {
   const [validateError, setValidateError] = useState("");
   const [geoLocation, setGeoLocation] = useState(null);
   const [isValidateEmail, setIsValidateEmail] = useState(false);
+  const [isValidatePhone, setIsValidatePhone] = useState(false);
 
   const [otpSent, setOtpSent] = useState(false);
 
@@ -135,7 +137,7 @@ const BecomeArtist = () => {
       setValue("city", user?.address?.city);
       setValue("region", user?.address?.state);
       setValue("country", user?.address?.country);
-
+      setEmail(user?.email);
       setValidateEmail(
         user?.isEmailVerified ? "Email Verified" : "Verify Email"
       );
@@ -144,23 +146,30 @@ const BecomeArtist = () => {
   }, []);
 
   // useEffect(() => {
-  //   watch("phone");
-  //   watch("email");
-  //   if (!errors.email) {
-  //     setEmail(getValues("email"));
-  //   }
+  //   // watch("phone");
+  //   // watch("email");
+  //   // if (!errors.email) {
+  //   //   setEmail(getValues("email"));
+  //   // }
   //   const getGeoLocation = async () => {
   //     const request = await fetch("https://ipapi.co/json");
   //     const jsonResponse = await request.json();
   //     setGeoLocation(jsonResponse);
+
+  //     console.log(jsonResponse);
   //   };
   //   getGeoLocation();
   // }, []);
+
   // useEffect(() => {
   //   setValue("city", geoLocation?.city);
   //   setValue("region", geoLocation?.region);
-  //   setCountryCode(geoLocation?.country);
+  //   setValue("country", geoLocation?.country_name);
+
+  //   setCountryCode(geoLocation?.country?.toLowerCase());
   // }, [geoLocation]);
+
+  const countryValue = getValues("country");
 
   useEffect(() => {
     if (watchDicipline) {
@@ -192,13 +201,31 @@ const BecomeArtist = () => {
     }
   }, [country, zipCode]);
 
-  console.log(getValues("country"));
-  const countryLable = countryList().getData();
-  console.log(countryLable);
-
   useEffect(() => {
     watch("phone");
+    watch("country");
   }, []);
+
+  // const getCountryCode = (countryName) => {
+  //   const flattenedOptions = options.data.flat();
+
+  //   const country = flattenedOptions.find((c) => c.label === countryName);
+
+  //   if (country) {
+  //     return country.value;
+  //   } else {
+  //     return "Country code not found";
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   if (countryValue) {
+  //     const countryName = getCountryCode(countryValue); // Get the country code based on the country name
+  //     const formattedCountryCode = countryName.toLowerCase(); // Ensure the country code is in uppercase
+
+  //     setCountryCode(formattedCountryCode);
+  //   }
+  // }, [countryValue]);
 
   const emails = getValues("email");
   const phones = getValues("phone");
@@ -235,6 +262,7 @@ const BecomeArtist = () => {
 
     verifyPhoneOtp(data).then(() => {
       setOtpSent(true);
+      setIsValidatePhone(true);
       setValidatePhone("Verified");
       setIsOtpVerify(true);
       setIsModalOpenPhone(false);
@@ -260,6 +288,7 @@ const BecomeArtist = () => {
     });
   };
 
+  // first to send otp and open pop
   const handleSendOtp = () => {
     try {
       const data = {
@@ -460,7 +489,8 @@ const BecomeArtist = () => {
                       <PhoneInput
                         className="appearance-none  outline-none rounded py-1   w-full text-gray-700 leading-tight focus:outline-none"
                         placeholder="Enter phone number"
-                        defaultCountry={countryCode}
+                        defaultCountry="es"
+                        disabled={isValidatePhone}
                         value={getValues("phone")}
                         onChange={(val) => setValue("phone", val)}
                       />
@@ -556,6 +586,7 @@ const BecomeArtist = () => {
                 > */}
                   <CustomDropdown
                     control={control}
+                    countryValue={countryValue}
                     options={options}
                     name="country"
                     isActiveStatus="active"

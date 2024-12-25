@@ -150,7 +150,7 @@ const AddArtwork = () => {
   const [hasMainVideo, setHasMainVideo] = useState(true);
   const [hasMainImg, setHasMainImg] = useState(true);
   const qrCodeRef = useRef(null);
-  // const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState([]);
 
@@ -158,7 +158,6 @@ const AddArtwork = () => {
 
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [action, setAction] = useState("");
-  //  const isArtProvider = useAppSelector((state) => state.user.isArtProvider);
 
   const closePopup = () => {
     setIsPopupOpen(false);
@@ -281,13 +280,21 @@ const AddArtwork = () => {
       userIsLoading ||
       technicLoading ||
       themeLoading ||
-      seriesLoading
+      seriesLoading ||
+      getMediaSupportLoding
     ) {
       setLoading(true);
     } else {
       setLoading(false);
     }
-  }, [isLoading, userIsLoading, technicLoading, themeLoading, seriesLoading]);
+  }, [
+    isLoading,
+    userIsLoading,
+    technicLoading,
+    themeLoading,
+    seriesLoading,
+    getMediaSupportLoding,
+  ]);
 
   const getOutDiscipline = seriesData?.discipline?.map(
     (item, i) => item?.discipline
@@ -470,8 +477,8 @@ const AddArtwork = () => {
 
   const status = data?.data?.status;
 
-  // console.log();
   const url = `https://dev.freshartclub.com/discover_more?id=${id}?referral=${"QR"}`;
+  const seriesOptions = seriesData?.seriesList?.map((item, i) => item);
 
   const currentPageUrl = url;
 
@@ -513,11 +520,6 @@ const AddArtwork = () => {
     "Artwork Discount Options",
     "Artwork Available To",
   ]);
-
-  const picklistMapD = dPicklist.reduce((acc, item: any) => {
-    acc[item?.fieldName] = item?.picklist;
-    return acc;
-  }, {});
 
   const picklistMap = picklist.reduce((acc, item: any) => {
     acc[item?.fieldName] = item?.picklist;
@@ -614,33 +616,11 @@ const AddArtwork = () => {
     }
   };
 
-  const removeExistingVideo = (index: number, typeFile: string) => {
-    console.log(index, typeFile);
-    if (typeFile === "Url") {
-      initialValues.existingVideo = initialValues.existingVideo.filter(
-        (_, i) => i !== index
-      );
-      setInitialValues({ ...initialValues });
-    }
-  };
-
-  // const watchPackageHeight = watch("packageHeight");
-  // const watchPackageWeight = watch("packageWeight");
-  // const watchPackageWidth = watch("packageWidth");
-  // const watchPackageDepth = watch("packageLength");
-  // const watchBasePrice = watch("basePrice");
-
   const [packageHeightError, setPackageHeightError] = useState(null);
   const [packageWidthError, setPackageWidthError] = useState(null);
   const [packageDepthError, setPackageDepthError] = useState(null);
   const [basePriceError, setBasePriceError] = useState(null);
   const [packageWeightError, setPackageWeightError] = useState(null);
-
-  const packageHeight = getValues("packageHeight");
-  const packageWeight = getValues("packageWeight");
-  const packageWidth = getValues("packageWidth");
-  const packageDepth = getValues("packageLength");
-  const basePrice = parseInt(getValues("basePrice"));
 
   useEffect(() => {
     if (activeTab === "purchase") {
@@ -724,7 +704,6 @@ const AddArtwork = () => {
             if (item instanceof File) {
               formData.append(key, item);
             } else {
-              console.log(key, value, "this is from formdata loop");
               formData.append(key, JSON.stringify(item));
             }
           });
@@ -732,13 +711,13 @@ const AddArtwork = () => {
           formData.append(key, value);
         } else {
           formData.append(key, value);
-          console.log(key, value, "this is from outside loop");
         }
       });
 
-      for (let [name, value] of formData.entries()) {
-        console.log(name, value);
-      }
+      // remove it before final from submission
+      // for (let [name, value] of formData.entries()) {
+      //   console.log(name, value);
+      // }
 
       const newData = {
         id: id,
@@ -765,19 +744,9 @@ const AddArtwork = () => {
     watch("artworkSeries");
     watch("purchaseType");
     watch("existingImage");
-    // watch("packageHeight");
-    // watch("packageWeight");
-    // watch("packageWidth");
-    // watch("packageLength");
-    // watch("basePrice");
+    watch("existingVideo");
     watch("framed");
   }, []);
-
-  // console.log(isValid);
-  // console.log(errors);
-  // console.log(getValues("basePrice"));
-
-  // console.log(packageHeightError);
 
   const removeImage = (name: string, index: number, typeFile: string) => {
     if (name === "mainImage") {
@@ -801,12 +770,26 @@ const AddArtwork = () => {
 
   const newImages = getValues("existingImage");
 
+  const exVidoes = getValues("existingVideo");
+
   const removeExistingImage = (index: number, typeFile: string) => {
     console.log(index, typeFile);
     if (typeFile === "Url") {
       const filteredimg = newImages.filter((_, i) => i !== index);
 
       setValue("existingImage", filteredimg);
+    }
+  };
+
+  const removeExistingVideo = (index: number, typeFile: string) => {
+    console.log(index, typeFile);
+    if (typeFile === "Url") {
+      console.log("yes url");
+
+      const filteredVideo = exVidoes.filter((_, i) => i !== index);
+
+      setValue("existingVideo", filteredVideo);
+      // setInitialValues({ ...initialValues });
     }
   };
 
@@ -890,8 +873,6 @@ const AddArtwork = () => {
 
     setIsLoadingPdf(false);
   };
-
-  const seriesOptions = seriesData?.seriesList?.map((item, i) => item);
 
   const handleSelectOption = (selectedOption) => {
     if (selectedOption) {
@@ -1044,7 +1025,9 @@ const AddArtwork = () => {
                 ) : null}
 
                 <div className="mb-4 flex flex-col lg:flex-row  gap-2 w-full">
-                  <div className="w-full">
+                  <div
+                    className={`w-full ${query ? "pointer-events-none" : ""}`}
+                  >
                     <label className="block text-sm sm:text-base text-[#203F58] font-semibold mb-2">
                       {t("Artwork Creation Year ")}
                     </label>
@@ -1059,6 +1042,7 @@ const AddArtwork = () => {
                           selectedYear={field.value}
                           toggleCalendar={toggleCalendar}
                           showCalendar={showCalendar}
+                          // disabled={query}
                         />
                       )}
                     />
@@ -1070,9 +1054,11 @@ const AddArtwork = () => {
                         {t("Select Series")}
                       </label>
                       <p className="text-[#5C59E8] text-sm sm:text-base flex items-center gap-[2px] cursor-pointer">
-                        <span onClick={() => setIsPopupOpen(true)}>
-                          <TiPlus size="1.2em" />
-                        </span>
+                        {query ? null : (
+                          <span onClick={() => setIsPopupOpen(true)}>
+                            <TiPlus size="1.2em" />
+                          </span>
+                        )}
                       </p>
                     </div>
 
@@ -1189,7 +1175,7 @@ const AddArtwork = () => {
                               className="w-28 h-28 object-cover"
                             />
                             <span
-                              className={`absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center ${
+                              className={`absolute top-1 right-1 bg-red-500 cursor-pointer text-white rounded-full w-6 h-6 flex items-center justify-center ${
                                 query ? "pointer-events-none opacity-50" : ""
                               }`}
                               onClick={() => removeImage("mainImage", 0)}
@@ -1256,7 +1242,7 @@ const AddArtwork = () => {
                               className="w-28 h-28 object-cover"
                             />
                             <span
-                              className={`absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center ${
+                              className={`absolute top-1 right-1 cursor-pointer bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center ${
                                 query ? "pointer-events-none opacity-50" : ""
                               }`}
                               onClick={() => removeImage("backImage", 0)}
@@ -1323,7 +1309,7 @@ const AddArtwork = () => {
                               className="w-28 h-28 object-cover"
                             />
                             <span
-                              className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center "
+                              className="absolute top-1 right-1 cursor-pointer bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center "
                               onClick={() => removeImage("inProcessImage", 0)}
                             >
                               &times;
@@ -1398,7 +1384,7 @@ const AddArtwork = () => {
                                     className="w-28 h-28 object-cover"
                                   />
                                   <span
-                                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center "
+                                    className="absolute top-1 right-1 bg-red-500 cursor-pointer text-white rounded-full w-6 h-6 flex items-center justify-center "
                                     onClick={() =>
                                       removeImage("images", i, "File")
                                     } // Remove image by index
@@ -1419,7 +1405,7 @@ const AddArtwork = () => {
                                     className="w-28 h-28 object-cover"
                                   />
                                   <span
-                                    className={`absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center ${
+                                    className={`absolute top-1 right-1 cursor-pointer bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center ${
                                       query
                                         ? "pointer-events-none opacity-50"
                                         : ""
@@ -1495,7 +1481,7 @@ const AddArtwork = () => {
                               controls
                             />
                             <span
-                              className={`absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center ${
+                              className={`absolute top-1 right-1 cursor-pointer bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center ${
                                 query ? "pointer-events-none opacity-50" : ""
                               }`}
                               onClick={() => removeImage("mainvideo", 0)}
@@ -1563,36 +1549,32 @@ const AddArtwork = () => {
                                 controls
                               />
                               <span
-                                className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
+                                className="absolute top-1 right-1 cursor-pointer bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
                                 onClick={() => removeVideo(i, "File")} // Custom function to remove video from state
                               >
                                 &times;
                               </span>
                             </div>
                           ))}
-                        {initialValues.existingVideo &&
-                        initialValues.existingVideo.length > 0 ? (
-                          initialValues.existingVideo.map(
-                            (video, i = otherVideo.length + 1) => (
-                              <div key={i} className="relative">
-                                <video
-                                  src={`${data?.url}/videos/${video}`} // Use the URL for the video preview
-                                  className="w-28 max-h-28 object-cover mb-4"
-                                  controls
-                                />
-                                <span
-                                  className={`absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center ${
-                                    query
-                                      ? "pointer-events-none opacity-50"
-                                      : ""
-                                  }`}
-                                  onClick={() => removeExistingVideo(i, "Url")}
-                                >
-                                  &times;
-                                </span>
-                              </div>
-                            )
-                          )
+
+                        {exVidoes && exVidoes.length > 0 ? (
+                          exVidoes.map((video, i = otherVideo.length + 1) => (
+                            <div key={i} className="relative">
+                              <video
+                                src={`${data?.url}/videos/${video}`} // Use the URL for the video preview
+                                className="w-28 max-h-28 object-cover mb-4"
+                                controls
+                              />
+                              <span
+                                className={`absolute top-1 right-1 bg-red-500 cursor-pointer text-white rounded-full w-6 h-6 flex items-center justify-center ${
+                                  query ? "pointer-events-none opacity-50" : ""
+                                }`}
+                                onClick={() => removeExistingVideo(i, "Url")}
+                              >
+                                &times;
+                              </span>
+                            </div>
+                          ))
                         ) : (
                           <img
                             src={video_icon}

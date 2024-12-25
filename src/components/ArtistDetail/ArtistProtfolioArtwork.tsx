@@ -68,7 +68,7 @@ const ArtistProtfolioArtwork = ({ data }) => {
               <img
                 src={`${data.url}/users/${item.media.mainImage}`}
                 alt="image"
-                className="w-[40vw] h-[50vh] object-cover cursor-pointer "
+                className="w-full md:w-[40vw] lg:w-[40vw] h-[50vh] object-cover cursor-pointer "
                 onClick={() => handleRedirectToDescription(item._id)}
               />
               {/* 

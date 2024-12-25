@@ -40,13 +40,25 @@ const ArtistHeader = ({ data }) => {
     (item, index) => item
   );
 
+  const additionalVidoes = data?.artist?.profile?.additionalVideo?.map(
+    (item, index) => item
+  );
+  console.log(data?.artist?.profile);
+
+  const url2 = "https://dev.freshartclub.com/images/videos";
+
   const images = data?.artist
     ? [
         { src: data?.artist?.profile?.mainImage, alt: "Main Image" },
         { src: data?.artist?.profile?.inProcessImage, alt: "In Process Image" },
+        { src: data?.artist?.profile?.mainVideo, alt: "Main Video" },
         ...additionalImage?.map((item) => ({
           src: item,
           alt: "Additional Image",
+        })),
+        ...additionalVidoes?.map((item) => ({
+          src: item,
+          alt: "Additional Video",
         })),
       ]
     : [];
@@ -102,27 +114,50 @@ const ArtistHeader = ({ data }) => {
       <div className="mt-4">
         <div className=" ">
           <Slider {...settings} ref={sliderRef} className="discover_more">
-            {images.map((slide, index) => (
-              <div key={index}>
-                <img
-                  src={`${data?.url}/users/${slide.src}`}
-                  alt={`Slide ${index + 1}`}
-                  className="mx-auto  object-cover"
-                />
-              </div>
-            ))}
+            {images.map((slide, index) => {
+              const isVideo = slide?.src && slide?.src?.endsWith(".mp4"); // Check if the source is a video
+
+              return (
+                <div key={index}>
+                  {isVideo ? (
+                    <video
+                      src={`${url2}/${slide?.src}`}
+                      className="mx-auto w-full h-[40vh] sm:h-[50vh] md:h-[55vh] lg:h-[60vh] object-cover rounded-lg"
+                      controls
+                    />
+                  ) : (
+                    <img
+                      src={`${data?.url}/users/${slide?.src}`}
+                      alt={`Slide ${index + 1}`}
+                      className="mx-auto w-full h-[40vh] sm:h-[50vh] md:h-[55vh] lg:h-[60vh] object-cover rounded-lg"
+                    />
+                  )}
+                </div>
+              );
+            })}
           </Slider>
         </div>
 
-        <div className="flex gap-5 justify-center my-5">
+        <div className="flex gap-5 justify-center my-5 overflow-x-auto">
           {images.map((thumb, index) => {
             console.log(thumb);
+            const isVideo = thumb?.src && thumb?.src?.endsWith(".mp4");
+            if (isVideo) {
+              return (
+                <video
+                  key={index}
+                  src={`${url2}/${thumb.src}`}
+                  className="mb-4 w-12 h-16 md:w-16 md:h-20 lg:w-20 lg:h-24 object-cover"
+                  controls
+                />
+              );
+            }
             return (
               <img
                 key={index}
-                src={`${data?.url}/users/${thumb.src}`}
+                src={`${data?.url}/users/${thumb?.src}`}
                 alt={thumb.alt}
-                className="mb-4 lg:w-20 lg:h-24 object-cover"
+                className="mb-4 w-12 h-16 md:w-16 md:h-20 lg:w-20 lg:h-24 object-cover"
                 onClick={() => handleThumbnailClick(index)}
               />
             );

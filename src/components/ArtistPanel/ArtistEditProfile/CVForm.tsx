@@ -84,7 +84,7 @@ const CVForm: React.FC<CVFormProps> = ({
               defaultValue={cv.year}
             >
               <option value="">Year</option>
-              {Array.from({ length: 10 }, (_, i) => {
+              {Array.from({ length: 40 }, (_, i) => {
                 const year = new Date().getFullYear() - i;
                 return (
                   <option key={year} value={year}>

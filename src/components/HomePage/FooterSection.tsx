@@ -18,6 +18,8 @@ const FooterSection = () => {
 
   const token = localStorage.getItem("auth_token");
 
+  const isArtist = useAppSelector((state) => state.user.isArtist);
+
   return (
     <>
       <footer className="bg-[#102030] text-white pt-16 pb-6 z-[5]">
@@ -163,15 +165,18 @@ const FooterSection = () => {
                     </li>
                   </>
                 )}
-                <li>
-                  <Link
-                    to="/become_artist"
-                    className="text-sm hover:underline"
-                    onClick={scrolToTop}
-                  >
-                    Become An Artist
-                  </Link>
-                </li>
+                {isArtist ? null : (
+                  <li>
+                    <Link
+                      to="/become_artist"
+                      className="text-sm hover:underline"
+                      onClick={scrolToTop}
+                    >
+                      Become An Artist
+                    </Link>
+                  </li>
+                )}
+
                 <li>
                   <Link
                     to="/terms"
