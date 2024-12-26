@@ -21,10 +21,14 @@ import AddArtwork2 from "./AddArtwork/AddArtwork2";
 import AddArtwork from "./AddArtwork/AddArtwork";
 
 const ArtistPanel = () => {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   return (
     <>
+      <ArtistNavBar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
       <div className=" flex w-full overflow-hidden">
-        <Sidebar />
+        <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+
         <div className="flex-1 sm:px-6 lg:px-3 bg-zinc-100 ">
           <Routes>
             <Route index element={<Dashboard />} />

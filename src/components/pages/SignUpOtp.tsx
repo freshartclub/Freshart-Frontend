@@ -53,10 +53,10 @@ const SignUpOtp = () => {
     try {
       const newData = {
         id: localId,
-        otp: data.passCode, // Ensure you're sending the correct OTP data
+        otp: data.passCode,
       };
 
-      await mutateAsync(newData);
+      await mutateAsync(newData).then(() => navigate("/priceandplans"));
     } catch (error) {
       console.error(error.message);
     }

@@ -150,8 +150,10 @@ const AddArtwork = () => {
   const [hasMainVideo, setHasMainVideo] = useState(true);
   const [hasMainImg, setHasMainImg] = useState(true);
   const qrCodeRef = useRef(null);
+  const [isComingSoon, setIsComingSoon] = useState(null);
 
   const [isDropdownOpen, setDropdownOpen] = useState(false);
+
   const [selectedOptions, setSelectedOptions] = useState([]);
 
   const [newOtherVideo, setNewOtherVideo] = useState([]);
@@ -170,8 +172,8 @@ const AddArtwork = () => {
 
   const { data: userData, isLoading: userIsLoading } = useGetArtistDetails();
   const userID = userData?.data?.artist?._id;
-  const vatAmount = userData?.data?.artist?.invoice?.vatAmount;
-  const isArtProvider = useAppSelector((state) => state.user.isArtProvider);
+
+  const isArtProvider = userData?.data?.artist?.commercilization?.artProvider;
 
   const { data: technicData, isLoading: technicLoading } = useGetTechnic();
 
@@ -193,6 +195,10 @@ const AddArtwork = () => {
 
   const { mutate: modifyMuatate, isPending: modifyIsPending } =
     usePostModifyArtworkMutation();
+
+  const vatAmount = data?.data?.pricing?.vatAmount
+    ? data?.data?.pricing?.vatAmount
+    : userData?.data?.artist?.invoice?.vatAmount;
 
   const [initialValues, setInitialValues] = useState({
     artworkName: "",
@@ -468,10 +474,8 @@ const AddArtwork = () => {
         "packageWidth",
         data?.data?.inventoryShipping?.packageWidth || ""
       );
-      setValue(
-        "comingSoon",
-        data?.data?.inventoryShipping?.comingSoon || Boolean
-      );
+
+      setIsComingSoon(data?.data?.inventoryShipping?.comingSoon || Boolean);
     }
   }, [id, data, inProcessImage, setInitialValues, seriesData]);
 
@@ -693,6 +697,7 @@ const AddArtwork = () => {
       values.hasBackImg = hasBackImg;
       values.hasInProcessImg = hasInProcessImg;
       values.hasMainVideo = hasMainVideo;
+      values.comingSoon = isComingSoon;
 
       const formData = new FormData();
 
@@ -1029,7 +1034,7 @@ const AddArtwork = () => {
                     className={`w-full ${query ? "pointer-events-none" : ""}`}
                   >
                     <label className="block text-sm sm:text-base text-[#203F58] font-semibold mb-2">
-                      {t("Artwork Creation Year ")}
+                      {t("Artwork Creation Year ")}*
                     </label>
 
                     <Controller
@@ -1120,7 +1125,7 @@ const AddArtwork = () => {
 
                 <>
                   <label className="block text-sm sm:text-base mb-2 font-semibold text-[#203F58]">
-                    {t("Artwork Description")}
+                    {t("Artwork Description")}*
                   </label>
                   <textarea
                     {...register("productDescription")}
@@ -1156,7 +1161,7 @@ const AddArtwork = () => {
                         }}
                         className="mb-2 text-[#203F58]"
                       >
-                        {t("Main Photo")}
+                        {t("Main Photo")}*
                       </Header>
                       <input
                         type="file"
@@ -1704,7 +1709,7 @@ const AddArtwork = () => {
                       value: item,
                       label: item,
                     }))}
-                    placeholder="Select Artwork Style"
+                    placeholder="Select Artwork Style *"
                     isMulti
                     isDisabled={query ? true : false}
                     value={getValues("artworkStyleType")}
@@ -1739,7 +1744,7 @@ const AddArtwork = () => {
                 <div className="mt-3 mb-2">
                   <Select
                     options={emotions ? emotions : []}
-                    placeholder="Emotions"
+                    placeholder="Emotions *"
                     isMulti
                     isDisabled={query ? true : false}
                     {...register("emotions", {
@@ -1777,7 +1782,7 @@ const AddArtwork = () => {
                 <div className="mb-3">
                   <Select
                     options={colors ? colors : []}
-                    placeholder="Select Color"
+                    placeholder="Select Color  *"
                     // name="colors"
                     {...register("colors", {
                       required: "Colors are required",
@@ -1876,7 +1881,7 @@ const AddArtwork = () => {
 
                 <div className=" md:grid-cols-2 gap-3 mt-4 mb-4">
                   <label className="text-[#203F58] font-semibold">
-                    Material
+                    Material *
                     <select
                       as="select"
                       id="Material"
@@ -1905,7 +1910,7 @@ const AddArtwork = () => {
                   {artwork_orientation?.map((field) => (
                     <span key={field.name}>
                       <label className="p-1 text-[14px] text-[#203F58] font-semibold">
-                        {field.label}
+                        {field.label} *
                       </label>
                       <input
                         type="text"
@@ -1946,6 +1951,11 @@ const AddArtwork = () => {
                       <option>Yes </option>
                       <option>No</option>
                     </select>
+                    {errors.hangingAvailable ? (
+                      <div className="error text-red-500 mt-1 text-sm">
+                        {errors.hangingAvailable.message}
+                      </div>
+                    ) : null}
                   </label>
 
                   {getValues("hangingAvailable") === "Yes" ? (
@@ -1965,7 +1975,7 @@ const AddArtwork = () => {
                   ) : null}
 
                   <label className="text-[#203F58] text-sm sm:text-bas  font-semibold ">
-                    Framed
+                    Framed *
                     <select
                       as="select"
                       id="Farmed"
@@ -1990,7 +2000,7 @@ const AddArtwork = () => {
                   {getValues("framed") === "Yes" ? (
                     <>
                       <label className="text-[#203F58] text-sm sm:text-base font-semibold">
-                        Framed Description
+                        Framed Description *
                         <textarea
                           id="framedDescription"
                           {...register("framedDescription", {
@@ -2011,7 +2021,7 @@ const AddArtwork = () => {
                         {Framed_dimension?.map((field) => (
                           <span key={field.name}>
                             <label className="p-1 text-[14px] text-[#203F58] font-semibold">
-                              {field.label} (cm)
+                              {field.label} (cm) *
                             </label>
                             <input
                               {...register(field.name, {
@@ -2038,7 +2048,7 @@ const AddArtwork = () => {
                   ) : null}
 
                   <label className="text-[#203F58] text-sm sm:text-base font-semibold  ">
-                    Artwork orientation
+                    Artwork orientation *
                     <select
                       as="select"
                       id="artworkOrientation"
@@ -2073,7 +2083,7 @@ const AddArtwork = () => {
                   }}
                   className="mb-4"
                 >
-                  Commercialization
+                  Commercialization *
                 </Header>
 
                 <div
@@ -2308,7 +2318,6 @@ const AddArtwork = () => {
                         })}
                         id="basePrice"
                         placeholder="Enter Base Price"
-                        // name="currency"
                         disabled={query}
                         className="bg-[#F9F9FC] mb-3 mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
                       />
@@ -2367,7 +2376,6 @@ const AddArtwork = () => {
                           name="basePrice"
                           id="basePrice"
                           placeholder="€ Type base price here..."
-                          // value={values.basePrice}
                           readOnly={query ? true : false}
                           className="bg-[#F9F9FC] border mb-3 border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5"
                         />
@@ -2497,7 +2505,7 @@ const AddArtwork = () => {
 
                 <div className="">
                   <label className="text-[#203F58] sm:text-base font-semibold ">
-                    Package Material
+                    Package Material *
                     <select
                       as="select"
                       id="packageMaterial"
@@ -2566,7 +2574,7 @@ const AddArtwork = () => {
                   {package_dimension.map((field) => (
                     <span key={field.name}>
                       <label className="p-1 text-[14px] text-[#203F58] font-semibold">
-                        {field.label}
+                        {field.label} *
                       </label>
                       <input
                         type="text"
@@ -2592,7 +2600,10 @@ const AddArtwork = () => {
                   <label className="flex items-center text-sm">
                     <input
                       type="checkbox"
-                      {...register("comingSoon")}
+                      onChange={(e) => {
+                        setIsComingSoon((prev) => !prev);
+                      }}
+                      value={isComingSoon}
                       id="comingSoon"
                       className="mr-2"
                     />

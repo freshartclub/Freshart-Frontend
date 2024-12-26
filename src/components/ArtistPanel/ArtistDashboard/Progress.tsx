@@ -2,6 +2,7 @@ import { PiDotsThreeVerticalBold } from "react-icons/pi";
 import ProgressBar from "./ProgressBar";
 import { IoArrowUp } from "react-icons/io5";
 import { IoArrowDownSharp } from "react-icons/io5";
+
 const Progress = () => {
   const progress = [
     {
@@ -12,60 +13,58 @@ const Progress = () => {
       today: "1.5k",
     },
   ];
-  return (
-    <div>
-      <div className="p-4">
-        <div className="flex justify-between">
-          <p className="text-[18px] font-semibold text-black">Sales Progress</p>
-          <PiDotsThreeVerticalBold className="text-[16px]" />
-        </div>
-        <p className="text-[14px]">This Quarter</p>
 
-        <div>
-          {progress.map((value, index) => (
-            <div
-              key={index}
-              className="flex flex-col justify-center items-center"
-            >
-              <ProgressBar progress={value.percentage} className="mx-auto" />
-              <div>
-                <p>
-                  You succeed earn <span>{value.todaysale}</span> today, its
-                  higher than yesterday
-                </p>
-                <div className="flex justify-around gap-2 pt-2">
-                  <div>
-                    <p>Target</p>
-                    <div className="flex gap-1 items-center">
-                      <p className="font-bold text-black text-[20px]">
-                        {value.target}
-                      </p>
-                      <IoArrowDownSharp className="text-red-500" />
-                    </div>
+  return (
+    <div className="p-4 ">
+      <div className="flex justify-between items-center">
+        <p className="text-[18px] font-semibold text-black">Sales Progress</p>
+        <PiDotsThreeVerticalBold className="text-[16px] cursor-pointer" />
+      </div>
+      <p className="text-[14px] text-gray-500">This Quarter</p>
+
+      <div>
+        {progress.map((value, index) => (
+          <div
+            key={index}
+            className="flex flex-col justify-center items-center mt-4"
+          >
+            {/* Progress Bar */}
+            <ProgressBar progress={value.percentage} className="mx-auto" />
+
+            <div className="mt-4 w-full">
+              <p className="text-center">
+                You earned{" "}
+                <span className="font-semibold">{value.todaysale}</span> today,
+                which is higher than yesterday.
+              </p>
+
+              {/* Sales Information */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
+                <div className="text-center">
+                  <p className="text-sm text-gray-600">Target</p>
+                  <div className="flex justify-center items-center gap-1">
+                    <p className="font-bold text-xl">{value.target}</p>
+                    <IoArrowDownSharp className="text-red-500" />
                   </div>
-                  <div>
-                    <p>Revenue</p>
-                    <div className="flex gap-1 items-center">
-                      <p className="font-bold text-black text-[20px]">
-                        {value.revenue}
-                      </p>
-                      <IoArrowUp className="text-green-700" />
-                    </div>
+                </div>
+                <div className="text-center">
+                  <p className="text-sm text-gray-600">Revenue</p>
+                  <div className="flex justify-center items-center gap-1">
+                    <p className="font-bold text-xl">{value.revenue}</p>
+                    <IoArrowUp className="text-green-700" />
                   </div>
-                  <div>
-                    <p>Today</p>
-                    <div className="flex gap-1 items-center">
-                      <p className="font-bold text-black text-[20px]">
-                        {value.today}
-                      </p>
-                      <IoArrowUp className="text-green-700" />
-                    </div>
+                </div>
+                <div className="text-center">
+                  <p className="text-sm text-gray-600">Today</p>
+                  <div className="flex justify-center items-center gap-1">
+                    <p className="font-bold text-xl">{value.today}</p>
+                    <IoArrowUp className="text-green-700" />
                   </div>
                 </div>
               </div>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
     </div>
   );

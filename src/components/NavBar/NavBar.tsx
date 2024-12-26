@@ -38,7 +38,7 @@ const NavBar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-
+  const [scrolled, setScrolled] = useState(false);
   const url = "https://dev.freshartclub.com/images";
 
   const closePopup = useRef(null);
@@ -51,13 +51,17 @@ const NavBar = () => {
 
   const { data: disciplineData, isLoading: artistLoading } = useGetDiscipline();
 
+  console.log("this is from _________________", disciplineData?.data);
+
   const selectSeriesPicklist = seriesPickList?.data?.filter(
     (item) => item?.picklistName === "Series"
   );
 
-  const { data: artistData, isLoading } = useGetArtistDetails();
+  const { isLoading, refetch } = useGetArtistDetails();
 
-  useEffect(() => {}, [artistData]);
+  useEffect(() => {
+    refetch();
+  }, []);
 
   const isArtist = useAppSelector((state) => state?.user?.isArtist) || null;
   const user = useAppSelector((state) => state.user.user);
@@ -115,13 +119,27 @@ const NavBar = () => {
     setIsModalOpen((Modalprev) => !Modalprev);
   };
 
-  // if (loading) {
-  //   return <div>Loading...</div>;
-  // }
+  // Detect scroll event
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <>
-      <nav className="bg-[#102030] py-6 px-10">
+      <nav
+        className={`bg-[#102030] py-6 px-10 sticky top-0 z-50 transition-transform duration-300 ${
+          scrolled ? "transform translate-y-0" : "translate-y-0"
+        }`}
+      >
         <div className="flex justify-between">
           {token && isAuthorized ? (
             <>
@@ -162,8 +180,8 @@ const NavBar = () => {
                           <ul className="space-y-4 w-[10vw]">
                             <li className="uppercase font-bold">Discipline</li>
 
-                            {disciplineData && disciplineData.length > 0
-                              ? disciplineData?.map((item, i) => (
+                            {disciplineData && disciplineData?.data?.length > 0
+                              ? disciplineData?.data?.map((item, i) => (
                                   <li
                                     key={i}
                                     onClick={() => setIsDropdownOpen(false)}

@@ -65,7 +65,6 @@ const AccountSetting = () => {
 
   const onSubmit = (values) => {
     console.log("Form data:", values);
-    // Handle form submission logic here
   };
 
   return (
@@ -174,12 +173,20 @@ const AccountSetting = () => {
                   </div>
                 </div>
 
-                <div className="md:w-[30%] w-full flex flex-col justify-center items-center">
+                <div className="md:w-[30%] w-full flex flex-col  relative justify-center items-center">
                   <img
                     src={profileImage || image_icon}
                     alt="Profile"
                     className="mx-auto"
                   />
+                  <span
+                    className={`absolute top-5 right-0 bg-red-500 ${
+                      profileImage ? "block" : "hidden"
+                    } text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer`}
+                    onClick={() => setProfileImage(null)}
+                  >
+                    &times;
+                  </span>
                   <span className="flex items-center rounded-full">
                     <input
                       onChange={handleImageChange}

@@ -65,87 +65,77 @@ const HighlightSection = ({ data }) => {
         Highlighted for you
       </h1>
       <div>
-        {data?.highlighted?.length > 4 ? (
-          data?.highlighted?.map((item, index) => (
-            <div
-              key={index}
-              className="sm:px-3 px-0 border-none outline-none relative cursor-pointer"
-              onClick={() => handleRedirectToDescription(item?._id)}
-            >
-              <img
-                src={`${data.url}/users/${item.media.mainImage}`}
-                alt="image"
-                className="w-[20vw] h-[50vh] object-cover"
-              />
-
-              <button className="absolute top-2 right-[28px] border border-[#FFD9DE] rounded-full px-3 py-3 bg-white cursor-pointer">
-                <img src={like} alt="like" className="w-[20px] h-[20px]" />
-              </button>
-
-              <div className="mt-3">
-                <p className="text-[14px] text-[#696868]">
-                  {item?.discipline?.artworkDiscipline}
-                </p>
-                <div className="flex justify-between items-center">
-                  <h1 className="font-bold text-[20px] text-[#333333]  xl:w-[80%] lg:w-[70%] w-[80%] line-clamp-2">
-                    {item?.artworkName}
-                  </h1>
-                  <p className="text-[14px] text-[#696868]">
-                    {`${item?.additionalInfo?.length} x ${item?.additionalInfo?.width}`}
+        {data?.highlighted?.length < 4 ? (
+          <div className="flex flex-wrap justify-center gap-4">
+            {data?.highlighted?.map((item, index) => (
+              <div
+                key={index}
+                className="relative cursor-pointer w-full sm:w-[18rem] md:w-[22rem] lg:w-[25rem] px-3"
+                onClick={() => handleRedirectToDescription(item?._id)}
+              >
+                <img
+                  src={`${data.url}/users/${item.media.mainImage}`}
+                  alt="image"
+                  className="w-full h-[40vh] sm:h-[45vh] md:h-[50vh] object-cover rounded-lg"
+                />
+                <button className="absolute top-2 right-2 border border-[#FFD9DE] rounded-full p-2 bg-white cursor-pointer">
+                  <img src={like} alt="like" className="w-5 h-5" />
+                </button>
+                <div className="mt-3">
+                  <p className="text-sm text-gray-500">
+                    {item?.discipline?.artworkDiscipline}
                   </p>
-                  <div>
-                    <p className="text-[14px] text-[#696868]">{item?.size}</p>
+                  <div className="flex justify-between items-center mt-2">
+                    <h1 className="font-bold text-lg text-gray-800 line-clamp-2">
+                      {item?.artworkName}
+                    </h1>
+                    <p className="text-sm text-gray-500">
+                      {`${item?.additionalInfo?.length} x ${item?.additionalInfo?.width}`}
+                    </p>
                   </div>
+                  <p className="text-sm text-gray-500">{item?.size}</p>
+                  <p className="text-sm text-gray-500 mt-1">
+                    {item?.owner?.artistName}
+                  </p>
                 </div>
-                <p className="text-[14px] text-[#696868]">
-                  {item?.owner?.artistName}
-                </p>
               </div>
-            </div>
-          ))
+            ))}
+          </div>
         ) : (
           <Slider {...settings}>
-            {data?.highlighted &&
-              data?.highlighted.length > 0 &&
-              data?.highlighted.map((item, index) => (
-                <div
-                  key={index}
-                  className="sm:px-3 px-0 border-none outline-none relative cursor-pointer"
-                  onClick={() => handleRedirectToDescription(item?._id)}
-                >
-                  <img
-                    src={`${data.url}/users/${item.media.mainImage}`}
-                    alt="image"
-                    className="w-full h-full md:w-[20vw] md:h-[50vh] object-cover"
-                  />
-
-                  <button className="absolute top-2 right-[28px] border border-[#FFD9DE] rounded-full px-3 py-3 bg-white cursor-pointer">
-                    <img src={like} alt="like" className="w-[20px] h-[20px]" />
-                  </button>
-
-                  <div className="mt-3">
-                    <p className="text-[14px] text-[#696868]">
-                      {item?.discipline?.artworkDiscipline}
-                    </p>
-                    <div className="flex justify-between items-center">
-                      <h1 className="font-bold text-[20px] text-[#333333]  xl:w-[80%] lg:w-[70%] w-[80%] line-clamp-2">
-                        {item?.artworkName}
-                      </h1>
-                      <p className="text-[14px] text-[#696868]">
-                        {`${item?.additionalInfo?.length} x ${item?.additionalInfo?.width}`}
-                      </p>
-                      <div>
-                        <p className="text-[14px] text-[#696868]">
-                          {item?.size}
-                        </p>
-                      </div>
-                    </div>
-                    <p className="text-[14px] text-[#696868]">
-                      {item?.owner?.artistName}
+            {data?.highlighted?.map((item, index) => (
+              <div
+                key={index}
+                className="relative cursor-pointer px-3"
+                onClick={() => handleRedirectToDescription(item?._id)}
+              >
+                <img
+                  src={`${data.url}/users/${item.media.mainImage}`}
+                  alt="image"
+                  className="w-full h-[40vh] sm:h-[45vh] md:h-[50vh] object-cover "
+                />
+                <button className="absolute top-2 right-7 border border-[#FFD9DE] rounded-full p-2 bg-white cursor-pointer">
+                  <img src={like} alt="like" className="w-5 h-5" />
+                </button>
+                <div className="mt-3">
+                  <p className="text-sm text-gray-500">
+                    {item?.discipline?.artworkDiscipline}
+                  </p>
+                  <div className="flex justify-between items-center mt-2">
+                    <h1 className="font-bold text-lg text-gray-800 line-clamp-2">
+                      {item?.artworkName}
+                    </h1>
+                    <p className="text-sm text-gray-500">
+                      {`${item?.additionalInfo?.length} x ${item?.additionalInfo?.width} cm`}
                     </p>
                   </div>
+                  <p className="text-sm text-gray-500">{item?.size}</p>
+                  <p className="text-sm text-gray-500 mt-1">
+                    {item?.owner?.artistName}
+                  </p>
                 </div>
-              ))}
+              </div>
+            ))}
           </Slider>
         )}
       </div>

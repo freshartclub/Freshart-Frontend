@@ -107,11 +107,9 @@ const filterData = [
   },
 ];
 
-
 const ITEMS_PER_PAGE = 8;
 
 const AplhaFilter = ({ query, data }: any) => {
-
   const [selectedLetter, setSelectedLetter] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
@@ -199,7 +197,7 @@ const AplhaFilter = ({ query, data }: any) => {
           filteredItems?.map((item, index) => (
             <div key={index} className=" text-center">
               <div
-                className="mt-14 rounded-lg border border-[#FF536B] flex flex-col items-center"
+                className="mt-14 rounded-lg border cursor-pointer border-[#FF536B] flex flex-col items-center"
                 onClick={() => handleArtistDetail(item?._id)}
               >
                 <img

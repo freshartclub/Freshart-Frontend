@@ -28,7 +28,7 @@ const VerifySignUpMutation = () => {
 
     onSuccess: async (res, input) => {
       setToken(res.data.token, input.rememberMe);
-      navigate("/priceandplans");
+
       dispatch(forgotPasswordUserId({ userId: res.data.id }));
       dispatch(setIsAuthorized(true));
       localStorage.setItem("profile", "user");

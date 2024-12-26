@@ -83,11 +83,11 @@ const BannerSection = () => {
     <>
       <Slider {...settings} className="banner_arrow">
         {bannerData.map((item, index) => (
-          <div key={index} className=" flex items-center justify-center">
+          <div key={index} className=" flex items-center">
             <img
               src={item.image1}
               alt="banner"
-              className="w-full h-screen relative"
+              className="w-full h-screen relative object-fill"
             />
             <div className="container mx-auto md:px-6 px-3">
               <div className="absolute 2xl:top-32 xl:top-24 lg:top-16 sm:top-8 top-5">

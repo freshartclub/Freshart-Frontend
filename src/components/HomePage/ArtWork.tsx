@@ -204,7 +204,7 @@ const Artwork = ({ data }) => {
         Newly Added Artworks
       </h1>
       <div>
-        {data?.newAdded?.length > 4 ? (
+        {data?.newAdded?.length < 4 ? (
           data?.newAdded?.map((item, index) => (
             <div
               key={index}

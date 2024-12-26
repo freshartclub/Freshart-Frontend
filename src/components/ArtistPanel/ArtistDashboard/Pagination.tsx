@@ -47,120 +47,105 @@ const Pagination = () => {
 
   return (
     <>
-      <div className="grid grid-cols-11 bg-gray-50 items-center my-auto h-10 p-2 overflow-x-auto">
-        {headerData.map((header, index) => (
-          <div key={index} className={`col-span-${header?.span} text-left`}>
-            <p className="font-semibold text-[16px] text-black">
-              {header?.title}
-            </p>
-          </div>
-        ))}
-      </div>
+      <div className="bg-white p-4">
+        {data && data.length > 0 ? (
+          <div className="w-full overflow-x-auto">
+            <table className="w-full border-collapse table-auto">
+              {/* Table Header */}
+              <thead>
+                <tr className="bg-gray-50">
+                  {headerData.map((header, index) => (
+                    <th
+                      key={index}
+                      className="text-left px-4 py-2 text-sm font-semibold text-black whitespace-nowrap"
+                    >
+                      {header?.title}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
 
-      {data && data?.length > 0 ? (
-        <div className="bg-white p-2 overflow-x-scroll">
-          {data &&
-            data.length > 0 &&
-            data.map((value, index) => (
-              <div key={index}>
-                <div className="grid grid-cols-11  h-auto pb-3 pt-3 bg-white ">
-                  <div
-                    onClick={() => handelClickData(value)}
-                    className="col-span-2 flex gap-2 cursor-pointer"
-                  >
-                    <div>
+              {/* Table Body */}
+              <tbody>
+                {data.map((value, index) => (
+                  <tr key={index} className="border-b">
+                    <td
+                      className="px-4 py-3 flex items-center gap-2 cursor-pointer whitespace-nowrap"
+                      onClick={() => handelClickData(value)}
+                    >
                       <img
                         src={`${url}/users/${value?.image}`}
                         alt="product image"
                         className="w-[2em] h-[2.5em] rounded-md"
                       />
-                    </div>
-                    <div>
-                      <p className="text-black font-bold text-[12px] md:text-[14px]">
-                        {value?.artWorkName}
+                      <div>
+                        <p className="text-black font-bold text-[12px] md:text-[14px]">
+                          {value?.artWorkName}
+                        </p>
+                        <p className="text-[10px] md:text-[14px]">
+                          {`${value?.length} x ${value?.width} x ${value?.height} cm`}
+                        </p>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      <p className="text-black font-semibold text-[12px] md:text-[14px]">
+                        {value?.artistName
+                          ? `${value?.artistName} ${value?.artistSurname1} ${value?.artistSurname2}`
+                          : null}
                       </p>
-                      <p className="text-[10px] md:text-[14px]">
-                        {`${value?.length} x ${value?.width} x ${value?.height} cm`}
+                      <p className="text-[10px] md:text-[12px]">
+                        {value?.email}
                       </p>
-                    </div>
-                  </div>
-
-                  <div className="col-span-2">
-                    <p className="text-black font-semibold text-[12px] md:text-[14px]">
-                      {value?.artistName
-                        ? `${value?.artistName} ${value?.artistSurname1} ${value?.artistSurname2}`
-                        : null}
-                    </p>
-                    <p className="text-[10px] md:text-[12px]">{value?.email}</p>
-                  </div>
-
-                  <div className="col-span-1">
-                    <p className="text-[12px] md:text-[14px] font-bold capitalize">
+                    </td>
+                    <td className="px-4 py-3 text-[12px] md:text-[14px] font-bold capitalize whitespace-nowrap">
                       {value?.orderType}
-                    </p>
-                  </div>
-
-                  <div className="col-span-1">
-                    <p className="text-[12px] md:text-[14px] font-bold">
+                    </td>
+                    <td className="px-4 py-3 text-[12px] md:text-[14px] font-bold whitespace-nowrap">
                       {formateCurrency(value?.subTotal, "$")}
-                    </p>
-                  </div>
-
-                  <div className="col-span-1">
-                    <p className="text-[12px] md:text-[14px] font-bold">
-                      {value.paymenttype}
-                    </p>
-                  </div>
-
-                  <div className="col-span-1">
-                    <p className="text-[12px] md:text-[14px] font-bold">
+                    </td>
+                    <td className="px-4 py-3 text-[12px] md:text-[14px] font-bold whitespace-nowrap">
+                      {value?.paymenttype}
+                    </td>
+                    <td className="px-4 py-3 text-[12px] md:text-[14px] font-bold whitespace-nowrap">
                       {dayjs(value?.createdAt).format("MMM D, YYYY")}
-                    </p>
-                    {/* <p className="text-[10px] md:text-[14px]">{value.time}</p> */}
-                  </div>
-
-                  <div className="col-span-2 ">
-                    <div
-                      className={`w-fit rounded-lg py-0 px-2 capitalize ${
-                        value.status === "processing"
-                          ? "bg-[#FDF1E8] text-[#E46A11]"
-                          : value.status === "Shiped"
-                          ? "bg-[#E8F8FD] text-[#13B2E4]"
-                          : "bg-[#E7F4EE] text-[#0D894F]"
-                      }`}
-                    >
-                      <p className="flex items-center pt-0 justify-center">
-                        {value.status}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="col-span-1">
-                    <div className="flex gap-4">
-                      <LuEye
-                        onClick={() => handelClickData(value)}
-                        className="text-[20px] hover:cursor-pointer"
-                      />
-                      <RiDeleteBin6Line className="text-[20px] hover:cursor-pointer" />
-                    </div>
-                  </div>
-                </div>
-                <hr />
-              </div>
-            ))}
-        </div>
-      ) : (
-        <div className="flex flex-col items-center justify-center bg-white h-[300px] border border-zinc-300">
-          <p className="text-lg text-center font-medium mb-4">
-            You don't have any Order yet.
-          </p>
-          {/* <NavLink to="/artist-panel/artwork/add">
-                <button className="px-6 py-2 bg-zinc-800 text-white rounded-lg">
-                  Add Artwork
-                </button>
-              </NavLink> */}
-        </div>
-      )}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      <div
+                        className={`w-fit rounded-lg py-0 px-2 capitalize ${
+                          value.status === "processing"
+                            ? "bg-[#FDF1E8] text-[#E46A11]"
+                            : value.status === "Shiped"
+                            ? "bg-[#E8F8FD] text-[#13B2E4]"
+                            : "bg-[#E7F4EE] text-[#0D894F]"
+                        }`}
+                      >
+                        <p className="flex items-center justify-center">
+                          {value.status}
+                        </p>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      <div className="flex gap-4">
+                        <LuEye
+                          onClick={() => handelClickData(value)}
+                          className="text-[20px] hover:cursor-pointer"
+                        />
+                        <RiDeleteBin6Line className="text-[20px] hover:cursor-pointer" />
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center bg-white h-[300px] border border-zinc-300">
+            <p className="text-lg text-center font-medium mb-4">
+              You don't have any Order yet.
+            </p>
+          </div>
+        )}
+      </div>
 
       <div className="bg-white">
         <PaginationTabs

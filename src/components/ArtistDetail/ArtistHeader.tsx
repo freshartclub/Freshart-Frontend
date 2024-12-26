@@ -24,18 +24,6 @@ const ArtistHeader = ({ data }) => {
     }
   };
 
-  // const images = data?.data
-  //   ? [
-  //       { src: data?.data.media?.mainImage, alt: "Main Image" },
-  //       { src: data?.data.media?.backImage, alt: "Back Image" },
-  //       { src: data?.data.media?.inProcessImage, alt: "In Process Image" },
-  //       ...additionalImage.map((item) => ({
-  //         src: item,
-  //         alt: "Additional Image",
-  //       })),
-  //     ]
-  //   : [];
-
   const additionalImage = data?.artist?.profile?.additionalImage?.map(
     (item, index) => item
   );
@@ -43,15 +31,29 @@ const ArtistHeader = ({ data }) => {
   const additionalVidoes = data?.artist?.profile?.additionalVideo?.map(
     (item, index) => item
   );
-  console.log(data?.artist?.profile);
 
   const url2 = "https://dev.freshartclub.com/images/videos";
 
   const images = data?.artist
     ? [
-        { src: data?.artist?.profile?.mainImage, alt: "Main Image" },
-        { src: data?.artist?.profile?.inProcessImage, alt: "In Process Image" },
-        { src: data?.artist?.profile?.mainVideo, alt: "Main Video" },
+        {
+          src: data?.artist?.profile?.mainImage
+            ? data?.artist?.profile?.mainImage
+            : null,
+          alt: "Main Image",
+        },
+        {
+          src: data?.artist?.profile?.inProcessImage
+            ? data?.artist?.profile?.inProcessImage
+            : null,
+          alt: "In Process Image",
+        },
+        {
+          src: data?.artist?.profile?.mainVideo
+            ? data?.artist?.profile?.mainVideo
+            : null,
+          alt: "Main Video",
+        },
         ...additionalImage?.map((item) => ({
           src: item,
           alt: "Additional Image",
@@ -60,7 +62,7 @@ const ArtistHeader = ({ data }) => {
           src: item,
           alt: "Additional Video",
         })),
-      ]
+      ].filter((image) => image.src !== null)
     : [];
 
   return (

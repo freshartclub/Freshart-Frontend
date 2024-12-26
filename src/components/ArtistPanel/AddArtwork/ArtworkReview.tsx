@@ -75,8 +75,6 @@ const DiscoverMore = () => {
 
   const url2 = "https://dev.freshartclub.com/images/videos";
 
-  console.log(data?.url);
-
   const images = data?.data
     ? [
         {

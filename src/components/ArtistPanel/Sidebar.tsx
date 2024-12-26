@@ -48,7 +48,7 @@ export const sections = [
     path: "order",
     submenu: [
       { key: "current", label: "Current Orders", path: "order" },
-      { key: "history", label: "Order History", path: "order/approve-order" },
+      // { key: "history", label: "Order History", path: "order/approve-order" },
     ],
   },
   {
@@ -81,10 +81,34 @@ export const sections = [
   },
 ];
 
-const Sidebar: React.FC = () => {
+const Sidebar: React.FC = ({ sidebarOpen, setSidebarOpen }) => {
   const [isOpen, setIsOpen] = useState(true);
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
   const location = useLocation();
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 640) {
+        setIsOpen(true);
+      }
+    };
+    const handleNormal = () => {
+      if (window.innerWidth > 640) {
+        setSidebarOpen(false);
+      }
+    };
+
+    handleResize();
+    handleNormal();
+
+    window.addEventListener("resize", handleResize);
+    window.addEventListener("resize", handleNormal);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("resize", handleNormal);
+    };
+  }, []);
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -97,13 +121,13 @@ const Sidebar: React.FC = () => {
   return (
     <div className={`flex transition-width duration-300 relative `}>
       <div
-        className={`${
-          isOpen ? "w-64" : "w-14"
-        } transition-all duration-300 h-screen flex flex-col bg-white`}
+        className={`${isOpen ? "w-64" : "w-14"} ${
+          sidebarOpen ? "left-[-20rem]" : "left-0"
+        } transition-all duration-300 h-screen absolute sm:relative md:relative lg:relative z-[50] flex flex-col bg-white`}
       >
         <button
           onClick={toggleSidebar}
-          className={`absolute top-0 -right-5 bg-white shadow-lg px-4 py-3.5 rounded-full transform transition-transform ${
+          className={`absolute top-0 invisible sm:visible lg:visible md:visible -right-5 bg-white shadow-lg px-4 py-3.5 rounded-full transform transition-transform ${
             isOpen ? "" : "rotate-180"
           }`}
         >

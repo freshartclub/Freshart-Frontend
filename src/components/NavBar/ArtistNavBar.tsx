@@ -13,7 +13,7 @@ import i18n from "../utils/i18n";
 import useClickOutside from "../utils/useClickOutside";
 import { GiHamburgerMenu } from "react-icons/gi";
 
-const ArtistNavBar = () => {
+const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
   const [isToogleOpen, setIsToggelOpen] = useState(false);
   const [isLanguageOpen, setIsLanguageOpen] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState("GB");
@@ -61,172 +61,101 @@ const ArtistNavBar = () => {
     navigate("/home", { replace: true });
     localStorage.setItem("profile", "user");
   };
+  const handleRedirect = () => {
+    navigate("/artist-panel/artdashboard");
+  };
 
   return (
-    <div className="w-full py-5 px-5 flex items-center gap-5 relative justify-between">
-      {/* <GiHamburgerMenu size="2em" /> */}
-      {/* Logo */}
-      <div className="overflow-hidden ">
-        <img
-          className="w-[8rem]  lg:block left-[20%] top-[50%] lg:w-full object-cover"
-          src={logo}
-          alt="Logo"
+    <div className="w-full mx-auto">
+      <div className="w-full py-5 px-5 flex items-center gap-5 relative justify-between">
+        <GiHamburgerMenu
+          className="cursor-pointer block sm:hidden md:hidden lg:hidden xl:hidden"
+          size="2em"
+          onClick={() => setSidebarOpen((prev) => !prev)}
         />
-      </div>
+        {/* Logo */}
+        <div className="overflow-hidden cursor-pointer ">
+          <img
+            onClick={handleRedirect}
+            className="w-[8rem]  lg:block left-[20%] top-[50%] lg:w-full object-cover"
+            src={logo}
+            alt="Logo"
+          />
+        </div>
 
-      {/* Main Navbar */}
-      <div className="flex items-center gap-5">
-        {/* Search Bar */}
-        {/* <div className="hidden lg:block">
-          <div className="flex items-center gap-2">
-            <input
-              placeholder="Search"
-              className="rounded outline-none px-2 py-1 border border-zinc-800 w-20"
-              type="text"
-            />
-            <IoMdSearch className="cursor-pointer" size="1.5em" />
-          </div>
-        </div> */}
+        <div className="flex items-center gap-5">
+          <IoNotifications
+            className="cursor-pointer hidden lg:block"
+            size="1.5em"
+          />
 
-        {/* Country Selector */}
-        {/* <div className="relative inline-block">
-          <div
-            className="flex   items-center space-x-2 cursor-pointer"
-            onClick={() => setIsLanguageOpen((prev) => !prev)}
+          <span
+            onClick={() => setIsToggelOpen(!isToogleOpen)}
+            className="rounded-full flex items-center justify-center cursor-pointer border p-1"
           >
-            <div>
-              <img
-                src={
-                  countries?.find(
-                    (country) => country?.code === selectedCountry
-                  )?.flag
-                }
-                alt={`${selectedCountry} Flag`}
-                className="w-6 h-4 rounded "
-              />
-            </div>
+            <img
+              src={`${url}/users/${user.profile.mainImage}`}
+              alt="User Profile"
+              className="w-8 h-8 object-cover rounded-full "
+            />
+            <p className="font-semibold ml-2 hidden lg:block">
+              {user.artistName} {user.artistSurname1} {user.artistSurname2}
+            </p>
+            <img
+              className={`ml-1 transition-transform duration-300 ${
+                isToogleOpen ? "rotate-180" : "rotate-0"
+              }`}
+              src={navigation_1}
+              alt="Toggle"
+            />
+          </span>
 
-            <span className="hidden lg:block">
-              {
-                countries.find((country) => country.code === selectedCountry)
-                  .name
-              }
-            </span>
-          </div>
+          {/* Dropdown Menu */}
+          {isToogleOpen && (
+            <div
+              ref={closePopup}
+              className="absolute  z-10 top-20 right-5 flex flex-col gap-4 text-sm bg-white border rounded-lg shadow-md py-5 px-6"
+            >
+              <Link
+                className="font-medium hover:bg-zinc-200 transition-all duration-200"
+                to="/artist-panel/edit-artistprofile"
+                onClick={() => setIsToggelOpen(false)}
+              >
+                Profile
+              </Link>
 
-          {isLanguageOpen && (
-            <div className="absolute mt-2 bg-white border rounded shadow-md z-10 w-40">
-              {countries.map((country) => (
-                <div
-                  key={country.code}
-                  className="flex items-center space-x-2 p-2 hover:bg-gray-100 cursor-pointer"
-                  onClick={() => {
-                    setSelectedCountry(country.code);
-                    setIsLanguageOpen(false);
-                    setLanguage(country.name);
-                  }}
-                >
-                  <img
-                    src={country.flag}
-                    alt={country.name}
-                    className="w-6 h-4 rounded"
-                  />
-                  <span>{country.name}</span>
-                </div>
-              ))}
+              <Link
+                className="font-medium hover:bg-zinc-200 transition-all duration-200"
+                to="/artist-panel/user/settings"
+                onClick={() => setIsToggelOpen(false)}
+              >
+                User Settings
+              </Link>
+
+              <Link
+                className="font-medium hover:bg-zinc-200 transition-all duration-200"
+                to="/artist-panel/user/settings"
+                onClick={() => setIsToggelOpen(false)}
+              >
+                Notification
+              </Link>
+
+              <button
+                className="font-medium hover:bg-zinc-200"
+                onClick={handleProfile}
+              >
+                Switch To User Profile
+              </button>
+              <button
+                className="bg-red-300 flex flex-col items-center justify-center gap-1 py-2 rounded hover:bg-red-400 font-medium"
+                onClick={handleLogOut}
+              >
+                <span>Sign Out</span>
+                <span className="text-[12px]">{user.email}</span>
+              </button>
             </div>
           )}
-        </div> */}
-
-        {/* Notifications */}
-        <IoNotifications
-          className="cursor-pointer hidden lg:block"
-          size="1.5em"
-        />
-
-        {/* User Profile */}
-        <span
-          onClick={() => setIsToggelOpen(!isToogleOpen)}
-          className="rounded-full flex items-center justify-center cursor-pointer border p-1"
-        >
-          <img
-            src={`${url}/users/${user.profile.mainImage}`}
-            alt="User Profile"
-            className="w-8 h-8 object-cover rounded-full "
-          />
-          <p className="font-semibold ml-2 hidden lg:block">
-            {user.artistName} {user.artistSurname1} {user.artistSurname2}
-          </p>
-          <img
-            className={`ml-1 transition-transform duration-300 ${
-              isToogleOpen ? "rotate-180" : "rotate-0"
-            }`}
-            src={navigation_1}
-            alt="Toggle"
-          />
-        </span>
-
-        {/* Dropdown Menu */}
-        {isToogleOpen && (
-          <div
-            ref={closePopup}
-            className="absolute  z-10 top-20 right-5 flex flex-col gap-4 text-sm bg-white border rounded-lg shadow-md py-5 px-6"
-          >
-            <Link
-              className="font-medium hover:bg-zinc-200 transition-all duration-200"
-              to={artistPanel.artistEditProfile}
-              onClick={() => setIsToggelOpen(false)}
-            >
-              Profile
-            </Link>
-
-            <Link
-              className="font-medium hover:bg-zinc-200 transition-all duration-200"
-              to={artistPanel.artistprofileOther}
-              onClick={() => setIsToggelOpen(false)}
-            >
-              User Settings
-            </Link>
-
-            {/* <Link
-              className="font-medium hover:bg-zinc-200 transition-all duration-200"
-              to={artistPanel.artistprofileOther}
-              onClick={() => setIsToggelOpen(false)}
-            >
-              Password
-            </Link>
-
-            <Link
-              className="font-medium hover:bg-zinc-200 transition-all duration-200"
-              to={artistPanel.artistprofileOther}
-              onClick={() => setIsToggelOpen(false)}
-            >
-              Currency
-            </Link> */}
-
-            <Link
-              className="font-medium hover:bg-zinc-200 transition-all duration-200"
-              to={artistPanel.artistprofileOther}
-              onClick={() => setIsToggelOpen(false)}
-            >
-              Notification
-            </Link>
-
-            <button
-              className="font-medium hover:bg-zinc-200"
-              onClick={handleProfile}
-            >
-              Switch To User Profile
-            </button>
-            <button
-              className="bg-red-300 flex flex-col items-center justify-center gap-1 py-2 rounded hover:bg-red-400 font-medium"
-              onClick={handleLogOut}
-            >
-              <span>Sign Out</span>
-              <span className="text-[12px]">{user.email}</span>
-            </button>
-          </div>
-        )}
+        </div>
       </div>
     </div>
   );

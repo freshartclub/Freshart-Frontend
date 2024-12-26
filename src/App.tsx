@@ -374,7 +374,7 @@ const App: React.FC = () => {
               }
             />
             <Route
-              path="/purchase"
+              path="/all-artworks"
               element={
                 <AuthGuard>
                   <Purchase />

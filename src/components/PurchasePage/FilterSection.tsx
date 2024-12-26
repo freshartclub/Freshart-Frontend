@@ -9,14 +9,8 @@ import Select from "react-select";
 import ArtworkGroup from "./ArtworkGroup";
 import CardSection from "./CardSection";
 import HighlightSection from "../HomePage/HighlightSection";
-
-const columnOptions = [
-  { value: 4, label: "4 Columns" },
-  { value: 5, label: "5 Columns" },
-  { value: 6, label: "6 Columns" },
-  { value: 7, label: "7 Columns" },
-  { value: 8, label: "8 Columns" },
-];
+import { useGetDiscipline } from "../pages/http/useGetDiscipline";
+import CustomSelect from "../utils/CustomSelect";
 
 const groupOption = [
   {
@@ -29,16 +23,36 @@ const groupOption = [
   },
 ];
 
-const FilterSection = ({ query, search }: any) => {
+const FilterSection = ({
+  query,
+  search,
+  setSelectedOption,
+  selectedOption,
+  techData,
+  themeData,
+  setSelectedTheme,
+  selectedTheme,
+  selectedTechnic,
+  setSelectedTechnic,
+  isLoading,
+  data,
+}: any) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(true);
   const [isThemeOpen, setIsThemeOpen] = useState(true);
   const [showArtwork, setShowArtwork] = useState(false);
-  const [selectedOption, setSelectedOption] = useState(null);
 
   const handleShowArtwork = () => {
     setShowArtwork((prevState) => !prevState);
   };
+
+  const { data: disciplineData, isLoading: disiplineLoading } =
+    useGetDiscipline();
+
+  const columnOptions = disciplineData?.data?.map((discipline) => ({
+    value: discipline.disciplineName,
+    label: discipline.disciplineName,
+  }));
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -373,7 +387,7 @@ const FilterSection = ({ query, search }: any) => {
           </div>
         </div>
 
-        <div className="flex lg:flex-row flex-col lg:items-center w-full 2xl:gap-10 xl:gap-10 gap-8 my-10">
+        <div className="flex items-center justify-between flex-wrap w-full gap-6  my-10">
           <div className="flex xl:flex-row flex-col xl:w-[25%] lg:w-[20%] gap-2 items-center">
             <Button
               variant={{
@@ -397,105 +411,62 @@ const FilterSection = ({ query, search }: any) => {
               Showing 1–16 of 32 results
             </P>
           </div>
-
-          <div className="relative flex items-center shadow-xl xl:w-[30%] lg:w-[30%] sm:w-[80%] mx-auto w-full rounded-full">
+          <div className=" relative flex items-center justify-end rounded-full border border-zinc-300 ">
             <input
               type="text"
-              placeholder="Search for anything..."
+              placeholder="Search by Artwork & Artistname"
               className="xl:pl-10 pl-4 pr-4 py-2 w-full rounded-full outline-none"
               onChange={search}
               value={query}
             />
             <span
-              className="absolute right-5 cursor-pointer"
+              className="absolute  left-3 cursor-pointer"
               onClick={() => search({ target: { value: query } })}
             >
               <FaSearch className="w-5 h-5" />
             </span>
           </div>
-
-          <div className="relative flex flex-wrap xl:gap-5 lg:gap-2 gap-4 justify-center 2xl:w-[50%] xl:w-[37%] lg:w-[42%] item-center">
+          <div className="flex flex-wrap lg:gap-2 gap-4 item-center">
             <div className="">
               <div className="w-full ">
-                <Select
-                  styles={{
-                    control: (provided, state) => ({
-                      ...provided,
-                      boxShadow: state.isFocused ? "#f78494" : "#f78494",
-                      borderColor: state.isFocused ? "#f78494" : "#f78494",
-                      borderRadius: "9999px",
-                      padding: "3px",
-                      textAlign: "center",
-                      fontSize: "13px",
-                      display: "flex",
-                      alignItems: "center",
-                      "&:hover": {
-                        borderColor: "#f78494",
-                      },
-                    }),
-                  }}
-                  placeholder="Show Artwork"
+                <CustomSelect
                   options={columnOptions}
+                  placeholder="Select Discipline"
+                  selectedOption={selectedOption}
+                  setSelectedOption={setSelectedOption}
                 />
               </div>
             </div>
             <div>
-              <Select
-                styles={{
-                  control: (provided, state) => ({
-                    ...provided,
-                    boxShadow: state.isFocused ? "#f78494" : "#f78494",
-                    borderColor: state.isFocused ? "#f78494" : "#f78494",
-                    borderRadius: "9999px",
-                    padding: "3px",
-                    textAlign: "center",
-                    fontSize: "13px",
-                    display: "flex",
-                    alignItems: "center",
-                    "&:hover": {
-                      borderColor: "#f78494",
-                    },
-                  }),
-                }}
-                placeholder="Group By"
-                options={groupOption}
-                onChange={handleGroupBy}
+              <CustomSelect
+                options={techData}
+                placeholder="Select Technic"
+                selectedOption={selectedTechnic}
+                setSelectedOption={setSelectedTechnic}
               />
             </div>
 
             <div>
-              <Select
-                styles={{
-                  control: (provided, state) => ({
-                    ...provided,
-                    boxShadow: state.isFocused ? "#f78494" : "#f78494",
-                    borderColor: state.isFocused ? "#f78494" : "#f78494",
-                    borderRadius: "9999px",
-                    padding: "3px",
-                    textAlign: "center",
-                    fontSize: "13px",
-                    display: "flex",
-                    alignItems: "center",
-                    "&:hover": {
-                      borderColor: "#f78494",
-                    },
-                  }),
-                }}
-                placeholder="Sort By"
-                options={columnOptions}
+              <CustomSelect
+                options={themeData}
+                placeholder="Select Theme"
+                selectedOption={selectedTheme}
+                setSelectedOption={setSelectedTheme}
               />
             </div>
           </div>
         </div>
       </div>
 
-      {selectedOption === "artist" ? (
-        <ArtworkGroup />
+      <CardSection query={query} data={data} isLoading={isLoading} />
+
+      {/* {selectedOption === "artist" ? (
+      <ArtworkGroup />
       ) : selectedOption === "artist2" ? (
         <HighlightSection />
       ) : (
         <CardSection query={query} />
-      )}
+      )} */}
     </>
   );
 };

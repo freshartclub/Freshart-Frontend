@@ -1,9 +1,13 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import Button from "../ui/Button";
 import BannerSection from "./BannerSection";
 import FilterSection from "./FilterSection";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaBars } from "react-icons/fa";
+
+import { useGetTechnic } from "../ArtistPanel/AddArtwork/http/useGetTechnic";
+import { useGetTheme } from "../ArtistPanel/AddArtwork/http/useGetTheme";
+import { useGetPurchaseArtwork } from "./http/useGetPurchaseArtwork";
 
 const art_data = [
   {
@@ -31,6 +35,14 @@ const art_data = [
 
 const Purchase = () => {
   const [query, setQuery] = useState("");
+  const [selectedOption, setSelectedOption] = useState(null);
+
+  const [selectedTheme, setSelectedTheme] = useState(null);
+  const [selectedTechnic, setSelectedTechnic] = useState(null);
+
+  const [technicData, setTechnicData] = useState([]);
+  const [themeData, setThemeData] = useState([]);
+
   const navigate = useNavigate();
   const redirectToDiscovery = () => {
     navigate("/discovery_art");
@@ -48,6 +60,56 @@ const Purchase = () => {
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
+
+  const [searchParams] = useSearchParams();
+  const type = searchParams.get("type");
+
+  const { data, isLoading, isFetching } = useGetPurchaseArtwork(
+    type,
+    query,
+    selectedTheme,
+    selectedTechnic,
+    selectedOption
+  );
+
+  const { data: techData, isLoading: technicLoading } = useGetTechnic();
+  const { data: theData, isLoading: themeLoading } = useGetTheme();
+
+  useEffect(() => {
+    if (selectedOption) {
+      // Filter technic data
+      const newTechnic = techData?.data
+        ?.filter(
+          (item) =>
+            item.discipline &&
+            item.discipline.some((newItem) =>
+              newItem.disciplineName.includes(selectedOption.value)
+            )
+        )
+        .map((item) => ({
+          label: item.technicName || item.disciplineName,
+          value: item._id,
+        }));
+
+      // Filter theme data
+      const newTheme = theData?.data
+        ?.filter(
+          (item) =>
+            item.discipline &&
+            item.discipline.some((newItem) =>
+              newItem.disciplineName.includes(selectedOption.value)
+            )
+        )
+        .map((item) => ({
+          label: item.themeName || item.disciplineName,
+          value: item._id,
+        }));
+
+      // Set data
+      setTechnicData(newTechnic || []);
+      setThemeData(newTheme || []);
+    }
+  }, [selectedOption, techData, theData]);
 
   return (
     <>
@@ -110,8 +172,21 @@ const Purchase = () => {
           </div>
         </div>
       </div>
-      <BannerSection />
-      <FilterSection query={query} search={search} />
+      {/* <BannerSection /> */}
+      <FilterSection
+        query={query}
+        search={search}
+        selectedOption={selectedOption}
+        setSelectedOption={setSelectedOption}
+        themeData={themeData}
+        techData={technicData}
+        setSelectedTheme={setSelectedTheme}
+        selectedTheme={selectedTheme}
+        selectedTechnic={selectedTechnic}
+        setSelectedTechnic={setSelectedTechnic}
+        data={data}
+        isLoading={isLoading || isFetching}
+      />
     </>
   );
 };

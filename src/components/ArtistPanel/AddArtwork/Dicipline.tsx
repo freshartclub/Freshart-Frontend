@@ -10,7 +10,7 @@ const Dicipline = ({
   control,
   errors,
   getOutDiscipline,
-  setValue
+  setValue,
 }) => {
   const { data, isLoading } = useGetDiscipline();
 
@@ -45,7 +45,7 @@ const Dicipline = ({
                 htmlFor={id}
                 className="block text-sm sm:text-base font-semibold text-[#203F58] mb-2"
               >
-                {label}
+                {label}*
               </label>
 
               <Controller
@@ -60,7 +60,7 @@ const Dicipline = ({
                     onChange={(val) => {
                       field.onChange(val);
                       setArtDicipline(val.target.value);
-                      setValue("artworkStyleType", "")
+                      setValue("artworkStyleType", "");
                     }}
                     value={artDicipline}
                     className="block w-full p-1 sm:px-4 sm:py-2 bg-[#F9F9FC] outline-none border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"

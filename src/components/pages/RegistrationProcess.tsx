@@ -117,6 +117,8 @@ const RegistrationProcess = () => {
 
   console.log(gender);
 
+  const handleRemoveImage = () => {};
+
   const onSubmit = handleSubmit(async (data) => {
     const formData = new FormData();
 
@@ -162,12 +164,21 @@ const RegistrationProcess = () => {
               add as much detail as needed.
             </P>
 
-            <div className="flex lg:flex-row flex-col xl:gap-10 gap-8 xl:items-start items-center">
-              <div className="xl:p-8 p-3 shadow-xl rounded-xl bg-white h-fit xl:w-[30%] sm:w-[45%] w-[90%] flex flex-col justify-center items-center">
+            <div className="flex lg:flex-row flex-col xl:gap-10 gap-8 xl:items-start items-center ">
+              <div className="xl:p-8 p-3 shadow-xl rounded-xl bg-white h-fit xl:w-[30%] relative sm:w-[45%] w-[90%] flex flex-col justify-center items-center">
                 <UploadImage
                   selectedFile={selectedFile}
                   setSelectedFile={setSelectedFile}
                 />
+
+                <span
+                  className={`absolute top-5 ${
+                    selectedFile ? "block" : "hidden"
+                  } right-5 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer`}
+                  onClick={() => setSelectedFile(null)}
+                >
+                  &times;
+                </span>
               </div>
 
               <div className="w-full">
@@ -179,7 +190,7 @@ const RegistrationProcess = () => {
                           htmlFor="artistName"
                           className="block mb-2 text-sm font-semibold text-gray-700 text-left"
                         >
-                          Name *
+                          Firstname *
                         </label>
                         <input
                           {...register("artistName")}

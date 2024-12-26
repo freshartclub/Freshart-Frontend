@@ -82,7 +82,7 @@ const ArtCardPagination: React.FC = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-x-5 gap-y-5 mt-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-6">
         {artwork?.slice(firstIndex, lastIndex).map((record, index) => (
           <div key={index}>
             <ArtCard record={record} data={data} />

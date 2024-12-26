@@ -175,15 +175,6 @@ const ArtistDescription = ({ data }) => {
               {highlightText}
             </P>
 
-            {/* <P
-              variant={{ size: "base", theme: "dark", weight: "normal" }}
-              className="border-b pb-7"
-            >
-              Many desktop publishing packages and web page editors now use
-              Lorem Ipsum as their default model text, and a search for 'lorem
-              ipsum' will uncover many web sites still in their infancy.
-            </P> */}
-
             <div>
               <P
                 variant={{ size: "base", theme: "dark", weight: "semiBold" }}
@@ -236,16 +227,6 @@ const ArtistDescription = ({ data }) => {
             >
               {aboutText}
             </P>
-
-            {/* <P
-              variant={{ size: "base", theme: "dark", weight: "normal" }}
-              className="border-b pb-7"
-            >
-              Many desktop publishing packages and web page editors now use
-              Lorem Ipsum as their default model text, and a search for 'lorem
-              ipsum' will uncover many web sites still in their infancy.
-            </P> */}
-
             <div>
               <P
                 variant={{ size: "base", theme: "dark", weight: "semiBold" }}

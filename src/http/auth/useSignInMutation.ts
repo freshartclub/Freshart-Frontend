@@ -34,6 +34,8 @@ const useSigInInMutation = () => {
       dispatch(updateUser(res?.data?.user));
       dispatch(setIsAuthorized(true));
 
+      console.log(res?.data?.user?.commercilization?.artProvider);
+
       dispatch(
         setIsArtProvider(res?.data?.user?.commercilization?.artProvider)
       );

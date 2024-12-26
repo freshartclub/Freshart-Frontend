@@ -128,14 +128,20 @@ const ArtistPortfolio = ({ data }) => {
                     alt="profile"
                     className="-mt-10 w-[10vh] h-[10vh] rounded-full object-cover"
                   />
-                  <h1 className="text-xl line-clamp-1">
+                  <h1 className="text-xl line-clamp-1 font-medium">
                     {item.artistName + " " + item.artistSurname1}
                   </h1>
                   <p className="text-sm flex gap-2 min-h-[20px]">
-                    {item?.aboutArtist?.discipline?.map((item, i) => (
-                      <h1 className=" ">{item?.discipline}</h1>
-                    ))}
+                    {item?.aboutArtist?.discipline?.map(
+                      (disciplineItem, i, arr) => (
+                        <>
+                          <span>{disciplineItem?.discipline}</span>
+                          {i < arr.length - 1 && <span>|</span>}
+                        </>
+                      )
+                    )}
                   </p>
+
                   <img
                     src={`${data.url}/users/${item?.profile?.inProcessImage}`}
                     alt="Artwork"

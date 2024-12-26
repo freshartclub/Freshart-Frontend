@@ -8,7 +8,12 @@ const SecondSection = () => {
   const navigate = useNavigate();
 
   const redirectToPurchasePage = () => {
-    navigate("/purchase");
+    navigate("/all-artworks?type=purchase");
+    window.scrollTo(0, 0);
+  };
+
+  const redirectToSubscriptionPage = () => {
+    navigate("/all-artworks?type=subscription");
     window.scrollTo(0, 0);
   };
 
@@ -35,6 +40,7 @@ const SecondSection = () => {
                   fontSize: "base",
                 }}
                 className={`mt-3 uppercase !bg-[#F16E5B]`}
+                onClick={redirectToSubscriptionPage}
               >
                 Subscribe now
               </Button>

@@ -31,7 +31,7 @@ const Layout: React.FC<LayoutProps> = ({
   let RoleBaseNavBar;
 
   if (user === "artist") {
-    RoleBaseNavBar = ArtistNavBar;
+    RoleBaseNavBar = null;
   } else {
     RoleBaseNavBar = NavBar;
   }
@@ -40,9 +40,8 @@ const Layout: React.FC<LayoutProps> = ({
     <div>
       {isLoginPage || isSignUpPage || isForgetPassword ? (
         <LogNaveBar />
-      ) : isArtist ? (
-        <RoleBaseNavBar />
-      ) : (
+      ) : user === "artist" ? // No NavBar for artists
+      null : (
         <NavBar />
       )}
       <main>{children}</main>

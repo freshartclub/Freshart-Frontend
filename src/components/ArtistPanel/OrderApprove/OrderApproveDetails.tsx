@@ -138,6 +138,7 @@ const OrderApproveDetails = () => {
     });
   };
 
+  console.log(data?.data?.items);
   const reviewArtWork = (id) => {
     // Call your review artwork API here
     navigate(
@@ -235,7 +236,8 @@ const OrderApproveDetails = () => {
                         </td>
 
                         <td className="px-3 md:px-6 py-2 md:py-4">
-                          {product?.evidenceImg ? (
+                          {product?.evidenceImg &&
+                          product?.evidenceImg?.length > 0 ? (
                             <div className="flex flex-wrap gap-2 mb-2">
                               {product?.evidenceImg?.map((img, i) => {
                                 return (
@@ -257,6 +259,7 @@ const OrderApproveDetails = () => {
                                         openModal(product);
                                       }}
                                       size="2.5em"
+                                      className="cursor-pointer"
                                     />
                                   )
                               )}
@@ -340,10 +343,10 @@ const OrderApproveDetails = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row mt-6 md:mt-8 gap-4 sm:gap-10 border-b-2 border-dashed">
-            <div className="w-16 md:w-20">
+            <div className="">
               <img
-                className="rounded-full w-16 md:w-20"
-                src={`${data?.url}/users/${data?.data?.user?.profile?.mainImage}`}
+                className="rounded-full w-16 h-16 md:w-20 md:h-20 object-cover"
+                src={`${data?.url}/users/${data?.data?.user?.mainImage}`}
                 alt=""
               />
             </div>
@@ -396,11 +399,11 @@ const OrderApproveDetails = () => {
           </button>
         </div>
       </div>
-      <div className=" bg-[#fff] border shadow-lg mt-6 rounded-lg p-6 w-full">
-        <h1 className="font-bold text-lg mb-4">Evidence Collection</h1>
+      {/* <div className=" bg-[#fff] border shadow-lg mt-6 rounded-lg p-6 w-full"> */}
+      {/* <h1 className="font-bold text-lg mb-4">Evidence Collection</h1> */}
 
-        {/* this is old evidence */}
-        {/* <div className="flex flex-col sm:flex-row items-left space-x-2 ">
+      {/* this is old evidence */}
+      {/* <div className="flex flex-col sm:flex-row items-left space-x-2 ">
           {evidence.map((src, index) => (
             <div key={index} className="">
               <img
@@ -411,7 +414,7 @@ const OrderApproveDetails = () => {
           ))}
         </div> */}
 
-        <button
+      {/* <button
           onClick={() => {
             setIsModalOpen(true);
           }}
@@ -419,8 +422,8 @@ const OrderApproveDetails = () => {
         >
           {" "}
           + Add More
-        </button>
-      </div>
+        </button> */}
+      {/* </div> */}
 
       {/*modal section */}
 
@@ -503,30 +506,6 @@ const OrderApproveDetails = () => {
                 <h2 className="text-lg font-bold mb-3 border-b-2 pb-4">
                   Upload Evidence
                 </h2>
-                {/* <h2 className="text-sm font-semibold mb-2"> Title</h2>
-                <input
-                  type="text"
-                  placeholder="Ex: Adventure Seekers Expedition..."
-                  defaultValue={selectedProduct?.artWork?.artworkName}
-                  readOnly
-                  className="h-12 w-full border rounded-lg p-2 mb-3 outline-none"
-                  {...register("title")}
-                /> */}
-                {/* 
-                <h2 className="text-sm font-semibold mb-2">
-                  {" "}
-                  Short Description
-                </h2>
-                <input
-                  type="text"
-                  placeholder="Ex: Adventure Seekers Expedition..."
-                  className="h-12 w-full border rounded-lg p-2"
-                  {...register("description", { required: true })}
-                />
-                {errors.description && (
-                  <span className="text-red-500">This field is required</span>
-                )} */}
-
                 <h2 className="text-sm font-semibold mb-2 mt-4">
                   {" "}
                   upload your images{" "}

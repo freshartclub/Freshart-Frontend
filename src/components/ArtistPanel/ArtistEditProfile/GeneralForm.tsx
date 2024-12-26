@@ -285,6 +285,8 @@ const GeneralForm = ({ isActiveStatus }) => {
     setSearchResult(data?.data?.artist?.address?.residentialAddress || "");
   }, [data]);
 
+  // console.log(data?.data?.artist?.gender);
+
   const handlePDF = (file) => {
     window.open(`${data?.data?.url}/documents/${file}`, "_blank");
   };
@@ -412,6 +414,17 @@ const GeneralForm = ({ isActiveStatus }) => {
     setSearchResult(fullAddress);
   };
 
+  function getTimeDifference(nextRevalidationDate) {
+    const currentDate = new Date();
+    const targetDate = new Date(nextRevalidationDate);
+
+    const differenceMs = targetDate - currentDate;
+
+    const days = Math.floor(differenceMs / (1000 * 60 * 60 * 24));
+
+    return `${days} Days Remaning`;
+  }
+
   if (isLoading) {
     return <Loader />;
   }
@@ -459,7 +472,6 @@ const GeneralForm = ({ isActiveStatus }) => {
                 <div className="md:w-[48%] w-full relative">
                   <input
                     type="text"
-                    // placeholder="Fullname"
                     {...register("artistName", {
                       required: "Name is required",
                     })}
@@ -481,7 +493,6 @@ const GeneralForm = ({ isActiveStatus }) => {
                 <div className="md:w-[48%] w-full relative">
                   <input
                     type="text"
-                    // placeholder="Enter Your Email id"
                     {...register("artistSurname1", {
                       required: "Email is required",
                     })}
@@ -930,9 +941,15 @@ const GeneralForm = ({ isActiveStatus }) => {
                     )}
                   </div>
 
-                  <h2 className="text-md font-semibold mb-3 text-[#1A1C21] ">
-                    Revalidation Information
-                  </h2>
+                  <div className="flex gap-5">
+                    <h2 className="text-md font-semibold mb-3 text-[#1A1C21] ">
+                      Revalidation Information
+                    </h2>
+
+                    <h2 className="text-md font-semibold mb-3 text-[#1A1C21] border border-green-200 px-3  rounded-md">
+                      {getTimeDifference(getValues("nextRevalidationDate"))}
+                    </h2>
+                  </div>
 
                   <div className="flex justify-between items-center gap-5 pointer-events-none">
                     <div className="md:w-[48%] w-full relative">
