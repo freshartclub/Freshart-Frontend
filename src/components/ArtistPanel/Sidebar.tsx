@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import dashboard from "./assets/dashboard.png";
 import artwork from "./assets/HANGER.png";
@@ -10,6 +10,7 @@ import mail from "./assets/mail.png";
 import toggle from "./assets/toggle_arrow.png";
 import arrow from "./assets/turn-right.png";
 import logo from "../../assets/loginlogo.png";
+import useClickOutside from "../utils/useClickOutside";
 export const sections = [
   {
     key: "dashboard",
@@ -85,6 +86,7 @@ const Sidebar: React.FC = ({ sidebarOpen, setSidebarOpen }) => {
   const [isOpen, setIsOpen] = useState(true);
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
   const location = useLocation();
+  const closePopup = useRef(null);
 
   useEffect(() => {
     const handleResize = () => {
@@ -92,6 +94,7 @@ const Sidebar: React.FC = ({ sidebarOpen, setSidebarOpen }) => {
         setIsOpen(true);
       }
     };
+
     const handleNormal = () => {
       if (window.innerWidth > 640) {
         setSidebarOpen(false);
@@ -114,6 +117,11 @@ const Sidebar: React.FC = ({ sidebarOpen, setSidebarOpen }) => {
     setIsOpen(!isOpen);
   };
 
+  useClickOutside(closePopup, () => {
+    console.log("clickOutside");
+    setSidebarOpen(false);
+  });
+
   const handleSubmenuToggle = (key: string) => {
     setOpenSubmenu(openSubmenu === key ? null : key);
   };
@@ -121,6 +129,7 @@ const Sidebar: React.FC = ({ sidebarOpen, setSidebarOpen }) => {
   return (
     <div className={`flex transition-width duration-300 relative `}>
       <div
+        // ref={closePopup}
         className={`${isOpen ? "w-64" : "w-14"} ${
           sidebarOpen ? "left-[-20rem]" : "left-0"
         } transition-all duration-300 h-screen absolute sm:relative md:relative lg:relative z-[50] flex flex-col bg-white`}

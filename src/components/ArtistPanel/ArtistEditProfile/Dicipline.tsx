@@ -62,7 +62,9 @@ const Dicipline = ({ control, isActiveStatus, prefillValues, watch }) => {
                       <select
                         disabled={isActiveStatus !== "active"}
                         {...field}
-                        className="border border-gray-300 rounded p-3 w-full outline-none"
+                        className={`border border-gray-300 rounded p-3 w-full outline-none ${
+                          isActiveStatus !== "active" ? "bg-zinc-100" : ""
+                        }`}
                       >
                         <option value="">Select</option>
                         {data?.data?.map((item, index) => (

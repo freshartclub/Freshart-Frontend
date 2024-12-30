@@ -19,6 +19,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "country-state-city": "^3.2.1",
+    "currency-symbol-map": "^5.1.0",
     "dayjs": "^1.11.13",
     "formik": "^2.4.6",
     "framer-motion": "^11.5.4",

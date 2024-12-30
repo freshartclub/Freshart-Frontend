@@ -47,6 +47,7 @@ const SingleTicket = () => {
     usePatchFeedbackMutation();
 
   const newDate = dayjs(data?.data?.createdAt).format("DD-MM-YYYY");
+  const newTime = dayjs(data?.data?.createdAt).format(" hh:mm A");
 
   const handleReply = (ticket) => {
     const newData = {
@@ -199,8 +200,9 @@ const SingleTicket = () => {
               </div>
 
               <div className="flex gap-3 text-xs">
-                <div className="font-semibold">04/11/2024</div>
-                <div className="font-semibold">08:36 PM</div>
+                <div className="font-semibold">{newDate} </div>
+
+                <div className="font-semibold">{newTime}</div>
               </div>
             </div>
 
@@ -233,15 +235,19 @@ const SingleTicket = () => {
                       <FaRegUserCircle />
                     </span>
                     <span className=" text-sm font-semibold  ">
-                      {item.userType === "user"
-                        ? `${user.artistName} (${user?.email})`
+                      {item?.userType === "user"
+                        ? `${user?.artistName} (${user?.email})`
                         : `Admin wrote (admin) :`}
                     </span>
                   </div>
 
                   <div className="flex gap-3 text-xs">
-                    <div className="font-semibold">04/11/2024</div>
-                    <div className="font-semibold">08:36 PM</div>
+                    <div className="font-semibold">
+                      {dayjs(user?.createdAt).format("DD-MM-YYYY")}
+                    </div>
+                    <div className="font-semibold">
+                      {dayjs(user?.createdAt).format(" hh:mm A")}
+                    </div>
                   </div>
                 </div>
 
@@ -308,26 +314,24 @@ const SingleTicket = () => {
                   className="opacity-0 inset-0 cursor-pointer"
                   onChange={(val) => handleFileChange(val)}
                 />
-
                 <label
                   htmlFor="file-upload"
                   className={`inline-block relative px-6 py-3 font-semibold rounded-md cursor-pointer border border-red-300 shadow-xl transition duration-300 ${
-                    file ? "bg-gray-200" : "bg-white"
+                    file ? "bg-gray-200 pointer-events-none " : "bg-white"
                   }`}
                 >
                   {file ? (
                     <>
                       <span
-                        onClick={handleRemoveFile}
-                        className="absolute top-0 right-0 px-2 font-semibold cursor-pointer text-red-500"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleRemoveFile();
+                        }}
+                        className="absolute top-0 right-0 px-2 font-semibold cursor-pointer text-red-500 z-50"
                       >
                         X
                       </span>
-                      <span
-                        className={`ml-6 ${file ? "pointer-events-none" : ""}`}
-                      >
-                        {fileName}
-                      </span>{" "}
+                      <span className={`ml-6 `}>{fileName}</span>
                     </>
                   ) : (
                     "Choose File"

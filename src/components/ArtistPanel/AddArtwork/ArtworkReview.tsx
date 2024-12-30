@@ -10,6 +10,7 @@ import Loader from "../../ui/Loader";
 import { useGetArtWorkById } from "./http/useGetArtworkById";
 import P from "../../ui/P";
 import Button from "../../ui/Button";
+import Header from "../../ui/Header";
 
 const DiscoverMore = () => {
   const sliderRef = useRef<Slider>(null);
@@ -91,14 +92,15 @@ const DiscoverMore = () => {
             : null,
           alt: "In Process Image",
         },
-        {
-          src: data?.data.media?.mainVideo ? data?.data.media?.mainVideo : null,
-          alt: "Main Video",
-        },
+
         ...additionalImage?.map((item) => ({
           src: item,
           alt: "Additional Image",
         })),
+        {
+          src: data?.data.media?.mainVideo ? data?.data.media?.mainVideo : null,
+          alt: "Main Video",
+        },
         ...additionalVideo?.map((item) => ({
           src: item,
           alt: "Video",
@@ -107,9 +109,6 @@ const DiscoverMore = () => {
       ].filter((image) => image.src !== null)
     : [];
 
-  console.log(images);
-  // const filteredMedia = images?.filter((item) => item.src !== null);
-
   if (isLoading) {
     return <Loader />;
   }
@@ -117,22 +116,16 @@ const DiscoverMore = () => {
   return (
     <>
       <div className="container mx-auto md:px-6 px-3">
-        <ul className="flex p-2 gap-4 text-xl text-[#2E4053] items-center mt-10">
-          <li>
-            <Link to="/" className="rounded-md transition-all flex">
-              <P
-                variant={{ size: "small", theme: "dark", weight: "medium" }}
-                className="text-[#FF536B]"
-              >
-                Artwork preview
-              </P>
-            </Link>
-          </li>
-        </ul>
+        <Header
+          variant={{ size: "xl", theme: "dark", weight: "bold" }}
+          className="text-black mt-10 "
+        >
+          Artwork Review
+        </Header>
 
         <div className="flex lg:flex-row  flex-col gap-10 mt-10">
           <div className="flex lg:flex-row flex-col gap-4 lg:w-[50%] w-full items-center mb-2">
-            <div className="flex lg:justify-start justify-center flex-row lg:flex-col lg:max-h-[60vh] lg:h-[60vh] lg:overflow-y-auto  gap-2 w-[15%] lg:ml-4">
+            <div className="flex lg:justify-start justify-center flex-row lg:flex-col lg:max-h-[60vh] lg:h-[60vh] lg:overflow-y-auto  gap-2 w-[15%]  lg:ml-4 ">
               {images?.map((thumb, index) => {
                 const isVideo = thumb.src && thumb.src.endsWith(".mp4");
                 if (thumb.src) {

@@ -1,24 +1,3 @@
-import img1 from "./assets/product1.png";
-import img2 from "./assets/product2.png";
-import img3 from "./assets/product3.png";
-import img4 from "./assets/product4.png";
-import img5 from "./assets/product5.png";
-import img6 from "./assets/product6.png";
-import img7 from "./assets/product7.png";
-import img8 from "./assets/product8.png";
-import img9 from "./assets/product9.png";
-import img10 from "./assets/product10.png";
-import img11 from "./assets/product11.png";
-import profile1 from "./assets/Frame 1000009410.png";
-import profile2 from "./assets/frame11.png";
-import profile3 from "./assets/Frame1.png";
-import profile4 from "./assets/frame2.png";
-import profile5 from "./assets/frame3.png";
-import profile6 from "./assets/frame4.png";
-import profile7 from "./assets/frame5.png";
-import profile8 from "./assets/frame6.png";
-import profile9 from "./assets/frame7.png";
-import profile10 from "./assets/frame10.png";
 import { useState } from "react";
 import P from "../ui/P";
 import { useNavigate } from "react-router-dom";
@@ -120,8 +99,6 @@ const AplhaFilter = ({ query, data }: any) => {
       )
     : data?.artists;
 
-  console.log("FilteredItems", filteredArtists);
-
   const totalPages = Math.ceil(filteredArtists?.length / ITEMS_PER_PAGE);
 
   const currentItems = filteredArtists?.slice(
@@ -219,7 +196,7 @@ const AplhaFilter = ({ query, data }: any) => {
                 <img
                   src={`${data.url}/users/${item?.profile?.inProcessImage}`}
                   alt="Artwork"
-                  className="p-4 w-[30vw] h-[30vh] object-cover"
+                  className="p-4 w-full sm:w-[30vw] h-[30vh] object-cover"
                 />
               </div>
             </div>

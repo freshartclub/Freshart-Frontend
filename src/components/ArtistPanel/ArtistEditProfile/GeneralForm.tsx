@@ -599,7 +599,9 @@ const GeneralForm = ({ isActiveStatus }) => {
                       required: "Gender is required",
                     })}
                     disabled={isActiveStatus !== "active"}
-                    className="border border-[#E6E6E6] p-3 w-full rounded-md focus:outline-none peer placeholder::font-montserrat font-normal text-left placeholder:text-[#1C252E] outline-none"
+                    className={`border  ${
+                      isActiveStatus !== "active" ? "bg-zinc-100" : ""
+                    } border-[#E6E6E6] p-3 w-full rounded-md focus:outline-none peer placeholder::font-montserrat font-normal text-left placeholder:text-[#1C252E] outline-none`}
                   >
                     {gender &&
                       gender.map((item, i) => (
@@ -624,7 +626,9 @@ const GeneralForm = ({ isActiveStatus }) => {
                       required: "language is required",
                     })}
                     disabled={isActiveStatus !== "active"}
-                    className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-[#1C252E] outline-none"
+                    className={`border  ${
+                      isActiveStatus !== "active" ? "bg-zinc-100" : ""
+                    } border-[#E6E6E6] p-3 w-full rounded-md focus:outline-none peer placeholder::font-montserrat font-normal text-left placeholder:text-[#1C252E] outline-none`}
                   >
                     {language &&
                       language.map((item, i) => (
@@ -738,7 +742,11 @@ const GeneralForm = ({ isActiveStatus }) => {
               <div className="flex  w-full gap-4 mb-4">
                 <div className=" w-full relative">
                   <Autocomplete
-                    className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500"
+                    className={`border ${
+                      isActiveStatus !== "active"
+                        ? "pointer-events-none bg-zinc-100 "
+                        : ""
+                    } border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500`}
                     value={searchResult}
                     apiKey={import.meta.env.VITE_APP_GOOGLE_MAPS_API_KEY}
                     onChange={(e) => {
@@ -946,18 +954,18 @@ const GeneralForm = ({ isActiveStatus }) => {
                       Revalidation Information
                     </h2>
 
-                    <h2 className="text-md font-semibold mb-3 text-[#1A1C21] border border-green-200 px-3  rounded-md">
+                    <h2 className="text-md font-semibold mb-3 text-[#1A1C21] border border-green-500 px-3 py-1 rounded-md">
                       {getTimeDifference(getValues("nextRevalidationDate"))}
                     </h2>
                   </div>
 
-                  <div className="flex justify-between items-center gap-5 pointer-events-none">
+                  <div className="flex justify-between items-center gap-5">
                     <div className="md:w-[48%] w-full relative">
                       <div className="flex items-center">
                         <input
                           type="text"
                           {...register("lastRevalidationDate", {})}
-                          className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none pr-10" // Add padding to the right
+                          className="border border-[#E6E6E6] p-3 w-full  pointer-events-none rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none pr-10" // Add padding to the right
                         />
 
                         {/* <SelectDateBtn /> */}
@@ -965,7 +973,7 @@ const GeneralForm = ({ isActiveStatus }) => {
 
                       <label
                         htmlFor="lastRevalidationDate"
-                        className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
+                        className="absolute text-sm top-[-10px] left-3  pointer-events-none bg-white px-1 font-montserrat font-semibold text-[#637381]"
                       >
                         Last Revalidation Date
                       </label>
@@ -983,11 +991,11 @@ const GeneralForm = ({ isActiveStatus }) => {
                       <input
                         type="text"
                         {...register("nextRevalidationDate", {})}
-                        className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
+                        className="border border-[#E6E6E6]  pointer-events-none p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
                       />
                       <label
                         htmlFor="nextRevalidationDate"
-                        className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
+                        className="absolute text-sm top-[-10px] left-3  pointer-events-none bg-white px-1 font-montserrat font-semibold text-[#637381]"
                       >
                         Next Revalidation Date
                       </label>
@@ -1005,9 +1013,9 @@ const GeneralForm = ({ isActiveStatus }) => {
                       <div className="md:w-[48%] w-full relative">
                         <span
                           onClick={handleRevelidate}
-                          className="border border-[#E6E6E6] bg-black text-white p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
+                          className="border border-[#E6E6E6] cursor-pointer bg-black text-white p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
                         >
-                          {revalidationPending ? "Lodaing..." : "Revalidate"}
+                          {revalidationPending ? "Loading..." : "Revalidate"}
                         </span>
                       </div>
                     ) : null}
@@ -1244,7 +1252,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                       <input
                         type="text"
                         {...register("emergencyContactName", {})}
-                        className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
+                        className="border border-[#E6E6E6]  p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
                       />
                       <label
                         htmlFor="emergencyContactName"

@@ -193,63 +193,65 @@ const CardSection = ({ query, data, isLoading }: any) => {
     window.scroll(0, 0);
   };
 
-  console.log(data?.data);
-
   if (isLoading) {
     return <Loader />;
   }
   return (
     <div className="container mx-auto md:px-6 px-3 mt-10">
       <div className="flex flex-wrap justify-center gap-4 sm:gap-4 md:gap-4">
-        {data?.data &&
-          data?.data?.length > 0 &&
-          data?.data.map((item, index) => (
-            <div
-              key={index}
-              className="w-full sm:w-[18rem] md:w-[22rem] lg:w-[22rem] px-3 border-none outline-none relative cursor-pointer"
-              onClick={() => handleRedirectToDescription(item?._id)}
-            >
-              <div className="relative">
-                <img
-                  src={`${data?.url}/users/${item?.media}`}
-                  alt="Artwork"
-                  className="w-full h-[15rem] sm:h-[18rem] md:h-[25rem] object-cover shadow-lg"
-                />
-                <button className="absolute top-2 right-2 border border-[#FFD9DE] rounded-full p-2 bg-white cursor-pointer">
-                  <img src={like} alt="like" className="w-5 h-5" />
-                </button>
-              </div>
-              <div className="mt-4">
-                <p className="text-sm text-gray-500">{item?.discipline}</p>
-                <div className="flex justify-between items-center mt-2">
-                  <Header
-                    variant={{ weight: "bold" }}
-                    className="text-md text-gray-800 line-clamp-2"
-                  >
-                    {item?.artworkName}
-                  </Header>
+        {data?.data && data?.data?.length > 0
+          ? data?.data.map((item, index) => (
+              <div
+                key={index}
+                className="w-full sm:w-[18rem] md:w-[22rem] lg:w-[22rem] px-3 border-none outline-none relative cursor-pointer"
+                onClick={() => handleRedirectToDescription(item?._id)}
+              >
+                <div className="relative">
+                  <img
+                    src={`${data?.url}/users/${item?.media}`}
+                    alt="Artwork"
+                    className="w-full h-[15rem] sm:h-[18rem] md:h-[25rem] object-cover shadow-lg"
+                  />
+                  <button className="absolute top-2 right-2 border border-[#FFD9DE] rounded-full p-2 bg-white cursor-pointer">
+                    <img src={like} alt="like" className="w-5 h-5" />
+                  </button>
+                </div>
+                <div className="mt-4">
+                  <p className="text-sm text-gray-500">{item?.discipline}</p>
+                  <div className="flex justify-between items-center mt-2">
+                    <Header
+                      variant={{ weight: "bold" }}
+                      className="text-md text-gray-800 line-clamp-2"
+                    >
+                      {item?.artworkName}
+                    </Header>
+                    <P
+                      variant={{
+                        size: "base",
+                        theme: "dark",
+                        weight: "medium",
+                      }}
+                      className="text-sm text-gray-500"
+                    >
+                      {item?.size}
+                    </P>
+                  </div>
                   <P
                     variant={{ size: "base", theme: "dark", weight: "medium" }}
-                    className="text-sm text-gray-500"
+                    className="text-sm text-gray-500 mt-1"
                   >
-                    {item?.size}
+                    {name(item)}
+                  </P>
+                  <P
+                    variant={{ size: "small", theme: "dark", weight: "medium" }}
+                    className="mt-1 text-sm text-gray-600"
+                  >
+                    {item?.pricing?.currency} {item?.pricing?.basePrice}
                   </P>
                 </div>
-                <P
-                  variant={{ size: "base", theme: "dark", weight: "medium" }}
-                  className="text-sm text-gray-500 mt-1"
-                >
-                  {name(item)}
-                </P>
-                <P
-                  variant={{ size: "small", theme: "dark", weight: "medium" }}
-                  className="mt-1 text-sm text-gray-600"
-                >
-                  {item?.pricing?.currency} {item?.pricing?.basePrice}
-                </P>
               </div>
-            </div>
-          ))}
+            ))
+          : "No artworks available"}
       </div>
 
       <div className="my-16">

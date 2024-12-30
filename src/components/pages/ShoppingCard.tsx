@@ -43,14 +43,14 @@ const ShoppingCard = ({ isOpen, onClose }: any) => {
 
   return (
     <div
-      className={`fixed top-0 right-0 h-full bg-white shadow-lg transition-transform duration-300 ${
+      className={`fixed top-0 right-0 h-[100vh] w-fu bg-white shadow-lg transition-transform duration-300 ${
         isOpen ? "translate-x-0" : "translate-x-full"
       } w-[25%] z-50`}
     >
       {isLoading ? (
         <Loader />
       ) : (
-        <div className="container mx-auto px-10 sm:px-3">
+        <div className="container   mx-auto px-10 sm:px-3">
           <div className="flex justify-between w-full p-4 my-6">
             <Header variant={{ size: "md", theme: "dark", weight: "semiBold" }}>
               Shopping Cart ({totalItems})
@@ -119,20 +119,6 @@ const ShoppingCard = ({ isOpen, onClose }: any) => {
                   Total: ${totalPrice}
                 </P>
               </div>
-
-              {/* <div className="w-full">
-              <Button
-                variant={{
-                  fontSize: "md",
-                  theme: "dark",
-                  fontWeight: "normal",
-                  rounded: "full",
-                }}
-                className="w-full my-2"
-              >
-                Checkout
-              </Button>
-            </div> */}
 
               <div className="w-full">
                 <Button

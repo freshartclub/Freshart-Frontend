@@ -23,6 +23,11 @@ export const ARTTIST_ENDPOINTS = {
   UpdateBillingAddress: `${ARTIST_BASE_URl}/update-billing-address`,
   PatchRevalidation: `${ARTIST_BASE_URl}/revalidate-profile`,
 
+  // AddSeries: `${ARTIST_BASE_URl}/add-series`,
+  // DeleteSeries: `${ARTIST_BASE_URl}/delete-series`,
+  // UpdateSeries: `${ARTIST_BASE_URl}/update-series`,
+  // GetArtistFeedback: `${ARTIST_BASE_URl}/get-artist-feedback`,
+
   // GetArtistArtwork: `${ARTIST_BASE_URl}/get-artist-artwork `,
   // DeleteArtwork: `${ARTIST_BASE_URl}/delete-artist-artwork `,
   // UpdateArtwork: `${ARTIST_BASE_URl}/update-artist-artwork `,
@@ -44,6 +49,7 @@ export const ARTTIST_ENDPOINTS = {
   usePatchSeries: `${ARTIST_BASE_URl}/add-series-to-artist`,
   useDeleteSeries: `${ARTIST_BASE_URl}/delete-series-to-artist`,
   getSeries: `${ARTIST_BASE_URl}/get-series-list`,
+  GetArtSeries: `${ARTIST_BASE_URl}/get-all-series`,
 
   // GetArtistTicket: `${ARTIST_BASE_URl}/get
 };

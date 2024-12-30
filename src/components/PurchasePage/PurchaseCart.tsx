@@ -82,7 +82,7 @@ const PurchaseCart = () => {
   };
 
   const handlepurchase = () => {
-    navigate("/purchase");
+    navigate("/all-artworks?type=purchase");
   };
 
   return (

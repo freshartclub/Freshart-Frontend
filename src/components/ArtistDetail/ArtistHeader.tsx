@@ -107,7 +107,11 @@ const ArtistHeader = ({ data }) => {
               variant={{ size: "small", theme: "dark", weight: "semiBold" }}
               className="text-[#203F58]"
             >
-              {data?.artist?.artistName + " " + data?.artist?.artistSurname1}
+              {data?.artist?.artistName +
+                " " +
+                data?.artist?.artistSurname1 +
+                " " +
+                data?.artist?.artistSurname2}
             </P>
           </Link>
         </li>

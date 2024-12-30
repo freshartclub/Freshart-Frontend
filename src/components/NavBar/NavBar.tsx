@@ -24,8 +24,8 @@ import { useGetArtistDetails } from "../UserProfile/http/useGetDetails";
 
 const mobile_links = [
   { path: "/", label: "Home" },
-  { path: "/", label: "Subscribe" },
-  { path: "/purchase", label: "Purchase" },
+  { path: "/all-artworks?type=subscription", label: "Subscribe" },
+  { path: "/all-artworks?type=purchase", label: "Purchase" },
   { path: "/all_artist", label: "Artist" },
   { path: "/blog", label: "Blog" },
 ];
@@ -43,6 +43,7 @@ const NavBar = () => {
 
   const closePopup = useRef(null);
   const dropDownPopup = useRef(null);
+  const mobileNavPopup = useRef(null);
 
   const { data: seriesPickList, isLoading: seriesPickListLoading } =
     useGetPicklist();
@@ -90,8 +91,23 @@ const NavBar = () => {
     }
   };
 
+  useClickOutside(mobileNavPopup, () => {
+    setIsOpen(false);
+  });
+
+  const handlePhoneOutside = (event) => {
+    console.log();
+    if (
+      mobileNavPopup.current &&
+      !mobileNavPopup.current.contains(event.target)
+    ) {
+      setIsDropdownOpen(false);
+    }
+  };
+
   useEffect(() => {
     document.addEventListener("click", handleClickOutside);
+
     return () => {
       document.removeEventListener("click", handleClickOutside);
     };
@@ -119,30 +135,47 @@ const NavBar = () => {
     setIsModalOpen((Modalprev) => !Modalprev);
   };
 
-  // Detect scroll event
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 50) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
-    };
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     if (window.scrollY > 50) {
+  //       setScrolled(true);
+  //     } else {
+  //       setScrolled(false);
+  //     }
+  //   };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  //   window.addEventListener("scroll", handleScroll);
+  //   return () => window.removeEventListener("scroll", handleScroll);
+  // }, []);
 
   return (
     <>
-      <nav
-        className={`bg-[#102030] py-6 px-10 sticky top-0 z-50 transition-transform duration-300 ${
-          scrolled ? "transform translate-y-0" : "translate-y-0"
-        }`}
-      >
-        <div className="flex justify-between">
+      <nav className="bg-[#102030] py-6 px-10 relative">
+        <div className="flex justify-between  items-center ">
           {token && isAuthorized ? (
             <>
+              <div className="lg:hidden">
+                <button
+                  onClick={() => setIsOpen(!isOpen)}
+                  className="text-white focus:outline-none"
+                >
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M4 6h16M4 12h16M4 18h16"
+                    ></path>
+                  </svg>
+                </button>
+              </div>
+
               <div className="hidden lg:flex lg:gap-2 xl:space-x-6 lg:space-x-0 text-white">
                 <Link
                   to="/home"
@@ -250,7 +283,7 @@ const NavBar = () => {
                   </span>
                 </div>
                 <Link
-                  to="/purchase"
+                  to="/all-artworks?type=purchase"
                   className="group mt-3 font-semibold text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
                 >
                   Purchase
@@ -268,32 +301,39 @@ const NavBar = () => {
                   Blog
                 </Link>
               </div>
+
               <div
                 className="flex items-center justify-center "
                 onClick={() => navigate("/home")}
               >
-                <img src={logo} alt="logo" className="" />
+                <img
+                  src={logo}
+                  alt="logo"
+                  className=" lg:w-full md:w-full w-[70%]  "
+                />
               </div>
-              <div className="lg:flex hidden space-x-4  justify-end mt-3">
-                {/* <Link to="/" className="focus:outline-none">
-                  <img
-                    src={search}
-                    alt="search"
-                    className="w-8 h-8 text-white mx-2"
-                  />
-                </Link> */}
-                <Link to="/wishlist" className="focus:outline-none">
+
+              <div className="lg:flex   space-x-4  justify-end mt-3">
+                <Link
+                  to="/wishlist"
+                  className="focus:outline-none lg:block hidden"
+                >
                   <img
                     src={heart}
                     alt="heart"
-                    className="w-8 h-8 text-white mx-2"
+                    className="w-8 h-8 text-white mx-2 "
                   />
                 </Link>
+                <div className="overflow-x-hidden ">
+                  <ShoppingCard
+                    isOpen={isSidebarOpen}
+                    onClose={toggleSidebar}
+                  />
+                </div>
 
-                <ShoppingCard isOpen={isSidebarOpen} onClose={toggleSidebar} />
                 <button
                   onClick={toggleSidebar}
-                  className="relative focus:outline-none"
+                  className="relative focus:outline-none hidden lg:block"
                 >
                   <img
                     src={bag}
@@ -308,6 +348,7 @@ const NavBar = () => {
                     ) : null}
                   </span>
                 </button>
+
                 <button
                   ref={closePopup}
                   className="focus:outline-none relative"
@@ -326,6 +367,7 @@ const NavBar = () => {
                       color="white"
                     />
                   )}
+
                   {isProfileDropdown && (
                     <div className="absolute w-[13rem] right-0 z-10 top-[4rem] bg-white divide-y divide-gray-100 rounded-md shadow dark:bg-gray-700 dark:divide-gray-600 pb-3">
                       <ul
@@ -510,27 +552,8 @@ const NavBar = () => {
                   )}
                 </button>
               </div>
-              <div className="lg:hidden relative">
-                <button
-                  onClick={() => setIsOpen(!isOpen)}
-                  className="text-white focus:outline-none"
-                >
-                  <svg
-                    className="w-6 h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M4 6h16M4 12h16M4 18h16"
-                    ></path>
-                  </svg>
-                </button>
-              </div>
+
+              {/* Hamburger Icon */}
             </>
           ) : (
             <>
@@ -557,9 +580,17 @@ const NavBar = () => {
         </div>
 
         {isOpen && (
-          <div className="lg:hidden absolute top-48 left-0 right-0 z-10 bg-[#102030] text-white px-6 pb-4">
+          <div
+            ref={mobileNavPopup}
+            className="lg:hidden absolute top-18 left-0 right-0 z-10 bg-[#102030] text-white px-6 pb-4"
+          >
             {mobile_links.map((link, index) => (
-              <Link to={link.path} className="block py-2" key={index}>
+              <Link
+                onClick={() => setIsOpen(false)}
+                to={link.path}
+                className="block py-2"
+                key={index}
+              >
                 {link.label}
               </Link>
             ))}

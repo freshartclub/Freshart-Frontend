@@ -49,7 +49,6 @@ const Allorders = ({ orderDelail }: any) => {
   return (
     <>
       <div className="rounded-md border border-1 mt-3 w-full overflow-x-auto">
-        {/* Mobile view - card layout */}
         <div className="block lg:hidden bg-white">
           {data && data?.length > 0 ? (
             data?.map((value: any, index: any) => (
@@ -67,7 +66,7 @@ const Allorders = ({ orderDelail }: any) => {
                         : "bg-[#E7F4EE] text-[#0D894F]"
                     }`}
                   >
-                    {value.status}
+                    {value?.status}
                   </div>
                 </div>
 
@@ -101,7 +100,7 @@ const Allorders = ({ orderDelail }: any) => {
                   </p>
                   <p className="text-sm">
                     <span className="font-semibold">Payment:</span>{" "}
-                    {value.paymenttype}
+                    {value?.paymenttype}
                   </p>
                 </div>
 
@@ -123,19 +122,13 @@ const Allorders = ({ orderDelail }: any) => {
               <p className="text-lg text-center font-medium mb-4">
                 You don't have any Order yet.
               </p>
-              {/* <NavLink to="/artist-panel/artwork/add">
-                  <button className="px-6 py-2 bg-zinc-800 text-white rounded-lg">
-                    Add Artwork
-                  </button>
-                </NavLink> */}
             </div>
           )}
         </div>
 
-        {/* Desktop view - table layout */}
         <div className="hidden lg:block min-w-[1000px]">
           <div className="grid grid-cols-11 bg-[#F9F9FC] items-center my-auto h-10 p-2 border-b">
-            {columns.map((column) => (
+            {columns?.map((column) => (
               <div key={column.key} className={`col-span-${column.colSpan}`}>
                 <p className="font-semibold text-sm xl:text-base text-black">
                   {column.label}
@@ -154,7 +147,10 @@ const Allorders = ({ orderDelail }: any) => {
                         {value.orderID}
                       </p>
                     </div>
-                    <div className="col-span-2 flex gap-2">
+                    <div
+                      className="col-span-2 flex gap-2 cursor-pointer"
+                      onClick={() => handelClickData(value)}
+                    >
                       <div>
                         <img
                           src={`${url}/users/${value?.image}`}
@@ -241,11 +237,6 @@ const Allorders = ({ orderDelail }: any) => {
                 <p className="text-lg text-center font-medium mb-4">
                   You don't have any Order yet.
                 </p>
-                {/* <NavLink to="/artist-panel/artwork/add">
-                    <button className="px-6 py-2 bg-zinc-800 text-white rounded-lg">
-                      Add Artwork
-                    </button>
-                  </NavLink> */}
               </div>
             )}
             <div>

@@ -255,7 +255,7 @@ const GeneralMedia = ({ control, data, url, isActiveStatus }) => {
                       existingMainImage ? "block" : "hidden"
                     } right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer ${
                       isActiveStatus !== "active"
-                        ? "opacity-50 cursor-not-allowed"
+                        ? "opacity-50 pointer-events-none"
                         : ""
                     }`}
                     onClick={(e) => handleRemoveMainImage("Url")}
@@ -302,7 +302,7 @@ const GeneralMedia = ({ control, data, url, isActiveStatus }) => {
                     <span
                       className={`absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer ${
                         isActiveStatus !== "active"
-                          ? "opacity-50 cursor-not-allowed"
+                          ? "opacity-50 pointer-events-none"
                           : ""
                       }`}
                       onClick={() => handleRemoveInProcessImage("url")}
@@ -377,7 +377,7 @@ const GeneralMedia = ({ control, data, url, isActiveStatus }) => {
                   <span
                     className={`absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer ${
                       isActiveStatus !== "active"
-                        ? "opacity-50 cursor-not-allowed"
+                        ? "opacity-50 pointer-events-none"
                         : ""
                     }`}
                     onClick={() => removeAdditionalImage(i, "Url")}
@@ -451,7 +451,7 @@ const GeneralMedia = ({ control, data, url, isActiveStatus }) => {
                       existingMainVideo ? "block" : "hidden"
                     } top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer ${
                       isActiveStatus !== "active"
-                        ? "opacity-50 cursor-not-allowed"
+                        ? "opacity-50 pointer-events-none"
                         : ""
                     }`}
                     onClick={(e) => setExistingMainVideo()}
@@ -522,7 +522,7 @@ const GeneralMedia = ({ control, data, url, isActiveStatus }) => {
                         <span
                           className={`absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer ${
                             isActiveStatus !== "active"
-                              ? "opacity-50 cursor-not-allowed"
+                              ? "opacity-50 pointer-events-none"
                               : ""
                           }`}
                           onClick={() =>

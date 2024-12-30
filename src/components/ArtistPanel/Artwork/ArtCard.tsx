@@ -22,7 +22,7 @@ const ArtCard = ({ record, data }: any) => {
       >
         <div className="flex justify-center relative overflow-hidden bg-cover bg-no-repeat">
           <img
-            src={`${data.url}/users/${record?.media}`}
+            src={`${data?.url}/users/${record?.media}`}
             className="rounded-md lg:w-[20vw] lg:h-[40vh] object-cover"
           />
           <div className="absolute bottom-0 left-0 right-0 top-0 h-full w-full overflow-hidden bg-[#D9D9D9] bg-fixed flex items-center justify-center opacity-0 transition duration-300 ease-in-out hover:opacity-50 hover:cursor-pointer">
@@ -45,9 +45,7 @@ const ArtCard = ({ record, data }: any) => {
                 : record?.status === "pending"
                 ? "bg-[#D8F002]"
                 : record?.status === "draft"
-                ? "bg-[#696868]"
-                : record?.status === "pending"
-                ? "bg-[#D8F002]"
+                ? "bg-[#f0dd32]"
                 : record?.status === "modified"
                 ? "bg-[#ac329e]"
                 : record?.status === "notAvailable"
@@ -56,9 +54,9 @@ const ArtCard = ({ record, data }: any) => {
             }`}
           ></div>
 
-          <p className="text-[12px]">{record.discipline?.artworkDiscipline}</p>
+          <p className="text-[12px]">{record?.discipline?.artworkDiscipline}</p>
           <p className="text-black text-[16px] font-bold">
-            {record.artworkName}
+            {record?.artworkName}
           </p>
           <p className="text-black text-[13px] font-meedium">
             {record.owner?.artistName}

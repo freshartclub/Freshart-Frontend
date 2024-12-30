@@ -202,12 +202,12 @@ const AddArtwork = () => {
 
   const [initialValues, setInitialValues] = useState({
     artworkName: "",
-    // isArtProvider: "",
+
     provideArtistName: "",
     artworkCreationYear: "",
     artworkSeries: "",
     productDescription: "",
-    // Depth: "",
+
     artworkTechnic: "",
     artworkTheme: "",
     artworkOrientation: "",
@@ -538,8 +538,6 @@ const AddArtwork = () => {
   const availableTo = picklistMap["Artwork Available To"];
   const discountAcceptation = picklistMap["Artwork Discount Options"];
 
-  const disciplineValue = watch("discipline");
-
   const getMaterial = getMediaSupport?.data?.filter(
     (item) =>
       item.discipline &&
@@ -628,6 +626,8 @@ const AddArtwork = () => {
 
   useEffect(() => {
     if (activeTab === "purchase") {
+      console.log("________", activeTab);
+
       const purchaseItem = seriesData?.purchaseCatalog?.find(
         (item) => item?._id === getValues("purchaseCatalog")
       );
@@ -643,6 +643,7 @@ const AddArtwork = () => {
         setPackageDepthError(maxDepth ? maxDepth : null);
       }
     } else if (activeTab === "subscription") {
+      console.log("________", activeTab);
       const subscriptionItem = seriesData?.subscriptionCatalog?.find(
         (item) => item?._id === getValues("subscriptionCatalog")
       );
@@ -673,11 +674,11 @@ const AddArtwork = () => {
   const onSubmit = handleSubmit(async (values: any) => {
     console.log("onSubmit", values);
     if (
-      parseInt(values.basePrice) < basePriceError &&
-      parseInt(values.packageLength) < packageDepthError &&
-      parseInt(values.packageHeight) < packageHeightError &&
-      parseInt(values.packageWidth) < packageWidthError &&
-      parseInt(values.packageWeight) < packageWeightError
+      parseInt(values.basePrice) <= basePriceError &&
+      parseInt(values.packageLength) <= packageDepthError &&
+      parseInt(values.packageHeight) <= packageHeightError &&
+      parseInt(values.packageWidth) <= packageWidthError &&
+      parseInt(values.packageWeight) <= packageWeightError
     ) {
       values.mainImage = newImage;
       values.backImage = newBackImage;
@@ -789,12 +790,9 @@ const AddArtwork = () => {
   const removeExistingVideo = (index: number, typeFile: string) => {
     console.log(index, typeFile);
     if (typeFile === "Url") {
-      console.log("yes url");
-
       const filteredVideo = exVidoes.filter((_, i) => i !== index);
 
       setValue("existingVideo", filteredVideo);
-      // setInitialValues({ ...initialValues });
     }
   };
 
@@ -827,8 +825,6 @@ const AddArtwork = () => {
     const catalogType = values.target.id;
     const catalogValue = values.target.value;
 
-    let updatedValues = { ...initialValues };
-
     if (catalogType === "subscriptionCatalog") {
       const selectedCatalog = seriesData?.subscriptionCatalog?.find(
         (item) => item?._id === catalogValue
@@ -840,10 +836,6 @@ const AddArtwork = () => {
       );
 
       setCatalogPrice(selectedCatalog?.artistFees);
-    }
-
-    if (JSON.stringify(updatedValues) !== JSON.stringify(initialValues)) {
-      setInitialValues(updatedValues);
     }
   };
 
@@ -884,6 +876,8 @@ const AddArtwork = () => {
       setValue("artworkSeries", selectedOption);
     }
   };
+
+  const [pendingDeleteOption, setPendingDeleteOption] = useState(null);
 
   const handleRemoveSeries = (value) => {
     try {
@@ -999,11 +993,6 @@ const AddArtwork = () => {
                       <option value="yes">Yes</option>
                       <option value="no">No</option>
                     </select>
-                    {/* {touched.isArtProvider && errors.provideArtistName ? (
-                      <div className="error text-red-500 mt-1 text-sm">
-                        {errors.isArtProvider}
-                      </div>
-                    ) : null} */}
                   </div>
                 ) : null}
 
@@ -1021,11 +1010,6 @@ const AddArtwork = () => {
                       placeholder="Type artist name here (if different from artist). . ."
                       className="w-full bg-[#F9F9FC] text-sm sm:text-base border border-gray-300 rounded-md p-1 sm:p-3 outline-none"
                     />
-                    {/* {touched.provideArtistName && errors.provideArtistName ? (
-                      <div className="error text-red-500 mt-1 text-sm">
-                        {errors.provideArtistName}
-                      </div>
-                    ) : null} */}
                   </div>
                 ) : null}
 
@@ -1047,7 +1031,6 @@ const AddArtwork = () => {
                           selectedYear={field.value}
                           toggleCalendar={toggleCalendar}
                           showCalendar={showCalendar}
-                          // disabled={query}
                         />
                       )}
                     />
@@ -1075,7 +1058,6 @@ const AddArtwork = () => {
 
                     <div className="relative w-full">
                       <div className="flex flex-col mb-1">
-                        {/* Display the selected value as an input field */}
                         <input
                           {...register("artworkSeries", {
                             required: "Series is required",
@@ -1090,7 +1072,6 @@ const AddArtwork = () => {
                         />
                       </div>
 
-                      {/* Display the dropdown options if it's open */}
                       {isDropdownOpen && !query && (
                         <div className="absolute top-full left-0 w-full mt-2 bg-white border border-gray-300 rounded-lg shadow-lg">
                           <ul className="max-h-60 overflow-y-auto flex flex-col gap-2 p-2">
@@ -2336,7 +2317,7 @@ const AddArtwork = () => {
                 watch("purchaseType") === "Fixed Price" ||
                 watch("purchaseType") === "Price By Request" ? (
                   <>
-                    {activeTab === "purchase" && watch("purchaseCatalog") ? (
+                    {activeTab === "purchase" || watch("purchaseCatalog") ? (
                       <div className="flex items-center border border-zinc-500 w-full py-3 px-4 bg-yellow-100 text-yellow-800">
                         {/* Warning Icon */}
                         <svg
@@ -2603,7 +2584,7 @@ const AddArtwork = () => {
                       onChange={(e) => {
                         setIsComingSoon((prev) => !prev);
                       }}
-                      value={isComingSoon}
+                      checked={isComingSoon}
                       id="comingSoon"
                       className="mr-2"
                     />

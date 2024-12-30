@@ -8,6 +8,7 @@ import mark from "./assets/offer.png";
 import question from "./assets/question.png";
 import wishlist from "./assets/wishlist.png";
 import useGetPublishedArtwork from "./http/useGetPublishedArtwork";
+import getSymbolFromCurrency from "currency-symbol-map";
 
 const DiscoverContent = ({ data }: any) => {
   const navigate = useNavigate();
@@ -126,7 +127,7 @@ const DiscoverContent = ({ data }: any) => {
         </P>
       </div>
 
-      <div className="flex gap-2 lg:mt-2 mt-1 ">
+      {/* <div className="flex gap-2 lg:mt-2 mt-1 ">
         <P variant={{ size: "base", theme: "dark", weight: "medium" }}>
           Location :
         </P>
@@ -137,7 +138,7 @@ const DiscoverContent = ({ data }: any) => {
         >
           Newyork, USA
         </P>
-      </div>
+      </div> */}
 
       <P
         variant={{ size: "base", theme: "dark", weight: "normal" }}
@@ -146,14 +147,14 @@ const DiscoverContent = ({ data }: any) => {
         {description}
       </P>
 
-      <div className="flex ">
+      <div className="flex gap-3 ">
         <P variant={{ size: "base", theme: "dark", weight: "medium" }}>
-          Size :{" "}
+          Size :
         </P>
         <P variant={{ size: "base", theme: "dark", weight: "normal" }}>
-          {` ${data?.additionalInfo?.height} x ${
-            data?.additionalInfo?.weight
-          } x ${data?.additionalInfo?.length || null}`}
+          {` ${data?.additionalInfo?.height + " " + "cm"} x ${
+            data?.additionalInfo?.weight + " " + "cm"
+          } x ${data?.additionalInfo?.length + " " + "cm" || null}`}
         </P>
       </div>
 
@@ -161,7 +162,7 @@ const DiscoverContent = ({ data }: any) => {
         variant={{ size: "xl", theme: "dark", weight: "semiBold" }}
         className="lg:my-4 my-2"
       >
-        {`${currency} ${data?.pricing?.basePrice}`}
+        {`${getSymbolFromCurrency(currency)} ${data?.pricing?.basePrice}`}
       </Header>
 
       <div

@@ -31,7 +31,9 @@ const SocialMediaLinks = ({ control, isActiveStatus }) => {
                     <select
                       disabled={isActiveStatus !== "active"}
                       {...field}
-                      className="border border-gray-300 rounded p-3 w-full outline-none"
+                      className={`border border-gray-300 rounded p-3 w-full outline-none ${
+                        isActiveStatus !== "active" ? "bg-zinc-100" : ""
+                      }`}
                     >
                       <option value="">Select</option>
                       {ARTIST_SOCIAL_LINKS.map((item, index) => (

@@ -13,6 +13,7 @@ import { useState } from "react";
 import { useGetCartItems } from "./http/useGetCartItems";
 import useAddToWhislistMutation from "./http/useAddToWhislistMutation";
 import { useGetWishList } from "./http/useGetWishList";
+import getSymbolFromCurrency from "currency-symbol-map";
 
 const DiscoverContent = ({ data }: any) => {
   console.log("this is from dicover", data);
@@ -107,20 +108,33 @@ const DiscoverContent = ({ data }: any) => {
 
       <div className="flex">
         <P variant={{ size: "base", theme: "dark", weight: "normal" }}>
-          Size :{" "}
+          Size :
         </P>
-        <P variant={{ size: "base", theme: "dark", weight: "normal" }}>
-          {` ${data?.additionalInfo?.height} x ${
-            data?.additionalInfo?.weight
-          } x ${data?.additionalInfo?.length || null}`}
-        </P>
+        <p
+          variant={{ size: "base", theme: "dark", weight: "normal" }}
+          className="ml-2"
+        >
+          {data?.additionalInfo?.length
+            ? `${data.additionalInfo.length} cm`
+            : "--"}{" "}
+          x{" "}
+          {data?.additionalInfo?.width
+            ? `${data.additionalInfo.width} cm`
+            : "--"}{" "}
+          x{" "}
+          {data?.additionalInfo?.height
+            ? `${data.additionalInfo.height} cm`
+            : "--"}
+        </p>
       </div>
 
       <Header
         variant={{ size: "xl", theme: "dark", weight: "semiBold" }}
         className="lg:my-4 my-2"
       >
-        {`${data?.pricing?.currency} ${data?.pricing?.basePrice}`}
+        {`${getSymbolFromCurrency(data?.pricing?.currency)} ${
+          data?.pricing?.basePrice
+        }`}
       </Header>
 
       <div className="flex md:flex-row flex-col xl:gap-10 gap-2">

@@ -1,11 +1,13 @@
 import { useSearchParams } from "react-router-dom";
 import ArtistDescription from "./ArtistDescription";
 import ArtistHeader from "./ArtistHeader";
-import Artwork from "./Artwork";
+
 import ArtworkSeries from "./ArtworkSeries";
 import { useGetArtistDetails } from "./http/useGetArtistDetails";
 import ArtistProtfolioArtwork from "./ArtistProtfolioArtwork";
 import Loader from "../ui/Loader";
+
+import { useGetArtSeries } from "./http/useGetArtSeries";
 
 const ArtistDetail = () => {
   const [searchParams] = useSearchParams();
@@ -13,6 +15,10 @@ const ArtistDetail = () => {
 
   const { data, isLoading } = useGetArtistDetails(id);
   console.log("this is from dsd", data?.artist);
+
+  const { data: seriesData, isLoading: getSeriesLoading } = useGetArtSeries(id);
+
+  console.log(seriesData);
 
   if (isLoading) {
     return <Loader />;

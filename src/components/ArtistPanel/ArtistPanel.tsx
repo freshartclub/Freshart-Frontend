@@ -41,8 +41,7 @@ const ArtistPanel = () => {
             <Route path="artwork/add" element={<AddArtwork />} />
             <Route path="edit-artistprofile" element={<ArtistProfile />} />
             <Route path="user/settings" element={<Settings />} />
-            {/* <Route path="ticket" element={<TicketHistory />} /> */}
-            {/* <Route path="ticket/:ticketId" element={<TicketDe />} /> */}
+
             <Route path="ticket/tickets" element={<TicketHistory />} />
             <Route path="/ticket" element={<Support />} />
             <Route path="/new_ticket" element={<NewTicket />} />

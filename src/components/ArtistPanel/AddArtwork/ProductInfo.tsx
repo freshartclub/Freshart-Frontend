@@ -8,6 +8,7 @@ import print from "./assets/print.png";
 import return1 from "./assets/return.png";
 import secure from "./assets/secure.png";
 import product from "./assets/single-product.jpg.png";
+import getSymbolFromCurrency from "currency-symbol-map";
 
 const ProductInfo = ({ data }: any) => {
   const currency = data?.data?.pricing?.currency;
@@ -84,16 +85,16 @@ const ProductInfo = ({ data }: any) => {
     },
     {
       head: "Artwork Width :",
-      name: data?.data?.additionalInfo?.width,
+      name: data?.data?.additionalInfo?.width + " " + "cm",
     },
 
     {
       head: "Artwork Height :",
-      name: data?.data?.additionalInfo?.height,
+      name: data?.data?.additionalInfo?.height + " " + "cm",
     },
     {
       head: "Artwork Length :",
-      name: data?.data?.additionalInfo?.length,
+      name: data?.data?.additionalInfo?.length + " " + "cm",
     },
   ];
 
@@ -108,15 +109,21 @@ const ProductInfo = ({ data }: any) => {
     },
     {
       heading: "Framed height: ",
-      description: data?.data?.additionalInfo?.frameHeight,
+      description: data?.data?.additionalInfo?.frameHeight
+        ? data?.data?.additionalInfo?.frameHeight + " " + "cm"
+        : "N/A",
     },
     {
       heading: "Frame Length: ",
-      description: data?.data?.additionalInfo?.frameLength,
+      description: data?.data?.additionalInfo?.frameLength
+        ? data?.data?.additionalInfo?.frameLength + " " + "cm"
+        : "N/A",
     },
     {
       heading: "Frame Width: ",
-      description: data?.data?.additionalInfo?.frameWidth,
+      description: data?.data?.additionalInfo?.frameWidth
+        ? data?.data?.additionalInfo?.frameWidth + " " + "cm"
+        : "N/A",
     },
   ];
 
@@ -177,13 +184,19 @@ const ProductInfo = ({ data }: any) => {
 
     {
       heading: "Artist Fees: ",
-      description: `${currency} ${data?.data?.pricing?.artistFees}` || "N/A",
+      description:
+        `${getSymbolFromCurrency(currency)} ${
+          data?.data?.pricing?.artistFees
+        }` || "N/A",
     },
 
     {
       heading: "Accept Minimum Offer: ",
-      description:
-        `${currency} ${data?.data?.pricing?.acceptOfferPrice}` || "N/A",
+      description: data?.data?.pricing?.acceptOfferPrice
+        ? `${getSymbolFromCurrency(currency)} ${
+            data?.data?.pricing?.acceptOfferPrice
+          }`
+        : "N/A",
     },
 
     {
@@ -192,7 +205,9 @@ const ProductInfo = ({ data }: any) => {
     },
     {
       heading: "Vat Amount: ",
-      description: `${currency} ${data?.data?.pricing?.vatAmount}`,
+      description: `${getSymbolFromCurrency(currency)} ${
+        data?.data?.pricing?.vatAmount
+      }`,
     },
   ];
 
@@ -228,23 +243,28 @@ const ProductInfo = ({ data }: any) => {
 
     {
       heading: "Package Material: ",
-      description: `${data?.data?.inventoryShipping?.packageMaterial}` || "N/A",
+      description:
+        `${data?.data?.inventoryShipping?.packageMaterial} ` || "N/A",
     },
     {
       heading: "Package Depth: ",
-      description: data?.data?.inventoryShipping?.packageLength || "N/A",
+      description:
+        data?.data?.inventoryShipping?.packageLength + " " + "cm" || "N/A",
     },
     {
       heading: "Package Height: ",
-      description: data?.data?.inventoryShipping?.packageHeight || "N/A",
+      description:
+        data?.data?.inventoryShipping?.packageHeight + " " + "cm" || "N/A",
     },
     {
       heading: "Package Width: ",
-      description: data?.data?.inventoryShipping?.packageWidth || "N/A",
+      description:
+        data?.data?.inventoryShipping?.packageWidth + " " + "cm" || "N/A",
     },
     {
       heading: "Package Weight: ",
-      description: data?.data?.inventoryShipping?.packageWeight || "N/A",
+      description:
+        data?.data?.inventoryShipping?.packageWeight + " " + "kg" || "N/A",
     },
     {
       heading: "Coming Soon: ",

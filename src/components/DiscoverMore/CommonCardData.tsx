@@ -5,6 +5,8 @@ import "../../App.css";
 import like from "../../assets/like.png";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { BiLike } from "react-icons/bi";
+import getSymbolFromCurrency from "currency-symbol-map";
 
 interface HighlightItem {
   image: string;
@@ -45,7 +47,7 @@ const CommonCardData = ({ heading, highlightData }: HandleLikeClickParams) => {
       {
         breakpoint: 768,
         settings: {
-          slidesToShow: highlightData?.artworks?.length === 1 ? 1 : 2,
+          slidesToShow: highlightData?.artworks?.length === 1 ? 2 : 2,
           slidesToScroll: 1,
           infinite: highlightData?.artworks?.length > 1,
           dots: true,
@@ -145,7 +147,9 @@ const CommonCardData = ({ heading, highlightData }: HandleLikeClickParams) => {
           </p>
 
           <p className="text-[14px] font-bold text-[#333333]">
-            {highlightData?.artworks[0]?.pricing?.currency +
+            {getSymbolFromCurrency(
+              highlightData?.artworks[0]?.pricing?.currency
+            ) +
               " " +
               highlightData?.artworks[0]?.pricing?.basePrice}
           </p>
@@ -195,8 +199,10 @@ const CommonCardData = ({ heading, highlightData }: HandleLikeClickParams) => {
                   {item?.artworkName}
                 </h1>
                 <p className="text-[12px] sm:text-[14px] text-[#696868] sm:w-auto w-full">
-                  {item?.additionalInfo?.length || null}x
-                  {item?.additionalInfo?.width || null}
+                  {`${item?.additionalInfo?.length || "--"} x ${
+                    item?.additionalInfo?.width || "--"
+                  } x ${item?.additionalInfo?.height || "--"}`}{" "}
+                  cm
                 </p>
               </div>
 
@@ -206,7 +212,9 @@ const CommonCardData = ({ heading, highlightData }: HandleLikeClickParams) => {
                   highlightData?.data?.owner?.artistSurname1}
               </p>
               <p className="text-[14px] font-bold">
-                {item?.pricing?.currency + " " + item?.pricing?.basePrice}
+                {getSymbolFromCurrency(item?.pricing?.currency) +
+                  " " +
+                  item?.pricing?.basePrice}
               </p>
             </div>
           </div>

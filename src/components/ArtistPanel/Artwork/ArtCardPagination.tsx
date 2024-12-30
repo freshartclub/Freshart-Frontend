@@ -53,12 +53,13 @@ const ArtCardPagination: React.FC = () => {
       const filteredArtwork = originalArtwork?.filter((item) =>
         item.artworkName.toLowerCase().includes(query.toLowerCase())
       );
-      setArtwork(filteredArtwork);
+      setArtwork(filteredArtwork || null);
     }
   };
 
   const nPages = Math.ceil((artwork?.length || 0) / recordPerPage);
   const numbers = [...Array(nPages + 1).keys()].slice(1);
+
   if (isLoading) {
     return <Loader />;
   }
@@ -82,7 +83,7 @@ const ArtCardPagination: React.FC = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-6">
+      <div className="flex flex-wrap gap-5 mt-6">
         {artwork?.slice(firstIndex, lastIndex).map((record, index) => (
           <div key={index}>
             <ArtCard record={record} data={data} />
@@ -111,10 +112,6 @@ const ArtCardPagination: React.FC = () => {
           <div className="w-[.8em] h-[.8em] rounded-full bg-blue-600 flex items-center"></div>
           <p className="text-[14px] text-black">Subscription</p>
         </div>
-        {/* <div className="flex gap-2 items-center">
-          <div className="w-[.8em] h-[.8em] rounded-full bg-[#FFA600] flex items-center"></div>
-          <p className="text-[14px] text-black">In subscription</p>
-        </div> */}
         <div className="flex gap-2 items-center">
           <div className="w-[.8em] h-[.8em] rounded-full   bg-[#EE1D52]   flex items-center"></div>
           <p className="text-[14px] text-black">Not Available</p>

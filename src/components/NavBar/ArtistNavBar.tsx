@@ -39,8 +39,10 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
     { code: "ES", flag: "https://flagcdn.com/w320/es.png", name: "Spanish" },
     { code: "CA", flag: "https://flagcdn.com/w320/cat.png", name: "Catalan" },
   ];
+
   useClickOutside(closePopup, () => {
     setIsToggelOpen(false);
+    // setSidebarOpen(false);
   });
 
   const url = "https://dev.freshartclub.com/images";
