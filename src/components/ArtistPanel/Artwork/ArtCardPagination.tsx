@@ -35,7 +35,7 @@ const ArtCardPagination: React.FC = () => {
   const [searchData, setSearchData] = useState<string>("");
 
   let selectedArtwork = "";
-  const { data, isLoading } = useGetArtWorkList(selectedArtwork);
+  const { data, isLoading, isFetching } = useGetArtWorkList(selectedArtwork);
 
   useEffect(() => {
     if (data) {
@@ -60,7 +60,7 @@ const ArtCardPagination: React.FC = () => {
   const nPages = Math.ceil((artwork?.length || 0) / recordPerPage);
   const numbers = [...Array(nPages + 1).keys()].slice(1);
 
-  if (isLoading) {
+  if (isLoading || isFetching) {
     return <Loader />;
   }
 
@@ -83,7 +83,7 @@ const ArtCardPagination: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-5 mt-6">
+      <div className="flex flex-wrap justify-center gap-5 mt-6">
         {artwork?.slice(firstIndex, lastIndex).map((record, index) => (
           <div key={index}>
             <ArtCard record={record} data={data} />

@@ -35,6 +35,8 @@ const Artwork = () => {
     setAction(actionType);
   };
 
+  // console.log(data?.data);
+
   useEffect(() => {
     refetch();
   }, [selectedArtwork]);
@@ -46,6 +48,7 @@ const Artwork = () => {
       setLoading(false);
     }
   }, [isLoading, data]);
+
   const handleArtworkSelect = (artwork) => {
     const currentValue = artwork.target.innerHTML;
     setSelectedArtwork(currentValue);

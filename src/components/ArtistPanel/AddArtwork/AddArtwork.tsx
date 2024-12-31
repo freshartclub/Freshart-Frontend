@@ -179,7 +179,7 @@ const AddArtwork = () => {
 
   const { data: themeData, isLoading: themeLoading } = useGetTheme();
 
-  const { mutate: seriesDelete, isPending: isSeriesPendingDelete } =
+  const { mutateAsync: seriesDelete, isPending: isSeriesPendingDelete } =
     useDeleteSeriesMutation();
 
   const { data: getMediaSupport, isLoading: getMediaSupportLoding } =
@@ -674,7 +674,9 @@ const AddArtwork = () => {
   const onSubmit = handleSubmit(async (values: any) => {
     console.log("onSubmit", values);
     if (
-      parseInt(values.basePrice) <= basePriceError &&
+      (getValues("purchaseType") === "Downward Offer" ||
+        getValues("purchaseType") === "Upward Offer" ||
+        parseInt(values.basePrice) <= basePriceError) &&
       parseInt(values.packageLength) <= packageDepthError &&
       parseInt(values.packageHeight) <= packageHeightError &&
       parseInt(values.packageWidth) <= packageWidthError &&
@@ -877,7 +879,7 @@ const AddArtwork = () => {
     }
   };
 
-  const [pendingDeleteOption, setPendingDeleteOption] = useState(null);
+  const [pendingDeleteOption, setPendingDeleteOption] = useState(false);
 
   const handleRemoveSeries = (value) => {
     try {
@@ -1802,7 +1804,6 @@ const AddArtwork = () => {
                     </div>
                   ) : null}
                 </div>
-                {/* this is for offensive  */}
 
                 <label className="text-[#203F58] text-sm sm:text-base font-semibold  ">
                   Offensive
@@ -1830,7 +1831,6 @@ const AddArtwork = () => {
                       type="text"
                       id="extTags"
                       name="extTags"
-                      // disabled={query}
                       readOnly={query}
                       className="bg-[#F9F9FC] border mb-3 border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5"
                       placeholder="Enter tags (e.g., #example)"
@@ -2016,7 +2016,6 @@ const AddArtwork = () => {
                               className="bg-[#F9F9FC] border mb-2 border-gray-300 outline-none text-[#203F58] text-sm rounded-lg block w-full p-1 sm:p-2.5"
                             />
 
-                            {/* Access errors dynamically based on field.name */}
                             {errors?.[field.name] && (
                               <div className="error text-red-500 mt-1 text-sm">
                                 {errors?.[field.name]?.message}
@@ -2033,7 +2032,6 @@ const AddArtwork = () => {
                     <select
                       as="select"
                       id="artworkOrientation"
-                      // name="artworkOrientation"
                       {...register("artworkOrientation", {
                         required: "Artwork orientation is required",
                       })}

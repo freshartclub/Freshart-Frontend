@@ -34,6 +34,7 @@ import usePhoneOtpVerify from "./http/useVerifyPhoneOtp";
 import CustomDropdown from "./CustomDropdown";
 import { useAppSelector } from "../../store/typedReduxHooks";
 import { getCountries } from "react-phone-number-input";
+import Loader from "../ui/Loader";
 
 const BecomeArtist = () => {
   const validationSchema = Yup.object().shape({
@@ -59,9 +60,9 @@ const BecomeArtist = () => {
   const [isOtpVerify, setIsOtpVerify] = useState(false);
   const [popUp, setPopUp] = useState(false);
 
-  const [countryCode, setCountryCode] = useState("es");
+  const [countryCode, setCountryCode] = useState("");
   const [validateEmail, setValidateEmail] = useState("Verify Email");
-  const [validatePhone, setValidatePhone] = useState("Send Code");
+  const [validatePhone, setValidatePhone] = useState("Verify Code");
   const [validateotp, setValidateotp] = useState("Validate Otp");
   const [filterStyle, setFilterStyle] = useState(null);
   const [validateError, setValidateError] = useState("");
@@ -145,21 +146,23 @@ const BecomeArtist = () => {
     }
   }, []);
 
-  // useEffect(() => {
-  //   // watch("phone");
-  //   // watch("email");
-  //   // if (!errors.email) {
-  //   //   setEmail(getValues("email"));
-  //   // }
-  //   const getGeoLocation = async () => {
-  //     const request = await fetch("https://ipapi.co/json");
-  //     const jsonResponse = await request.json();
-  //     setGeoLocation(jsonResponse);
+  useEffect(() => {
+    // watch("phone");
+    // watch("email");
+    // if (!errors.email) {
+    //   setEmail(getValues("email"));
+    // }
+    const getGeoLocation = async () => {
+      const request = await fetch("https://ipapi.co/json");
+      const jsonResponse = await request.json();
+      setGeoLocation(jsonResponse);
 
-  //     console.log(jsonResponse);
-  //   };
-  //   getGeoLocation();
-  // }, []);
+      console.log(jsonResponse);
+      setCountryCode(jsonResponse?.country_code.toLowerCase());
+      setValue("country", jsonResponse?.country_name);
+    };
+    getGeoLocation();
+  }, []);
 
   // useEffect(() => {
   //   setValue("city", geoLocation?.city);
@@ -365,6 +368,10 @@ const BecomeArtist = () => {
     return true;
   };
 
+  if (!countryCode) {
+    return <Loader />;
+  }
+
   return (
     <>
       <div className="relative">
@@ -489,10 +496,12 @@ const BecomeArtist = () => {
                       <PhoneInput
                         className="appearance-none  outline-none rounded py-1   w-full text-gray-700 leading-tight focus:outline-none"
                         placeholder="Enter phone number"
-                        defaultCountry="es"
+                        defaultCountry={countryCode}
                         disabled={isValidatePhone}
                         value={getValues("phone")}
-                        onChange={(val) => setValue("phone", val)}
+                        onChange={(val) => {
+                          setValue("phone", val);
+                        }}
                       />
 
                       <PhoneVerification
