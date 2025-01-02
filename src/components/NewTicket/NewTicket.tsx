@@ -118,7 +118,7 @@ const NewTicket = () => {
     }
   };
 
-  if (isLoading || picklistMap === {}) {
+  if (isLoading || Object.keys(picklistMap).length === 0) {
     return <Loader />;
   }
 

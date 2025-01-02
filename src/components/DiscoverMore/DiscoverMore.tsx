@@ -131,7 +131,7 @@ const DiscoverMore = () => {
           </li>
         </ul>
 
-        <div className="flex md:flex-row flex-col  gap-10 mt-10">
+        <div className="flex md:flex-row flex-col  gap-10 ">
           <div className="flex lg:flex-row  flex-col gap-4 md:w-[50%] w-full items-center">
             <div className="flex lg:justify-start justify-center  lg:flex-col lg:max-h-[60vh] lg:h-[60vh] lg:overflow-y-auto  gap-2 w-[15%] lg:ml-4">
               {images?.map((thumb, index) => {

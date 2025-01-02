@@ -164,14 +164,6 @@ const BecomeArtist = () => {
     getGeoLocation();
   }, []);
 
-  // useEffect(() => {
-  //   setValue("city", geoLocation?.city);
-  //   setValue("region", geoLocation?.region);
-  //   setValue("country", geoLocation?.country_name);
-
-  //   setCountryCode(geoLocation?.country?.toLowerCase());
-  // }, [geoLocation]);
-
   const countryValue = getValues("country");
 
   useEffect(() => {
@@ -207,28 +199,8 @@ const BecomeArtist = () => {
   useEffect(() => {
     watch("phone");
     watch("country");
+    watch("zipCode");
   }, []);
-
-  // const getCountryCode = (countryName) => {
-  //   const flattenedOptions = options.data.flat();
-
-  //   const country = flattenedOptions.find((c) => c.label === countryName);
-
-  //   if (country) {
-  //     return country.value;
-  //   } else {
-  //     return "Country code not found";
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   if (countryValue) {
-  //     const countryName = getCountryCode(countryValue); // Get the country code based on the country name
-  //     const formattedCountryCode = countryName.toLowerCase(); // Ensure the country code is in uppercase
-
-  //     setCountryCode(formattedCountryCode);
-  //   }
-  // }, [countryValue]);
 
   const emails = getValues("email");
   const phones = getValues("phone");

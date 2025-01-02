@@ -239,3 +239,7 @@
   width: "24px";
 } */
 /* .react-international-phone-flag-height': '24px' */
+
+.toast {
+  z-index: 999999;
+}

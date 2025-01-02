@@ -719,7 +719,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                     {...register("stateRegion", {
                       required: "State/Region is required",
                     })}
-                    disabled={isActiveStatus !== "active"}
+                    disabled
                     className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
                   />
                   <label

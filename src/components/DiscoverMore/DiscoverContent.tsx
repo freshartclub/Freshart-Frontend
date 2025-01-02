@@ -16,7 +16,6 @@ import { useGetWishList } from "./http/useGetWishList";
 import getSymbolFromCurrency from "currency-symbol-map";
 
 const DiscoverContent = ({ data }: any) => {
-  console.log("this is from dicover", data);
   const [addtoCart, setAddToCart] = useState("Add To Cart");
 
   const { mutate, isPending } = useAddToCartMutation();
@@ -48,14 +47,12 @@ const DiscoverContent = ({ data }: any) => {
     return item._id === data._id;
   });
 
-  console.log(wislistItem);
-
   // console.log(checkCartItem.length ? "hello" : "hey");
   return (
     <div>
       <P
         variant={{ size: "small", weight: "semiBold" }}
-        className="lg:mb-10 mb-3 text-[#999999]"
+        className=" mb-3 text-[#999999]"
       >
         {data?.discipline?.artworkDiscipline}
       </P>

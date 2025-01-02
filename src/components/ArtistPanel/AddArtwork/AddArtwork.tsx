@@ -288,8 +288,7 @@ const AddArtwork = () => {
       technicLoading ||
       themeLoading ||
       seriesLoading ||
-      getMediaSupportLoding ||
-      seriesFetching
+      getMediaSupportLoding
     ) {
       setLoading(true);
     } else {
@@ -646,7 +645,6 @@ const AddArtwork = () => {
         setPackageDepthError(maxDepth ? maxDepth : null);
       }
     } else if (activeTab === "subscription") {
-      console.log("________", activeTab);
       const subscriptionItem = seriesData?.subscriptionCatalog?.find(
         (item) => item?._id === getValues("subscriptionCatalog")
       );
@@ -677,9 +675,7 @@ const AddArtwork = () => {
   const onSubmit = handleSubmit(async (values: any) => {
     console.log("onSubmit", values);
     if (
-      (getValues("purchaseType") === "Downward Offer" ||
-        getValues("purchaseType") === "Upward Offer" ||
-        parseInt(values.basePrice) <= basePriceError) &&
+      parseInt(values.basePrice) <= basePriceError &&
       parseInt(values.packageLength) <= packageDepthError &&
       parseInt(values.packageHeight) <= packageHeightError &&
       parseInt(values.packageWidth) <= packageWidthError &&
@@ -2316,9 +2312,10 @@ const AddArtwork = () => {
                   )}
                 </div>
 
-                {watch("purchaseType") === "Downword Offer" ||
+                {watch("purchaseType") === "Downward Offer" ||
                 watch("purchaseType") === "Fixed Price" ||
-                watch("purchaseType") === "Price By Request" ? (
+                watch("purchaseType") === "Price By Request" ||
+                watch("purchaseType") === "Upward Offer" ? (
                   <>
                     {activeTab === "purchase" || watch("purchaseCatalog") ? (
                       <div className="flex items-center border border-zinc-500 w-full py-3 px-4 bg-yellow-100 text-yellow-800">
@@ -2392,7 +2389,8 @@ const AddArtwork = () => {
                           />
                         </label>
 
-                        {watch("purchaseType") === "Downword Offer" ? (
+                        {watch("purchaseType") === "Downward Offer" ||
+                        watch("purchaseType") === "Upward Offer" ? (
                           <label className="text-[#203F58] text-sm sm:text-base font-semibold">
                             Accept Offer Minimum Price
                             <input

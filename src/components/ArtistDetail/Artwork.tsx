@@ -108,7 +108,7 @@ const Artwork = () => {
           </div>
           <div className="flex gap-2 items-center">
             <div className="w-[.8em] h-[.8em] rounded-full bg-[#D8F002] flex items-center"></div>
-            <p className="text-[14px] text-black">Pending</p>
+            <p className="text-[14px] text-black">Pending Approval</p>
           </div>
           <div className="flex gap-2 items-center">
             <div className="w-[.8em] h-[.8em] rounded-full bg-[#ac329e] flex items-center"></div>
@@ -129,6 +129,11 @@ const Artwork = () => {
           <div className="flex gap-2 items-center">
             <div className="w-[.8em] h-[.8em] rounded-full bg-[#696868] flex items-center"></div>
             <p className="text-[14px] text-black">Purchased</p>
+          </div>
+
+          <div className="flex gap-2 items-center">
+            <div className="w-[.8em] h-[.8em] rounded-full bg-[#a74343] flex items-center"></div>
+            <p className="text-[14px] text-black">Coming Soon</p>
           </div>
         </div>
       </div>
