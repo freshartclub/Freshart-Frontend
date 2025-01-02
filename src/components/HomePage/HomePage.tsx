@@ -28,7 +28,7 @@ const HomePage = () => {
   }
 
   return (
-    <div className="overflow-x-hidden">
+    <div className="overflow-x-hidden ">
       <BannerSection />
       <SecondSection />
       <HighlightSection data={data} />

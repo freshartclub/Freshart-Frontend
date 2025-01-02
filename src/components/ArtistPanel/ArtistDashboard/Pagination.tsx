@@ -7,10 +7,7 @@ import { useGetArtistOrder } from "../Orders/http/useGetArtistOrder";
 import dayjs from "dayjs";
 import { NavLink, useNavigate } from "react-router-dom";
 import Loader from "../../ui/Loader";
-import {
-  formateCurrency,
-  formateCurrencyWithoutSymbol,
-} from "../../utils/FormatCurrency";
+import { formateCurrency } from "../../utils/FormatCurrency";
 
 const Pagination = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -40,6 +37,8 @@ const Pagination = () => {
       `/artist-panel/order/approve-order?id=${value?._id}&orderType=${value?.orderType}`
     );
   };
+
+  console.log(data);
 
   const nPages = Math.ceil((data?.length || 0) / recordPerPage);
   const numbers = [...Array(nPages).keys()].map((num) => num + 1);
@@ -75,7 +74,7 @@ const Pagination = () => {
                     {/* Product Column */}
                     <td
                       className="px-4 py-3 flex items-center gap-2 cursor-pointer whitespace-nowrap"
-                      onClick={() => handleClickData(value)}
+                      onClick={() => handelClickData(value)}
                     >
                       <img
                         src={`${url}/users/${value?.image}`}
@@ -111,7 +110,7 @@ const Pagination = () => {
 
                     {/* Total */}
                     <td className="px-4 py-3 text-[12px] lg:text-[14px] font-bold whitespace-nowrap">
-                      {formateCurrencyWithoutSymbol(value?.subTotal, "$")}
+                      {formateCurrency(value?.subTotal, "$")}
                     </td>
 
                     {/* Payment Type */}

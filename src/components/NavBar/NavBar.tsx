@@ -135,26 +135,22 @@ const NavBar = () => {
     setIsModalOpen((Modalprev) => !Modalprev);
   };
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 50) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
-    };
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     if (window.scrollY > 50) {
+  //       setScrolled(true);
+  //     } else {
+  //       setScrolled(false);
+  //     }
+  //   };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  //   window.addEventListener("scroll", handleScroll);
+  //   return () => window.removeEventListener("scroll", handleScroll);
+  // }, []);
 
   return (
     <>
-      <nav
-        className={`bg-[#102030] py-6 px-10 fixed top-0 left-0 w-full z-50 transition-transform duration-300 ${
-          scrolled ? "translate-y-0" : "translate-y-0"
-        }`}
-      >
+      <nav className="bg-[#102030] py-6 px-10 relative">
         <div className="flex justify-between  items-center ">
           {token && isAuthorized ? (
             <>
