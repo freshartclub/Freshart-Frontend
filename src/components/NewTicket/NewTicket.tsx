@@ -18,6 +18,7 @@ import { useAppSelector } from "../../store/typedReduxHooks";
 import { useGetArtistDetails } from "../UserProfile/http/useGetDetails";
 import Loader from "../ui/Loader";
 import { RenderAllPicklists } from "../utils/RenderAllPicklist";
+import { useGetPickListMutation } from "../utils/http/useGetPickListMutation";
 
 const NewTicket = () => {
   const validationSchema = Yup.object({
@@ -41,20 +42,11 @@ const NewTicket = () => {
 
   const requestedName =
     user.artistName + " " + user.artistSurname1 + " " + user.artistSurname2;
-  console.log(requestedName);
-
-  const initialValues = {
-    requestedBy: "",
-    region: "",
-    subject: "",
-    message: "",
-    ticketImg: null,
-    ticketType: "",
-    urgency: "",
-    impact: "",
-  };
 
   const { data, isLoading } = useGetArtistDetails();
+
+  const { data: Picklist, isLoading: picklistLoading } =
+    useGetPickListMutation();
 
   const picklist = RenderAllPicklists([
     "Ticket Type",
@@ -83,6 +75,25 @@ const NewTicket = () => {
   const navigate = useNavigate();
   const { mutate, isPending } = useGetPostArtistTicketMutation();
 
+  // const setUpUrgency = ticketUrgency?.map((item, i) => item?.value);
+
+  // console.log(Picklist[21]);
+
+  const initialValues = {
+    requestedBy: "",
+    region: "",
+    subject: "",
+    message: "",
+    ticketImg: null,
+    ticketType: "",
+    urgency: ticketUrgency?.[0]?.value || "",
+    impact: ticketImpact?.[0]?.value || "",
+  };
+
+  console.log(initialValues);
+  console.log(ticketImpact);
+  console.log(picklistMap);
+
   const onSubmit = (values, action) => {
     console.log("onSubmit", values);
 
@@ -107,7 +118,7 @@ const NewTicket = () => {
     }
   };
 
-  if (isLoading) {
+  if (isLoading || picklistMap === {}) {
     return <Loader />;
   }
 
@@ -217,6 +228,7 @@ const NewTicket = () => {
                     <Field
                       name="urgency"
                       as="select"
+                      // setFieldValue={}
                       className="outline-[#FDB7DC] bg-[#FFD1D114] shadow border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-[#FDB7DC] focus:shadow-outline"
                     >
                       {/* <option value="">Choose Urgency Type</option> */}
@@ -246,6 +258,7 @@ const NewTicket = () => {
                     <Field
                       name="impact"
                       as="select"
+                      // setFieldValue={initialValues.impact}
                       className="outline-[#FDB7DC] bg-[#FFD1D114] shadow border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-[#FDB7DC] focus:shadow-outline"
                     >
                       {/* <option value="">Choose Impact Type</option> */}

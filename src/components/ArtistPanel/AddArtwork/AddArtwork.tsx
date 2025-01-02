@@ -188,6 +188,7 @@ const AddArtwork = () => {
   const {
     data: seriesData,
     isLoading: seriesLoading,
+    isFetching: seriesFetching,
     refetch,
   } = useGetSeries(userID);
 
@@ -287,7 +288,8 @@ const AddArtwork = () => {
       technicLoading ||
       themeLoading ||
       seriesLoading ||
-      getMediaSupportLoding
+      getMediaSupportLoding ||
+      seriesFetching
     ) {
       setLoading(true);
     } else {
@@ -300,6 +302,7 @@ const AddArtwork = () => {
     themeLoading,
     seriesLoading,
     getMediaSupportLoding,
+    seriesFetching,
   ]);
 
   const getOutDiscipline = seriesData?.discipline?.map(
@@ -2131,6 +2134,7 @@ const AddArtwork = () => {
                               setValue("purchaseOption", "");
                               setsubscriptionCatlogValue(val.target.value);
                             }}
+                            disabled={query}
                             className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
                           >
                             <option value="">Select</option>
@@ -2186,6 +2190,7 @@ const AddArtwork = () => {
                               setsubscriptionCatlogValue("");
                               setValue("purchaseType", "");
                             }}
+                            disabled={query}
                             className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
                           >
                             <option value="">Select</option>

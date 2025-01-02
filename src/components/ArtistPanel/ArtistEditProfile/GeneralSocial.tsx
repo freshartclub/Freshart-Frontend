@@ -77,7 +77,7 @@ const SocialMediaLinks = ({ control, isActiveStatus }) => {
       <span
         variant={{ size: "base", weight: "500", rounded: "lg" }}
         onClick={handleAddAccount}
-        className={`bg-[#DEDEFA] font-semibold py-3 px-2 rounded ${
+        className={`bg-[#DEDEFA] font-semibold py-3 px-2 rounded cursor-pointer ${
           isActiveStatus !== "active" ? "pointer-events-none" : ""
         }`}
       >

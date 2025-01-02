@@ -255,10 +255,10 @@ const Artwork = ({ data }) => {
                   <img
                     src={`${data.url}/users/${item.media.mainImage}`}
                     alt="image"
-                    className="w-full h-full md:w-[20vw] md:h-[50vh] object-cover cursor-pointer"
+                    className="w-full h-[40vh] sm:h-[45vh] md:h-[50vh] object-cover "
                   />
 
-                  <button className="absolute top-2 right-[40px] border border-[#FFD9DE] rounded-full px-3 py-3 bg-white cursor-pointer">
+                  <button className="absolute top-2 right-7 border border-[#FFD9DE] rounded-full p-2 bg-white cursor-pointer">
                     <img src={like} alt="like" className="w-[20px] h-[20px]" />
                   </button>
 

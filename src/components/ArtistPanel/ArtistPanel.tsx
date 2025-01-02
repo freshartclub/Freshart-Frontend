@@ -26,10 +26,10 @@ const ArtistPanel = () => {
   return (
     <>
       <ArtistNavBar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-      <div className=" flex w-full overflow-hidden">
+      <div className=" flex w-full overflow-hidden mt-[12vh] ">
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
-        <div className="flex-1 sm:px-6 lg:px-3 bg-zinc-100 ">
+        <div className="flex-1 sm:px-6 lg:px-3 bg-zinc-100 overflow-auto  ">
           <Routes>
             <Route index element={<Dashboard />} />
             <Route path="artdashboard" element={<Dashboard />} />

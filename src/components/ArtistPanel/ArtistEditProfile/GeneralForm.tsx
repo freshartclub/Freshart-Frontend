@@ -360,10 +360,6 @@ const GeneralForm = ({ isActiveStatus }) => {
 
     formData.append("address", searchResult);
 
-    for (let [key, value] of formData.entries()) {
-      console.log(key, value);
-    }
-
     if (isManagerDetails) {
       formData.append("isManagerDetails", "true");
     }
@@ -475,7 +471,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                     {...register("artistName", {
                       required: "Name is required",
                     })}
-                    disabled={isActiveStatus !== "active"}
+                    disabled
                     className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-[#1C252E] outline-none"
                   />
                   <label
@@ -496,7 +492,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                     {...register("artistSurname1", {
                       required: "Email is required",
                     })}
-                    disabled={isActiveStatus !== "active"}
+                    disabled
                     className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-[#1C252E] outline-none"
                   />
                   <label
@@ -518,7 +514,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                   <input
                     type="text"
                     {...register("artistSurname2")}
-                    disabled={isActiveStatus !== "active"}
+                    disabled
                     className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-[#1C252E] outline-none"
                   />
                   <label
@@ -533,7 +529,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                     type="text"
                     // placeholder="Enter Your Email id"
                     {...register("nickName")}
-                    disabled={isActiveStatus !== "active"}
+                    disabled
                     className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-[#1C252E] outline-none"
                   />
                   <label
@@ -553,7 +549,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                     {...register("email", {
                       required: "Name is required",
                     })}
-                    disabled={isActiveStatus !== "active"}
+                    disabled
                     className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-[#1C252E] outline-none"
                   />
                   <label
@@ -575,7 +571,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                     placeholder="Enter phone number"
                     value={getValues("phoneNumber")}
                     onChange={(val) => setValue("phoneNumber", val)}
-                    disabled={isActiveStatus !== "active"}
+                    disabled
                   />
                   <label
                     htmlFor="phoneNumber"
@@ -598,7 +594,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                     {...register("gender", {
                       required: "Gender is required",
                     })}
-                    disabled={isActiveStatus !== "active"}
+                    disabled
                     className={`border  ${
                       isActiveStatus !== "active" ? "bg-zinc-100" : ""
                     } border-[#E6E6E6] p-3 w-full rounded-md focus:outline-none peer placeholder::font-montserrat font-normal text-left placeholder:text-[#1C252E] outline-none`}
@@ -625,7 +621,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                     {...register("language", {
                       required: "language is required",
                     })}
-                    disabled={isActiveStatus !== "active"}
+                    disabled
                     className={`border  ${
                       isActiveStatus !== "active" ? "bg-zinc-100" : ""
                     } border-[#E6E6E6] p-3 w-full rounded-md focus:outline-none peer placeholder::font-montserrat font-normal text-left placeholder:text-[#1C252E] outline-none`}
@@ -658,7 +654,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                     options={options}
                     countryValue={countryValue}
                     name="country"
-                    isActiveStatus={isActiveStatus}
+                    isActiveStatus="Under Maintenance"
                   />
 
                   <label
@@ -679,7 +675,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                     type="text"
                     // placeholder="Enter Your Zip Code"
                     {...register("zip", { required: "Zip Code is required" })}
-                    disabled={isActiveStatus !== "active"}
+                    disabled
                     className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
                   />
                   <label
@@ -702,7 +698,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                     type="text"
                     // placeholder="Enter Your City"
                     {...register("city", { required: "City is required" })}
-                    disabled={isActiveStatus !== "active"}
+                    disabled
                     className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-[#1C252E] outline-none"
                   />
                   <label
@@ -742,11 +738,7 @@ const GeneralForm = ({ isActiveStatus }) => {
               <div className="flex  w-full gap-4 mb-4">
                 <div className=" w-full relative">
                   <Autocomplete
-                    className={`border ${
-                      isActiveStatus !== "active"
-                        ? "pointer-events-none bg-zinc-100 "
-                        : ""
-                    } border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500`}
+                    className={`border pointer-events-none bg-zinc-100 border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500`}
                     value={searchResult}
                     apiKey={import.meta.env.VITE_APP_GOOGLE_MAPS_API_KEY}
                     onChange={(e) => {

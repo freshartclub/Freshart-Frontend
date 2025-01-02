@@ -71,6 +71,10 @@ const DiscoverMore = () => {
     }
   };
 
+  console.log(data?.data?.commercialization?.activeTab);
+
+  const checkArtworkType = data?.data?.commercialization?.activeTab;
+
   if (isLoading) {
     return <Loader />;
   }
@@ -96,12 +100,21 @@ const DiscoverMore = () => {
           </li>
           <img src={arrow} alt="Arrow" className="w-[4px] h-[6px] mr-2" />
           <li>
-            <Link to="/purchase" className="rounded-md transition-all flex">
+            <Link
+              to={
+                checkArtworkType === "subscription"
+                  ? "/all-artworks?type=subscription"
+                  : "/all-artworks?type=purchase"
+              }
+              className="rounded-md transition-all flex"
+            >
               <P
                 variant={{ size: "small", theme: "dark", weight: "medium" }}
                 className="text-[#FF536B]"
               >
-                Purchase
+                {checkArtworkType === "subscription"
+                  ? "Subscription"
+                  : "Purchase"}
               </P>
             </Link>
           </li>

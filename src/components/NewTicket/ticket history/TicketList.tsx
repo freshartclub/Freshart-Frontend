@@ -125,17 +125,27 @@ const TicketsList: FC<{
               </div>
               <div className="text-[16px] flex justify-between ml-[7px] font-semibold mt-[2px] mb-[3px]">
                 {ticket.subject}
-                <span
-                  className={`border px-3 py-1 rounded-md  ${
-                    ticket?.status === "Finalise"
-                      ? "border-red-300"
-                      : ticket?.status === "Created"
-                      ? "border-zinc-300"
-                      : "border-green-300"
-                  }`}
-                >
-                  {ticket?.status}
-                </span>
+
+                <div className="flex justify-end items-center gap-2">
+                  <span
+                    className={`border px-3 py-1 rounded-md  ${
+                      ticket?.status === "Finalise"
+                        ? "border-red-300"
+                        : ticket?.status === "Created"
+                        ? "border-zinc-300"
+                        : "border-green-300"
+                    }`}
+                  >
+                    {ticket?.status}
+                  </span>
+
+                  <span className={`border px-3 py-1 rounded-md`}>
+                    {ticket?.impact}
+                  </span>
+                  <span className={`border px-3 py-1 rounded-md`}>
+                    {ticket?.urgency}
+                  </span>
+                </div>
               </div>
               <div className="text-xs sm:text-sm mb-4 w-[90%] px-2">
                 {ticket.message}

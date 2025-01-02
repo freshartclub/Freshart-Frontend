@@ -68,7 +68,7 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
   };
 
   return (
-    <div className="w-full mx-auto">
+    <div className="w-full fixed top-0 left-0 z-[9999999] bg-white shadow-md">
       <div className="w-full py-5 px-5 flex items-center gap-5 relative justify-between">
         <GiHamburgerMenu
           className="cursor-pointer block sm:hidden md:hidden lg:hidden xl:hidden"

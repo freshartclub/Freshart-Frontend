@@ -65,7 +65,7 @@ const Artwork = () => {
   }
 
   return (
-    <div className="px-3 lg:px-0">
+    <div className="px-3 lg:px-0  ">
       <Header
         variant={{ size: "xl", theme: "dark", weight: "semiBold" }}
         className="mb-4 mt-4"

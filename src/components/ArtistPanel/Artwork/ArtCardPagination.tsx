@@ -60,7 +60,7 @@ const ArtCardPagination: React.FC = () => {
   const nPages = Math.ceil((artwork?.length || 0) / recordPerPage);
   const numbers = [...Array(nPages + 1).keys()].slice(1);
 
-  if (isLoading || isFetching) {
+  if (isFetching) {
     return <Loader />;
   }
 

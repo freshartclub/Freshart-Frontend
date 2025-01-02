@@ -46,6 +46,8 @@ const Support = () => {
 
   const KbTitle = kbData?.data?.map((item, i) => item?.kbTitle) || [];
 
+  console.log(kbData);
+
   const now = dayjs();
   const startOfDay = now.startOf("day");
   const endOfDay = now.endOf("day");

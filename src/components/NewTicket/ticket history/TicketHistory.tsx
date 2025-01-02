@@ -71,9 +71,11 @@ const TicketHistory: React.FC = () => {
   //   dayjs(b.createdAt).diff(dayjs(a.createdAt))
   // );
 
-  const newTickets = data.filter((ticket) =>
-    dayjs(ticket.createdAt).isAfter(now.subtract(3, "day"))
-  );
+  const newTickets = data
+    ? data?.filter((ticket) =>
+        dayjs(ticket.createdAt).isAfter(now.subtract(3, "day"))
+      )
+    : null;
 
   const onGoingTicket = data?.filter((ticket) => {
     return ticket?.status?.includes("In progress");

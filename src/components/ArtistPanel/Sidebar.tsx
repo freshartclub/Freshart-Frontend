@@ -127,7 +127,7 @@ const Sidebar: React.FC = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   return (
-    <div className={`flex transition-width duration-300 relative `}>
+    <div className={`flex transition-width duration-300 relative   `}>
       <div
         // ref={closePopup}
         className={`${isOpen ? "w-64" : "w-14"} ${

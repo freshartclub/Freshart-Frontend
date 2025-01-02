@@ -138,7 +138,7 @@ const Dicipline = ({ control, isActiveStatus, prefillValues, watch }) => {
       })}
       <span
         onClick={handleAddAccount}
-        className={`bg-[#DEDEFA] font-semibold py-3 px-2 rounded ${
+        className={`bg-[#DEDEFA] font-semibold py-3 px-2 rounded cursor-pointer ${
           isActiveStatus !== "active" ? "pointer-events-none" : ""
         }`}
       >

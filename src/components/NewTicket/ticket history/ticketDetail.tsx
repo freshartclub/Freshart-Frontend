@@ -46,8 +46,13 @@ const SingleTicket = () => {
   const { mutateAsync: sendFeedback, isPending: isFeedbackLoading } =
     usePatchFeedbackMutation();
 
-  const newDate = dayjs(data?.data?.createdAt).format("DD-MM-YYYY");
-  const newTime = dayjs(data?.data?.createdAt).format(" hh:mm A");
+  const newDate = data?.data?.createdAt
+    ? new Date(data.data.createdAt).toLocaleDateString()
+    : null;
+
+  const newTime = data?.data?.createdAt
+    ? new Date(data.data.createdAt).toLocaleTimeString()
+    : null;
 
   const handleReply = (ticket) => {
     const newData = {
@@ -103,6 +108,7 @@ const SingleTicket = () => {
     sendFeedback(data).then(() => {
       setOpenTicketId(null);
       setFile(null);
+      setIsModalOpen(false);
     });
   };
 
@@ -140,7 +146,7 @@ const SingleTicket = () => {
   return (
     <div className="container mx-auto sm:px-6 px-3 mt-[2rem] mb-[2rem]">
       <FaArrowLeftLong onClick={handleNavigate} className="cursor-pointer" />
-      <div className="flex flex-col md:flex-row justify-between items-center w-full p-2">
+      <div className="flex flex-col md:flex-row justify-between items-center w-full p-2 ">
         <div className="flex flex-col gap-2 w-full md:w-2/3">
           <div className="flex gap-3 items-center">
             <span className="w-5 h-5 bg-[#F8A53499] rounded-full"></span>
@@ -243,10 +249,14 @@ const SingleTicket = () => {
 
                   <div className="flex gap-3 text-xs">
                     <div className="font-semibold">
-                      {dayjs(user?.createdAt).format("DD-MM-YYYY")}
+                      {user?.createdAt
+                        ? new Date(user.createdAt).toLocaleDateString()
+                        : null}
                     </div>
                     <div className="font-semibold">
-                      {dayjs(user?.createdAt).format(" hh:mm A")}
+                      {user?.createdAt
+                        ? new Date(user.createdAt).toLocaleTimeString()
+                        : null}
                     </div>
                   </div>
                 </div>
@@ -276,26 +286,35 @@ const SingleTicket = () => {
 
         <div className="flex items-center gap-3 mt-3">
           {data?.data?.status === "Finalise" ? (
-            <div className="flex items-center gap-2">
-              <span className="cursor-pointer" onClick={() => handleLike()}>
-                <AiFillLike
-                  size="1.5em"
-                  color={
-                    data?.data?.ticketFeedback?.isLiked === true
-                      ? "green"
-                      : "gray"
-                  }
-                />
-              </span>
-              <span className="cursor-pointer" onClick={() => handleDisLike()}>
-                <AiFillDislike
-                  size="1.5em"
-                  color={
-                    data?.data?.ticketFeedback?.isLiked === false
-                      ? "red"
-                      : "gray"
-                  }
-                />
+            <div className="flex items-center gap-10">
+              <div className="flex items-center gap-2">
+                <span className="cursor-pointer" onClick={() => handleLike()}>
+                  <AiFillLike
+                    size="1.5em"
+                    color={
+                      data?.data?.ticketFeedback?.isLiked === true
+                        ? "green"
+                        : "gray"
+                    }
+                  />
+                </span>
+                <span
+                  className="cursor-pointer"
+                  onClick={() => handleDisLike()}
+                >
+                  <AiFillDislike
+                    size="1.5em"
+                    color={
+                      data?.data?.ticketFeedback?.isLiked === false
+                        ? "red"
+                        : "gray"
+                    }
+                  />
+                </span>
+              </div>
+
+              <span className="font-montserrat text-sm font-medium bg-white border border-zinc-200  text-left  py-2 px-4 break-words ml-2 ">
+                {data?.data?.ticketFeedback?.message}
               </span>
             </div>
           ) : (
