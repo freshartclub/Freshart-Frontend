@@ -13,8 +13,6 @@ const LogNaveBar = () => {
     navigate("/become_artist");
   };
 
-  console.log("LogNaveBar");
-
   const handleRedirectToBecomeAnArtist = () => {
     navigate("/become_artist");
   };

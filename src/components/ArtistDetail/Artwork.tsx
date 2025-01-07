@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Header from "../ui/Header";
 import { useGetArtWorkList } from "./http/getArtWorkList";
 import Loader from "../ui/Loader";
@@ -7,9 +7,9 @@ import edit from "../ArtistDetail/assets/edit.png";
 import deleteimg from "../ArtistDetail/assets/Container (2).png";
 import { ArtworkViewPopup } from "./Pop";
 import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css"; // Swiper default styles
-import "swiper/css/navigation"; // If you're using navigation controls
-import "swiper/css/pagination"; // If you're using pagination
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 import { useAppSelector } from "../../store/typedReduxHooks";
 
 const Artwork = () => {
@@ -34,8 +34,6 @@ const Artwork = () => {
   const handleAction = (actionType) => {
     setAction(actionType);
   };
-
-  // console.log(data?.data);
 
   useEffect(() => {
     refetch();

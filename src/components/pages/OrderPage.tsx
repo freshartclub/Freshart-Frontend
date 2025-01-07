@@ -1,52 +1,16 @@
-import { Link, useNavigate } from "react-router-dom";
-import Button from "../ui/Button";
-import processing from "../../assets/processing.png";
-import export_icon from "../../assets/export.png";
-import invoice from "../../assets/invoice.png";
-import P from "../ui/P";
-import order2 from "../../assets/order1.png";
-import order1 from "../../assets/order2.png";
-import Header from "../ui/Header";
-import home from "../../assets/home.png";
-import arrow from "../../assets/Vector.png";
-import { useGetOrder } from "./http/useGetOrder";
-import { useState } from "react";
 import dayjs from "dayjs";
+import { useState } from "react";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import export_icon from "../../assets/export.png";
+import home from "../../assets/home.png";
+import invoice from "../../assets/invoice.png";
+import processing from "../../assets/processing.png";
+import arrow from "../../assets/Vector.png";
+import Button from "../ui/Button";
+import Header from "../ui/Header";
 import Loader from "../ui/Loader";
-import { setLocale } from "yup";
-
-const order_Data = [
-  {
-    image: order1,
-    title: "Art back on the air",
-    para: "34x72cm",
-    price: "$100",
-    order_place: "Order Placed on",
-    date: "3 October 2020",
-    ship: "Ship To",
-    name: "Anna Kathy",
-    order_btn: "Order again",
-    cancel: "Cancel",
-    order_number: "Order Number",
-    number: "#124-5660-9008",
-    view: "View Order Details",
-  },
-  {
-    image: order2,
-    title: "Art back on the air",
-    para: "34x72cm",
-    price: "$100",
-    order_place: "Order Placed on",
-    date: "3 October 2020",
-    ship: "Ship To",
-    name: "Anna Kathy",
-    order_btn: "Order again",
-    cancel: "Cancel",
-    order_number: "Order Number",
-    number: "#124-5660-9008",
-    view: "View Order Details",
-  },
-];
+import P from "../ui/P";
+import { useGetOrder } from "./http/useGetOrder";
 
 const OrderPage = () => {
   const [state, setState] = useState("purchase");
@@ -54,21 +18,17 @@ const OrderPage = () => {
   const navigate = useNavigate();
 
   const handleDetailPage = (item) => {
-    console.log(item);
-    localStorage.setItem("artworkId", item?.artwork?._id);
-    navigate(`/order_tracking?id=${item?._id}&orderType=${item?.orderType}`);
+    navigate(
+      `/order_tracking?id=${item?._id}&orderType=${item?.orderType}&art=${item?.artwork?._id}`
+    );
   };
-
-  console.log(data);
 
   const dataToRender =
     state === "purchase" ? data?.purchase : data?.subscription;
 
   console.log(dataToRender);
 
-  if (isLoading) {
-    return <Loader />;
-  }
+  if (isLoading) return <Loader />;
 
   return (
     <div className="bg-[#EFEFF7] pb-10">
@@ -107,13 +67,17 @@ const OrderPage = () => {
           <div className=" flex gap-5 mt-8">
             <span
               onClick={() => setState("purchase")}
-              className="font-bold text-md border border-zinc-800 px-5 py-2 cursor-pointer rounded-md "
+              className={`${
+                state === "purchase" && "bg-[#FF536B] text-white"
+              } font-bold text-md border border-zinc-800 px-5 py-2 cursor-pointer rounded-md`}
             >
               Purchase
             </span>
             <span
               onClick={() => setState("subscription")}
-              className="font-bold text-md border border-zinc-800 px-5 py-2 cursor-pointer  rounded-md"
+              className={`${
+                state !== "purchase" && "bg-[#FF536B] text-white"
+              } font-bold text-md border border-zinc-800 px-5 py-2 cursor-pointer  rounded-md`}
             >
               Subscription
             </span>
@@ -159,85 +123,73 @@ const OrderPage = () => {
         </div>
 
         <div className="flex flex-col gap-8">
-          {dataToRender &&
-            dataToRender.length > 0 &&
-            dataToRender?.map((item, index) => (
-              <>
-                <div
-                  key={index}
-                  className="flex flex-col sm:flex-row justify-between lg:gap-10 gap-5 bg-white p-4 rounded-md"
-                >
-                  <div className="">
-                    <img
-                      src={`${data?.url}/users/${item?.artwork?.media}`}
-                      alt="order image"
-                      className="w-[20vw] object-cover"
-                    />
-                  </div>
+          {dataToRender && dataToRender.length > 0 ? (
+            dataToRender.map((item, index) => (
+              <div
+                key={index}
+                className="flex flex-col sm:flex-row justify-between lg:gap-10 gap-5 bg-white p-4 rounded-md"
+              >
+                <img
+                  src={`${data?.url}/users/${item?.artwork?.media}`}
+                  alt="order image"
+                  className="w-[20vw] h-[10vw] object-cover"
+                />
 
-                  <div className="sm:w-[80%] w-full">
-                    <div className="flex lg:flex-row flex-col justify-between">
-                      <Header
-                        variant={{
-                          size: "xl",
-                          theme: "dark",
-                          weight: "semiBold",
-                        }}
-                      >
-                        {item?.artWork?.artworkName}
-                      </Header>
-                      <div className="flex xl:gap-4">
-                        <P
-                          variant={{
-                            size: "base",
-                            theme: "dark",
-                            weight: "normal",
-                          }}
-                        >
-                          {item?.orderID}
-                        </P>
-                        <P
-                          variant={{
-                            size: "base",
-                            theme: "dark",
-                            weight: "normal",
-                          }}
-                        ></P>
-                      </div>
-                    </div>
-                    <P
+                <div className="sm:w-[80%] w-full">
+                  <div className="flex lg:flex-row flex-col justify-between">
+                    <Header
                       variant={{
-                        size: "small",
+                        size: "xl",
                         theme: "dark",
-                        weight: "normal",
+                        weight: "semiBold",
                       }}
-                      className="text-[#848484] my-1"
+                      className="flex items-baseline gap-2 "
                     >
-                      {item.para}
-                    </P>
-
-                    <P
-                      variant={{
-                        size: "base",
-                        theme: "dark",
-                        weight: "medium",
-                      }}
-                      className="mb-2"
-                    >
-                      $ {item?.subTotal}
-                    </P>
-
-                    <div className="flex gap-1 my-2">
+                      {item?.artwork?.artworkName}
                       <P
                         variant={{
                           size: "small",
                           theme: "dark",
                           weight: "medium",
                         }}
+                        className="text-[#848484]"
                       >
-                        {item.order_place}
+                        ({dayjs(item?.createdAt).format("MMMM D, YYYY")})
                       </P>
-                      <P
+                    </Header>
+
+                    <P
+                      variant={{
+                        size: "base",
+                        theme: "dark",
+                        weight: "normal",
+                      }}
+                    >
+                      OrderID - #{item?.orderID}
+                    </P>
+                  </div>
+
+                  <P
+                    variant={{
+                      size: "base",
+                      theme: "dark",
+                      weight: "medium",
+                    }}
+                    className="mb-2"
+                  >
+                    € {item?.subTotal}
+                  </P>
+
+                  <P
+                    variant={{
+                      size: "small",
+                      theme: "dark",
+                      weight: "medium",
+                    }}
+                  >
+                    {item.order_place}
+                  </P>
+                  {/* <P
                         variant={{
                           size: "small",
                           theme: "dark",
@@ -247,80 +199,68 @@ const OrderPage = () => {
                       >
                         Order Placed on :{" "}
                         {dayjs(item?.createdAt).format("MMMM D, YYYY")}
-                      </P>
-                    </div>
+                      </P> */}
 
-                    <div className="flex">
-                      <P
-                        variant={{
-                          size: "small",
-                          theme: "dark",
-                          weight: "medium",
-                        }}
-                      >
-                        Quantity : {item?.artwork?.quantity}
-                      </P>
+                  <div className="flex">
+                    <P
+                      variant={{
+                        size: "small",
+                        theme: "dark",
+                        weight: "medium",
+                      }}
+                    >
+                      Quantity : {item?.artwork?.quantity}
+                    </P>
 
-                      <P
-                        variant={{
-                          size: "small",
-                          theme: "dark",
-                          weight: "medium",
-                        }}
-                        className="text-[#848484] ml-2"
-                      >
-                        {item.name}
-                      </P>
-                    </div>
+                    <P
+                      variant={{
+                        size: "small",
+                        theme: "dark",
+                        weight: "medium",
+                      }}
+                      className="text-[#848484] ml-2"
+                    >
+                      {item.name}
+                    </P>
+                  </div>
 
-                    <div className="flex sm:flex-row flex-col justify-between  w-full mt-6 ">
-                      <div className="flex items-center sm:justify-center justify-between md:gap-5 ">
-                        <Button
-                          variant={{
-                            fontWeight: "500",
-                            thickness: "thick",
-                          }}
-                          className="border border-black rounded-md text-sm sm:px-6 sm:py-3 !p-2"
-                        >
-                          Order Again
-                        </Button>
-
-                        <Button
-                          variant={{ fontWeight: "500" }}
-                          className="text-sm sm:px-6 sm:py-3 !p-2 "
-                        >
-                          Cancel
-                        </Button>
-                      </div>
-                      <div className="flex md:justify-end mt-2 sm:mt-0">
-                        <Button
-                          onClick={() => handleDetailPage(item)}
-                          variant={{
-                            theme: "light",
-                            fontWeight: "600",
-                          }}
-                          className="text-[16px] text-[#FF536B] border border-gray-400 text-sm  sm:px-6 sm:py-3 !p-2 "
-                        >
-                          View Order Details
-                        </Button>
-                      </div>
-                    </div>
-                    {/* <div className="flex sm:justify-end justify-center mt-2 sm:mt-0">
+                  <div className="flex sm:flex-row flex-col justify-start gap-2 w-full mt-6 ">
                     <Button
                       variant={{
-                        fontSize: "base",
+                        fontWeight: "500",
+                        thickness: "thick",
+                      }}
+                      className="border border-black rounded-md text-sm sm:px-6 sm:py-3 !p-2"
+                    >
+                      Order Again
+                    </Button>
+
+                    <Button
+                      onClick={() => handleDetailPage(item)}
+                      variant={{
                         theme: "light",
                         fontWeight: "600",
                       }}
-                      className="text-[16px] text-[#FF536B] border border-gray-400"
+                      className="text-[16px] text-[#FF536B] border border-gray-400 text-sm  sm:px-6 sm:py-3 !p-2 "
                     >
-                      {item.view}
+                      View Order
                     </Button>
-                  </div> */}
                   </div>
                 </div>
-              </>
-            ))}
+              </div>
+            ))
+          ) : (
+            <div className="px-6 py-4 text-center border border-[#c6c6c9]">
+              <p className="text-lg text-center font-medium mb-4">
+                You haven't placed any orders.
+              </p>
+              <NavLink to="/all-artworks?type=purchase">
+                <button className="px-6 py-2 bg-zinc-800 text-white rounded-lg">
+                  Continue Shopping
+                </button>
+              </NavLink>
+            </div>
+          )}
         </div>
       </div>
     </div>

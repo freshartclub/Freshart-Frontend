@@ -17,6 +17,7 @@ import getSymbolFromCurrency from "currency-symbol-map";
 
 const DiscoverContent = ({ data }: any) => {
   const [addtoCart, setAddToCart] = useState("Add To Cart");
+  console.log(data);
 
   const { mutate, isPending } = useAddToCartMutation();
   const { data: cartItem, isLoading } = useGetCartItems();
@@ -107,7 +108,7 @@ const DiscoverContent = ({ data }: any) => {
         <P variant={{ size: "base", theme: "dark", weight: "normal" }}>
           Size :
         </P>
-        <p
+        <P
           variant={{ size: "base", theme: "dark", weight: "normal" }}
           className="ml-2"
         >
@@ -122,7 +123,7 @@ const DiscoverContent = ({ data }: any) => {
           {data?.additionalInfo?.height
             ? `${data.additionalInfo.height} cm`
             : "--"}
-        </p>
+        </P>
       </div>
 
       <Header

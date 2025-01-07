@@ -1,53 +1,14 @@
-import Header from "../ui/Header";
-import img1 from "../../assets/Overlay+Shadow (1).png";
-import img2 from "../../assets/oiloncanvasofalittlegirl.jpg.png";
-import img3 from "../../assets/Frame 1000009408.png";
+import { useNavigate } from "react-router-dom";
 import "../../App.css";
-import like from "../../assets/like.png";
-import { useGetArtWorkList } from "./http/getArtWorkList";
-import Loader from "../ui/Loader";
-import { NavLink, useNavigate } from "react-router-dom";
-import edit from "../ArtistDetail/assets/edit.png";
-import deleteimg from "../ArtistDetail/assets/Container (2).png";
-
-//   {
-//     image: img1,
-//     title: "Illustrator, painting",
-//     heading: "Nineteenth-Century Pastel Portraits",
-//     para: "Andrews meson",
-//     size: "70 x 32 ",
-//   },
-//   {
-//     image: img2,
-//     title: "Illustrator, painting",
-//     heading: "Nineteenth-Century Pastel Portraits",
-//     para: "Andrews meson",
-//     size: "70 x 32 ",
-//   },
-//   {
-//     image: img3,
-//     title: "Illustrator, painting",
-//     heading: "Nineteenth-Century Pastel Portraits",
-//     para: "Andrews meson",
-//     size: "70 x 32 ",
-//   },
-//   {
-//     image: img2,
-//     title: "Illustrator, painting",
-//     heading: "Nineteenth-Century Pastel Portraits",
-//     para: "Andrews meson",
-//     size: "70 x 32 ",
-//   },
-// ];
+import Header from "../ui/Header";
 
 const ArtistProtfolioArtwork = ({ data }) => {
-  console.log(data);
-
   const navigate = useNavigate();
   const handleRedirectToDescription = (id) => {
     navigate(`/discover_more?id=${id}`);
     window.scroll(0, 0);
   };
+  
   return (
     <div>
       <Header

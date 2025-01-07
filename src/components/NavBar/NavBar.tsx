@@ -38,7 +38,6 @@ const NavBar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const [scrolled, setScrolled] = useState(false);
   const url = "https://dev.freshartclub.com/images";
 
   const closePopup = useRef(null);
@@ -47,12 +46,8 @@ const NavBar = () => {
 
   const { data: seriesPickList, isLoading: seriesPickListLoading } =
     useGetPicklist();
-
   const { data: cartItem, isLoading: cartLoading } = useGetCartItems();
-
   const { data: disciplineData, isLoading: artistLoading } = useGetDiscipline();
-
-  console.log("this is from _________________", disciplineData?.data);
 
   const selectSeriesPicklist = seriesPickList?.data?.filter(
     (item) => item?.picklistName === "Series"
@@ -95,16 +90,6 @@ const NavBar = () => {
     setIsOpen(false);
   });
 
-  const handlePhoneOutside = (event) => {
-    console.log();
-    if (
-      mobileNavPopup.current &&
-      !mobileNavPopup.current.contains(event.target)
-    ) {
-      setIsDropdownOpen(false);
-    }
-  };
-
   useEffect(() => {
     document.addEventListener("click", handleClickOutside);
 
@@ -134,19 +119,6 @@ const NavBar = () => {
   const toggleModal = () => {
     setIsModalOpen((Modalprev) => !Modalprev);
   };
-
-  // useEffect(() => {
-  //   const handleScroll = () => {
-  //     if (window.scrollY > 50) {
-  //       setScrolled(true);
-  //     } else {
-  //       setScrolled(false);
-  //     }
-  //   };
-
-  //   window.addEventListener("scroll", handleScroll);
-  //   return () => window.removeEventListener("scroll", handleScroll);
-  // }, []);
 
   return (
     <>

@@ -1,36 +1,27 @@
-import dayjs from "dayjs";
-import { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { ARTTIST_ENDPOINTS } from "../../../http/apiEndPoints/Artist";
-import { useAppSelector } from "../../../store/typedReduxHooks";
-import axiosInstance from "../../utils/axios";
-import artistImg from "../ticket history/assets/People.png";
-import useGetPostArtistTicketReplyMutation from "./http/usePostReply";
-import { FaArrowLeftLong } from "react-icons/fa6";
-import { useGetTicketDetails } from "./http/useGetTicketDetails";
-import Loader from "../../ui/Loader";
+import { useState } from "react";
+import { AiFillDislike, AiFillLike } from "react-icons/ai";
 import { FaRegUserCircle } from "react-icons/fa";
+import { FaArrowLeftLong } from "react-icons/fa6";
 import { IoDocumentTextOutline } from "react-icons/io5";
-import { AiFillDislike } from "react-icons/ai";
-import { AiFillLike } from "react-icons/ai";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useAppSelector } from "../../../store/typedReduxHooks";
+import Loader from "../../ui/Loader";
+import { useGetTicketDetails } from "./http/useGetTicketDetails";
 import usePatchFeedbackMutation from "./http/usePatchFeedback";
+import useGetPostArtistTicketReplyMutation from "./http/usePostReply";
 
-interface Ticket {
-  ticketId: string;
-  ticketType: string;
-  subject: string;
-  message: string;
-  ticketDate: string;
-}
+// interface Ticket {
+//   ticketId: string;
+//   ticketType: string;
+//   subject: string;
+//   message: string;
+//   ticketDate: string;
+// }
 
 const SingleTicket = () => {
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
-  const [ticket, setTicket] = useState<Ticket | null>(null);
   const [reply, setReply] = useState("");
-  const [feedbackData, setFeedbackData] = useState<{
-    [key: string]: { feedback: string; isLiked: string };
-  }>({});
   const [openTicketId, setOpenTicketId] = useState<string | null>(null);
   const [file, setFile] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -41,7 +32,7 @@ const SingleTicket = () => {
   const user = useAppSelector((state) => state.user.user);
   const navigate = useNavigate();
 
-  const { data, isLoading, isFetching } = useGetTicketDetails(id);
+  const { data, isFetching } = useGetTicketDetails(id);
   const { mutateAsync, isPending } = useGetPostArtistTicketReplyMutation();
   const { mutateAsync: sendFeedback, isPending: isFeedbackLoading } =
     usePatchFeedbackMutation();
@@ -71,7 +62,6 @@ const SingleTicket = () => {
     }
 
     if (file) {
-      console.log(file);
       formData.append("ticketImg", file);
     }
 
@@ -139,9 +129,7 @@ const SingleTicket = () => {
     setFile(null);
   };
 
-  if (isFetching) {
-    return <Loader />;
-  }
+  if (isFetching) return <Loader />;
 
   return (
     <div className="container mx-auto sm:px-6 px-3 mt-[2rem] mb-[2rem]">
@@ -226,7 +214,7 @@ const SingleTicket = () => {
         </div>
 
         {data?.reply &&
-          data?.reply?.length &&
+          data?.reply?.length > 0 &&
           data?.reply.map((item, i) => (
             <div className="flex items-center">
               <div

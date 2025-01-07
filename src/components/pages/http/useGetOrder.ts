@@ -6,7 +6,6 @@ async function fetchData() {
   const { data } = await axiosInstance.get(
     `${ORDERS_ENDPOINTS.GetCheckoutOrders}`
   );
-  console.log("data is ", data);
   return data;
 }
 

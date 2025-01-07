@@ -59,13 +59,9 @@ const trendingData = [
   },
 ];
 
-
-
 const Wishlist = () => {
+  const { data, isLoading } = useGetWishList();
 
-  const {data , isLoading} = useGetWishList()
-
-console.log(data)
   return (
     <div className="container mx-auto md:px-6 px-3 my-10">
       <ul className="flex p-2 gap-3 text-xl text-[#2E4053] items-center">

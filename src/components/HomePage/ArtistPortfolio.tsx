@@ -1,20 +1,10 @@
-import profile1 from "../../assets/profile_1.png";
-import profile2 from "../../assets/profile_2.png";
-import profile3 from "../../assets/profile_3.png";
-import profile4 from "../../assets/profile_4.png";
-import img1 from "../../assets/product_4_1.png";
-import img2 from "../../assets/product_4_2.png";
-import img3 from "../../assets/product_4_3.png";
-import img4 from "../../assets/product_4_4.png";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import "./ArtistPortfoilio.css";
-import Header from "../ui/Header";
 import { useNavigate } from "react-router-dom";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick-theme.css";
+import "slick-carousel/slick/slick.css";
+import Header from "../ui/Header";
 import ViewButton from "../ui/ViewButton";
-import { useGetAllArtist } from "./http/useGetAllArtist";
-import Loader from "../ui/Loader";
+import "./ArtistPortfoilio.css";
 
 const settings = {
   dots: true,
@@ -102,7 +92,7 @@ const ArtistPortfolio = ({ data }) => {
                   </h1>
                   <p className="text-sm flex gap-2 min-h-[20px]">
                     {item?.aboutArtist?.discipline?.map((item, i) => (
-                      <h1 className=" ">{item?.discipline}</h1>
+                      <h1 key={i}>{item?.discipline}</h1>
                     ))}
                   </p>
                   <img

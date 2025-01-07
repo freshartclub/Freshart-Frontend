@@ -1,9 +1,6 @@
 import type { AxiosRequestConfig } from 'axios';
 
 import axios from 'axios';
-
-
-
 import { store } from '../../store/store';
 import { setIsAuthorized } from '../../store/userSlice/userSlice';
 import { getToken } from './tokenHelper';

@@ -8,24 +8,27 @@ import invoice from "../../assets/invoice.png";
 import OrderDescription from "./OrderDescription";
 import { useGetOrderDetails } from "./http/useGetOrderDetails";
 import Loader from "../ui/Loader";
+import { useEffect } from "react";
 
 const OrderTracking = () => {
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
   const orderType = searchParams.get("orderType");
-  const artworkId = localStorage.getItem("artworkId");
+  const art = searchParams.get("art");
 
   const values = {
-    artworkId,
+    art,
     orderId: id,
     orderType,
   };
 
-  const { data, isLoading } = useGetOrderDetails(values);
+  const { data, isLoading, refetch } = useGetOrderDetails(values);
 
-  // if (isLoading) {
-  //   return <Loader />;
-  // }
+  useEffect(() => {
+    refetch();
+  }, [art]);
+
+  if (isLoading) return <Loader />;
 
   return (
     <div className="bg-[#EFEFF7] pb-10">
@@ -96,7 +99,7 @@ const OrderTracking = () => {
           </Button>
         </div>
 
-        <OrderDescription />
+        <OrderDescription data={data} />
       </div>
     </div>
   );

@@ -1,15 +1,13 @@
+import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
+import Loader from "../../ui/Loader";
 import SearchDropdown from "../ticket history/SearchDropdown";
-import axiosInstance from "../../utils/axios";
+import Resolved from "../ticket history/assets//resolved.png";
 import allTicket from "../ticket history/assets/allTicket.png";
 import newTicket from "../ticket history/assets/newTicket.png";
 import onGoingTicketImg from "../ticket history/assets/on-going.png";
-import Resolved from "../ticket history/assets//resolved.png";
 import TicketsList from "./TicketList";
 import { useGetTicket } from "./http/useGetTicket";
-import { useAppSelector } from "../../../store/typedReduxHooks";
-import dayjs from "dayjs";
-import Loader from "../../ui/Loader";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -45,32 +43,6 @@ const TicketHistory: React.FC = () => {
     setActiveTab(tab);
   };
 
-  // if (filter) {
-  //   setActiveTab(filter);
-  // }
-
-  // console.log("this is from filter", filter);
-
-  const handleSearch = (query: string) => {
-    setSearchQuery(query.trim());
-
-    if (query) {
-      const filteredTickets = data.filter(
-        (item) =>
-          item.ticketId.toLowerCase().includes(query.toLowerCase()) ||
-          item.subject.toLowerCase().includes(query.toLowerCase())
-      );
-      setTickets(filteredTickets);
-      setTotalPages(Math.ceil(filteredTickets.length / ticketsPerPage));
-    }
-
-    setCurrentPage(1);
-  };
-
-  // const sortedTickets = [...data].sort((a, b) =>
-  //   dayjs(b.createdAt).diff(dayjs(a.createdAt))
-  // );
-
   const newTickets = data
     ? data?.filter((ticket) =>
         dayjs(ticket.createdAt).isAfter(now.subtract(3, "day"))
@@ -84,19 +56,6 @@ const TicketHistory: React.FC = () => {
   const solvedTicket = data?.filter((ticket) => {
     return ticket?.status?.includes("Finalise");
   });
-
-  const thisWeek = data.filter((ticket) =>
-    dayjs(ticket.createdAt).isAfter(now.startOf("week"))
-  );
-
-  // const date = new Date();
-  // const dateString = date.toLocaleDateString();
-  // console.log(dateString);
-  // console.log(dayjs().isAfter(now.startOf("week")));
-
-  const thisMonth = data.filter((ticket) =>
-    dayjs(ticket.createdAt).isAfter(now.startOf("month"))
-  );
 
   const filterTickets = () => {
     let filteredTickets = [...data];

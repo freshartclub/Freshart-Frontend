@@ -18,17 +18,15 @@ const DiscoverMore = () => {
 
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
-  let preview = false;
+  const preview = false;
 
   const { data, isLoading } = useGetArtWorkById(id, preview);
 
-  const additionalImage = data?.data.media?.images?.map((item, index) => item);
-
-  const additionalVideo = data?.data.media?.otherVideo?.map((item) => item);
+  // const additionalImage = data?.data.media?.images?.map((item) => item);
+  // const additionalVideo = data?.data.media?.otherVideo?.map((item) => item);
 
   const url2 = "https://dev.freshartclub.com/images/videos";
 
-  // Define images based on available data, filtering out null values
   const images = data?.data
     ? [
         {
@@ -49,7 +47,7 @@ const DiscoverMore = () => {
             : null,
           alt: "In Process Image",
         },
-        ...additionalImage?.map((item) => ({
+        ...data?.data.media?.images?.map((item) => ({
           src: item,
           alt: "Additional Image",
         })),
@@ -71,13 +69,9 @@ const DiscoverMore = () => {
     }
   };
 
-  console.log(data?.data?.commercialization?.activeTab);
-
   const checkArtworkType = data?.data?.commercialization?.activeTab;
 
-  if (isLoading) {
-    return <Loader />;
-  }
+  if (isLoading) return <Loader />;
 
   return (
     <>

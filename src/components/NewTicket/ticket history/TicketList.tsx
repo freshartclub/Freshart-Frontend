@@ -1,14 +1,12 @@
-import React, { FC, useState } from "react";
-import orange from "../ticket history/assets/orange.png";
+import dayjs from "dayjs";
+import { FC, useState } from "react";
+import { AiFillDislike, AiFillLike } from "react-icons/ai";
+import { useLocation, useNavigate } from "react-router-dom";
+import Loader from "../../ui/Loader";
 import blue from "../ticket history/assets/blue.png";
 import green from "../ticket history/assets/green.png";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import orange from "../ticket history/assets/orange.png";
 import artistImg from "../ticket history/assets/People.png";
-import Loader from "../../ui/Loader";
-import dayjs from "dayjs";
-import { useAppSelector } from "../../../store/typedReduxHooks";
-import { AiFillDislike } from "react-icons/ai";
-import { AiFillLike } from "react-icons/ai";
 import usePatchFeedbackMutation from "./http/usePatchFeedback";
 
 const TicketsList: FC<{
@@ -25,7 +23,6 @@ const TicketsList: FC<{
   }>({});
   const [openTicketId, setOpenTicketId] = useState<string | null>(null);
 
-  const isArtist = useAppSelector((state) => state.user.isArtist);
   const location = useLocation();
   const isArtistProfile = location.pathname.includes("/artist-panel");
   const { mutateAsync, isPending } = usePatchFeedbackMutation();
@@ -68,9 +65,7 @@ const TicketsList: FC<{
     setOpenTicketId(null);
   };
 
-  if (isLoading) {
-    return <Loader />;
-  }
+  if (isLoading) return <Loader />;
 
   return (
     <div>

@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-
 import axiosInstance from "../../utils/axios";
 import { generalPath } from "../../utils/paths";
 
@@ -9,10 +8,8 @@ async function fetchData() {
 }
 
 export const useGetPicklist = () => {
-  let url = `${generalPath.getPickList}`;
   return useQuery({
-    // remember query key it is using same same
-    queryKey: [url],
+    queryKey: [generalPath.getPickList],
     queryFn: fetchData,
   });
 };

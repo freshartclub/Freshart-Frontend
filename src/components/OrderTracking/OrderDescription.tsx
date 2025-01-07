@@ -6,7 +6,7 @@ import BillingSection from "./BillingSection";
 import OrderHistory from "./OrderHistory";
 import Progressbar from "./Progressbar";
 
-const OrderDescription = () => {
+const OrderDescription = ({ data }) => {
   return (
     <div className="bg-white border border-[#E4E7E9]">
       <div className="flex justify-between p-4 border-b">
@@ -34,20 +34,22 @@ const OrderDescription = () => {
               <Header
                 variant={{ size: "lg", theme: "dark", weight: "semiBold" }}
               >
-                #96459761
+                #{data?.foundArt?.orderID}
               </Header>
               <div className="flex sm:flex-row flex-col md:gap-4 gap-2 mt-2">
                 <P
                   variant={{ size: "base", weight: "medium" }}
                   className="text-[#475156]"
                 >
-                  4 Products
+                  {data?.otherArt?.length + 1}{" "}
+                  {data?.otherArt?.length + 1 > 1 ? "Artworks" : "Artwork"}
                 </P>
                 <P
                   variant={{ size: "base", weight: "normal" }}
                   className="text-[#475156]"
                 >
-                  Order Placed in 17 Jan, 2021 at 7:32 PM
+                  Order Placed in{" "}
+                  {new Date(data?.foundArt?.createdAt).toLocaleString()}
                 </P>
               </div>
             </div>
@@ -56,12 +58,11 @@ const OrderDescription = () => {
                 variant={{ size: "xl", weight: "bold" }}
                 className="text-[#FF536B]"
               >
-                $1199.00
+                €{data?.foundArt?.subTotal}
               </Header>
             </div>
           </div>
         </div>
-        {/* --------------- */}
 
         <div className="mt-4">
           <P variant={{ size: "base", theme: "dark", weight: "normal" }}>
@@ -71,9 +72,9 @@ const OrderDescription = () => {
         </div>
 
         <Progressbar />
-        <OrderHistory/>
-        
-        <ArtWork />
+        <OrderHistory />
+
+        <ArtWork data={data?.foundArt} url={data?.url} otherArt={data?.otherArt} />
         <BillingSection />
       </div>
     </div>

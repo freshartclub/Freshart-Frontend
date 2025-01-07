@@ -1,44 +1,22 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import logo from "../../assets/loginlogo.png";
 import navigation_1 from "../../assets/navigation_1.png";
 
-import { IoMdSearch } from "react-icons/io";
+import { GiHamburgerMenu } from "react-icons/gi";
 import { IoNotifications } from "react-icons/io5";
 import { Link, useNavigate } from "react-router-dom";
-import { artistPanel } from "../utils/paths";
-import { useAppDispatch, useAppSelector } from "../../store/typedReduxHooks";
 import useLogOutMutation from "../../http/auth/useLogOutMutation";
-import { setIsArtist } from "../../store/userSlice/userSlice";
-import i18n from "../utils/i18n";
+import { useAppSelector } from "../../store/typedReduxHooks";
 import useClickOutside from "../utils/useClickOutside";
-import { GiHamburgerMenu } from "react-icons/gi";
 
 const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
   const [isToogleOpen, setIsToggelOpen] = useState(false);
-  const [isLanguageOpen, setIsLanguageOpen] = useState(false);
-  const [selectedCountry, setSelectedCountry] = useState("GB");
 
   const navigate = useNavigate();
   const user = useAppSelector((state) => state.user.user);
-  const [language, setLanguage] = useState("english");
   const closePopup = useRef(null);
 
-  const dispatch = useAppDispatch();
-  const profile = localStorage.getItem("profile");
-  const authToken = localStorage.getItem("auth_token");
-
   const { mutate: logOut } = useLogOutMutation();
-
-  const countries = [
-    { code: "GB", flag: "https://flagcdn.com/w320/gb.png", name: "English" },
-    {
-      code: "US",
-      flag: "https://flagcdn.com/w320/us.png",
-      name: "English (US)",
-    },
-    { code: "ES", flag: "https://flagcdn.com/w320/es.png", name: "Spanish" },
-    { code: "CA", flag: "https://flagcdn.com/w320/cat.png", name: "Catalan" },
-  ];
 
   useClickOutside(closePopup, () => {
     setIsToggelOpen(false);
@@ -46,11 +24,6 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
   });
 
   const url = "https://dev.freshartclub.com/images";
-
-  // useEffect(() => {
-  //   i18n.changeLanguage(language.toLocaleLowerCase());
-  // }, [language]);
-
   const handleLogOut = () => {
     try {
       logOut();

@@ -2,7 +2,7 @@ import logo from "../../assets/Logo01 1.png";
 import location from "../../assets/loacation.png";
 import call from "../../assets/phone.png";
 import mail from "../../assets/mail.png";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import facebook from "../../assets/Link.png";
 import icon from "../../assets/Link (1).png";
 import instagram from "../../assets/Link (2).png";
@@ -18,8 +18,6 @@ const FooterSection = () => {
 
   const token = localStorage.getItem("auth_token");
   const profile = localStorage.getItem("profile");
-
-  console.log(profile);
 
   const isArtist = useAppSelector((state) => state.user.isArtist);
 

@@ -1,21 +1,17 @@
-import loginimage from "../../assets/login.png";
-import Header from "../ui/Header";
-import P from "../ui/P";
-import arrow from "../../assets/arrow.png";
-import Button from "../ui/Button";
-import logo from "../../assets/loginlogo.png";
-import semicircle from "../../assets/semicircle.png";
-import arrow3 from "../../assets/arrow_3.png";
-import globe from "../../assets/glob.png";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import BackButton from "../ui/BackButton";
-import eye from "../../assets/view.png";
-import eyeclose from "../../assets/hidden.png";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import * as Yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
+import arrow from "../../assets/arrow.png";
+import eyeclose from "../../assets/hidden.png";
+import loginimage from "../../assets/login.png";
+import eye from "../../assets/view.png";
 import useNewPasswordMutation from "../../http/auth/useNewPasswordMutation";
+import BackButton from "../ui/BackButton";
+import Button from "../ui/Button";
+import Header from "../ui/Header";
+import P from "../ui/P";
 
 const ChangePassword = () => {
   const navigate = useNavigate();

@@ -1,32 +1,16 @@
-import { Formik, Field, Form, ErrorMessage } from "formik";
+import { ErrorMessage, Field, Form, Formik } from "formik";
+import { useRef } from "react";
 import * as Yup from "yup";
-import Button from "../ui/Button";
-import Header from "../ui/Header";
-import P from "../ui/P";
-import { useEffect, useRef } from "react";
-
-import { useNavigate } from "react-router-dom";
-
-import useGetPostArtistTicketMutation from "./ticket history/http/usePostTicket";
-import {
-  impactOption,
-  urgency,
-  urgencyData,
-  urgencyOption,
-} from "../utils/mockData";
 import { useAppSelector } from "../../store/typedReduxHooks";
 import { useGetArtistDetails } from "../UserProfile/http/useGetDetails";
+import Header from "../ui/Header";
 import Loader from "../ui/Loader";
+import P from "../ui/P";
 import { RenderAllPicklists } from "../utils/RenderAllPicklist";
-import { useGetPickListMutation } from "../utils/http/useGetPickListMutation";
+import useGetPostArtistTicketMutation from "./ticket history/http/usePostTicket";
 
 const NewTicket = () => {
   const validationSchema = Yup.object({
-    // name: Yup.string().required("Name is required"),
-    // email: Yup.string()
-    //   .email("Invalid email format")
-    //   .required("Email is required"),
-
     subject: Yup.string().required("Title is required"),
     message: Yup.string()
       .required("Message is required")
@@ -44,10 +28,6 @@ const NewTicket = () => {
     user.artistName + " " + user.artistSurname1 + " " + user.artistSurname2;
 
   const { data, isLoading } = useGetArtistDetails();
-
-  const { data: Picklist, isLoading: picklistLoading } =
-    useGetPickListMutation();
-
   const picklist = RenderAllPicklists([
     "Ticket Type",
     "Ticket Impact",
@@ -72,12 +52,7 @@ const NewTicket = () => {
     data?.data?.artist?.artistSurname2;
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const navigate = useNavigate();
   const { mutate, isPending } = useGetPostArtistTicketMutation();
-
-  // const setUpUrgency = ticketUrgency?.map((item, i) => item?.value);
-
-  // console.log(Picklist[21]);
 
   const initialValues = {
     requestedBy: "",
@@ -90,16 +65,8 @@ const NewTicket = () => {
     impact: ticketImpact?.[0]?.value || "",
   };
 
-  console.log(initialValues);
-  console.log(ticketImpact);
-  console.log(picklistMap);
-
   const onSubmit = (values, action) => {
-    console.log("onSubmit", values);
-
     try {
-      console.log("onSubmit", values);
-
       const formData = new FormData();
       Object.keys(values).forEach((key) => {
         if (
@@ -228,11 +195,8 @@ const NewTicket = () => {
                     <Field
                       name="urgency"
                       as="select"
-                      // setFieldValue={}
                       className="outline-[#FDB7DC] bg-[#FFD1D114] shadow border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-[#FDB7DC] focus:shadow-outline"
                     >
-                      {/* <option value="">Choose Urgency Type</option> */}
-
                       {ticketUrgency
                         ? ticketUrgency?.map((item, i) => (
                             <option key={i} value={item?.value}>
@@ -258,11 +222,8 @@ const NewTicket = () => {
                     <Field
                       name="impact"
                       as="select"
-                      // setFieldValue={initialValues.impact}
                       className="outline-[#FDB7DC] bg-[#FFD1D114] shadow border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-[#FDB7DC] focus:shadow-outline"
                     >
-                      {/* <option value="">Choose Impact Type</option> */}
-
                       {ticketImpact
                         ? ticketImpact?.map((item, i) => (
                             <option key={i} value={item?.value}>
@@ -343,11 +304,6 @@ const NewTicket = () => {
                   </button>
 
                   <span
-                    // variant={{
-                    //   fontSize: "sm",
-                    //   thickness: "thick",
-                    //   fontWeight: "600",
-                    // }}
                     onClick={() => {
                       resetForm();
                       setErrors({});
