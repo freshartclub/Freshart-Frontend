@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import Button from "../ui/Button";
 import Header from "../ui/Header";
 import P from "../ui/P";
@@ -16,7 +17,7 @@ const CartTotal = ({ data }) => {
   });
 
   const { mutate, isPending } = usePostCheckOutMutation();
-
+  const navigate = useNavigate();
   const totalDiscountAmount = discountAmounts
     ?.reduce((totalDiscount, item) => {
       return totalDiscount + item;
@@ -55,6 +56,9 @@ const CartTotal = ({ data }) => {
     (item) => item?.item?.commercialization?.activeTab
   );
 
+  // const orderDetails = data?.cart?.map((item) => item?.item?.pricing);
+  // console.log(data);
+
   let itemQu = {};
 
   data?.cart?.forEach((item) => {
@@ -64,23 +68,7 @@ const CartTotal = ({ data }) => {
   });
 
   const handleCheckOut = () => {
-    try {
-      const data = {
-        subTotal: totalPrice - totalDiscountAmount,
-        tax: 0,
-        discount: totalDiscountAmount,
-        shipping: 0,
-        orderType: orderType[0],
-        items: Object.keys(itemQu).map((id) => ({
-          id: id,
-          quantity: itemQu[id],
-        })),
-      };
-
-      mutate(data);
-    } catch (error) {
-      console.log(error);
-    }
+    navigate("/payment_page");
   };
 
   return (

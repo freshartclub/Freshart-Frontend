@@ -24,6 +24,8 @@ const OrderTracking = () => {
 
   const { data, isLoading, refetch } = useGetOrderDetails(values);
 
+  console.log(data);
+
   useEffect(() => {
     refetch();
   }, [art]);

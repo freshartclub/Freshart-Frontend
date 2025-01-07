@@ -1,9 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import logo from "../../assets/Logo01 1.png";
-// import call from "../../assets/PhoneCall 1.png";
-// import down from "../../assets/downarrow.png";
-// import us_flag from "../../assets/Clip path group.png";
-// import search from "../../assets/Search.png";
 import heart from "../../assets/Heart.png";
 import bag from "../../assets/Bag.png";
 import { Link, useNavigate } from "react-router-dom";
@@ -16,7 +12,6 @@ import { useAppSelector } from "../../store/typedReduxHooks";
 import useLogOutMutation from "../../http/auth/useLogOutMutation";
 import { useGetDiscipline } from "../pages/http/useGetDiscipline";
 import { useGetPicklist } from "./http/getPickList";
-// import Loader from "../ui/Loader";
 import { useGetCartItems } from "../pages/http/useGetCartItems";
 import useClickOutside from "../utils/useClickOutside";
 import { FaUserCircle } from "react-icons/fa";

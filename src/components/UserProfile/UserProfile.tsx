@@ -17,9 +17,6 @@ const UserProfile = () => {
 
   return (
     <>
-      {/* {isLoading ? (
-        <Loader />
-      ) : ( */}
       <div className="container mx-auto md:px-6 px-3 pt-5">
         <ul className="flex p-2 gap-4 text-xl text-[#2E4053] items-center">
           <li>
@@ -58,7 +55,6 @@ const UserProfile = () => {
           <UserDescription user={user} />
         </div>
       </div>
-      {/* )} */}
     </>
   );
 };

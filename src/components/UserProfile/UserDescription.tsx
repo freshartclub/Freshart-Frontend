@@ -81,7 +81,7 @@ const UserDescription = ({ user }) => {
   const isArtist = useAppSelector((state) => state.user.isArtist);
   const navigate = useNavigate();
 
-  console.log(user.role);
+  console.log(user);
 
   const handleProfile = () => {
     if (user.role === "artist") {
@@ -188,7 +188,7 @@ const UserDescription = ({ user }) => {
             <TabPanel className="">
               <div className="p-4">
                 <div className="flex justify-end">
-                  {user.role === "artist" ? null : (
+                  {user?.isActivated ? null : (
                     <button
                       onClick={handleProfile}
                       variant={{ fontSize: "sm", theme: "dark", weight: "500" }}

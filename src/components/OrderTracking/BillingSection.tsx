@@ -1,35 +1,46 @@
 import Header from "../ui/Header";
 import P from "../ui/P";
 
-const address_data = [
-  {
-    heading: "Billing Address",
-    name: "Kevin Gilbert",
-    address:
-      "East Tejturi Bazar, Word No. 04, Road No. 13/x, House no. 1320/C, Flat No. 5D, Dhaka - 1200, Bangladesh",
-    phone: "Phone Number:",
-    number: " +1-202-555-0118",
-    email: "Email:",
-    email_address: " kevin.gilbert@gmail.com",
-  },
-  {
-    heading: "Shipping Address",
-    name: "Kevin Gilbert",
-    address:
-      "East Tejturi Bazar, Word No. 04, Road No. 13/x, House no. 1320/C, Flat No. 5D, Dhaka - 1200, Bangladesh",
-    phone: "Phone Number:",
-    number: " +1-202-555-0118",
-    email: "Email:",
-    email_address: " kevin.gilbert@gmail.com",
-  },
-  {
-    heading: "Order Notes",
-    address:
-      "Donec ac vehicula turpis. Aenean sagittis est eu arcu ornare, eget venenatis purus lobortis. Aliquam erat volutpat. Aliquam magna odio.",
-  },
-];
+const BillingSection = ({ data }) => {
+  const address_data = [
+    {
+      heading: "Billing Address",
+      name: data?.foundArt?.billingAddress?.firstName
+        ? data?.foundArt?.billingAddress?.firstName +
+          " " +
+          data?.foundArt?.billingAddress?.lastName
+        : "N/A",
+      address: data?.foundArt?.billingAddress?.address,
+      phone: "Phone Number:",
+      number: data?.foundArt?.billingAddress?.phone,
+      email: "Email:",
+      email_address: data?.foundArt?.billingAddress?.email,
+    },
+    {
+      heading: "Shipping Address",
+      name: data?.foundArt?.billingAddress?.firstName
+        ? data?.foundArt?.billingAddress?.firstName +
+          " " +
+          data?.foundArt?.billingAddress?.lastName
+        : "N/A",
+      address:
+        data?.foundArt?.shippingAddress?.address ||
+        data?.foundArt?.billingAddress?.address,
+      phone: "Phone Number:",
+      number:
+        data?.foundArt?.shippingAddress?.phone ||
+        data?.foundArt?.billingAddress?.phone,
+      email: "Email:",
+      email_address:
+        data?.foundArt?.shippingAddress?.email ||
+        data?.foundArt?.billingAddress?.email,
+    },
+    {
+      heading: "Order Notes",
+      address: data?.foundArt?.note ? data?.foundArt?.note : "N/A",
+    },
+  ];
 
-const BillingSection = () => {
   return (
     <div className="grid lg:grid-cols-3 grid-cols-1 md:mt-10 mt-1">
       {address_data.map((item, index) => (

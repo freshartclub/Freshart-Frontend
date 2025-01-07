@@ -17,6 +17,7 @@ const HomePage = () => {
   const navigate = useNavigate();
 
   const profile = localStorage.getItem("profile");
+
   if (profile === "artist") {
     return navigate("/artist-panel");
   }

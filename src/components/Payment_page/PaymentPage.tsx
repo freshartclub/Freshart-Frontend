@@ -15,17 +15,24 @@ import CustomDropdown from "../pages/CustomDropdown";
 import countryList from "react-select-country-list";
 import { useGetBillingAddress } from "../ArtistPanel/ArtistEditProfile/http/useGetBillingAddress";
 import { PhoneInput } from "react-international-phone";
+import getSymbolFromCurrency from "currency-symbol-map";
+import Loader from "../ui/Loader";
+import usePostCheckOutMutation from "../PurchasePage/http/usePostCheckOutMutation";
+import BillingAddress from "../EditProfile/BillingAddress";
 
 const PaymentPage = () => {
   const { data, isLoading } = useGetCartItems();
   const { mutate, isPending } = useAddToCartMutation();
+  const { mutate: checkOutMutation, isPending: checkOutPending } =
+    usePostCheckOutMutation();
   const [isCheckBox, setIsCheckBox] = useState(false);
   const options = useMemo(() => countryList(), []);
 
-  const { data: billingData, isLoading: billingLoading } =
-    useGetBillingAddress();
-
-  // console.log(billingData);
+  const {
+    data: billingData,
+    isLoading: billingLoading,
+    isFetching,
+  } = useGetBillingAddress();
 
   const {
     register,
@@ -61,15 +68,15 @@ const PaymentPage = () => {
 
   const countryValue = getValues("country");
 
-  const discountAmounts = data?.data?.cart?.map((item) => {
+  const discountAmounts = data?.data?.cart?.reduce((total, item) => {
     const basePrice = parseFloat(
       item?.item?.pricing?.basePrice?.replace("$", "")
     );
     const discountPercentage = item?.item?.pricing?.dpersentage || 0;
     const discountAmount =
       (basePrice * item?.quantity * discountPercentage) / 100;
-    return discountAmount;
-  });
+    return total + discountAmount;
+  }, 0);
 
   const totalPrice = data?.data?.cart
     ?.reduce((total, item) => {
@@ -84,8 +91,70 @@ const PaymentPage = () => {
 
   const finalPrice = totalPrice - discountAmounts + tax;
 
+  let itemQu = {};
+
+  data?.data?.cart?.forEach((item) => {
+    if (item?.item?._id) {
+      itemQu[item?.item?._id] = (itemQu[item?.item?._id] || 0) + item.quantity;
+    }
+  });
+
+  const orderType = data?.data?.cart?.map(
+    (item) => item?.item?.commercialization?.activeTab
+  );
+
   const onSubmit = (data: any) => {
-    console.log(data);
+    try {
+      const billingDetails = billingData[0]?.billingDetails || {};
+
+      const payload = {
+        shipping: 0,
+        totalPrice: finalPrice,
+        discountAmount: discountAmounts,
+        tax: tax,
+        orderType: orderType[0],
+
+        items: Object.keys(itemQu).map((id) => ({
+          id: id,
+          quantity: itemQu[id],
+        })),
+
+        billingAddress: {
+          firstName: billingDetails.billingFirstName || "",
+          lastName: billingDetails.billingLastName || "",
+          email: billingDetails.billingEmail || "",
+          phone: billingDetails.billingPhone || "",
+          companyName: billingDetails.billingCompanyName || "",
+          address: billingDetails.billingAddress || "",
+          country: billingDetails.billingCountry || "",
+          zipCode: billingDetails.billingZipCode || "",
+          state: billingDetails.billingState || "",
+          city: billingDetails.billingCity || "",
+          addressType: billingDetails.billingAddressType || "",
+        },
+        shippingAddress: {
+          firstName: data.shippingFirstName,
+          lastName: data.shippingLastName,
+          email: data.shippingEmail,
+          phone: data.shippingPhoneNumber,
+          companyName: data.shippingCompanyName,
+          address: data.shippingAddress,
+          country: data.shippingCountry,
+          zipCode: data.shippingZipCode,
+          state: data.shippingstate,
+          city: data.shippingCity,
+          addressType: data.shippingAddressType,
+        },
+
+        note: data?.additionalInfo,
+      };
+
+      console.log(payload);
+
+      checkOutMutation(payload);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const items = [
@@ -105,21 +174,14 @@ const PaymentPage = () => {
     },
   ];
 
-  const calculateTotal = () => {
-    const subTotal = items.reduce(
-      (total, item) => total + item.price * item.quantity,
-      0
-    );
-    const discount = 24; // Fixed discount
-    const tax = 61.99; // Fixed tax
-    const shipping = 0; // Free shipping
-    return subTotal + tax - discount + shipping;
-  };
-
   const handleCheck = (val) => {
     setIsCheckBox(val.target.checked);
     console.log(val.target.value);
   };
+
+  if (billingLoading || isFetching || isLoading) {
+    return <Loader />;
+  }
 
   return (
     <div className="container mx-auto p-4">
@@ -524,75 +586,6 @@ const PaymentPage = () => {
                     </p>
                   )}
                 </div>
-
-                {/* Card Details */}
-                {/* {['Credit Card'].includes(watch('paymentOption')) && ( */}
-                {/* <>
-                  <div className="grid md:grid-cols-2 gap-4 mb-4">
-                    <div>
-                      <label className="block mb-1">Name on Card</label>
-                      <input
-                        {...register("nameOnCard", {
-                          required: "Name on card is required",
-                        })}
-                        type="text"
-                        className="w-full p-2 border border-gray-300 rounded-lg"
-                      />
-                      {errors.nameOnCard && (
-                        <p className="text-red-500">
-                          {String(errors.nameOnCard.message)}
-                        </p>
-                      )}
-                    </div>
-                    <div>
-                      <label className="block mb-1">Card Number</label>
-                      <input
-                        {...register("cardNumber", {
-                          required: "Card Number is required",
-                        })}
-                        type="text"
-                        className="w-full p-2 border border-gray-300 rounded-lg"
-                      />
-                      {errors.cardNumber && (
-                        <p className="text-red-500">
-                          {String(errors.cardNumber.message)}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                  <div className="grid md:grid-cols-2 gap-4 mb-4">
-                    <div>
-                      <label className="block mb-1">Expiry Date</label>
-                      <input
-                        {...register("expiryDate", {
-                          required: "Expiry date is required",
-                        })}
-                        type="text"
-                        placeholder="MM/YY"
-                        className="w-full p-2 border border-gray-300 rounded-lg"
-                      />
-                      {errors.expiryDate && (
-                        <p className="text-red-500">
-                          {String(errors.expiryDate.message)}
-                        </p>
-                      )}
-                    </div>
-                    <div>
-                      <label className="block mb-1">CVC</label>
-                      <input
-                        {...register("cvc", { required: "CVC is required" })}
-                        type="text"
-                        className="w-full p-2 border border-gray-300 rounded-lg"
-                      />
-                      {errors.cvc && (
-                        <p className="text-red-500">
-                          {String(errors.cvc.message)}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                </> */}
-                {/* )} */}
               </div>
 
               {/* Additional information */}
@@ -633,9 +626,12 @@ const PaymentPage = () => {
                       <div>
                         <p className="text-sm">{item?.item?.artworkName}</p>
                         <p className="text-sm text-gray-500">
-                          {item.quantity} ×{" "}
+                          {item?.item?.quantity ? item?.item?.quantity : "1"} ×{" "}
                           <span className="text-[#FF536B] font-semibold">
-                            ${item.price}
+                            {getSymbolFromCurrency(
+                              item?.item?.pricing?.currency
+                            )}
+                            {" " + item?.item?.pricing?.basePrice}
                           </span>
                         </p>
                       </div>
@@ -647,7 +643,10 @@ const PaymentPage = () => {
               <div className="mt-6 space-y-2 ">
                 <div className="flex justify-between text-sm ">
                   <span className="text-[#5F6C72]">Sub-total</span>
-                  <span className="font-semibold">${totalPrice}</span>
+                  <span className="font-semibold">
+                    {getSymbolFromCurrency("EUR")}
+                    {" " + totalPrice}
+                  </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-[#5F6C72]">Shipping</span>
@@ -655,16 +654,25 @@ const PaymentPage = () => {
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-[#5F6C72]">Discount</span>
-                  <span className="font-semibold">${discountAmounts}</span>
+                  <span className="font-semibold">
+                    {getSymbolFromCurrency("EUR")}
+                    {" " + discountAmounts}
+                  </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-[#5F6C72]">Tax</span>
-                  <span className="font-semibold">${tax}</span>
+                  <span className="font-semibold">
+                    {getSymbolFromCurrency("EUR")}
+                    {" " + tax}
+                  </span>
                 </div>
                 <hr className="my-2" />
                 <div className="flex justify-between ">
                   <span>Total</span>
-                  <span className="font-semibold">${finalPrice} USD</span>
+                  <span className="font-semibold">
+                    {getSymbolFromCurrency("EUR")}
+                    {" " + finalPrice}
+                  </span>
                 </div>
               </div>
 

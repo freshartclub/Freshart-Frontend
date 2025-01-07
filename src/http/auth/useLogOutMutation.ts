@@ -43,9 +43,9 @@ const useLogOutMutation = () => {
       toast.success(res.data.message);
 
       dispatch(removeUser());
-      console.log("yes this is working");
 
       localStorage.removeItem("auth_token");
+      localStorage.removeItem("profile");
 
       navigate("/login", { replace: true });
     },

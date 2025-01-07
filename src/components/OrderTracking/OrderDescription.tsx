@@ -74,8 +74,12 @@ const OrderDescription = ({ data }) => {
         <Progressbar />
         <OrderHistory />
 
-        <ArtWork data={data?.foundArt} url={data?.url} otherArt={data?.otherArt} />
-        <BillingSection />
+        <ArtWork
+          data={data?.foundArt}
+          url={data?.url}
+          otherArt={data?.otherArt}
+        />
+        <BillingSection data={data} />
       </div>
     </div>
   );

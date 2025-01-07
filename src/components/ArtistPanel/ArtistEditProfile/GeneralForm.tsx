@@ -421,7 +421,7 @@ const GeneralForm = ({ isActiveStatus }) => {
     return `${days} Days Remaning`;
   }
 
-  if (isLoading) {
+  if (isFetching) {
     return <Loader />;
   }
 

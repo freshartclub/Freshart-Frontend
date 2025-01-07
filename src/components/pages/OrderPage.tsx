@@ -254,7 +254,7 @@ const OrderPage = () => {
               <p className="text-lg text-center font-medium mb-4">
                 You haven't placed any orders.
               </p>
-              <NavLink to="/all-artworks?type=purchase">
+              <NavLink to="/all-artworks?type=subscription">
                 <button className="px-6 py-2 bg-zinc-800 text-white rounded-lg">
                   Continue Shopping
                 </button>

@@ -22,7 +22,6 @@ const OrderHistory = () => {
 
   return (
     <div className="flex flex-col md:flex-row gap-8 bg-white p-6 rounded-lg shadow mb-6 ">
-      {/* Left Section - History */}
       <div className="w-full md:w-2/3">
         <h2 className="text-lg font-semibold mb-6">History</h2>
         <ul className="space-y-6">
@@ -53,7 +52,6 @@ const OrderHistory = () => {
         </button>
       </div>
 
-      {/* Right Section - Details */}
       <div className="w-full md:w-2/3 border-l pl-6">
         {orderDetails.map((detail, index) => (
           <div key={index} className="mb-4">

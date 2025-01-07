@@ -40,8 +40,7 @@ const Layout: React.FC<LayoutProps> = ({
     <div>
       {isLoginPage || isSignUpPage || isForgetPassword ? (
         <LogNaveBar />
-      ) : user === "artist" ? // No NavBar for artists
-      null : (
+      ) : user === "artist" ? null : (
         <NavBar />
       )}
       <main>{children}</main>

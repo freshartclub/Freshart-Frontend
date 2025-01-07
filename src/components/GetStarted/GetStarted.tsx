@@ -9,8 +9,6 @@ import FifthSection from "./FifthSection";
 import LearnMoreSection from "./LearnMoreSection";
 import ThirdSection from "./ThirdSection";
 import { useNavigate, useLocation } from "react-router-dom";
-import { replace } from "formik";
-import Loader from "../ui/Loader";
 
 const GetStarted = () => {
   const isAuthorized = useAppSelector((state) => state.user.isAuthorized);
