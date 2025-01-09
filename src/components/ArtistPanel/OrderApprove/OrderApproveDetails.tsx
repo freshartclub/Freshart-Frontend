@@ -36,6 +36,8 @@ const OrderApproveDetails = () => {
 
   const { data, isRefetching } = useGetOrderDetails(apiId, apiOrderType);
 
+  console.log(data);
+
   const discountAmounts = data?.data?.items?.map((item) => {
     const basePrice = parseFloat(
       item?.artWork?.pricing?.basePrice?.replace("$", "")
@@ -309,7 +311,7 @@ const OrderApproveDetails = () => {
               <div className="flex justify-between text-sm md:text-base text-gray-400 mb-1 font-bold">
                 <span>Subtotal :</span>
                 <span className="font-semibold text-black">
-                  {formateCurrency(subTotalAmount, "$")}
+                  {formateCurrency(data?.data?.subTotal, "$")}
                 </span>
               </div>
               <div className="flex justify-between text-sm md:text-base text-gray-400 mb-1 font-semibold">
@@ -321,18 +323,18 @@ const OrderApproveDetails = () => {
               <div className="flex justify-between text-sm md:text-base text-gray-400 mb-1 font-semibold">
                 <span>Discount :</span>
                 <span className="text-red-400">
-                  {formateCurrency(discountAmounts, "$")}
+                  {formateCurrency(data?.data?.discount, "$")}
                 </span>
               </div>
               <div className="flex justify-between text-sm md:text-base text-gray-400 mb-1">
                 <span>Taxes:</span>
                 <span className="text-black font-semibold">
-                  {formateCurrency(data?.data?.tax, "$")}
+                  {formateCurrency(data?.data?.taxAmount, "$")}
                 </span>
               </div>
               <div className="flex justify-between text-gray-800 font-semibold text-sm md:text-md mt-4">
                 <span>Total</span>
-                {formateCurrency(totalAmount, "$")}
+                {formateCurrency(data?.data?.total, "$")}
               </div>
             </div>
           </div>

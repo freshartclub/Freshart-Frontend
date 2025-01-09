@@ -17,6 +17,7 @@ import red_cross from "./assets/XCircle.png";
 import CartTotal from "./CartTotal";
 import useRemoveMutation from "./http/useRemoveMutation";
 import { imageUrl } from "../utils/baseUrls";
+import getSymbolFromCurrency from "currency-symbol-map";
 
 const product_data = [
   {
@@ -81,6 +82,8 @@ const PurchaseCart = () => {
       console.error(error);
     }
   };
+
+
 
   const handlepurchase = () => {
     navigate("/all-artworks?type=purchase");
@@ -244,14 +247,22 @@ const PurchaseCart = () => {
                             </td>
 
                             <td className="xl:px-6 lg:px-4 px-2 py-4 text-[#475156] font-medium">
-                              ${table?.item?.pricing?.basePrice}
+                              {getSymbolFromCurrency(
+                                table?.item?.pricing?.currency
+                              ) +
+                                " " +
+                                table?.item?.pricing?.basePrice}
                             </td>
                             <td className="xl:px-6 lg:px-4 px-2 py-4 text-[#475156] font-medium">
                               {table?.item?.pricing?.dpersentage}%
                             </td>
 
                             <td className="xl:px-6 lg:px-4 px-2 py-4 text-[#191C1F] font-semibold">
-                              ${discountedPrice}
+                              {getSymbolFromCurrency(
+                                table?.item?.pricing?.currency
+                              ) +
+                                " " +
+                                discountedPrice}
                             </td>
                           </tr>
                         );

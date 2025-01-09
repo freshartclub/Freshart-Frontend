@@ -60,7 +60,7 @@ const ArtistPortfolio = ({ data }) => {
   };
 
   return (
-    <div className="container mx-auto md:px-6 px-3">
+    <div className="container mx-auto md:px-6 px-3 ">
       <div className="mt-10">
         <div className="flex sm:flex-row flex-col justify-between">
           <Header
@@ -73,7 +73,7 @@ const ArtistPortfolio = ({ data }) => {
           <ViewButton onClick={redirectToAllArtistPage} />
         </div>
       </div>
-      <div className="artist_slider">
+      <div className="artist_slider h-auto  ">
         {data?.length > 4 ? (
           <>
             {data?.artists?.map((item, index) => (
@@ -110,7 +110,7 @@ const ArtistPortfolio = ({ data }) => {
             {data?.artists?.map((item, index) => (
               <div
                 key={index}
-                className="px-2 text-center cursor-pointer"
+                className="px-2 text-center cursor-pointer   "
                 onClick={() => handleArtistDesc(item._id)}
               >
                 <div className="mt-14 rounded-lg border border-[#FF536B] flex  flex-col items-center">
@@ -122,7 +122,7 @@ const ArtistPortfolio = ({ data }) => {
                   <h1 className="text-xl line-clamp-1 font-medium">
                     {item.artistName + " " + item.artistSurname1}
                   </h1>
-                  <p className="text-sm flex gap-2 min-h-[20px]">
+                  <p className="text-sm flex flex-wrap justify-center gap-2 min-h-[20px]">
                     {item?.aboutArtist?.discipline?.map(
                       (disciplineItem, i, arr) => (
                         <>

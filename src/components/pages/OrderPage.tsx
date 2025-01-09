@@ -18,18 +18,12 @@ const OrderPage = () => {
   const { data, isLoading } = useGetOrder();
   const navigate = useNavigate();
 
-  console.log(data);
-
   const handleDetailPage = (item) => {
-    navigate(
-      `/order_tracking?id=${item?._id}&orderType=${item?.orderType}&art=${item?.artwork?._id}`
-    );
+    navigate(`/order_tracking?id=${item?._id}&art=${item?.artwork?._id}`);
   };
 
   const dataToRender =
     state === "purchase" ? data?.purchase : data?.subscription;
-
-  console.log(dataToRender);
 
   if (isLoading) return <Loader />;
 
@@ -66,8 +60,8 @@ const OrderPage = () => {
           </li>
         </ul>
 
-        <div className="flex sm:flex-row flex-col justify-between gap-5 mb-8">
-          <div className=" flex gap-5 mt-8">
+        <div className="flex sm:flex-row flex-col justify-end gap-5 mb-8">
+          {/* <div className=" flex gap-5 mt-8">
             <span
               onClick={() => setState("purchase")}
               className={`${
@@ -84,7 +78,7 @@ const OrderPage = () => {
             >
               Subscription
             </span>
-          </div>
+          </div> */}
           <div className="flex sm:flex-row flex-col gap-5 items-center ">
             <Button
               variant={{ fontSize: "md", fontWeight: "bold" }}

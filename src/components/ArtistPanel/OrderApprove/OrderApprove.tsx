@@ -30,6 +30,8 @@ const OrderApprove = () => {
     }
   };
 
+  console.log(data);
+
   const order = {
     order_id: "Order #6079",
     order_time: "12 Aug 2022 10:00 PM",

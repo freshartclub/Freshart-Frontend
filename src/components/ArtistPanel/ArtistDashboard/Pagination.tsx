@@ -24,7 +24,7 @@ const Pagination = () => {
   const headerData = [
     { title: "Products" },
     { title: "Customer" },
-    { title: "Order Type" },
+    { title: "Type" },
     { title: "Total" },
     { title: "Payment" },
     { title: "Date" },
@@ -103,7 +103,7 @@ const Pagination = () => {
 
                     {/* Order Type */}
                     <td className="px-4 py-3 text-[12px] lg:text-[14px] font-bold capitalize whitespace-nowrap">
-                      {value?.orderType}
+                      {value?.items[0]?.type}
                     </td>
 
                     {/* Total */}

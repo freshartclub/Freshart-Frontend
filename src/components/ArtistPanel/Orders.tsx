@@ -9,6 +9,10 @@ import { IoIosArrowBack } from "react-icons/io";
 import { NavLink } from "react-router-dom";
 import { tabsContext } from "./Context/Context";
 import { useGetArtistOrder } from "./Orders/http/useGetArtistOrder";
+import dayjs from "dayjs";
+import duration from "dayjs/plugin/duration";
+import Loader from "../ui/Loader";
+dayjs.extend(duration);
 
 const Orders = () => {
   const categorys = ["All Time", "12 Months", "30 Days", "7 Days", "24 Hour"];
@@ -17,13 +21,33 @@ const Orders = () => {
 
   const filterData =
     activeTab === "All Time"
-      ? orderDelail
-      : orderDelail.filter((data) => data.days === activeTab);
+      ? data
+      : data.filter((item) => {
+          const createdAt = dayjs(item.createdAt);
+          switch (activeTab) {
+            case "12 Months":
+              return createdAt.isAfter(dayjs().subtract(12, "month"));
+            case "30 Days":
+              return createdAt.isAfter(dayjs().subtract(30, "days"));
+            case "7 Days":
+              return createdAt.isAfter(dayjs().subtract(7, "days"));
+            case "24 Hour":
+              return createdAt.isAfter(dayjs().subtract(1, "day"));
+            default:
+              return true;
+          }
+        });
 
   const handleTabs = (value: string) => {
     setActiveTab(value);
   };
+
+  console.log(filterData);
   const Active = useContext(tabsContext);
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <div className="py-7">
@@ -74,7 +98,7 @@ const Orders = () => {
             <FilterBtn />
           </div>
         </div>
-        <Allorders orderDelail={filterData} />
+        <Allorders orderDetail={filterData} />
       </div>
     </div>
   );
