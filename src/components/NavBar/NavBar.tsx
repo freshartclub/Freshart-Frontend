@@ -16,6 +16,7 @@ import { useGetCartItems } from "../pages/http/useGetCartItems";
 import useClickOutside from "../utils/useClickOutside";
 import { FaUserCircle } from "react-icons/fa";
 import { useGetArtistDetails } from "../UserProfile/http/useGetDetails";
+import { imageUrl } from "../utils/baseUrls";
 
 const mobile_links = [
   { path: "/", label: "Home" },
@@ -322,7 +323,7 @@ const NavBar = () => {
                 >
                   {user?.profile?.mainImage ? (
                     <img
-                      src={`${url}/users/${user?.profile?.mainImage}`}
+                      src={`${imageUrl}/users/${user?.profile?.mainImage}`}
                       alt="Profile"
                       onClick={() => setIsProfileDropdown((prev) => !prev)}
                       className=" text-white mx-2 rounded-full object-cover w-8 h-8"

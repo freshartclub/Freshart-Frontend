@@ -11,11 +11,14 @@ import Header from "../ui/Header";
 import Loader from "../ui/Loader";
 import P from "../ui/P";
 import { useGetOrder } from "./http/useGetOrder";
+import { imageUrl } from "../utils/baseUrls";
 
 const OrderPage = () => {
   const [state, setState] = useState("purchase");
   const { data, isLoading } = useGetOrder();
   const navigate = useNavigate();
+
+  console.log(data);
 
   const handleDetailPage = (item) => {
     navigate(
@@ -123,14 +126,14 @@ const OrderPage = () => {
         </div>
 
         <div className="flex flex-col gap-8">
-          {dataToRender && dataToRender.length > 0 ? (
-            dataToRender.map((item, index) => (
+          {data && data.length > 0 ? (
+            data.map((item, index) => (
               <div
                 key={index}
                 className="flex flex-col sm:flex-row justify-between lg:gap-10 gap-5 bg-white p-4 rounded-md"
               >
                 <img
-                  src={`${data?.url}/users/${item?.artwork?.media}`}
+                  src={`${imageUrl}/users/${item?.artwork?.media}`}
                   alt="order image"
                   className="w-[20vw] h-[10vw] object-cover"
                 />
@@ -223,6 +226,17 @@ const OrderPage = () => {
                       {item.name}
                     </P>
                   </div>
+
+                  <P
+                    variant={{
+                      size: "small",
+                      theme: "dark",
+                      weight: "medium",
+                    }}
+                    className="mt-2"
+                  >
+                    Type : {item?.artwork?.type.toUpperCase()}
+                  </P>
 
                   <div className="flex sm:flex-row flex-col justify-start gap-2 w-full mt-6 ">
                     <Button

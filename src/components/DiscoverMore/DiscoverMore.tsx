@@ -12,6 +12,7 @@ import home from "../../assets/home.png";
 import Button from "../ui/Button";
 import { useGetArtWorkById } from "./http/useGetArtWorkById";
 import Loader from "../ui/Loader";
+import { imageUrl } from "../utils/baseUrls";
 
 const DiscoverMore = () => {
   const sliderRef = useRef<Slider>(null);
@@ -134,14 +135,14 @@ const DiscoverMore = () => {
                   return isVideo ? (
                     <video
                       key={index}
-                      src={`${url2}/${thumb.src}`}
+                      src={`${imageUrl}/videos/${thumb.src}`}
                       className="mb-4 lg:w-20 w-24 h-24 lg:h-24 cursor-pointer object-cover"
                       onClick={() => handleThumbnailClick(index)}
                     />
                   ) : (
                     <img
                       key={index}
-                      src={`${data?.url}/users/${thumb.src}`}
+                      src={`${imageUrl}/users/${thumb.src}`}
                       alt={thumb.alt}
                       className="mb-4 lg:w-20 w-24 h-24 lg:h-24 cursor-pointer object-cover"
                       onClick={() => handleThumbnailClick(index)}
@@ -161,13 +162,13 @@ const DiscoverMore = () => {
                         <div key={index} className="">
                           {slide.src.endsWith(".mp4") ? ( // Check if it's a video
                             <video
-                              src={`${url2}/${slide.src}`}
+                              src={`${imageUrl}/videos/${slide.src}`}
                               className="mx-auto object-cover h-[20rem] md:h-[60vh] lg:h-[60vh]"
                               controls
                             />
                           ) : (
                             <img
-                              src={`${data?.url}/users/${slide.src}`}
+                              src={`${imageUrl}/users/${slide.src}`}
                               alt={`Slide ${index + 1}`}
                               className="mx-auto object-cover h-[20rem] md:h-[60vh] lg:h-[60vh]"
                             />
@@ -180,14 +181,14 @@ const DiscoverMore = () => {
                 images[0]?.src &&
                 (images[0].src.endsWith(".mp4") ? (
                   <video
-                    src={`${url2}/${images[0].src}`}
+                    src={`${imageUrl}/videos/${images[0].src}`}
                     className="md:w-[40vw] w-full h-[50vh] md:h-[70vh] object-cover overflow-y-hidden"
                     controls
                     autoPlay={true}
                   />
                 ) : (
                   <img
-                    src={`${data?.url}/users/${images[0]?.src}`}
+                    src={`${imageUrl}/users/${images[0]?.src}`}
                     alt="Single Image"
                     className="md:w-[40vw] w-full h-[50vh] md:h-[70vh] object-cover overflow-y-hidden"
                   />

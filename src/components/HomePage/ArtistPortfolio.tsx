@@ -5,6 +5,7 @@ import "slick-carousel/slick/slick.css";
 import Header from "../ui/Header";
 import ViewButton from "../ui/ViewButton";
 import "./ArtistPortfoilio.css";
+import { imageUrl } from "../utils/baseUrls";
 
 const settings = {
   dots: true,
@@ -83,7 +84,7 @@ const ArtistPortfolio = ({ data }) => {
               >
                 <div className="mt-14 rounded-lg border border-[#FF536B] flex  flex-col items-center">
                   <img
-                    src={`${data.url}/users/${item?.profile?.mainImage}`}
+                    src={`${imageUrl}/users/${item?.profile?.mainImage}`}
                     alt="profile"
                     className="-mt-10 w-[10vh] h-[10vh] rounded-full object-cover"
                   />
@@ -96,7 +97,7 @@ const ArtistPortfolio = ({ data }) => {
                     ))}
                   </p>
                   <img
-                    src={`${data.url}/users/${item?.profile?.inProcessImage}`}
+                    src={`${imageUrl}/users/${item?.profile?.inProcessImage}`}
                     alt="Artwork"
                     className="p-4 sm:w-[30vw] sm:h-[30vh] object-cover"
                   />
@@ -114,7 +115,7 @@ const ArtistPortfolio = ({ data }) => {
               >
                 <div className="mt-14 rounded-lg border border-[#FF536B] flex  flex-col items-center">
                   <img
-                    src={`${data.url}/users/${item?.profile?.mainImage}`}
+                    src={`${imageUrl}/users/${item?.profile?.mainImage}`}
                     alt="profile"
                     className="-mt-10 w-[10vh] h-[10vh] rounded-full object-cover"
                   />
@@ -133,7 +134,7 @@ const ArtistPortfolio = ({ data }) => {
                   </p>
 
                   <img
-                    src={`${data.url}/users/${item?.profile?.inProcessImage}`}
+                    src={`${imageUrl}/users/${item?.profile?.inProcessImage}`}
                     alt="Artwork"
                     className="p-4 sm:w-[30vw] sm:h-[30vh] object-cover"
                   />

@@ -33,6 +33,7 @@ import { RenderAllPicklists } from "../../utils/RenderAllPicklist";
 import SelectDateBtn from "../ArtistDashboard/SelectDateBtn";
 import useRevalidationMutation from "./http/useRevalidationMutation";
 import Autocomplete from "react-google-autocomplete";
+import { imageUrl } from "../../utils/baseUrls";
 
 const GeneralForm = ({ isActiveStatus }) => {
   const { data, isLoading, isFetching } = useGetArtistDetails();
@@ -288,7 +289,7 @@ const GeneralForm = ({ isActiveStatus }) => {
   // console.log(data?.data?.artist?.gender);
 
   const handlePDF = (file) => {
-    window.open(`${data?.data?.url}/documents/${file}`, "_blank");
+    window.open(`${imageUrl}/documents/${file}`, "_blank");
   };
 
   const handleTagChange = (e) => {
@@ -817,7 +818,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                     {data?.data?.artist?.insignia?.map((item, i) => (
                       <div>
                         <img
-                          src={`${data.data.url}/users/${item.insigniaImage}`}
+                          src={`${imageUrl}/users/${item.insigniaImage}`}
                           alt=""
                           className="lg:w-[10vw] lg:h-[15vh] object-cover"
                         />
@@ -851,7 +852,7 @@ const GeneralForm = ({ isActiveStatus }) => {
               <GeneralMedia
                 control={control}
                 data={data?.data?.artist?.profile}
-                url={data?.data?.url}
+                // url={data?.data?.url}
                 isActiveStatus={isActiveStatus}
               />
               <Invoice control={control} />

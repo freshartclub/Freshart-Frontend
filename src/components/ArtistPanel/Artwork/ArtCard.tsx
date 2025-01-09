@@ -1,3 +1,4 @@
+import { imageUrl } from "../../utils/baseUrls";
 import edit from "../assets/Container (1).png";
 import deleteimg from "../assets/Container (2).png";
 import { NavLink } from "react-router-dom";
@@ -22,7 +23,7 @@ const ArtCard = ({ record, data }: any) => {
       >
         <div className="flex flex-wrap justify-center relative overflow-hidden bg-cover bg-no-repeat">
           <img
-            src={`${data?.url}/users/${record?.media}`}
+            src={`${imageUrl}/users/${record?.media}`}
             className="rounded-md w-[20rem] xl:w-[19rem] sm:w-[20rem] md:w-[20rem] lg:w-[20rem] h-[22rem] object-cover"
             alt="Media"
           />

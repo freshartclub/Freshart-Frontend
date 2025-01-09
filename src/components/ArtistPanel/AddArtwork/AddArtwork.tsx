@@ -49,6 +49,7 @@ import toast from "react-hot-toast";
 import { useAppSelector } from "../../../store/typedReduxHooks";
 import { useGetMediaSupport } from "./http/useGetMediaSupport";
 import usePostModifyArtworkMutation from "./http/usePostModifyArtwork";
+import { baseUrl, imageUrl } from "../../utils/baseUrls";
 
 const AddArtwork = () => {
   const [progress, setProgress] = useState(0);
@@ -168,7 +169,7 @@ const AddArtwork = () => {
   const id = searchParams.get("id");
   const query = searchParams.get("view");
 
-  const { data, isLoading, isFetching } = useGetArtWorkById(id);
+  const { data, isLoading, refetch: refetchData } = useGetArtWorkById(id);
 
   const { data: userData, isLoading: userIsLoading } = useGetArtistDetails();
   const userID = userData?.data?.artist?._id;
@@ -279,7 +280,7 @@ const AddArtwork = () => {
 
   useEffect(() => {
     refetch();
-  }, [userID]);
+  }, [id]);
 
   useEffect(() => {
     if (
@@ -301,7 +302,6 @@ const AddArtwork = () => {
     themeLoading,
     seriesLoading,
     getMediaSupportLoding,
-    seriesFetching,
   ]);
 
   const getOutDiscipline = seriesData?.discipline?.map(
@@ -483,7 +483,7 @@ const AddArtwork = () => {
 
   const status = data?.data?.status;
 
-  const url = `https://dev.freshartclub.com/discover_more?id=${id}?referral=${"QR"}`;
+  const url = `${baseUrl}/discover_more?id=${id}?referral=${"QR"}`;
   const seriesOptions = seriesData?.seriesList?.map((item, i) => item);
 
   const currentPageUrl = url;
@@ -557,8 +557,8 @@ const AddArtwork = () => {
     const file = e.target.files?.[0];
     if (file) {
       setNewImage(file);
-      const imageUrl = URL.createObjectURL(file);
-      setMainImage(imageUrl);
+      const imageUrls = URL.createObjectURL(file);
+      setMainImage(imageUrls);
       setHasMainImg(true);
     }
   };
@@ -567,8 +567,8 @@ const AddArtwork = () => {
     const file = e.target.files?.[0];
     if (file) {
       setNewBackImage(file);
-      const imageUrl = URL.createObjectURL(file);
-      setBackImage(imageUrl);
+      const imageUrls = URL.createObjectURL(file);
+      setBackImage(imageUrls);
       setHasBackImg(true);
     }
   };
@@ -577,8 +577,8 @@ const AddArtwork = () => {
     const file = e.target.files?.[0];
     if (file) {
       setNewInProcessImage(file);
-      const imageUrl = URL.createObjectURL(file);
-      setInProcessImage(imageUrl);
+      const imageUrls = URL.createObjectURL(file);
+      setInProcessImage(imageUrls);
       setHasInProcessImg(true);
     }
   };
@@ -628,8 +628,6 @@ const AddArtwork = () => {
 
   useEffect(() => {
     if (activeTab === "purchase") {
-      console.log("________", activeTab);
-
       const purchaseItem = seriesData?.purchaseCatalog?.find(
         (item) => item?._id === getValues("purchaseCatalog")
       );
@@ -662,10 +660,10 @@ const AddArtwork = () => {
     }
   }, [
     activeTab,
-    watch("purchaseCatalog"),
-    getValues("basePrice"),
-    watch("subscriptionCatalog"),
-    getValues("subscriptionCatalog"),
+    // watch("purchaseCatalog"),
+    // getValues("basePrice"),
+    // watch("subscriptionCatalog"),
+    // getValues("subscriptionCatalog"),
     watch("purchaseType"),
     watch("purchaseOption"),
     id,
@@ -801,22 +799,22 @@ const AddArtwork = () => {
     if (data && id) {
       setMainImage(
         data?.data?.media?.mainImage
-          ? `${data?.url}/users/${data?.data?.media?.mainImage}`
+          ? `${imageUrl}/users/${data?.data?.media?.mainImage}`
           : null
       );
       setBackImage(
         data?.data?.media?.backImage
-          ? `${data?.url}/users/${data?.data?.media?.backImage}`
+          ? `${imageUrl}/users/${data?.data?.media?.backImage}`
           : null
       );
       setInProcessImage(
         data?.data?.media?.inProcessImage
-          ? `${data?.url}/users/${data?.data?.media?.inProcessImage}`
+          ? `${imageUrl}/users/${data?.data?.media?.inProcessImage}`
           : null
       );
       setMainVideo(
         data?.data?.media?.mainVideo
-          ? `${data?.url}/videos/${data?.data?.media?.mainVideo}`
+          ? `${imageUrl}/videos/${data?.data?.media?.mainVideo}`
           : null
       );
     }
@@ -1387,7 +1385,7 @@ const AddArtwork = () => {
                               return (
                                 <div key={i} className="relative">
                                   <img
-                                    src={`${data?.url}/users/${img}`}
+                                    src={`${imageUrl}/users/${img}`}
                                     alt="image"
                                     className="w-28 h-28 object-cover"
                                   />
@@ -1548,7 +1546,7 @@ const AddArtwork = () => {
                           exVidoes.map((video, i = otherVideo.length + 1) => (
                             <div key={i} className="relative">
                               <video
-                                src={`${data?.url}/videos/${video}`} // Use the URL for the video preview
+                                src={`${imageUrl}/videos/${video}`} // Use the URL for the video preview
                                 className="w-28 max-h-28 object-cover mb-4"
                                 controls
                               />

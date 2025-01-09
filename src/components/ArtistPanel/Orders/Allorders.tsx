@@ -7,6 +7,7 @@ import { useGetArtistOrder } from "./http/useGetArtistOrder";
 import dayjs from "dayjs";
 import Loader from "../../ui/Loader";
 import { formateCurrency } from "../../utils/FormatCurrency";
+import { imageUrl } from "../../utils/baseUrls";
 
 const Allorders = ({ orderDelail }: any) => {
   const { data, isLoading } = useGetArtistOrder();
@@ -72,7 +73,7 @@ const Allorders = ({ orderDelail }: any) => {
 
                 <div className="flex gap-3 mb-3">
                   <img
-                    src={`${url}/users/${value?.image}`}
+                    src={`${imageUrl}/users/${value?.image}`}
                     alt="product"
                     className="w-20 h-20 rounded-lg object-cover"
                   />
@@ -153,7 +154,7 @@ const Allorders = ({ orderDelail }: any) => {
                     >
                       <div>
                         <img
-                          src={`${url}/users/${value?.image}`}
+                          src={`${imageUrl}/users/${value?.image}`}
                           alt="product image"
                           className="w-10 h-12 rounded-xl object-cover"
                         />

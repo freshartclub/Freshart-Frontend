@@ -16,6 +16,7 @@ import image2 from "./assets/Image1.png";
 import red_cross from "./assets/XCircle.png";
 import CartTotal from "./CartTotal";
 import useRemoveMutation from "./http/useRemoveMutation";
+import { imageUrl } from "../utils/baseUrls";
 
 const product_data = [
   {
@@ -125,7 +126,7 @@ const PurchaseCart = () => {
         </Header>
 
         <div className="w-full flex lg:flex-row flex-col gap-5 my-10">
-          <div className="lg:w-[70%] w-full border rounded-md">
+          <div className="lg:w-[75%] w-full border rounded-md">
             <Header
               variant={{ theme: "dark", weight: "semiBold" }}
               className="p-5"
@@ -134,132 +135,144 @@ const PurchaseCart = () => {
             </Header>
 
             <div>
-              <table className="w-full border-b text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                <thead className="text-sm text-black uppercase bg-[#F2F4F5] ">
-                  <tr>
-                    <th
-                      scope="col"
-                      className="xl:px-6 lg:px-4 px-2 py-3 uppercase"
-                    >
-                      Products
-                    </th>
-                    <th
-                      scope="col"
-                      className="xl:px-6 lg:px-4 px-2 py-3 uppercase"
-                    >
-                      Ouantity
-                    </th>
-                    <th
-                      scope="col"
-                      className="xl:px-6 lg:px-4 px-2 py-3 uppercase"
-                    >
-                      Price
-                    </th>
-                    <th
-                      scope="col"
-                      className="xl:px-6 lg:px-4 px-2 py-3 uppercase"
-                    >
-                      Discount %
-                    </th>
-                    <th
-                      scope="col"
-                      className="xl:px-6 lg:px-4 px-2 py-3 uppercase"
-                    >
-                      Sub-total
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="">
-                  {data?.data?.cart && data?.data?.cart?.length > 0 ? (
-                    data?.data?.cart?.map((table: any, index: number) => {
-                      const basePrice = parseFloat(
-                        table?.item?.pricing?.basePrice?.replace("$", "")
-                      );
-
-                      const discountPercentage =
-                        table?.item?.pricing?.dpersentage || 0;
-
-                      const discountAmount =
-                        (basePrice * table?.quantity * discountPercentage) /
-                        100;
-
-                      const discountedPrice = (
-                        basePrice * table?.quantity -
-                        discountAmount
-                      ).toFixed(2);
-
-                      return (
-                        <tr key={index} className="bg-white">
-                          <td
-                            scope="row"
-                            className="flex sm:flex-row flex-col justify-start xl:gap-4 lg:gap-2 gap-2 sm:items-center
-                   xl:px-6 lg:px-4 px-2 py-4 font-medium text-gray-900 dark:text-white"
-                          >
-                            <button
-                              onClick={() => handleRemove(table?.item?._id)}
-                            >
-                              <img src={gray_cross} alt="cross" />
-                            </button>
-
-                            <img
-                              src={`${data?.url}/users/${table?.item?.media?.mainImage}`}
-                              alt="image"
-                              className="w-[72px] h-[72px] object-cover"
-                            />
-                            <P
-                              variant={{
-                                weight: "medium",
-                                theme: "dark",
-                              }}
-                              className="xl:text-base text-sm"
-                            >
-                              {table?.item?.artworkName}
-                            </P>
-                          </td>
-                          <td className="xl:px-6 lg:px-4 px-2 py-4 text-[#475156] font-medium">
-                            <span className="flex justify-between py-1 border border-zinc-900 px-2 rounded-md bg-black text-white">
-                              <FaMinus
-                                onClick={() =>
-                                  handleRemoveQuantity(table?.item?._id)
-                                }
-                                className="cursor-pointer   w-[20px] h-[20px] sm:w-[16px] sm:h-[16px]"
-                              />
-                              {table?.quantity}
-                              <FaPlus
-                                onClick={() => handleAdd(table?.item?._id)}
-                                className="cursor-pointer  w-[20px] h-[20px] sm:w-[16px] sm:h-[16px]"
-                              />
-                            </span>
-                          </td>
-                          <td className="xl:px-6 lg:px-4 px-2 py-4 text-[#475156] font-medium">
-                            ${table?.item?.pricing?.basePrice}
-                          </td>
-                          <td className="xl:px-6 lg:px-4 px-2 py-4 text-[#475156] font-medium">
-                            {table?.item?.pricing?.dpersentage}%
-                          </td>
-
-                          <td className="xl:px-6 lg:px-4 px-2 py-4 text-[#191C1F] font-semibold">
-                            ${discountedPrice}
-                          </td>
-                        </tr>
-                      );
-                    })
-                  ) : (
+              <div className="overflow-x-auto w-full">
+                <table className=" min-w-[800px] border-b text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                  <thead className="text-sm text-black uppercase bg-[#F2F4F5]">
                     <tr>
-                      <td className="px-6 py-4 text-center" colSpan={5}>
-                        <p className="text-lg text-center font-medium mb-4">
-                          You haven't added any artwork to your cart.
-                        </p>
-                        <NavLink to="/home">
-                          <button className="px-6 py-2 bg-zinc-800 text-white rounded-lg">
-                            Add To Cart
-                          </button>
-                        </NavLink>
-                      </td>
+                      <th
+                        scope="col"
+                        className="xl:px-6 lg:px-4 px-2 py-3 uppercase"
+                      >
+                        Products
+                      </th>
+                      <th
+                        scope="col"
+                        className="xl:px-6 lg:px-4 px-2 py-3 uppercase"
+                      >
+                        Quantity
+                      </th>
+                      <th
+                        scope="col"
+                        className="xl:px-6 lg:px-4 px-2 py-3 uppercase"
+                      >
+                        Type
+                      </th>
+                      <th
+                        scope="col"
+                        className="xl:px-6 lg:px-4 px-2 py-3 uppercase"
+                      >
+                        Price
+                      </th>
+                      <th
+                        scope="col"
+                        className="xl:px-6 lg:px-4 px-2 py-3 uppercase"
+                      >
+                        Discount %
+                      </th>
+                      <th
+                        scope="col"
+                        className="xl:px-6 lg:px-4 px-2 py-3 uppercase"
+                      >
+                        Sub-total
+                      </th>
                     </tr>
-                  )}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {data?.data?.cart && data?.data?.cart?.length > 0 ? (
+                      data?.data?.cart?.map((table: any, index: number) => {
+                        const basePrice = parseFloat(
+                          table?.item?.pricing?.basePrice?.replace("$", "")
+                        );
+
+                        const discountPercentage =
+                          table?.item?.pricing?.dpersentage || 0;
+
+                        const discountAmount =
+                          (basePrice * table?.quantity * discountPercentage) /
+                          100;
+
+                        const discountedPrice = (
+                          basePrice * table?.quantity -
+                          discountAmount
+                        ).toFixed(2);
+
+                        return (
+                          <tr key={index} className="bg-white">
+                            <td
+                              scope="row"
+                              className="flex sm:flex-row flex-col justify-start xl:gap-4 lg:gap-2 gap-2 sm:items-center xl:px-6 lg:px-4 px-2 py-4 font-medium text-gray-900 dark:text-white"
+                            >
+                              <button
+                                onClick={() => handleRemove(table?.item?._id)}
+                              >
+                                <img src={gray_cross} alt="cross" />
+                              </button>
+
+                              <img
+                                src={`${imageUrl}/users/${table?.item?.media?.mainImage}`}
+                                alt="image"
+                                className="w-[72px] h-[72px] object-cover"
+                              />
+                              <P
+                                variant={{
+                                  weight: "medium",
+                                  theme: "dark",
+                                }}
+                                className="xl:text-base text-sm"
+                              >
+                                {table?.item?.artworkName}
+                              </P>
+                            </td>
+                            <td className="xl:px-6 lg:px-4 px-2 py-4 text-[#475156] font-medium">
+                              <span className="flex justify-between py-1 border border-zinc-900 px-2 rounded-md bg-black text-white">
+                                <FaMinus
+                                  onClick={() =>
+                                    handleRemoveQuantity(table?.item?._id)
+                                  }
+                                  className="cursor-pointer   w-[20px] h-[20px] sm:w-[16px] sm:h-[16px]"
+                                />
+                                {table?.quantity}
+                                <FaPlus
+                                  onClick={() => handleAdd(table?.item?._id)}
+                                  className="cursor-pointer  w-[20px] h-[20px] sm:w-[16px] sm:h-[16px]"
+                                />
+                              </span>
+                            </td>
+
+                            <td className="xl:px-6 lg:px-4 px-2 py-4 text-[#475156] font-medium">
+                              {table?.item?.commercialization?.activeTab}
+                            </td>
+
+                            <td className="xl:px-6 lg:px-4 px-2 py-4 text-[#475156] font-medium">
+                              ${table?.item?.pricing?.basePrice}
+                            </td>
+                            <td className="xl:px-6 lg:px-4 px-2 py-4 text-[#475156] font-medium">
+                              {table?.item?.pricing?.dpersentage}%
+                            </td>
+
+                            <td className="xl:px-6 lg:px-4 px-2 py-4 text-[#191C1F] font-semibold">
+                              ${discountedPrice}
+                            </td>
+                          </tr>
+                        );
+                      })
+                    ) : (
+                      <tr>
+                        <td className="px-6 py-4 text-center" colSpan={5}>
+                          <p className="text-lg text-center font-medium mb-4">
+                            You haven't added any artwork to your cart.
+                          </p>
+                          <NavLink to="/home">
+                            <button className="px-6 py-2 bg-zinc-800 text-white rounded-lg">
+                              Add To Cart
+                            </button>
+                          </NavLink>
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
 
               <Button
                 onClick={handlepurchase}

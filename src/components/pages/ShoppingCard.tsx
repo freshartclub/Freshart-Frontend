@@ -8,6 +8,7 @@ import { useGetCartItems } from "./http/useGetCartItems";
 
 import Loader from "../ui/Loader";
 import useRemoveMutation from "../PurchasePage/http/useRemoveMutation";
+import { imageUrl } from "../utils/baseUrls";
 
 const ShoppingCard = ({ isOpen, onClose }: any) => {
   const { data, isLoading } = useGetCartItems();
@@ -43,93 +44,81 @@ const ShoppingCard = ({ isOpen, onClose }: any) => {
 
   return (
     <div
-      className={`fixed top-0 right-0 h-[100vh] w-fu bg-white shadow-lg transition-transform duration-300 ${
+      className={`fixed top-0 right-0 h-full bg-white shadow-lg transition-transform duration-300 ${
         isOpen ? "translate-x-0" : "translate-x-full"
-      } w-[25%] z-50`}
+      } w-full sm:w-[25%] z-50`}
     >
       {isLoading ? (
         <Loader />
       ) : (
-        <div className="container   mx-auto px-10 sm:px-3">
-          <div className="flex justify-between w-full p-4 my-6">
+        <div className="container mx-auto px-6 sm:px-4">
+          {/* Header Section */}
+          <div className="flex justify-between items-center w-full p-4 border-b">
             <Header variant={{ size: "md", theme: "dark", weight: "semiBold" }}>
               Shopping Cart ({totalItems})
             </Header>
-            <Button onClick={onClose}>
-              <RxCross1 />
+            <Button onClick={onClose} className="p-1">
+              <RxCross1 size={20} />
             </Button>
           </div>
 
-          <div className="">
+          {/* Cart Items */}
+          <div className="mt-4 space-y-4 overflow-y-auto max-h-[65vh]">
             {data?.data?.cart?.map((item: any, index: number) => (
-              <div key={index} className="flex justify-between p-4 mb-1">
+              <div
+                key={index}
+                className="flex justify-between items-center p-4 bg-gray-50 rounded shadow-sm"
+              >
                 <div
-                  className="flex justify-between gap-10"
+                  className="flex gap-4 items-center"
                   onClick={redirectToDetailPage}
                 >
                   <img
-                    src={`${data?.url}/users/${item?.item?.media?.mainImage}`}
+                    src={`${imageUrl}/users/${item?.item?.media?.mainImage}`}
                     alt="cart image"
-                    className="object-cover lg:w-[10vw] rounded"
+                    className="object-cover w-[20vw] sm:w-[10vw] rounded"
                   />
-                  <div className="flex flex-col justify-center">
+
+                  <div>
                     <P
                       variant={{ size: "base", theme: "dark", weight: "light" }}
                     >
                       {item?.item?.artworkName}
                     </P>
-                    <div className="flex justify-evenly gap-2">
-                      <P
-                        variant={{
-                          size: "small",
-                          theme: "dark",
-                          weight: "normal",
-                        }}
-                      >
-                        Quantity {item?.quantity}
-                      </P>
-                      <P
-                        variant={{
-                          size: "small",
-                          theme: "dark",
-                          weight: "normal",
-                        }}
-                      >
-                        Price {item?.item?.pricing?.basePrice}
-                      </P>
+                    <div className="flex gap-2 flex-col text-sm text-gray-600">
+                      <span>Quantity: {item?.quantity}</span>
+                      <span>Price: ${item?.item?.pricing?.basePrice}</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="flex flex-col justify-center items-center">
-                  <button onClick={() => handleRemoveItem(item?.item?._id)}>
-                    <img src={cross_icon} alt="cross icon" />
-                  </button>
-                </div>
+                <button
+                  onClick={() => handleRemoveItem(item?.item?._id)}
+                  className="p-2 hover:bg-red-100 rounded"
+                >
+                  <img src={cross_icon} alt="Remove item" className="w-5 h-5" />
+                </button>
               </div>
             ))}
           </div>
-          <div className="absolute bottom-0 w-[95%] ">
-            <div className="flex flex-col justify-self-end">
-              <div className="flex justify-between">
-                <P variant={{ size: "base", theme: "dark", weight: "normal" }}>
-                  {totalItems} Artworks
-                </P>
-                <P variant={{ size: "base", theme: "dark", weight: "normal" }}>
-                  Total: ${totalPrice}
-                </P>
-              </div>
 
-              <div className="w-full">
-                <Button
-                  onClick={handleCart}
-                  variant={{ fontSize: "md", fontWeight: "normal" }}
-                  className="w-full my-2 bg-lime-50 rounded-full"
-                >
-                  Go To Cart
-                </Button>
-              </div>
+          {/* Footer Section */}
+          <div className="absolute bottom-0 left-0 w-full p-4 bg-white border-t shadow-md">
+            <div className="flex justify-between text-gray-800 mb-4">
+              <P variant={{ size: "base", theme: "dark", weight: "normal" }}>
+                {totalItems} Artworks
+              </P>
+              <P variant={{ size: "base", theme: "dark", weight: "normal" }}>
+                Total: ${totalPrice}
+              </P>
             </div>
+            <Button
+              onClick={handleCart}
+              variant={{ fontSize: "md", fontWeight: "normal" }}
+              className="w-full py-2 bg-black text-white rounded-full"
+            >
+              Go To Cart
+            </Button>
           </div>
         </div>
       )}

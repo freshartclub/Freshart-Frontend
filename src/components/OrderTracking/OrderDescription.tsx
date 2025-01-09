@@ -1,5 +1,6 @@
 import Header from "../ui/Header";
 import P from "../ui/P";
+import { imageUrl } from "../utils/baseUrls";
 import ArtWork from "./ArtWork";
 import plus from "./assets/Plus.png";
 import BillingSection from "./BillingSection";
@@ -76,7 +77,7 @@ const OrderDescription = ({ data }) => {
 
         <ArtWork
           data={data?.foundArt}
-          url={data?.url}
+          url={imageUrl}
           otherArt={data?.otherArt}
         />
         <BillingSection data={data} />

@@ -8,6 +8,7 @@ import { Link, useNavigate } from "react-router-dom";
 import useLogOutMutation from "../../http/auth/useLogOutMutation";
 import { useAppSelector } from "../../store/typedReduxHooks";
 import useClickOutside from "../utils/useClickOutside";
+import { imageUrl } from "../utils/baseUrls";
 
 const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
   const [isToogleOpen, setIsToggelOpen] = useState(false);
@@ -69,7 +70,7 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
             className="rounded-full flex items-center justify-center cursor-pointer border p-1"
           >
             <img
-              src={`${url}/users/${user.profile.mainImage}`}
+              src={`${imageUrl}/users/${user.profile.mainImage}`}
               alt="User Profile"
               className="w-8 h-8 object-cover rounded-full "
             />

@@ -19,6 +19,7 @@ import getSymbolFromCurrency from "currency-symbol-map";
 import Loader from "../ui/Loader";
 import usePostCheckOutMutation from "../PurchasePage/http/usePostCheckOutMutation";
 import BillingAddress from "../EditProfile/BillingAddress";
+import { GiConsoleController } from "react-icons/gi";
 
 const PaymentPage = () => {
   const { data, isLoading } = useGetCartItems();
@@ -103,6 +104,13 @@ const PaymentPage = () => {
     (item) => item?.item?.commercialization?.activeTab
   );
 
+  const cartLookup = data?.data?.cart?.reduce((acc, item) => {
+    if (item?.item?._id) {
+      acc[item?.item?._id] = item?.item?.commercialization?.activeTab;
+    }
+    return acc;
+  }, {});
+
   const onSubmit = (data: any) => {
     try {
       const billingDetails = billingData[0]?.billingDetails || {};
@@ -114,10 +122,14 @@ const PaymentPage = () => {
         tax: tax,
         orderType: orderType[0],
 
-        items: Object.keys(itemQu).map((id) => ({
-          id: id,
-          quantity: itemQu[id],
-        })),
+        items: Object.keys(itemQu).map((id) => {
+          return {
+            id: id,
+            quantity: itemQu[id],
+            type: cartLookup[id] || null,
+            currency: "USD",
+          };
+        }),
 
         billingAddress: {
           firstName: billingDetails.billingFirstName || "",

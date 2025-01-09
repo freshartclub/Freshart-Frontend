@@ -1,5 +1,6 @@
 import Header from "../ui/Header";
 import Loader from "../ui/Loader";
+import { imageUrl } from "../utils/baseUrls";
 import { useGetArtWorkBySeries } from "./http/getArtworkBySeries";
 import { useSearchParams } from "react-router-dom";
 
@@ -29,7 +30,7 @@ const ArtworkSeries = () => {
                       {group?.artworks?.map((artwork, idx) => (
                         <img
                           key={idx}
-                          src={`${data?.url}/users/${artwork?.media}`}
+                          src={`${imageUrl}/users/${artwork?.media}`}
                           alt={`Artwork ${idx + 1}`}
                           className="object-cover w-[50%] h-[32vh]"
                         />
@@ -39,7 +40,7 @@ const ArtworkSeries = () => {
                     <div className="flex gap-2 p-2">
                       <div className="row-span-1">
                         <img
-                          src={`${data?.url}/users/${group.artworks[0].media}`}
+                          src={`${imageUrl}/users/${group.artworks[0].media}`}
                           alt="Main Artwork"
                           className="object-cover w-full h-[32vh]"
                         />
@@ -48,14 +49,14 @@ const ArtworkSeries = () => {
                       <div className="flex flex-col gap-2 items-center bg-red-100">
                         <div className="w-full h-full">
                           <img
-                            src={`${data?.url}/users/${group.artworks[1].media}`}
+                            src={`${imageUrl}/users/${group.artworks[1].media}`}
                             alt="Artwork 2"
                             className="object-cover h-full w-full"
                           />
                         </div>
                         <div
                           style={{
-                            backgroundImage: `url(${data?.url}/users/${group.artworks[2].media})`,
+                            backgroundImage: `url(${imageUrl}/users/${group.artworks[2].media})`,
                             backgroundSize: "cover",
                             backgroundPosition: "center",
                             height: "100%",
@@ -76,7 +77,7 @@ const ArtworkSeries = () => {
                         group?.artworks?.map((artwork, idx) => (
                           <img
                             key={idx}
-                            src={`${data?.url}/users/${artwork?.media}`}
+                            src={`${imageUrl}/users/${artwork?.media}`}
                             alt={`Artwork ${idx + 1}`}
                             className="object-cover w-full h-[32vh]"
                           />

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import P from "../ui/P";
 import { useNavigate } from "react-router-dom";
+import { imageUrl } from "../utils/baseUrls";
 
 const filterData = [
   {
@@ -178,7 +179,7 @@ const AplhaFilter = ({ query, data }: any) => {
                 onClick={() => handleArtistDetail(item?._id)}
               >
                 <img
-                  src={`${data.url}/users/${item?.profile?.mainImage}`}
+                  src={`${imageUrl}/users/${item?.profile?.mainImage}`}
                   alt="profile"
                   className="-mt-10 w-[10vh] h-[10vh] rounded-full object-cover"
                 />
@@ -194,7 +195,7 @@ const AplhaFilter = ({ query, data }: any) => {
                     ))}
                 </p>
                 <img
-                  src={`${data.url}/users/${item?.profile?.inProcessImage}`}
+                  src={`${imageUrl}/users/${item?.profile?.inProcessImage}`}
                   alt="Artwork"
                   className="p-4 w-full sm:w-[30vw] h-[30vh] object-cover"
                 />

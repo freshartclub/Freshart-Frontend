@@ -11,6 +11,7 @@ import { useGetArtWorkById } from "./http/useGetArtworkById";
 import P from "../../ui/P";
 import Button from "../../ui/Button";
 import Header from "../../ui/Header";
+import { baseUrl, imageUrl } from "../../utils/baseUrls";
 
 const DiscoverMore = () => {
   const sliderRef = useRef<Slider>(null);
@@ -74,7 +75,7 @@ const DiscoverMore = () => {
 
   const additionalVideo = data?.data.media?.otherVideo?.map((item) => item);
 
-  const url2 = "https://dev.freshartclub.com/images/videos";
+  const url2 = `${imageUrl}/videos`;
 
   const images = data?.data
     ? [
@@ -139,7 +140,7 @@ const DiscoverMore = () => {
                   ) : (
                     <img
                       key={index}
-                      src={`${data?.url}/users/${thumb.src}`}
+                      src={`${imageUrl}/users/${thumb.src}`}
                       alt={thumb.alt}
                       className="mb-4 lg:w-20 w-24 h-24 lg:h-24 cursor-pointer object-cover"
                       onClick={() => handleThumbnailClick(index)}
@@ -165,7 +166,7 @@ const DiscoverMore = () => {
                             />
                           ) : (
                             <img
-                              src={`${data?.url}/users/${slide.src}`}
+                              src={`${imageUrl}/users/${slide.src}`}
                               alt={`Slide ${index + 1}`}
                               className="mx-auto object-cover h-[20rem] md:h-[60vh] lg:h-[60vh]"
                             />
@@ -185,7 +186,7 @@ const DiscoverMore = () => {
                   />
                 ) : (
                   <img
-                    src={`${data?.url}/users/${images[0]?.src}`}
+                    src={`${imageUrl}/users/${images[0]?.src}`}
                     alt="Single Image"
                     className="md:w-[40vw] w-full h-[50vh] md:h-[70vh] object-cover overflow-y-hidden"
                   />

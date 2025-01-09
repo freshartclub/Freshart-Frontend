@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import home from "../../assets/home.png";
 import arrow from "../../assets/Vector.png";
 import P from "../ui/P";
+import { imageUrl } from "../utils/baseUrls";
 
 const ArtistHeader = ({ data }) => {
   const sliderRef = useRef<Slider>(null);
@@ -118,30 +119,52 @@ const ArtistHeader = ({ data }) => {
       </ul>
 
       <div className="mt-4">
-        <div className=" ">
-          <Slider {...settings} ref={sliderRef} className="discover_more">
-            {images.map((slide, index) => {
-              const isVideo = slide?.src && slide?.src?.endsWith(".mp4"); // Check if the source is a video
-
+        <div className="">
+          {images && images.length === 1 ? (
+            images.map((image, index) => {
+              const isVideo = image?.src && image?.src.endsWith(".mp4"); // Check if the source is a video
               return (
                 <div key={index}>
                   {isVideo ? (
                     <video
-                      src={`${url2}/${slide?.src}`}
+                      src={`${imageUrl}/videos/${image?.src}`}
                       className="mx-auto w-full h-[40vh] sm:h-[50vh] md:h-[55vh] lg:h-[60vh] object-cover rounded-lg"
                       controls
                     />
                   ) : (
                     <img
-                      src={`${data?.url}/users/${slide?.src}`}
+                      src={`${imageUrl}/users/${image?.src}`}
                       alt={`Slide ${index + 1}`}
                       className="mx-auto w-full h-[40vh] sm:h-[50vh] md:h-[55vh] lg:h-[60vh] object-cover rounded-lg"
                     />
                   )}
                 </div>
               );
-            })}
-          </Slider>
+            })
+          ) : (
+            <Slider {...settings} ref={sliderRef} className="discover_more">
+              {images.map((slide, index) => {
+                const isVideo = slide?.src && slide?.src.endsWith(".mp4"); // Check if the source is a video
+                return (
+                  <div key={index}>
+                    {isVideo ? (
+                      <video
+                        src={`${imageUrl}/videos/${slide?.src}`}
+                        className="mx-auto w-full h-[40vh] sm:h-[50vh] md:h-[55vh] lg:h-[60vh] object-cover rounded-lg"
+                        controls
+                      />
+                    ) : (
+                      <img
+                        src={`${imageUrl}/users/${slide?.src}`}
+                        alt={`Slide ${index + 1}`}
+                        className="mx-auto w-full h-[40vh] sm:h-[50vh] md:h-[55vh] lg:h-[60vh] object-cover rounded-lg"
+                      />
+                    )}
+                  </div>
+                );
+              })}
+            </Slider>
+          )}
         </div>
 
         <div className="flex gap-5 justify-center my-5 overflow-x-auto">
@@ -152,7 +175,7 @@ const ArtistHeader = ({ data }) => {
               return (
                 <video
                   key={index}
-                  src={`${url2}/${thumb.src}`}
+                  src={`${imageUrl}/videos/${thumb.src}`}
                   className="mb-4 w-12 h-16 md:w-16 md:h-20 lg:w-20 lg:h-24 object-cover"
                   controls
                 />
@@ -161,7 +184,7 @@ const ArtistHeader = ({ data }) => {
             return (
               <img
                 key={index}
-                src={`${data?.url}/users/${thumb?.src}`}
+                src={`${imageUrl}/users/${thumb?.src}`}
                 alt={thumb.alt}
                 className="mb-4 w-12 h-16 md:w-16 md:h-20 lg:w-20 lg:h-24 object-cover"
                 onClick={() => handleThumbnailClick(index)}

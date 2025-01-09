@@ -7,7 +7,7 @@ async function fetchData() {
     `${ORDERS_ENDPOINTS.GetArtistOrder}`
   );
 
-  return [...data?.purchase, ...data?.subscription];
+  return data.data;
 }
 
 export const useGetArtistOrder = () => {

@@ -9,6 +9,7 @@ import new_icon from "./assets/New.png";
 import award from "./assets/Nomination.png";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { imageUrl } from "../utils/baseUrls";
 
 const credential = [
   {
@@ -50,7 +51,7 @@ const ArtistDescription = ({ data }) => {
     <div>
       <div className="flex gap-5 sm:justify-end justify-center items-center my-4">
         <img
-          src={`${data?.url}/users/${data?.artist?.profile?.mainImage}`}
+          src={`${imageUrl}/users/${data?.artist?.profile?.mainImage}`}
           alt="profile image"
           className="cursor-pointer w-10 h-10 rounded-full object-cover"
         />
@@ -193,7 +194,7 @@ const ArtistDescription = ({ data }) => {
                     }`}
                   >
                     <img
-                      src={`${data?.url}/users/${item.insigniaImage}`}
+                      src={`${imageUrl}/users/${item.insigniaImage}`}
                       alt=""
                     />
                     <P
@@ -245,7 +246,7 @@ const ArtistDescription = ({ data }) => {
                     }`}
                   >
                     <img
-                      src={`${data?.url}/users/${item.insigniaImage}`}
+                      src={`${imageUrl}/users/${item.insigniaImage}`}
                       alt=""
                     />
                     <P
@@ -324,7 +325,7 @@ const ArtistDescription = ({ data }) => {
                       }`}
                     >
                       <img
-                        src={`${data?.url}/users/${item.insigniaImage}`}
+                        src={`${imageUrl}/users/${item.insigniaImage}`}
                         alt=""
                       />
                       <P

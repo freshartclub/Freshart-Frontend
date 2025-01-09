@@ -9,6 +9,7 @@ import like from "../../assets/like.png";
 import { useNavigate } from "react-router-dom";
 
 import postRecentArtworkMutation from "./http/postRecentView";
+import { imageUrl } from "../utils/baseUrls";
 
 const HighlightSection = ({ data }) => {
   const settings = {
@@ -74,7 +75,7 @@ const HighlightSection = ({ data }) => {
                 onClick={() => handleRedirectToDescription(item?._id)}
               >
                 <img
-                  src={`${data.url}/users/${item.media.mainImage}`}
+                  src={`${imageUrl}/users/${item.media.mainImage}`}
                   alt="image"
                   className="w-full h-[40vh] sm:h-[45vh] md:h-[50vh] object-cover rounded-lg"
                 />
@@ -110,7 +111,7 @@ const HighlightSection = ({ data }) => {
                 onClick={() => handleRedirectToDescription(item?._id)}
               >
                 <img
-                  src={`${data.url}/users/${item.media.mainImage}`}
+                  src={`${imageUrl}/users/${item.media.mainImage}`}
                   alt="image"
                   className="w-full h-[40vh] sm:h-[45vh] md:h-[50vh] object-cover "
                 />

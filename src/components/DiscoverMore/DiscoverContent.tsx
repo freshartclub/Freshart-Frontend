@@ -48,6 +48,8 @@ const DiscoverContent = ({ data }: any) => {
     return item._id === data._id;
   });
 
+  console.log(data?.pricing?.currency.slice(0, 3));
+
   // console.log(checkCartItem.length ? "hello" : "hey");
   return (
     <div>
@@ -130,7 +132,7 @@ const DiscoverContent = ({ data }: any) => {
         variant={{ size: "xl", theme: "dark", weight: "semiBold" }}
         className="lg:my-4 my-2"
       >
-        {`${getSymbolFromCurrency(data?.pricing?.currency)} ${
+        {`${getSymbolFromCurrency(data?.pricing?.currency?.slice(0, 3))} ${
           data?.pricing?.basePrice
         }`}
       </Header>

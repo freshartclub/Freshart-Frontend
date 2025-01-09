@@ -6,7 +6,7 @@ async function fetchData() {
   const { data } = await axiosInstance.get(
     `${ORDERS_ENDPOINTS.GetCheckoutOrders}`
   );
-  return data;
+  return data?.data;
 }
 
 export const useGetOrder = () => {

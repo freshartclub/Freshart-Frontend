@@ -51,7 +51,7 @@ const UserProfile = () => {
         </ul>
 
         <div className="flex md:flex-row flex-col w-full xl:gap-10 lg:gap-5 gap-5 mt-8">
-          <UserImage user={user} url={url} />
+          <UserImage user={user} />
           <UserDescription user={user} />
         </div>
       </div>

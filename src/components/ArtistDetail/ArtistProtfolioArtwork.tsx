@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import "../../App.css";
 import Header from "../ui/Header";
+import { imageUrl } from "../utils/baseUrls";
 
 const ArtistProtfolioArtwork = ({ data }) => {
   const navigate = useNavigate();
@@ -8,7 +9,7 @@ const ArtistProtfolioArtwork = ({ data }) => {
     navigate(`/discover_more?id=${id}`);
     window.scroll(0, 0);
   };
-  
+
   return (
     <div>
       <Header
@@ -27,7 +28,7 @@ const ArtistProtfolioArtwork = ({ data }) => {
               className="sm:px-3 px-0 border-none outline-none flex flex-col pb-5 justify-center relative"
             >
               <img
-                src={`${data.url}/users/${item.media.mainImage}`}
+                src={`${imageUrl}/users/${item.media.mainImage}`}
                 alt="image"
                 className="w-full md:w-[40vw] lg:w-[40vw] h-[50vh] object-cover cursor-pointer "
                 onClick={() => handleRedirectToDescription(item._id)}

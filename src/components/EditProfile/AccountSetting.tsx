@@ -7,6 +7,7 @@ import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
 import image_icon from "../../assets/image_icon.png";
 import P from "../ui/P";
+import { imageUrl } from "../utils/baseUrls";
 
 const AccountSetting = () => {
   const [profileImage, setProfileImage] = useState(null);
@@ -43,7 +44,7 @@ const AccountSetting = () => {
       });
       setProfileImage(
         data?.data?.artist?.profile?.mainImage
-          ? `${url}/users/${data?.data?.artist?.profile?.mainImage}`
+          ? `${imageUrl}/users/${data?.data?.artist?.profile?.mainImage}`
           : null
       );
     }

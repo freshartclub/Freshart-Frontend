@@ -127,19 +127,6 @@ const DiscoverContent = ({ data }: any) => {
         </P>
       </div>
 
-      {/* <div className="flex gap-2 lg:mt-2 mt-1 ">
-        <P variant={{ size: "base", theme: "dark", weight: "medium" }}>
-          Location :
-        </P>
-
-        <P
-          variant={{ size: "base", theme: "dark", weight: "normal" }}
-          // className="lg:mt-2 mt-1"
-        >
-          Newyork, USA
-        </P>
-      </div> */}
-
       <P
         variant={{ size: "base", theme: "dark", weight: "normal" }}
         className="lg:my-6 my-2"
@@ -162,7 +149,9 @@ const DiscoverContent = ({ data }: any) => {
         variant={{ size: "xl", theme: "dark", weight: "semiBold" }}
         className="lg:my-4 my-2"
       >
-        {`${getSymbolFromCurrency(currency)} ${data?.pricing?.basePrice}`}
+        {`${getSymbolFromCurrency(currency?.slice(0, 3))} ${
+          data?.pricing?.basePrice
+        }`}
       </Header>
 
       <div

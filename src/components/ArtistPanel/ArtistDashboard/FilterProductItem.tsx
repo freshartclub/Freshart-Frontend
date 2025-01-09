@@ -43,27 +43,27 @@ const FilterProductItem = () => {
       product: [
         {
           image: image1,
-          title: "Total Revenue2",
-          price: "75,500",
-          discount: "10%",
+          title: "Total Revenue",
+          price: "30,500",
+          discount: "20%",
         },
         {
           image: image2,
-          title: "Total Sales2",
-          price: "31,500",
-          discount: "15%",
+          title: "Total Sales",
+          price: "20,500",
+          discount: "20%",
         },
         {
           image: image3,
-          title: "Product SKU2",
-          price: "247",
-          discount: "0%",
+          title: "Product SKU",
+          price: "158",
+          discount: "5%",
         },
         {
           image: image4,
-          title: "Balence2",
-          price: "24,500",
-          discount: "-25%",
+          title: "Balence",
+          price: "15,500",
+          discount: "-35%",
         },
       ],
     },
@@ -72,27 +72,27 @@ const FilterProductItem = () => {
       product: [
         {
           image: image1,
-          title: "Total Revenue3",
-          price: "75,500",
-          discount: "10%",
-        },
-        {
-          image: image2,
-          title: "Total Sales3",
-          price: "31,500",
+          title: "Total Revenue",
+          price: "30,500",
           discount: "15%",
         },
         {
+          image: image2,
+          title: "Total Sales",
+          price: "25,500",
+          discount: "12%",
+        },
+        {
           image: image3,
-          title: "Product SKU3",
-          price: "247",
-          discount: "0%",
+          title: "Product SKU",
+          price: "45",
+          discount: "3%",
         },
         {
           image: image4,
-          title: "Balence3",
-          price: "24,500",
-          discount: "-25%",
+          title: "Balence",
+          price: "23,500",
+          discount: "-5%",
         },
       ],
     },
@@ -130,26 +130,26 @@ const FilterProductItem = () => {
       product: [
         {
           image: image1,
-          title: "Total Revenue2",
-          price: "75,500",
+          title: "Total Revenue",
+          price: "5,500",
           discount: "10%",
         },
         {
           image: image2,
-          title: "Total Sales2",
-          price: "31,500",
-          discount: "15%",
+          title: "Total Sales",
+          price: "1,500",
+          discount: "5%",
         },
         {
           image: image3,
-          title: "Product SKU2",
-          price: "247",
-          discount: "0%",
+          title: "Product SKU",
+          price: "47",
+          discount: "3%",
         },
         {
           image: image4,
-          title: "Balence2",
-          price: "24,500",
+          title: "Balence",
+          price: "4,500",
           discount: "-25%",
         },
       ],
@@ -159,9 +159,11 @@ const FilterProductItem = () => {
   const categoris = ["All Time", "12 Months", "30 Days", "7 Days", "24 Hour"];
   const [isActive, setIsActive] = useState(categoris[0]);
   const [curruntProduct, setCurruntProduct] = useState(products[0].product);
-  const myProducts = ({ value }: any) => {
+
+  const myProducts = (value: any) => {
     setIsActive(value);
     const result = products.filter((item) => item.tag === value);
+
     setCurruntProduct(result[0].product);
   };
 

@@ -4,6 +4,7 @@ import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
 import "../../App.css";
 import like from "../../assets/like.png";
+import { imageUrl } from "../utils/baseUrls";
 
 const Artwork = ({ data }) => {
   const settings = {
@@ -57,7 +58,9 @@ const Artwork = ({ data }) => {
         Newly Added Artworks
       </h1>
       <div
-        className={`${data?.newAdded?.length < 4 ? "flex flex-row flex-wrap gap-3" : ""}`}
+        className={`${
+          data?.newAdded?.length < 4 ? "flex flex-row flex-wrap gap-3" : ""
+        }`}
       >
         {data?.newAdded?.length < 4 ? (
           data?.newAdded?.map((item, index) => (
@@ -67,7 +70,7 @@ const Artwork = ({ data }) => {
               onClick={() => handleRedirectToDescription(item?._id)}
             >
               <img
-                src={`${data.url}/users/${item.media.mainImage}`}
+                src={`${imageUrl}/users/${item.media.mainImage}`}
                 alt="image"
                 className="w-full h-[50vh] object-cover cursor-pointer"
               />
@@ -108,7 +111,7 @@ const Artwork = ({ data }) => {
                   onClick={() => handleRedirectToDescription(item?._id)}
                 >
                   <img
-                    src={`${data.url}/users/${item.media.mainImage}`}
+                    src={`${imageUrl}/users/${item.media.mainImage}`}
                     alt="image"
                     className="w-full h-[40vh] sm:h-[45vh] md:h-[50vh] object-cover "
                   />

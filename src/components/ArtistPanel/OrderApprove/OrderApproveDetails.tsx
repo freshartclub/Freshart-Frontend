@@ -17,6 +17,7 @@ import usePostCancelItem from "./https/usePostCancelItem";
 import { useGetOrderDetails } from "./https/useGetOrderDetails";
 import { MdCancel } from "react-icons/md";
 import { BiSolidImageAdd } from "react-icons/bi";
+import { imageUrl } from "../../utils/baseUrls";
 
 const OrderApproveDetails = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -157,7 +158,7 @@ const OrderApproveDetails = () => {
             <h2 className="text-base md:text-lg font-bold mb-4">Details</h2>
 
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
+              <table className="min-w-[800px] divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
                     <th
@@ -204,7 +205,7 @@ const OrderApproveDetails = () => {
                           <div className="flex flex-col md:flex-row items-start md:items-center space-y-2 md:space-y-0 md:space-x-4">
                             <div className="bg-gray-300 rounded-lg flex items-center justify-center">
                               <img
-                                src={`${data?.url}/users/${product?.artWork?.media}`}
+                                src={`${imageUrl}/users/${product?.artWork?.media}`}
                                 alt="product"
                                 className="rounded-md w-16 md:w-20 h-16 md:h-20 object-cover"
                               />
@@ -243,7 +244,7 @@ const OrderApproveDetails = () => {
                                 return (
                                   <img
                                     key={i}
-                                    src={`${data?.url}/users/${img}`}
+                                    src={`${imageUrl}/users/${img}`}
                                     alt={`Evidence ${i + 1}`}
                                     className="w-12 h-12 rounded-md object-cover"
                                   />
@@ -346,7 +347,7 @@ const OrderApproveDetails = () => {
             <div className="">
               <img
                 className="rounded-full w-16 h-16 md:w-20 md:h-20 object-cover"
-                src={`${data?.url}/users/${data?.data?.user?.mainImage}`}
+                src={`${imageUrl}/users/${data?.data?.user?.mainImage}`}
                 alt=""
               />
             </div>

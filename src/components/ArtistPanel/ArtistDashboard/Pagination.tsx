@@ -8,6 +8,7 @@ import dayjs from "dayjs";
 import { NavLink, useNavigate } from "react-router-dom";
 import Loader from "../../ui/Loader";
 import { formateCurrency } from "../../utils/FormatCurrency";
+import { imageUrl } from "../../utils/baseUrls";
 
 const Pagination = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -17,7 +18,6 @@ const Pagination = () => {
   const records = PaginationData.slice(firstIndex, lastIndex);
 
   const navigate = useNavigate();
-  const url = "https://dev.freshartclub.com/images";
 
   const { data, isLoading } = useGetArtistOrder();
 
@@ -33,9 +33,7 @@ const Pagination = () => {
   ];
 
   const handelClickData = (value) => {
-    navigate(
-      `/artist-panel/order/approve-order?id=${value?._id}&orderType=${value?.orderType}`
-    );
+    navigate(`/artist-panel/order/approve-order?id=${value?._id}`);
   };
 
   console.log(data);
@@ -77,7 +75,7 @@ const Pagination = () => {
                       onClick={() => handelClickData(value)}
                     >
                       <img
-                        src={`${url}/users/${value?.image}`}
+                        src={`${imageUrl}/users/${value?.image}`}
                         alt="product image"
                         className="w-10 h-12 rounded-md object-cover"
                       />

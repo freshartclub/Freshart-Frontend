@@ -23,6 +23,7 @@ import Slider from "react-slick";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Loader from "../ui/Loader";
 import postRecentArtworkMutation from "../HomePage/http/postRecentView";
+import { imageUrl } from "../utils/baseUrls";
 
 const highlightData = [
   {
@@ -208,7 +209,7 @@ const CardSection = ({ query, data, isLoading }: any) => {
               >
                 <div className="relative">
                   <img
-                    src={`${data?.url}/users/${item?.media}`}
+                    src={`${imageUrl}/users/${item?.media}`}
                     alt="Artwork"
                     className="w-full h-[15rem] sm:h-[18rem] md:h-[25rem] object-cover shadow-lg"
                   />

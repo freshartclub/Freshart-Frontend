@@ -8,10 +8,12 @@ import FilterBtn from "./Artwork/FilterBtn";
 import { IoIosArrowBack } from "react-icons/io";
 import { NavLink } from "react-router-dom";
 import { tabsContext } from "./Context/Context";
+import { useGetArtistOrder } from "./Orders/http/useGetArtistOrder";
 
 const Orders = () => {
   const categorys = ["All Time", "12 Months", "30 Days", "7 Days", "24 Hour"];
   const [activeTab, setActiveTab] = useState("All Time");
+  const { data, isLoading } = useGetArtistOrder();
 
   const filterData =
     activeTab === "All Time"

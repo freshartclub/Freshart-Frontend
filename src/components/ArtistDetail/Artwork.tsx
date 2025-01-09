@@ -11,6 +11,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { useAppSelector } from "../../store/typedReduxHooks";
+import { imageUrl } from "../utils/baseUrls";
 
 const Artwork = () => {
   const [loading, setLoading] = useState(true);
@@ -193,7 +194,7 @@ const Artwork = () => {
                       >
                         <img
                           className="w-[20rem] h-[20rem] object-cover"
-                          src={`${data?.url}/users/${art?.media}`}
+                          src={`${imageUrl}/users/${art?.media}`}
                           alt=""
                         />
                         <p className="text-[14px] text-center text-zinc-800]">

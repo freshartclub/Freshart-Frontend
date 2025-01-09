@@ -14,13 +14,13 @@ const OrderApprove = () => {
   const orderType = searchParams.get("orderType");
   const naviagte = useNavigate();
 
-  const { data, isLoading } = useGetOrderDetails(id, orderType);
+  const { data, isLoading } = useGetOrderDetails(id);
   const { mutate, isPending } = usePostAcceptMutation();
 
   const handleAccept = () => {
     const newData = {
       id: id,
-      orderType: orderType,
+
       status: "accept",
     };
     try {

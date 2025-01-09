@@ -8,8 +8,9 @@ import {
 import Header from "../../ui/Header";
 import image_icon from "../../../assets/image_icon.png";
 import video_icon from "../../../assets/video_icon.png";
+import { imageUrl } from "../../utils/baseUrls";
 
-const GeneralMedia = ({ control, data, url, isActiveStatus }) => {
+const GeneralMedia = ({ control, data, isActiveStatus }) => {
   const { setValue, getValues, watch } = useFormContext();
 
   useEffect(() => {
@@ -29,6 +30,15 @@ const GeneralMedia = ({ control, data, url, isActiveStatus }) => {
   } = useFieldArray({
     control,
     name: "additionalVideo",
+  });
+
+  const {
+    fields: mainVideoFields,
+
+    remove: removeMainVideo,
+  } = useFieldArray({
+    control,
+    name: "mainVideo",
   });
 
   const {
@@ -54,7 +64,6 @@ const GeneralMedia = ({ control, data, url, isActiveStatus }) => {
     name: "additionalImage",
   });
 
-  // Refs for file inputs
   const mainImageInputRef = useRef<HTMLInputElement>(null);
   const backImageInputRef = useRef<HTMLInputElement>(null);
   const inProcessImageInputRef = useRef<HTMLInputElement>(null);
@@ -72,14 +81,14 @@ const GeneralMedia = ({ control, data, url, isActiveStatus }) => {
 
   useEffect(() => {
     setExistingMainImage(
-      data?.mainImage ? `${url}/users/${data?.mainImage}` : null
+      data?.mainImage ? `${imageUrl}/users/${data?.mainImage}` : null
     );
     setExistingAdditionalImage(data?.additionalImage);
     setExistingInProcessImage(
-      data?.inProcessImage ? `${url}/users/${data?.inProcessImage}` : null
+      data?.inProcessImage ? `${imageUrl}/users/${data?.inProcessImage}` : null
     );
     setExistingMainVideo(
-      data?.mainVideo ? `${url}/videos/${data?.mainVideo}` : null
+      data?.mainVideo ? `${imageUrl}/videos/${data?.mainVideo}` : null
     );
     setExistingAdditionalVideo(data?.additionalVideo);
   }, [data]);
@@ -120,7 +129,6 @@ const GeneralMedia = ({ control, data, url, isActiveStatus }) => {
   };
 
   const handleAdditionalVideoUpload = (e) => {
-    console.log("vidoe");
     const files = e.target.files;
 
     Array.from(files).forEach((val) => {
@@ -152,10 +160,14 @@ const GeneralMedia = ({ control, data, url, isActiveStatus }) => {
     if (typeFile === "File") {
       removeAdditionalImageFrom("additionalImage", index);
     } else {
-      setExistingAdditionalImage(
-        existingAdditionalImage.filter((_, i) => i !== index)
+      // Create a filtered version first
+      const updatedImages = existingAdditionalImage.filter(
+        (_, i) => i !== index
       );
-      setValue("existingAdditionalImage", existingAdditionalImage);
+
+      // Update state and form field consistently
+      setExistingAdditionalImage(updatedImages);
+      setValue("existingAdditionalImage", updatedImages);
     }
   };
 
@@ -177,28 +189,29 @@ const GeneralMedia = ({ control, data, url, isActiveStatus }) => {
     }
   };
 
-  const removeAdditionalVideo = async (index: number, typeFile: string) => {
+  const handleRemoveMainVidoe = async (typeFile: string) => {
     if (typeFile === "File") {
-      removeVideo("additionalVideo", index);
-    }
+      console.log("File");
 
-    if ((typeFile = "Url")) {
-      setExistingAdditionalVideo(
-        existingAdditionalVideo.filter((_, i) => i !== index)
-      );
-      setValue("existingAdditionalVideo", existingAdditionalVideo);
+      removeMainVideo("mainVideo");
+    } else {
+      setExistingMainVideo(null);
+      setValue("mainVideo", "null");
     }
   };
 
-  const removeExistingAdditionalVideo = async (
-    index: number,
-    typeFile: string
-  ) => {
-    if ((typeFile = "Url")) {
-      setExistingAdditionalVideo(
-        existingAdditionalVideo.filter((_, i) => i !== index)
+  const removeAdditionalVideo = async (index: number, typeFile: string) => {
+    if (typeFile === "File") {
+      removeVideo(index);
+    }
+
+    if (typeFile === "Url") {
+      const updatedVideos = existingAdditionalVideo.filter(
+        (_, i) => i !== index
       );
-      setValue("existingAdditionalVideo", existingAdditionalVideo);
+
+      setExistingAdditionalVideo(updatedVideos);
+      setValue("existingAdditionalVideo", updatedVideos);
     }
   };
 
@@ -370,7 +383,7 @@ const GeneralMedia = ({ control, data, url, isActiveStatus }) => {
               existingAdditionalImage?.map((field: string, i: number) => (
                 <div key={i} className="relative w-28 h-28">
                   <img
-                    src={`${url}/users/${field}`}
+                    src={`${imageUrl}/users/${field}`}
                     alt={`Additional Image ${i}`}
                     className="w-full h-full object-cover"
                   />
@@ -454,7 +467,7 @@ const GeneralMedia = ({ control, data, url, isActiveStatus }) => {
                         ? "opacity-50 pointer-events-none"
                         : ""
                     }`}
-                    onClick={(e) => setExistingMainVideo()}
+                    onClick={(e) => handleRemoveMainVidoe("Url")}
                   >
                     &times;
                   </span>
@@ -515,7 +528,7 @@ const GeneralMedia = ({ control, data, url, isActiveStatus }) => {
                     ) => (
                       <div key={i} className="relative w-28 h-28">
                         <video
-                          src={`${url}/videos/${field}`}
+                          src={`${imageUrl}/videos/${field}`}
                           controls
                           className="w-full h-full object-cover"
                         />
@@ -525,9 +538,7 @@ const GeneralMedia = ({ control, data, url, isActiveStatus }) => {
                               ? "opacity-50 pointer-events-none"
                               : ""
                           }`}
-                          onClick={() =>
-                            removeExistingAdditionalVideo(i, "Url")
-                          }
+                          onClick={() => removeAdditionalVideo(i, "Url")}
                         >
                           &times;
                         </span>

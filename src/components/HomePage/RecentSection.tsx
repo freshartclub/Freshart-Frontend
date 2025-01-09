@@ -8,6 +8,7 @@ import like from "../../assets/like.png";
 import { useGetRecentArtwork } from "./http/getRecentArtwork";
 import postRecentArtworkMutation from "./http/postRecentView";
 import { useNavigate } from "react-router-dom";
+import { imageUrl } from "../utils/baseUrls";
 
 const recentData = [
   {
@@ -107,7 +108,7 @@ const RecentSection = () => {
               onClick={() => handleRedirectToDescription(item?._id)}
             >
               <img
-                src={`${data.url}/users/${item.media.mainImage}`}
+                src={`${imageUrl}/users/${item.media.mainImage}`}
                 alt="image"
                 className="w-[20rem] h-[50vh] object-cover"
               />
@@ -143,7 +144,7 @@ const RecentSection = () => {
                 className="sm:px-3 px-0 border-none outline-none relative cursor-pointer"
               >
                 <img
-                  src={`${data.url}/users/${item.media.mainImage}`}
+                  src={`${imageUrl}/users/${item.media.mainImage}`}
                   alt="image"
                   className="w-full h-[40vh] sm:h-[45vh] md:h-[50vh] object-cover "
                 />
