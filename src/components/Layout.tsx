@@ -28,13 +28,13 @@ const Layout: React.FC<LayoutProps> = ({
   const isSignUpPage = location.pathname === "/signup";
   const isForgetPassword = location.pathname === "/forget-password";
 
-  let RoleBaseNavBar;
+  // let RoleBaseNavBar;
 
-  if (user === "artist") {
-    RoleBaseNavBar = null;
-  } else {
-    RoleBaseNavBar = NavBar;
-  }
+  // if (user === "artist") {
+  //   RoleBaseNavBar = null;
+  // } else {
+  //   RoleBaseNavBar = NavBar;
+  // }
 
   return (
     <div>

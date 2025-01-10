@@ -81,16 +81,9 @@ const UserDescription = ({ user }) => {
   const isArtist = useAppSelector((state) => state.user.isArtist);
   const navigate = useNavigate();
 
-  console.log(user);
-
   const handleProfile = () => {
-    if (user.role === "artist") {
-      navigate("/artist-panel/edit-artistprofile", { replace: true });
-      localStorage.setItem("profile", "artist");
-    } else {
-      navigate("/edit_profile", { replace: true });
-      localStorage.setItem("profile", "user");
-    }
+    navigate("/edit_profile", { replace: true });
+    localStorage.setItem("profile", "user");
   };
 
   const personal_info = [
@@ -191,7 +184,6 @@ const UserDescription = ({ user }) => {
                   {user?.isActivated ? null : (
                     <button
                       onClick={handleProfile}
-                      variant={{ fontSize: "sm", theme: "dark", weight: "500" }}
                       className="flex gap-2 items-center justify-center bg-black text-white px-2 py-2"
                     >
                       <img src={edit} alt="edit" />
