@@ -33,9 +33,9 @@ const SearchDropdown: FC<SearchDropdownProps> = ({
   };
 
   return (
-    <div className="flex flex-col md:flex-row justify-between items-center sm:p-4 py-2 sm:mx-4">
+    <div className="flex flex-col lg:flex-row justify-between items-center sm:p-4 py-2 sm:mx-4">
       {/* Search Input */}
-      <div className="relative w-full md:w-[30%] mb-4 md:mb-0">
+      <div className="relative w-full lg:w-[30%] mb-4 lg:mb-0">
         <img
           src={search}
           className="absolute left-3 top-1/2 transform -translate-y-1/2"
@@ -50,7 +50,7 @@ const SearchDropdown: FC<SearchDropdownProps> = ({
       </div>
 
       {/* Filters and Button */}
-      <div className="flex flex-col sm:flex-row justify-center gap-4 w-full md:w-auto">
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-4 w-full lg:w-auto">
         {/* Priority Filter */}
         <select
           value={filterPriority}

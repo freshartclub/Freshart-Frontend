@@ -8,11 +8,16 @@ import "react-international-phone/style.css";
 import image_icon from "../../assets/image_icon.png";
 import P from "../ui/P";
 import { imageUrl } from "../utils/baseUrls";
+import useEditUserProfileMutation from "./https/useEditUserProfile";
+import Loader from "../ui/Loader";
 
 const AccountSetting = () => {
   const [profileImage, setProfileImage] = useState(null);
+  const [profile, setProfile] = useState(null);
+
   const triggerImg = useRef(null);
   const { data, isLoading } = useGetArtistDetails();
+  const { mutate, isPending } = useEditUserProfileMutation();
 
   const url = data?.data?.url;
 
@@ -26,21 +31,23 @@ const AccountSetting = () => {
     register,
   } = useForm({
     defaultValues: {
-      firstName: "",
-      lastName: "",
+      artistName: "",
+      artistSurname1: "",
+      artistSurname2: "",
       email: "",
       profileImage: "",
-      phoneNumber: "",
+      phone: "",
     },
   });
 
   useEffect(() => {
     if (data?.data) {
       reset({
-        firstName: data?.data?.artist?.artistName,
-        lastName: data?.data?.artist?.artistSurname2,
+        artistName: data?.data?.artist?.artistName,
+        artistSurname1: data?.data?.artist?.artistSurname1,
+        artistSurname2: data?.data?.artist?.artistSurname2,
         email: data?.data?.artist?.email,
-        phoneNumber: data?.data?.artist?.phone,
+        phone: data?.data?.artist?.phone,
       });
       setProfileImage(
         data?.data?.artist?.profile?.mainImage
@@ -59,14 +66,32 @@ const AccountSetting = () => {
     const file = e.target.files?.[0];
 
     if (file) {
+      setProfile(file);
       const img = URL.createObjectURL(file);
       setProfileImage(img);
     }
   };
 
   const onSubmit = (values) => {
-    console.log("Form data:", values);
+    try {
+      console.log("Form data:", values);
+      const formData = new FormData();
+      formData.append("artistName", values.artistName);
+      formData.append("artistSurname1", values.artistSurname1);
+      formData.append("artistSurname2", values.artistSurname2);
+      formData.append("email", values.email);
+      formData.append("phone", values.phone);
+      formData.append("mainImage", profile);
+
+      mutate(formData);
+    } catch (error) {
+      console.log(error);
+    }
   };
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <div className="shadow-xl my-10">
@@ -85,32 +110,48 @@ const AccountSetting = () => {
                 <div className="md:w-[60%] w-full">
                   <div className="sm:my-3 my-1 w-full">
                     <label
-                      htmlFor="firstName"
+                      htmlFor="artistName"
                       className="block mb-2 text-sm font-semibold text-gray-700 text-left"
                     >
                       First Name
                     </label>
                     <input
                       type="text"
-                      {...register("firstName")}
+                      {...register("artistName")}
                       placeholder="Dianne"
                       className="border border-[#D3D3D3] p-2 w-full rounded-md focus:outline-none"
                     />
                   </div>
 
-                  <div className="sm:my-3 my-1 w-full">
-                    <label
-                      htmlFor="lastName"
-                      className="block mb-2 text-sm font-semibold text-gray-700 text-left"
-                    >
-                      Last Name
-                    </label>
-                    <input
-                      type="text"
-                      {...register("lastName")}
-                      placeholder="Russell"
-                      className="border border-[#D3D3D3] p-2 w-full rounded-md focus:outline-none"
-                    />
+                  <div className="sm:my-3 flex justify-between gap-2 items-center my-1 w-full">
+                    <div className="w-full">
+                      <label
+                        htmlFor="lastName"
+                        className="block mb-2 text-sm font-semibold text-gray-700 text-left"
+                      >
+                        Surname 1
+                      </label>
+                      <input
+                        type="text"
+                        {...register("artistSurname1")}
+                        placeholder="Russell"
+                        className="border border-[#D3D3D3] p-2 w-full  rounded-md focus:outline-none"
+                      />
+                    </div>
+                    <div className="w-full">
+                      <label
+                        htmlFor="lastName"
+                        className="block mb-2 text-sm font-semibold text-gray-700 text-left"
+                      >
+                        Surname 2
+                      </label>
+                      <input
+                        type="text"
+                        {...register("artistSurname2")}
+                        placeholder="Russell"
+                        className="border border-[#D3D3D3] p-2 w-full rounded-md focus:outline-none"
+                      />
+                    </div>
                   </div>
 
                   <div className="sm:my-3 my-1 w-full">
@@ -130,20 +171,20 @@ const AccountSetting = () => {
 
                   <div className="sm:my-3 my-1 w-full">
                     <label
-                      htmlFor="phoneNumber"
+                      htmlFor="phone"
                       className="block mb-2 text-sm font-semibold text-gray-700 text-left"
                     >
                       Phone Number
                     </label>
                     <Controller
                       control={control}
-                      name="phoneNumber"
+                      name="phone"
                       render={({ field }) => (
                         <PhoneInput
                           {...field}
                           className="appearance-none outline-none rounded py-1 w-full text-gray-700 leading-tight focus:outline-none"
                           placeholder="Enter phone number"
-                          onChange={(val) => setValue("phoneNumber", val)}
+                          onChange={(val) => setValue("phone", val)}
                         />
                       )}
                     />
@@ -168,7 +209,7 @@ const AccountSetting = () => {
                           weight: "semiBold",
                         }}
                       >
-                        Save Changes
+                        {isPending ? "Saving..." : "Save Changes"}
                       </P>
                     </Button>
                   </div>

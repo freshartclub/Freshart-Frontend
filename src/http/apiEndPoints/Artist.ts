@@ -41,6 +41,9 @@ export const ARTTIST_ENDPOINTS = {
   addToCart: `${ARTIST_BASE_URl}/add-to-cart`,
   cartItems: `${ARTIST_BASE_URl}/get-cart`,
   removeItems: `${ARTIST_BASE_URl}/remove-from-cart`,
+
+  editProfile: `${ARTIST_BASE_URl}/edit-user-profile`,
+
   // removeItems: `${ARTIST_BASE_URl}/remove-from-cart`,
 
   GetAllArtwork: `${ARTIST_BASE_URl}/get-all-artworks`,

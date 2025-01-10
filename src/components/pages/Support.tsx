@@ -321,35 +321,6 @@ const Support = () => {
                 </Button>
               </div>
             </div>
-
-            {/* <div className="flex flex-col md:flex-row bg-white py-8 pl-8"> */}
-            {/* <div className="bg-green-100 w-[120px] h-[80px] p-2  flex items-center justify-center mr-5">
-                <FaWhatsapp size="3em" color="green" />
-              </div> */}
-            {/* <div>
-                <Header
-                  variant={{ size: "xl", theme: "dark", weight: "semiBold" }}
-                  className="mb-3"
-                >
-                  Chat with us on Whatsapp
-                </Header>
-                <P
-                  variant={{ size: "md", theme: "dark", weight: "normal" }}
-                  className="mb-4 pr-10"
-                >
-                  we are available online from 9:00 AM to 5:00 PM (GMT95:45)
-                  Talk with use now
-                </P>
-               
-                <Button
-                  variant={{ fontSize: "base", fontWeight: "500" }}
-                  className="uppercase flex bg-[#FF536B] text-white mt-8"
-                >
-                  Start Chat
-                  <img src={arrow} alt="arrow" className="mt-1 ml-2" />
-                </Button>
-              </div> */}
-            {/* </div> */}
           </div>
           <div className="flex items-center justify-center py-5">
             <Link

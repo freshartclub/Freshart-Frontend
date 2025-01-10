@@ -79,6 +79,7 @@ const NewTicket = () => {
           formData.append(key, values[key]);
         }
       });
+
       mutate(formData);
     } catch (error) {
       console.log(error);
