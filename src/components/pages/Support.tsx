@@ -47,6 +47,7 @@ const Support = () => {
   const KbTitle = kbData?.data?.map((item, i) => item?.kbTitle) || [];
 
   console.log(kbData);
+  console.log(getSearchValue);
 
   const now = dayjs();
   const startOfDay = now.startOf("day");
@@ -149,7 +150,7 @@ const Support = () => {
               How we can help you!
             </Header>
             <div className="border border-lightgray py-2 px-2 md:w-[70%] w-full flex justify-between my-5 bg-[#ffff] rounded-md">
-              <div className="flex w-full rounded-md">
+              <div className="flex w-full relative rounded-md">
                 <img
                   src={search}
                   alt="search icon"
@@ -160,7 +161,27 @@ const Support = () => {
                   placeholder="Enter your question or keyword"
                   className="w-[90%] outline-none"
                   onChange={(e) => setSearchValue(e.target.value)}
-                ></input>
+                />
+                {getSearchValue && (
+                  <div className="search-list-container top-12 absolute w-full  mt-2 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                    <ul className="list-none p-2">
+                      {kbData?.data
+                        ?.filter((result) =>
+                          result?.kbTitle
+                            ?.toLowerCase()
+                            .includes(getSearchValue.toLowerCase())
+                        )
+                        .map((result, index) => (
+                          <li
+                            key={index}
+                            className="py-1 px-2 hover:bg-gray-200 cursor-pointer"
+                          >
+                            {result?.kbTitle}
+                          </li>
+                        ))}
+                    </ul>
+                  </div>
+                )}
               </div>
               <Button
                 variant={{
