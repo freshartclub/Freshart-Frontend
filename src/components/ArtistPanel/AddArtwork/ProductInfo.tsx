@@ -21,10 +21,18 @@ const ProductInfo = ({ data }: any) => {
       ))
     : null;
 
+  // const externlaTags = Array.isArray(data?.data?.tags?.intTags)
+  //   ? data.data.tags.extTags.map((tag, i) => (
+  //       <span key={tag}>
+  //         {tag} {i < tag.length - 1 && " | "}
+  //       </span>
+  //     ))
+  //   : null;
+
   const externlaTags = Array.isArray(data?.data?.tags?.intTags)
-    ? data.data.tags.extTags.map((tag, i) => (
+    ? data.data.tags.extTags.map((tag, i, arr) => (
         <span key={tag}>
-          {tag} {i < tag.length - 1 && " | "}
+          {tag} {i < arr.length - 1 && " | "}
         </span>
       ))
     : null;
@@ -185,7 +193,7 @@ const ProductInfo = ({ data }: any) => {
     {
       heading: "Artist Fees: ",
       description:
-        `${getSymbolFromCurrency(currency)} ${
+        `${getSymbolFromCurrency(currency.slice(0, 3))} ${
           data?.data?.pricing?.artistFees
         }` || "N/A",
     },
@@ -205,9 +213,7 @@ const ProductInfo = ({ data }: any) => {
     },
     {
       heading: "Vat Amount: ",
-      description: `${getSymbolFromCurrency(currency)} ${
-        data?.data?.pricing?.vatAmount
-      }`,
+      description: ` ${data?.data?.pricing?.vatAmount}%`,
     },
   ];
 
@@ -234,11 +240,11 @@ const ProductInfo = ({ data }: any) => {
   const shipping_data = [
     {
       heading: "Location: ",
-      description: `${data?.data?.inventoryShipping?.location}`,
+      description: `${data?.data?.inventoryShipping?.location || "N/A"}`,
     },
     {
       heading: "Product Code: ",
-      description: `${data?.data?.inventoryShipping?.pCode}`,
+      description: `${data?.data?.inventoryShipping?.pCode || "N/A"}`,
     },
 
     {

@@ -41,7 +41,7 @@ const Dicipline = ({ control, isActiveStatus, prefillValues, watch }) => {
   return (
     <div className="p-4 mx-auto border border-custom-gray bg-white rounded-md shadow-custom mb-4 mt-4">
       <h2 className="pb-3 font-medium text-lg leading-7 tracking-wider text-[#1A1C21]">
-        Dicipline
+        Discipline
       </h2>
       {fields.map((account, index) => {
         const selectedDiscipline = disciplineValues?.[index]?.discipline;

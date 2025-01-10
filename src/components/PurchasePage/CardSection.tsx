@@ -24,6 +24,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import Loader from "../ui/Loader";
 import postRecentArtworkMutation from "../HomePage/http/postRecentView";
 import { imageUrl } from "../utils/baseUrls";
+import getSymbolFromCurrency from "currency-symbol-map";
 
 const highlightData = [
   {
@@ -247,7 +248,8 @@ const CardSection = ({ query, data, isLoading }: any) => {
                     variant={{ size: "small", theme: "dark", weight: "medium" }}
                     className="mt-1 text-sm text-gray-600"
                   >
-                    {item?.pricing?.currency} {item?.pricing?.basePrice}
+                    {getSymbolFromCurrency(item?.pricing?.currency.slice(0, 3))}{" "}
+                    {item?.pricing?.basePrice}
                   </P>
                 </div>
               </div>

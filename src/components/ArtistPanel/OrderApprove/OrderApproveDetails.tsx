@@ -17,13 +17,17 @@ import usePostCancelItem from "./https/usePostCancelItem";
 import { useGetOrderDetails } from "./https/useGetOrderDetails";
 import { MdCancel } from "react-icons/md";
 import { BiSolidImageAdd } from "react-icons/bi";
+import { MdDelete } from "react-icons/md";
 import { imageUrl } from "../../utils/baseUrls";
+import ProductPopup from "./ProductPopup";
 
 const OrderApproveDetails = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [orderModal, setOrderModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [selectedProductPop, setSelectedProductPop] = useState(null);
 
   const [id, setId] = useState("");
   const [orderType, setOrderType] = useState("");
@@ -35,8 +39,6 @@ const OrderApproveDetails = () => {
   const apiOrderType = searchParams.get("orderType");
 
   const { data, isRefetching } = useGetOrderDetails(apiId, apiOrderType);
-
-  console.log(data);
 
   const discountAmounts = data?.data?.items?.map((item) => {
     const basePrice = parseFloat(
@@ -71,6 +73,7 @@ const OrderApproveDetails = () => {
     formState: { errors },
     setValue,
     reset,
+    getValues,
   } = useForm();
 
   const { mutateAsync, isPending } = usePostEvidenceMutation();
@@ -84,8 +87,6 @@ const OrderApproveDetails = () => {
   };
 
   const openModal = (product: React.SetStateAction<null>) => {
-    console.log(product);
-
     setArtworkId(product?.artWork?._id);
 
     setSelectedProduct(product);
@@ -104,11 +105,14 @@ const OrderApproveDetails = () => {
     }
   };
 
-  const handleFileSelect = (event: { target: { files: any[] } }) => {
-    const file = event.target.files[0];
-    if (file) {
-      setValue("evidenceImg", file);
-      setSelectedImage(URL.createObjectURL(file));
+  const handleFileSelect = (event) => {
+    const files = event.target.files;
+
+    if (files && files.length > 0) {
+      const fileArray = Array.from(files);
+      setValue("evidenceImg", fileArray);
+      const previewURLs = fileArray.map((file) => URL.createObjectURL(file));
+      setSelectedImage(previewURLs);
     }
   };
 
@@ -125,7 +129,6 @@ const OrderApproveDetails = () => {
   };
 
   const onSubmit = (value, reset) => {
-    console.log(value);
     const data = {
       id,
       artworkId,
@@ -141,7 +144,6 @@ const OrderApproveDetails = () => {
     });
   };
 
-  console.log(data?.data?.items);
   const reviewArtWork = (id) => {
     // Call your review artwork API here
     navigate(
@@ -153,14 +155,16 @@ const OrderApproveDetails = () => {
     return <Loader />;
   }
   return (
-    <div>
-      <div className="flex flex-col lg:flex-row justify-between w-full gap-5">
-        <div className="left flex flex-col w-full lg:w-4/5">
+    <>
+      <div className="flex flex-col  justify-between w-full gap-5">
+        <div className="left flex flex-col w-full ">
           <div className="bg-white p-4 md:p-6 shadow-md border rounded-lg mt-4">
-            <h2 className="text-base md:text-lg font-bold mb-4">Details</h2>
+            <h2 className="text-base md:text-lg font-bold mb-4">
+              Order Details
+            </h2>
 
-            <div className="overflow-x-auto">
-              <table className="min-w-[800px] divide-y divide-gray-200">
+            <div className="overflow-x-auto w-full">
+              <table className="min-w-[800px] w-full  divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
                     <th
@@ -173,7 +177,19 @@ const OrderApproveDetails = () => {
                       scope="col"
                       className="px-3 md:px-6 py-2 md:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
+                      Type
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-3 md:px-6 py-2 md:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
                       Price
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-3 md:px-6 py-2 md:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Quantity
                     </th>
                     <th
                       scope="col"
@@ -204,12 +220,12 @@ const OrderApproveDetails = () => {
                           onClick={() => reviewArtWork(product?.artWork?._id)}
                           className="px-3 md:px-6 py-2 md:py-4 cursor-pointer"
                         >
-                          <div className="flex flex-col md:flex-row items-start md:items-center space-y-2 md:space-y-0 md:space-x-4">
+                          <div className="flex min-w-[20vw] flex-col md:flex-row items-start md:items-center space-y-2 md:space-y-0 space-x-6 md:space-x-4">
                             <div className="bg-gray-300 rounded-lg flex items-center justify-center">
                               <img
                                 src={`${imageUrl}/users/${product?.artWork?.media}`}
                                 alt="product"
-                                className="rounded-md w-16 md:w-20 h-16 md:h-20 object-cover"
+                                className="rounded-md min-w-16 md:w-20 h-16 md:h-20 object-cover"
                               />
                             </div>
                             <div>
@@ -224,11 +240,22 @@ const OrderApproveDetails = () => {
                           </div>
                         </td>
                         <td className="px-3 md:px-6 py-2 md:py-4">
+                          <p className="text-sm md:text-base text-gray-600 capitalize font-semibold">
+                            {product?.type}
+                          </p>
+                        </td>
+                        <td className="px-3 md:px-6 py-2 md:py-4">
                           <p className="text-sm md:text-base text-gray-600 font-semibold">
                             {formateCurrency(
                               product?.artWork?.pricing?.basePrice,
                               "$"
                             )}
+                          </p>
+                        </td>
+                        {/* CHnage */}
+                        <td className="px-3 md:px-6 py-2 md:py-4">
+                          <p className="text-sm md:text-base text-gray-600 font-semibold">
+                            x {product?.quantity}
                           </p>
                         </td>
                         <td className="px-3 md:px-6 py-2 md:py-4">
@@ -238,34 +265,42 @@ const OrderApproveDetails = () => {
                           </p>
                         </td>
 
-                        <td className="px-3 md:px-6 py-2 md:py-4">
+                        <td className="px-3  md:px-6 py-2 md:py-4">
                           {product?.evidenceImg &&
                           product?.evidenceImg?.length > 0 ? (
-                            <div className="flex flex-wrap gap-2 mb-2">
-                              {product?.evidenceImg?.map((img, i) => {
-                                return (
-                                  <img
-                                    key={i}
-                                    src={`${imageUrl}/users/${img}`}
-                                    alt={`Evidence ${i + 1}`}
-                                    className="w-12 h-12 rounded-md object-cover"
-                                  />
-                                );
-                              })}
-                              {product?.evidenceImg?.map(
-                                (img, i) =>
-                                  img?.length > 3 && (
-                                    <BiSolidImageAdd
-                                      onClick={() => {
-                                        setOrderType(data?.data?.orderType);
-                                        setId(data?.data?._id);
-                                        openModal(product);
-                                      }}
-                                      size="2.5em"
-                                      className="cursor-pointer"
-                                    />
-                                  )
-                              )}
+                            <div className="flex  gap-2 mb-2 ">
+                              {product?.evidenceImg &&
+                                product?.evidenceImg.length > 0 && (
+                                  <div className="flex flex-wrap gap-2 mb-2">
+                                    {product.evidenceImg
+                                      .slice(0, 1)
+                                      .map((img, i) => (
+                                        <img
+                                          key={i}
+                                          src={`${imageUrl}/users/${img}`}
+                                          alt={`Evidence ${i + 1}`}
+                                          className="w-12 h-12 rounded-md object-cover"
+                                        />
+                                      ))}
+                                  </div>
+                                )}
+
+                              <ProductPopup
+                                product={selectedProductPop}
+                                imageUrl={imageUrl}
+                                setIsPopupOpen={setIsPopupOpen}
+                                isPopupOpen={isPopupOpen}
+                              />
+
+                              <BiSolidImageAdd
+                                onClick={() => {
+                                  setOrderType(data?.data?.orderType);
+                                  setId(data?.data?._id);
+                                  openModal(product);
+                                }}
+                                size="2.5em"
+                                className="cursor-pointer"
+                              />
                             </div>
                           ) : (
                             <span
@@ -279,9 +314,23 @@ const OrderApproveDetails = () => {
                               <BiSolidImageAdd size="2.5em" />
                             </span>
                           )}
+
+                          {product?.evidenceImg &&
+                          product?.evidenceImg.length > 0 ? (
+                            <button
+                              className="px-3 py-1 border text-xs font-semibold rounded-md border-zinc-400"
+                              onClick={() => {
+                                setIsPopupOpen(!isPopupOpen);
+                                setSelectedProductPop(product);
+                              }}
+                            >
+                              View All
+                            </button>
+                          ) : null}
                         </td>
+
                         <td className="px-3 md:px-6 py-2 md:py-4">
-                          <div className="flex justify-end space-x-4 pr-2 md:pr-5">
+                          <div className="flex justify-end   pr-2 md:pr-5">
                             {!product?.isCancelled ? (
                               <span
                                 className="cursor-pointer w-full sm:w-[5rem]  font-medium text-xs sm:text-sm p-1.5 sm:p-2 rounded-md inline-block text-center"
@@ -291,7 +340,7 @@ const OrderApproveDetails = () => {
                                   setOrderModal(true);
                                 }}
                               >
-                                <MdCancel size="2em" />
+                                <MdDelete size="2em" />
                               </span>
                             ) : (
                               <span className="cursor-pointer w-full sm:w-[5.5rem] bg-red-300 text-black pointer-events-none font-medium text-xs sm:text-sm p-1.5 sm:p-2 rounded-md inline-block text-center">
@@ -402,37 +451,10 @@ const OrderApproveDetails = () => {
           </button>
         </div>
       </div>
-      {/* <div className=" bg-[#fff] border shadow-lg mt-6 rounded-lg p-6 w-full"> */}
-      {/* <h1 className="font-bold text-lg mb-4">Evidence Collection</h1> */}
-
-      {/* this is old evidence */}
-      {/* <div className="flex flex-col sm:flex-row items-left space-x-2 ">
-          {evidence.map((src, index) => (
-            <div key={index} className="">
-              <img
-                className="w-40 h-40 sm:w-24 sm:h-20 rounded-lg shadow-md  object-cover mb-4 sm:mb-0 "
-                src={src}
-              />
-            </div>
-          ))}
-        </div> */}
-
-      {/* <button
-          onClick={() => {
-            setIsModalOpen(true);
-          }}
-          className=" text-sm font-bold  text-[#FF536B] "
-        >
-          {" "}
-          + Add More
-        </button> */}
-      {/* </div> */}
-
-      {/*modal section */}
 
       {orderModal && (
         <div>
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[999999]">
             <div className="bg-white p-6 rounded-lg shadow-lg w-2/3 ">
               <h2 className="text-lg font-bold mb-4 pb-4 border-b-2">
                 Reason For Cancel
@@ -503,7 +525,7 @@ const OrderApproveDetails = () => {
 
       {isModalOpen && (
         <div>
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[999999]">
             <div className="bg-white p-6 rounded-lg shadow-lg w-2/3 ">
               <form onSubmit={handleSubmit((data) => onSubmit(data, reset))}>
                 <h2 className="text-lg font-bold mb-3 border-b-2 pb-4">
@@ -520,14 +542,14 @@ const OrderApproveDetails = () => {
                       id="fileInput"
                       type="file"
                       accept="image/*"
-                      multiple
+                      multiple // Ensures multiple file selection
                       style={{ display: "none" }}
-                      {...register("evidenceImg")}
-                      onChange={(e) => handleFileSelect(e)}
+                      {...register("evidenceImg", {
+                        onChange: (e) => handleFileSelect(e), // Ensure react-hook-form integrates with the handler
+                      })}
                     />
                     <img src={select_file} alt="Select file" />
                     <h1 className="font-bold text-base mb-4">
-                      {" "}
                       Drop or select file
                     </h1>
                     <p
@@ -542,14 +564,23 @@ const OrderApproveDetails = () => {
                 </div>
 
                 <div className="flex flex-col sm:flex-row mt-6">
-                  {selectedImage && (
-                    <div>
-                      <img
-                        src={selectedImage}
-                        alt="Selected"
-                        className="w-16 h-14 rounded-md"
-                      />
+                  {selectedImage && selectedImage.length > 0 ? (
+                    <div className="flex flex-wrap gap-4">
+                      {selectedImage.map((image, index) => (
+                        <div
+                          key={index}
+                          className="p-2 border border-gray-300 rounded-md"
+                        >
+                          <img
+                            src={image}
+                            alt={`Selected Preview ${index + 1}`}
+                            className="w-16 h-14 rounded-md object-cover"
+                          />
+                        </div>
+                      ))}
                     </div>
+                  ) : (
+                    <p className="text-gray-500 text-sm">No images selected</p>
                   )}
                 </div>
 
@@ -573,7 +604,7 @@ const OrderApproveDetails = () => {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 };
 

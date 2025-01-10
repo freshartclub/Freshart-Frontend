@@ -5,7 +5,7 @@ import "../../App.css";
 import like from "../../assets/like.png";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { BiLike } from "react-icons/bi";
+
 import getSymbolFromCurrency from "currency-symbol-map";
 
 interface HighlightItem {
@@ -148,7 +148,7 @@ const CommonCardData = ({ heading, highlightData }: HandleLikeClickParams) => {
 
           <p className="text-[14px] font-bold text-[#333333]">
             {getSymbolFromCurrency(
-              highlightData?.artworks[0]?.pricing?.currency
+              highlightData?.artworks[0]?.pricing?.currency?.slice(0, 3)
             ) +
               " " +
               highlightData?.artworks[0]?.pricing?.basePrice}
