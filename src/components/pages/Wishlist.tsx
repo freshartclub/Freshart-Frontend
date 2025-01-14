@@ -7,6 +7,9 @@ import wishlist_like from "../../assets/whishlist_like.png";
 import Header from "../ui/Header";
 import arrow_bread from "../../assets/arrow_bread.png";
 import { useGetWishList } from "../DiscoverMore/http/useGetWishList";
+import { useGetLikedItems } from "./http/useGetLikedItems";
+import { imageUrl } from "../utils/baseUrls";
+import getSymbolFromCurrency from "currency-symbol-map";
 
 const trendingData = [
   {
@@ -60,7 +63,11 @@ const trendingData = [
 ];
 
 const Wishlist = () => {
-  const { data, isLoading } = useGetWishList();
+  // const { data, isLoading } = useGetWishList();
+
+  const { data, isLoading } = useGetLikedItems();
+
+  console.log("from wishlist", data);
 
   return (
     <div className="container mx-auto md:px-6 px-3 my-10">
@@ -105,48 +112,56 @@ const Wishlist = () => {
       </Header>
 
       <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 justify-between gap-4 mt-4">
-        {trendingData.map((item, index) => (
-          <div
-            key={index}
-            className="sm:px-3 px-0 border-none outline-none relative"
-          >
-            <img src={item.image} alt="image" className="w-full" />
-            <button className="absolute top-2 right-[28px]  cursor-pointer">
-              <img src={wishlist_like} alt="like" className="" />
-            </button>
-            <div className="mt-3">
-              <P
-                variant={{ size: "base", weight: "normal" }}
-                className="text-[#696868]"
-              >
-                {item.title}
-              </P>
-              <div className="flex justify-between items-center">
-                <Header
-                  variant={{ size: "xl", theme: "dark", weight: "semiBold" }}
-                  className="text-[#333333] xl:w-[80%] lg:w-[70%] w-[80%] line-clamp-2"
-                >
-                  {item.heading}
-                </Header>
-
+        {data?.data?.likedArtworks &&
+          data?.data?.likedArtworks?.map((item, index) => (
+            <div
+              key={index}
+              className="sm:px-3 px-0 border-none outline-none relative"
+            >
+              <img
+                src={`${imageUrl}/users/${item?.media?.mainImage}`}
+                alt="image"
+                className="w-full  object-cover"
+              />
+              <button className="absolute top-2 right-[28px]  cursor-pointer">
+                <img src={wishlist_like} alt="like" className="" />
+              </button>
+              <div className="mt-3">
                 <P
                   variant={{ size: "base", weight: "normal" }}
                   className="text-[#696868]"
                 >
-                  {item.size}
+                  {item.title}
+                </P>
+                <div className="flex justify-between items-center">
+                  <Header
+                    variant={{ size: "xl", theme: "dark", weight: "semiBold" }}
+                    className="text-[#333333] xl:w-[80%] lg:w-[70%] w-[80%] line-clamp-2"
+                  >
+                    {item?.artworkName}
+                  </Header>
+
+                  <P
+                    variant={{ size: "base", weight: "normal" }}
+                    className="text-[#696868]"
+                  >
+                    {item.size}
+                  </P>
+                </div>
+                <P
+                  variant={{ size: "base", weight: "normal" }}
+                  className="text-[#696868]"
+                >
+                  {item.para}
+                </P>
+
+                <P variant={{ size: "base", weight: "medium" }}>
+                  {getSymbolFromCurrency(item?.pricing?.currency.slice(0, 3))}{" "}
+                  {item?.pricing?.basePrice}
                 </P>
               </div>
-              <P
-                variant={{ size: "base", weight: "normal" }}
-                className="text-[#696868]"
-              >
-                {item.para}
-              </P>
-
-              <P variant={{ size: "base", weight: "medium" }}>{item.price}</P>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
     </div>
   );

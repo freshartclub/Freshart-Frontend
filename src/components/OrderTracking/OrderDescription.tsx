@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Header from "../ui/Header";
 import P from "../ui/P";
 import { imageUrl } from "../utils/baseUrls";
@@ -6,8 +7,17 @@ import plus from "./assets/Plus.png";
 import BillingSection from "./BillingSection";
 import OrderHistory from "./OrderHistory";
 import Progressbar from "./Progressbar";
+import ReviewPopup from "./ReviewPopup";
 
 const OrderDescription = ({ data }) => {
+  const [isReviewOpen, setIsReviewOpen] = useState(false);
+
+  const openReviewPopup = () => setIsReviewOpen(true);
+  const closeReviewPopup = () => setIsReviewOpen(false);
+
+  console.log("this is from orderDes", data?.foundArt?.items?.rating);
+  const rating = data?.foundArt?.items?.rating;
+
   return (
     <div className="bg-white border border-[#E4E7E9]">
       <div className="flex justify-between p-4 border-b">
@@ -17,16 +27,51 @@ const OrderDescription = ({ data }) => {
         >
           Order Detail
         </P>
-        <div className="flex gap-2 items-center">
-          <P
-            variant={{ size: "small", theme: "dark", weight: "medium" }}
-            className="text-[#FF536B]"
-          >
-            Leave a Rating
-          </P>
-          <img src={plus} alt="plus sign" />
+
+        <div className="flex justify-end">
+          {" "}
+          {data?.foundArt?.items?.rating ? (
+            Array.from({ length: 5 }, (_, index) => (
+              <svg
+                key={index}
+                xmlns="http://www.w3.org/2000/svg"
+                className={`w-6 h-6 cursor-pointer flex ${
+                  index < rating ? "text-yellow-500" : "text-gray-300"
+                }`}
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M12 17.077l-4.917 3.275 1.266-5.99L3 9.495l5.081-.434L12 3l2.919 5.061L20 9.495l-5.349 4.867 1.266 5.99L12 17.077z"
+                />
+              </svg>
+            ))
+          ) : (
+            <div className="flex gap-2 items-center">
+              <P
+                variant={{ size: "small", theme: "dark", weight: "medium" }}
+                className="text-[#FF536B] "
+              >
+                Leave a Rating
+              </P>
+              <img
+                src={plus}
+                alt="plus sign "
+                className="cursor-pointer"
+                onClick={openReviewPopup}
+              />
+            </div>
+          )}{" "}
         </div>
       </div>
+
+      <ReviewPopup
+        isOpen={isReviewOpen}
+        onClose={closeReviewPopup}
+        data={data?.foundArt}
+      />
       {/* ----------------- */}
       <div className="md:p-5 p-2">
         <div className=" flex justify-between">

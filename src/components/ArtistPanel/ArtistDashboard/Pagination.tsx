@@ -71,7 +71,7 @@ const Pagination = () => {
                   <tr key={index} className="border-b hover:bg-gray-100">
                     {/* Product Column */}
                     <td
-                      className="px-4 py-3 flex items-center gap-2 cursor-pointer whitespace-nowrap"
+                      className="px-8 py-3 flex items-center gap-2 cursor-pointer whitespace-nowrap"
                       onClick={() => handelClickData(value)}
                     >
                       <img

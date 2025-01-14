@@ -12,11 +12,16 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { useAppSelector } from "../../store/typedReduxHooks";
 import { imageUrl } from "../utils/baseUrls";
+import {
+  IoIosArrowDropleftCircle,
+  IoIosArrowDroprightCircle,
+} from "react-icons/io";
 
 const Artwork = () => {
   const [loading, setLoading] = useState(true);
   const [selectedArtwork, setSelectedArtwork] = useState("series");
   const isArtProvider = useAppSelector((state) => state.user.isArtProvider);
+  const [swiperInstance, setSwiperInstance] = useState(null);
 
   const { data, isLoading, refetch, isRefetching } =
     useGetArtWorkList(selectedArtwork);
@@ -57,6 +62,18 @@ const Artwork = () => {
     setSelectedArtworkId(artworkId);
     setIsPopupOpen(true);
     setStatus(status);
+  };
+
+  const handleArrowClick = () => {
+    if (swiperInstance) {
+      swiperInstance.slideNext();
+    }
+  };
+
+  const handleArrowRightClick = () => {
+    if (swiperInstance) {
+      swiperInstance.slidePrev();
+    }
   };
 
   if (isLoading) {
@@ -142,10 +159,26 @@ const Artwork = () => {
         <div>
           {data?.data && data?.data.length > 0 ? (
             data?.data.map((item, i) => (
-              <div key={i} className="mb-5">
-                <h1 className="font-bold mb-5 mt-5 text-[20px] capitalize text-[#333333] xl:w-[80%] lg:w-[70%] w-[80%] line-clamp-2">
+              <div key={i} className="mb-5 relative">
+                <h1 className="font-bold mb-5 mt-5 text-[20px]  capitalize text-[#333333] xl:w-[80%] lg:w-[70%] w-[80%] line-clamp-2">
                   {item?.groupName || "No Name"}
                 </h1>
+
+                <IoIosArrowDropleftCircle
+                  onClick={handleArrowClick}
+                  size="3.5em"
+                  color="white"
+                  // className="absolute top-1/2 left-4 transform -translate-x-1/2 -translate-y-1/2 z-[999]  filter blur-sm"
+                  className="absolute   top-1/2 left-4  transform -translate-x-1/2 -translate-y-1/2 z-[999] cursor-pointer"
+                />
+
+                <IoIosArrowDroprightCircle
+                  onClick={handleArrowRightClick}
+                  size="3.5em"
+                  color="white"
+                  // className="absolute top-1/2 left-4 transform -translate-x-1/2 -translate-y-1/2 z-[999]  filter blur-sm"
+                  className="absolute   top-1/2 left-[98%]  transform -translate-x-1/2 -translate-y-1/2 z-[999] cursor-pointer"
+                />
 
                 <Swiper
                   spaceBetween={20}
@@ -153,6 +186,7 @@ const Artwork = () => {
                   autoplay={false}
                   loop
                   pagination={{ clickable: true }}
+                  onSwiper={(swiper) => setSwiperInstance(swiper)}
                 >
                   {item?.artworks?.map((art, idx) => (
                     <div

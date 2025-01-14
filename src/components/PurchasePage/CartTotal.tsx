@@ -33,8 +33,6 @@ const CartTotal = ({ data }) => {
     }, 0)
     .toFixed(2);
 
-  console.log(data);
-
   const card_total = [
     {
       title: "Sub-total",

@@ -7,11 +7,16 @@ import "slick-carousel/slick/slick-theme.css";
 import "../../App.css";
 import like from "../../assets/like.png";
 import { useNavigate } from "react-router-dom";
+import wishlist_like from "../../assets/whishlist_like.png";
 
 import postRecentArtworkMutation from "./http/postRecentView";
 import { imageUrl } from "../utils/baseUrls";
+import { useEffect, useState } from "react";
+import likeUnlikeArtworkMutation from "./http/useLikeUnLike";
+import { useGetArtistDetails } from "../UserProfile/http/useGetDetails";
 
 const HighlightSection = ({ data }) => {
+  const [likedItems, setLikedItems] = useState([]);
   const settings = {
     dots: true,
     infinite: true,
@@ -53,11 +58,47 @@ const HighlightSection = ({ data }) => {
 
   const { mutate, isPending } = postRecentArtworkMutation();
 
+  const { data: ArtistData, isLoading } = useGetArtistDetails();
+
+  console.log(ArtistData?.data?.artist?.likedArtworks);
+
+  const likedArtworks = ArtistData?.data?.artist?.likedArtworks;
+
+  const { mutateAsync: LikeUnlikeMutate, isPending: likePending } =
+    likeUnlikeArtworkMutation();
+
   const navigate = useNavigate();
   const handleRedirectToDescription = (id) => {
     mutate(id);
     navigate(`/discover_more?id=${id}`);
     window.scroll(0, 0);
+  };
+
+  useEffect(() => {
+    if (ArtistData) {
+      setLikedItems(ArtistData?.data?.artist?.likedArtworks);
+    }
+  }, []);
+
+  const handleLike = (id) => {
+    const action = likedItems.includes(id) ? "unlike" : "like";
+
+    const data = {
+      id,
+      action,
+    };
+    try {
+      LikeUnlikeMutate(data).then(() => {
+        setLikedItems((prev) =>
+          prev.includes(id)
+            ? prev.filter((itemId) => itemId !== id)
+            : [...prev, id]
+        );
+      });
+    } catch (error) {
+      console.error(`Error in LikeUnlikeMutate for id: ${id}`, error);
+      return;
+    }
   };
 
   return (
@@ -79,8 +120,13 @@ const HighlightSection = ({ data }) => {
                   alt="image"
                   className="w-full h-[40vh] sm:h-[45vh] md:h-[50vh] object-cover rounded-lg"
                 />
-                <button className="absolute top-2 right-2 border border-[#FFD9DE] rounded-full p-2 bg-white cursor-pointer">
-                  <img src={like} alt="like" className="w-5 h-5" />
+                <button className="absolute top-2 right-2 border z-[999] border-[#FFD9DE] rounded-full p-2 bg-white cursor-pointer">
+                  <img
+                    onClick={() => handleLike(item?._id)}
+                    src={likedItems.includes(item?._id) ? wishlist_like : like}
+                    alt="like"
+                    className="w-5 h-5"
+                  />
                 </button>
                 <div className="mt-3">
                   <p className="text-sm text-gray-500">
@@ -105,18 +151,22 @@ const HighlightSection = ({ data }) => {
         ) : (
           <Slider {...settings}>
             {data?.highlighted?.map((item, index) => (
-              <div
-                key={index}
-                className="relative cursor-pointer px-3"
-                onClick={() => handleRedirectToDescription(item?._id)}
-              >
+              <div key={index} className="relative cursor-pointer px-3">
                 <img
+                  onClick={() => handleRedirectToDescription(item?._id)}
                   src={`${imageUrl}/users/${item.media.mainImage}`}
                   alt="image"
                   className="w-full h-[40vh] sm:h-[45vh] md:h-[50vh] object-cover "
                 />
-                <button className="absolute top-2 right-7 border border-[#FFD9DE] rounded-full p-2 bg-white cursor-pointer">
-                  <img src={like} alt="like" className="w-5 h-5" />
+                <button className="absolute top-2 z-[99] right-7 border border-[#FFD9DE] rounded-full p-2 bg-white cursor-pointer">
+                  <img
+                    onClick={() => handleLike(item?._id)}
+                    src={likedItems.includes(item?._id) ? wishlist_like : like}
+                    alt="like"
+                    className={`w-5 h-5 ${
+                      likedItems.includes(item?._id) ? "w-8 h-8" : ""
+                    }`}
+                  />
                 </button>
                 <div className="mt-3">
                   <p className="text-sm text-gray-500">

@@ -586,8 +586,11 @@ const OrderApproveDetails = () => {
 
                 <div className="flex justify-end gap-4 px-2 py-2 rounded">
                   <span
-                    onClick={() => setIsModalOpen(false)}
-                    className="bg-white-500 text-black text-md px-2 py-2 rounded-lg border-2 font-bold"
+                    onClick={() => {
+                      setIsModalOpen(false);
+                      setSelectedImage(null);
+                    }}
+                    className="bg-white-500 cursor-pointer text-black text-md px-2 py-2 rounded-lg border-2 font-bold"
                   >
                     Cancel
                   </span>

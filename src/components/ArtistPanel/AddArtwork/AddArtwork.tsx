@@ -280,6 +280,7 @@ const AddArtwork = () => {
 
   useEffect(() => {
     refetch();
+    refetchData();
   }, [id]);
 
   useEffect(() => {

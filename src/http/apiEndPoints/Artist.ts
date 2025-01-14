@@ -24,6 +24,10 @@ export const ARTTIST_ENDPOINTS = {
   PatchRevalidation: `${ARTIST_BASE_URl}/revalidate-profile`,
   GetArtWorkBySeries: `${ARTIST_BASE_URl}/get-artist-artworks-by-series`,
 
+  ReviewArtwork: `${ARTIST_BASE_URl}/give-review`,
+  LikeUnlikeArtwork: `${ARTIST_BASE_URl}/like-unlike-artwork`,
+  GetLikedArtWork: `${ARTIST_BASE_URl}/get-liked-items`,
+
   // AddSeries: `${ARTIST_BASE_URl}/add-series`,
   // DeleteSeries: `${ARTIST_BASE_URl}/delete-series`,
   // UpdateSeries: `${ARTIST_BASE_URl}/update-series`,

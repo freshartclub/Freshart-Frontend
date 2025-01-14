@@ -33,14 +33,18 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
 }) => {
   const [errorMessage, setErrorMessage] = useState("");
 
+  console.log(validatePhone);
+
   return (
     <div className="flex flex-col items-center">
       <span
         onClick={handleSendOtp}
         className={`${
           isOtpVerify || validateEmail === "Email Verified"
-            ? "border-zinc-600 text-black py-2 px-4 rounded border cursor-pointer w-[8rem]"
-            : "border-zinc-600 text-black py-2 px-4 rounded border cursor-pointer pointer-events-none opacity-40 w-[8rem]"
+            ? `border-zinc-600 text-black text-center py-2 px-4 rounded border cursor-pointer w-[8rem] ${
+                validatePhone === "Verified" ? "pointer-events-none" : ""
+              }`
+            : "border-zinc-600 text-black py-2 px-4 rounded border cursor-pointer pointer-events-none  text-center opacity-40 w-[8rem]"
         }`}
       >
         {requestOtpPending ? "Sending..." : validatePhone}

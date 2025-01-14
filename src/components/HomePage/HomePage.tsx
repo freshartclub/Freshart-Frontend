@@ -24,6 +24,8 @@ const HomePage = () => {
 
   const { data, isLoading } = useGetHomeData();
 
+  console.log("this from", data);
+
   if (isLoading) {
     return <Loader />;
   }

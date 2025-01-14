@@ -135,7 +135,7 @@ const App: React.FC = () => {
 
             <Route path="/" element={<GetStarted />} />
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignUp />} />
+            {/* <Route path="/signup" element={<SignUp />} /> */}
             <Route path="/forget-password" element={<ForgetPassword />} />
             <Route path="/reset-password" element={<ChangePassword />} />
             <Route path="/otp" element={<OtpPage />} />
@@ -149,6 +149,17 @@ const App: React.FC = () => {
             {/* <Route path="/artist-panel/*" element={<NotFoundPage />} /> */}
 
             <Route
+              path="/artist-panel/*"
+              element={
+                <AuthGuard>
+                  <ArtistGuard>
+                    <ArtistPanel />
+                  </ArtistGuard>
+                </AuthGuard>
+              }
+            />
+
+            {/* <Route
               path="/invoice-pdf*"
               element={
                 <AuthGuard>
@@ -169,16 +180,7 @@ const App: React.FC = () => {
               }
             />
 
-            <Route
-              path="/artist-panel/*"
-              element={
-                <AuthGuard>
-                  <ArtistGuard>
-                    <ArtistPanel />
-                  </ArtistGuard>
-                </AuthGuard>
-              }
-            />
+    
 
             <Route
               path="/tickets"
@@ -206,13 +208,6 @@ const App: React.FC = () => {
               }
             />
 
-            {/* <Route path="/artdashboard" element={<Dashboard />} />
-            <Route path="/artwork" element={<Artwork />} />
-            <Route path="/order" element={<Orders />} />
-            <Route path="/addartwork" element={<AddArtwork />} />
-            <Route path="/edit-artistprofile" element={<ArtistProfile />} /> */}
-
-            {/* Protected Routes */}
             <Route
               path="/home/"
               element={
@@ -511,10 +506,7 @@ const App: React.FC = () => {
                   <PaymentPage />
                 </AuthGuard>
               }
-            />
-            {/* Artist Dashboard Routes */}
-
-            {/* <Route path="/table_page" element={<TablePage />} /> */}
+            /> */}
           </Routes>
         </Suspense>
         <FooterSection />

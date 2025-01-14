@@ -692,7 +692,9 @@ const PaymentPage = () => {
                 type="submit"
                 className="  md:w-full bg-black text-white p-2 md:py-3 rounded-full text-sm flex  items-center  justify-center space-x-2 hover:bg-gray-800 transition mt-4"
               >
-                <span className="font-semibold">PLACE ORDER</span>
+                <span className="font-semibold">
+                  {checkOutPending ? "LOADING..." : "PLACE ORDER"}
+                </span>
               </button>
             </div>
           </div>

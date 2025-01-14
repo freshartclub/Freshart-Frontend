@@ -78,6 +78,8 @@ const BecomeArtist = () => {
 
   const [phoneNumber, setPhoneNumber] = useState("");
 
+  const [timeoutReached, setTimeoutReached] = useState(false);
+
   const options = useMemo(() => countryList(), []);
 
   const [email, setEmail] = useState("");
@@ -147,11 +149,6 @@ const BecomeArtist = () => {
   }, []);
 
   useEffect(() => {
-    // watch("phone");
-    // watch("email");
-    // if (!errors.email) {
-    //   setEmail(getValues("email"));
-    // }
     const getGeoLocation = async () => {
       const request = await fetch("https://ipapi.co/json");
       const jsonResponse = await request.json();
@@ -189,6 +186,7 @@ const BecomeArtist = () => {
     if (country && zipCode && zipCode.length > 4) {
       getCityStateFromZipCountry(country, zipCode, apiKey).then(
         ({ state, city }) => {
+          console.log(state, city);
           setValue("city", city);
           setValue("region", state);
         }

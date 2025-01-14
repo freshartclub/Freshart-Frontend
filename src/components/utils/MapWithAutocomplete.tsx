@@ -47,13 +47,18 @@ export const getCityStateFromZipCountry = async (
       component.types.includes("locality")
     )?.long_name;
 
-    const state = addressComponents.find((component) =>
+    const state1 = addressComponents.find((component) =>
       component.types.includes("administrative_area_level_1")
     )?.long_name;
 
-    // console.log("City:", city);
-    // console.log("State:", state);
-    return { city, state };
+    const state2 = addressComponents.find((component) =>
+      component.types.includes("administrative_area_level_2")
+    )?.long_name;
+
+    const filterState =
+      state1 && state2 ? `${state2}, ${state1}` : state1 || state2;
+
+    return { city, state: filterState };
   } catch (error) {
     console.error("Error fetching City and State:", error);
     return { city: "", state: "" };

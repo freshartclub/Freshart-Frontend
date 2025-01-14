@@ -8,30 +8,8 @@ import { FaBars } from "react-icons/fa";
 import { useGetTechnic } from "../ArtistPanel/AddArtwork/http/useGetTechnic";
 import { useGetTheme } from "../ArtistPanel/AddArtwork/http/useGetTheme";
 import { useGetPurchaseArtwork } from "./http/useGetPurchaseArtwork";
-
-const art_data = [
-  {
-    text: "Painting",
-  },
-  {
-    text: "Photography",
-  },
-  {
-    text: "Sculpture",
-  },
-  {
-    text: "Drawings",
-  },
-  {
-    text: "Prints",
-  },
-  {
-    text: "Inspirational",
-  },
-  {
-    text: "Trade",
-  },
-];
+import { useGetDiscipline } from "../pages/http/useGetDiscipline";
+import Loader from "../ui/Loader";
 
 const Purchase = () => {
   const [query, setQuery] = useState("");
@@ -42,11 +20,17 @@ const Purchase = () => {
 
   const [technicData, setTechnicData] = useState([]);
   const [themeData, setThemeData] = useState([]);
+  const [selectDiscipline, setSelectDiscipline] = useState(null);
 
   const navigate = useNavigate();
   const redirectToDiscovery = () => {
     navigate("/discovery_art");
   };
+
+  const { data: disciplineData, isLoading: disciplineLoading } =
+    useGetDiscipline();
+
+  console.log(disciplineData);
 
   const search = (e: any) => {
     setQuery(e.target.value);
@@ -111,6 +95,18 @@ const Purchase = () => {
     }
   }, [selectedOption, techData, theData]);
 
+  const handleDiscipline = (discipline) => {
+    const value = {
+      value: discipline,
+      label: discipline,
+    };
+    setSelectedOption(value);
+  };
+
+  if (disciplineLoading) {
+    return <Loader />;
+  }
+
   return (
     <>
       <div className="container mx-auto sm:px-6 px-3">
@@ -131,17 +127,18 @@ const Purchase = () => {
                space-y-2 lg:space-y-0 lg:space-x-4 bg-white absolute lg:relative z-0 md:w-[40%] sm:w-[50%]
                 lg:w-auto shadow-lg lg:shadow-none p-4 lg:p-0`}
             >
-              {art_data.map((item, index) => (
-                <Link
-                  to="/purchase"
-                  key={index}
-                  className="group font-semibold text-black"
-                >
-                  <div className="relative inline-block xl:px-2 lg:px-1">
-                    {item.text}
-                  </div>
-                </Link>
-              ))}
+              {disciplineData &&
+                disciplineData?.data?.map((item, index) => (
+                  <span
+                    onClick={() => handleDiscipline(item.disciplineName)}
+                    key={index}
+                    className="group font-semibold text-black cursor-pointer"
+                  >
+                    <div className="relative inline-block xl:px-2 lg:px-1">
+                      {item.disciplineName}
+                    </div>
+                  </span>
+                ))}
             </div>
           </div>
 

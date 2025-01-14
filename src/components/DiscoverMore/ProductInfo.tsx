@@ -111,7 +111,7 @@ const ProductInfo = ({ data }: any) => {
 
   const navigate = useNavigate();
   const aboutText = data?.data?.owner?.aboutArtist?.about.replace(
-    /^<p>|<\/p>$/g,
+    /<[^>]*>/g,
     ""
   );
 

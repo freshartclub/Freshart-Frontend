@@ -83,8 +83,6 @@ const PurchaseCart = () => {
     }
   };
 
-
-
   const handlepurchase = () => {
     navigate("/all-artworks?type=purchase");
   };
@@ -248,7 +246,7 @@ const PurchaseCart = () => {
 
                             <td className="xl:px-6 lg:px-4 px-2 py-4 text-[#475156] font-medium">
                               {getSymbolFromCurrency(
-                                table?.item?.pricing?.currency
+                                table?.item?.pricing?.currency.slice(0, 3)
                               ) +
                                 " " +
                                 table?.item?.pricing?.basePrice}
@@ -259,7 +257,7 @@ const PurchaseCart = () => {
 
                             <td className="xl:px-6 lg:px-4 px-2 py-4 text-[#191C1F] font-semibold">
                               {getSymbolFromCurrency(
-                                table?.item?.pricing?.currency
+                                table?.item?.pricing?.currency.slice(0, 3)
                               ) +
                                 " " +
                                 discountedPrice}

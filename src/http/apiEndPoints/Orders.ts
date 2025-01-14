@@ -9,4 +9,5 @@ export const ORDERS_ENDPOINTS = {
   AddEvidence: `${ARTIST_ORDER_URl}/upload-evidence`,
   CancelItem: `${ARTIST_ORDER_URl}/cancel-particular-item`,
   GetOrderDetails: `${ARTIST_ORDER_URl}/get-user-single-order`,
+  ReviewArtwork: `${ARTIST_ORDER_URl}/give-review`,
 };
