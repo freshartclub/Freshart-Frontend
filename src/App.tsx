@@ -135,7 +135,7 @@ const App: React.FC = () => {
 
             <Route path="/" element={<GetStarted />} />
             <Route path="/login" element={<LoginPage />} />
-            {/* <Route path="/signup" element={<SignUp />} /> */}
+            <Route path="/signup" element={<SignUp />} />
             <Route path="/forget-password" element={<ForgetPassword />} />
             <Route path="/reset-password" element={<ChangePassword />} />
             <Route path="/otp" element={<OtpPage />} />
@@ -149,17 +149,6 @@ const App: React.FC = () => {
             {/* <Route path="/artist-panel/*" element={<NotFoundPage />} /> */}
 
             <Route
-              path="/artist-panel/*"
-              element={
-                <AuthGuard>
-                  <ArtistGuard>
-                    <ArtistPanel />
-                  </ArtistGuard>
-                </AuthGuard>
-              }
-            />
-
-            {/* <Route
               path="/invoice-pdf*"
               element={
                 <AuthGuard>
@@ -178,9 +167,19 @@ const App: React.FC = () => {
                   </ArtistGuard>
                 </AuthGuard>
               }
-            /> */}
+            />
 
-            {/* 
+            <Route
+              path="/artist-panel/*"
+              element={
+                <AuthGuard>
+                  <ArtistGuard>
+                    <ArtistPanel />
+                  </ArtistGuard>
+                </AuthGuard>
+              }
+            />
+
             <Route
               path="/tickets"
               element={
@@ -207,7 +206,7 @@ const App: React.FC = () => {
               }
             />
 
- 
+            {/* Protected Routes */}
             <Route
               path="/home/"
               element={
@@ -507,10 +506,9 @@ const App: React.FC = () => {
                 </AuthGuard>
               }
             />
-            */}
           </Routes>
         </Suspense>
-        {/* <FooterSection /> */}
+        <FooterSection />
       </Layout>
     </AuthProvider>
   );

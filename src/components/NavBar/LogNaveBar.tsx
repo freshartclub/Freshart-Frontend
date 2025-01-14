@@ -45,10 +45,11 @@ const LogNaveBar = () => {
                 <Link to="/login" className="text-black mr-4">
                   SIGN IN
                 </Link>
-              ) : // <Link to="/signup" className="text-black mr-4">
-              //   SIGN UP
-              // </Link>
-              null}
+              ) : (
+                <Link to="/signup" className="text-black mr-4">
+                  SIGN UP
+                </Link>
+              )}
 
               {isSignupPage ? (
                 <Button

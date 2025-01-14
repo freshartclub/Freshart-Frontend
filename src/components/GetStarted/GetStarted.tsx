@@ -27,15 +27,15 @@ const GetStarted = () => {
 
   return (
     <div>
-      <UnderConstruction />
-      {/* <BannerSection />
+      {/* <UnderConstruction /> */}
+      <BannerSection />
       <DiscoverSection />
       <ThirdSection />
       <ExploreSection />
       <FifthSection />
       <LearnMoreSection />
       <ContactSection />
-      <FaqSection /> */}
+      <FaqSection />
     </div>
   );
 };
