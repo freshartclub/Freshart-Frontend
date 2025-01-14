@@ -9,6 +9,7 @@ import FifthSection from "./FifthSection";
 import LearnMoreSection from "./LearnMoreSection";
 import ThirdSection from "./ThirdSection";
 import { useNavigate, useLocation } from "react-router-dom";
+import UnderConstruction from "./UnderConstruction";
 
 const GetStarted = () => {
   const isAuthorized = useAppSelector((state) => state.user.isAuthorized);
@@ -26,14 +27,15 @@ const GetStarted = () => {
 
   return (
     <div>
-      <BannerSection />
+      <UnderConstruction />
+      {/* <BannerSection />
       <DiscoverSection />
       <ThirdSection />
       <ExploreSection />
       <FifthSection />
       <LearnMoreSection />
       <ContactSection />
-      <FaqSection />
+      <FaqSection /> */}
     </div>
   );
 };

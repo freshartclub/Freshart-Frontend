@@ -10,6 +10,7 @@ import { useGetWishList } from "../DiscoverMore/http/useGetWishList";
 import { useGetLikedItems } from "./http/useGetLikedItems";
 import { imageUrl } from "../utils/baseUrls";
 import getSymbolFromCurrency from "currency-symbol-map";
+import Loader from "../ui/Loader";
 
 const trendingData = [
   {
@@ -69,6 +70,9 @@ const Wishlist = () => {
 
   console.log("from wishlist", data);
 
+  if (isLoading) {
+    return <Loader />;
+  }
   return (
     <div className="container mx-auto md:px-6 px-3 my-10">
       <ul className="flex p-2 gap-3 text-xl text-[#2E4053] items-center">
@@ -145,7 +149,9 @@ const Wishlist = () => {
                     variant={{ size: "base", weight: "normal" }}
                     className="text-[#696868]"
                   >
-                    {item.size}
+                    {item.size
+                      ? `${item.size.width} x ${item.size.height} x ${item.size.length}`
+                      : "Size not available"}
                   </P>
                 </div>
                 <P
@@ -156,7 +162,7 @@ const Wishlist = () => {
                 </P>
 
                 <P variant={{ size: "base", weight: "medium" }}>
-                  {getSymbolFromCurrency(item?.pricing?.currency.slice(0, 3))}{" "}
+                  {getSymbolFromCurrency(item?.pricing?.currency?.slice(0, 3))}{" "}
                   {item?.pricing?.basePrice}
                 </P>
               </div>

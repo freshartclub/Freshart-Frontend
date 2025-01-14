@@ -532,7 +532,7 @@ const NavBar = () => {
                 <img src={logo} alt="logo" className="" />
               </div>
 
-              <div>
+              <div className="flex items-center justify-center">
                 <Link
                   to="/login"
                   className="px-4 py-2 text-sm bg-white rounded-md hover:bg-gray-200 focus:outline-none"
