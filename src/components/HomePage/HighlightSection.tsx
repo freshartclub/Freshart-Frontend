@@ -161,10 +161,10 @@ const HighlightSection = ({ data }) => {
                 <button className="absolute top-2 z-[99] right-7 border border-[#FFD9DE] rounded-full p-2 bg-white cursor-pointer">
                   <img
                     onClick={() => handleLike(item?._id)}
-                    src={likedItems.includes(item?._id) ? wishlist_like : like}
+                    src={likedItems?.includes(item?._id) ? wishlist_like : like}
                     alt="like"
                     className={`w-5 h-5 ${
-                      likedItems.includes(item?._id) ? "w-8 h-8" : ""
+                      likedItems?.includes(item?._id) ? "w-8 h-8" : ""
                     }`}
                   />
                 </button>

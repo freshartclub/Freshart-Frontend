@@ -116,12 +116,12 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
                 Notification
               </Link>
 
-              {/* <button
+              <button
                 className="font-medium hover:bg-zinc-200"
                 onClick={handleProfile}
               >
                 Switch To User Profile
-              </button> */}
+              </button>
               <button
                 className="bg-red-300 flex flex-col items-center justify-center gap-1 py-2 rounded hover:bg-red-400 font-medium"
                 onClick={handleLogOut}
