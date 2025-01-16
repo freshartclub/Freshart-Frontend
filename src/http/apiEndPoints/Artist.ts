@@ -40,6 +40,7 @@ export const ARTTIST_ENDPOINTS = {
   GetArtistTicketsDetails: `${ARTIST_BASE_URl}/ticket`,
   GetAllIncidents: `${ARTIST_BASE_URl}/get-all-incidents`,
   PatchFeedback: `${ARTIST_BASE_URl}/ticket-feedback`,
+  GetNotifications: `${ARTIST_BASE_URl}/get-notifications`,
 
   GetAllArtist: `${ARTIST_BASE_URl}/get-all-artists`,
   addToCart: `${ARTIST_BASE_URl}/add-to-cart`,

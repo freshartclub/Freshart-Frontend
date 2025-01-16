@@ -76,6 +76,7 @@ const Artwork = () => {
     }
   };
 
+  console.log(data?.data.length < 3);
   if (isLoading) {
     return <Loader />;
   }
@@ -164,21 +165,23 @@ const Artwork = () => {
                   {item?.groupName || "No Name"}
                 </h1>
 
-                <IoIosArrowDropleftCircle
-                  onClick={handleArrowClick}
-                  size="3.5em"
-                  color="white"
-                  // className="absolute top-1/2 left-4 transform -translate-x-1/2 -translate-y-1/2 z-[999]  filter blur-sm"
-                  className="absolute   top-1/2 left-4  transform -translate-x-1/2 -translate-y-1/2 z-[999] cursor-pointer"
-                />
+                {data?.data.length < 4 ? (
+                  <>
+                    <IoIosArrowDropleftCircle
+                      onClick={handleArrowClick}
+                      size="3.5em"
+                      color="white"
+                      className="absolute   top-1/2 left-4  transform -translate-x-1/2 -translate-y-1/2 z-[999] cursor-pointer"
+                    />
 
-                <IoIosArrowDroprightCircle
-                  onClick={handleArrowRightClick}
-                  size="3.5em"
-                  color="white"
-                  // className="absolute top-1/2 left-4 transform -translate-x-1/2 -translate-y-1/2 z-[999]  filter blur-sm"
-                  className="absolute   top-1/2 left-[98%]  transform -translate-x-1/2 -translate-y-1/2 z-[999] cursor-pointer"
-                />
+                    <IoIosArrowDroprightCircle
+                      onClick={handleArrowRightClick}
+                      size="3.5em"
+                      color="white"
+                      className="absolute   top-1/2 left-[98%]  transform -translate-x-1/2 -translate-y-1/2 z-[999] cursor-pointer"
+                    />
+                  </>
+                ) : null}
 
                 <Swiper
                   spaceBetween={20}

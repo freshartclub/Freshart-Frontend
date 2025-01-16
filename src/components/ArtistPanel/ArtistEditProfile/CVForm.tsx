@@ -34,6 +34,35 @@ const CVForm: React.FC<CVFormProps> = ({
     append({ year: "", Type: "", Description: "", Location: "", Scope: "" });
   };
 
+  const modules = {
+    toolbar: [
+      [{ header: [1, 2, 3, 4, 5, false] }],
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["bold", "italic", "underline"],
+      [{ align: [] }],
+    ],
+  };
+
+  const formats = [
+    "header",
+    "font",
+    "size",
+    "list",
+    "bullet",
+    "bold",
+    "italic",
+    "underline",
+    "align",
+  ];
+
+  const defaultSizeStyle = `
+  .ql-editor {
+    font-size: 20px; 
+      min-height: calc(1em * 9); 
+    line-height: 1.5; /*
+  }
+`;
+
   return (
     <div className="p-4 mt-4 bg-white rounded-lg shadow-md max-w-full border  mb-4">
       <h2 className="text-xl font-semibold mb-3 pb-3 text-[#1A1C21]">
@@ -46,21 +75,15 @@ const CVForm: React.FC<CVFormProps> = ({
           defaultValue=""
           render={({ field }) => (
             <div className="relative">
+              <style>{defaultSizeStyle}</style>
               <ReactQuill
                 {...field}
                 className="border border-[#E6E6E6] p-3 w-full rounded-md"
                 theme="snow"
                 placeholder="Write about yourself..."
-                readOnly={isActiveStatus !== "active"}
-                modules={{
-                  toolbar: [
-                    [{ header: "1" }, { header: "2" }, { font: [] }],
-                    [{ list: "ordered" }, { list: "bullet" }],
-                    ["bold", "italic", "underline"],
-                    [{ align: [] }],
-                    ["link"],
-                  ],
-                }}
+                // readOnly={isActiveStatus !== "active"}
+                modules={modules}
+                formats={formats}
               />
               <label
                 htmlFor="Hightlight"
@@ -78,8 +101,8 @@ const CVForm: React.FC<CVFormProps> = ({
           <div className="flex flex-col">
             <label className="text-sm font-medium mb-1">Year</label>
             <select
-              disabled={isActiveStatus !== "active"}
-              className="border border-gray-300 rounded-md px-1 py-1 w-20 outline-none"
+              // disabled={isActiveStatus !== "active"}
+              className="border border-gray-300 rounded-md px-1 py-1 w-20 outline-none cursor-pointer"
               {...control.register(`cvEntries.${index}.year`)}
               defaultValue={cv.year}
             >
@@ -98,8 +121,8 @@ const CVForm: React.FC<CVFormProps> = ({
           <div className="flex flex-col">
             <label className="text-sm font-medium mb-1">Type</label>
             <select
-              disabled={isActiveStatus !== "active"}
-              className="border border-gray-300 rounded-md px-1 py-1 w-24 outline-none"
+              // disabled={isActiveStatus !== "active"}
+              className="border border-gray-300 rounded-md px-1 py-1 w-24 outline-none cursor-pointer"
               {...control.register(`cvEntries.${index}.Type`)}
               defaultValue={cv.Type}
             >
@@ -120,9 +143,9 @@ const CVForm: React.FC<CVFormProps> = ({
               type="text"
               className="border border-gray-300 rounded-md px-1 py-1  outline-none "
               placeholder="Description"
-              disabled={isActiveStatus !== "active"}
-              {...control.register(`cvEntries.${index}.Description`)} // Register the input
-              defaultValue={cv.Description} // Use default value
+              // disabled={isActiveStatus !== "active"}
+              {...control.register(`cvEntries.${index}.Description`)}
+              defaultValue={cv.Description}
             />
           </div>
 
@@ -130,21 +153,21 @@ const CVForm: React.FC<CVFormProps> = ({
             <label className="text-sm font-medium mb-1">Location</label>
             <input
               type="text"
-              disabled={isActiveStatus !== "active"}
+              // disabled={isActiveStatus !== "active"}
               className="border border-gray-300 rounded-md px-1 py-1 w-24 outline-none"
               placeholder="Location"
-              {...control.register(`cvEntries.${index}.Location`)} // Register the input
-              defaultValue={cv.Location} // Use default value
+              {...control.register(`cvEntries.${index}.Location`)}
+              defaultValue={cv.Location}
             />
           </div>
 
           <div className="flex flex-col ">
             <label className="text-sm font-medium mb-1">Scope</label>
             <select
-              disabled={isActiveStatus !== "active"}
-              className="border border-gray-300 rounded-md px-1 py-1 w-20 outline-none"
-              {...control.register(`cvEntries.${index}.Scope`)} // Register the select input
-              defaultValue={cv.Scope} // Use default value
+              // disabled={isActiveStatus !== "active"}
+              className="border border-gray-300 rounded-md px-1 py-1 w-20 outline-none cursor-pointer"
+              {...control.register(`cvEntries.${index}.Scope`)}
+              defaultValue={cv.Scope}
             >
               <option value="">Select</option>
               {eventScope &&
@@ -158,7 +181,7 @@ const CVForm: React.FC<CVFormProps> = ({
 
           {/* Remove Button */}
           <button
-            disabled={isActiveStatus !== "active"}
+            // disabled={isActiveStatus !== "active"}
             type="button"
             className="text-red-600 font-semibold mt-5 "
             onClick={() => remove(index)} // Function to remove a CV entry
@@ -171,7 +194,7 @@ const CVForm: React.FC<CVFormProps> = ({
       <div className="mt-3">
         <button
           type="button"
-          disabled={isActiveStatus !== "active"}
+          // disabled={isActiveStatus !== "active"}
           onClick={addMoreCv}
           className="bg-[#102030] text-white px-3 py-2 rounded font-semibold"
         >

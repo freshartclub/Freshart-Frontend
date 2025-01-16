@@ -1,7 +1,7 @@
 import { useFieldArray, Controller } from "react-hook-form";
 import { ARTIST_SOCIAL_LINKS } from "../../utils/mockData";
 
-const SocialMediaLinks = ({ control, isActiveStatus }) => {
+const SocialMediaLinks = ({ control, isActiveStatus, socialMedia }) => {
   const { fields, append, remove } = useFieldArray({
     control,
     name: "accounts",
@@ -29,14 +29,14 @@ const SocialMediaLinks = ({ control, isActiveStatus }) => {
                   name={`accounts.${index}.name`}
                   render={({ field }) => (
                     <select
-                      disabled={isActiveStatus !== "active"}
+                      // disabled={isActiveStatus !== "active"}
                       {...field}
-                      className={`border border-gray-300 rounded p-3 w-full outline-none ${
-                        isActiveStatus !== "active" ? "bg-zinc-100" : ""
+                      className={`border border-gray-300 rounded p-3 w-full outline-none cursor-pointer ${
+                        isActiveStatus !== "active" ? "" : ""
                       }`}
                     >
                       <option value="">Select</option>
-                      {ARTIST_SOCIAL_LINKS.map((item, index) => (
+                      {socialMedia?.map((item, index) => (
                         <option value={item.value}>{item.value}</option>
                       ))}
                     </select>
@@ -52,7 +52,7 @@ const SocialMediaLinks = ({ control, isActiveStatus }) => {
                   name={`accounts.${index}.link`}
                   render={({ field }) => (
                     <input
-                      disabled={isActiveStatus !== "active"}
+                      // disabled={isActiveStatus !== "active"}
                       {...field}
                       type="text"
                       placeholder="www.instagram.com/bgsdd845?"
@@ -65,7 +65,7 @@ const SocialMediaLinks = ({ control, isActiveStatus }) => {
             <button
               onClick={() => remove(index)}
               className={`hover:bg-red-300 px-4 py-3 mt-5 rounded-lg gap-1 bg-[#FCDAD7] text-[#F04438] ${
-                isActiveStatus !== "active" ? "pointer-events-none" : ""
+                isActiveStatus !== "active" ? "" : ""
               }`}
               title="Remove account "
             >
@@ -78,7 +78,7 @@ const SocialMediaLinks = ({ control, isActiveStatus }) => {
         variant={{ size: "base", weight: "500", rounded: "lg" }}
         onClick={handleAddAccount}
         className={`bg-[#DEDEFA] font-semibold py-3 px-2 rounded cursor-pointer ${
-          isActiveStatus !== "active" ? "pointer-events-none" : ""
+          isActiveStatus !== "active" ? "" : ""
         }`}
       >
         + Add social media account

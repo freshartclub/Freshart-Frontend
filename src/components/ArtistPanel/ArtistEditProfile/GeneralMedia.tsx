@@ -215,6 +215,8 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
     }
   };
 
+  // reomve isActive Before final
+
   return (
     <div className="p-6 mt-6 bg-white rounded-lg shadow-md border mb-4 ">
       <Header
@@ -247,7 +249,7 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
                 className="hidden "
                 ref={mainImageInputRef}
                 onChange={(e) => handleMainImageChange(e)}
-                disabled={isActiveStatus !== "active"}
+                // disabled={isActiveStatus !== "active"}
               />
               <div className="bg-[#F9F9FC] border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
                 <div className="relative">
@@ -267,9 +269,7 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
                     className={`absolute top-1 ${
                       existingMainImage ? "block" : "hidden"
                     } right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer ${
-                      isActiveStatus !== "active"
-                        ? "opacity-50 pointer-events-none"
-                        : ""
+                      isActiveStatus !== "active" ? "" : ""
                     }`}
                     onClick={(e) => handleRemoveMainImage("Url")}
                   >
@@ -281,7 +281,7 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
                 </p>
                 <span
                   className={`bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer ${
-                    isActiveStatus !== "active" ? "pointer-events-none" : ""
+                    isActiveStatus !== "active" ? "" : ""
                   }`}
                   onClick={triggerMainImageInput}
                 >
@@ -314,9 +314,7 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
                     />
                     <span
                       className={`absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer ${
-                        isActiveStatus !== "active"
-                          ? "opacity-50 pointer-events-none"
-                          : ""
+                        isActiveStatus !== "active" ? "" : ""
                       }`}
                       onClick={() => handleRemoveInProcessImage("url")}
                     >
@@ -334,7 +332,7 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
                 </p>
                 <span
                   className={`bg-[#DEDEFA]  font-bold mt-2 p-3 px-4 rounded-md cursor-pointer ${
-                    isActiveStatus !== "active" ? "pointer-events-none" : ""
+                    isActiveStatus !== "active" ? "" : ""
                   }`}
                   onClick={triggerInProcessImageInput}
                 >
@@ -389,9 +387,7 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
                   />
                   <span
                     className={`absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer ${
-                      isActiveStatus !== "active"
-                        ? "opacity-50 pointer-events-none"
-                        : ""
+                      isActiveStatus !== "active" ? "" : ""
                     }`}
                     onClick={() => removeAdditionalImage(i, "Url")}
                   >
@@ -413,7 +409,7 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
           )}
           <span
             className={`bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer flex items-center justify-center ${
-              isActiveStatus !== "active" ? "pointer-events-none" : ""
+              isActiveStatus !== "active" ? "" : ""
             }`}
             onClick={() => document.querySelector("#photos-input").click()}
           >
@@ -463,9 +459,7 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
                     className={`absolute ${
                       existingMainVideo ? "block" : "hidden"
                     } top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer ${
-                      isActiveStatus !== "active"
-                        ? "opacity-50 pointer-events-none"
-                        : ""
+                      isActiveStatus !== "active" ? "" : ""
                     }`}
                     onClick={(e) => handleRemoveMainVidoe("Url")}
                   >
@@ -477,7 +471,7 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
                 </p>
                 <span
                   className={`bg-[#DEDEFA]  font-bold mt-2 p-3 px-4 rounded-md cursor-pointer ${
-                    isActiveStatus !== "active" ? "pointer-events-none" : ""
+                    isActiveStatus !== "active" ? "" : ""
                   }`}
                   onClick={triggerVideoInput}
                 >
@@ -534,9 +528,7 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
                         />
                         <span
                           className={`absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer ${
-                            isActiveStatus !== "active"
-                              ? "opacity-50 pointer-events-none"
-                              : ""
+                            isActiveStatus !== "active" ? "" : ""
                           }`}
                           onClick={() => removeAdditionalVideo(i, "Url")}
                         >
@@ -559,7 +551,7 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
 
               <span
                 className={`bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer flex items-center justify-center ${
-                  isActiveStatus !== "active" ? "pointer-events-none" : ""
+                  isActiveStatus !== "active" ? "" : ""
                 }`}
                 onClick={() => document.querySelector("#Videos-input").click()}
               >

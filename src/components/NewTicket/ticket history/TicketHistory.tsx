@@ -8,6 +8,7 @@ import newTicket from "../ticket history/assets/newTicket.png";
 import onGoingTicketImg from "../ticket history/assets/on-going.png";
 import TicketsList from "./TicketList";
 import { useGetTicket } from "./http/useGetTicket";
+import { RenderAllPicklists } from "../../utils/RenderAllPicklist";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -23,6 +24,8 @@ const TicketHistory: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [filterPriority, setFilterPriority] = useState<string>("All Tickets");
   const [filterTimeframe, setFilterTimeframe] = useState<string>("");
+  const [filterBy, setFilterBy] = useState<string>("All");
+  const [status, setStatus] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [ticketsdata, setTickets] = useState<any[]>([]);
   const [totalPages, setTotalPages] = useState<number>(0);
@@ -39,22 +42,34 @@ const TicketHistory: React.FC = () => {
     }
   };
 
+  const picklist = RenderAllPicklists(["Ticket Status"]);
+
+  const picklistMap = picklist?.reduce((acc, item: any) => {
+    acc[item?.fieldName] = item?.picklist;
+    return acc;
+  }, {});
+
+  const statusPicklist = picklistMap["Ticket Status"];
+
+  const getStatusValue = statusPicklist?.map((item: any) => item.value);
+
+  const filteredStatuses = getStatusValue?.filter(
+    (status) => status !== "Closed" && status !== "Created"
+  );
+
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
   };
-
-  const newTickets = data
-    ? data?.filter((ticket) =>
-        dayjs(ticket.createdAt).isAfter(now.subtract(3, "day"))
-      )
-    : null;
+  const inProgressTicket = data?.filter((ticket) => {
+    return filteredStatuses?.some((status) => ticket?.status?.includes(status));
+  });
 
   const onGoingTicket = data?.filter((ticket) => {
     return ticket?.status?.includes("In progress");
   });
 
   const solvedTicket = data?.filter((ticket) => {
-    return ticket?.status?.includes("Finalise");
+    return ticket?.status?.includes("Closed");
   });
 
   const filterTickets = () => {
@@ -92,12 +107,49 @@ const TicketHistory: React.FC = () => {
       );
     }
 
+    if (filterBy === "Ticket Urgency") {
+      filteredTickets = filteredTickets.sort(
+        (a, b) =>
+          parseInt(a.urgency.split(" - ")[0], 10) -
+          parseInt(b.urgency.split(" - ")[0], 10)
+      );
+    } else if (filterBy === "Ticket Priority") {
+      filteredTickets = filteredTickets.sort((a, b) => {
+        const priorityA = parseInt(a.priority.split(" - ")[0], 10);
+        const priorityB = parseInt(b.priority.split(" - ")[0], 10);
+        return priorityA - priorityB;
+      });
+    } else if (filterBy === "Ticket Impact") {
+      filteredTickets = filteredTickets.sort((a, b) => {
+        const impactA = parseInt(a.impact.split(" - ")[0], 10);
+        const impactB = parseInt(b.impact.split(" - ")[0], 10);
+        return impactA - impactB;
+      });
+    } else if (filterBy === "Ticket Type") {
+      filteredTickets = filteredTickets.sort((a, b) => {
+        const typeA = a.ticketType.split(" - ")[1];
+        const typeB = b.ticketType.split(" - ")[1];
+
+        return typeA.localeCompare(typeB);
+      });
+    }
+
+    if (status) {
+      console.log(status);
+      filteredTickets = filteredTickets.filter((ticket) => {
+        return ticket.status.includes(status);
+      });
+    }
+
+    console.log(filterBy);
+
     setTickets(filteredTickets);
     setTotalPages(Math.ceil(filteredTickets.length / ticketsPerPage));
   };
+
   useEffect(() => {
     filterTickets();
-  }, [filterPriority, filterTimeframe, searchQuery, data]);
+  }, [filterPriority, filterTimeframe, searchQuery, data, filterBy, status]);
 
   if (isLoading) {
     return <Loader />;
@@ -112,6 +164,10 @@ const TicketHistory: React.FC = () => {
         filterPriority={filterPriority}
         setFilterPriority={setFilterPriority}
         filterTimeframe={filterTimeframe}
+        filterBy={filterBy}
+        setFilterBy={setFilterBy}
+        status={status}
+        setStatus={setStatus}
         setFilterTimeframe={setFilterTimeframe}
       />
 
@@ -147,10 +203,10 @@ const TicketHistory: React.FC = () => {
                 role="tab"
                 aria-selected={activeTab === "new"}
               >
-                Requested
+                In Progress
               </button>
             </li>
-            <li className="flex items-center" role="presentation">
+            {/* <li className="flex items-center" role="presentation">
               <img src={onGoingTicketImg} alt="On-Going" className="h-6 w-6" />
               <button
                 className={`inline-block p-2 rounded-sm ${
@@ -162,7 +218,7 @@ const TicketHistory: React.FC = () => {
               >
                 Dispatched
               </button>
-            </li>
+            </li> */}
             <li className="flex items-center" role="presentation">
               <img src={Resolved} alt="Resolved" className="h-6 w-6" />
               <button
@@ -173,7 +229,7 @@ const TicketHistory: React.FC = () => {
                 role="tab"
                 aria-selected={activeTab === "Resolved"}
               >
-                Resolved
+                Resolved(Closed)
               </button>
             </li>
           </ul>
@@ -192,7 +248,7 @@ const TicketHistory: React.FC = () => {
           </TabPanel>
           <TabPanel activeTab={activeTab} tabKey="new">
             <TicketsList
-              tickets={newTickets}
+              tickets={inProgressTicket}
               isLoading={isLoading}
               searchQuery={searchQuery}
               currentPage={currentPage}

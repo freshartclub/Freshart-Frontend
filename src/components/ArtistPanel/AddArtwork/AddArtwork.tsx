@@ -50,6 +50,7 @@ import { useAppSelector } from "../../../store/typedReduxHooks";
 import { useGetMediaSupport } from "./http/useGetMediaSupport";
 import usePostModifyArtworkMutation from "./http/usePostModifyArtwork";
 import { baseUrl, imageUrl } from "../../utils/baseUrls";
+import { MdDelete } from "react-icons/md";
 
 const AddArtwork = () => {
   const [progress, setProgress] = useState(0);
@@ -669,6 +670,7 @@ const AddArtwork = () => {
     watch("purchaseOption"),
     id,
     data,
+    seriesData,
   ]);
 
   const onSubmit = handleSubmit(async (values: any) => {
@@ -1091,9 +1093,9 @@ const AddArtwork = () => {
                                 </li>
                                 <span
                                   onClick={() => handleRemoveSeries(option)}
-                                  className="cursor-pointer  bg-black px-2 rounded-md text-white"
+                                  className="cursor-pointer bg-black   px-2 py-2 rounded-md text-white"
                                 >
-                                  Delete
+                                  <MdDelete size="1em" />
                                 </span>
                               </div>
                             ))}
@@ -2530,23 +2532,13 @@ const AddArtwork = () => {
 
                   {/* Warning Message */}
                   <span>
-                    The following values must be less than or equal to the
-                    specified limits:
+                    Max Dimensions should not be greater than the Dimensions in
+                    selected Catalog.
                     <ul className="list-disc ml-5 mt-2">
-                      <li>
-                        Height must be less than or equal to{" "}
-                        {packageHeightError}
-                      </li>
-                      <li>
-                        Width must be less than or equal to {packageWidthError}
-                      </li>
-                      <li>
-                        Depth must be less than or equal to {packageDepthError}
-                      </li>
-                      <li>
-                        Weight must be less than or equal to{" "}
-                        {packageWeightError}
-                      </li>
+                      <li>Max Height : {packageHeightError}</li>
+                      <li>Max Width : {packageWidthError}</li>
+                      <li>Max Depth : {packageDepthError}</li>
+                      <li>Max Weight :{packageWeightError}</li>
                     </ul>
                   </span>
                 </div>

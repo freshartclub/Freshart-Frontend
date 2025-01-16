@@ -82,8 +82,12 @@ export const sections = [
   },
 ];
 
-const Sidebar: React.FC = ({ sidebarOpen, setSidebarOpen }) => {
-  const [isOpen, setIsOpen] = useState(true);
+const Sidebar: React.FC = ({
+  sidebarOpen,
+  setSidebarOpen,
+  setIsOpen,
+  isOpen,
+}) => {
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
   const location = useLocation();
   const closePopup = useRef(null);
@@ -127,7 +131,13 @@ const Sidebar: React.FC = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   return (
-    <div className={`flex transition-width duration-300 relative   `}>
+    <div
+      className={`flex transition-width duration-300 relative md:w-14  ${
+        isOpen
+          ? "lg:fixed lg:w-64 xl:fixed xl:w-64 md:fixed md:w-64 "
+          : "lg:fixed lg:w-14 xl:fixed xl:w-14 md:fixed md:w-14"
+      }  `}
+    >
       <div
         // ref={closePopup}
         className={`${isOpen ? "w-64" : "w-14"} ${

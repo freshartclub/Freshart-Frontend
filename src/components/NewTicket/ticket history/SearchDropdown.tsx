@@ -2,6 +2,8 @@ import React, { FC } from "react";
 import search from "../ticket history/assets/search.png";
 import new_Ticket from "../ticket history/assets/new_Ticket.png";
 import { Link } from "react-router-dom";
+import { RenderAllPicklists } from "../../utils/RenderAllPicklist";
+import { PiNutFill } from "react-icons/pi";
 
 interface SearchDropdownProps {
   searchQuery: string;
@@ -19,6 +21,10 @@ const SearchDropdown: FC<SearchDropdownProps> = ({
   setFilterPriority,
   filterTimeframe,
   setFilterTimeframe,
+  setFilterBy,
+  filterBy,
+  setStatus,
+  status,
 }) => {
   const handlePriorityDropdownChange = (
     e: React.ChangeEvent<HTMLSelectElement>
@@ -26,11 +32,32 @@ const SearchDropdown: FC<SearchDropdownProps> = ({
     setFilterPriority(e.target.value);
   };
 
+  const handleFilterDropdownChange = (
+    e: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    setFilterBy(e.target.value);
+  };
+
+  const handleStatusDropdownChange = (
+    e: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    setStatus(e.target.value);
+  };
+
   const handleTimeframeDropdownChange = (
     e: React.ChangeEvent<HTMLSelectElement>
   ) => {
     setFilterTimeframe(e.target.value);
   };
+
+  const picklist = RenderAllPicklists(["Ticket Status"]);
+
+  const picklistMap = picklist.reduce((acc, item: any) => {
+    acc[item?.fieldName] = item?.picklist;
+    return acc;
+  }, {});
+
+  const ticketStatus = picklistMap["Ticket Status"];
 
   return (
     <div className="flex flex-col lg:flex-row justify-between items-center sm:p-4 py-2 sm:mx-4">
@@ -53,6 +80,34 @@ const SearchDropdown: FC<SearchDropdownProps> = ({
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4 w-full lg:w-auto">
         {/* Priority Filter */}
         <select
+          value={filterBy}
+          onChange={handleFilterDropdownChange}
+          className="border p-3 sm:p-4 rounded-lg text-sm font-bold text-[#203F58] w-full sm:w-auto outline-none"
+        >
+          <option value="">Filter By</option>
+          {/* <option value="All">All</option> */}
+          <option value="Ticket Urgency">Ticket Urgency</option>
+          {/* <option value="Ticket Priority">Ticket Priority</option> */}
+
+          <option value="Ticket Impact">Ticket Impact</option>
+
+          <option value="Ticket Type">Ticket Type</option>
+        </select>
+
+        <select
+          value={status}
+          onChange={handleStatusDropdownChange}
+          className="border p-5 sm:p-4 rounded-lg text-sm font-bold text-[#203F58] w-full sm:w-auto outline-none"
+        >
+          <option value="">Select Status</option>
+          {ticketStatus && ticketStatus
+            ? ticketStatus.map((item, i) => (
+                <option value={item?.value}>{item?.value}</option>
+              ))
+            : null}
+        </select>
+
+        {/* <select
           value={filterPriority}
           onChange={handlePriorityDropdownChange}
           className="border p-3 sm:p-4 rounded-lg text-sm font-bold text-[#203F58] w-full sm:w-auto outline-none"
@@ -61,7 +116,7 @@ const SearchDropdown: FC<SearchDropdownProps> = ({
           <option value="New Tickets">Requested Ticket</option>
           <option value="On-Going Tickets">Dispatched Ticket</option>
           <option value="Resolved Tickets">Resolved Tickets</option>
-        </select>
+        </select> */}
 
         {/* Timeframe Filter */}
         <select

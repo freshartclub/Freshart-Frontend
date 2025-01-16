@@ -9,9 +9,11 @@ import useLogOutMutation from "../../http/auth/useLogOutMutation";
 import { useAppSelector } from "../../store/typedReduxHooks";
 import useClickOutside from "../utils/useClickOutside";
 import { imageUrl } from "../utils/baseUrls";
+import { useGetNotification } from "./http/useGetNotification";
 
 const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
   const [isToogleOpen, setIsToggelOpen] = useState(false);
+  const [isOpenNotify, setIsOpenNotify] = useState(false);
 
   const navigate = useNavigate();
   const user = useAppSelector((state) => state.user.user);
@@ -24,7 +26,8 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
     // setSidebarOpen(false);
   });
 
-  const url = "https://dev.freshartclub.com/images";
+  // const { data, isLoading } = useGetNotification();
+
   const handleLogOut = () => {
     try {
       logOut();
@@ -39,6 +42,10 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
   };
   const handleRedirect = () => {
     navigate("/artist-panel/artdashboard");
+  };
+
+  const handleNotifaction = () => {
+    setIsOpenNotify((prev) => !prev);
   };
 
   return (
@@ -58,12 +65,19 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
             alt="Logo"
           />
         </div>
+        {/* {isOpenNotify ? (
+          <div className="absolute transition-all duration-500 top-[100%] right-0 w-[20vw] h-[100vh] bg-red-200"></div>
+        ) : null} */}
 
-        <div className="flex items-center gap-5">
-          <IoNotifications
-            className="cursor-pointer hidden lg:block"
-            size="1.5em"
-          />
+        <div className="flex items-center gap-5 ">
+          <div className="relative">
+            <IoNotifications
+              // onClick={handleNotifaction}
+              className="cursor-pointer hidden lg:block"
+              size="1.5em"
+            />
+            {/* <div className="w-4 h-4 text-center bg-red-400 absolute rounded-full bottom-3 left-3 text-black"></div> */}
+          </div>
 
           <span
             onClick={() => setIsToggelOpen(!isToogleOpen)}

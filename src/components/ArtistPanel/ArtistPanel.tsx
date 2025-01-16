@@ -22,14 +22,24 @@ import AddArtwork from "./AddArtwork/AddArtwork";
 
 const ArtistPanel = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
 
   return (
     <>
       <ArtistNavBar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
       <div className=" flex w-full overflow-hidden mt-[12vh] ">
-        <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+        <Sidebar
+          sidebarOpen={sidebarOpen}
+          setSidebarOpen={setSidebarOpen}
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+        />
 
-        <div className="flex-1 sm:px-6 lg:px-3 bg-zinc-100 overflow-auto  ">
+        <div
+          className={`flex-1 ml-0 sm:px-6 lg:px-3 bg-zinc-100 overflow-auto ${
+            isOpen ? "lg:ml-64 " : "lg:ml-14 md:ml-14 xl:ml-14"
+          }  `}
+        >
           <Routes>
             <Route index element={<Dashboard />} />
             <Route path="artdashboard" element={<Dashboard />} />

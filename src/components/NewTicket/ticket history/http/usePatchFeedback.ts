@@ -24,7 +24,7 @@ const usePatchFeedbackMutation = () => {
         queryKey: ["like"],
         refetchType: "all",
       });
-      navigate("/artist-panel/ticket/tickets");
+
       toast.success(res.data.message, {
         duration: 3000,
       });

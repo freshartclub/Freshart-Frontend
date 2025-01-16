@@ -377,6 +377,7 @@ const GeneralForm = ({ isActiveStatus }) => {
     "Event Scope",
     "Gender",
     "Language",
+    "Social Media",
   ]);
 
   const picklistMap = picklist.reduce((acc, item: any) => {
@@ -388,6 +389,7 @@ const GeneralForm = ({ isActiveStatus }) => {
   const eventType = picklistMap["Event Type"];
   const eventScope = picklistMap["Event Scope"];
   const language = picklistMap["Language"];
+  const socialMedia = picklistMap["Social Media"];
 
   const placesSelected = (places: google.maps.places.PlaceResult) => {
     const address_comp = [
@@ -421,6 +423,35 @@ const GeneralForm = ({ isActiveStatus }) => {
 
     return `${days} Days Remaning`;
   }
+
+  const modules = {
+    toolbar: [
+      [{ header: [1, 2, 3, 4, 5, false] }],
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["bold", "italic", "underline"],
+      [{ align: [] }],
+    ],
+  };
+
+  const formats = [
+    "header",
+    "font",
+    "size",
+    "list",
+    "bullet",
+    "bold",
+    "italic",
+    "underline",
+    "align",
+  ];
+
+  const defaultSizeStyle = `
+  .ql-editor {
+    font-size: 20px; 
+      min-height: calc(1em * 9); 
+    line-height: 1.5; /*
+  }
+`;
 
   if (isFetching) {
     return <Loader />;
@@ -598,7 +629,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                     disabled
                     className={`border  ${
                       isActiveStatus !== "active" ? "bg-zinc-100" : ""
-                    } border-[#E6E6E6] p-3 w-full rounded-md focus:outline-none peer placeholder::font-montserrat font-normal text-left placeholder:text-[#1C252E] outline-none`}
+                    } border-[#E6E6E6] bg-zinc-100 p-3 w-full rounded-md focus:outline-none peer placeholder::font-montserrat font-normal text-left placeholder:text-[#1C252E] outline-none`}
                   >
                     {gender &&
                       gender.map((item, i) => (
@@ -625,7 +656,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                     disabled
                     className={`border  ${
                       isActiveStatus !== "active" ? "bg-zinc-100" : ""
-                    } border-[#E6E6E6] p-3 w-full rounded-md focus:outline-none peer placeholder::font-montserrat font-normal text-left placeholder:text-[#1C252E] outline-none`}
+                    } border-[#E6E6E6] bg-zinc-100 p-3 w-full rounded-md focus:outline-none peer placeholder::font-montserrat font-normal text-left placeholder:text-[#1C252E] outline-none`}
                   >
                     {language &&
                       language.map((item, i) => (
@@ -785,20 +816,15 @@ const GeneralForm = ({ isActiveStatus }) => {
                   defaultValue=""
                   render={({ field }) => (
                     <div className="relative">
+                      <style>{defaultSizeStyle}</style>
                       <ReactQuill
-                        readOnly={isActiveStatus !== "active"}
+                        // readOnly={isActiveStatus !== "active"}
                         {...field}
                         className="border border-[#E6E6E6] p-3 w-full rounded-md"
                         theme="snow"
                         placeholder="Write about yourself..."
-                        modules={{
-                          toolbar: [
-                            [{ header: "1" }, { header: "2" }, { font: [] }],
-                            [{ list: "ordered" }, { list: "bullet" }],
-                            ["bold", "italic", "underline"],
-                            [{ align: [] }],
-                          ],
-                        }}
+                        modules={modules}
+                        formats={formats}
                       />
                       <label
                         htmlFor="about"
@@ -833,6 +859,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                 <GeneralSocial
                   control={control}
                   isActiveStatus={isActiveStatus}
+                  socialMedia={socialMedia}
                 />
 
                 <Dicipline
@@ -873,6 +900,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                         className="w-full flex gap-3 items-center"
                       >
                         <input
+                          disabled
                           type="text"
                           value={item?.documentName}
                           readOnly
@@ -956,6 +984,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                     <div className="md:w-[48%] w-full relative">
                       <div className="flex items-center">
                         <input
+                          disabled
                           type="text"
                           {...register("lastRevalidationDate", {})}
                           className="border border-[#E6E6E6] p-3 w-full  pointer-events-none rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none pr-10" // Add padding to the right
@@ -982,6 +1011,7 @@ const GeneralForm = ({ isActiveStatus }) => {
 
                     <div className="md:w-[48%] w-full relative">
                       <input
+                        disabled
                         type="text"
                         {...register("nextRevalidationDate", {})}
                         className="border border-[#E6E6E6]  pointer-events-none p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
@@ -1021,7 +1051,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                   <div className="flex justify-between flex-wrap gap-3">
                     <div className="md:w-[48%] w-full relative">
                       <input
-                        disabled={isActiveStatus !== "active"}
+                        disabled
                         type="text"
                         {...register("managerName", {})}
                         className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
@@ -1041,7 +1071,7 @@ const GeneralForm = ({ isActiveStatus }) => {
 
                     <div className="md:w-[48%] w-full relative">
                       <input
-                        disabled={isActiveStatus !== "active"}
+                        disabled
                         type="text"
                         {...register("managerEmail", {})}
                         className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
@@ -1064,7 +1094,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                     <div className="md:w-[48%] w-full relative">
                       <input
                         type="text"
-                        disabled={isActiveStatus !== "active"}
+                        disabled
                         {...register("managerPhone", {})}
                         className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
                       />
@@ -1084,59 +1114,58 @@ const GeneralForm = ({ isActiveStatus }) => {
                     </div>
 
                     <div className="md:w-[48%] w-full relative">
-                      <input
-                        disabled={isActiveStatus !== "active"}
-                        type="text"
-                        {...register("managerGender", {})}
-                        className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
-                      />
+                      <select
+                        {...register("managerGender")}
+                        disabled
+                        className={`border  border-[#E6E6E6] p-3 w-full rounded-md focus:outline-none peer placeholder::font-montserrat font-normal text-left placeholder:text-[#1C252E] outline-none bg-zinc-100`}
+                      >
+                        <option value="">Select</option>
+                        {gender &&
+                          gender.map((item, i) => (
+                            <option key={i}>{item?.label}</option>
+                          ))}
+                      </select>
+
                       <label
                         htmlFor="managerGender"
                         className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
                       >
                         Manager Gender
                       </label>
-                      {errors.managerGender && (
-                        <div className="text-red-500 text-sm mt-1">
-                          <div>
-                            {String(errors.managerGender?.message || "")}
-                          </div>
-                        </div>
-                      )}
                     </div>
 
                     <div className="md:w-[48%] w-full relative">
-                      <input
-                        disabled={isActiveStatus !== "active"}
-                        type="text"
-                        {...register("managerLanguage", {})}
-                        className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
-                      />
+                      <select
+                        {...register("managerLanguage")}
+                        disabled
+                        className={`border bg-zinc-100 border-[#E6E6E6] p-3 w-full rounded-md focus:outline-none peer placeholder::font-montserrat font-normal text-left placeholder:text-[#1C252E] outline-none`}
+                      >
+                        <option value="">Select</option>
+                        {language &&
+                          language.map((item, i) => (
+                            <option key={i} value={item?.value}>
+                              {item?.label}
+                            </option>
+                          ))}
+                      </select>
                       <label
                         htmlFor="managerLanguage"
                         className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
                       >
                         Manager Language
                       </label>
-                      {errors.managerLanguage && (
-                        <div className="text-red-500 text-sm mt-1">
-                          <div>
-                            {String(errors.managerLanguage?.message || "")}
-                          </div>
-                        </div>
-                      )}
                     </div>
 
                     <div className="md:w-[48%] w-full relative">
                       <input
-                        disabled={isActiveStatus !== "active"}
+                        disabled
                         type="text"
                         {...register("managerAddress", {})}
                         className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
                       />
                       <label
                         htmlFor="managerAddress"
-                        className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
+                        className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold "
                       >
                         Manager Address
                       </label>
@@ -1151,7 +1180,7 @@ const GeneralForm = ({ isActiveStatus }) => {
 
                     <div className="md:w-[48%] w-full relative">
                       <input
-                        disabled={isActiveStatus !== "active"}
+                        disabled
                         type="text"
                         {...register("managerCountry", {})}
                         className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
@@ -1173,7 +1202,7 @@ const GeneralForm = ({ isActiveStatus }) => {
 
                     <div className="md:w-[48%] w-full relative">
                       <input
-                        disabled={isActiveStatus !== "active"}
+                        disabled
                         type="text"
                         {...register("managerZipCode", {})}
                         className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
@@ -1196,7 +1225,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                     <div className="md:w-[48%] w-full relative">
                       <input
                         type="text"
-                        disabled={isActiveStatus !== "active"}
+                        disabled
                         {...register("managerState", {})}
                         className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
                       />
@@ -1217,7 +1246,7 @@ const GeneralForm = ({ isActiveStatus }) => {
 
                     <div className="md:w-[48%] w-full relative">
                       <input
-                        disabled={isActiveStatus !== "active"}
+                        disabled
                         type="text"
                         {...register("managerCity", {})}
                         className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
@@ -1244,6 +1273,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                     <div className="md:w-[48%] w-full relative">
                       <input
                         type="text"
+                        disabled
                         {...register("emergencyContactName", {})}
                         className="border border-[#E6E6E6]  p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
                       />
@@ -1264,6 +1294,7 @@ const GeneralForm = ({ isActiveStatus }) => {
 
                     <div className="md:w-[48%] w-full relative">
                       <input
+                        disabled
                         type="text"
                         {...register("emergencyContactPhone", {})}
                         className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
@@ -1287,6 +1318,7 @@ const GeneralForm = ({ isActiveStatus }) => {
 
                     <div className="md:w-[48%] w-full relative">
                       <input
+                        disabled
                         type="text"
                         {...register("emergencyContactEmail", {})}
                         className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
@@ -1310,6 +1342,7 @@ const GeneralForm = ({ isActiveStatus }) => {
 
                     <div className="md:w-[48%] w-full relative">
                       <input
+                        disabled
                         type="text"
                         {...register("emergencyContactAddress", {})}
                         className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
@@ -1318,7 +1351,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                         htmlFor="emergencyContactAddress"
                         className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
                       >
-                        Emergency Contact Email
+                        Emergency Contact Address
                       </label>
                       {errors.emergencyContactAddress && (
                         <div className="text-red-500 text-sm mt-1">
@@ -1333,6 +1366,7 @@ const GeneralForm = ({ isActiveStatus }) => {
 
                     <div className="md:w-[48%] w-full relative">
                       <input
+                        disabled
                         type="text"
                         {...register("emergencyContactRelation", {})}
                         className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
@@ -1361,9 +1395,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                 <button
                   type="submit"
                   className={`bg-zinc-800 hover:bg-zinc-900 text-white font-medium py-2 px-4 rounded-md ${
-                    isActiveStatus !== "active"
-                      ? "opacity-50 pointer-events-none"
-                      : ""
+                    isActiveStatus !== "active" ? "" : ""
                   }`}
                 >
                   {isPending ? `Loading...` : " Save Changes"}

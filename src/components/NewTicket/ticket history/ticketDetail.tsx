@@ -96,6 +96,9 @@ const SingleTicket = () => {
       isLiked: yesOrNo,
     };
     sendFeedback(data).then(() => {
+      if (yesOrNo) {
+        navigate("/artist-panel/ticket/tickets");
+      }
       setOpenTicketId(null);
       setFile(null);
       setIsModalOpen(false);
@@ -128,6 +131,8 @@ const SingleTicket = () => {
     setFileName("");
     setFile(null);
   };
+
+  console.log(data?.data?.status);
 
   if (isFetching) return <Loader />;
 
@@ -237,13 +242,13 @@ const SingleTicket = () => {
 
                   <div className="flex gap-3 text-xs">
                     <div className="font-semibold">
-                      {user?.createdAt
-                        ? new Date(user.createdAt).toLocaleDateString()
+                      {item?.createdAt
+                        ? new Date(item.createdAt).toLocaleDateString()
                         : null}
                     </div>
                     <div className="font-semibold">
-                      {user?.createdAt
-                        ? new Date(user.createdAt).toLocaleTimeString()
+                      {item?.createdAt
+                        ? new Date(item.createdAt).toLocaleTimeString()
                         : null}
                     </div>
                   </div>
@@ -267,16 +272,25 @@ const SingleTicket = () => {
 
       <div className="py-2  w-full md:w-2/3">
         <h2 className="font-montserrat text-lg font-semibold mt-4">
-          {data?.data?.status === "Finalise"
+          {data?.data?.status === "Technical Finish" ||
+          data?.data?.status === "Closed"
             ? "Send Your Feedback"
             : "Reply to Ticket"}
         </h2>
 
         <div className="flex items-center gap-3 mt-3">
-          {data?.data?.status === "Finalise" ? (
+          {data?.data?.status === "Technical Finish" ||
+          data?.data?.status === "Closed" ? (
             <div className="flex items-center gap-10">
               <div className="flex items-center gap-2">
-                <span className="cursor-pointer" onClick={() => handleLike()}>
+                <span
+                  className={`${
+                    data?.data?.status === "Closed"
+                      ? "pointer-events-none"
+                      : "cursor-pointer"
+                  }`}
+                  onClick={() => handleLike()}
+                >
                   <AiFillLike
                     size="1.5em"
                     color={
@@ -287,7 +301,11 @@ const SingleTicket = () => {
                   />
                 </span>
                 <span
-                  className="cursor-pointer"
+                  className={`${
+                    data?.data?.status === "Closed"
+                      ? "pointer-events-none"
+                      : "cursor-pointer"
+                  }`}
                   onClick={() => handleDisLike()}
                 >
                   <AiFillDislike
@@ -301,9 +319,11 @@ const SingleTicket = () => {
                 </span>
               </div>
 
-              <span className="font-montserrat text-sm font-medium bg-white border border-zinc-200  text-left  py-2 px-4 break-words ml-2 ">
-                {data?.data?.ticketFeedback?.message}
-              </span>
+              {data?.data?.ticketFeedback?.message ? (
+                <textarea className="font-montserrat text-sm font-medium bg-white border rounded-md  border-zinc-200  text-left  py-2 px-8 break-words ml-2 ">
+                  {data?.data?.ticketFeedback?.message}
+                </textarea>
+              ) : null}
             </div>
           ) : (
             <div className="flex flex-col gap-2 items-end rounded-md py-3 w-full">
@@ -314,40 +334,47 @@ const SingleTicket = () => {
                 rows={4}
                 value={reply}
               />
-              <div className="flex justify-end gap-3">
-                <input
-                  type="file"
-                  id="file-upload"
-                  className="opacity-0 inset-0 cursor-pointer"
-                  onChange={(val) => handleFileChange(val)}
-                />
-                <label
-                  htmlFor="file-upload"
-                  className={`inline-block relative px-6 py-3 font-semibold rounded-md cursor-pointer border border-red-300 shadow-xl transition duration-300 ${
-                    file ? "bg-gray-200 pointer-events-none " : "bg-white"
-                  }`}
-                >
-                  {file ? (
+              <div className="flex justify-end gap-3 items-center">
+                <div className="relative">
+                  {file ? null : (
                     <>
-                      <span
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleRemoveFile();
-                        }}
-                        className="absolute top-0 right-0 px-2 font-semibold cursor-pointer text-red-500 z-50"
+                      <input
+                        type="file"
+                        id="file-upload"
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        onChange={(val) => handleFileChange(val)}
+                      />
+                      <label
+                        htmlFor="file-upload"
+                        className={`inline-block px-6 py-3 font-semibold rounded-md cursor-pointer border shadow-lg transition duration-300 ${
+                          file
+                            ? "bg-gray-200 border-gray-300"
+                            : "bg-white border-red-300"
+                        }`}
                       >
-                        X
-                      </span>
-                      <span className={`ml-6 `}>{fileName}</span>
+                        Choose File
+                      </label>
                     </>
-                  ) : (
-                    "Choose File"
                   )}
-                </label>
+                </div>
+
+                {file && (
+                  <div className="flex items-center gap-4">
+                    <span className="truncate px-4 py-2 bg-gray-100 border rounded-md">
+                      {fileName}
+                    </span>
+                    <button
+                      onClick={handleRemoveFile}
+                      className="text-red-500 font-semibold border border-red-500 px-4 py-2 rounded-md hover:bg-red-100 transition duration-300"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                )}
 
                 <button
                   onClick={() => handleReply(data?.data)}
-                  className="bg-black text-white rounded-lg px-4 py-2"
+                  className="bg-black text-white rounded-lg px-4 py-2 hover:bg-gray-800 transition duration-300"
                 >
                   {isPending ? "Loading..." : "Submit"}
                 </button>
@@ -356,7 +383,7 @@ const SingleTicket = () => {
           )}
 
           {isModalOpen ? (
-            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[999]">
               <div className="bg-white p-6 rounded-lg lg:w-1/3">
                 <h2 className="  xl:text-xl mb-4">We'd love your feedback!</h2>
                 <textarea

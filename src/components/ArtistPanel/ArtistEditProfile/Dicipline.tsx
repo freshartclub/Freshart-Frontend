@@ -60,10 +60,10 @@ const Dicipline = ({ control, isActiveStatus, prefillValues, watch }) => {
                     name={`discipline.${index}.discipline`}
                     render={({ field }) => (
                       <select
-                        disabled={isActiveStatus !== "active"}
+                        // disabled={isActiveStatus !== "active"}
                         {...field}
-                        className={`border border-gray-300 rounded p-3 w-full outline-none ${
-                          isActiveStatus !== "active" ? "bg-zinc-100" : ""
+                        className={`border border-gray-300 rounded p-3 w-full outline-none cursor-pointer ${
+                          isActiveStatus !== "active" ? "" : ""
                         }`}
                       >
                         <option value="">Select</option>
@@ -95,7 +95,7 @@ const Dicipline = ({ control, isActiveStatus, prefillValues, watch }) => {
                       return (
                         <Select
                           isMulti
-                          isDisabled={isActiveStatus !== "active"}
+                          // isDisabled={isActiveStatus !== "active"}
                           options={
                             selectedDiscipline
                               ? getStylesForDiscipline(selectedDiscipline)?.map(
@@ -126,7 +126,7 @@ const Dicipline = ({ control, isActiveStatus, prefillValues, watch }) => {
               <button
                 onClick={() => remove(index)}
                 className={`hover:bg-red-300 px-4 py-3 mt-5 rounded-lg gap-1 bg-[#FCDAD7] text-[#F04438] ${
-                  isActiveStatus !== "active" ? "pointer-events-none" : ""
+                  isActiveStatus !== "active" ? "" : ""
                 }`}
                 title="Remove Discipline"
               >
@@ -139,7 +139,7 @@ const Dicipline = ({ control, isActiveStatus, prefillValues, watch }) => {
       <span
         onClick={handleAddAccount}
         className={`bg-[#DEDEFA] font-semibold py-3 px-2 rounded cursor-pointer ${
-          isActiveStatus !== "active" ? "pointer-events-none" : ""
+          isActiveStatus !== "active" ? "" : ""
         }`}
       >
         + Add Discipline

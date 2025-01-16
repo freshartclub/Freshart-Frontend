@@ -44,6 +44,18 @@ const NewTicket = () => {
   const ticketImpact = picklistMap["Ticket Priority"];
   const ticketUrgency = picklistMap["Ticket Urgency"];
 
+  const sortedticketImpact = ticketImpact?.sort((a, b) => {
+    if (a.label > b.label) return -1;
+    if (a.label < b.label) return 1;
+    return 0;
+  });
+
+  const sortedticketUrgency = ticketUrgency?.sort((a, b) => {
+    if (a.label > b.label) return -1;
+    if (a.label < b.label) return 1;
+    return 0;
+  });
+
   const name =
     data?.data?.artist?.artistName +
     " " +
@@ -61,8 +73,8 @@ const NewTicket = () => {
     message: "",
     ticketImg: null,
     ticketType: "",
-    urgency: ticketUrgency?.[0]?.value || "",
-    impact: ticketImpact?.[0]?.value || "",
+    urgency: sortedticketUrgency?.[0]?.value || "",
+    impact: sortedticketImpact?.[0]?.value || "",
   };
 
   const onSubmit = (values, action) => {
@@ -198,8 +210,8 @@ const NewTicket = () => {
                       as="select"
                       className="outline-[#FDB7DC] bg-[#FFD1D114] shadow border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-[#FDB7DC] focus:shadow-outline"
                     >
-                      {ticketUrgency
-                        ? ticketUrgency?.map((item, i) => (
+                      {sortedticketUrgency
+                        ? sortedticketUrgency?.map((item, i) => (
                             <option key={i} value={item?.value}>
                               {item.value}
                             </option>
@@ -225,8 +237,8 @@ const NewTicket = () => {
                       as="select"
                       className="outline-[#FDB7DC] bg-[#FFD1D114] shadow border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-[#FDB7DC] focus:shadow-outline"
                     >
-                      {ticketImpact
-                        ? ticketImpact?.map((item, i) => (
+                      {sortedticketImpact
+                        ? sortedticketImpact?.map((item, i) => (
                             <option key={i} value={item?.value}>
                               {item.value}
                             </option>

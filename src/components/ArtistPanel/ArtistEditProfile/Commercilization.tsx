@@ -55,8 +55,6 @@ const Commercilization = ({ control }) => {
     },
   ];
 
-
-
   return (
     <div className="p-4 mx-auto border border-custom-gray bg-white rounded-md shadow-custom mb-4 mt-4">
       <h2 className="pb-3 font-medium text-lg leading-7 tracking-wider text-[#1A1C21]">
@@ -66,7 +64,7 @@ const Commercilization = ({ control }) => {
         {commercializationData.map(({ name, label, message }) => (
           <div key={name} className="md:w-[48%] w-full relative">
             <input
-              readOnly
+              disabled
               type="text"
               {...control.register(name)}
               className="border pointer-events-none border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-[#1C252E] outline-none"
@@ -96,7 +94,7 @@ const Commercilization = ({ control }) => {
                     <select
                       disabled
                       {...field}
-                      className="border border-gray-300 rounded p-3 w-full outline-none"
+                      className="border border-gray-300 rounded p-3 w-full outline-none "
                     >
                       {/* <option value="">Select</option> */}
                       {fields?.map((item, index) => (

@@ -91,7 +91,9 @@ const TicketsList: FC<{
           return (
             <div
               key={ticket._id}
-              className="border p-2 sm:p-4 rounded-lg mb-4 bg-[#FEFEFE]"
+              className={`border p-2 sm:p-4 rounded-lg mb-4  ${
+                ticket.isRead ? "bg-zinc-200 " : "  bg-[#FEFEFE]"
+              }`}
             >
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center px-2 w-[100%]">
                 <div className="flex items-center mb-2 sm:mb-0 w-[100%]">
@@ -159,10 +161,14 @@ const TicketsList: FC<{
                 </div>
 
                 <div className="flex items-center gap-3">
-                  {ticket.status === "Finalise" ? (
+                  {ticket.status === "Closed" ? (
                     <div className="flex items-center gap-2">
                       <span
-                        className="cursor-pointer"
+                        className={`${
+                          ticket.status === "Closed"
+                            ? "pointer-events-none"
+                            : "cursor-pointer"
+                        }`}
                         onClick={() => handleLike(ticket._id)}
                       >
                         <AiFillLike
@@ -176,7 +182,11 @@ const TicketsList: FC<{
                         />
                       </span>
                       <span
-                        className="cursor-pointer"
+                        className={`${
+                          ticket.status === "Closed"
+                            ? "pointer-events-none"
+                            : "cursor-pointer"
+                        }`}
                         onClick={() => handleDisLike(ticket._id)}
                       >
                         <AiFillDislike

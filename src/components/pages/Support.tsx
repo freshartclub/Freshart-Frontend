@@ -42,12 +42,11 @@ const Support = () => {
 
   const { data: kbData, isLoading: KbLoding } = useGetKbDataBase();
 
+  const newSearchArray = { ...faqData?.data, ...kbData };
+
   dayjs.extend(isBetween);
 
   const KbTitle = kbData?.data?.map((item, i) => item?.kbTitle) || [];
-
-  console.log(kbData);
-  console.log(getSearchValue);
 
   const now = dayjs();
   const startOfDay = now.startOf("day");
@@ -62,9 +61,14 @@ const Support = () => {
   const location = useLocation();
   const isArtistProfile = location.pathname.includes("/artist-panel");
 
-  const handleKbDatabse = (link) => {
+  const handleItemClick = (link) => {
+    console.log(link);
     if (isArtistProfile) {
-      navigate(`/artist-panel/kb-database/${link}`);
+      if (link?.faqQues) {
+        navigate(`/artist-panel/faq/`);
+      } else if (link?.kbTitle) {
+        navigate(`/artist-panel/kb-database/`);
+      }
       window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
       navigate(`/kb-database`);
@@ -142,6 +146,7 @@ const Support = () => {
                 thickness: "thick",
                 fontSize: "base",
               }}
+              // onClick={handleKbDatabse}
               className="bg-[#FF536B] rounded-md text-white mb-5 uppercase"
             >
               Help Center
@@ -163,20 +168,21 @@ const Support = () => {
                   onChange={(e) => setSearchValue(e.target.value)}
                 />
                 {getSearchValue && (
-                  <div className="search-list-container top-12 absolute w-full  mt-2 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                  <div className="search-list-container top-12 absolute w-full mt-2 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
                     <ul className="list-none p-2">
-                      {kbData?.data
-                        ?.filter((result) =>
-                          result?.kbTitle
+                      {[...(faqData?.data || []), ...(kbData?.data || [])]
+                        .filter((item) =>
+                          (item?.faqQues || item?.kbTitle)
                             ?.toLowerCase()
                             .includes(getSearchValue.toLowerCase())
                         )
-                        .map((result, index) => (
+                        .map((item, index) => (
                           <li
                             key={index}
+                            onClick={() => handleItemClick(item)}
                             className="py-1 px-2 hover:bg-gray-200 cursor-pointer"
                           >
-                            {result?.kbTitle}
+                            {item?.faqQues || item?.kbTitle}
                           </li>
                         ))}
                     </ul>

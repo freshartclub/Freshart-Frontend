@@ -9,7 +9,7 @@ import Language from "./Language";
 import Billing from "./Billing";
 
 const ArtistTabs = () => {
-  const [activeTab, setActiveTab] = useState("billing");
+  const [activeTab, setActiveTab] = useState("notification");
 
   return (
     <>
@@ -23,7 +23,7 @@ const ArtistTabs = () => {
           role="tablist"
         >
           {/* Billing Tab */}
-          <P
+          {/* <P
             variant={{ size: "base", theme: "dark", weight: "semiBold" }}
             className="mx-2 sm:mx-5 flex-shrink-0"
             role="presentation"
@@ -43,7 +43,7 @@ const ArtistTabs = () => {
               <img src={bill} alt="billing" className="h-4 w-4" />
               Billing
             </button>
-          </P>
+          </P> */}
 
           {/* Notification Tab */}
           <P
@@ -141,7 +141,7 @@ const ArtistTabs = () => {
 
       {/* Tab Content */}
       <div id="default-tab-content">
-        {activeTab === "billing" && <Billing />}
+        {/* {activeTab === "billing" && <Billing />} */}
         {activeTab === "notification" && <Notification />}
         {/* {activeTab === "social" && <Sociallinks />} */}
         {activeTab === "security" && <Security />}

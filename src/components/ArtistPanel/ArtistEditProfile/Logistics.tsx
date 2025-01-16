@@ -63,6 +63,7 @@ const Logistics = ({ control }) => {
         {logisticsData.map(({ name, label, message }) => (
           <div key={name} className="md:w-[48%] w-full relative">
             <input
+              disabled
               type="text"
               {...control.register(name)}
               className="border pointer-events-none border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-[#1C252E] outline-none"
