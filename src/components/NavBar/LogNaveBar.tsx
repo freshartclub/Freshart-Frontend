@@ -45,29 +45,45 @@ const LogNaveBar = () => {
   useEffect(() => {
     const getLanguage = localStorage.getItem("language");
     const getLangCode = localStorage.getItem("langCode");
-    setFlag(getLangCode.toLocaleLowerCase() || "es");
+    setFlag(getLangCode || "es");
     setLanguageSettings(getLanguage || "en");
     setCurrencySettings(getCurrency || "usd");
   }, []);
 
   const countries = [
-    { code: "GB", flag: "https://flagcdn.com/w320/gb.png", name: "English" },
+    {
+      code: "GB",
+      flag: "https://flagcdn.com/w320/gb.png",
+      name: "English",
+      val: "gb",
+    },
     {
       code: "US",
       flag: "https://flagcdn.com/w320/us.png",
       name: "English (US)",
+      val: "us",
     },
-    { code: "ES", flag: "https://flagcdn.com/w320/es.png", name: "Spanish" },
-    { code: "CAT", flag: "https://flagcdn.com/w320/ct.png", name: "Catalan" },
+    {
+      code: "ES",
+      flag: "https://flagcdn.com/w320/es.png",
+      name: "Spanish",
+      val: "es",
+    },
+    {
+      code: "CAT",
+      flag: "https://flagcdn.com/w320/ct.png",
+      name: "Catalan",
+      val: "cat",
+    },
   ];
 
   const handleSelectChange = (value: string, key: string, flag) => {
     localStorage.setItem("language", value);
-    localStorage.setItem("langCode", key);
+    localStorage.setItem("langCode", flag);
     localStorage.setItem("currency", currencySettings);
 
     dispatch(setLanguage(value));
-    setFlag(key.toLocaleLowerCase());
+    setFlag(flag);
     setLanguageSettings(value);
     setSettings((prev) => ({ ...prev, [key]: value }));
     setLanguageDropdownOpen(false);
@@ -117,7 +133,7 @@ const LogNaveBar = () => {
                           handleSelectChange(
                             choice.name,
                             choice.code,
-                            choice.flag
+                            choice.val
                           )
                         }
                       >
@@ -138,14 +154,15 @@ const LogNaveBar = () => {
                 <img src={globe} alt="" className="mr-5" />
               </Link> */}
 
-              {isSignupPage ? (
-                <Link to="/login" className="text-black mr-4 uppercase">
-                  {t("Sign in")}
-                </Link>
-              ) : null
-              // <Link to="/signup" className="text-black mr-4 uppercase">
-              //   {t("Sign up")}
-              // </Link>
+              {
+                isSignupPage ? (
+                  <Link to="/login" className="text-black mr-4 uppercase">
+                    {t("Sign in")}
+                  </Link>
+                ) : null
+                // <Link to="/signup" className="text-black mr-4 uppercase">
+                //   {t("Sign up")}
+                // </Link>
               }
 
               {isSignupPage ? (
