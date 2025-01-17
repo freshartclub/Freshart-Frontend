@@ -12,7 +12,7 @@ i18n
     ns: ["translation"],
     defaultNS: "translation",
     backend: {
-      loadPath: `https://test.freshartclub.com/images/lang/{{lng}}.json`,
+      loadPath: `${imageUrl}/lang/{{lng}}.json`,
       // loadPath: `http://localhost:5000/uploads/lang/{{lng}}.json`,
     },
   });
