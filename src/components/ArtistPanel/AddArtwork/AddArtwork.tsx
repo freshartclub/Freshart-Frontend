@@ -154,6 +154,8 @@ const AddArtwork = () => {
   const qrCodeRef = useRef(null);
   const [isComingSoon, setIsComingSoon] = useState(null);
 
+  const [isArtProviderField, setIsArtProviderField] = useState("");
+
   const [isDropdownOpen, setDropdownOpen] = useState(false);
 
   const [selectedOptions, setSelectedOptions] = useState([]);
@@ -334,6 +336,7 @@ const AddArtwork = () => {
 
   useEffect(() => {
     if (id) {
+      setIsArtProviderField(data?.data?.isArtProvider || "");
       setArtDicipline(data?.data?.discipline?.artworkDiscipline || ""),
         setActiveTab(data?.data?.commercialization?.activeTab || "");
       setInternalTags(data?.data?.tags?.intTags || []);
@@ -691,7 +694,7 @@ const AddArtwork = () => {
       values.activeTab = activeTab;
       values.intTags = internalTags;
       values.extTags = externalTags;
-      values.isArtProvider = isArtProvider;
+      values.isArtProvider = isArtProviderField;
       values.artworkDiscipline = artDicipline;
       values.vatAmount = vatAmount;
       values.artistFees = catalogPrice;
@@ -893,6 +896,8 @@ const AddArtwork = () => {
     setDropdownOpen(!isDropdownOpen);
   };
 
+  console.log(isArtProviderField);
+
   if (loading) {
     return <Loader />;
   }
@@ -987,6 +992,8 @@ const AddArtwork = () => {
                       id="isArtProvider"
                       name="isArtProvider"
                       disabled={query}
+                      value={isArtProviderField}
+                      onChange={(e) => setIsArtProviderField(e.target.value)}
                       className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
                     >
                       <option value="" disabled>
@@ -998,7 +1005,7 @@ const AddArtwork = () => {
                   </div>
                 ) : null}
 
-                {getValues("isArtProvider") === "yes" ? (
+                {isArtProviderField === "yes" ? (
                   <div className="mb-4">
                     <label className="block text-sm sm:text-base text-[#203F58] font-semibold mb-2">
                       {t("Artist name")}
@@ -1061,9 +1068,7 @@ const AddArtwork = () => {
                     <div className="relative w-full">
                       <div className="flex flex-col mb-1">
                         <input
-                          {...register("artworkSeries", {
-                            required: "Series is required",
-                          })}
+                          {...register("artworkSeries")}
                           value={getValues("artworkSeries")}
                           type="text"
                           readOnly="true"

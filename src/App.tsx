@@ -136,12 +136,13 @@ const App: React.FC = () => {
             <Route path="/" element={<GetStarted />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignUp />} />
+            <Route path="/become_artist" element={<BecomeArtist />} />
             <Route path="/forget-password" element={<ForgetPassword />} />
             <Route path="/reset-password" element={<ChangePassword />} />
             <Route path="/otp" element={<OtpPage />} />
             <Route path="/sign-up-otp" element={<SignUpOtp />} />
             <Route path="/terms" element={<TermAndCondition />} />
-            <Route path="/become_artist" element={<BecomeArtist />} />
+
             <Route path="*" element={<NotFoundPage />} />
             <Route path="/faq" element={<Faq />} />
             <Route path="/kb-database" element={<KbDatabase />} />

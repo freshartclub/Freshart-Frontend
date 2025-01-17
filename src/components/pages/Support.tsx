@@ -22,11 +22,15 @@ import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
 import { useGetFaq } from "./http/useGetFaq";
 import { useGetKbDataBase } from "./http/useGetKbDataBase";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Loader from "../ui/Loader";
 
 const Support = () => {
   const navigate = useNavigate();
   const [getSearchValue, setSearchValue] = useState("");
+  const [isModalOpen, setIsModelOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const handleSubmitButton = () => {
     const submitTicket = isArtistProfile
@@ -51,6 +55,7 @@ const Support = () => {
   const now = dayjs();
   const startOfDay = now.startOf("day");
   const endOfDay = now.endOf("day");
+  const sevenDaysFromNow = now.add(7, "day").startOf("day");
 
   const newIncident = data?.filter((incident) => {
     const incidentStart = dayjs(incident.initTime);
@@ -58,17 +63,41 @@ const Support = () => {
     return incidentStart.isBetween(startOfDay, endOfDay, null, "[]");
   });
 
+  const incidentAfterSevenDay = data?.filter((incident) => {
+    const incidentStart = dayjs(incident.initTime);
+
+    return incidentStart.isBetween(sevenDaysFromNow);
+  });
+
+  console.log(incidentAfterSevenDay);
+
   const location = useLocation();
   const isArtistProfile = location.pathname.includes("/artist-panel");
 
   const handleItemClick = (link) => {
-    console.log(link);
     if (isArtistProfile) {
       if (link?.faqQues) {
-        navigate(`/artist-panel/faq/`);
-      } else if (link?.kbTitle) {
-        navigate(`/artist-panel/kb-database/`);
+        setIsModelOpen(true);
+        setSelectedItem(link);
+      } else {
+        navigate(`/artist-panel/kb-details?id=${link._id}`);
+        window.scrollTo({ top: 0, behavior: "smooth" });
       }
+    } else {
+      navigate(`/kb-database`);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
+  const closeModal = () => {
+    setIsModelOpen(false); // Close the modal
+    setSelectedItem(null); // Reset the selected item
+  };
+
+  const handleKbDatabse = (item) => {
+    if (isArtistProfile) {
+      navigate(`/artist-panel/kb-details?id=${item._id}`);
+
       window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
       navigate(`/kb-database`);
@@ -85,6 +114,16 @@ const Support = () => {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
+
+  console.log(data);
+
+  useEffect(() => {
+    if (isLoading || faqLoading || KbLoding) {
+      setLoading(true);
+    } else {
+      setLoading(false);
+    }
+  }, [isLoading, faqLoading, KbLoding]);
 
   const assist_Data = [
     {
@@ -121,6 +160,10 @@ const Support = () => {
     },
   ];
 
+  if (loading) {
+    return <Loader />;
+  }
+
   return (
     <div>
       <div className="container mx-auto md:px-6 px-3">
@@ -133,6 +176,22 @@ const Support = () => {
               newIncident?.map((item, i) => (
                 <p className="mt-1" key={i}>
                   {item?.description?.replace(/(^<p>|<\/p>$)/g, "")}
+                </p>
+              ))
+            )}
+
+            <h3 className="font-semibold mt-3">Up Coming</h3>
+            {isLoading ? (
+              <h1>Loading...</h1>
+            ) : (
+              incidentAfterSevenDay?.map((item, i) => (
+                <p className="mt-1 flex items-center gap-3" key={i}>
+                  {item?.title?.replace(/(^<p>|<\/p>$)/g, "")}
+                  <span className="text-xs font-semibold">
+                    {dayjs(item.initTime).format("MMM D, YYYY")}
+                    {" " + "-" + " "}
+                    {dayjs(item.endTime).format("MMM D, YYYY")}
+                  </span>
                 </p>
               ))
             )}
@@ -180,12 +239,34 @@ const Support = () => {
                           <li
                             key={index}
                             onClick={() => handleItemClick(item)}
-                            className="py-1 px-2 hover:bg-gray-200 cursor-pointer"
+                            className="py-1 px-2 border border-zinc-300 rounded-md mb-3 hover:bg-gray-200 cursor-pointer"
                           >
-                            {item?.faqQues || item?.kbTitle}
+                            {item?.faqQues
+                              ? `FAQ: ${item.faqQues}`
+                              : `KB: ${item?.kbTitle}`}
                           </li>
                         ))}
                     </ul>
+                  </div>
+                )}
+
+                {isModalOpen && (
+                  <div className="fixed inset-0 flex items-center justify-center z-[999] bg-black bg-opacity-50 ">
+                    <div className="bg-white p-6 rounded-md shadow-lg max-w-md w-full">
+                      <h2 className="text-lg font-semibold mb-4">
+                        FAQ Details
+                      </h2>
+                      <p className="mb-4 flex flex-col gap-2">
+                        <span className="text-md font-semibold leading-none tracking-tight">{`Question: ${selectedItem.faqQues}`}</span>
+                        <span className="font-medium tracking-tight">{`${selectedItem?.faqAns}`}</span>
+                      </p>
+                      <button
+                        onClick={closeModal}
+                        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                      >
+                        Close
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
@@ -218,18 +299,18 @@ const Support = () => {
             What can we assist you with today?
           </Header>
           <div className="grid xl:grid-cols-4 md:grid-cols-3 grid-cols-1  gap-4">
-            {assist_Data.map((item, index) => (
+            {kbData?.data?.map((item, index) => (
               <div
                 onClick={() => handleKbDatabse(item)}
                 key={index}
                 className="bg-white flex p-4 border-2 border-[#FFD8DD] shadow-lg cursor-pointer"
               >
-                <img className="w-8 h-8" src={item.image} alt="image" />
+                {/* <img className="w-8 h-8" src={item.image} alt="image" /> */}
                 <P
                   variant={{ size: "base", theme: "dark", weight: "normal" }}
                   className="ml-3 mt-1 font-bold text-sm"
                 >
-                  {item.title}
+                  {item?.kbTitle}
                 </P>
               </div>
             ))}

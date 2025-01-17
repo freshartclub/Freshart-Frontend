@@ -16,12 +16,14 @@ import {
   IoIosArrowDropleftCircle,
   IoIosArrowDroprightCircle,
 } from "react-icons/io";
+import { useGetArtistDetails } from "./http/useGetArtistDetails";
 
 const Artwork = () => {
   const [loading, setLoading] = useState(true);
   const [selectedArtwork, setSelectedArtwork] = useState("series");
   const isArtProvider = useAppSelector((state) => state.user.isArtProvider);
   const [swiperInstance, setSwiperInstance] = useState(null);
+  // const { data: artistData, isLoading: artistLoading } = useGetArtistDetails();
 
   const { data, isLoading, refetch, isRefetching } =
     useGetArtWorkList(selectedArtwork);
@@ -58,6 +60,10 @@ const Artwork = () => {
     setSelectedArtwork(currentValue);
   };
 
+  const handleArtistName = (artist) => {
+    setSelectedArtwork(artist);
+  };
+
   const handleArtworkClick = (artworkId, status) => {
     setSelectedArtworkId(artworkId);
     setIsPopupOpen(true);
@@ -76,7 +82,6 @@ const Artwork = () => {
     }
   };
 
-  console.log(data?.data.length < 3);
   if (isLoading) {
     return <Loader />;
   }
@@ -107,7 +112,7 @@ const Artwork = () => {
 
         {isArtProvider === "Yes" ? (
           <span
-            onClick={handleArtworkSelect}
+            onClick={() => handleArtistName("artprovider")}
             className="px-2 py-2 bg-white font-medium rounded cursor-pointer text-md"
           >
             Artist Name
@@ -165,7 +170,7 @@ const Artwork = () => {
                   {item?.groupName || "No Name"}
                 </h1>
 
-                {data?.data.length < 4 ? (
+                {/* {item?.artworks < 4 ? (
                   <>
                     <IoIosArrowDropleftCircle
                       onClick={handleArrowClick}
@@ -181,7 +186,7 @@ const Artwork = () => {
                       className="absolute   top-1/2 left-[98%]  transform -translate-x-1/2 -translate-y-1/2 z-[999] cursor-pointer"
                     />
                   </>
-                ) : null}
+                ) : null} */}
 
                 <Swiper
                   spaceBetween={20}

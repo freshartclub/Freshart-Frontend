@@ -14,54 +14,6 @@ const Faq = () => {
   const navigate = useNavigate();
   const { data, isLoading } = useGetFaq();
 
-  const faqData = [
-    {
-      question: "How do I create an artwork listing?",
-      answer:
-        "To create an artwork listing, navigate to the 'Artwork Management' section from the dashboard. Click 'Add New', fill in the required details like title, description, and price, and upload high-quality images.",
-    },
-    {
-      question: "What payment methods does FreshArt support?",
-      answer:
-        "FreshArt supports all major payment methods, including credit/debit cards, PayPal, and bank transfers. Payments are securely processed through industry-standard gateways.",
-    },
-    {
-      question: "Can I manage my subscription plan?",
-      answer:
-        "Yes, you can manage your subscription plan from the 'Subscription Plan' section. Here you can upgrade, downgrade, or cancel your plan anytime.",
-    },
-    {
-      question: "How do I track orders?",
-      answer:
-        "Orders can be tracked via the 'Subscription Order' or 'Purchase Order' sections on the dashboard. You can view order status, details, and updates here.",
-    },
-    {
-      question: "Is there customer support available?",
-      answer:
-        "Yes, FreshArt offers 24/7 customer support. You can reach out via the 'Help & Support' section on the dashboard for any assistance.",
-    },
-    {
-      question: "How do I track orders?",
-      answer:
-        "Orders can be tracked via the 'Subscription Order' or 'Purchase Order' sections on the dashboard. You can view order status, details, and updates here.",
-    },
-    {
-      question: "Is there customer support available?",
-      answer:
-        "Yes, FreshArt offers 24/7 customer support. You can reach out via the 'Help & Support' section on the dashboard for any assistance.",
-    },
-    {
-      question: "How do I track orders?",
-      answer:
-        "Orders can be tracked via the 'Subscription Order' or 'Purchase Order' sections on the dashboard. You can view order status, details, and updates here.",
-    },
-    {
-      question: "Is there customer support available?",
-      answer:
-        "Yes, FreshArt offers 24/7 customer support. You can reach out via the 'Help & Support' section on the dashboard for any assistance.",
-    },
-  ];
-
   const handleBack = () => {
     navigate(-1);
   };
@@ -69,7 +21,7 @@ const Faq = () => {
   if (isLoading) return <Loader />;
 
   return (
-    <div className="relative">
+    <div className="relative h-[100vh]">
       <span
         onClick={() => handleBack()}
         className="absolute left-10 top-8 cursor-pointer"

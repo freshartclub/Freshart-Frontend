@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface EmailVerificationProps {
   verificationCode: string;
@@ -27,6 +28,8 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({
 }) => {
   const [errorMessage, setErrorMessage] = useState("");
 
+  const { t, i18n } = useTranslation();
+
   const handleCodeChange = (e) => {
     setVerificationCode(e.target.value);
   };
@@ -35,11 +38,11 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({
     <div className="flex flex-col items-center ">
       <span
         onClick={handleRevalidateEmail}
-        className={`text-black border border-zinc-600 py-2 w-[9rem] px-4 pr-0 rounded cursor-pointer ${
+        className={`text-black border border-zinc-600 py-2 w-[11rem]  text-center pr-0 rounded cursor-pointer ${
           validateEmail === "Email Verified" ? "pointer-events-none" : ""
         }`}
       >
-        {sendMailPending ? "Sending..." : validateEmail}
+        {sendMailPending ? "Sending..." : t(validateEmail)}
       </span>
 
       {isModalOpen && (

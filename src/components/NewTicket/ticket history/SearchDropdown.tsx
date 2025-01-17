@@ -79,20 +79,6 @@ const SearchDropdown: FC<SearchDropdownProps> = ({
       {/* Filters and Button */}
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4 w-full lg:w-auto">
         {/* Priority Filter */}
-        <select
-          value={filterBy}
-          onChange={handleFilterDropdownChange}
-          className="border p-3 sm:p-4 rounded-lg text-sm font-bold text-[#203F58] w-full sm:w-auto outline-none"
-        >
-          <option value="">Filter By</option>
-          {/* <option value="All">All</option> */}
-          <option value="Ticket Urgency">Ticket Urgency</option>
-          {/* <option value="Ticket Priority">Ticket Priority</option> */}
-
-          <option value="Ticket Impact">Ticket Impact</option>
-
-          <option value="Ticket Type">Ticket Type</option>
-        </select>
 
         <select
           value={status}

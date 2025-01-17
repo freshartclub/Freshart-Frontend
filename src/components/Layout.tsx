@@ -27,6 +27,7 @@ const Layout: React.FC<LayoutProps> = ({
   const isLoginPage = location.pathname === "/login";
   const isSignUpPage = location.pathname === "/signup";
   const isForgetPassword = location.pathname === "/forget-password";
+  const becomeAnArtist = location.pathname === "/become_artist";
 
   // let RoleBaseNavBar;
 
@@ -38,7 +39,7 @@ const Layout: React.FC<LayoutProps> = ({
 
   return (
     <div>
-      {isLoginPage || isSignUpPage || isForgetPassword ? (
+      {isLoginPage || isSignUpPage || isForgetPassword || becomeAnArtist ? (
         <LogNaveBar />
       ) : user === "artist" ? null : (
         <NavBar />

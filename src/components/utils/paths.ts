@@ -18,4 +18,5 @@ export const generalPath = {
   getKbDataBase: "api/general/get-general-kb-list",
   getArtworkStyle: "api/general/list-style",
   getMediaSupport: "api/general/list-media",
+  getKbDetails: "api/general/get-kb-by-id",
 };

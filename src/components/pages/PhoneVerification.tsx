@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface PhoneVerificationProps {
   handleSendOtp: () => void;
@@ -32,6 +33,7 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
   validateEmail,
 }) => {
   const [errorMessage, setErrorMessage] = useState("");
+  const { t, i18n } = useTranslation();
 
   console.log(validatePhone);
 
@@ -44,10 +46,10 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
             ? `border-zinc-600 text-black text-center py-2 px-4 rounded border cursor-pointer w-[8rem] ${
                 validatePhone === "Verified" ? "pointer-events-none" : ""
               }`
-            : "border-zinc-600 text-black py-2 px-4 rounded border cursor-pointer pointer-events-none  text-center opacity-40 w-[8rem]"
+            : "border-zinc-600 text-black py-2 px-4 rounded border cursor-pointer pointer-events-none  text-center opacity-40 w-[11rem]"
         }`}
       >
-        {requestOtpPending ? "Sending..." : validatePhone}
+        {requestOtpPending ? "Sending..." : t(validatePhone)}
       </span>
 
       {isModalOpenPhone && (

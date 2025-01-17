@@ -57,13 +57,22 @@ const TicketHistory: React.FC = () => {
     (status) => status !== "Closed" && status !== "Created"
   );
 
+  console.log(filteredStatuses);
+
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
   };
   const inProgressTicket = data?.filter((ticket) => {
-    return filteredStatuses?.some((status) => ticket?.status?.includes(status));
+    const ticketStatus = ticket?.status?.toString().toLowerCase();
+
+    return filteredStatuses?.some((status) =>
+      ticketStatus.includes(status.toLowerCase())
+    );
   });
 
+  console.log(inProgressTicket);
+
+  console.log(data);
   const onGoingTicket = data?.filter((ticket) => {
     return ticket?.status?.includes("In progress");
   });
@@ -107,32 +116,32 @@ const TicketHistory: React.FC = () => {
       );
     }
 
-    if (filterBy === "Ticket Urgency") {
-      filteredTickets = filteredTickets.sort(
-        (a, b) =>
-          parseInt(a.urgency.split(" - ")[0], 10) -
-          parseInt(b.urgency.split(" - ")[0], 10)
-      );
-    } else if (filterBy === "Ticket Priority") {
-      filteredTickets = filteredTickets.sort((a, b) => {
-        const priorityA = parseInt(a.priority.split(" - ")[0], 10);
-        const priorityB = parseInt(b.priority.split(" - ")[0], 10);
-        return priorityA - priorityB;
-      });
-    } else if (filterBy === "Ticket Impact") {
-      filteredTickets = filteredTickets.sort((a, b) => {
-        const impactA = parseInt(a.impact.split(" - ")[0], 10);
-        const impactB = parseInt(b.impact.split(" - ")[0], 10);
-        return impactA - impactB;
-      });
-    } else if (filterBy === "Ticket Type") {
-      filteredTickets = filteredTickets.sort((a, b) => {
-        const typeA = a.ticketType.split(" - ")[1];
-        const typeB = b.ticketType.split(" - ")[1];
+    // if (filterBy === "Ticket Urgency") {
+    //   filteredTickets = filteredTickets.sort(
+    //     (a, b) =>
+    //       parseInt(a.urgency.split(" - ")[0], 10) -
+    //       parseInt(b.urgency.split(" - ")[0], 10)
+    //   );
+    // } else if (filterBy === "Ticket Priority") {
+    //   filteredTickets = filteredTickets.sort((a, b) => {
+    //     const priorityA = parseInt(a.priority.split(" - ")[0], 10);
+    //     const priorityB = parseInt(b.priority.split(" - ")[0], 10);
+    //     return priorityA - priorityB;
+    //   });
+    // } else if (filterBy === "Ticket Impact") {
+    //   filteredTickets = filteredTickets.sort((a, b) => {
+    //     const impactA = parseInt(a.impact.split(" - ")[0], 10);
+    //     const impactB = parseInt(b.impact.split(" - ")[0], 10);
+    //     return impactA - impactB;
+    //   });
+    // } else if (filterBy === "Ticket Type") {
+    //   filteredTickets = filteredTickets.sort((a, b) => {
+    //     const typeA = a.ticketType.split(" - ")[1];
+    //     const typeB = b.ticketType.split(" - ")[1];
 
-        return typeA.localeCompare(typeB);
-      });
-    }
+    //     return typeA.localeCompare(typeB);
+    //   });
+    // }
 
     if (status) {
       console.log(status);
@@ -140,8 +149,6 @@ const TicketHistory: React.FC = () => {
         return ticket.status.includes(status);
       });
     }
-
-    console.log(filterBy);
 
     setTickets(filteredTickets);
     setTotalPages(Math.ceil(filteredTickets.length / ticketsPerPage));

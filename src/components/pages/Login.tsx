@@ -14,6 +14,7 @@ import eyeclose from "../../assets/hidden.png";
 import { CommonValidation } from "../ui/CommonValidation";
 import useSignInMutation from "../../http/auth/useSignInMutation";
 import { useAppSelector } from "../../store/typedReduxHooks";
+import { useTranslation } from "react-i18next";
 
 const Login: React.FC = () => {
   const [newPasswordIcon, setNewPasswordIcon] = React.useState(eyeclose);
@@ -34,6 +35,8 @@ const Login: React.FC = () => {
     );
     setNewPasswordIcon((prevIcon) => (prevIcon === eyeclose ? eye : eyeclose));
   };
+
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     const storedEmail = localStorage.getItem("email");
@@ -65,13 +68,13 @@ const Login: React.FC = () => {
       <div className="grid md:grid-cols-2 grid-cols-1 gap-10 py-10">
         <div className="text-center shadow-xl bg-white xl:p-10 lg:p-8 md:p-6 p-4 xl:w-[80%] w-full">
           <Header variant={{ size: "2xl", theme: "dark", weight: "semiBold" }}>
-            Welcome Back
+            {t("Welcome Back")}
           </Header>
           <P
             variant={{ size: "base", theme: "dark", weight: "normal" }}
             className="lg:w-[60%] md:w-[80%] mx-auto mt-4"
           >
-            Hey, Enter your details to login to your account
+            {t("Hey, Enter your details to login to your account")}
           </P>
 
           <form onSubmit={handleSubmit(onSubmit)} id="login">
@@ -85,7 +88,7 @@ const Login: React.FC = () => {
                     message: "Email is not valid",
                   },
                 })}
-                placeholder="Email or phone number"
+                placeholder={t("Email or phone number")}
                 className={`border ${
                   errors.email ? "border-red-500" : "border-[#D3D3D3]"
                 } p-2 w-full rounded-md focus:outline-none`}
@@ -101,7 +104,7 @@ const Login: React.FC = () => {
               <input
                 type={newPasswordType}
                 {...register("password", { required: "Password is required" })}
-                placeholder="Password"
+                placeholder={t("Password")}
                 className={`border ${
                   errors.password ? "border-red-500" : "border-[#D3D3D3]"
                 } p-2 w-full rounded-md focus:outline-none`}
@@ -132,7 +135,7 @@ const Login: React.FC = () => {
                 type="submit"
                 disabled={isPending}
               >
-                <p>{isPending ? "Signing in..." : "Sign in"}</p>
+                <p>{isPending ? t("Signing in...") : t("Sign in")}</p>
                 <img src={arrow} alt="arrow" className="ml-2 mt-1" />
               </Button>
             </div>
@@ -146,13 +149,15 @@ const Login: React.FC = () => {
                 checked={rememberMe}
                 onChange={handleRememberMeChange}
               />
-              <span className="ml-2 text-sm text-gray-700">Remember me</span>
+              <span className="ml-2 text-sm text-gray-700">
+                {t("Remember me")}
+              </span>
             </label>
             <Link
               to="/forget-password"
               className="text-sm text-red-500 hover:underline mt-4 sm:mt-0"
             >
-              Forget Password?
+              {t("Forget Password ?")}
             </Link>
           </div>
 
@@ -161,12 +166,12 @@ const Login: React.FC = () => {
               variant={{ theme: "dark", weight: "medium" }}
               className="md:text-base text-sm"
             >
-              Don’t have account ?{" "}
+              {t("Don’t have account ?")}{" "}
               <Link
                 to="/become_artist"
                 className="hover:underline decoration-red-700  cursor-pointer"
               >
-                Become an Artist{" "}
+                {t("Become an artist")}{" "}
               </Link>
             </P>
           </div>
@@ -174,7 +179,7 @@ const Login: React.FC = () => {
             to="/signup"
             className="font-bold uppercase ml-1 md:text-base text-sm"
           >
-            Sign Up
+            {t("Sign up")}
           </Link>
         </div>
         <div className="my-auto">

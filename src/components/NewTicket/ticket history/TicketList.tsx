@@ -161,8 +161,13 @@ const TicketsList: FC<{
                 </div>
 
                 <div className="flex items-center gap-3">
-                  {ticket.status === "Closed" ? (
-                    <div className="flex items-center gap-2">
+                  {ticket.status === "Technical Finish" ||
+                  ticket.status === "Closed" ? (
+                    <div className="flex items-center gap-2 ">
+                      <p className="font-bold border px-2 rounded-md border-zinc-200 ">
+                        {ticket?.ticketFeedback?.message}
+                      </p>
+
                       <span
                         className={`${
                           ticket.status === "Closed"

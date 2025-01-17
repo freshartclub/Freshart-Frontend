@@ -35,6 +35,7 @@ import CustomDropdown from "./CustomDropdown";
 import { useAppSelector } from "../../store/typedReduxHooks";
 import { getCountries } from "react-phone-number-input";
 import Loader from "../ui/Loader";
+import { useTranslation } from "react-i18next";
 
 const BecomeArtist = () => {
   const validationSchema = Yup.object().shape({
@@ -119,6 +120,8 @@ const BecomeArtist = () => {
   const diciplineOption = data?.data.map((item) => {
     return item.disciplineName;
   });
+
+  const { t, i18n } = useTranslation();
 
   const watchEmail = "email";
   const watchDicipline = watch("discipline");
@@ -360,25 +363,26 @@ const BecomeArtist = () => {
                   variant={{ size: "3xl", weight: "bold", theme: "dark" }}
                   className="text-center mb-4"
                 >
-                  Become an artist
+                  {t("Become an artist")}
                 </Header>
                 <P
                   variant={{ size: "md", theme: "dark", weight: "normal" }}
                   className="text-sm text-gray-600 mb-8 text-center"
                 >
-                  Please fill the form below to become an artist. Feel free to
-                  add as much detail as needed. Our admin will contact you.
+                  {t(
+                    "Please fill the form below to become an artist. Feel free to add as much detail as needed. Our admin will contact you."
+                  )}
                 </P>
 
                 <div className="flex sm:flex-row flex-col justify-between">
                   <div className="mb-4 sm:w-[32%] w-full">
                     <label className="block text-gray-700 text-sm font-bold mb-2">
-                      Artist Name *
+                      {t("Artist Name")} *
                     </label>
                     <input
                       {...register("artistName")}
                       className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
-                      placeholder="Enter Artist Name"
+                      placeholder={t("Enter Artist Name")}
                     />
                     {errors.aritstName && (
                       <span className="text-red-500 text-xs">
@@ -388,12 +392,12 @@ const BecomeArtist = () => {
                   </div>
                   <div className="mb-4 sm:w-[32%] w-full">
                     <label className="block text-gray-700 text-sm font-bold mb-2">
-                      Aritst Surname 1
+                      {t("Artist Surname 1")}
                     </label>
                     <input
                       {...register("artistSurname1")}
                       className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
-                      placeholder="Enter Artist Surname 1"
+                      placeholder={t("Enter Artist Surname 1")}
                     />
                     {errors.artistSurname1 && (
                       <span className="text-red-500 text-xs">
@@ -404,12 +408,12 @@ const BecomeArtist = () => {
 
                   <div className="mb-4 sm:w-[32%] w-full">
                     <label className="block text-gray-700 text-sm font-bold mb-2">
-                      Artist Surname 2
+                      {t("Artist Surname 2")}
                     </label>
                     <input
                       {...register("artistSurname2")}
                       className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
-                      placeholder="Enter Artist Surname 2"
+                      placeholder={t("Enter Artist Surname 2")}
                     />
                     {errors.artistSurname2 && (
                       <span className="text-red-500 text-xs">
@@ -422,7 +426,7 @@ const BecomeArtist = () => {
                 <div className="flex sm:flex-row flex-col justify-between w-full">
                   <div className="sm:mb-4 mb-2 w-full">
                     <label className="block text-gray-700 text-sm font-bold mb-2">
-                      Email *
+                      {t("Email")} *
                     </label>
 
                     <div className="flex w-full gap-2">
@@ -431,7 +435,7 @@ const BecomeArtist = () => {
                         onChange={(e) => setEmail(e.target.value)}
                         disabled={isValidateEmail}
                         className={`appearance-none border rounded w-full  px-3 text-gray-700 leading-tight focus:outline-none `}
-                        placeholder="Enter email"
+                        placeholder={t("Enter email")}
                       />
 
                       <EmailVerification
@@ -460,12 +464,12 @@ const BecomeArtist = () => {
                 <div className="mb-4 w-full">
                   <div className="sm:mb-4 mb-2 w-full">
                     <label className="block text-gray-700 text-sm font-bold mb-2">
-                      Phone Number *
+                      {t("Phone Number")} *
                     </label>
                     <div className="flex  flex-row w-full gap-2">
                       <PhoneInput
                         className="appearance-none  outline-none rounded py-1   w-full text-gray-700 leading-tight focus:outline-none"
-                        placeholder="Enter phone number"
+                        placeholder={t("Enter phone number")}
                         defaultCountry={countryCode}
                         disabled={isValidatePhone}
                         value={getValues("phone")}
@@ -502,18 +506,18 @@ const BecomeArtist = () => {
                 <div className="flex sm:flex-row flex-col justify-between">
                   <div className="mb-4 sm:w-[49%] w-full">
                     <label className="block text-gray-700 text-sm font-bold mb-2">
-                      Discipline *
+                      {t("Discipline")}*
                     </label>
                     <select
                       {...register("discipline")}
                       className="block appearance-none w-full bg-white border px-4 py-3 pr-8 rounded leading-tight focus:outline-none"
                     >
-                      <option value="">Select Discipline</option>
+                      <option value="">{t("Select Discipline")}</option>
                       {isLoading
                         ? "Loading..."
                         : diciplineOption?.map((item, i) => (
                             <option className="text-black" value={item}>
-                              {item}
+                              {t(item)}
                             </option>
                           ))}
                     </select>
@@ -526,7 +530,7 @@ const BecomeArtist = () => {
 
                   <div className="sm:mb-4 mb-2 sm:w-[49%] w-full">
                     <label className="block text-gray-700 text-sm font-bold mb-2">
-                      Style *
+                      {t("Style")} *
                     </label>
 
                     <Controller
@@ -538,8 +542,8 @@ const BecomeArtist = () => {
                           {...field}
                           isMulti
                           options={filterStyle?.map((item: string) => ({
-                            value: item.styleName,
-                            label: item.styleName,
+                            value: t(item.styleName),
+                            label: t(item.styleName),
                           }))}
                           className="block appearance-none w-full bg-white rounded leading-tight focus:outline-none lg:py-1"
                         />
@@ -556,7 +560,7 @@ const BecomeArtist = () => {
 
                 <div className="mb-4 w-full">
                   <label className="block text-gray-700 text-sm font-bold mb-2">
-                    Country *
+                    {t("Country")} *
                   </label>
 
                   {/* <div
@@ -582,12 +586,12 @@ const BecomeArtist = () => {
                 <div className="flex sm:flex-row flex-col justify-between">
                   <div className="mb-4 sm:w-[32%] w-full">
                     <label className="block text-gray-700 text-sm font-bold mb-2">
-                      Zip Code *
+                      {t("Zip Code")} *
                     </label>
                     <input
                       {...register("zipCode")}
                       className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
-                      placeholder="Enter ZipCode"
+                      placeholder={t("Enter Zip Code")}
                     />
                     {errors.zipCode && (
                       <span className="text-red-500 text-xs">
@@ -598,12 +602,12 @@ const BecomeArtist = () => {
 
                   <div className="mb-4 sm:w-[32%] w-full">
                     <label className="block text-gray-700 text-sm font-bold mb-2">
-                      City *
+                      {t("City")} *
                     </label>
                     <input
                       {...register("city")}
                       className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
-                      placeholder="Enter City"
+                      placeholder={t("Enter City")}
                     />
                     {errors.city && (
                       <span className="text-red-500 text-xs">
@@ -614,7 +618,7 @@ const BecomeArtist = () => {
 
                   <div className="mb-4 sm:w-[32%] w-full">
                     <label className="block text-gray-700 text-sm font-bold mb-2">
-                      Region *
+                      {t("Region")} *
                     </label>
                     <input
                       {...register("region")}
@@ -632,13 +636,13 @@ const BecomeArtist = () => {
                 <div className="flex sm:flex-row flex-col justify-between">
                   <div className="sm:mb-4 mb-2 sm:w-[49%] w-full">
                     <label className="block text-gray-700 text-sm font-bold mb-2">
-                      Social Media Reference
+                      {t("Social Media Reference")}
                     </label>
                     <select
                       {...register("socialMedia")}
                       className="block appearance-none w-full bg-white border px-4 py-3 pr-8 rounded leading-tight focus:outline-none"
                     >
-                      <option value="">Select Social Media</option>
+                      <option value="">{t("Select Social Media")}</option>
                       {socialMediaPicklistLoading ? (
                         <option>Loding...</option>
                       ) : (
@@ -658,7 +662,7 @@ const BecomeArtist = () => {
 
                   <div className="mb-4 sm:w-[49%] w-full">
                     <label className="block text-gray-700 text-sm font-bold mb-2">
-                      URL
+                      {t("URL")}
                     </label>
                     <input
                       {...register("website", {
@@ -681,7 +685,7 @@ const BecomeArtist = () => {
                       <img src={browser} alt="browse-icon" />
                     </div>
                     <label className="block text-gray-700 sm:text-xl text-lg font-bold mb-2 text-center ">
-                      Upload Your CV Here *
+                      {t("Upload Your CV Here")} *
                     </label>
                     <input
                       {...register("uploadDocs", { required: true })}
@@ -695,7 +699,7 @@ const BecomeArtist = () => {
                       id="file-upload"
                     />
                     <p className="text-gray-600 sm:text-md text-base mt-4">
-                      PDF, DOC, and Excel formats, up to 5MB
+                      {t("PDF, DOC, and Excel formats, up to 5MB")}
                     </p>
                     {errors.uploadDocs && (
                       <span className="text-red-500 text-xs">
@@ -709,7 +713,7 @@ const BecomeArtist = () => {
                     className="px-5 py-3 bg-black text-white rounded-md font-bold text-sm "
                     type="submit"
                   >
-                    {isPending ? "Loading..." : "Submit"}
+                    {isPending ? "Loading..." : t("Submit")}
                   </button>
                 </div>
               </form>

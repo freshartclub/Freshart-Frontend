@@ -18,7 +18,7 @@ const KbDatabase = () => {
   };
 
   return (
-    <div className="relative">
+    <div className="relative h-[100vh]">
       <span
         onClick={() => handleBack()}
         className="absolute left-10 top-8 cursor-pointer"

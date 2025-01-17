@@ -68,13 +68,13 @@ const Wishlist = () => {
 
   const { data, isLoading } = useGetLikedItems();
 
-  console.log("from wishlist", data);
+  console.log("from wishlist", data?.data?.likedArtworks);
 
   if (isLoading) {
     return <Loader />;
   }
   return (
-    <div className="container mx-auto md:px-6 px-3 my-10">
+    <div className="container mx-auto md:px-6 px-3 my-10 ">
       <ul className="flex p-2 gap-3 text-xl text-[#2E4053] items-center">
         <li>
           <Link to="/" className="rounded-md transition-all flex">
@@ -115,17 +115,17 @@ const Wishlist = () => {
         Most Loved Artworks
       </Header>
 
-      <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 justify-between gap-4 mt-4">
+      <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 justify-between gap-8 mt-4 ">
         {data?.data?.likedArtworks &&
           data?.data?.likedArtworks?.map((item, index) => (
             <div
               key={index}
-              className="sm:px-3 px-0 border-none outline-none relative"
+              className="sm:px-3 px-0 border-none outline-none mb-10 w-[20vw] h-[50vh] relative"
             >
               <img
-                src={`${imageUrl}/users/${item?.media?.mainImage}`}
+                src={`${imageUrl}/users/${item?.media}`}
                 alt="image"
-                className="w-full  object-cover"
+                className="w-full h-full shadow-md object-cover"
               />
               <button className="absolute top-2 right-[28px]  cursor-pointer">
                 <img src={wishlist_like} alt="like" className="" />

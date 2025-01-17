@@ -19,6 +19,8 @@ import KbDatabase from "../pages/KbDatabase";
 import Faq from "../pages/Faq";
 import AddArtwork2 from "./AddArtwork/AddArtwork2";
 import AddArtwork from "./AddArtwork/AddArtwork";
+import KbDetiails from "../pages/KbDetails";
+import KbDetails from "../pages/KbDetails";
 
 const ArtistPanel = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -56,6 +58,7 @@ const ArtistPanel = () => {
             <Route path="/ticket" element={<Support />} />
             <Route path="/new_ticket" element={<NewTicket />} />
             <Route path="/kb-database" element={<KbDatabase />} />
+            <Route path="/kb-details" element={<KbDetails />} />
             <Route path="/faq" element={<Faq />} />
 
             <Route path="/ticket_detail" element={<SingleTicket />} />

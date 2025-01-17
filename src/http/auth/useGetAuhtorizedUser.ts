@@ -5,6 +5,7 @@ import axiosInstance from "../../components/utils/axios";
 import { useAppDispatch } from "../../store/typedReduxHooks";
 import {
   setIsArtist,
+  setIsArtProvider,
   setIsAuthorized,
   updateUser,
 } from "../../store/userSlice/userSlice";
@@ -23,8 +24,12 @@ const useCheckIsAuthorized = () => {
 
       const res = await getUser();
 
+      // console.log(res.artist?.commercilization?.artProvider);
+
+      dispatch(setIsArtProvider(res.artist?.commercilization?.artProvider));
       dispatch(updateUser(res.artist));
       dispatch(setIsAuthorized(true));
+
       if (res.artist.isActivated) {
         dispatch(setIsArtist(true));
       }
