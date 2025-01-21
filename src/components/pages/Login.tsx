@@ -175,12 +175,12 @@ const Login: React.FC = () => {
               </Link>
             </P>
           </div>
-          {/* <Link
+          <Link
             to="/signup"
             className="font-bold uppercase ml-1 md:text-base text-sm"
           >
             {t("Sign up")}
-          </Link> */}
+          </Link>
         </div>
         <div className="my-auto">
           <img src={loginImage} alt="Login" />

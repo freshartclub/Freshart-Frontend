@@ -161,7 +161,7 @@ const FooterSection = () => {
                           Login
                         </Link>
                       </li>
-                      {/* <li>
+                      <li>
                         <Link
                           to="/signup"
                           className="text-sm hover:underline"
@@ -169,7 +169,7 @@ const FooterSection = () => {
                         >
                           Signup
                         </Link>
-                      </li> */}
+                      </li>
                     </>
                   )}
                   {isArtist ? null : (

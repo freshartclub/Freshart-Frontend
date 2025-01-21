@@ -43,8 +43,11 @@ const Layout: React.FC<LayoutProps> = ({
     <div>
       {isLoginPage || isSignUpPage || isForgetPassword || becomeAnArtist ? (
         <LogNaveBar />
-      ) : home ? null : user === "artist" ? null : // <NavBar /> // <NavForHome />
-      null}
+      ) : home ? (
+        <NavForHome />
+      ) : user === "artist" ? null : ( // <NavBar /> // <NavForHome />
+        <NavBar />
+      )}
       <main>{children}</main>
     </div>
   );
