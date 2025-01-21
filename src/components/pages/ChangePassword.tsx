@@ -125,7 +125,7 @@ const ChangePassword = () => {
             />
 
             <Header variant={{ size: "2xl", theme: "dark", weight: "bold" }}>
-              Change Password
+              Reset Password
             </Header>
             <P
               variant={{ size: "base", theme: "dark", weight: "normal" }}

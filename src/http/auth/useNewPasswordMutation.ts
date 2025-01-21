@@ -24,7 +24,7 @@ const useNewPasswordMutation = () => {
     onSuccess: async (res, input) => {
       toast.dismiss(toastId);
       toast.success(res.data.message);
-      navigate("/home");
+      navigate("/login");
     },
     onError: (res) => {
       toast.error(res.response.data.message);
