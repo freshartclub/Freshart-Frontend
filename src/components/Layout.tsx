@@ -6,6 +6,7 @@ import { useAppSelector } from "../store/typedReduxHooks";
 import Loader from "./ui/Loader";
 import ArtistNavBar from "./NavBar/ArtistNavBar";
 import { Navigate, useNavigate } from "react-router";
+import NavForHome from "./NavBar/NavForHome";
 
 interface LayoutProps {
   isAuthenticated: boolean;
@@ -28,6 +29,7 @@ const Layout: React.FC<LayoutProps> = ({
   const isSignUpPage = location.pathname === "/signup";
   const isForgetPassword = location.pathname === "/forget-password";
   const becomeAnArtist = location.pathname === "/become_artist";
+  const home = location.pathname === "/home";
 
   // let RoleBaseNavBar;
 
@@ -41,9 +43,8 @@ const Layout: React.FC<LayoutProps> = ({
     <div>
       {isLoginPage || isSignUpPage || isForgetPassword || becomeAnArtist ? (
         <LogNaveBar />
-      ) : user === "artist" ? null : (
-        <NavBar />
-      )}
+      ) : home ? null : user === "artist" ? null : // <NavBar /> // <NavForHome />
+      null}
       <main>{children}</main>
     </div>
   );

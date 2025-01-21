@@ -21,10 +21,13 @@ import AddArtwork2 from "./AddArtwork/AddArtwork2";
 import AddArtwork from "./AddArtwork/AddArtwork";
 import KbDetiails from "../pages/KbDetails";
 import KbDetails from "../pages/KbDetails";
+import Circle from "../CIrcle/Circle";
+import CirclePage from "../CirclePage/CirclePage";
 
 const ArtistPanel = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(true);
+
 
   return (
     <>
@@ -53,6 +56,9 @@ const ArtistPanel = () => {
             <Route path="artwork/add" element={<AddArtwork />} />
             <Route path="edit-artistprofile" element={<ArtistProfile />} />
             <Route path="user/settings" element={<Settings />} />
+            <Route path="circle" element={<CirclePage />} />
+
+            
 
             <Route path="ticket/tickets" element={<TicketHistory />} />
             <Route path="/ticket" element={<Support />} />

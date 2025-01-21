@@ -15,8 +15,6 @@ const ShoppingCard = ({ isOpen, onClose }: any) => {
 
   const { mutate, isPending } = useRemoveMutation();
 
-  console.log(data?.data?.cart);
-
   const handleCart = () => {
     navigate("/purchase_cart");
     onClose();
@@ -44,7 +42,7 @@ const ShoppingCard = ({ isOpen, onClose }: any) => {
 
   return (
     <div
-      className={`fixed top-0 right-0 h-full bg-white shadow-lg transition-transform duration-300 ${
+      className={`fixed top-0 right-0 h-[100vh] bg-white shadow-lg transition-transform duration-300 ${
         isOpen ? "translate-x-0" : "translate-x-full"
       } w-full sm:w-[25%] z-50`}
     >

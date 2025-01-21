@@ -5,7 +5,7 @@ import { ORDERS_ENDPOINTS } from "../../../http/apiEndPoints/Orders";
 import { useNavigate } from "react-router-dom";
 
 async function postCheckOut(input: any) {
-  return axiosInstance.post(`${ORDERS_ENDPOINTS.PostOrders}`, input);
+  return axiosInstance.post(`${ORDERS_ENDPOINTS.PostOrders}?type=${input?.type}`, input);
 }
 const usePostCheckOutMutation = () => {
   const navigate = useNavigate();

@@ -999,13 +999,13 @@ const AddArtwork = () => {
                       <option value="" disabled>
                         {t("Select")}
                       </option>
-                      <option value="yes">Yes</option>
-                      <option value="no">No</option>
+                      <option value="Yes">Yes</option>
+                      <option value="No">No</option>
                     </select>
                   </div>
                 ) : null}
 
-                {isArtProviderField === "yes" ? (
+                {isArtProviderField === "Yes" ? (
                   <div className="mb-4">
                     <label className="block text-sm sm:text-base text-[#203F58] font-semibold mb-2">
                       {t("Artist name")}

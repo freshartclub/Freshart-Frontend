@@ -243,3 +243,7 @@
 .toast {
   z-index: 999999;
 }
+
+html {
+  scroll-behavior: smooth;
+}

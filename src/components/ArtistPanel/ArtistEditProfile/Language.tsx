@@ -43,11 +43,6 @@ export const options = [
 
 export const countries = [
   { code: "GB", flag: "https://flagcdn.com/w320/gb.png", name: "English" },
-  {
-    code: "US",
-    flag: "https://flagcdn.com/w320/us.png",
-    name: "English (US)",
-  },
   { code: "ES", flag: "https://flagcdn.com/w320/es.png", name: "Spanish" },
   { code: "CA", flag: "https://flagcdn.com/w320/cat.png", name: "Catalan" },
 ];
@@ -66,10 +61,6 @@ const Language = () => {
 
   const [isLanguageDropdownOpen, setLanguageDropdownOpen] = useState(false);
 
-  const getLanguage = localStorage.getItem("language");
-  const getCurrency = localStorage.getItem("currency");
-  const getLangCode = localStorage.getItem("langCode");
-
   const handleSelectChange = (value: string, key: string) => {
     setCode(key.toLocaleLowerCase());
     setLanguageSettings(value);
@@ -78,7 +69,10 @@ const Language = () => {
   };
 
   useEffect(() => {
-    setLanguageSettings(getLanguage || "en");
+    const getLanguage = localStorage.getItem("language");
+    const getCurrency = localStorage.getItem("currency");
+    const getLangCode = localStorage.getItem("langCode");
+    setLanguageSettings(getLanguage || "es");
     setCurrencySettings(getCurrency || "usd");
     setCode(getLangCode || "en");
   }, []);

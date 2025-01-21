@@ -14,7 +14,7 @@ const ForgetPassword = () => {
   const navigate = useNavigate();
 
   const handleBack = () => {
-    navigate("/");
+    navigate("/login");
   };
 
   const validationSchema = Yup.object().shape({
@@ -23,7 +23,11 @@ const ForgetPassword = () => {
       .required("Email is required"),
   });
 
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
     resolver: yupResolver(validationSchema),
   });
 
@@ -65,9 +69,15 @@ const ForgetPassword = () => {
                   type="email"
                   placeholder="Email"
                   {...register("email")}
-                  className={`border ${errors.email ? "border-red-500" : "border-[#D3D3D3]"} p-2 w-full rounded-md focus:outline-none`}
+                  className={`border ${
+                    errors.email ? "border-red-500" : "border-[#D3D3D3]"
+                  } p-2 w-full rounded-md focus:outline-none`}
                 />
-                {errors.email && <div className="text-red-500 text-sm text-left">{errors.email.message}</div>}
+                {errors.email && (
+                  <div className="text-red-500 text-sm text-left">
+                    {errors.email.message}
+                  </div>
+                )}
               </div>
 
               <Button
@@ -81,8 +91,10 @@ const ForgetPassword = () => {
                 className="mt-3 flex justify-center w-full mb-5"
                 type="submit"
               >
-                <P variant={{ size: "base", theme: "light", weight: "semiBold" }}>
-             { isPending ? "Sending..." :   "Send OTP"}
+                <P
+                  variant={{ size: "base", theme: "light", weight: "semiBold" }}
+                >
+                  {isPending ? "Sending..." : "Send OTP"}
                 </P>
                 <img src={arrow} alt="arrow" className="ml-2 mt-1" />
               </Button>

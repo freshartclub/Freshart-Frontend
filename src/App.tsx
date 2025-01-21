@@ -28,6 +28,7 @@ import LoginPage from "./components/pages/Login";
 import NotFoundPage from "./components/pages/NotFoundPage";
 import i18n from "./components/utils/i18n.ts";
 import { useAppDispatch, useAppSelector } from "./store/typedReduxHooks";
+import UnderConstruction from "./components/GetStarted/UnderConstruction.tsx";
 const SignUp = lazy(() => import("./components/pages/SignUp"));
 const ForgetPassword = lazy(() => import("./components/pages/ForgetPassword"));
 const ChangePassword = lazy(() => import("./components/pages/ChangePassword"));
@@ -133,9 +134,9 @@ const App: React.FC = () => {
           <Routes>
             {/* Public Routes */}
 
-            <Route path="/" element={<GetStarted />} />
+            <Route path="/" element={<UnderConstruction />} />
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignUp />} />
+            {/* <Route path="/signup" element={<SignUp />} /> */}
             <Route path="/become_artist" element={<BecomeArtist />} />
             <Route path="/forget-password" element={<ForgetPassword />} />
             <Route path="/reset-password" element={<ChangePassword />} />
@@ -181,15 +182,15 @@ const App: React.FC = () => {
               }
             />
 
-            <Route
+            {/* <Route
               path="/tickets"
               element={
                 <AuthGuard>
                   <TicketHistory />
                 </AuthGuard>
               }
-            ></Route>
-            <Route
+            ></Route> */}
+            {/* <Route
               path="/ticket_detail"
               element={
                 <AuthGuard>
@@ -205,10 +206,10 @@ const App: React.FC = () => {
                   <NewTicket />{" "}
                 </AuthGuard>
               }
-            />
+            /> */}
 
             {/* Protected Routes */}
-            <Route
+            {/* <Route
               path="/home/"
               element={
                 <AuthGuard>
@@ -506,10 +507,10 @@ const App: React.FC = () => {
                   <PaymentPage />
                 </AuthGuard>
               }
-            />
+            /> */}
           </Routes>
         </Suspense>
-        <FooterSection />
+        {/* <FooterSection /> */}
       </Layout>
     </AuthProvider>
   );

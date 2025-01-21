@@ -24,11 +24,9 @@ const useCheckIsAuthorized = () => {
 
       const res = await getUser();
 
-      // console.log(res.artist?.commercilization?.artProvider);
-
-      dispatch(setIsArtProvider(res.artist?.commercilization?.artProvider));
       dispatch(updateUser(res.artist));
       dispatch(setIsAuthorized(true));
+      dispatch(setIsArtProvider(res.artist?.commercilization?.artProvider));
 
       if (res.artist.isActivated) {
         dispatch(setIsArtist(true));

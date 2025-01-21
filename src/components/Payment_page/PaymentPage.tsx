@@ -20,14 +20,20 @@ import Loader from "../ui/Loader";
 import usePostCheckOutMutation from "../PurchasePage/http/usePostCheckOutMutation";
 import BillingAddress from "../EditProfile/BillingAddress";
 import { GiConsoleController } from "react-icons/gi";
+import { useSearchParams } from "react-router-dom";
 
 const PaymentPage = () => {
   const { data, isLoading } = useGetCartItems();
-  const { mutate, isPending } = useAddToCartMutation();
+
   const { mutate: checkOutMutation, isPending: checkOutPending } =
     usePostCheckOutMutation();
   const [isCheckBox, setIsCheckBox] = useState(false);
   const options = useMemo(() => countryList(), []);
+
+  const [searchParams] = useSearchParams()
+  const type = searchParams.get("type")
+
+  console.log(type)
 
   const {
     data: billingData,
@@ -69,7 +75,9 @@ const PaymentPage = () => {
 
   const countryValue = getValues("country");
 
-  const discountAmounts = data?.data?.cart?.reduce((total, item) => {
+  const renderData = data?.data?.cart?.filter(item => item?.item?.commercialization?.activeTab === type) 
+
+  const discountAmounts = renderData?.reduce((total, item) => {
     const basePrice = parseFloat(
       item?.item?.pricing?.basePrice?.replace("$", "")
     );
@@ -79,7 +87,7 @@ const PaymentPage = () => {
     return total + discountAmount;
   }, 0);
 
-  const totalPrice = data?.data?.cart
+  const totalPrice = renderData
     ?.reduce((total, item) => {
       const itemPrice = parseFloat(
         item?.item?.pricing?.basePrice?.replace("$", "")
@@ -94,22 +102,23 @@ const PaymentPage = () => {
 
   let itemQu = {};
 
-  data?.data?.cart?.forEach((item) => {
+  renderData?.forEach((item) => {
     if (item?.item?._id) {
       itemQu[item?.item?._id] = (itemQu[item?.item?._id] || 0) + item.quantity;
     }
   });
 
-  const orderType = data?.data?.cart?.map(
+  const orderType = renderData?.map(
     (item) => item?.item?.commercialization?.activeTab
   );
 
-  const cartLookup = data?.data?.cart?.reduce((acc, item) => {
+  const cartLookup = renderData?.reduce((acc, item) => {
     if (item?.item?._id) {
       acc[item?.item?._id] = item?.item?.commercialization?.activeTab;
     }
     return acc;
   }, {});
+
 
   const onSubmit = (data: any) => {
     try {
@@ -120,7 +129,7 @@ const PaymentPage = () => {
         totalPrice: finalPrice,
         discountAmount: discountAmounts,
         tax: tax,
-        orderType: orderType[0],
+        type: orderType[0],
 
         items: Object.keys(itemQu).map((id) => {
           return {
@@ -626,7 +635,7 @@ const PaymentPage = () => {
               <h2 className="text-base font-semibold mb-4">Order Summary</h2>
 
               <div className="space-y-4">
-                {data?.data?.cart?.map((item) => {
+                {renderData && renderData.length > 0 && renderData?.map((item) => {
                   // console.log(item); // Logs each 'item' in the cart
                   return (
                     <div key={item.id} className="flex items-center space-x-4">

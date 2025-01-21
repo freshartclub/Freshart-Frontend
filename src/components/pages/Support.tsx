@@ -22,8 +22,9 @@ import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
 import { useGetFaq } from "./http/useGetFaq";
 import { useGetKbDataBase } from "./http/useGetKbDataBase";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Loader from "../ui/Loader";
+import { gsap } from "gsap";
 
 const Support = () => {
   const navigate = useNavigate();
@@ -31,6 +32,8 @@ const Support = () => {
   const [isModalOpen, setIsModelOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const modalRef = useRef(null);
 
   const handleSubmitButton = () => {
     const submitTicket = isArtistProfile
@@ -124,6 +127,24 @@ const Support = () => {
       setLoading(false);
     }
   }, [isLoading, faqLoading, KbLoding]);
+
+  useEffect(() => {
+    if (isModalOpen) {
+      gsap.fromTo(
+        modalRef.current,
+        { scale: 0.8, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.3, ease: "power2.out" } // Final state
+      );
+    } else {
+      gsap.to(modalRef.current, {
+        scale: 0.5,
+        opacity: 0,
+        duration: 0.4,
+        ease: "power2.in",
+        onComplete: closeModal,
+      });
+    }
+  }, [isModalOpen, closeModal]);
 
   const assist_Data = [
     {
@@ -251,8 +272,11 @@ const Support = () => {
                 )}
 
                 {isModalOpen && (
-                  <div className="fixed inset-0 flex items-center justify-center z-[999] bg-black bg-opacity-50 ">
-                    <div className="bg-white p-6 rounded-md shadow-lg max-w-md w-full">
+                  <div className="fixed inset-0 flex items-center justify-center z-[999] bg-black bg-opacity-50">
+                    <div
+                      ref={modalRef}
+                      className="bg-white p-6 rounded-md shadow-lg max-w-md w-full"
+                    >
                       <h2 className="text-lg font-semibold mb-4">
                         FAQ Details
                       </h2>
@@ -261,7 +285,15 @@ const Support = () => {
                         <span className="font-medium tracking-tight">{`${selectedItem?.faqAns}`}</span>
                       </p>
                       <button
-                        onClick={closeModal}
+                        onClick={() => {
+                          gsap.to(modalRef.current, {
+                            scale: 0.5,
+                            opacity: 0,
+                            duration: 0.3,
+                            ease: "power2.in",
+                            onComplete: closeModal,
+                          });
+                        }}
                         className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                       >
                         Close

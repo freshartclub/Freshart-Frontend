@@ -45,49 +45,77 @@ const LogNaveBar = () => {
   useEffect(() => {
     const getLanguage = localStorage.getItem("language");
     const getLangCode = localStorage.getItem("langCode");
-    setFlag(getLangCode || "es");
-    setLanguageSettings(getLanguage || "en");
+    setFlag(getLangCode || "gb");
+    setLanguageSettings(
+      getLanguage === "Spanish"
+        ? "Español"
+        : getLanguage === "Catalan"
+        ? "Català"
+        : "English"
+    );
     setCurrencySettings(getCurrency || "usd");
   }, []);
 
   const countries = [
     {
-      code: "GB",
-      flag: "https://flagcdn.com/w320/gb.png",
-      name: "English",
-      val: "gb",
-    },
-    {
-      code: "US",
-      flag: "https://flagcdn.com/w320/us.png",
-      name: "English (US)",
-      val: "us",
-    },
-    {
       code: "ES",
       flag: "https://flagcdn.com/w320/es.png",
       name: "Spanish",
       val: "es",
+      nativeName: "Español",
     },
     {
       code: "CAT",
       flag: "https://flagcdn.com/w320/ct.png",
       name: "Catalan",
       val: "cat",
+      nativeName: "Catala",
+    },
+    {
+      code: "GB",
+      flag: "https://flagcdn.com/w320/gb.png",
+      name: "English",
+      val: "gb",
+      nativeName: "English",
     },
   ];
 
-  const handleSelectChange = (value: string, key: string, flag) => {
+  const handleSelectChange = (
+    value: string,
+    key: string,
+    flag,
+    navtiveName
+  ) => {
     localStorage.setItem("language", value);
     localStorage.setItem("langCode", flag);
     localStorage.setItem("currency", currencySettings);
 
     dispatch(setLanguage(value));
     setFlag(flag);
-    setLanguageSettings(value);
+    setLanguageSettings(navtiveName);
     setSettings((prev) => ({ ...prev, [key]: value }));
     setLanguageDropdownOpen(false);
   };
+
+  const userLanguage = navigator.language || navigator.userLanguage;
+  console.log(userLanguage.split("-")[0]);
+
+  useEffect(() => {
+    if (userLanguage && !localStorage.getItem("language")) {
+      const userLanguageCode = userLanguage.split("-")[0];
+      const userLanguageObj = countries.find(
+        (country) => country.val === userLanguageCode
+      );
+      if (userLanguageObj) {
+        setFlag(userLanguageObj.val);
+        localStorage.setItem("language", userLanguageObj.name);
+        localStorage.setItem("langCode", userLanguageObj.val);
+
+        setLanguageSettings(userLanguageObj.name);
+        dispatch(setLanguage(userLanguageObj.name));
+      }
+    }
+  }, []);
 
   const handeleLanguage = () => {
     setLanguageDropdownOpen((prev) => !prev);
@@ -133,7 +161,8 @@ const LogNaveBar = () => {
                           handleSelectChange(
                             choice.name,
                             choice.code,
-                            choice.val
+                            choice.val,
+                            choice.nativeName
                           )
                         }
                       >
@@ -143,7 +172,7 @@ const LogNaveBar = () => {
                           className="w-6 h-6"
                         />
 
-                        <span className="ml-2">{choice.name}</span>
+                        <span className="ml-2">{choice.nativeName}</span>
                       </button>
                     ))}
                   </div>

@@ -43,9 +43,9 @@ const Circle = () => {
             </div>
           </div>
           <div>
-            <button className="py-2 px-3 rounded-md border-gray-100 bg-black text-white flex gap-1 items-center hover:cursor-pointer font-semibold">
+            {/* <button className="py-2 px-3 rounded-md border-gray-100 bg-black text-white flex gap-1 items-center hover:cursor-pointer font-semibold">
               <GoPlus className="text-xl font-semibold" /> New Circle
-            </button>
+            </button> */}
           </div>
         </div>
 
@@ -57,13 +57,13 @@ const Circle = () => {
               placeholder="Search"
             ></input>
           </div>
-          <div>
+          {/* <div>
             <span>Sort By: </span>
             <select className="p-2 border rounded-lg">
               <option>Featured</option>
               <option>Recent</option>
             </select>
-          </div>
+          </div> */}
         </div>
 
         {/* Tab Filter Section */}

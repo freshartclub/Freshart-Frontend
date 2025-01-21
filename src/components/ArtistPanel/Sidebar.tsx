@@ -187,7 +187,7 @@ const Sidebar: React.FC = ({
                       <li key={sub.key} className="ml-4 ">
                         <Link to={`/artist-panel/${sub.path}`}>
                           <button
-                            className={`text-left flex space-x-4 p-3 hover:bg-gray-100 ${
+                            className={`text-left flex space-x-4 p-2 hover:bg-gray-100 ${
                               location.pathname === `/artist-panel/${sub.path}`
                                 ? "font-bold"
                                 : ""

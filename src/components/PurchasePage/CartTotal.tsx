@@ -5,7 +5,7 @@ import P from "../ui/P";
 import rightarr from "./assets/ArrowRight.png";
 import usePostCheckOutMutation from "./http/usePostCheckOutMutation";
 
-const CartTotal = ({ data }) => {
+const CartTotal = ({ data , state }) => {
   const discountAmounts = data?.cart?.map((item) => {
     const basePrice = parseFloat(
       item?.item?.pricing?.basePrice?.replace("$", "")
@@ -36,23 +36,23 @@ const CartTotal = ({ data }) => {
   const card_total = [
     {
       title: "Sub-total",
-      value: `$ ${totalPrice}` || 0,
+      value: state === "subscription" ? "$ 00" : totalPrice,
     },
     {
       title: "Shipping",
-      value: "Free",
+      value: state === "subscription" ? "$ 00" : "Free",
     },
     {
       title: "Discount",
-      value: `$ ${totalDiscountAmount}`,
+      value: state === "subscription" ? "$ 00" : `$ ${totalDiscountAmount}`,
     },
     {
       title: "Tax",
-      value: "$61.99",
+      value: state === "subscription" ? "$ 00" : "$61.99",
     },
   ];
 
-  const orderType = data?.cart?.map(
+  const type = data?.cart?.map(
     (item) => item?.item?.commercialization?.activeTab
   );
 
@@ -68,12 +68,15 @@ const CartTotal = ({ data }) => {
   });
 
   const handleCheckOut = () => {
-    navigate("/payment_page");
+    navigate(`/payment_page?type=${state}`);
   };
 
   return (
     <>
       <div className="p-5 mb-8 border rounded-md">
+
+        
+        <div>
         <Header variant={{ size: "md", theme: "dark", weight: "semiBold" }}>
           Card Totals
         </Header>
@@ -102,9 +105,11 @@ const CartTotal = ({ data }) => {
             Total
           </P>
           <P variant={{ size: "base", theme: "dark", weight: "semiBold" }}>
-            $ {totalPrice - totalDiscountAmount}
+            $ {state === "subscription" ? " 00" : totalPrice - totalDiscountAmount}
           </P>
         </div>
+        </div>
+      
 
         <Button
           onClick={() => handleCheckOut()}

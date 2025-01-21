@@ -2,7 +2,7 @@ import logo from "../../assets/Logo01 1.png";
 import location from "../../assets/loacation.png";
 import call from "../../assets/phone.png";
 import mail from "../../assets/mail.png";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import facebook from "../../assets/Link.png";
 import icon from "../../assets/Link (1).png";
 import instagram from "../../assets/Link (2).png";
@@ -11,10 +11,13 @@ import linkedin from "../../assets/Link (4).png";
 import { useAppSelector } from "../../store/typedReduxHooks";
 
 const FooterSection = () => {
+  const location = useLocation();
   const isAuthorized = useAppSelector((state) => state.user.isAuthorized);
   const scrolToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+  const isArtistPanel = location.pathname === "/artist-panel";
 
   const token = localStorage.getItem("auth_token");
   const profile = localStorage.getItem("profile");
@@ -158,7 +161,7 @@ const FooterSection = () => {
                           Login
                         </Link>
                       </li>
-                      <li>
+                      {/* <li>
                         <Link
                           to="/signup"
                           className="text-sm hover:underline"
@@ -166,7 +169,7 @@ const FooterSection = () => {
                         >
                           Signup
                         </Link>
-                      </li>
+                      </li> */}
                     </>
                   )}
                   {isArtist ? null : (

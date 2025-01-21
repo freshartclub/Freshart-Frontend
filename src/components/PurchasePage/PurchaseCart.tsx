@@ -40,6 +40,7 @@ const product_data = [
 
 const PurchaseCart = () => {
   const [cross, setCross] = useState(product_data);
+  const [state, setState] = useState("purchase");
   const navigate = useNavigate();
 
   const { data, isLoading } = useGetCartItems();
@@ -58,6 +59,11 @@ const PurchaseCart = () => {
     const discountAmount = (basePrice * discountPercentage) / 100;
     return discountAmount;
   });
+
+
+  console.log(data?.data?.cart)
+
+  const renderData = data?.data?.cart?.filter(item => item?.item?.commercialization?.activeTab === state) 
 
   const handleAdd = (id) => {
     try {
@@ -126,6 +132,27 @@ const PurchaseCart = () => {
           My Purchase Cart
         </Header>
 
+        <div className="flex sm:flex-row flex-col justify-between gap-5 mb-8">
+          <div className=" flex gap-5 mt-8">
+            <span
+              onClick={() => setState("purchase")}
+              className={`${
+                state === "purchase" && "bg-[#FF536B] text-white"
+              } font-bold text-md border border-zinc-800 px-5 py-2 cursor-pointer rounded-md`}
+            >
+              Purchase
+            </span>
+            <span
+              onClick={() => setState("subscription")}
+              className={`${
+                state !== "purchase" && "bg-[#FF536B] text-white"
+              } font-bold text-md border border-zinc-800 px-5 py-2 cursor-pointer  rounded-md`}
+            >
+              Subscription
+            </span>
+          </div>
+        </div>
+
         <div className="w-full flex lg:flex-row flex-col gap-5 my-10">
           <div className="lg:w-[75%] w-full border rounded-md">
             <Header
@@ -179,8 +206,8 @@ const PurchaseCart = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {data?.data?.cart && data?.data?.cart?.length > 0 ? (
-                      data?.data?.cart?.map((table: any, index: number) => {
+                    {renderData && renderData?.length > 0 ? (
+                      renderData?.map((table: any, index: number) => {
                         const basePrice = parseFloat(
                           table?.item?.pricing?.basePrice?.replace("$", "")
                         );
@@ -225,22 +252,22 @@ const PurchaseCart = () => {
                               </P>
                             </td>
                             <td className="xl:px-6 lg:px-4 px-2 py-4 text-[#475156] font-medium">
-                              <span className="flex justify-between py-1 border border-zinc-900 px-2 rounded-md bg-black text-white">
-                                <FaMinus
+                              <span className="flex justify-between py-1  px-2 rounded-md  ">
+                                {/* <FaMinus
                                   onClick={() =>
                                     handleRemoveQuantity(table?.item?._id)
                                   }
                                   className="cursor-pointer   w-[20px] h-[20px] sm:w-[16px] sm:h-[16px]"
-                                />
-                                {table?.quantity}
-                                <FaPlus
+                                /> */}
+                                {table?.quantity}x
+                                {/* <FaPlus
                                   onClick={() => handleAdd(table?.item?._id)}
                                   className="cursor-pointer  w-[20px] h-[20px] sm:w-[16px] sm:h-[16px]"
-                                />
+                                /> */}
                               </span>
                             </td>
 
-                            <td className="xl:px-6 lg:px-4 px-2 py-4 text-[#475156] font-medium">
+                            <td className="xl:px-6 lg:px-4 px-2 py-4 text-[#475156] font-medium capitalize">
                               {table?.item?.commercialization?.activeTab}
                             </td>
 
@@ -303,7 +330,7 @@ const PurchaseCart = () => {
           </div>
 
           <div className="lg:w-[28%] w-full">
-            <CartTotal data={data?.data} />
+            <CartTotal data={data?.data}  state={state}/>
           </div>
         </div>
       </div>

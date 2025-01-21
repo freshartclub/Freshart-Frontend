@@ -12,6 +12,7 @@ import TrendingSection from "./TrendingSection";
 import { useNavigate } from "react-router-dom";
 import Loader from "../ui/Loader";
 import { useGetHomeData } from "./http/useGetHomeData";
+import ArtCard from "./ArtCard";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -34,9 +35,14 @@ const HomePage = () => {
     <div className="overflow-x-hidden ">
       <BannerSection />
       <SecondSection />
-      <HighlightSection data={data} />
-      <TrendingSection />
-      <ArtWork data={data} />
+      <ArtCard data={data?.newAdded} tittle={"New Artwork"} />
+      <ArtCard data={data?.trending} tittle={"Trending Artwork"} />
+      <ArtCard data={data?.commingSoon} tittle={"Coming Soon"} />
+      <ArtCard data={data?.highlighted} tittle={"Highlighted Artwork"} />
+
+      {/* <HighlightSection data={data} /> */}
+      {/* <TrendingSection /> */}
+      {/* <ArtWork data={data} /> */}
       <HelpSection />
       <ArtistPortfolio data={data} />
       <RecentSection data={data} />

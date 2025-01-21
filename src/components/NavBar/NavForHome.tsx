@@ -17,6 +17,7 @@ import useClickOutside from "../utils/useClickOutside";
 import { FaUserCircle } from "react-icons/fa";
 import { useGetArtistDetails } from "../UserProfile/http/useGetDetails";
 import { imageUrl } from "../utils/baseUrls";
+import { GoSearch, GoX } from "react-icons/go";
 
 const mobile_links = [
   { path: "/", label: "Home" },
@@ -26,13 +27,19 @@ const mobile_links = [
   { path: "/blog", label: "Blog" },
 ];
 
-const NavBar = () => {
+const NavForHome = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isProfileDropdown, setIsProfileDropdown] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
   const navigate = useNavigate();
   const url = "https://dev.freshartclub.com/images";
 
@@ -94,6 +101,31 @@ const NavBar = () => {
     };
   }, []);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      if (currentScrollY > lastScrollY) {
+        setIsVisible(false);
+      } else {
+        setIsVisible(true);
+      }
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastScrollY]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const handleProfile = () => {
     if (isArtist) {
       navigate("/artist-panel", { replace: true });
@@ -116,12 +148,28 @@ const NavBar = () => {
     setIsModalOpen((Modalprev) => !Modalprev);
   };
 
+  const handleInputChange = (e) => {
+    setInputValue(e.target.value);
+  };
+
+  const clearInput = (e) => {
+    e.stopPropagation();
+    setInputValue("");
+    setIsFocused(false);
+  };
+
   return (
-    <>
-      <nav className="bg-[#102030] py-6 px-10 relative">
-        <div className="flex justify-between  items-center ">
-          {token && isAuthorized ? (
-            <>
+    <nav
+      className={`z-[9999] ${
+        isScrolled ? "bg-[#102030]" : "bg-transparent  "
+      } hover:bg-[#102030] pt-4 py-2 px-10 fixed top-0 left-0 w-full transition-all duration-300 ${
+        isVisible ? "translate-y-0 " : "-translate-y-full "
+      }`}
+    >
+      <div className="flex justify-between  items-center ">
+        {token && isAuthorized ? (
+          <div className="w-[90vw] mx-auto flex flex-col gap-2 items-center">
+            <div className=" w-full mx-auto flex justify-between  items-center">
               <div className="lg:hidden">
                 <button
                   onClick={() => setIsOpen(!isOpen)}
@@ -144,132 +192,6 @@ const NavBar = () => {
                 </button>
               </div>
 
-              <div className="hidden lg:flex lg:gap-2 xl:space-x-6 lg:space-x-0 text-white">
-                <Link
-                  to="/home"
-                  className="group mt-3 font-semibold text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
-                >
-                  Home
-                </Link>
-                <div className="cursor-pointer" ref={dropDownPopup}>
-                  <span
-                    className="group mt-3 font-semibold text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300 flex px-2"
-                    onClick={() => setIsDropdownOpen((prev) => !prev)}
-                  >
-                    Subscribe
-                    <svg
-                      className="w-2.5 h-2.5 ml-1 mt-2"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 10 6"
-                    >
-                      <path
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="m1 1 4 4 4-4"
-                      />
-                    </svg>
-                    {isDropdownOpen && (
-                      <div
-                        onClick={(e) => e.stopPropagation()}
-                        className="absolute w-full left-0 z-10 top-[5.6rem] grid grid-cols-[1fr_1fr_1fr_1fr_4fr] gap-4 text-sm bg-white border shadow-md p-8"
-                      >
-                        <div className="text-gray-900 md:pb-4 flex px-5">
-                          <ul className="space-y-4 w-[10vw]">
-                            <li className="uppercase font-bold">Discipline</li>
-
-                            {disciplineData && disciplineData?.data?.length > 0
-                              ? disciplineData?.data?.map((item, i) => (
-                                  <li
-                                    key={i}
-                                    onClick={() => setIsDropdownOpen(false)}
-                                  >
-                                    <Link
-                                      to={`${item.disciplineName}?option=subscription`}
-                                      className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500"
-                                    >
-                                      {item?.disciplineName}
-                                    </Link>
-                                  </li>
-                                ))
-                              : null}
-                          </ul>
-
-                          <ul
-                            className="space-y-4  px-5  w-[10vw] "
-                            aria-labelledby="mega-menu-dropdown-button"
-                          >
-                            <li className="uppercase font-bold">Series</li>
-
-                            {selectSeriesPicklist &&
-                              selectSeriesPicklist.length > 0 &&
-                              selectSeriesPicklist[0]?.picklist?.map(
-                                (item, i) => (
-                                  <li
-                                    key={i}
-                                    onClick={() => setIsDropdownOpen(false)}
-                                  >
-                                    <h1 className=" text-gray-500  dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500">
-                                      {item?.name}
-                                    </h1>
-                                  </li>
-                                )
-                              )}
-                          </ul>
-
-                          <ul
-                            className="space-y-4 mr-6"
-                            aria-labelledby="mega-menu-dropdown-button"
-                          >
-                            <li className="uppercase font-bold">Collection</li>
-
-                            <li onClick={() => setIsDropdownOpen(false)}>
-                              <a className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500">
-                                Collection
-                              </a>
-                            </li>
-                          </ul>
-                        </div>
-
-                        <div>
-                          <Header
-                            variant={{
-                              theme: "dark",
-                              weight: "bold",
-                            }}
-                            className="uppercase text-sm w-[30vw] "
-                          >
-                            Top selling product
-                          </Header>
-                          <img src={selling} alt="selling product " />
-                        </div>
-                      </div>
-                    )}
-                  </span>
-                </div>
-                <Link
-                  to="/all-artworks?type=purchase"
-                  className="group mt-3 font-semibold text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
-                >
-                  Purchase
-                </Link>
-                <Link
-                  to="/all_artist"
-                  className="group mt-3 font-semibold text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
-                >
-                  Artist
-                </Link>
-                <Link
-                  to="/blog"
-                  className="group mt-3 font-semibold text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
-                >
-                  Blog
-                </Link>
-              </div>
-
               <div
                 className="flex items-center justify-center "
                 onClick={() => navigate("/home")}
@@ -279,6 +201,34 @@ const NavBar = () => {
                   alt="logo"
                   className=" lg:w-full md:w-full w-[70%]  "
                 />
+              </div>
+
+              <div className="relative hidden lg:block">
+                <input
+                  className="w-[50vw] bg-white/75 py-1 px-10 focus:px-3 focus:outline-none focus:border-b-2 focus:border-b-[#102030] transition-all duration-300"
+                  type="text"
+                  placeholder="Artwork, Categories, Topic..."
+                  value={inputValue}
+                  onChange={handleInputChange}
+                  onFocus={() => setIsFocused(true)}
+                  onBlur={() => setIsFocused(true)}
+                />
+
+                <span
+                  className={`absolute top-1/2 -translate-y-1/2 transition-all duration-300 ${
+                    isFocused ? "right-0 pr-2" : "left-0 pl-2"
+                  }`}
+                >
+                  {inputValue ? (
+                    <GoX
+                      size="1.3em"
+                      className="cursor-pointer z-20"
+                      onClick={clearInput}
+                    />
+                  ) : (
+                    <GoSearch size="1.3em" />
+                  )}
+                </span>
               </div>
 
               <div className="lg:flex   space-x-4  justify-end mt-3">
@@ -522,51 +472,177 @@ const NavBar = () => {
               </div>
 
               {/* Hamburger Icon */}
-            </>
-          ) : (
-            <>
-              <div
-                className="flex items-center justify-center "
-                onClick={redirectToHomepage}
-              >
-                <img src={logo} alt="logo" className="" />
-              </div>
+            </div>
 
-              <div className="flex items-center justify-center">
-                <Link
-                  to="/login"
-                  className="px-4 py-2 text-sm bg-white rounded-md hover:bg-gray-200 focus:outline-none"
-                >
-                  Sign In
-                </Link>
-                {/* <Link to="/signup" className="ml-4 text-sm text-white ">
-                  Sign Up
-                </Link> */}
-              </div>
-            </>
-          )}
-        </div>
-
-        {isOpen && (
-          <div
-            ref={mobileNavPopup}
-            className="lg:hidden absolute top-18 left-0 right-0 z-10 bg-[#102030] text-white px-6 pb-4"
-          >
-            {mobile_links.map((link, index) => (
+            <div className="hidden lg:flex lg:gap-2 xl:space-x-6 lg:space-x-0 text-white">
               <Link
-                onClick={() => setIsOpen(false)}
-                to={link.path}
-                className="block py-2"
-                key={index}
+                to="/home"
+                className="group  font-semibold text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
               >
-                {link.label}
+                Home
               </Link>
-            ))}
+              <div className="cursor-pointer" ref={dropDownPopup}>
+                <span
+                  className="group  font-semibold text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300 flex px-2"
+                  onClick={() => setIsDropdownOpen((prev) => !prev)}
+                >
+                  Subscribe
+                  <svg
+                    className="w-2.5 h-2.5 ml-1 mt-2"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 10 6"
+                  >
+                    <path
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="m1 1 4 4 4-4"
+                    />
+                  </svg>
+                  {isDropdownOpen && (
+                    <div
+                      onClick={(e) => e.stopPropagation()}
+                      className="absolute w-full left-0 z-10 top-[5.6rem] grid grid-cols-[1fr_1fr_1fr_1fr_4fr] gap-4 text-sm bg-white border shadow-md p-8"
+                    >
+                      <div className="text-gray-900 md:pb-4 flex px-5">
+                        <ul className="space-y-4 w-[10vw]">
+                          <li className="uppercase font-bold">Discipline</li>
+
+                          {disciplineData && disciplineData?.data?.length > 0
+                            ? disciplineData?.data?.map((item, i) => (
+                                <li
+                                  key={i}
+                                  onClick={() => setIsDropdownOpen(false)}
+                                >
+                                  <Link
+                                    to={`${item.disciplineName}?option=subscription`}
+                                    className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500"
+                                  >
+                                    {item?.disciplineName}
+                                  </Link>
+                                </li>
+                              ))
+                            : null}
+                        </ul>
+
+                        <ul
+                          className="space-y-4  px-5  w-[10vw] "
+                          aria-labelledby="mega-menu-dropdown-button"
+                        >
+                          <li className="uppercase font-bold">Series</li>
+
+                          {selectSeriesPicklist &&
+                            selectSeriesPicklist.length > 0 &&
+                            selectSeriesPicklist[0]?.picklist?.map(
+                              (item, i) => (
+                                <li
+                                  key={i}
+                                  onClick={() => setIsDropdownOpen(false)}
+                                >
+                                  <h1 className=" text-gray-500  dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500">
+                                    {item?.name}
+                                  </h1>
+                                </li>
+                              )
+                            )}
+                        </ul>
+
+                        <ul
+                          className="space-y-4 mr-6"
+                          aria-labelledby="mega-menu-dropdown-button"
+                        >
+                          <li className="uppercase font-bold">Collection</li>
+
+                          <li onClick={() => setIsDropdownOpen(false)}>
+                            <a className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500">
+                              Collection
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+
+                      <div>
+                        <Header
+                          variant={{
+                            theme: "dark",
+                            weight: "bold",
+                          }}
+                          className="uppercase text-sm w-[30vw] "
+                        >
+                          Top selling product
+                        </Header>
+                        <img src={selling} alt="selling product " />
+                      </div>
+                    </div>
+                  )}
+                </span>
+              </div>
+              <Link
+                to="/all-artworks?type=purchase"
+                className="group  font-semibold text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
+              >
+                Purchase
+              </Link>
+              <Link
+                to="/all_artist"
+                className="group  font-semibold text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
+              >
+                Artist
+              </Link>
+              <Link
+                to="/blog"
+                className="group  font-semibold text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
+              >
+                Blog
+              </Link>
+            </div>
           </div>
+        ) : (
+          <>
+            <div
+              className="flex items-center justify-center "
+              onClick={redirectToHomepage}
+            >
+              <img src={logo} alt="logo" className="" />
+            </div>
+
+            <div className="flex items-center justify-center">
+              <Link
+                to="/login"
+                className="px-4 py-2 text-sm bg-white rounded-md hover:bg-gray-200 focus:outline-none"
+              >
+                Sign In
+              </Link>
+              <Link to="/signup" className="ml-4 text-sm text-white ">
+                Sign Up
+              </Link>
+            </div>
+          </>
         )}
-      </nav>
-    </>
+      </div>
+
+      {isOpen && (
+        <div
+          ref={mobileNavPopup}
+          className="lg:hidden absolute top-18 left-0 right-0 z-10 bg-[#102030] text-white px-6 pb-4"
+        >
+          {mobile_links.map((link, index) => (
+            <Link
+              onClick={() => setIsOpen(false)}
+              to={link.path}
+              className="block py-2"
+              key={index}
+            >
+              {link.label}
+            </Link>
+          ))}
+        </div>
+      )}
+    </nav>
   );
 };
 
-export default NavBar;
+export default NavForHome;
