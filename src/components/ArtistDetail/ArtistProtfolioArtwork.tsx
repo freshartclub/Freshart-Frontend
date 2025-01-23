@@ -6,8 +6,21 @@ import { imageUrl } from "../utils/baseUrls";
 const ArtistProtfolioArtwork = ({ data }) => {
   const navigate = useNavigate();
   const handleRedirectToDescription = (id) => {
-    navigate(`/discover_more?id=${id}`);
+    navigate(`/discover_more/${id}`);
     window.scroll(0, 0);
+  };
+
+  const name = (val: {
+    artistName: string;
+    artistSurname1: string;
+    artistSurname2: string;
+  }) => {
+    let fullName = val?.artistName || "";
+
+    if (val?.artistSurname1) fullName += " " + val?.artistSurname1;
+    if (val?.artistSurname2) fullName += " " + val?.artistSurname2;
+
+    return fullName.trim();
   };
 
   return (
@@ -33,17 +46,6 @@ const ArtistProtfolioArtwork = ({ data }) => {
                 className="w-full md:w-[40vw] lg:w-[40vw] h-[50vh] object-cover cursor-pointer "
                 onClick={() => handleRedirectToDescription(item._id)}
               />
-              {/* 
-              {profile === "artist" ? (
-                <div className="absolute bottom-0 left-0 right-0 top-0 h-full w-full overflow-hidden bg-[#D9D9D9] bg-fixed flex gap-10 items-center justify-center opacity-0 transition duration-300 ease-in-out hover:opacity-[0.7] hover:cursor-pointer">
-                  <div className="flex gap-5 ">
-                    <NavLink to={`/artist-panel/artwork/add?id=${item._id}`}>
-                      <img src={edit} className="" alt="" />
-                    </NavLink>
-                    <img src={deleteimg} className="" alt="" />
-                  </div>
-                </div>
-              ) : null} */}
 
               <div className="mt-3">
                 <p className="text-[14px] text-[#696868]">
@@ -56,14 +58,13 @@ const ArtistProtfolioArtwork = ({ data }) => {
                   <div>
                     <p className="text-[14px] text-[#696868]">
                       {item?.additionalInfo?.height} x{" "}
-                      {item?.additionalInfo?.width}
+                      {item?.additionalInfo?.width} x{" "}
+                      {item?.additionalInfo?.depth} cm
                     </p>
                   </div>
                 </div>
                 <p className="text-[14px] text-[#696868]">
-                  {data?.artist?.artistName +
-                    " " +
-                    data?.artist?.artistSurname1}
+                  {name(data?.artist)}
                 </p>
               </div>
             </div>

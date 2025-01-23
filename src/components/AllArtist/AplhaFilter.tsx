@@ -141,9 +141,14 @@ const AplhaFilter = ({ query, data }: any) => {
     setCurrentPage(1);
   };
 
-  const handleArtistDetail = (id) => {
+  const handleArtistDetail = (id: string) => {
     navigate(`/artist_detail?id=${id}`);
     window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const mapData = (val: string[]) => {
+    if (!val || val.length === 0) return "";
+    return val.join(" | ");
   };
 
   return (
@@ -185,19 +190,19 @@ const AplhaFilter = ({ query, data }: any) => {
                 />
                 <h1 className="text-xl my-1">{item?.artistName}</h1>
                 <p className="text-sm mb-2">
-                  {" "}
-                  {Array.isArray(item?.aboutArtist?.discipline) &&
-                    item?.aboutArtist?.discipline.map((iw, i) => (
-                      <span key={i}>
-                        {iw.discipline}
-                        {i < item?.aboutArtist?.discipline?.length - 1 && "| "}
-                      </span>
-                    ))}
+                  {item?.aboutArtist?.discipline &&
+                    mapData(
+                      item?.aboutArtist?.discipline?.map(
+                        (item) => item?.discipline
+                      )
+                    )}
                 </p>
                 <img
-                  src={`${imageUrl}/users/${item?.profile?.inProcessImage}`}
+                  src={`${imageUrl}/users/${
+                    item?.profile?.inProcessImage || item?.profile?.mainImage
+                  }`}
                   alt="Artwork"
-                  className="p-4 w-full sm:w-[30vw] h-[30vh] object-cover"
+                  className="p-2 w-full sm:w-[30vw] h-[30vh] object-cover"
                 />
               </div>
             </div>

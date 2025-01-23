@@ -1,28 +1,18 @@
 import { useSearchParams } from "react-router-dom";
 import ArtistDescription from "./ArtistDescription";
 import ArtistHeader from "./ArtistHeader";
-
+import Loader from "../ui/Loader";
+import ArtistProtfolioArtwork from "./ArtistProtfolioArtwork";
 import ArtworkSeries from "./ArtworkSeries";
 import { useGetArtistDetails } from "./http/useGetArtistDetails";
-import ArtistProtfolioArtwork from "./ArtistProtfolioArtwork";
-import Loader from "../ui/Loader";
-
-import { useGetArtSeries } from "./http/useGetArtSeries";
 
 const ArtistDetail = () => {
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
 
   const { data, isLoading } = useGetArtistDetails(id);
-  console.log("this is from dsd", data?.artist);
 
-  const { data: seriesData, isLoading: getSeriesLoading } = useGetArtSeries(id);
-
-  console.log(seriesData);
-
-  if (isLoading) {
-    return <Loader />;
-  }
+  if (isLoading) return <Loader />;
 
   return (
     <div className="container mx-auto md:px-6 px-3">

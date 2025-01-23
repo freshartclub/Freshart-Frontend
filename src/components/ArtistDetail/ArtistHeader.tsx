@@ -26,14 +26,12 @@ const ArtistHeader = ({ data }) => {
   };
 
   const additionalImage = data?.artist?.profile?.additionalImage?.map(
-    (item, index) => item
+    (item) => item
   );
 
   const additionalVidoes = data?.artist?.profile?.additionalVideo?.map(
-    (item, index) => item
+    (item) => item
   );
-
-  const url2 = "https://dev.freshartclub.com/images/videos";
 
   const images = data?.artist
     ? [
@@ -65,6 +63,19 @@ const ArtistHeader = ({ data }) => {
         })),
       ].filter((image) => image.src !== null)
     : [];
+
+  const name = (val: {
+    artistName: string;
+    artistSurname1: string;
+    artistSurname2: string;
+  }) => {
+    let fullName = val?.artistName || "";
+
+    if (val?.artistSurname1) fullName += " " + val?.artistSurname1;
+    if (val?.artistSurname2) fullName += " " + val?.artistSurname2;
+
+    return fullName.trim();
+  };
 
   return (
     <div className="lg:w-[80%] w-[90%] m-auto">
@@ -100,21 +111,12 @@ const ArtistHeader = ({ data }) => {
         <img src={arrow} alt="Home icon" className="w-[4px] h-[6px]" />
 
         <li>
-          <Link
-            to="/"
-            className="cursor-pointer hover:bg-[#E8DAEF] rounded-md transition-all duration-300"
+          <P
+            variant={{ size: "small", theme: "dark", weight: "semiBold" }}
+            className="text-[#203F58]"
           >
-            <P
-              variant={{ size: "small", theme: "dark", weight: "semiBold" }}
-              className="text-[#203F58]"
-            >
-              {data?.artist?.artistName +
-                " " +
-                data?.artist?.artistSurname1 +
-                " " +
-                data?.artist?.artistSurname2}
-            </P>
-          </Link>
+            {name(data?.artist)}
+          </P>
         </li>
       </ul>
 
@@ -169,7 +171,6 @@ const ArtistHeader = ({ data }) => {
 
         <div className="flex gap-5 justify-center my-5 overflow-x-auto">
           {images.map((thumb, index) => {
-            console.log(thumb);
             const isVideo = thumb?.src && thumb?.src?.endsWith(".mp4");
             if (isVideo) {
               return (
