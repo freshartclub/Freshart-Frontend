@@ -9,9 +9,8 @@ async function fetchData(id) {
 }
 
 export const useGetKbDetails = (id) => {
-  let url = `${generalPath.getKbDetails}`;
   return useQuery({
-    queryKey: [url],
+    queryKey: [generalPath.getKbDetails],
     queryFn: () => fetchData(id),
   });
 };

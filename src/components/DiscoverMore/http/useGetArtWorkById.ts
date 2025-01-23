@@ -11,9 +11,8 @@ async function fetchData(id, preview) {
 }
 
 export const useGetArtWorkById = (id, preview) => {
-  let url = `${ARTTIST_ENDPOINTS.GetArtWorkListById}/${id}?preview=${preview}`;
   return useQuery({
-    queryKey: [url],
+    queryKey: [ARTTIST_ENDPOINTS.GetArtWorkListById, id, preview],
     queryFn: () => fetchData(id, preview),
   });
 };

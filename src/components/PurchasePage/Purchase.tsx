@@ -1,15 +1,14 @@
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import Button from "../ui/Button";
-import BannerSection from "./BannerSection";
-import FilterSection from "./FilterSection";
 import { useEffect, useState } from "react";
 import { FaBars } from "react-icons/fa";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import Button from "../ui/Button";
+import FilterSection from "./FilterSection";
 
 import { useGetTechnic } from "../ArtistPanel/AddArtwork/http/useGetTechnic";
 import { useGetTheme } from "../ArtistPanel/AddArtwork/http/useGetTheme";
-import { useGetPurchaseArtwork } from "./http/useGetPurchaseArtwork";
 import { useGetDiscipline } from "../pages/http/useGetDiscipline";
 import Loader from "../ui/Loader";
+import { useGetPurchaseArtwork } from "./http/useGetPurchaseArtwork";
 
 const Purchase = () => {
   const [query, setQuery] = useState("");
@@ -20,7 +19,6 @@ const Purchase = () => {
 
   const [technicData, setTechnicData] = useState([]);
   const [themeData, setThemeData] = useState([]);
-  const [selectDiscipline, setSelectDiscipline] = useState(null);
 
   const navigate = useNavigate();
   const redirectToDiscovery = () => {
@@ -29,8 +27,6 @@ const Purchase = () => {
 
   const { data: disciplineData, isLoading: disciplineLoading } =
     useGetDiscipline();
-
-  console.log(disciplineData);
 
   const search = (e: any) => {
     setQuery(e.target.value);
@@ -56,12 +52,11 @@ const Purchase = () => {
     selectedOption
   );
 
-  const { data: techData, isLoading: technicLoading } = useGetTechnic();
-  const { data: theData, isLoading: themeLoading } = useGetTheme();
+  const { data: techData } = useGetTechnic();
+  const { data: theData } = useGetTheme();
 
   useEffect(() => {
     if (selectedOption) {
-      // Filter technic data
       const newTechnic = techData?.data
         ?.filter(
           (item) =>
@@ -103,10 +98,8 @@ const Purchase = () => {
     setSelectedOption(value);
   };
 
-  if (disciplineLoading) {
-    return <Loader />;
-  }
-
+  if (disciplineLoading) return <Loader />;
+  
   return (
     <>
       <div className="container mx-auto sm:px-6 px-3">

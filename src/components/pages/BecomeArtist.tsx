@@ -1,41 +1,34 @@
-import { Controller, set, useForm } from "react-hook-form";
-import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import P from "../ui/P";
-import Header from "../ui/Header";
+import { Controller, useForm } from "react-hook-form";
+import * as Yup from "yup";
 import browser from "../../assets/cloud-add.png";
-// import "react-phone-number-input/style.css";
+import Header from "../ui/Header";
+import P from "../ui/P";
 import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
 import Select from "react-select";
 
+import { useEffect, useMemo, useState } from "react";
 import useBecomeAnArtistMutation from "../../http/artist/useBecomeAnArtistMutation";
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import useSendOtp from "../../http/artist/useSendOtp";
 import useOtpVerifyMutationBecomeAnArtist from "../../http/artist/useOtpVerifyBecomeAnArtist";
+import useSendOtp from "../../http/artist/useSendOtp";
 import { useGetDiscipline } from "./http/useGetDiscipline";
 import { useGetStyle } from "./http/useGetStyle";
 
 import toast from "react-hot-toast";
 import { useGetSocialMediaPicklist } from "./http/useGetSocialMedia";
 import ThankYou from "./ThankYou";
-
-import MapWithAutocomplete, {
-  getCityStateFromZipCountry,
-} from "../utils/MapWithAutocomplete";
+import { getCityStateFromZipCountry } from "../utils/MapWithAutocomplete";
 import EmailVerification from "./Pop";
-
 import PhoneVerification from "./PhoneVerification";
-
 import countryList from "react-select-country-list";
 import useGetPhone from "./http/useGetPhoneOtp";
 import usePhoneOtpVerify from "./http/useVerifyPhoneOtp";
 
-import CustomDropdown from "./CustomDropdown";
-import { useAppSelector } from "../../store/typedReduxHooks";
-import { getCountries } from "react-phone-number-input";
-import Loader from "../ui/Loader";
 import { useTranslation } from "react-i18next";
+import { useAppSelector } from "../../store/typedReduxHooks";
+import Loader from "../ui/Loader";
+import CustomDropdown from "./CustomDropdown";
 
 const BecomeArtist = () => {
   const validationSchema = Yup.object().shape({
@@ -57,7 +50,6 @@ const BecomeArtist = () => {
   });
 
   const [uploadDocs, setUploadDocs] = useState(null);
-
   const [isOtpVerify, setIsOtpVerify] = useState(false);
   const [popUp, setPopUp] = useState(false);
 
@@ -72,14 +64,10 @@ const BecomeArtist = () => {
   const [isValidatePhone, setIsValidatePhone] = useState(false);
 
   const [otpSent, setOtpSent] = useState(false);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOpenPhone, setIsModalOpenPhone] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
-
   const [phoneNumber, setPhoneNumber] = useState("");
-
-  const [timeoutReached, setTimeoutReached] = useState(false);
 
   const options = useMemo(() => countryList(), []);
 
@@ -94,7 +82,6 @@ const BecomeArtist = () => {
     control,
     watch,
     trigger,
-    setError,
   } = useForm({
     resolver: yupResolver(validationSchema),
     reValidateMode: "onChange",
@@ -115,15 +102,14 @@ const BecomeArtist = () => {
     useGetSocialMediaPicklist();
 
   const { data, isLoading } = useGetDiscipline();
-  const { data: styleData, isLoading: styleLoading } = useGetStyle();
+  const { data: styleData } = useGetStyle();
 
   const diciplineOption = data?.data.map((item) => {
     return item.disciplineName;
   });
 
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
-  const watchEmail = "email";
   const watchDicipline = watch("discipline");
 
   const GetOutSocialMedia = socialMediaPicklist?.data?.filter(
@@ -157,7 +143,6 @@ const BecomeArtist = () => {
       const jsonResponse = await request.json();
       setGeoLocation(jsonResponse);
 
-      console.log(jsonResponse);
       setCountryCode(jsonResponse?.country_code.toLowerCase());
       setValue("country", jsonResponse?.country_name);
     };
@@ -189,7 +174,6 @@ const BecomeArtist = () => {
     if (country && zipCode && zipCode.length > 4) {
       getCityStateFromZipCountry(country, zipCode, apiKey).then(
         ({ state, city }) => {
-          console.log(state, city);
           setValue("city", city);
           setValue("region", state);
         }
@@ -281,17 +265,7 @@ const BecomeArtist = () => {
   };
 
   const onSubmit = handleSubmit(async (data) => {
-    if (!isOtpVerify) {
-      return toast("Please Verify Otp");
-    }
-
-    // if (email !== watchEmail || getValues("email")) {
-    //   setValidateEmail("Verify Email");
-    //   setValidateotp("Validate Otp");
-    //   setIsOtpVerify(false);
-    //   return toast("Email Is Changed Re-Verify Please");
-    // }
-
+    if (!isOtpVerify) return toast("Please Verify Otp");
     if (!otpSent || !isValidateEmail) {
       return toast("Please Verify Email and Phone Number");
     }
@@ -333,7 +307,6 @@ const BecomeArtist = () => {
   const validateWebsite = (value) => {
     const checkValue = value.target.value;
     if (!/^https?:\/\//i.test(checkValue)) {
-      console.log("hello");
       setValidateError("URL must start with 'https://'");
       return "URL must start with 'https://'";
     }
@@ -341,9 +314,7 @@ const BecomeArtist = () => {
     return true;
   };
 
-  if (!countryCode) {
-    return <Loader />;
-  }
+  if (!countryCode) return <Loader />;
 
   return (
     <>

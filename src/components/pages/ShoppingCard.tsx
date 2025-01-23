@@ -5,15 +5,19 @@ import cross_icon from "../../assets/x-mark.png";
 import Button from "../ui/Button";
 import { useNavigate } from "react-router-dom";
 import { useGetCartItems } from "./http/useGetCartItems";
-
 import Loader from "../ui/Loader";
 import useRemoveMutation from "../PurchasePage/http/useRemoveMutation";
 import { imageUrl } from "../utils/baseUrls";
 
-const ShoppingCard = ({ isOpen, onClose }: any) => {
+const ShoppingCard = ({
+  isOpen,
+  onClose,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+}) => {
   const { data, isLoading } = useGetCartItems();
-
-  const { mutate, isPending } = useRemoveMutation();
+  const { mutate } = useRemoveMutation();
 
   const handleCart = () => {
     navigate("/purchase_cart");
@@ -36,9 +40,6 @@ const ShoppingCard = ({ isOpen, onClose }: any) => {
     .toFixed(2);
 
   const navigate = useNavigate();
-  const redirectToDetailPage = () => {
-    navigate("/discover_more");
-  };
 
   return (
     <div
@@ -50,43 +51,45 @@ const ShoppingCard = ({ isOpen, onClose }: any) => {
         <Loader />
       ) : (
         <div className="container mx-auto px-6 sm:px-4">
-          {/* Header Section */}
-          <div className="flex justify-between items-center w-full p-4 border-b">
+          <div className="flex justify-between items-center w-full px-2 py-4 border-b">
             <Header variant={{ size: "md", theme: "dark", weight: "semiBold" }}>
               Shopping Cart ({totalItems})
             </Header>
-            <Button onClick={onClose} className="p-1">
+            <Button onClick={onClose}>
               <RxCross1 size={20} />
             </Button>
           </div>
 
-          {/* Cart Items */}
           <div className="mt-4 space-y-4 overflow-y-auto max-h-[65vh]">
             {data?.data?.cart?.map((item: any, index: number) => (
               <div
                 key={index}
-                className="flex justify-between items-center p-4 bg-gray-50 rounded shadow-sm"
+                className="flex justify-between items-center p-2 bg-slate-100 hover:bg-gray-50 rounded shadow-sm"
               >
                 <div
                   className="flex gap-4 items-center"
-                  onClick={redirectToDetailPage}
+                  onClick={() => navigate(`/discover_more/${item?.item?._id}`)}
                 >
                   <img
                     src={`${imageUrl}/users/${item?.item?.media?.mainImage}`}
                     alt="cart image"
-                    className="object-cover w-[20vw] sm:w-[10vw] rounded"
+                    className="object-cover w-[50px] h-[50px] rounded-full"
                   />
 
                   <div>
-                    <P
-                      variant={{ size: "base", theme: "dark", weight: "light" }}
+                    <Header
+                      variant={{
+                        size: "md",
+                        theme: "dark",
+                        weight: "semiBold",
+                      }}
                     >
                       {item?.item?.artworkName}
-                    </P>
-                    <div className="flex gap-2 flex-col text-sm text-gray-600">
-                      <span>Quantity: {item?.quantity}</span>
-                      <span>Price: ${item?.item?.pricing?.basePrice}</span>
-                    </div>
+                    </Header>
+
+                    <span className="text-gray-600 text-[14px]">
+                      Price: ${item?.item?.pricing?.basePrice}
+                    </span>
                   </div>
                 </div>
 

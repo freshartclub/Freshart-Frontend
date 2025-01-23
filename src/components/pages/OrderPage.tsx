@@ -22,8 +22,8 @@ const OrderPage = () => {
     navigate(`/order_tracking?id=${item?._id}&art=${item?.artwork?._id}`);
   };
 
-  const dataToRender =
-    state === "purchase" ? data?.purchase : data?.subscription;
+  // const dataToRender =
+  //   state === "purchase" ? data?.purchase : data?.subscription;
 
   if (isLoading) return <Loader />;
 
@@ -186,17 +186,6 @@ const OrderPage = () => {
                   >
                     {item.order_place}
                   </P>
-                  {/* <P
-                        variant={{
-                          size: "small",
-                          theme: "dark",
-                          weight: "medium",
-                        }}
-                        className="text-[#848484]"
-                      >
-                        Order Placed on :{" "}
-                        {dayjs(item?.createdAt).format("MMMM D, YYYY")}
-                      </P> */}
 
                   <div className="flex">
                     <P

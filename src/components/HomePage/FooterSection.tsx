@@ -1,23 +1,20 @@
-import logo from "../../assets/Logo01 1.png";
-import location from "../../assets/loacation.png";
-import call from "../../assets/phone.png";
-import mail from "../../assets/mail.png";
-import { Link, useLocation } from "react-router-dom";
-import facebook from "../../assets/Link.png";
+import { Link } from "react-router-dom";
 import icon from "../../assets/Link (1).png";
 import instagram from "../../assets/Link (2).png";
 import cross from "../../assets/Link (3).png";
 import linkedin from "../../assets/Link (4).png";
+import facebook from "../../assets/Link.png";
+import locationIcon from "../../assets/loacation.png";
+import logo from "../../assets/Logo01 1.png";
+import mail from "../../assets/mail.png";
+import call from "../../assets/phone.png";
 import { useAppSelector } from "../../store/typedReduxHooks";
 
 const FooterSection = () => {
-  const location = useLocation();
   const isAuthorized = useAppSelector((state) => state.user.isAuthorized);
   const scrolToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
-
-  const isArtistPanel = location.pathname === "/artist-panel";
 
   const token = localStorage.getItem("auth_token");
   const profile = localStorage.getItem("profile");
@@ -28,10 +25,8 @@ const FooterSection = () => {
     <>
       {profile === "artist" ? null : (
         <footer className="bg-[#102030] text-white pt-16 pb-6 z-[5]">
-          {/* {0 ? <h1>H111</h1> : null} */}
           <div className="container mx-auto px-6 lg:px-10">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
-              {/* Logo and Description */}
               <div className="sm:text-left text-center">
                 <img src={logo} alt="Fresh Art Club Logo" />
                 <p className="mt-6 text-sm">
@@ -40,7 +35,6 @@ const FooterSection = () => {
                 </p>
               </div>
 
-              {/* Contact Information */}
               <div className="sm:text-left text-center">
                 <h2 className="text-xl font-bold text-[#FF725E] mb-3">
                   Contact Fresh Art
@@ -48,7 +42,7 @@ const FooterSection = () => {
 
                 <div className="flex mt-6 md:items-start items-center sm:justify-start justify-center">
                   <img
-                    src={location}
+                    src={locationIcon}
                     alt="Location"
                     className="w-6 h-6 sm:block hidden"
                   />

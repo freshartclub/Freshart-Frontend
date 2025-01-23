@@ -71,10 +71,8 @@ const DiscoverMore = () => {
     }
   };
 
-  const additionalImage = data?.data.media?.images?.map((item, index) => item);
-
+  const additionalImage = data?.data.media?.images?.map((item) => item);
   const additionalVideo = data?.data.media?.otherVideo?.map((item) => item);
-
   const url2 = `${imageUrl}/videos`;
 
   const images = data?.data
@@ -110,9 +108,7 @@ const DiscoverMore = () => {
       ].filter((image) => image.src !== null)
     : [];
 
-  if (isLoading) {
-    return <Loader />;
-  }
+  if (isLoading) return <Loader />;
 
   return (
     <>
@@ -195,7 +191,7 @@ const DiscoverMore = () => {
             </div>
           </div>
 
-          <div className="md:w-[50%] w-full">
+          <div className="w-full">
             <DiscoverContent data={data?.data} />
           </div>
         </div>
@@ -217,7 +213,7 @@ const DiscoverMore = () => {
 
         <ProductInfo data={data} />
       </div>
-      <SelectedSection data={data} />
+      {/* <SelectedSection data={data} /> */}
     </>
   );
 };

@@ -7,7 +7,6 @@ async function fetchData() {
   const { data } = await axiosInstance.get(
     `${ARTTIST_ENDPOINTS.GetArtWorkList}`
   );
-  console.log("data is ", data);
   return data;
 }
 

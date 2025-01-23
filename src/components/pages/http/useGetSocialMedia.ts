@@ -9,9 +9,8 @@ async function fetchData() {
 }
 
 export const useGetSocialMediaPicklist = () => {
-  let url = `${generalPath.getPickList}`;
   return useQuery({
-    queryKey: [url],
+    queryKey: [generalPath.getPickList],
     queryFn: fetchData,
   });
 };

@@ -1,26 +1,21 @@
-import React, { useEffect, useMemo, useState } from "react";
-import Header from "../ui/Header";
-import ArtBreadcrumbs1 from "./ArtBreadcrumbs1";
+import getSymbolFromCurrency from "currency-symbol-map";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
-import img_1 from "../ArtistPanel/assets/img_1.png";
-import img_2 from "../ArtistPanel/assets/img_2.png";
+import { PhoneInput } from "react-international-phone";
+import { useSearchParams } from "react-router-dom";
+import countryList from "react-select-country-list";
+import { useGetBillingAddress } from "../ArtistPanel/ArtistEditProfile/http/useGetBillingAddress";
 import payment_1 from "../ArtistPanel/assets/payment_1.png";
 import payment_2 from "../ArtistPanel/assets/payment_2.png";
 import payment_3 from "../ArtistPanel/assets/payment_3.png";
 import payment_4 from "../ArtistPanel/assets/payment_4.png";
 import payment_5 from "../ArtistPanel/assets/payment_5.png";
-import { useGetCartItems } from "../pages/http/useGetCartItems";
-import useAddToCartMutation from "../DiscoverMore/http/useAddToCartMutation";
 import CustomDropdown from "../pages/CustomDropdown";
-import countryList from "react-select-country-list";
-import { useGetBillingAddress } from "../ArtistPanel/ArtistEditProfile/http/useGetBillingAddress";
-import { PhoneInput } from "react-international-phone";
-import getSymbolFromCurrency from "currency-symbol-map";
-import Loader from "../ui/Loader";
+import { useGetCartItems } from "../pages/http/useGetCartItems";
 import usePostCheckOutMutation from "../PurchasePage/http/usePostCheckOutMutation";
-import BillingAddress from "../EditProfile/BillingAddress";
-import { GiConsoleController } from "react-icons/gi";
-import { useSearchParams } from "react-router-dom";
+import Header from "../ui/Header";
+import Loader from "../ui/Loader";
+import ArtBreadcrumbs1 from "./ArtBreadcrumbs1";
 
 const PaymentPage = () => {
   const { data, isLoading } = useGetCartItems();
@@ -30,10 +25,8 @@ const PaymentPage = () => {
   const [isCheckBox, setIsCheckBox] = useState(false);
   const options = useMemo(() => countryList(), []);
 
-  const [searchParams] = useSearchParams()
-  const type = searchParams.get("type")
-
-  console.log(type)
+  const [searchParams] = useSearchParams();
+  const type = searchParams.get("type");
 
   const {
     data: billingData,
@@ -69,13 +62,14 @@ const PaymentPage = () => {
         "addressType",
         billingData[0]?.billingDetails?.billingAddressType
       );
-      // setId(billingData[0]?._id);
     }
   }, [billingData]);
 
   const countryValue = getValues("country");
 
-  const renderData = data?.data?.cart?.filter(item => item?.item?.commercialization?.activeTab === type) 
+  const renderData = data?.data?.cart?.filter(
+    (item) => item?.item?.commercialization?.activeTab === type
+  );
 
   const discountAmounts = renderData?.reduce((total, item) => {
     const basePrice = parseFloat(
@@ -97,9 +91,7 @@ const PaymentPage = () => {
     .toFixed(2);
 
   const tax = 5;
-
   const finalPrice = totalPrice - discountAmounts + tax;
-
   let itemQu = {};
 
   renderData?.forEach((item) => {
@@ -118,7 +110,6 @@ const PaymentPage = () => {
     }
     return acc;
   }, {});
-
 
   const onSubmit = (data: any) => {
     try {
@@ -170,39 +161,17 @@ const PaymentPage = () => {
         note: data?.additionalInfo,
       };
 
-      console.log(payload);
-
       checkOutMutation(payload);
     } catch (error) {
       console.error(error);
     }
   };
 
-  const items = [
-    {
-      id: 1,
-      title: "Stylish wall art with abstract charcoal",
-      quantity: 1,
-      price: 70,
-      image: img_1,
-    },
-    {
-      id: 2,
-      title: "Wall framed painting with handpicking brush",
-      quantity: 3,
-      price: 250,
-      image: img_2,
-    },
-  ];
-
   const handleCheck = (val) => {
     setIsCheckBox(val.target.checked);
-    console.log(val.target.value);
   };
 
-  if (billingLoading || isFetching || isLoading) {
-    return <Loader />;
-  }
+  if (billingLoading || isFetching || isLoading) return <Loader />;
 
   return (
     <div className="container mx-auto p-4">
@@ -635,30 +604,36 @@ const PaymentPage = () => {
               <h2 className="text-base font-semibold mb-4">Order Summary</h2>
 
               <div className="space-y-4">
-                {renderData && renderData.length > 0 && renderData?.map((item) => {
-                  // console.log(item); // Logs each 'item' in the cart
-                  return (
-                    <div key={item.id} className="flex items-center space-x-4">
-                      <img
-                        src={`${data?.url}/users/${item?.item?.media?.mainImage}`}
-                        alt={item.title}
-                        className="w-14 h-14 rounded-md object-cover"
-                      />
-                      <div>
-                        <p className="text-sm">{item?.item?.artworkName}</p>
-                        <p className="text-sm text-gray-500">
-                          {item?.item?.quantity ? item?.item?.quantity : "1"} ×{" "}
-                          <span className="text-[#FF536B] font-semibold">
-                            {getSymbolFromCurrency(
-                              item?.item?.pricing?.currency
-                            )}
-                            {" " + item?.item?.pricing?.basePrice}
-                          </span>
-                        </p>
+                {renderData &&
+                  renderData.length > 0 &&
+                  renderData?.map((item) => {
+                    // console.log(item); // Logs each 'item' in the cart
+                    return (
+                      <div
+                        key={item.id}
+                        className="flex items-center space-x-4"
+                      >
+                        <img
+                          src={`${data?.url}/users/${item?.item?.media?.mainImage}`}
+                          alt={item.title}
+                          className="w-14 h-14 rounded-md object-cover"
+                        />
+                        <div>
+                          <p className="text-sm">{item?.item?.artworkName}</p>
+                          <p className="text-sm text-gray-500">
+                            {item?.item?.quantity ? item?.item?.quantity : "1"}{" "}
+                            ×{" "}
+                            <span className="text-[#FF536B] font-semibold">
+                              {getSymbolFromCurrency(
+                                item?.item?.pricing?.currency
+                              )}
+                              {" " + item?.item?.pricing?.basePrice}
+                            </span>
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
               </div>
 
               <div className="mt-6 space-y-2 ">

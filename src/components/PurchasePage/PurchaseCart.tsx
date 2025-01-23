@@ -1,85 +1,29 @@
+import getSymbolFromCurrency from "currency-symbol-map";
 import { useState } from "react";
-import { FaMinus, FaPlus } from "react-icons/fa";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import home from "../../assets/home.png";
-import useAddToCartMutation from "../DiscoverMore/http/useAddToCartMutation";
 import { useGetCartItems } from "../pages/http/useGetCartItems";
-import useGetCartItemsRemove from "../pages/http/useGetCartItemsRemove";
 import Button from "../ui/Button";
 import Header from "../ui/Header";
+import Loader from "../ui/Loader";
 import P from "../ui/P";
+import { imageUrl } from "../utils/baseUrls";
 import arrow from "./assets/arrow_22.png";
 import ret_arrow from "./assets/ArrowLeft.png";
 import gray_cross from "./assets/garycross.png";
-import image from "./assets/Image.png";
-import image2 from "./assets/Image1.png";
-import red_cross from "./assets/XCircle.png";
 import CartTotal from "./CartTotal";
 import useRemoveMutation from "./http/useRemoveMutation";
-import { imageUrl } from "../utils/baseUrls";
-import getSymbolFromCurrency from "currency-symbol-map";
-
-const product_data = [
-  {
-    id: 1,
-    title: "Stylish wall art with abstract charcoal",
-    price: "$70",
-    total: "$70",
-    productimg: image,
-    cross: gray_cross,
-  },
-  {
-    id: 2,
-    title: "Wall framed painting with handpicking brush",
-    price: "$250",
-    total: "$250",
-    productimg: image2,
-    cross: red_cross,
-  },
-];
 
 const PurchaseCart = () => {
-  const [cross, setCross] = useState(product_data);
   const [state, setState] = useState("purchase");
   const navigate = useNavigate();
 
   const { data, isLoading } = useGetCartItems();
-  const { mutate, isPending } = useAddToCartMutation();
-  const { mutate: removeMutate, isPending: removeIsPending } =
-    useGetCartItemsRemove();
+  const { mutate: removeProduct } = useRemoveMutation();
 
-  const { mutate: removeProduct, isPending: removeProductIsPending } =
-    useRemoveMutation();
-
-  const discountAmounts = data?.data?.cart?.map((item: any) => {
-    const basePrice = parseFloat(
-      item?.item?.pricing?.basePrice?.replace("$", "")
-    );
-    const discountPercentage = item?.item?.pricing?.dpersentage || 0;
-    const discountAmount = (basePrice * discountPercentage) / 100;
-    return discountAmount;
-  });
-
-
-  console.log(data?.data?.cart)
-
-  const renderData = data?.data?.cart?.filter(item => item?.item?.commercialization?.activeTab === state) 
-
-  const handleAdd = (id) => {
-    try {
-      mutate(id);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const handleRemoveQuantity = (id) => {
-    try {
-      removeMutate(id);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const renderData = data?.data?.cart?.filter(
+    (item) => item?.item?.commercialization?.activeTab === state
+  );
 
   const handleRemove = (id) => {
     try {
@@ -93,7 +37,9 @@ const PurchaseCart = () => {
     navigate("/all-artworks?type=purchase");
   };
 
-  return (
+  return isLoading ? (
+    <Loader />
+  ) : (
     <div className="container mx-auto px-6 sm:px-3 mt-4">
       <ul className="flex p-2 gap-4 text-xl text-[#2E4053] items-center">
         <li>
@@ -254,16 +200,16 @@ const PurchaseCart = () => {
                             <td className="xl:px-6 lg:px-4 px-2 py-4 text-[#475156] font-medium">
                               <span className="flex justify-between py-1  px-2 rounded-md  ">
                                 {/* <FaMinus
-                                  onClick={() =>
-                                    handleRemoveQuantity(table?.item?._id)
-                                  }
-                                  className="cursor-pointer   w-[20px] h-[20px] sm:w-[16px] sm:h-[16px]"
-                                /> */}
+                                onClick={() =>
+                                  handleRemoveQuantity(table?.item?._id)
+                                }
+                                className="cursor-pointer   w-[20px] h-[20px] sm:w-[16px] sm:h-[16px]"
+                              /> */}
                                 {table?.quantity}x
                                 {/* <FaPlus
-                                  onClick={() => handleAdd(table?.item?._id)}
-                                  className="cursor-pointer  w-[20px] h-[20px] sm:w-[16px] sm:h-[16px]"
-                                /> */}
+                                onClick={() => handleAdd(table?.item?._id)}
+                                className="cursor-pointer  w-[20px] h-[20px] sm:w-[16px] sm:h-[16px]"
+                              /> */}
                               </span>
                             </td>
 
@@ -330,7 +276,7 @@ const PurchaseCart = () => {
           </div>
 
           <div className="lg:w-[28%] w-full">
-            <CartTotal data={data?.data}  state={state}/>
+            <CartTotal data={data?.data} state={state} />
           </div>
         </div>
       </div>

@@ -1,20 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import loginImage from "../../assets/login.png";
+import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import arrow from "../../assets/arrow.png";
-import facebook from "../../assets/facebook.png";
-import google from "../../assets/google.png";
-import apple from "../../assets/apple.png";
+import eyeclose from "../../assets/hidden.png";
+import loginImage from "../../assets/login.png";
+import eye from "../../assets/view.png";
+import useSignInMutation from "../../http/auth/useSignInMutation";
+import Button from "../ui/Button";
 import Header from "../ui/Header";
 import P from "../ui/P";
-import Button from "../ui/Button";
-import eye from "../../assets/view.png";
-import eyeclose from "../../assets/hidden.png";
-import { CommonValidation } from "../ui/CommonValidation";
-import useSignInMutation from "../../http/auth/useSignInMutation";
-import { useAppSelector } from "../../store/typedReduxHooks";
-import { useTranslation } from "react-i18next";
 
 const Login: React.FC = () => {
   const [newPasswordIcon, setNewPasswordIcon] = React.useState(eyeclose);
@@ -36,7 +31,7 @@ const Login: React.FC = () => {
     setNewPasswordIcon((prevIcon) => (prevIcon === eyeclose ? eye : eyeclose));
   };
 
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const storedEmail = localStorage.getItem("email");

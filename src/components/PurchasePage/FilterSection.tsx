@@ -1,27 +1,13 @@
 import { useState } from "react";
-import Button from "../ui/Button";
-import P from "../ui/P";
-import filter from "./assets/filter.png";
 import { FaBars, FaSearch, FaTimes } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import Header from "../ui/Header";
-import Select from "react-select";
-import ArtworkGroup from "./ArtworkGroup";
-import CardSection from "./CardSection";
-import HighlightSection from "../HomePage/HighlightSection";
 import { useGetDiscipline } from "../pages/http/useGetDiscipline";
+import Button from "../ui/Button";
+import Header from "../ui/Header";
+import P from "../ui/P";
 import CustomSelect from "../utils/CustomSelect";
-
-const groupOption = [
-  {
-    value: "artist",
-    label: "Artist",
-  },
-  {
-    value: "artist2",
-    label: "Artist2",
-  },
-];
+import filter from "./assets/filter.png";
+import CardSection from "./CardSection";
 
 const FilterSection = ({
   query,
@@ -40,14 +26,8 @@ const FilterSection = ({
   const [isOpen, setIsOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(true);
   const [isThemeOpen, setIsThemeOpen] = useState(true);
-  const [showArtwork, setShowArtwork] = useState(false);
 
-  const handleShowArtwork = () => {
-    setShowArtwork((prevState) => !prevState);
-  };
-
-  const { data: disciplineData, isLoading: disiplineLoading } =
-    useGetDiscipline();
+  const { data: disciplineData } = useGetDiscipline();
 
   const columnOptions = disciplineData?.data?.map((discipline) => ({
     value: discipline.disciplineName,
@@ -64,10 +44,6 @@ const FilterSection = ({
 
   const toggleTheme = () => {
     setIsThemeOpen(!isThemeOpen);
-  };
-
-  const handleGroupBy = (option: { value: any }) => {
-    setSelectedOption(option.value);
   };
 
   return (
@@ -459,14 +435,6 @@ const FilterSection = ({
       </div>
 
       <CardSection query={query} data={data} isLoading={isLoading} />
-
-      {/* {selectedOption === "artist" ? (
-      <ArtworkGroup />
-      ) : selectedOption === "artist2" ? (
-        <HighlightSection />
-      ) : (
-        <CardSection query={query} />
-      )} */}
     </>
   );
 };

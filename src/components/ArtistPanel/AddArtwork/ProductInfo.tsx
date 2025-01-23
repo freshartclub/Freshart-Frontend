@@ -1,68 +1,22 @@
-import { useNavigate } from "react-router-dom";
+import getSymbolFromCurrency from "currency-symbol-map";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
 import Header from "../../ui/Header";
+import Loader from "../../ui/Loader";
 import P from "../../ui/P";
 import delivery from "./assets/delivery.png";
 import print from "./assets/print.png";
 import return1 from "./assets/return.png";
 import secure from "./assets/secure.png";
 import product from "./assets/single-product.jpg.png";
-import getSymbolFromCurrency from "currency-symbol-map";
 
 const ProductInfo = ({ data }: any) => {
   const currency = data?.data?.pricing?.currency;
 
-  const internalTags = Array.isArray(data?.data?.tags?.intTags)
-    ? data.data.tags.intTags.map((tag, i) => (
-        <span key={tag}>
-          {tag} {i < tag.length - 1 && " | "}
-        </span>
-      ))
-    : null;
-
-  // const externlaTags = Array.isArray(data?.data?.tags?.intTags)
-  //   ? data.data.tags.extTags.map((tag, i) => (
-  //       <span key={tag}>
-  //         {tag} {i < tag.length - 1 && " | "}
-  //       </span>
-  //     ))
-  //   : null;
-
-  const externlaTags = Array.isArray(data?.data?.tags?.intTags)
-    ? data.data.tags.extTags.map((tag, i, arr) => (
-        <span key={tag}>
-          {tag} {i < arr.length - 1 && " | "}
-        </span>
-      ))
-    : null;
-
-  const artworkStyles = Array.isArray(data?.data?.additionalInfo?.artworkStyle)
-    ? data.data.additionalInfo.artworkStyle.map((iw, i) => (
-        <span key={i}>
-          {iw}
-          {i < iw?.length - 1 && " | "}
-        </span>
-      ))
-    : null;
-
-  const artworkColors = Array.isArray(data?.data?.additionalInfo?.colors)
-    ? data.data.additionalInfo.colors.map((iw, i) => (
-        <span key={i}>
-          {iw}
-          {i < iw?.length - 1 && " | "}
-        </span>
-      ))
-    : null;
-
-  const artworkEmotion = Array.isArray(data?.data?.additionalInfo?.emotions)
-    ? data.data.additionalInfo.emotions.map((iw, i) => (
-        <span key={i}>
-          {iw}
-          {i < iw?.length - 1 && " | "}
-        </span>
-      ))
-    : null;
+  const mapData = (val: string[]) => {
+    if (!val || val.length === 0) return "";
+    return val.join(" | ");
+  };
 
   const overview_date = [
     {
@@ -138,16 +92,15 @@ const ProductInfo = ({ data }: any) => {
   const highlight_data = [
     {
       heading: "Artwork Style: ",
-      description: artworkStyles,
+      description: mapData(data?.data?.additionalInfo?.artworkStyle),
     },
-
     {
       heading: "Artwork Emotion: ",
-      description: artworkEmotion,
+      description: mapData(data?.data?.additionalInfo?.emotions),
     },
     {
       heading: "Artwork Colors: ",
-      description: artworkColors,
+      description: mapData(data?.data?.additionalInfo?.colors),
     },
   ];
 
@@ -226,14 +179,9 @@ const ProductInfo = ({ data }: any) => {
       heading: "Discount Acceptation: ",
       description: data?.data?.restriction?.discountAcceptation || "N/A",
     },
-
     {
       heading: "External Tags: ",
-      description: externlaTags && externlaTags.length ? externlaTags : "N/A",
-    },
-    {
-      heading: "Internal Tags: ",
-      description: internalTags && internalTags.length ? internalTags : "N/A",
+      description: mapData(data?.data?.tags?.extTags) || "N/A",
     },
   ];
 
@@ -278,17 +226,8 @@ const ProductInfo = ({ data }: any) => {
     },
   ];
 
-  const navigate = useNavigate();
-  const aboutText = data?.data?.owner?.aboutArtist?.about.replace(
-    /^<p>|<\/p>$/g,
-    ""
-  );
+  if (!product) return <Loader />;
 
-  const handleShowmore = (id) => {
-    navigate(`/artist_detail?id=${id}`);
-  };
-
-  if (!product) return <div>Loading...</div>;
   return (
     <div className="mt-20">
       <Tabs>
@@ -297,30 +236,27 @@ const ProductInfo = ({ data }: any) => {
           <Tab>Additional Information</Tab>
           <Tab>Commercialization</Tab>
           <Tab>Pricing</Tab>
-          <Tab>Inventry & Shipping</Tab>
-
+          <Tab>Inventory & Shipping</Tab>
           <Tab>More Details</Tab>
         </TabList>
 
         <TabPanel>
           <div className="flex flex-col lg:flex-row gap-8 justify-between my-10">
             <div className="lg:w-[65%] w-full">
-              <P
-                variant={{ size: "xl", theme: "dark", weight: "medium" }}
-                className=""
-              >
-                Product information
-              </P>
               <Header
-                variant={{ size: "small", theme: "dark", weight: "semibold" }}
+                variant={{ size: "md", theme: "dark", weight: "semiBold" }}
+              >
+                Product Information
+              </Header>
+              <P
+                variant={{ size: "base", theme: "dark", weight: "medium" }}
                 className="my-5 text-[#999999]"
               >
                 {data?.data?.productDescription}
-              </Header>
+              </P>
             </div>
 
             <div className="lg:w-[25%] w-full">
-              {/* Delivery Information */}
               <div className="flex items-start gap-5 my-5">
                 <img src={delivery} alt="" className="w-8 h-8" />
                 <div>
@@ -338,7 +274,6 @@ const ProductInfo = ({ data }: any) => {
                 </div>
               </div>
 
-              {/* Secure Payment Information */}
               <div className="flex items-start gap-5 my-5">
                 <img src={secure} alt="" className="w-8 h-8" />
                 <div>
@@ -356,7 +291,6 @@ const ProductInfo = ({ data }: any) => {
                 </div>
               </div>
 
-              {/* Premium Paper Information */}
               <div className="flex items-start gap-5 my-5">
                 <img src={print} alt="" className="w-8 h-8" />
                 <div>
@@ -374,7 +308,6 @@ const ProductInfo = ({ data }: any) => {
                 </div>
               </div>
 
-              {/* Return Information */}
               <div className="flex items-start gap-5 my-5">
                 <img src={return1} alt="" className="w-8 h-8" />
                 <div>
@@ -396,10 +329,8 @@ const ProductInfo = ({ data }: any) => {
         </TabPanel>
 
         <TabPanel>
-          {/* Flex container for the three columns */}
           <div className="flex flex-col lg:flex-row gap-10 justify-between w-full my-10">
-            {/* Overview Data Column */}
-            <div className="lg:w-[32%] w-full">
+            <div className="w-full">
               {overview_date.map((item, index) => (
                 <div key={index} className="flex ">
                   <P
@@ -410,7 +341,7 @@ const ProductInfo = ({ data }: any) => {
                   </P>
                   <P
                     variant={{ size: "small", weight: "medium" }}
-                    className="text-[#999999] "
+                    className="text-[#999999]"
                   >
                     {item.name}
                   </P>
@@ -418,16 +349,15 @@ const ProductInfo = ({ data }: any) => {
               ))}
             </div>
 
-            {/* Artwork Details Column */}
-            <div className="lg:w-[32%] w-full">
+            <div className="w-full">
               {artwork_detail.map((item, index) => (
-                <div key={index} className="flex  items-center">
-                  <Header
+                <div key={index} className="flex items-center">
+                  <P
                     variant={{ size: "small", theme: "dark", weight: "medium" }}
                     className="w-48 my-1"
                   >
                     {item.heading}
-                  </Header>
+                  </P>
                   <P
                     variant={{ size: "small", weight: "medium" }}
                     className="text-[#999999]"
@@ -438,16 +368,15 @@ const ProductInfo = ({ data }: any) => {
               ))}
             </div>
 
-            {/* Highlight Data Column */}
-            <div className="lg:w-[32%] w-full">
+            <div className="w-full">
               {highlight_data.map((item, index) => (
                 <div key={index} className="flex  items-center">
-                  <Header
+                  <P
                     variant={{ size: "small", theme: "dark", weight: "medium" }}
                     className="w-48 my-1"
                   >
                     {item.heading}
-                  </Header>
+                  </P>
                   <P
                     variant={{ size: "small", weight: "medium" }}
                     className="text-[#999999] capitalize"
@@ -460,35 +389,23 @@ const ProductInfo = ({ data }: any) => {
           </div>
 
           <div className="flex flex-col my-5">
-            <h1
-              variant={{ size: "small", theme: "dark" }}
-              className="font-semibold"
-            >
-              Hanging Description:
-            </h1>
-            <h1>{data?.data?.additionalInfo?.hangingDescription}</h1>
+            <h1 className="font-semibold">Hanging Description:</h1>
+            <span className="text-[#999999] text-[14px] mt-2">{data?.data?.additionalInfo?.hangingDescription || "N/A"}</span>
           </div>
 
-          {/* Framed Description Section */}
           <div className="flex flex-col my-5">
-            <h1
-              variant={{ size: "small", theme: "dark" }}
-              className="font-semibold"
-            >
-              Framed Description:
-            </h1>
-            <h1>{data?.data?.additionalInfo?.framedDescription}</h1>
+            <h1 className="font-semibold">Framed Description:</h1>
+            <span className="text-[#999999] text-[14px] mt-2">{data?.data?.additionalInfo?.framedDescription || "N/A"}</span>
           </div>
         </TabPanel>
 
         <TabPanel>
           <div className="flex flex-col lg:flex-row gap-10 justify-between w-full mb-10">
-            <div className="lg:w-[32%] w-full mt-8">
-              {/* Conditional rendering based on activeTab */}
+            <div className="w-full mt-8">
               {data?.data?.commercialization?.activeTab === "purchase"
                 ? purchaseData.map((item, index) => (
-                    <div key={index} className="flex items-center ">
-                      <Header
+                    <div key={index} className="flex items-center">
+                      <P
                         variant={{
                           size: "small",
                           theme: "dark",
@@ -497,7 +414,7 @@ const ProductInfo = ({ data }: any) => {
                         className="w-48 my-1"
                       >
                         {item.heading}
-                      </Header>
+                      </P>
                       <P
                         variant={{
                           size: "small",
@@ -510,8 +427,8 @@ const ProductInfo = ({ data }: any) => {
                     </div>
                   ))
                 : subscriptionData.map((item, index) => (
-                    <div key={index} className="flex items-center mb-5">
-                      <Header
+                    <div key={index} className="flex items-center">
+                      <P
                         variant={{
                           size: "small",
                           theme: "dark",
@@ -520,7 +437,7 @@ const ProductInfo = ({ data }: any) => {
                         className="w-48 my-1"
                       >
                         {item.heading}
-                      </Header>
+                      </P>
                       <P
                         variant={{
                           size: "small",
@@ -538,16 +455,15 @@ const ProductInfo = ({ data }: any) => {
 
         <TabPanel>
           <div className="flex gap-10 justify-between w-full mb-10">
-            <div className="lg:w-[32%] w-full mt-8">
-              {/* Iterate through Pricing_data */}
+            <div className="w-full mt-8">
               {Pricing_data.map((item, index) => (
                 <div key={index} className="flex items-center gap-2 ">
-                  <Header
+                  <P
                     variant={{ size: "small", theme: "dark", weight: "medium" }}
                     className="lg:w-48 my-1"
                   >
                     {item.heading}
-                  </Header>
+                  </P>
                   <P
                     variant={{
                       size: "small",
@@ -565,16 +481,15 @@ const ProductInfo = ({ data }: any) => {
 
         <TabPanel>
           <div className="flex flex-wrap gap-10 justify-between w-full mb-10">
-            <div className="lg:w-[32%] w-full mt-8">
-              {/* Iterate through shipping_data */}
+            <div className="w-full mt-8">
               {shipping_data.map((item, index) => (
                 <div key={index} className="flex items-center  gap-3">
-                  <Header
+                  <P
                     variant={{ size: "small", theme: "dark", weight: "medium" }}
                     className="lg:w-48 my-1"
                   >
                     {item.heading}
-                  </Header>
+                  </P>
                   <P
                     variant={{
                       size: "small",
@@ -592,15 +507,15 @@ const ProductInfo = ({ data }: any) => {
 
         <TabPanel>
           <div className="flex flex-wrap gap-10 justify-between w-full mb-10">
-            <div className="mt-8 w-full sm:w-1/2 lg:w-1/3">
+            <div className="mt-8 w-full">
               {moreInfo_data.map((item, index) => (
                 <div key={index} className="flex items-start ">
-                  <Header
+                  <P
                     variant={{ size: "small", theme: "dark", weight: "medium" }}
                     className="w-48 my-1"
                   >
                     {item.heading}
-                  </Header>
+                  </P>
                   <P
                     variant={{
                       size: "small",

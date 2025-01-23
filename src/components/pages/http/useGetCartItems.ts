@@ -1,20 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 
-import axiosInstance from "../../utils/axios";
 import { ARTTIST_ENDPOINTS } from "../../../http/apiEndPoints/Artist";
-import { useAppSelector } from "../../../store/typedReduxHooks";
+import axiosInstance from "../../utils/axios";
 
 export const useGetCartItems = () => {
-  const isAuthorized = useAppSelector((state) => state.user.isAuthorized);
-
-  let url = `${ARTTIST_ENDPOINTS.cartItems}`;
-
   async function fetchData() {
-    const { data } = await axiosInstance.get(url);
+    const { data } = await axiosInstance.get(ARTTIST_ENDPOINTS.cartItems);
     return data;
   }
   return useQuery({
-    queryKey: [url],
+    queryKey: [ARTTIST_ENDPOINTS.cartItems],
     queryFn: fetchData,
   });
 };

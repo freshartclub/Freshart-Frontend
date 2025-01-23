@@ -1,25 +1,24 @@
-import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
+import { useNavigate } from "react-router-dom";
+import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
-import P from "../ui/P";
-import delivery from "./assets/delivery.png";
-import secure from "./assets/secure.png";
-import print from "./assets/print.png";
-import return1 from "./assets/return.png";
-import Header from "../ui/Header";
-import product from "./assets/single-product.jpg.png";
+import account_plus from "../ArtistPortfolioPage/assets/account-plus-outline.png";
+import arrow from "../ArtistPortfolioPage/assets/arrow_2.png";
+import chat from "../ArtistPortfolioPage/assets/chat-outline.png";
 import circle1 from "../ArtistPortfolioPage/assets/circle1.png";
 import circle2 from "../ArtistPortfolioPage/assets/circle2.png";
-import account_plus from "../ArtistPortfolioPage/assets/account-plus-outline.png";
-import chat from "../ArtistPortfolioPage/assets/chat-outline.png";
 import dots from "../ArtistPortfolioPage/assets/dots-horizontal.png";
-import whtsap from "../ArtistPortfolioPage/assets/whatsapp.png";
 import facebook from "../ArtistPortfolioPage/assets/facebook.png";
-import twitter from "../ArtistPortfolioPage/assets/twitter.png";
 import linkedin from "../ArtistPortfolioPage/assets/linkedin.png";
-import arrow from "../ArtistPortfolioPage/assets/arrow_2.png";
+import twitter from "../ArtistPortfolioPage/assets/twitter.png";
+import whtsap from "../ArtistPortfolioPage/assets/whatsapp.png";
 import Button from "../ui/Button";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import Header from "../ui/Header";
+import P from "../ui/P";
+import delivery from "./assets/delivery.png";
+import print from "./assets/print.png";
+import return1 from "./assets/return.png";
+import secure from "./assets/secure.png";
+import product from "./assets/single-product.jpg.png";
 
 interface DisciplineItem {
   discipline: string;
@@ -27,8 +26,6 @@ interface DisciplineItem {
 }
 
 const ProductInfo = ({ data }: any) => {
-  console.log(data);
-
   const artworkStyles = Array.isArray(data?.data?.additionalInfo?.artworkStyle)
     ? data.data.additionalInfo.artworkStyle.map((iw, i) => (
         <span key={i}>{iw}</span>

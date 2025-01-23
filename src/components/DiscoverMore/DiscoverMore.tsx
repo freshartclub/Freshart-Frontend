@@ -6,7 +6,7 @@ import P from "../ui/P";
 import DiscoverContent from "./DiscoverContent";
 import ProductInfo from "./ProductInfo";
 import SelectedSection from "./SelectedSection";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import arrow from "../../assets/arrow_22.png";
 import home from "../../assets/home.png";
 import Button from "../ui/Button";
@@ -16,17 +16,10 @@ import { imageUrl } from "../utils/baseUrls";
 
 const DiscoverMore = () => {
   const sliderRef = useRef<Slider>(null);
-
-  const [searchParams] = useSearchParams();
-  const id = searchParams.get("id");
+  const id = useParams().id;
   const preview = false;
 
   const { data, isLoading } = useGetArtWorkById(id, preview);
-
-  // const additionalImage = data?.data.media?.images?.map((item) => item);
-  // const additionalVideo = data?.data.media?.otherVideo?.map((item) => item);
-
-  const url2 = "https://dev.freshartclub.com/images/videos";
 
   const images = data?.data
     ? [
@@ -76,8 +69,8 @@ const DiscoverMore = () => {
 
   return (
     <>
-      <div className="container mx-auto md:px-6 px-3">
-        <ul className="flex p-2 gap-4 text-xl text-[#2E4053] items-center mt-10">
+      <div className="lg:mx-6 mx-3 lg:px-6 px-3">
+        <ul className="flex md:p-2 gap-4 text-xl text-[#2E4053] overflow-x-auto w-full items-center mt-10 mb-5">
           <li>
             <Link to="/" className="rounded-md transition-all flex">
               <img
@@ -114,21 +107,18 @@ const DiscoverMore = () => {
             </Link>
           </li>
           <img src={arrow} alt="Arrow" className="w-[4px] h-[6px] mr-2" />
-          <li>
-            <Link
-              to="/products"
-              className="cursor-pointer hover:bg-[#E8DAEF] rounded-md transition-all duration-300"
-            >
-              <P variant={{ size: "small", theme: "dark", weight: "medium" }}>
-                Print art website
-              </P>
-            </Link>
-          </li>
+
+          <P
+            className="min-w-max scrollbar"
+            variant={{ size: "small", theme: "dark", weight: "medium" }}
+          >
+            {data?.data.artworkName}
+          </P>
         </ul>
 
-        <div className="flex md:flex-row flex-col  gap-10 ">
-          <div className="flex lg:flex-row  flex-col gap-4 md:w-[50%] w-full items-center">
-            <div className="flex lg:justify-start justify-center  lg:flex-col lg:max-h-[60vh] lg:h-[60vh] lg:overflow-y-auto  gap-2 w-[15%] lg:ml-4">
+        <div className="flex md:flex-row flex-col gap-5">
+          <div className="flex lg:flex-row flex-col md:w-[50%] w-full items-center">
+            <div className="flex lg:justify-start justify-center lg:flex-col lg:max-h-[60vh] lg:h-[60vh] md:w-[20rem] overflow-x-auto lg:overflow-y-auto gap-2 lg:w-[15%] lg:ml-4 scrollbar">
               {images?.map((thumb, index) => {
                 const isVideo = thumb.src && thumb.src.endsWith(".mp4");
                 if (thumb.src) {
@@ -136,7 +126,7 @@ const DiscoverMore = () => {
                     <video
                       key={index}
                       src={`${imageUrl}/videos/${thumb.src}`}
-                      className="mb-4 lg:w-20 w-24 h-24 lg:h-24 cursor-pointer object-cover"
+                      className="md:mb-0 mb-4 lg:w-20 w-24 h-24 lg:h-24 cursor-pointer object-cover"
                       onClick={() => handleThumbnailClick(index)}
                     />
                   ) : (
@@ -144,7 +134,7 @@ const DiscoverMore = () => {
                       key={index}
                       src={`${imageUrl}/users/${thumb.src}`}
                       alt={thumb.alt}
-                      className="mb-4 lg:w-20 w-24 h-24 lg:h-24 cursor-pointer object-cover"
+                      className="md:mb-0 mb-4 lg:w-20 w-24 h-24 lg:h-24 cursor-pointer object-cover"
                       onClick={() => handleThumbnailClick(index)}
                     />
                   );
@@ -153,24 +143,24 @@ const DiscoverMore = () => {
               })}
             </div>
 
-            <div className="flex-1 md:w-[70%] w-full">
+            <div className="flex-1 md:w-[80%] w-full">
               {images.length > 1 ? (
                 <Slider {...settings} ref={sliderRef} className="discover_more">
                   {images.map(
                     (slide, index) =>
                       slide.src && (
-                        <div key={index} className="">
+                        <div key={index}>
                           {slide.src.endsWith(".mp4") ? ( // Check if it's a video
                             <video
                               src={`${imageUrl}/videos/${slide.src}`}
-                              className="mx-auto object-cover h-[20rem] md:h-[60vh] lg:h-[60vh]"
+                              className="shadow rounded mx-auto object-cover md:w-[25rem] lg:w-[25rem] h-[20rem] md:h-[60vh] lg:h-[60vh]"
                               controls
                             />
                           ) : (
                             <img
                               src={`${imageUrl}/users/${slide.src}`}
                               alt={`Slide ${index + 1}`}
-                              className="mx-auto object-cover h-[20rem] md:h-[60vh] lg:h-[60vh]"
+                              className="shadow rounded mx-auto object-cover md:w-[25rem] lg:w-[25rem] h-[20rem] md:h-[60vh] lg:h-[60vh]"
                             />
                           )}
                         </div>
@@ -182,7 +172,7 @@ const DiscoverMore = () => {
                 (images[0].src.endsWith(".mp4") ? (
                   <video
                     src={`${imageUrl}/videos/${images[0].src}`}
-                    className="md:w-[40vw] w-full h-[50vh] md:h-[70vh] object-cover overflow-y-hidden"
+                    className="shadow rounded mx-auto object-cover md:w-[25rem] lg:w-[25rem] h-[20rem] md:h-[60vh] lg:h-[60vh]"
                     controls
                     autoPlay={true}
                   />
@@ -190,7 +180,7 @@ const DiscoverMore = () => {
                   <img
                     src={`${imageUrl}/users/${images[0]?.src}`}
                     alt="Single Image"
-                    className="md:w-[40vw] w-full h-[50vh] md:h-[70vh] object-cover overflow-y-hidden"
+                    className="shadow rounded mx-auto object-cover md:w-[25rem] lg:w-[25rem] h-[20rem] md:h-[60vh] lg:h-[60vh]"
                   />
                 ))
               )}
@@ -202,7 +192,7 @@ const DiscoverMore = () => {
           </div>
         </div>
 
-        <div className="flex justify-center md:w-[50%] w-full gap-10 mb-10">
+        <div className="flex justify-center md:w-[55%] w-full gap-10 mb-10">
           <div className="flex gap-1">
             <img src={eye} alt="eye" className="w-[19px] h-[12px] mt-1" />
             <P variant={{ size: "base", theme: "dark", weight: "normal" }}>

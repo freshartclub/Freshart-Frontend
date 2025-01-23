@@ -9,9 +9,8 @@ async function fetchData() {
 }
 
 export const useGetDiscipline = () => {
-  let url = `${generalPath.getDiscipline}`;
   return useQuery({
-    queryKey: [url],
+    queryKey: [generalPath.getDiscipline],
     queryFn: fetchData,
   });
 };

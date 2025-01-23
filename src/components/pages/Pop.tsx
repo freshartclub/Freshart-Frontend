@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 
 interface EmailVerificationProps {
@@ -26,9 +26,7 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({
   validateEmail,
   handleCloseModel,
 }) => {
-  const [errorMessage, setErrorMessage] = useState("");
-
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const handleCodeChange = (e) => {
     setVerificationCode(e.target.value);
@@ -63,9 +61,7 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({
                 placeholder="Enter verification code"
               />
             </div>
-            {errorMessage && (
-              <div className="text-red-500 text-xs mb-4">{errorMessage}</div>
-            )}
+
             <div className="flex justify-between">
               <span
                 onClick={validateEmailOtp}

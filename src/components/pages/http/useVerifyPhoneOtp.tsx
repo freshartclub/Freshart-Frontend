@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 
 import toast from "react-hot-toast";
 import axiosInstance from "../../utils/axios";
@@ -19,11 +19,9 @@ const usePhoneOtpVerify = () => {
       toast.success(res.data.message, {
         duration: 3000,
       });
-
-      // navigate("/home");
     },
     onError: (error) => {
-      toast.error(error.response?.data?.message || "An error occurred");
+      toast.error(error.response?.data?.message);
     },
   });
 };

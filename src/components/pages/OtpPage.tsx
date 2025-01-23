@@ -1,20 +1,20 @@
-import { useState, useEffect } from "react";
-import OTPInput from "react-otp-input";
-import loginimage from "../../assets/login.png";
-import P from "../ui/P";
-import arrow from "../../assets/arrow.png";
-import Button from "../ui/Button";
-import BackButton from "../ui/BackButton";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import otpimage from "../../assets/otp.png";
-import useTimer, { formatTime } from "../hooks/useTimer";
-import { useForm } from "react-hook-form";
-import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import useOtpVerifyMutation from "../../http/auth/useOtpVerifyMutation";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import OTPInput from "react-otp-input";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import * as Yup from "yup";
+import arrow from "../../assets/arrow.png";
+import loginimage from "../../assets/login.png";
+import otpimage from "../../assets/otp.png";
 import useOtpResendMutation from "../../http/auth/useOtpResendMutation";
+import useOtpVerifyMutation from "../../http/auth/useOtpVerifyMutation";
 import { useAppDispatch, useAppSelector } from "../../store/typedReduxHooks";
 import { forgotPasswordUserId } from "../../store/userSlice/userSlice";
+import useTimer, { formatTime } from "../hooks/useTimer";
+import BackButton from "../ui/BackButton";
+import Button from "../ui/Button";
+import P from "../ui/P";
 
 const OtpPage = () => {
   const [localId, setLocalId] = useState("");
@@ -23,7 +23,7 @@ const OtpPage = () => {
 
   const navigate = useNavigate();
   const [otp, setOtp] = useState("");
-  const timerLimit = 2 * 60; // 2 minutes
+  const timerLimit = 2 * 60;
   const { startTimer, stopTimer, seconds } = useTimer(timerLimit);
 
   const [searchParams, setSearchParam] = useSearchParams();
@@ -45,7 +45,6 @@ const OtpPage = () => {
   }, []);
 
   const {
-    register,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm({
@@ -53,7 +52,6 @@ const OtpPage = () => {
   });
 
   const { isPending, mutateAsync } = useOtpVerifyMutation();
-
   const { isPending: isResendPendig, mutateAsync: resendMutateAsync } =
     useOtpResendMutation();
 
@@ -138,7 +136,7 @@ const OtpPage = () => {
                 onClick={handleResendOtp}
                 className="font-bold cursor-pointer tracking-tight"
               >
-                SEND AGAIN
+                {isResendPendig ? "Sending..." : "Resend"}
               </span>
             </P>
 

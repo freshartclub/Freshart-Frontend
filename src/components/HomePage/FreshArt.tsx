@@ -1,17 +1,15 @@
-import arrow from "../../assets/PinkArrow.png";
+import { useNavigate } from "react-router-dom";
 import arrow_yellow from "../../assets/Arrow_yellow.png";
+import comment from "../../assets/ChatCentered 1.png";
 import img1 from "../../assets/fresh1.png";
 import img2 from "../../assets/fresh2.png";
 import img3 from "../../assets/fresh3.png";
 import img4 from "../../assets/fresh4.png";
 import img5 from "../../assets/fresh5.png";
 import img6 from "../../assets/fresh6.png";
+import arrow from "../../assets/PinkArrow.png";
 import tag from "../../assets/tag 1.png";
 import user from "../../assets/user_3 1.png";
-import comment from "../../assets/ChatCentered 1.png";
-import Button from "../ui/Button";
-import Barrow from "../../assets/view_arrow.png";
-import { useNavigate } from "react-router-dom";
 import ViewButton from "../ui/ViewButton";
 
 const FreshArt = () => {

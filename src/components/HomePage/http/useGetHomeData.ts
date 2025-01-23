@@ -4,15 +4,13 @@ import { ARTTIST_ENDPOINTS } from "../../../http/apiEndPoints/Artist";
 import axiosInstance from "../../utils/axios";
 
 export const useGetHomeData = () => {
-  const url = `${ARTTIST_ENDPOINTS.GetHomeData}`;
-
   async function fetchData() {
-    const { data } = await axiosInstance.get(url);
-    console.log("data is ", data);
+    const { data } = await axiosInstance.get(ARTTIST_ENDPOINTS.GetHomeData);
     return data;
   }
+
   return useQuery({
-    queryKey: [""],
+    queryKey: ["Home Data"],
     queryFn: fetchData,
   });
 };

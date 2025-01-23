@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 
 interface PhoneVerificationProps {
@@ -32,10 +32,7 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
   verifyPhoneOtpPending,
   validateEmail,
 }) => {
-  const [errorMessage, setErrorMessage] = useState("");
-  const { t, i18n } = useTranslation();
-
-  console.log(validatePhone);
+  const { t } = useTranslation();
 
   return (
     <div className="flex flex-col items-center">
@@ -68,9 +65,7 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
                 placeholder="Enter verification code"
               />
             </div>
-            {errorMessage && (
-              <div className="text-red-500 text-xs mb-4">{errorMessage}</div>
-            )}
+
             <div className="flex justify-between">
               <span
                 onClick={handleRevalidatePhone}

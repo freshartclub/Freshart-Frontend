@@ -1,37 +1,27 @@
+import Button from "../../../components/ui/Button";
+import Header from "../../ui/Header";
+import P from "../../ui/P";
 import CollectionSection from "./CollectionSection";
-import collection1 from "./assets/collection1.webp";
-import collection2 from "./assets/collection2.webp";
-import collection3 from "./assets/collection3.webp";
 import collection4 from "./assets/collection4.webp";
 import collection5 from "./assets/collection5.webp";
 import collection6 from "./assets/collection6.webp";
 import collection7 from "./assets/collection7.webp";
 import collection8 from "./assets/collection8.webp";
 import collection9 from "./assets/collection9.webp";
-import Button from "../../../components/ui/Button";
-import Header from "../../ui/Header";
-import P from "../../ui/P";
-
 
 const Visual = () => {
   return (
     <div>
       <div className="w-[100%] m-auto container py-[50px] xl:mt-20">
         <div className="text-center">
-          <h1 className="text-xl md:text-3xl font-bold  mb-4">How To Find Art You Love</h1>
+          <h1 className="text-xl md:text-3xl font-bold  mb-4">
+            How To Find Art You Love
+          </h1>
           <p className="text-md 2xl:w-[23%] xl:w-[25%] m-auto text-[#333333] font-semibold">
             Discovering art has never been easier or more enjoyable.
           </p>
         </div>
       </div>
-      {/* <CollectionSection
-        title="Curated Collection"
-        description="See new curator-approved works in special collections released weekly."
-        buttonText="START EXPLORING"
-        image1={collection1}
-        image2={collection2}
-        image3={collection3}
-      /> */}
 
       <div className="flex md:flex-row flex-col mt-[50px] md:mb-0 mb-[50px] container m-auto w-[100%]">
         <div className="flex lg:w-[50%] md:w-[50%]">

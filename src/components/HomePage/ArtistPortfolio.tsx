@@ -48,15 +48,33 @@ const settings = {
 
 const ArtistPortfolio = ({ data }) => {
   const navigate = useNavigate();
+
   const redirectToAllArtistPage = () => {
     navigate("/all_artist");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleArtistDesc = (id) => {
-    console.log("this is from artistPortfoloio", id);
     navigate(`/artist_detail?id=${id}`);
     window.scroll(0, 0);
+  };
+
+  const name = (val: {
+    artistName: string;
+    artistSurname1: string;
+    artistSurname2: string;
+  }) => {
+    let fullName = val?.artistName || "";
+
+    if (val?.artistSurname1) fullName += " " + val?.artistSurname1;
+    if (val?.artistSurname2) fullName += " " + val?.artistSurname2;
+
+    return fullName.trim();
+  };
+
+  const mapData = (val: string[]) => {
+    if (!val || val.length === 0) return "";
+    return val.join(" | ");
   };
 
   return (
@@ -76,9 +94,9 @@ const ArtistPortfolio = ({ data }) => {
       <div className="artist_slider h-auto  ">
         {data?.length > 4 ? (
           <>
-            {data?.artists?.map((item, index) => (
+            {data?.artists?.map((item, i: number) => (
               <div
-                key={index}
+                key={i}
                 className="px-2 text-center cursor-pointer"
                 onClick={() => handleArtistDesc(item._id)}
               >
@@ -88,18 +106,21 @@ const ArtistPortfolio = ({ data }) => {
                     alt="profile"
                     className="-mt-10 w-[10vh] h-[10vh] rounded-full object-cover"
                   />
-                  <h1 className="text-xl line-clamp-1">
-                    {item.artistName + " " + item.artistSurname1}
-                  </h1>
+                  <h1 className="text-xl line-clamp-1">{name(item)}</h1>
                   <p className="text-sm flex gap-2 min-h-[20px]">
-                    {item?.aboutArtist?.discipline?.map((item, i) => (
-                      <h1 key={i}>{item?.discipline}</h1>
-                    ))}
+                    {item?.aboutArtist?.discipline &&
+                      mapData(
+                        item?.aboutArtist?.discipline?.map(
+                          (item) => item?.discipline
+                        )
+                      )}
                   </p>
                   <img
-                    src={`${imageUrl}/users/${item?.profile?.inProcessImage}`}
+                    src={`${imageUrl}/users/${
+                      item?.profile?.inProcessImage || item?.profile?.mainImage
+                    }`}
                     alt="Artwork"
-                    className="p-4 sm:w-[30vw] sm:h-[30vh] object-cover"
+                    className="p-2 rounded sm:w-[30vw] sm:h-[30vh] object-cover"
                   />
                 </div>
               </div>
@@ -107,9 +128,9 @@ const ArtistPortfolio = ({ data }) => {
           </>
         ) : (
           <Slider {...settings}>
-            {data?.artists?.map((item, index) => (
+            {data?.artists?.map((item, i) => (
               <div
-                key={index}
+                key={i}
                 className="px-2 text-center cursor-pointer   "
                 onClick={() => handleArtistDesc(item._id)}
               >
@@ -120,23 +141,23 @@ const ArtistPortfolio = ({ data }) => {
                     className="-mt-10 w-[10vh] h-[10vh] rounded-full object-cover"
                   />
                   <h1 className="text-xl line-clamp-1 font-medium">
-                    {item.artistName + " " + item.artistSurname1}
+                    {name(item)}
                   </h1>
                   <p className="text-sm flex flex-wrap justify-center gap-2 min-h-[20px]">
-                    {item?.aboutArtist?.discipline?.map(
-                      (disciplineItem, i, arr) => (
-                        <>
-                          <span>{disciplineItem?.discipline}</span>
-                          {i < arr.length - 1 && <span>|</span>}
-                        </>
-                      )
-                    )}
+                    {item?.aboutArtist?.discipline &&
+                      mapData(
+                        item?.aboutArtist?.discipline?.map(
+                          (item) => item?.discipline
+                        )
+                      )}
                   </p>
 
                   <img
-                    src={`${imageUrl}/users/${item?.profile?.inProcessImage}`}
+                    src={`${imageUrl}/users/${
+                      item?.profile?.inProcessImage || item?.profile?.mainImage
+                    }`}
                     alt="Artwork"
-                    className="p-4 sm:w-[30vw] sm:h-[30vh] object-cover"
+                    className="p-2 rounded sm:w-[30vw] sm:h-[30vh] object-cover"
                   />
                 </div>
               </div>

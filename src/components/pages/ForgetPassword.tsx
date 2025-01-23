@@ -34,7 +34,6 @@ const ForgetPassword = () => {
   const { mutateAsync, isPending } = useForgotPasswordMutation();
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log(data);
     try {
       await mutateAsync(data);
     } catch (error) {

@@ -346,7 +346,7 @@ const App: React.FC = () => {
               }
             />
             <Route
-              path="/discover_more"
+              path="/discover_more/:id"
               element={
                 <AuthGuard>
                   <DiscoverMore />

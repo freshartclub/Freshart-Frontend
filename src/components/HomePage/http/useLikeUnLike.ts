@@ -1,27 +1,37 @@
-import { useMutation } from "@tanstack/react-query";
-
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-
 import axiosInstance from "../../utils/axios";
 import { ARTTIST_ENDPOINTS } from "../../../http/apiEndPoints/Artist";
 
-async function useLikeUnLike(input: any) {
-  return axiosInstance.patch(
-    `${ARTTIST_ENDPOINTS.LikeUnlikeArtwork}/${input.id}`,
-    { action: input.action }
-  );
+interface LikeUnlikeInput {
+  id: string | number;
+  action: string;
 }
-const likeUnlikeArtworkMutation = () => {
+
+const useLikeUnlikeArtworkMutation = () => {
+  const queryClient = useQueryClient();
+
+  async function useLikeUnLike(input: LikeUnlikeInput) {
+    return axiosInstance.patch(
+      `${ARTTIST_ENDPOINTS.LikeUnlikeArtwork}/${input.id}`,
+      { action: input.action }
+    );
+  }
+
   return useMutation({
     mutationFn: useLikeUnLike,
 
     onSuccess: async (res, input) => {
-      console.log(res.data);
+      queryClient.invalidateQueries({
+        queryKey: [ARTTIST_ENDPOINTS.GetLikedArtWork],
+        refetchType: "all",
+      });
+      toast.success(res.data.message);
     },
-    onError: (res) => {
-      //   toast.error(res.response.data.message);
+    onError: (res: any) => {
+      toast.error(res.response.data.message);
     },
   });
 };
 
-export default likeUnlikeArtworkMutation;
+export default useLikeUnlikeArtworkMutation;

@@ -1,18 +1,16 @@
-import readbanner from "./assets/read.webp";
-import { Navigation, Autoplay, Pagination, FreeMode } from "swiper/modules";
-import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
-import "swiper/css/pagination";
-import "swiper/css/navigation";
 import "swiper/css/free-mode";
-import review from "./assets/Review.webp";
-import ceo1 from "./assets/ceo1.webp";
-import image2 from "./assets/Image2.webp";
-import image3 from "./assets/Image3.webp";
-import card from "./assets/Card01.png";
-import "./../../../App.css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import { Autoplay, FreeMode, Navigation, Pagination } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
 import Header from "../../ui/Header";
 import P from "../../ui/P";
+import "./../../../App.css";
+import card from "./assets/Card01.png";
+import ceo1 from "./assets/ceo1.webp";
+import readbanner from "./assets/read.webp";
+import review from "./assets/Review.webp";
 
 const data = [
   {

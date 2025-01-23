@@ -60,6 +60,8 @@ export const ARTTIST_ENDPOINTS = {
   getSeries: `${ARTIST_BASE_URl}/get-series-list`,
   GetArtSeries: `${ARTIST_BASE_URl}/get-all-series`,
 
+  getAllPlans: `${ARTIST_BASE_URl}/get-all-plans`,
+
   // GetArtistTicket: `${ARTIST_BASE_URl}/get
 };
 

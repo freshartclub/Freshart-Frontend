@@ -17,6 +17,7 @@ const CartTotal = ({ data , state }) => {
   });
 
   const { mutate, isPending } = usePostCheckOutMutation();
+  
   const navigate = useNavigate();
   const totalDiscountAmount = discountAmounts
     ?.reduce((totalDiscount, item) => {
@@ -52,15 +53,7 @@ const CartTotal = ({ data , state }) => {
     },
   ];
 
-  const type = data?.cart?.map(
-    (item) => item?.item?.commercialization?.activeTab
-  );
-
-  // const orderDetails = data?.cart?.map((item) => item?.item?.pricing);
-  // console.log(data);
-
   let itemQu = {};
-
   data?.cart?.forEach((item) => {
     if (item?.item?._id) {
       itemQu[item?.item?._id] = (itemQu[item?.item?._id] || 0) + item.quantity;
@@ -74,8 +67,6 @@ const CartTotal = ({ data , state }) => {
   return (
     <>
       <div className="p-5 mb-8 border rounded-md">
-
-        
         <div>
         <Header variant={{ size: "md", theme: "dark", weight: "semiBold" }}>
           Card Totals

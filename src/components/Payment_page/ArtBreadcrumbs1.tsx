@@ -1,7 +1,6 @@
-import { IoIosArrowBack } from "react-icons/io";
-import { Link, NavLink } from "react-router-dom";
-import P from "../ui/P";
+import { Link } from "react-router-dom";
 import home from "../../assets/home.png";
+import P from "../ui/P";
 // import image from "assets/Image.png";
 // import image2 from "assets/Image1.png";
 import arrow from "../../assets/arrow_22.png";

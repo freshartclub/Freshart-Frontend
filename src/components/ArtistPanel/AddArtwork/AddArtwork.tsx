@@ -1,5 +1,3 @@
-// import { Field, Formik } from "formik";
-import { jsPDF } from "jspdf";
 import { useEffect, useRef, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import { BsBackspace } from "react-icons/bs";
@@ -27,35 +25,26 @@ import { useGetTechnic } from "./http/useGetTechnic";
 import { useGetTheme } from "./http/useGetTheme";
 import usePostArtWorkMutation from "./http/usePostArtwork";
 
-import axios from "axios";
+import html2canvas from "html2canvas";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
+import { Controller, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import * as Yup from "yup";
-import {
-  RenderAllPicklists,
-  RenderAllSinglePicklist,
-} from "../../utils/RenderAllPicklist";
+import { MdDelete } from "react-icons/md";
+import { baseUrl, imageUrl } from "../../utils/baseUrls";
+import { RenderAllPicklists } from "../../utils/RenderAllPicklist";
 import { useGetArtistDetails } from "../ArtistEditProfile/http/useGetDetails";
 import Dicipline from "./Dicipline";
-import { useGetArtWorkStyle } from "./http/useGetArtWorkStyle";
-import { useGetSeries } from "./http/useGetSeries";
-import { SeriesPop } from "./SeriesPop";
-import { Controller, useForm } from "react-hook-form";
-import html2canvas from "html2canvas";
-import { AiOutlineClose } from "react-icons/ai";
 import useDeleteSeriesMutation from "./http/useDeleteSeries";
-import toast from "react-hot-toast";
-import { useAppSelector } from "../../../store/typedReduxHooks";
 import { useGetMediaSupport } from "./http/useGetMediaSupport";
+import { useGetSeries } from "./http/useGetSeries";
 import usePostModifyArtworkMutation from "./http/usePostModifyArtwork";
-import { baseUrl, imageUrl } from "../../utils/baseUrls";
-import { MdDelete } from "react-icons/md";
+import { SeriesPop } from "./SeriesPop";
 
 const AddArtwork = () => {
-  const [progress, setProgress] = useState(0);
   const [copySuccess, setCopySuccess] = useState("");
-  const [isLoadingPdf, setIsLoadingPdf] = useState(false); // State to track loading
+  const [isLoadingPdf, setIsLoadingPdf] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [catalogPrice, setCatalogPrice] = useState(null);
 
@@ -68,35 +57,25 @@ const AddArtwork = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
-
-    touched,
+    formState: { errors },
     control,
     setValue,
     getValues,
     watch,
-    setError,
-    trigger,
-    clearErrors,
   } = useForm({
     reValidateMode: "onChange",
     mode: "onChange",
-    // resolver: yupResolver(validationSchema),
   });
 
   const CustomYearPicker = ({
     selectedYear,
     toggleCalendar,
     showCalendar,
-
     field,
   }) => {
-    // Handle year selection and update form value manually
     const handleYearSelect = (year) => {
-      // Manually update the value in React Hook Form's form state
-      // console.log(field);
       setValue("artworkCreationYear", year);
-      toggleCalendar(); // Optionally close calendar after selecting year
+      toggleCalendar();
     };
 
     return (
@@ -139,8 +118,6 @@ const AddArtwork = () => {
   const [newBackImage, setNewBackImage] = useState(null);
   const [newInProcessImage, setNewInProcessImage] = useState([]);
   const [newMainVideo, setNewMainVideo] = useState([]);
-  const [existingVideo, setExistingVideo] = useState([]);
-  const [existingImage, setExistingImage] = useState([]);
   const [internalTags, setInternalTags] = useState([]);
   const [externalTags, setExternalTags] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -153,17 +130,9 @@ const AddArtwork = () => {
   const [hasMainImg, setHasMainImg] = useState(true);
   const qrCodeRef = useRef(null);
   const [isComingSoon, setIsComingSoon] = useState(null);
-
   const [isArtProviderField, setIsArtProviderField] = useState("");
-
   const [isDropdownOpen, setDropdownOpen] = useState(false);
-
-  const [selectedOptions, setSelectedOptions] = useState([]);
-
-  const [newOtherVideo, setNewOtherVideo] = useState([]);
-
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [action, setAction] = useState("");
 
   const closePopup = () => {
     setIsPopupOpen(false);
@@ -173,18 +142,14 @@ const AddArtwork = () => {
   const query = searchParams.get("view");
 
   const { data, isLoading, refetch: refetchData } = useGetArtWorkById(id);
-
   const { data: userData, isLoading: userIsLoading } = useGetArtistDetails();
+
   const userID = userData?.data?.artist?._id;
 
   const isArtProvider = userData?.data?.artist?.commercilization?.artProvider;
-
   const { data: technicData, isLoading: technicLoading } = useGetTechnic();
-
   const { data: themeData, isLoading: themeLoading } = useGetTheme();
-
-  const { mutateAsync: seriesDelete, isPending: isSeriesPendingDelete } =
-    useDeleteSeriesMutation();
+  const { mutateAsync: seriesDelete } = useDeleteSeriesMutation();
 
   const { data: getMediaSupport, isLoading: getMediaSupportLoding } =
     useGetMediaSupport();
@@ -192,94 +157,16 @@ const AddArtwork = () => {
   const {
     data: seriesData,
     isLoading: seriesLoading,
-    isFetching: seriesFetching,
     refetch,
   } = useGetSeries(userID);
 
   const { mutate, isPending } = usePostArtWorkMutation();
-
   const { mutate: modifyMuatate, isPending: modifyIsPending } =
     usePostModifyArtworkMutation();
 
   const vatAmount = data?.data?.pricing?.vatAmount
     ? data?.data?.pricing?.vatAmount
     : userData?.data?.artist?.invoice?.vatAmount;
-
-  const [initialValues, setInitialValues] = useState({
-    artworkName: "",
-
-    provideArtistName: "",
-    artworkCreationYear: "",
-    artworkSeries: "",
-    productDescription: "",
-
-    artworkTechnic: "",
-    artworkTheme: "",
-    artworkOrientation: "",
-    material: "",
-    offensive: "No",
-    weight: "",
-    length: "",
-    height: "",
-    width: "",
-    emotions: [],
-    basePrice: "",
-    discounttype: "",
-    discountAcceptation: "",
-    textclass: "",
-
-    acceptOfferPrice: "",
-    pCode: "",
-    location: "",
-    barcode: "",
-    hangingAvailable: "",
-    hangingDescription: "",
-    framedDescription: "",
-    framed: "",
-    frameHeight: "",
-    frameLength: "",
-    frameWidth: "",
-    artworkStyle: [],
-    artworkStyleType: [],
-    colors: [],
-    purchaseCatalog: "",
-    // activeTab: "",
-    subscriptionCatalog: "",
-    subscriptionArtistFees: "",
-    artistFees: "",
-    purchaseOption: "",
-    availableTo: "",
-    dicountAcceptation: "",
-    downwardOffer: "",
-    upworkOffer: "",
-    purchaseType: {},
-    priceRequest: "",
-    artistbaseFees: "",
-    dpersentage: "",
-    artworkDiscipline: "",
-    collectionList: "",
-    artworkTags: [],
-    promotion: "",
-    promotionScore: "",
-    productcategory: "",
-    producttags: "",
-    Fieldlocation: "",
-    productstatus: "",
-    artistFeesCurrency: "",
-    currency: "",
-    basePriceCurrency: "",
-    existingImage: [],
-    existingVideo: [],
-    Subscription: "",
-    comingSoon: Boolean,
-    packageWeight: "",
-    packageHeight: "",
-    packageLength: "",
-    packageWidth: "",
-    packageMaterial: "",
-
-    extTags: [],
-  });
 
   useEffect(() => {
     refetch();
@@ -311,8 +198,6 @@ const AddArtwork = () => {
   const getOutDiscipline = seriesData?.discipline?.map(
     (item, i) => item?.discipline
   );
-
-  const getOutStyle = seriesData?.discipline?.map((item, i) => item?.style);
 
   const newTechnic = technicData?.data?.filter(
     (item) =>
@@ -484,16 +369,16 @@ const AddArtwork = () => {
 
       setIsComingSoon(data?.data?.inventoryShipping?.comingSoon || Boolean);
     }
-  }, [id, data, inProcessImage, setInitialValues, seriesData]);
+  }, [id, data, inProcessImage, seriesData]);
 
   const status = data?.data?.status;
 
-  const url = `${baseUrl}/discover_more?id=${id}?referral=${"QR"}`;
+  const url = `${baseUrl}/discover_more/${id}?referral=${"QR"}`;
   const seriesOptions = seriesData?.seriesList?.map((item, i) => item);
 
   const currentPageUrl = url;
 
-  const handleAddExternalTag = (e) => {
+  const handleAddExternalTag = (e: React.ChangeEvent<HTMLInputElement>) => {
     const tagValue = e.target.value.trim();
 
     if (tagValue && !externalTags.includes(tagValue)) {
@@ -503,19 +388,15 @@ const AddArtwork = () => {
     }
   };
 
-  const handleRemoveExternalTag = (index) => {
+  const handleRemoveExternalTag = (index: number) => {
     setExternalTags((prevTags) => prevTags.filter((_, i) => i !== index));
-  };
-
-  const handleAction = (actionType) => {
-    setAction(actionType);
   };
 
   const handleGenerateQRCode = () => {
     setQrVisible(true);
   };
 
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const picklist = RenderAllPicklists([
     "Commercialization Options",
@@ -525,11 +406,6 @@ const AddArtwork = () => {
     "Colors",
     "Artwork Available To",
     "Artwork Discount Options",
-  ]);
-
-  const dPicklist = RenderAllSinglePicklist([
-    "Artwork Discount Options",
-    "Artwork Available To",
   ]);
 
   const picklistMap = picklist.reduce((acc, item: any) => {
@@ -619,7 +495,6 @@ const AddArtwork = () => {
   };
 
   const removeVideo = (index: number, typeFile: string) => {
-    console.log(index, typeFile);
     if (typeFile === "File") {
       setOtherVideos((prevVideos) => prevVideos.filter((_, i) => i !== index));
     }
@@ -665,10 +540,6 @@ const AddArtwork = () => {
     }
   }, [
     activeTab,
-    // watch("purchaseCatalog"),
-    // getValues("basePrice"),
-    // watch("subscriptionCatalog"),
-    // getValues("subscriptionCatalog"),
     watch("purchaseType"),
     watch("purchaseOption"),
     id,
@@ -677,7 +548,6 @@ const AddArtwork = () => {
   ]);
 
   const onSubmit = handleSubmit(async (values: any) => {
-    console.log("onSubmit", values);
     if (
       parseInt(values.basePrice) <= basePriceError &&
       parseInt(values.packageLength) <= packageDepthError &&
@@ -725,11 +595,6 @@ const AddArtwork = () => {
         }
       });
 
-      // remove it before final from submission
-      // for (let [name, value] of formData.entries()) {
-      //   console.log(name, value);
-      // }
-
       const newData = {
         id: id,
         data: formData,
@@ -741,7 +606,6 @@ const AddArtwork = () => {
         mutate(newData);
       }
     } else {
-      console.log("Base price or package dimensions check failed");
       return toast("Please Check Base Price & Package Dimesions Values");
     }
   });
@@ -780,11 +644,9 @@ const AddArtwork = () => {
   };
 
   const newImages = getValues("existingImage");
-
   const exVidoes = getValues("existingVideo");
 
   const removeExistingImage = (index: number, typeFile: string) => {
-    console.log(index, typeFile);
     if (typeFile === "Url") {
       const filteredimg = newImages.filter((_, i) => i !== index);
 
@@ -793,7 +655,6 @@ const AddArtwork = () => {
   };
 
   const removeExistingVideo = (index: number, typeFile: string) => {
-    console.log(index, typeFile);
     if (typeFile === "Url") {
       const filteredVideo = exVidoes.filter((_, i) => i !== index);
 
@@ -882,8 +743,6 @@ const AddArtwork = () => {
     }
   };
 
-  const [pendingDeleteOption, setPendingDeleteOption] = useState(false);
-
   const handleRemoveSeries = (value) => {
     try {
       seriesDelete(value);
@@ -896,11 +755,7 @@ const AddArtwork = () => {
     setDropdownOpen(!isDropdownOpen);
   };
 
-  console.log(isArtProviderField);
-
-  if (loading) {
-    return <Loader />;
-  }
+  if (loading) return <Loader />;
 
   return (
     <>
@@ -921,11 +776,6 @@ const AddArtwork = () => {
             <div className="flex flex-col lg:flex-row w-fit gap-4 flex-wrap mt-4 md:lg-0">
               {query ? (
                 <h1
-                  variant={{
-                    fontSize: "base",
-                    theme: "dark",
-                    fontWeight: "500",
-                  }}
                   onClick={() => handleGenerateQRCode()}
                   className="cursor-pointer gap-2 bg-black text-white text-[12px] md:text-[16px] px-2 py-2 lg:px-4 lg:py-3 rounded-lg hover:bg-gray-800"
                 >
@@ -933,14 +783,7 @@ const AddArtwork = () => {
                 </h1>
               ) : null}
 
-              <h1
-                variant={{
-                  fontSize: "base",
-                  theme: "dark",
-                  fontWeight: "500",
-                }}
-                className="cursor-pointer gap-2 bg-black text-white text-[12px] md:text-[16px] px-2 py-2 lg:px-4 lg:py-3 rounded-lg hover:bg-gray-800"
-              >
+              <h1 className="cursor-pointer gap-2 bg-black text-white text-[12px] md:text-[16px] px-2 py-2 lg:px-4 lg:py-3 rounded-lg hover:bg-gray-800">
                 {t("Generate Certificate Of Authenticity")}
               </h1>
             </div>
@@ -991,7 +834,7 @@ const AddArtwork = () => {
                       as="select"
                       id="isArtProvider"
                       name="isArtProvider"
-                      disabled={query}
+                      disabled={query ? true : false}
                       value={isArtProviderField}
                       onChange={(e) => setIsArtProviderField(e.target.value)}
                       className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
@@ -1059,11 +902,7 @@ const AddArtwork = () => {
                       </p>
                     </div>
 
-                    <SeriesPop
-                      isOpen={isPopupOpen}
-                      onClose={closePopup}
-                      onAction={handleAction}
-                    />
+                    <SeriesPop isOpen={isPopupOpen} onClose={closePopup} />
 
                     <div className="relative w-full">
                       <div className="flex flex-col mb-1">
@@ -1157,7 +996,7 @@ const AddArtwork = () => {
                         id="main-photo-input"
                         onChange={(e) => handleFileChange(e, setMainImage)}
                         className="hidden"
-                        disabled={query}
+                        disabled={query ? true : false}
                       />
                       <div className="bg-[#F9F9FC]  border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
                         {data?.data?.media?.mainImage || mainImage ? (
@@ -1224,7 +1063,7 @@ const AddArtwork = () => {
                           handleFileChangeBackImage(e, setBackImage)
                         }
                         className="hidden"
-                        disabled={query}
+                        disabled={query ? true : false}
                       />
                       <div className="bg-[#F9F9FC]  border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
                         {backImage ? (
@@ -1291,7 +1130,7 @@ const AddArtwork = () => {
                           handleFileChangeInprocessImage(e, setInProcessImage)
                         }
                         className="hidden"
-                        disabled={query}
+                        disabled={query ? true : false}
                       />
                       <div className="bg-[#F9F9FC]  border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
                         {inProcessImage ? (
@@ -1362,7 +1201,7 @@ const AddArtwork = () => {
                           handleFileChangeDetailsImage(e, setImages)
                         }
                         className="hidden"
-                        disabled={query}
+                        disabled={query ? true : false}
                       />
                       <div className="bg-[#F9F9FC]  border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
                         <div className="flex gap-2 flex-wrap">
@@ -1463,7 +1302,7 @@ const AddArtwork = () => {
                         id="main-video-input"
                         onChange={(e) => handleMainVideo(e, setMainVideo)}
                         className="hidden"
-                        disabled={query}
+                        disabled={query ? true : false}
                       />
                       <div className="bg-[#F9F9FC]  border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
                         {mainVideo ? (
@@ -1529,7 +1368,7 @@ const AddArtwork = () => {
                         multiple
                         onChange={(e) => handleOtherVideo(e, setOtherVideos)}
                         className="hidden"
-                        disabled={query}
+                        disabled={query ? true : false}
                       />
                       <div className="bg-[#F9F9FC]  border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
                         {otherVideo &&
@@ -1600,8 +1439,6 @@ const AddArtwork = () => {
                 </div>
               </div>
 
-              {/* additional info */}
-
               <div className="bg-white p-4 rounded-md mt-6 border border-[#E0E2E7] shadow-md ">
                 <Header
                   variant={{
@@ -1631,10 +1468,8 @@ const AddArtwork = () => {
                       {...register("artworkTechnic", {
                         required: "ArtworkTechnic is required",
                       })}
-                      as="select"
                       id="artworkTechnic"
-                      // name="artworkTechnic"
-                      disabled={query}
+                      disabled={query ? true : false}
                       className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full  p-1 sm:p-2.5 "
                     >
                       <option value="">Select type</option>
@@ -1658,15 +1493,14 @@ const AddArtwork = () => {
                   <label className="text-[#203F58] text-sm sm:text-base font-semibold">
                     Artwork theme *
                     <select
-                      as="select"
                       id="artworkTheme"
                       {...register("artworkTheme", {
                         required: "Artwork theme is required",
                       })}
-                      disabled={query}
+                      disabled={query ? true : false}
                       className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
                     >
-                      <option value="">Select type</option>
+                      <option value="">Select Type</option>
                       {themeLoading ? (
                         <option value="" disabled>
                           Loading...
@@ -1679,7 +1513,7 @@ const AddArtwork = () => {
                         ))
                       ) : (
                         <option value="" disabled>
-                          No themes available
+                          No Themes Available
                         </option>
                       )}
                     </select>
@@ -1815,19 +1649,16 @@ const AddArtwork = () => {
                   <select
                     as="select"
                     id="offensive"
-                    // name="offensive"
                     {...register("offensive", {
                       required: "Offensive option is required",
                     })}
-                    disabled={query}
+                    disabled={query ? true : false}
                     className="bg-[#F9F9FC] mt-1 border mb-3 border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
                   >
                     <option value="No">No</option>
                     <option value="Yes">Yes </option>
                   </select>
                 </label>
-
-                {/* tags */}
 
                 <label className="text-[#203F58] text-sm sm:text-base font-semibold ">
                   Tags External
@@ -1836,7 +1667,7 @@ const AddArtwork = () => {
                       type="text"
                       id="extTags"
                       name="extTags"
-                      readOnly={query}
+                      readOnly={query ? true : false}
                       className="bg-[#F9F9FC] border mb-3 border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5"
                       placeholder="Enter tags (e.g., #example)"
                       onKeyDown={(e) => {
@@ -1869,16 +1700,15 @@ const AddArtwork = () => {
                   <label className="text-[#203F58] font-semibold">
                     Material *
                     <select
-                      as="select"
                       id="Material"
                       {...register("material", {
                         required: "Material type is required",
                       })}
-                      disabled={query}
+                      disabled={query ? true : false}
                       className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5"
                     >
                       <option value="">Select type</option>
-                      {getMaterial?.map((item, index) => (
+                      {getMaterial?.map((item, index: number) => (
                         <option key={index} value={item?.mediaName}>
                           {item?.mediaName}
                         </option>
@@ -1930,7 +1760,7 @@ const AddArtwork = () => {
                       {...register("hangingAvailable", {
                         required: "Hanging availability is required",
                       })}
-                      disabled={query}
+                      disabled={query ? true : false}
                       className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
                     >
                       <option value="">Select</option>
@@ -1946,15 +1776,14 @@ const AddArtwork = () => {
 
                   {getValues("hangingAvailable") === "Yes" ? (
                     <label className="text-[#203F58] text-sm sm:text-base font-semibold ">
-                      Short Description for hanging
+                      Hanging Description
                       <textarea
                         id="hangingDescription"
-                        // name="hangingDescription"
                         {...register("hangingDescription", {
                           required: "Hanging description is required",
                         })}
                         readOnly={query ? true : false}
-                        placeholder="Type Hanging description here. . .. . ."
+                        placeholder="Type Hanging description here..."
                         className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full  p-1 sm:p-2.5 pb-10 "
                       />
                     </label>
@@ -1965,11 +1794,10 @@ const AddArtwork = () => {
                     <select
                       as="select"
                       id="Farmed"
-                      // name="framed"
                       {...register("framed", {
                         required: "Framed option is required",
                       })}
-                      disabled={query}
+                      disabled={query ? true : false}
                       className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
                     >
                       <option value="">Select</option>
@@ -2033,14 +1861,13 @@ const AddArtwork = () => {
                   ) : null}
 
                   <label className="text-[#203F58] text-sm sm:text-base font-semibold  ">
-                    Artwork orientation *
+                    Artwork Orientation *
                     <select
-                      as="select"
                       id="artworkOrientation"
                       {...register("artworkOrientation", {
                         required: "Artwork orientation is required",
                       })}
-                      disabled={query}
+                      disabled={query ? true : false}
                       className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
                     >
                       <option value="">Select type</option>
@@ -2088,7 +1915,6 @@ const AddArtwork = () => {
                       setPackageHeightError(null);
                       setBasePriceError(null);
                     }}
-                    // onChange={() => setPurchaseCatlogValue(null)}
                     className={`py-2 font-bold cursor-pointer ${
                       activeTab === "subscription"
                         ? "border-b-4 border-black"
@@ -2110,7 +1936,6 @@ const AddArtwork = () => {
                       setPackageHeightError(null);
                       setBasePriceError(null);
                     }}
-                    // onChange={() => setPurchaseCatlogValue(null)}
                     className={`py-2 mx-8 font-bold cursor-pointer ${
                       activeTab === "purchase"
                         ? "border-b-4 border-black"
@@ -2128,7 +1953,6 @@ const AddArtwork = () => {
                         <label className="text-[#203F58] text-sm sm:text-base font-semibold ">
                           Subscription Catalog
                           <select
-                            // name="subscriptionCatalog"
                             id="subscriptionCatalog"
                             {...register("subscriptionCatalog")}
                             onChange={(val) => {
@@ -2158,11 +1982,10 @@ const AddArtwork = () => {
 
                       <div className="mt-4 space-y-2">
                         <label className="text-[#203F58] text-sm sm:text-base font-semibold ">
-                          Purches Option
+                          Purchase Option
                           <select
                             {...register("purchaseOption")}
                             id="purchaseOption"
-                            // name="purchaseOption"
                             disabled={query}
                             className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
                           >
@@ -2198,7 +2021,6 @@ const AddArtwork = () => {
                             <option value="">Select</option>
                             {seriesData?.purchaseCatalog?.map((item, index) => (
                               <option
-                                // label={item?.catalogNameabel}
                                 value={item?._id || purchaseCatlogValue}
                                 label={item?.catalogName}
                                 key={index}
@@ -2535,7 +2357,6 @@ const AddArtwork = () => {
                     />
                   </svg>
 
-                  {/* Warning Message */}
                   <span>
                     Max Dimensions should not be greater than the Dimensions in
                     selected Catalog.
@@ -2592,7 +2413,6 @@ const AddArtwork = () => {
                 </div>
               </div>
             </div>
-            {/* ------------------------ */}
 
             <ArtworkRight
               query={query}
@@ -2625,7 +2445,9 @@ const AddArtwork = () => {
                         theme: "dark",
                       }}
                       // disabled={!isValid}
-                      className=" text-white py-2 px-4 rounded"
+                      className={`text-white py-2 px-4 rounded ${
+                        modifyIsPending ? "opacity-70 pointer-events-none" : ""
+                      }`}
                     >
                       {modifyIsPending ? "Modifying..." : "Modify Artwork"}
                     </Button>
@@ -2638,8 +2460,9 @@ const AddArtwork = () => {
                         fontWeight: "600",
                         theme: "dark",
                       }}
-                      // disabled={!isValid}
-                      className=" text-white py-2 px-4 rounded"
+                      className={`text-white py-2 px-4 rounded ${
+                        isPending ? "opacity-70 pointer-events-none" : ""
+                      }`}
                     >
                       {isPending ? "Previewing..." : "Save & Preview"}
                     </Button>

@@ -9,9 +9,8 @@ async function fetchData() {
 }
 
 export const useGetFaq = () => {
-  let url = `${generalPath.getFaq}`;
   return useQuery({
-    queryKey: [url],
+    queryKey: [generalPath.getFaq],
     queryFn: fetchData,
   });
 };

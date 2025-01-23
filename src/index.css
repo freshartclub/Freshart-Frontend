@@ -151,6 +151,11 @@
 .discover_more .slick-prev {
   display: none !important;
 }
+
+.scrollbar::-webkit-scrollbar {
+  display: none !important;
+}
+
 @media (max-width: 1536px) {
   .banner_arrow .slick-next {
     right: 50px !important;

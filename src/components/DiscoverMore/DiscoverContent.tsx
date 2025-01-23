@@ -1,30 +1,24 @@
+import getSymbolFromCurrency from "currency-symbol-map";
+import { AiFillLike, AiOutlineLike } from "react-icons/ai";
+import useLikeUnlikeArtworkMutation from "../HomePage/http/useLikeUnLike";
+import { useGetLikedItems } from "../pages/http/useGetLikedItems";
 import Button from "../ui/Button";
 import Header from "../ui/Header";
 import P from "../ui/P";
 import cart from "./assets/cart.png";
 import mark from "./assets/offer.png";
-import wishlist from "./assets/wishlist.png";
-import wishlist_like from "../../assets/whishlist_like.png";
-import like from "./assets/like.png";
 import question from "./assets/question.png";
-import { AiFillLike, AiOutlineLike } from "react-icons/ai";
 import useAddToCartMutation from "./http/useAddToCartMutation";
-import { useState } from "react";
 import { useGetCartItems } from "./http/useGetCartItems";
-import useAddToWhislistMutation from "./http/useAddToWhislistMutation";
-import { useGetWishList } from "./http/useGetWishList";
-import getSymbolFromCurrency from "currency-symbol-map";
+import { AiOutlineHeart } from "react-icons/ai";
 
 const DiscoverContent = ({ data }: any) => {
-  const [addtoCart, setAddToCart] = useState("Add To Cart");
-  console.log(data);
-
   const { mutate, isPending } = useAddToCartMutation();
-  const { data: cartItem, isLoading } = useGetCartItems();
-  const { mutate: wishListMutation, isPending: wishlistPending } =
-    useAddToWhislistMutation();
+  const { data: cartItem } = useGetCartItems();
+  const { mutate: likeMutation, isPending: likePending } =
+    useLikeUnlikeArtworkMutation();
 
-  const { data: wislistItem } = useGetWishList();
+  const { data: likedItems } = useGetLikedItems();
 
   const maxLength = 100;
   const description =
@@ -40,91 +34,86 @@ const DiscoverContent = ({ data }: any) => {
     return item?.item?._id === data?._id;
   });
 
-  const addToWishList = (id) => {
-    wishListMutation(id);
-  };
-
-  const checkWishlist = wislistItem?.data?.wishlist?.filter((item) => {
+  const checkWishlist = likedItems?.likedArtworks?.filter((item) => {
     return item._id === data._id;
   });
 
-  console.log(data?.pricing?.currency.slice(0, 3));
+  const name = (val: {
+    artistName: string;
+    artistSurname1: string;
+    artistSurname2: string;
+  }) => {
+    let fullName = val?.artistName || "";
 
-  // console.log(checkCartItem.length ? "hello" : "hey");
+    if (val?.artistSurname1) fullName += " " + val?.artistSurname1;
+    if (val?.artistSurname2) fullName += " " + val?.artistSurname2;
+
+    return fullName.trim();
+  };
+
   return (
     <div>
-      <P
-        variant={{ size: "small", weight: "semiBold" }}
-        className=" mb-3 text-[#999999]"
-      >
-        {data?.discipline?.artworkDiscipline}
-      </P>
-      <div className="flex gap-2">
+      <div className="border-b pb-2">
         <Header
-          variant={{ theme: "dark", weight: "bold" }}
-          className="xl:text-3xl text-xl"
+          variant={{ size: "xl", theme: "dark", weight: "bold" }}
+          className="items-center capitalize"
         >
           {data?.artworkName}
         </Header>
-        <P
-          variant={{ size: "md", theme: "dark", weight: "normal" }}
-          className="mt-5 "
-        >
-          ({data?.artworkCreationYear})
-        </P>
-      </div>
-
-      <div className="flex lg:pb-5 pb-2 border-b lg:mt-2 gap-1">
-        <P variant={{ size: "base", theme: "dark", weight: "medium" }}>
-          Author :
-        </P>
-        <P variant={{ size: "base", theme: "dark", weight: "normal" }}>
-          {data?.owner?.artistName + " " + data?.owner?.artistSurname1}
-        </P>
+        <div className="flex items-center gap-2">
+          <Header variant={{ size: "base", theme: "dark", weight: "medium" }}>
+            Author :
+          </Header>
+          <P
+            className="text-[#999999] translate-y-[2px]"
+            variant={{ size: "small", weight: "medium" }}
+          >
+            {name(data?.owner)}
+          </P>
+        </div>
       </div>
 
       <div className="flex gap-2 lg:mt-2 mt-1">
-        <P variant={{ size: "base", theme: "dark", weight: "medium" }}>
-          Years of creation :
+        <P variant={{ size: "small", theme: "dark", weight: "medium" }}>
+          Year of Creation :
         </P>
-        <P variant={{ size: "base", theme: "dark", weight: "normal" }}>
+        <P
+          className="text-[#999999]"
+          variant={{ size: "small", theme: "dark", weight: "medium" }}
+        >
           {data?.artworkCreationYear}
         </P>
       </div>
 
-      {/* <P
-        variant={{ size: "base", theme: "dark", weight: "normal" }}
-        className="lg:mt-2 mt-1"
-      >
-        Newyork, USA
-      </P> */}
+      <div className="flex gap-2 lg:mt-2 mt-1 ">
+        <P variant={{ size: "small", theme: "dark", weight: "medium" }}>
+          Artwork Series :
+        </P>
+        <P
+          className="text-[#999999]"
+          variant={{ size: "small", theme: "dark", weight: "medium" }}
+        >
+          {data?.artworkSeries}
+        </P>
+      </div>
 
       <P
-        variant={{ size: "base", theme: "dark", weight: "normal" }}
-        className="lg:my-6 my-2"
+        variant={{ size: "small", theme: "dark", weight: "medium" }}
+        className="lg:my-4 my-2 text-[#999999]"
       >
         {description}
       </P>
 
-      <div className="flex">
-        <P variant={{ size: "base", theme: "dark", weight: "medium" }}>
+      <div className="flex gap-3 ">
+        <P variant={{ size: "small", theme: "dark", weight: "medium" }}>
           Size :
         </P>
         <P
-          variant={{ size: "base", theme: "dark", weight: "normal" }}
-          className="ml-2"
+          className="text-[#999999]"
+          variant={{ size: "small", theme: "dark", weight: "medium" }}
         >
-          {data?.additionalInfo?.length
-            ? `${data.additionalInfo.length} cm`
-            : "--"}{" "}
-          x{" "}
-          {data?.additionalInfo?.width
-            ? `${data.additionalInfo.width} cm`
-            : "--"}{" "}
-          x{" "}
-          {data?.additionalInfo?.height
-            ? `${data.additionalInfo.height} cm`
-            : "--"}
+          {data?.additionalInfo?.length} x {data?.additionalInfo?.width} x{" "}
+          {data?.additionalInfo?.height} cm
         </P>
       </div>
 
@@ -137,7 +126,7 @@ const DiscoverContent = ({ data }: any) => {
         }`}
       </Header>
 
-      <div className="flex md:flex-row flex-col xl:gap-10 gap-2">
+      <div className="flex lg:flex-row flex-col gap-5">
         <Button
           onClick={() => addToCart(data?._id)}
           variant={{
@@ -175,37 +164,58 @@ const DiscoverContent = ({ data }: any) => {
         </Button>
       </div>
 
-      <div className="flex lg:flex-row flex-col w-full xl:justify-between lg:justify-between lg:items-center gap-2 lg:my-6 my-3">
-        {/* <div className="flex items-center lg:justify-center gap-2 xl:w-[30%]">
-          <img src={wishlist} alt="whishlist icon" />
+      <div className="flex flex-wrap justify-between w-full items-center gap-2 my-4">
+        <div className="flex items-center gap-2">
+          <AiOutlineHeart size="1.5rem" color="#999999" />
           <P
             variant={{ size: "small", weight: "semiBold" }}
             className="text-[#999999] uppercase"
           >
             Add to Wishlist
           </P>
-        </div> */}
-
-        <div className="flex  items-center lg:justify-center gap-2 xl:w-[30%] cursor-pointer">
-          <button
-            onClick={() => addToWishList(data?._id)}
-            className="text-[#999999] uppercase flex gap-2 items-centers"
-          >
-            {checkWishlist?.length ? (
-              <>
-                <AiFillLike size="1.6em" color="red" />
-                <span>Liked</span>
-              </>
-            ) : (
-              <>
-                <AiOutlineLike size="1.6em" />
-                <span>Like</span>
-              </>
-            )}
-          </button>
         </div>
 
-        <div className="flex gap-2 items-center lg:justify-center xl:w-[30%]">
+        <div className="flex items-center gap-2">
+          {checkWishlist?.length ? (
+            <button
+              onClick={() =>
+                likeMutation({
+                  id: data?._id,
+                  action: "unlike",
+                })
+              }
+              className="text-[#999999] font-bold uppercase flex gap-2 items-center w-full justify-center"
+            >
+              <AiFillLike size="1.5rem" color="red" />
+              <P
+                variant={{ size: "small", weight: "semiBold" }}
+                className="text-[#999999] uppercase translate-y-[3px]"
+              >
+                {likePending ? "Dislike..." : "Dislike"}
+              </P>
+            </button>
+          ) : (
+            <button
+              onClick={() =>
+                likeMutation({
+                  id: data?._id,
+                  action: "like",
+                })
+              }
+              className="text-[#999999] font-bold uppercase flex gap-2 items-center w-full justify-center"
+            >
+              <AiOutlineLike size="1.5rem" />
+              <P
+                variant={{ size: "small", weight: "semiBold" }}
+                className="text-[#999999] uppercase translate-y-[3px]"
+              >
+                {likePending ? "Like..." : "Like"}
+              </P>
+            </button>
+          )}
+        </div>
+
+        <div className="flex items-center gap-2">
           <img src={question} alt="question" />
           <P
             variant={{ size: "small", weight: "semiBold" }}
@@ -216,8 +226,8 @@ const DiscoverContent = ({ data }: any) => {
         </div>
       </div>
 
-      <div>
-        <div className="flex gap-2 my-2">
+      <div className="flex gap-2 flex-wrap justify-between">
+        <div className="flex gap-2">
           <P
             variant={{ size: "small", theme: "dark", weight: "medium" }}
             className="uppercase"
@@ -228,10 +238,10 @@ const DiscoverContent = ({ data }: any) => {
             variant={{ size: "small", weight: "medium" }}
             className=" text-[#999999]"
           >
-            {data?.inventoryShipping?.pCode}
+            {data?.inventoryShipping?.pCode || "N/A"}
           </P>
         </div>
-        <div className="flex gap-2 my-2">
+        <div className="flex gap-2">
           <P
             variant={{ size: "small", theme: "dark", weight: "medium" }}
             className="uppercase"
@@ -245,7 +255,6 @@ const DiscoverContent = ({ data }: any) => {
             {data?.discipline?.artworkDiscipline}
           </P>
         </div>
-        <div className="flex gap-2 my-2"></div>
       </div>
     </div>
   );

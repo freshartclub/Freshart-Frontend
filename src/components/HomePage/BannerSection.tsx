@@ -87,12 +87,12 @@ const BannerSection = () => {
               alt="banner"
               className="w-full h-screen relative object-fill"
             />
-            <div className="container mx-auto md:px-6 px-3">
-              <div className="absolute 2xl:top-32 xl:top-24 lg:top-16 sm:top-8 top-5">
-                <div className=" w-[90%] sm:w-[90%] md:w-[90%] xl:w-[80%] 2xl:w-[50%] md:text-left text-center text-white">
+            <div className="container mx-auto">
+              <div className="absolute top-[30%] left-12">
+                <div className="w-[90%] sm:w-[90%] md:w-[90%] xl:w-[80%] 2xl:w-[50%] md:text-left text-center text-white">
                   <Header
                     variant={{ theme: "light", weight: "light" }}
-                    className="xl:text-[80px] lg:text-[60px] md:text-[40px] sm:text-[35px] text-[30px] capitalize animate-fadeInDown"
+                    className="xl:text-[65px] lg:text-[60px] md:text-[40px] sm:text-[35px] text-[30px] capitalize animate-fadeInDown"
                   >
                     {item.header}
                   </Header>

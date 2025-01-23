@@ -1,78 +1,18 @@
-import { Link } from "react-router-dom";
+import getSymbolFromCurrency from "currency-symbol-map";
+import { Link, NavLink } from "react-router-dom";
+import arrow_bread from "../../assets/arrow_bread.png";
 import home from "../../assets/home.png";
-import P from "../ui/P";
-import img1 from "../../assets/Trending1.png";
-import img3 from "../../assets/Trending3.png";
 import wishlist_like from "../../assets/whishlist_like.png";
 import Header from "../ui/Header";
-import arrow_bread from "../../assets/arrow_bread.png";
-import { useGetWishList } from "../DiscoverMore/http/useGetWishList";
-import { useGetLikedItems } from "./http/useGetLikedItems";
-import { imageUrl } from "../utils/baseUrls";
-import getSymbolFromCurrency from "currency-symbol-map";
 import Loader from "../ui/Loader";
-
-const trendingData = [
-  {
-    image: img1,
-    title: "Illustrator, painting",
-    heading: "Nineteenth-Century Pastel Portraits",
-    para: "Andrews meson",
-    size: "70 x 32 ",
-    price: "$65",
-  },
-  {
-    image: img1,
-    title: "Illustrator, painting",
-    heading: "Nineteenth-Century Pastel Portraits",
-    para: "Andrews meson",
-    size: "70 x 32 ",
-    price: "$65",
-  },
-  {
-    image: img3,
-    title: "Illustrator, painting",
-    heading: "Nineteenth-Century Pastel Portraits",
-    para: "Andrews meson",
-    size: "70 x 32 ",
-    price: "$65",
-  },
-  {
-    image: img1,
-    title: "Illustrator, painting",
-    heading: "Nineteenth-Century Pastel Portraits",
-    para: "Andrews meson",
-    size: "70 x 32 ",
-    price: "$65",
-  },
-  {
-    image: img1,
-    title: "Illustrator, painting",
-    heading: "Nineteenth-Century Pastel Portraits",
-    para: "Andrews meson",
-    size: "70 x 32 ",
-    price: "$65",
-  },
-  {
-    image: img1,
-    title: "Illustrator, painting",
-    heading: "Nineteenth-Century Pastel Portraits",
-    para: "Andrews meson",
-    size: "70 x 32 ",
-    price: "$65",
-  },
-];
+import P from "../ui/P";
+import { imageUrl } from "../utils/baseUrls";
+import { useGetLikedItems } from "./http/useGetLikedItems";
 
 const Wishlist = () => {
-  // const { data, isLoading } = useGetWishList();
-
   const { data, isLoading } = useGetLikedItems();
+  if (isLoading) return <Loader />;
 
-  console.log("from wishlist", data?.data?.likedArtworks);
-
-  if (isLoading) {
-    return <Loader />;
-  }
   return (
     <div className="container mx-auto md:px-6 px-3 my-10 ">
       <ul className="flex p-2 gap-3 text-xl text-[#2E4053] items-center">
@@ -102,7 +42,7 @@ const Wishlist = () => {
             className="cursor-pointer hover:bg-[#E8DAEF] rounded-md transition-all duration-300"
           >
             <P variant={{ size: "small", theme: "dark", weight: "normal" }}>
-              Wishlist
+              Liked Artworks
             </P>
           </Link>
         </li>
@@ -112,12 +52,12 @@ const Wishlist = () => {
         variant={{ size: "xl", theme: "dark", weight: "semiBold" }}
         className="my-4"
       >
-        Most Loved Artworks
+        My Liked Artworks
       </Header>
 
       <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 justify-between gap-8 mt-4 ">
-        {data?.data?.likedArtworks &&
-          data?.data?.likedArtworks?.map((item, index) => (
+        {data?.likedArtworks && data?.likedArtworks?.length > 0 ? (
+          data?.likedArtworks?.map((item: Artwork, index: number) => (
             <div
               key={index}
               className="sm:px-3 px-0 border-none outline-none mb-10 w-[20vw] h-[50vh] relative"
@@ -167,10 +107,41 @@ const Wishlist = () => {
                 </P>
               </div>
             </div>
-          ))}
+          ))
+        ) : (
+          <div className="px-6 rounded py-4 text-center col-span-4 border border-[#c6c6c9]">
+            <p className="text-lg text-center font-medium mb-4">
+              You haven't liked any artworks.
+            </p>
+            <NavLink to="/all-artworks?type=subscription">
+              <button className="px-6 py-2 bg-zinc-800 text-white rounded-lg">
+                Explore Artworks
+              </button>
+            </NavLink>
+          </div>
+        )}
       </div>
     </div>
   );
 };
+
+interface Artwork {
+  media: string;
+  title: string;
+  price: number;
+  currency: string;
+  artworkName: string;
+  size: {
+    height: string;
+    width: string;
+    length: string;
+  };
+  para: string;
+  _id: string;
+  pricing: {
+    basePrice: number;
+    currency: string;
+  };
+}
 
 export default Wishlist;

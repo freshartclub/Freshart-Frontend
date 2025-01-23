@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { useGetFaq } from "./http/useGetFaq";
-import Loader from "../ui/Loader";
+import { useState } from "react";
 import { FaArrowLeft } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
+import Loader from "../ui/Loader";
+import { useGetFaq } from "./http/useGetFaq";
 
 const Faq = () => {
   const [openIndex, setOpenIndex] = useState(null);

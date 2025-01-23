@@ -9,9 +9,8 @@ async function fetchData() {
 }
 
 export const useGetStyle = () => {
-  let url = `${generalPath.getStyle}`;
   return useQuery({
-    queryKey: [url],
+    queryKey: [generalPath.getStyle],
     queryFn: fetchData,
   });
 };

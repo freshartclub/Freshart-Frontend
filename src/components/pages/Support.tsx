@@ -1,30 +1,19 @@
-import Button from "../ui/Button";
-import Header from "../ui/Header";
-import support from "../../assets/security.png";
-import search from "../../assets/MagnifyingGlass.png";
-import P from "../ui/P";
-import truck from "../../assets/Truck.png";
-import lock from "../../assets/LockOpen.png";
-import credit from "../../assets/CreditCard.png";
-import user from "../../assets/User.png";
-import stack from "../../assets/Stack99.png";
-import notepad from "../../assets/Notepad.png";
-import shopping from "../../assets/CreditCard.png";
-import store from "../../assets/Storefront.png";
-import arrow from "../../assets/arrow.png";
-import call from "../../assets/PhoneCall.png";
-import msg from "../../assets/ChatCircleDots.png";
-import { FaWhatsapp } from "react-icons/fa";
-import { BsFillTicketPerforatedFill } from "react-icons/bs";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useGetAllIncidents } from "../NewTicket/ticket history/http/useGetAllIncidents";
 import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
+import { gsap } from "gsap";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { BsFillTicketPerforatedFill } from "react-icons/bs";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import arrow from "../../assets/arrow.png";
+import search from "../../assets/MagnifyingGlass.png";
+import support from "../../assets/security.png";
+import { useGetAllIncidents } from "../NewTicket/ticket history/http/useGetAllIncidents";
+import Button from "../ui/Button";
+import Header from "../ui/Header";
+import Loader from "../ui/Loader";
+import P from "../ui/P";
 import { useGetFaq } from "./http/useGetFaq";
 import { useGetKbDataBase } from "./http/useGetKbDataBase";
-import { useEffect, useRef, useState } from "react";
-import Loader from "../ui/Loader";
-import { gsap } from "gsap";
 
 const Support = () => {
   const navigate = useNavigate();
@@ -44,16 +33,10 @@ const Support = () => {
   };
 
   const { data, isLoading } = useGetAllIncidents();
-
   const { data: faqData, isLoading: faqLoading } = useGetFaq();
-
   const { data: kbData, isLoading: KbLoding } = useGetKbDataBase();
 
-  const newSearchArray = { ...faqData?.data, ...kbData };
-
   dayjs.extend(isBetween);
-
-  const KbTitle = kbData?.data?.map((item, i) => item?.kbTitle) || [];
 
   const now = dayjs();
   const startOfDay = now.startOf("day");
@@ -71,8 +54,6 @@ const Support = () => {
 
     return incidentStart.isBetween(sevenDaysFromNow);
   });
-
-  console.log(incidentAfterSevenDay);
 
   const location = useLocation();
   const isArtistProfile = location.pathname.includes("/artist-panel");
@@ -92,10 +73,10 @@ const Support = () => {
     }
   };
 
-  const closeModal = () => {
+  const closeModal = useCallback(() => {
     setIsModelOpen(false); // Close the modal
     setSelectedItem(null); // Reset the selected item
-  };
+  }, []);
 
   const handleKbDatabse = (item) => {
     if (isArtistProfile) {
@@ -117,8 +98,6 @@ const Support = () => {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
-
-  console.log(data);
 
   useEffect(() => {
     if (isLoading || faqLoading || KbLoding) {
@@ -146,44 +125,7 @@ const Support = () => {
     }
   }, [isModalOpen, closeModal]);
 
-  const assist_Data = [
-    {
-      image: truck,
-      title: "Track Order",
-    },
-    {
-      image: lock,
-      title: "Reset Password",
-    },
-    {
-      image: credit,
-      title: "Payment Option",
-    },
-    {
-      image: user,
-      title: "User & Account",
-    },
-    {
-      image: stack,
-      title: "Wishlist & Compare",
-    },
-    {
-      image: notepad,
-      title: "Shipping & Billing",
-    },
-    {
-      image: shopping,
-      title: "Shoping Cart & Wallet",
-    },
-    {
-      image: store,
-      title: "Sell on Clicon",
-    },
-  ];
-
-  if (loading) {
-    return <Loader />;
-  }
+  if (loading) return <Loader />;
 
   return (
     <div>
@@ -337,7 +279,6 @@ const Support = () => {
                 key={index}
                 className="bg-white flex p-4 border-2 border-[#FFD8DD] shadow-lg cursor-pointer"
               >
-                {/* <img className="w-8 h-8" src={item.image} alt="image" /> */}
                 <P
                   variant={{ size: "base", theme: "dark", weight: "normal" }}
                   className="ml-3 mt-1 font-bold text-sm"
@@ -368,7 +309,6 @@ const Support = () => {
                   className="cursor-pointer"
                 >
                   <h3 className="font-semibold">{item.faqQues}</h3>
-                  {/* <p>{item.faqAns}</p> */}
                 </div>
               ))}
           </div>

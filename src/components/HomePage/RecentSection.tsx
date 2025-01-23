@@ -1,45 +1,11 @@
-import img1 from "../../assets/recent1.png";
-import img2 from "../../assets/Artwork2.png";
-import img3 from "../../assets/recent3.png";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import like from "../../assets/like.png";
-import { useGetRecentArtwork } from "./http/getRecentArtwork";
-import postRecentArtworkMutation from "./http/postRecentView";
 import { useNavigate } from "react-router-dom";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick-theme.css";
+import "slick-carousel/slick/slick.css";
+import like from "../../assets/like.png";
+import Loader from "../ui/Loader";
 import { imageUrl } from "../utils/baseUrls";
-
-const recentData = [
-  {
-    image: img1,
-    title: "Illustrator, painting",
-    heading: "Nineteenth-Century Pastel Portraits",
-    para: "Andrews meson",
-    size: "70 x 32 ",
-  },
-  {
-    image: img2,
-    title: "Illustrator, painting",
-    heading: "Nineteenth-Century Pastel Portraits",
-    para: "Andrews meson",
-    size: "70 x 32 ",
-  },
-  {
-    image: img3,
-    title: "Illustrator, painting",
-    heading: "Nineteenth-Century Pastel Portraits",
-    para: "Andrews meson",
-    size: "70 x 32 ",
-  },
-  {
-    image: img1,
-    title: "Illustrator, painting",
-    heading: "Nineteenth-Century Pastel Portraits",
-    para: "Andrews meson",
-    size: "70 x 32 ",
-  },
-];
+import { useGetRecentArtwork } from "./http/getRecentArtwork";
 
 const RecentSection = () => {
   const settings = {
@@ -82,18 +48,16 @@ const RecentSection = () => {
   };
 
   const { data, isLoading } = useGetRecentArtwork();
-  console.log("this is from recent artwork", data);
 
-  // const { mutate, isPending } = postRecentArtworkMutation();
   const navigate = useNavigate();
   const handleRedirectToDescription = (id) => {
-    console.log("gvdsfkma", id);
-    // mutate(id);
     navigate(`/discover_more?id=${id}`);
     window.scroll(0, 0);
   };
 
-  return (
+  return isLoading ? (
+    <Loader />
+  ) : (
     <div className="bg-[#F5F2EB] py-24 mt-16">
       <div className="container mx-auto md:px-6 px-3">
         <h1 className="text-[30px] font-semibold mb-5 w-80 sm:w-full">

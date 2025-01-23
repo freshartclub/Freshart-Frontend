@@ -1,97 +1,22 @@
-import img1 from "./assets/card1.png";
-import img2 from "./assets/card2.png";
-import img3 from "./assets/card3.png";
-import img4 from "./assets/card4.png";
-import img5 from "./assets/card5.png";
-import img6 from "./assets/card6.png";
-import img7 from "./assets/card7.png";
-import img8 from "./assets/card8.png";
-import "slick-carousel/slick/slick.css";
+import Slider from "react-slick";
 import "slick-carousel/slick/slick-theme.css";
+import "slick-carousel/slick/slick.css";
 import "../../App.css";
 import like from "../../assets/like.png";
-import P from "../ui/P";
+import Button from "../ui/Button";
 import Header from "../ui/Header";
+import P from "../ui/P";
+import like_btn from "./assets/like.png";
 import promot1 from "./assets/promot1.png";
 import promot2 from "./assets/promot2.png";
-import view_btn from "./assets/view.png";
 import scan_btn from "./assets/scan.png";
-import Button from "../ui/Button";
-import like_btn from "./assets/like.png";
-import Slider from "react-slick";
+import view_btn from "./assets/view.png";
 
-import { useNavigate, useSearchParams } from "react-router-dom";
-import Loader from "../ui/Loader";
-import postRecentArtworkMutation from "../HomePage/http/postRecentView";
-import { imageUrl } from "../utils/baseUrls";
 import getSymbolFromCurrency from "currency-symbol-map";
-
-const highlightData = [
-  {
-    image: img1,
-    title: "Illustrator, painting",
-    heading: "Century Pastel Portraits",
-    para: "Andrews meson",
-    size: "70 x 32 ",
-    price: "$65.00",
-  },
-  {
-    image: img2,
-    title: "Illustrator, painting",
-    heading: "Pastel Nineteenth-Century  Portraits",
-    para: "Andrews meson",
-    size: "70 x 32 ",
-    price: "$65.00",
-  },
-  {
-    image: img3,
-    title: "Illustrator, painting",
-    heading: "Portraits Nineteenth-Century  ",
-    para: "Andrews meson",
-    size: "70 x 32 ",
-    price: "$65.00",
-  },
-  {
-    image: img4,
-    title: "Illustrator, painting",
-    heading: "Century Nineteenth- Portraits",
-    para: "Andrews meson",
-    size: "70 x 32 ",
-    price: "$65.00",
-  },
-  {
-    image: img5,
-    title: "Illustrator, painting",
-    heading: "Nineteenth-Century  Portraits",
-    para: "Andrews meson",
-    size: "70 x 32 ",
-    price: "$65.00",
-  },
-  {
-    image: img6,
-    title: "Illustrator, painting",
-    heading: "Nineteenth-Century  Portraits",
-    para: "Andrews meson",
-    size: "70 x 32 ",
-    price: "$65.00",
-  },
-  {
-    image: img8,
-    title: "Illustrator, painting",
-    heading: "Nineteenth-Century  Portraits",
-    para: "Andrews meson",
-    size: "70 x 32 ",
-    price: "$65.00",
-  },
-  {
-    image: img7,
-    title: "Illustrator, painting",
-    heading: "Nineteenth-Century  Portraits",
-    para: "Andrews meson",
-    size: "70 x 32 ",
-    price: "$65.00",
-  },
-];
+import { useNavigate } from "react-router-dom";
+import postRecentArtworkMutation from "../HomePage/http/postRecentView";
+import Loader from "../ui/Loader";
+import { imageUrl } from "../utils/baseUrls";
 
 const promot_artwork = [
   {
@@ -172,10 +97,6 @@ const CardSection = ({ query, data, isLoading }: any) => {
     ],
   };
 
-  const searchData = highlightData.filter((item) =>
-    item.heading.toLowerCase().includes(query.toLowerCase())
-  );
-
   const name = (val) => {
     let fullName = val?.artistName || "";
 
@@ -186,18 +107,17 @@ const CardSection = ({ query, data, isLoading }: any) => {
     return fullName.trim();
   };
 
-  const { mutate, isPending } = postRecentArtworkMutation();
+  const { mutate } = postRecentArtworkMutation();
   const navigate = useNavigate();
 
   const handleRedirectToDescription = (id) => {
     mutate(id);
-    navigate(`/discover_more?id=${id}`);
+    navigate(`/discover_more/${id}`);
     window.scroll(0, 0);
   };
 
-  if (isLoading) {
-    return <Loader />;
-  }
+  if (isLoading) return <Loader />;
+
   return (
     <div className="container mx-auto md:px-6 px-3 mt-10">
       <div className="flex flex-wrap justify-center gap-4 sm:gap-4 md:gap-4">
@@ -344,55 +264,6 @@ const CardSection = ({ query, data, isLoading }: any) => {
           </Slider>
         </div>
       </div>
-
-      {/* <div className="grid xl:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-4 justify-center my-16">
-        {highlightData.map((item, index) => (
-          <div
-            key={index}
-            className="sm:px-3 px-0 border-none outline-none relative"
-          >
-            <img src={item.image} alt="image" className="w-full shadow-xl" />
-            <button className="absolute top-2 right-[28px] border border-[#FFD9DE] rounded-full px-3 py-3 bg-white cursor-pointer">
-              <img src={like} alt="like" className="w-[20px] h-[20px]" />
-            </button>
-            <div className="mt-3">
-              <p className="text-[14px] text-[#696868]">{item.title}</p>
-              <div className="flex justify-between items-center">
-                <Header
-                  variant={{ size: "md", weight: "bold" }}
-                  className=" text-[#333333]  xl:w-[80%] lg:w-[70%] w-[80%] line-clamp-2"
-                >
-                  {item.heading}
-                </Header>
-                <P
-                  variant={{ size: "base", theme: "dark", weight: "medium" }}
-                  className="text-[14px] text-[#696868]"
-                >
-                  {item.size}
-                </P>
-              </div>
-              <P
-                variant={{ size: "base", theme: "dark", weight: "medium" }}
-                className="text-[14px] text-[#696868]"
-              >
-                {item.para}
-              </P>
-              <P
-                variant={{ size: "base", theme: "dark", weight: "medium" }}
-                className="text-[14px] text-[#696868]"
-              >
-                {item.size}
-              </P>
-              <P
-                variant={{ size: "small", theme: "dark", weight: "medium" }}
-                className=""
-              >
-                {item.price}
-              </P>
-            </div>
-          </div>
-        ))}
-      </div> */}
     </div>
   );
 };

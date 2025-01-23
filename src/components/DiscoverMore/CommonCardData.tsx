@@ -5,27 +5,17 @@ import "../../App.css";
 import like from "../../assets/like.png";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-
 import getSymbolFromCurrency from "currency-symbol-map";
 
-interface HighlightItem {
-  image: string;
-  title: string;
+const CommonCardData = ({
+  heading,
+  highlightData,
+}: {
   heading: string;
-  size: string;
-  para: string;
-  price: string;
-}
-
-interface HandleLikeClickParams {
-  heading: string;
-  highlightData: HighlightItem[];
-}
-
-const CommonCardData = ({ heading, highlightData }: HandleLikeClickParams) => {
+  highlightData: Items;
+}) => {
   const [likes, setLikes] = useState<{ [key: number]: boolean }>({});
 
-  // Slider settings
   const settings = {
     dots: true,
     infinite: highlightData?.artworks?.length > 1,
@@ -67,7 +57,7 @@ const CommonCardData = ({ heading, highlightData }: HandleLikeClickParams) => {
 
   const navigate = useNavigate();
 
-  const handleRedirectToDescription = (id) => {
+  const handleRedirectToDescription = (id: string) => {
     navigate(`/discover_more?id=${id}`);
     window.scroll(0, 0);
   };
@@ -115,9 +105,9 @@ const CommonCardData = ({ heading, highlightData }: HandleLikeClickParams) => {
               highlightData?.artworks[0]?.additionalInfo?.artworkStyle
             ) &&
               highlightData?.artworks[0]?.additionalInfo?.artworkStyle.map(
-                (iw, i) => (
+                (item, i) => (
                   <span key={i}>
-                    {iw}
+                    {item}
                     {i <
                       highlightData?.artworks[0]?.additionalInfo?.artworkStyle
                         .length -
@@ -212,7 +202,7 @@ const CommonCardData = ({ heading, highlightData }: HandleLikeClickParams) => {
                   highlightData?.data?.owner?.artistSurname1}
               </p>
               <p className="text-[14px] font-bold">
-                {getSymbolFromCurrency(item?.pricing?.currency) +
+                {getSymbolFromCurrency(item?.pricing?.currency.split(" ")[0]) +
                   " " +
                   item?.pricing?.basePrice}
               </p>
@@ -231,5 +221,40 @@ const CommonCardData = ({ heading, highlightData }: HandleLikeClickParams) => {
     </div>
   );
 };
+
+interface Items {
+  artworks: HighlightItem[];
+  url: string;
+  data: {
+    owner: {
+      artistName: string;
+      artistSurname1: string;
+    };
+  };
+}
+
+interface HighlightItem {
+  media: {
+    mainImage: string;
+  };
+  additionalInfo: {
+    length: string;
+    width: string;
+    height: string;
+    artworkStyle: string[];
+    colors: string[];
+  };
+  pricing: {
+    currency: string;
+    basePrice: string;
+  };
+  artworkName: string;
+  _id: string;
+  title: string;
+  heading: string;
+  size: string;
+  para: string;
+  price: string;
+}
 
 export default CommonCardData;

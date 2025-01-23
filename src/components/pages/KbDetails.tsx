@@ -9,7 +9,7 @@ const KbDetails = () => {
   const [searchParams] = useSearchParams();
 
   const id = searchParams.get("id");
-  const { data, isLoading, isFetching } = useGetKbDetails(id);
+  const { data, isFetching } = useGetKbDetails(id);
 
   function removeHtmlTags(kbDesc) {
     const div = document.createElement("div");
@@ -22,9 +22,8 @@ const KbDetails = () => {
     navigate(-1);
   };
 
-  if (isFetching) {
-    return <Loader />;
-  }
+  if (isFetching) return <Loader />;
+
   return (
     <div>
       <div className="relative w-full h-[100vh]">
