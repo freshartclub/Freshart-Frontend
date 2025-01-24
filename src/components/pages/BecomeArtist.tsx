@@ -334,7 +334,7 @@ const BecomeArtist = () => {
                   variant={{ size: "3xl", weight: "bold", theme: "dark" }}
                   className="text-center mb-4"
                 >
-                  {t("Become an artist")}
+                  {t("Become an Artist")}
                 </Header>
                 <P
                   variant={{ size: "md", theme: "dark", weight: "normal" }}
@@ -357,7 +357,7 @@ const BecomeArtist = () => {
                     />
                     {errors.aritstName && (
                       <span className="text-red-500 text-xs">
-                        {errors.artistName.message}
+                        {t(`${errors.aritstName.message}`)}
                       </span>
                     )}
                   </div>
@@ -372,7 +372,7 @@ const BecomeArtist = () => {
                     />
                     {errors.artistSurname1 && (
                       <span className="text-red-500 text-xs">
-                        {errors.artistSurname1.message}
+                        {t(`${errors.artistSurname1.message}`)}
                       </span>
                     )}
                   </div>
@@ -388,7 +388,7 @@ const BecomeArtist = () => {
                     />
                     {errors.artistSurname2 && (
                       <span className="text-red-500 text-xs">
-                        {errors.artistSurname2.message}
+                        {t(`${errors.artistSurname2.message}`)}
                       </span>
                     )}
                   </div>
@@ -406,7 +406,7 @@ const BecomeArtist = () => {
                         onChange={(e) => setEmail(e.target.value)}
                         disabled={isValidateEmail}
                         className={`appearance-none border rounded w-full  px-3 text-gray-700 leading-tight focus:outline-none `}
-                        placeholder={t("Enter email")}
+                        placeholder={t("Enter Email")}
                       />
 
                       <EmailVerification
@@ -426,7 +426,7 @@ const BecomeArtist = () => {
 
                     {errors.email && (
                       <span className="text-red-500 text-xs">
-                        {errors.email.message}
+                        {t(`${errors.email.message}`)}
                       </span>
                     )}
                   </div>
@@ -440,7 +440,7 @@ const BecomeArtist = () => {
                     <div className="flex  flex-row w-full gap-2">
                       <PhoneInput
                         className="appearance-none  outline-none rounded py-1   w-full text-gray-700 leading-tight focus:outline-none"
-                        placeholder={t("Enter phone number")}
+                        placeholder={t("Enter Phone number")}
                         defaultCountry={countryCode}
                         disabled={isValidatePhone}
                         value={getValues("phone")}
@@ -468,7 +468,7 @@ const BecomeArtist = () => {
 
                     {errors.phone && (
                       <span className="text-red-500 text-xs">
-                        {errors.phone.message}
+                        {t(`${errors.phone.message}`)}
                       </span>
                     )}
                   </div>
@@ -477,7 +477,7 @@ const BecomeArtist = () => {
                 <div className="flex sm:flex-row flex-col justify-between">
                   <div className="mb-4 sm:w-[49%] w-full">
                     <label className="block text-gray-700 text-sm font-bold mb-2">
-                      {t("Discipline")}*
+                      {t("Discipline")} *
                     </label>
                     <select
                       {...register("discipline")}
@@ -485,7 +485,7 @@ const BecomeArtist = () => {
                     >
                       <option value="">{t("Select Discipline")}</option>
                       {isLoading
-                        ? "Loading..."
+                        ? t("Loading...")
                         : diciplineOption?.map((item, i) => (
                             <option className="text-black" value={item}>
                               {t(item)}
@@ -494,7 +494,7 @@ const BecomeArtist = () => {
                     </select>
                     {errors.discipline && (
                       <span className="text-red-500 text-xs">
-                        {errors.discipline.message}
+                        {t(`${errors.discipline.message}`)}
                       </span>
                     )}
                   </div>
@@ -507,7 +507,7 @@ const BecomeArtist = () => {
                     <Controller
                       name="style"
                       control={control}
-                      rules={{ required: "style is required" }}
+                      rules={{ required: t("Style is required") }}
                       render={({ field }) => (
                         <Select
                           {...field}
@@ -523,7 +523,7 @@ const BecomeArtist = () => {
 
                     {errors.style && (
                       <span className="text-red-500 text-xs">
-                        {errors.style.message}
+                        {t(`${errors.style.message}`)}
                       </span>
                     )}
                   </div>
@@ -534,10 +534,6 @@ const BecomeArtist = () => {
                     {t("Country")} *
                   </label>
 
-                  {/* <div
-                  className="block  appearance-none w-full bg-white border px-4 py-3 pr-8 rounded leading-tight focus:outline-none"
-                  {...register("country")}
-                > */}
                   <CustomDropdown
                     control={control}
                     countryValue={countryValue}
@@ -545,11 +541,10 @@ const BecomeArtist = () => {
                     name="country"
                     isActiveStatus="active"
                   />
-                  {/* </div> */}
 
                   {errors.value && (
                     <span className="text-red-500 text-xs">
-                      {errors.value.message}
+                      {t(`${errors.value.message}`)}
                     </span>
                   )}
                 </div>
@@ -566,7 +561,7 @@ const BecomeArtist = () => {
                     />
                     {errors.zipCode && (
                       <span className="text-red-500 text-xs">
-                        {errors.zipCode.message}
+                        {t(`${errors.zipCode.message}`)}
                       </span>
                     )}
                   </div>
@@ -582,7 +577,7 @@ const BecomeArtist = () => {
                     />
                     {errors.city && (
                       <span className="text-red-500 text-xs">
-                        {errors.city.message}
+                        {t(`${errors.city.message}`)}
                       </span>
                     )}
                   </div>
@@ -594,11 +589,11 @@ const BecomeArtist = () => {
                     <input
                       {...register("region")}
                       className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
-                      placeholder="Enter Region"
+                      placeholder={t("Enter Region")}
                     />
                     {errors.region && (
                       <span className="text-red-500 text-xs">
-                        {errors.region.message}
+                        {t(`${errors.region.message}`)}
                       </span>
                     )}
                   </div>
@@ -619,14 +614,14 @@ const BecomeArtist = () => {
                       ) : (
                         GetOutSocialMedia[0]?.picklist?.map((item, index) => (
                           <option key={index} value={item.name}>
-                            {item.name}
+                            {t(item.name)}
                           </option>
                         ))
                       )}
                     </select>
                     {errors.socialMedia && (
                       <span className="text-red-500 text-xs">
-                        {errors.socialMedia.message}
+                        {t(`${errors.socialMedia.message}`)}
                       </span>
                     )}
                   </div>
@@ -637,15 +632,15 @@ const BecomeArtist = () => {
                     </label>
                     <input
                       {...register("website", {
-                        required: "Website URL is required",
+                        required: t("Website URL is required"),
                       })}
                       onChange={(val) => validateWebsite(val)}
                       className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
-                      placeholder="http://www.example.com"
+                      placeholder="https://www.example.com"
                     />
 
                     <span className="text-red-500 text-xs">
-                      {validateError && validateError}
+                      {validateError && t(validateError)}
                     </span>
                   </div>
                 </div>
@@ -662,7 +657,6 @@ const BecomeArtist = () => {
                       {...register("uploadDocs", { required: true })}
                       type="file"
                       accept=".pdf,.doc,.docx,.xls,.xlsx"
-                      className=""
                       onChange={(event) => {
                         const file = event.target.files[0];
                         setUploadDocs(file);
@@ -674,7 +668,7 @@ const BecomeArtist = () => {
                     </p>
                     {errors.uploadDocs && (
                       <span className="text-red-500 text-xs">
-                        {errors.uploadDocs.message}
+                        {t(`${errors.uploadDocs.message}`)}
                       </span>
                     )}
                   </div>
@@ -684,7 +678,7 @@ const BecomeArtist = () => {
                     className="px-5 py-3 bg-black text-white rounded-md font-bold text-sm "
                     type="submit"
                   >
-                    {isPending ? "Loading..." : t("Submit")}
+                    {isPending ? t("Loading...") : t("Submit")}
                   </button>
                 </div>
               </form>

@@ -1,14 +1,7 @@
-import React from "react";
-import { useFieldArray, useForm } from "react-hook-form";
-import { useAppSelector } from "../../../store/typedReduxHooks";
+import { useTranslation } from "react-i18next";
 
 const Invoice = ({ control }) => {
-  const { register, errors } = useForm();
-  const {} = useFieldArray({
-    control,
-    name: "invoice",
-  });
-
+  const { t } = useTranslation();
   const invoiceData = [
     {
       name: "taxNumber",
@@ -79,7 +72,7 @@ const Invoice = ({ control }) => {
   return (
     <div className="p-4 mt-4 bg-white rounded-lg shadow-md max-w-full border">
       <h2 className="text-xl font-semibold mb-3 text-[#1A1C21]">
-        Invoicing & Commercialization
+        {t("Invoicing & Commercialization")}
       </h2>
       <div className="flex flex-wrap justify-between w-full gap-4 mb-4">
         {invoiceData.map(({ name, label, message }) => (
@@ -94,13 +87,8 @@ const Invoice = ({ control }) => {
               htmlFor={name}
               className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
             >
-              {label}
+              {t(label)}
             </label>
-            {/* {errors.name && (
-              <div className="text-red-500 text-sm mt-1">
-                <div>{errors.name?.message}</div>
-              </div>
-            )} */}
           </div>
         ))}
       </div>

@@ -1,4 +1,7 @@
+import { useTranslation } from "react-i18next";
+
 const OrderList = ({ order }: any) => {
+  const { t } = useTranslation();
   const grandTotal =
     parseFloat(order.totle) +
     parseFloat(order.vat) +
@@ -6,26 +9,28 @@ const OrderList = ({ order }: any) => {
 
   return (
     <div className=" border shadow-md rounded-md">
-      <h2 className="text-[18px] text-black font-semibold p-5">Order List</h2>
+      <h2 className="text-[18px] text-black font-semibold p-5">
+        {t("Order List")}
+      </h2>
       <>
         <div className="grid grid-cols-6  bg-gray-50 p-5 ">
           <div className="col-span-2  ">
-            <h2 className="text-[16px] font-bold ">Product</h2>
+            <h2 className="text-[16px] font-bold ">{t("Product")}</h2>
           </div>
           <div>
-            <h2 className="text-[16px] font-bold">SKU</h2>
+            <h2 className="text-[16px] font-bold">{t("SKU")}</h2>
           </div>
           <div>
-            <h2 className="text-[16px] font-bold">QTY</h2>
+            <h2 className="text-[16px] font-bold">{t("QTY")}</h2>
           </div>
           <div>
-            <h2 className="text-[16px] font-bold">Price</h2>
+            <h2 className="text-[16px] font-bold">{t("Price")}</h2>
           </div>
           <div>
-            <h2 className="text-[16px] font-bold">Total</h2>
+            <h2 className="text-[16px] font-bold">{t("Total")}</h2>
           </div>
         </div>
-        
+
         <div className="grid grid-cols-6 bg-white p-5  ">
           <div className="col-span-2 flex  gap-2">
             <div className="">
@@ -53,14 +58,14 @@ const OrderList = ({ order }: any) => {
           <div className="grid-cols-1 ">
             <p className="text-[14px] font-semibold">${order.price}</p>
             <p className="text-[14px] text-black font-semibold pt-7">
-              Subtotal
+              {t("Subtotal")}
             </p>
             <p className="text-[14px] text-black font-semibold pt-7">VAT(0%)</p>
             <p className="text-[14px] text-black font-semibold pt-7">
-              Shipping Rate
+              {t("Shipping Rate")}
             </p>
             <p className="text-[14px] text-black font-semibold pt-7">
-              Grand Total
+              {t("Grand Total")}
             </p>
           </div>
 

@@ -1,43 +1,31 @@
-import React, { useContext } from "react";
-import { useLocation, useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { CiSaveDown2 } from "react-icons/ci";
 import { PiFilesFill } from "react-icons/pi";
-import { IoIosArrowBack } from "react-icons/io";
 import OrderInformation from "./OrderInformation";
-import Address from "./OrderList";
+import { default as Address, default as OrderList } from "./OrderList";
 import OrderStatus from "./OrderStatus";
-import { tabsContext } from "../Context/Context";
-import { NavLink } from "react-router-dom";
-import OrderList from "./OrderList";
 
 const OrderDetail = () => {
-  const setActiveTab = useContext(tabsContext);
+  const { t } = useTranslation();
 
   const order = {};
   return (
     <div className="px-5 py-7">
       <div>
         <h1 className="font-bold text-[20px] mdtext-[24px] text-black">
-          Order Details
+          {t("Order Details")}
         </h1>
         <div className="flex flex-wrap justify-between mt-4">
-          {/* <div className='flex gap-2 items-center '>
-                    <p className={`text-[18px] text-black` } onClick={() => setActiveTab('dashboard')} ><NavLink to={"/dashboard"}>Dashboard</NavLink></p>
-                    <span><IoIosArrowBack /></span>
-                    <p className={`text-[18px] text-black` } onClick={() => setActiveTab('orders')} ><NavLink to={"/orders"}>Order List</NavLink></p>
-                    <span><IoIosArrowBack /></span>
-                   <span className='text-[18px] hover:cursor-pointer'>Order Details</span>
-                 </div> */}
           <div className="flex gap-3">
             <button className="py-1 px-2 rounded-md flex gap-2 items-center bg-white text-black hover:cursor-pointer">
               {" "}
-              Processing
+              {t("Processing")}
             </button>
             <button className="py-1 px-2 rounded-md flex gap-2 items-center bg-[#DEDEFA] text-black hover:cursor-pointer">
-              <CiSaveDown2 /> Export
+              <CiSaveDown2 /> {t("Export")}
             </button>
             <button className="py-1 px-2 rounded-md flex gap-2 items-center bg-black text-white hover:cursor-pointer">
-              <PiFilesFill /> Invoice
+              <PiFilesFill /> {t("Invoice")}
             </button>
           </div>
         </div>

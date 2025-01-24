@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import { FaAngleDown } from "react-icons/fa";
-
-import { useDispatch } from "react-redux";
-import { setLanguage } from "../../../store/userSlice/userSlice";
-import { useAppDispatch } from "../../../store/typedReduxHooks";
 import toast from "react-hot-toast";
+import { useAppDispatch } from "../../../store/typedReduxHooks";
+import { setLanguage } from "../../../store/userSlice/userSlice";
+import { useTranslation } from "react-i18next";
 
-export const options = [
+const options = [
   {
     label: "Change Currency",
     value: "currency",
@@ -41,13 +40,14 @@ export const options = [
   },
 ];
 
-export const countries = [
+const countries = [
   { code: "GB", flag: "https://flagcdn.com/w320/gb.png", name: "English" },
   { code: "ES", flag: "https://flagcdn.com/w320/es.png", name: "Spanish" },
   { code: "CA", flag: "https://flagcdn.com/w320/cat.png", name: "Catalan" },
 ];
 
 const Language = () => {
+  const { t } = useTranslation();
   const [settings, setSettings] = useState({
     currency: "usd",
     language: "en",
@@ -82,7 +82,7 @@ const Language = () => {
     localStorage.setItem("currency", currencySettings);
     localStorage.setItem("langCode", code);
     dispatch(setLanguage(languageSettings));
-    toast("Settings updated");
+    toast(t("Settings updated"));
   };
 
   return (
@@ -160,7 +160,7 @@ const Language = () => {
           onClick={handleSaveChanges}
           className="bg-[#102030] text-white px-4 py-2 rounded font-semibold"
         >
-          Save Changes
+          {t("Save Changes")}
         </button>
       </div>
     </div>

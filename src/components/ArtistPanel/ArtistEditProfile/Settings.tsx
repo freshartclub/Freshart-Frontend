@@ -1,18 +1,17 @@
-import React from 'react'
-import ArtistTabs from './ArtistTabs'
-import Header from '../../ui/Header'
+import { useTranslation } from "react-i18next";
+import Header from "../../ui/Header";
+import ArtistTabs from "./ArtistTabs";
 import dot from "./assets/dot.png";
 
-
-
 const Settings = () => {
+  const { t } = useTranslation();
   return (
-<div className="bg-white p-10 ">
+    <div className="bg-white p-10 ">
       <Header
         variant={{ size: "2xl", theme: "dark", weight: "semiBold" }}
         className="mt-6"
       >
-        Artist Setting
+        {t("Artist Setting")}
       </Header>
 
       <nav className="flex" aria-label="Breadcrumb">
@@ -22,23 +21,23 @@ const Settings = () => {
               href="#"
               className="inline-flex items-center mx-2 text-sm font-medium text-gray-700 "
             >
-              Artist
+              {t("Artist")}
             </a>
           </li>
           <img src={dot} alt="dot" />
           <li>
             <div className="flex items-center">
               <a href="#" className=" text-sm mx-2 font-medium text-[#919EAB]">
-                Setting
+                {t("Setting")}
               </a>
             </div>
           </li>
         </ol>
       </nav>
 
-      <ArtistTabs/>
+      <ArtistTabs />
     </div>
-  )
-}
+  );
+};
 
-export default Settings
+export default Settings;

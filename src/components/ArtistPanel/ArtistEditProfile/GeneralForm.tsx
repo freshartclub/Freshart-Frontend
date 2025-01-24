@@ -1,42 +1,35 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
-import GeneralSocial from "./GeneralSocial";
-import GeneralMedia from "./GeneralMedia";
 import CVForm from "./CVForm";
+import GeneralMedia from "./GeneralMedia";
+import GeneralSocial from "./GeneralSocial";
 
-import useGetSaveArtistDetailsMutation from "./http/useGetSaveArtistDetails";
+import "react-datepicker/dist/react-datepicker.css";
+import { FaEye } from "react-icons/fa";
+import PhoneInput from "react-phone-number-input";
+import "react-phone-number-input/style.css";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 import { useGetArtistDetails } from "../../UserProfile/http/useGetDetails";
 import Loader from "../../ui/Loader";
 import Invoice from "./Invoice";
 import Logistics from "./Logistics";
-import PhoneInput from "react-phone-number-input";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
-import "react-phone-number-input/style.css";
-import { FaEye } from "react-icons/fa";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-
+import useGetSaveArtistDetailsMutation from "./http/useGetSaveArtistDetails";
 import "react-country-state-city/dist/react-country-state-city.css";
-
 import dayjs from "dayjs";
-import { getCityStateFromZipCountry } from "../../utils/MapWithAutocomplete";
 import countryList from "react-select-country-list";
-import { Country, State, City } from "country-state-city";
-
-import Select from "react-select";
-import Flag from "react-world-flags";
-import CustomDropdown from "../../pages/CustomDropdown";
-import Dicipline from "./Dicipline";
-import Commercilization from "./Commercilization";
-import { RenderAllPicklists } from "../../utils/RenderAllPicklist";
-import SelectDateBtn from "../ArtistDashboard/SelectDateBtn";
-import useRevalidationMutation from "./http/useRevalidationMutation";
+import { getCityStateFromZipCountry } from "../../utils/MapWithAutocomplete";
 import Autocomplete from "react-google-autocomplete";
+import CustomDropdown from "../../pages/CustomDropdown";
+import { RenderAllPicklists } from "../../utils/RenderAllPicklist";
 import { imageUrl } from "../../utils/baseUrls";
+import Commercilization from "./Commercilization";
+import Dicipline from "./Dicipline";
+import useRevalidationMutation from "./http/useRevalidationMutation";
+import { useTranslation } from "react-i18next";
 
 const GeneralForm = ({ isActiveStatus }) => {
-  const { data, isLoading, isFetching } = useGetArtistDetails();
+  const { data, isFetching } = useGetArtistDetails();
   const { mutate, isPending } = useGetSaveArtistDetailsMutation();
   const { mutate: revalidationMutation, isPending: revalidationPending } =
     useRevalidationMutation();
@@ -45,6 +38,8 @@ const GeneralForm = ({ isActiveStatus }) => {
   const [tags, setTags] = useState([]);
   const options = useMemo(() => countryList(), []);
   const [searchResult, setSearchResult] = useState(null);
+
+  const { t } = useTranslation();
 
   const methods = useForm();
 
@@ -55,7 +50,7 @@ const GeneralForm = ({ isActiveStatus }) => {
     getValues,
     watch,
     register,
-    trigger,
+
     formState: { errors },
   } = methods;
 
@@ -125,7 +120,7 @@ const GeneralForm = ({ isActiveStatus }) => {
     setValue("discipline", data?.data?.artist?.aboutArtist?.discipline || "");
 
     setValue("cvEntries", data?.data?.artist?.highlights?.cv || "");
-    // we will have to fix it
+
     setValue("documentName", data?.data?.artist?.documents?.documentName || []);
     setValue(
       "externalTags",
@@ -286,8 +281,6 @@ const GeneralForm = ({ isActiveStatus }) => {
     setSearchResult(data?.data?.artist?.address?.residentialAddress || "");
   }, [data]);
 
-  // console.log(data?.data?.artist?.gender);
-
   const handlePDF = (file) => {
     window.open(`${imageUrl}/documents/${file}`, "_blank");
   };
@@ -296,12 +289,10 @@ const GeneralForm = ({ isActiveStatus }) => {
     const inputValue = e.target.value;
 
     const newTags = inputValue.split(/[\s,]+/);
-    // .filter((tag) => tag.startsWith("#") && tag.length > 1);
     setTags(newTags);
   };
 
   const handleRemoveTags = (index) => {
-    console.log(index);
     const newTags = tags.filter((_, i) => i !== index);
     setTags(newTags);
     setValue("externalTags", newTags);
@@ -334,8 +325,6 @@ const GeneralForm = ({ isActiveStatus }) => {
   }, [watchCountry, watchZip]);
 
   const onSubmit = (data) => {
-    console.log("OnSubmit", data);
-
     delete data.insignia;
     delete data.publishingCatalog;
 
@@ -392,24 +381,7 @@ const GeneralForm = ({ isActiveStatus }) => {
   const socialMedia = picklistMap["Social Media"];
 
   const placesSelected = (places: google.maps.places.PlaceResult) => {
-    const address_comp = [
-      "street_number",
-      "route",
-      "locality",
-      "administrative_area_level_2",
-    ];
-
-    const comp = address_comp
-      .map(
-        (type) =>
-          places.address_components?.find((c) => c.types.includes(type))
-            ?.long_name
-      )
-      .filter(Boolean);
-
-    // const fullAddress = comp.filter(Boolean).join(", ");
-    const fullAddress = places?.formatted_address;
-
+    const fullAddress = places?.formatted_address || "";
     setSearchResult(fullAddress);
   };
 
@@ -418,7 +390,6 @@ const GeneralForm = ({ isActiveStatus }) => {
     const targetDate = new Date(nextRevalidationDate);
 
     const differenceMs = targetDate - currentDate;
-
     const days = Math.floor(differenceMs / (1000 * 60 * 60 * 24));
 
     return `${days} Days Remaning`;
@@ -453,9 +424,7 @@ const GeneralForm = ({ isActiveStatus }) => {
   }
 `;
 
-  if (isFetching) {
-    return <Loader />;
-  }
+  if (isFetching) return <Loader />;
 
   return (
     <div className="w-full md:w-full flex shadow-lg justify-center items-center">
@@ -465,7 +434,7 @@ const GeneralForm = ({ isActiveStatus }) => {
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="flex  justify-between mb-3 pb-3">
                 <h2 className="text-xl font-semibold  text-[#1A1C21]">
-                  General Information
+                  {t("General Information")}
                 </h2>
 
                 <span
@@ -481,17 +450,11 @@ const GeneralForm = ({ isActiveStatus }) => {
                 >
                   <span className="w-1.5 h-1.5 block bg-black rounded-full"></span>{" "}
                   {isActiveStatus === "active"
-                    ? "Active"
-                      ? "Published"
-                      : ""
+                    ? "Published"
                     : isActiveStatus === "under-review"
                     ? "Pending Approval"
-                    : ""
-                    ? "Under-Review"
                     : isActiveStatus === "inactive"
-                    ? "Draft"
-                    : ""
-                    ? "Inactive"
+                    ? "InActive"
                     : null}
                 </span>
               </div>
@@ -510,11 +473,11 @@ const GeneralForm = ({ isActiveStatus }) => {
                     htmlFor="name"
                     className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
                   >
-                    Artist Name
+                    {t("Artist Name")}
                   </label>
                   {errors.artistName && (
                     <div className="text-red-500 text-sm mt-1">
-                      <div>{String(errors.artistName?.message || "")}</div>
+                      {t(errors.artistName?.message)}
                     </div>
                   )}
                 </div>
@@ -531,7 +494,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                     htmlFor="artistSurname1"
                     className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
                   >
-                    Artist Surname1
+                    {t("Artist Surname 1")}
                   </label>
                   {errors.artistSurname1 && (
                     <div className="text-red-500 text-sm mt-1">
@@ -553,13 +516,12 @@ const GeneralForm = ({ isActiveStatus }) => {
                     htmlFor="artistSurname2"
                     className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
                   >
-                    Artist Surname2
+                    {t("Artist Surname 2")}
                   </label>
                 </div>
                 <div className="md:w-[48%] w-full relative">
                   <input
                     type="text"
-                    // placeholder="Enter Your Email id"
                     {...register("nickName")}
                     disabled
                     className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-[#1C252E] outline-none"
@@ -568,7 +530,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                     htmlFor="nickName"
                     className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
                   >
-                    Nickname
+                    {t("Nickname")}
                   </label>
                 </div>
               </div>
@@ -579,7 +541,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                     type="text"
                     // placeholder="Fullname"
                     {...register("email", {
-                      required: "Name is required",
+                      required: t("Name is required"),
                     })}
                     disabled
                     className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-[#1C252E] outline-none"
@@ -588,11 +550,11 @@ const GeneralForm = ({ isActiveStatus }) => {
                     htmlFor="email"
                     className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
                   >
-                    Email
+                    {t("Email")}
                   </label>
                   {errors.email && (
                     <div className="text-red-500 text-sm mt-1">
-                      <div>{String(errors.email?.message || "")}</div>
+                      {t(`${errors.email?.message}`)}
                     </div>
                   )}
                 </div>
@@ -609,12 +571,12 @@ const GeneralForm = ({ isActiveStatus }) => {
                     htmlFor="phoneNumber"
                     className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
                   >
-                    Phone Number
+                    {t("Phone Number")}
                   </label>
 
                   {errors.phoneNumber && (
                     <div className="text-red-500 text-sm mt-1">
-                      <div>{String(errors.phoneNumber?.message || "")}</div>
+                      {t(`${errors.phoneNumber?.message}`)}
                     </div>
                   )}
                 </div>
@@ -624,7 +586,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                 <div className="md:w-[48%] w-full relative">
                   <select
                     {...register("gender", {
-                      required: "Gender is required",
+                      required: t("Gender is required"),
                     })}
                     disabled
                     className={`border  ${
@@ -632,26 +594,26 @@ const GeneralForm = ({ isActiveStatus }) => {
                     } border-[#E6E6E6] bg-zinc-100 p-3 w-full rounded-md focus:outline-none peer placeholder::font-montserrat font-normal text-left placeholder:text-[#1C252E] outline-none`}
                   >
                     {gender &&
-                      gender.map((item, i) => (
-                        <option key={i}>{item?.label}</option>
+                      gender.map((item, i: number) => (
+                        <option key={i}>{t(item?.label)}</option>
                       ))}
                   </select>
                   <label
                     htmlFor="gender"
                     className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
                   >
-                    Gender
+                    {t("Gender")}
                   </label>
                   {errors.gender && (
                     <div className="text-red-500 text-sm mt-1">
-                      <div>{String(errors.gender?.message || "")}</div>
+                      {t(`${errors.gender?.message}`)}
                     </div>
                   )}
                 </div>
                 <div className="md:w-[48%] w-full relative">
                   <select
                     {...register("language", {
-                      required: "language is required",
+                      required: t("Language is required"),
                     })}
                     disabled
                     className={`border  ${
@@ -661,7 +623,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                     {language &&
                       language.map((item, i) => (
                         <option key={i} value={item?.value}>
-                          {item?.label}
+                          {t(item?.label)}
                         </option>
                       ))}
                   </select>
@@ -669,11 +631,11 @@ const GeneralForm = ({ isActiveStatus }) => {
                     htmlFor="language"
                     className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
                   >
-                    Language
+                    {t("Language")}
                   </label>
                   {errors.language && (
                     <div className="text-red-500 text-sm mt-1">
-                      <div>{String(errors.language?.message || "")}</div>
+                      {t(`${errors.language?.message}`)}
                     </div>
                   )}
                 </div>
@@ -693,11 +655,11 @@ const GeneralForm = ({ isActiveStatus }) => {
                     htmlFor="country"
                     className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
                   >
-                    Country
+                    {t("Country")}
                   </label>
                   {errors.country && (
                     <div className="text-red-500 text-sm mt-1">
-                      <div>{String(errors.country?.message || "")}</div>
+                      {t(`${errors.country?.message}`)}
                     </div>
                   )}
                 </div>
@@ -705,8 +667,9 @@ const GeneralForm = ({ isActiveStatus }) => {
                 <div className="md:w-[48%] w-full relative">
                   <input
                     type="text"
-                    // placeholder="Enter Your Zip Code"
-                    {...register("zip", { required: "Zip Code is required" })}
+                    {...register("zip", {
+                      required: t("Zip Code is required"),
+                    })}
                     disabled
                     className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
                   />
@@ -714,11 +677,11 @@ const GeneralForm = ({ isActiveStatus }) => {
                     htmlFor="zip"
                     className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
                   >
-                    Zip Code
+                    {t("Zip Code")}
                   </label>
                   {errors.zip && (
                     <div className="text-red-500 text-sm mt-1">
-                      <div>{String(errors.zip?.message || "")}</div>
+                      {t(`${errors.zip?.message}`)}
                     </div>
                   )}
                 </div>
@@ -729,7 +692,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                   <input
                     type="text"
                     // placeholder="Enter Your City"
-                    {...register("city", { required: "City is required" })}
+                    {...register("city", { required: t("City is required") })}
                     disabled
                     className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-[#1C252E] outline-none"
                   />
@@ -737,11 +700,11 @@ const GeneralForm = ({ isActiveStatus }) => {
                     htmlFor="city"
                     className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
                   >
-                    City
+                    {t("City")}
                   </label>
                   {errors.city && (
                     <div className="text-red-500 text-sm mt-1">
-                      <div>{String(errors.city?.message || "")}</div>
+                      {t(`${errors.city?.message}`)}
                     </div>
                   )}
                 </div>
@@ -749,7 +712,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                   <input
                     type="text"
                     {...register("stateRegion", {
-                      required: "State/Region is required",
+                      required: t("State/Region is required"),
                     })}
                     disabled
                     className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
@@ -758,11 +721,11 @@ const GeneralForm = ({ isActiveStatus }) => {
                     htmlFor="stateRegion"
                     className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
                   >
-                    State/Region
+                    {t("State/Region")}
                   </label>
                   {errors.stateRegion && (
                     <div className="text-red-500 text-sm mt-1">
-                      <div>{String(errors.stateRegion?.message || "")}</div>
+                      {t(`${errors.stateRegion?.message}`)}
                     </div>
                   )}
                 </div>
@@ -786,29 +749,27 @@ const GeneralForm = ({ isActiveStatus }) => {
                     htmlFor="address"
                     className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
                   >
-                    Address
+                    {t("Address")}
                   </label>
 
                   {errors.address && (
                     <div className="text-red-500 text-sm mt-1">
-                      <div>{String(errors.address?.message || "")}</div>
+                      {t(`${errors.address?.message}`)}
                     </div>
                   )}
                 </div>
               </div>
 
-              {/* Cv And Highlight */}
-
               <CVForm
                 control={control}
-                isActiveStatus={isActiveStatus}
                 eventScope={eventScope}
                 eventType={eventType}
+                t={t}
               />
 
               <div className="w-full relative">
                 <h2 className="text-xl font-semibold mb-3 pb-3 text-[#1A1C21]">
-                  About
+                  {t("About")}
                 </h2>
                 <Controller
                   name="about"
@@ -818,11 +779,10 @@ const GeneralForm = ({ isActiveStatus }) => {
                     <div className="relative">
                       <style>{defaultSizeStyle}</style>
                       <ReactQuill
-                        // readOnly={isActiveStatus !== "active"}
                         {...field}
                         className="border border-[#E6E6E6] p-3 w-full rounded-md"
                         theme="snow"
-                        placeholder="Write about yourself..."
+                        placeholder={t("Write about yourself...")}
                         modules={modules}
                         formats={formats}
                       />
@@ -830,7 +790,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                         htmlFor="about"
                         className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
                       >
-                        About
+                        {t("About")}
                       </label>
                     </div>
                   )}
@@ -838,18 +798,17 @@ const GeneralForm = ({ isActiveStatus }) => {
 
                 <div className="p-4 mt-4 bg-white rounded-lg shadow-md max-w-full ">
                   <h2 className="text-xl font-medium mb-3 text-[#1A1C21]">
-                    Insignia
+                    {t("Insignia")}
                   </h2>
                   <div className="flex gap-3 items-center justify-center">
-                    {data?.data?.artist?.insignia?.map((item, i) => (
-                      <div>
+                    {data?.data?.artist?.insignia?.map((item, i: number) => (
+                      <div key={i}>
                         <img
                           src={`${imageUrl}/users/${item.insigniaImage}`}
-                          alt=""
                           className="lg:w-[10vw] lg:h-[15vh] object-cover"
                         />
                         <h1 className="text-center font-medium">
-                          {item.credentialName}
+                          {t(item.credentialName)}
                         </h1>
                       </div>
                     ))}
@@ -868,18 +827,11 @@ const GeneralForm = ({ isActiveStatus }) => {
                   prefillValues={getValues("discipline")}
                   watch={watch}
                 />
-
-                {/* <div className="p-4 mt-4 bg-white rounded-lg shadow-md max-w-full ">
-                  <h2 className="text-xl font-medium mb-3 text-[#1A1C21]">
-                    Add Dicipline
-                  </h2>
-                </div> */}
               </div>
 
               <GeneralMedia
                 control={control}
                 data={data?.data?.artist?.profile}
-                // url={data?.data?.url}
                 isActiveStatus={isActiveStatus}
               />
               <Invoice control={control} />
@@ -889,11 +841,10 @@ const GeneralForm = ({ isActiveStatus }) => {
 
               <div className="p-4 mt-4 bg-white rounded-lg shadow-md max-w-full">
                 <h2 className="text-xl font-semibold mb-3 text-[#1A1C21]">
-                  Others
+                  {t("Others")}
                 </h2>
                 <div className="flex  flex-col gap-5">
                   <div className="md:w-[48%] w-full relative flex flex-col gap-3 items-center">
-                    {/* Document Names */}
                     {data?.data?.artist?.documents?.map((item, index) => (
                       <div
                         key={index}
@@ -910,7 +861,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                           htmlFor={`documentName-${index}`}
                           className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
                         >
-                          Documents
+                          {t("Documents")}
                         </label>
 
                         <span
@@ -940,7 +891,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                       htmlFor="externalTags"
                       className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
                     >
-                      External Tags
+                      {t("External Tags")}
                     </label>
 
                     <div className="mt-2">
@@ -965,14 +916,14 @@ const GeneralForm = ({ isActiveStatus }) => {
                     </div>
                     {errors.externalTags && (
                       <div className="text-red-500 text-sm mt-1">
-                        <div>{String(errors.externalTags?.message || "")}</div>
+                        {t(`${errors.externalTags.message}`)}
                       </div>
                     )}
                   </div>
 
                   <div className="flex gap-5">
                     <h2 className="text-md font-semibold mb-3 text-[#1A1C21] ">
-                      Revalidation Information
+                      {t("Revalidation Information")}
                     </h2>
 
                     <h2 className="text-md font-semibold mb-3 text-[#1A1C21] border border-green-500 px-3 py-1 rounded-md">
@@ -989,22 +940,18 @@ const GeneralForm = ({ isActiveStatus }) => {
                           {...register("lastRevalidationDate", {})}
                           className="border border-[#E6E6E6] p-3 w-full  pointer-events-none rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none pr-10" // Add padding to the right
                         />
-
-                        {/* <SelectDateBtn /> */}
                       </div>
 
                       <label
                         htmlFor="lastRevalidationDate"
                         className="absolute text-sm top-[-10px] left-3  pointer-events-none bg-white px-1 font-montserrat font-semibold text-[#637381]"
                       >
-                        Last Revalidation Date
+                        {t("Last Revalidation Date")}
                       </label>
 
                       {errors.lastRevalidationDate && (
                         <div className="text-red-500 text-sm mt-1">
-                          <div>
-                            {String(errors.lastRevalidationDate?.message || "")}
-                          </div>
+                          {t(`${errors.lastRevalidationDate.message}`)}
                         </div>
                       )}
                     </div>
@@ -1020,13 +967,11 @@ const GeneralForm = ({ isActiveStatus }) => {
                         htmlFor="nextRevalidationDate"
                         className="absolute text-sm top-[-10px] left-3  pointer-events-none bg-white px-1 font-montserrat font-semibold text-[#637381]"
                       >
-                        Next Revalidation Date
+                        {t("Next Revalidation Date")}
                       </label>
                       {errors.nextRevalidationDate && (
                         <div className="text-red-500 text-sm mt-1">
-                          <div>
-                            {String(errors.nextRevalidationDate?.message || "")}
-                          </div>
+                          {t(`${errors.nextRevalidationDate.message}`)}
                         </div>
                       )}
                     </div>
@@ -1045,7 +990,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                   </div>
 
                   <h2 className="text-md font-semibold mb-3 text-[#1A1C21]">
-                    Manager Information
+                    {t("Manager Information")}
                   </h2>
 
                   <div className="flex justify-between flex-wrap gap-3">
@@ -1060,11 +1005,11 @@ const GeneralForm = ({ isActiveStatus }) => {
                         htmlFor="managerName"
                         className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
                       >
-                        Manager Name
+                        {t("Manager Name")}
                       </label>
                       {errors.managerName && (
                         <div className="text-red-500 text-sm mt-1">
-                          <div>{String(errors.managerName?.message || "")}</div>
+                          {t(`${errors.managerName.message}`)}
                         </div>
                       )}
                     </div>
@@ -1080,13 +1025,11 @@ const GeneralForm = ({ isActiveStatus }) => {
                         htmlFor="managerEmail"
                         className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
                       >
-                        Manager Email
+                        {t("Manager Email")}
                       </label>
                       {errors.managerEmail && (
                         <div className="text-red-500 text-sm mt-1">
-                          <div>
-                            {String(errors.managerEmail?.message || "")}
-                          </div>
+                          {t(`${errors.managerEmail.message}`)}
                         </div>
                       )}
                     </div>
@@ -1102,13 +1045,11 @@ const GeneralForm = ({ isActiveStatus }) => {
                         htmlFor="managerPhone"
                         className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
                       >
-                        Manager Phone
+                        {t("Manager Phone")}
                       </label>
                       {errors.managerPhone && (
                         <div className="text-red-500 text-sm mt-1">
-                          <div>
-                            {String(errors.managerPhone?.message || "")}
-                          </div>
+                          {t(`${errors.managerPhone.message}`)}
                         </div>
                       )}
                     </div>
@@ -1119,10 +1060,10 @@ const GeneralForm = ({ isActiveStatus }) => {
                         disabled
                         className={`border  border-[#E6E6E6] p-3 w-full rounded-md focus:outline-none peer placeholder::font-montserrat font-normal text-left placeholder:text-[#1C252E] outline-none bg-zinc-100`}
                       >
-                        <option value="">Select</option>
+                        <option value="">{t("Select")}</option>
                         {gender &&
                           gender.map((item, i) => (
-                            <option key={i}>{item?.label}</option>
+                            <option key={i}>{t(item?.label)}</option>
                           ))}
                       </select>
 
@@ -1130,7 +1071,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                         htmlFor="managerGender"
                         className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
                       >
-                        Manager Gender
+                        {t("Manager Gender")}
                       </label>
                     </div>
 
@@ -1140,11 +1081,11 @@ const GeneralForm = ({ isActiveStatus }) => {
                         disabled
                         className={`border bg-zinc-100 border-[#E6E6E6] p-3 w-full rounded-md focus:outline-none peer placeholder::font-montserrat font-normal text-left placeholder:text-[#1C252E] outline-none`}
                       >
-                        <option value="">Select</option>
+                        <option value="">{t("Select")}</option>
                         {language &&
                           language.map((item, i) => (
                             <option key={i} value={item?.value}>
-                              {item?.label}
+                              {t(item?.label)}
                             </option>
                           ))}
                       </select>
@@ -1152,7 +1093,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                         htmlFor="managerLanguage"
                         className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
                       >
-                        Manager Language
+                        {t("Manager Language")}
                       </label>
                     </div>
 
@@ -1167,13 +1108,11 @@ const GeneralForm = ({ isActiveStatus }) => {
                         htmlFor="managerAddress"
                         className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold "
                       >
-                        Manager Address
+                        {t("Manager Address")}
                       </label>
                       {errors.managerAddress && (
                         <div className="text-red-500 text-sm mt-1">
-                          <div>
-                            {String(errors.managerAddress?.message || "")}
-                          </div>
+                          {t(`${errors.managerAddress.message}`)}
                         </div>
                       )}
                     </div>
@@ -1189,13 +1128,11 @@ const GeneralForm = ({ isActiveStatus }) => {
                         htmlFor="managerCountry"
                         className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
                       >
-                        Manager Country
+                        {t("Manager Country")}
                       </label>
                       {errors.managerCountry && (
                         <div className="text-red-500 text-sm mt-1">
-                          <div>
-                            {String(errors.managerCountry?.message || "")}
-                          </div>
+                          {t(`${errors.managerCountry.message}`)}
                         </div>
                       )}
                     </div>
@@ -1211,13 +1148,11 @@ const GeneralForm = ({ isActiveStatus }) => {
                         htmlFor="managerZipCode"
                         className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
                       >
-                        Manager zipCode
+                        {t("Manager zipCode")}
                       </label>
                       {errors.managerZipCode && (
                         <div className="text-red-500 text-sm mt-1">
-                          <div>
-                            {String(errors.managerZipCode?.message || "")}
-                          </div>
+                          {t(`${errors.managerZipCode.message}`)}
                         </div>
                       )}
                     </div>
@@ -1233,13 +1168,11 @@ const GeneralForm = ({ isActiveStatus }) => {
                         htmlFor="state"
                         className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
                       >
-                        Manager state
+                        {t("Manager State")}
                       </label>
                       {errors.managerState && (
                         <div className="text-red-500 text-sm mt-1">
-                          <div>
-                            {String(errors.managerState?.message || "")}
-                          </div>
+                          {t(`${errors.managerState.message}`)}
                         </div>
                       )}
                     </div>
@@ -1255,18 +1188,18 @@ const GeneralForm = ({ isActiveStatus }) => {
                         htmlFor="managerCity"
                         className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
                       >
-                        Manager City
+                        {t("Manager City")}
                       </label>
                       {errors.managerCity && (
                         <div className="text-red-500 text-sm mt-1">
-                          <div>{String(errors.managerCity?.message || "")}</div>
+                          {t(`${errors.managerCity.message}`)}
                         </div>
                       )}
                     </div>
                   </div>
 
                   <h2 className="text-md font-semibold mb-3 text-[#1A1C21]">
-                    Emergency Information
+                    {t("Emergency Information")}
                   </h2>
 
                   <div className="flex justify-between flex-wrap gap-3 pointer-events-none">
@@ -1281,13 +1214,11 @@ const GeneralForm = ({ isActiveStatus }) => {
                         htmlFor="emergencyContactName"
                         className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
                       >
-                        Emergency Contact Name
+                        {t("Emergency Contact Name")}
                       </label>
                       {errors.emergencyContactName && (
                         <div className="text-red-500 text-sm mt-1">
-                          <div>
-                            {String(errors.emergencyContactName?.message || "")}
-                          </div>
+                          {t(`${errors.emergencyContactName.message}`)}
                         </div>
                       )}
                     </div>
@@ -1303,15 +1234,11 @@ const GeneralForm = ({ isActiveStatus }) => {
                         htmlFor="emergencyContactPhone"
                         className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
                       >
-                        Emergency Contact Phone
+                        {t("Emergency Contact Phone")}
                       </label>
                       {errors.emergencyContactPhone && (
                         <div className="text-red-500 text-sm mt-1">
-                          <div>
-                            {String(
-                              errors.emergencyContactPhone?.message || ""
-                            )}
-                          </div>
+                          {t(`${errors.emergencyContactPhone.message}`)}
                         </div>
                       )}
                     </div>
@@ -1327,15 +1254,11 @@ const GeneralForm = ({ isActiveStatus }) => {
                         htmlFor="emergencyContactEmail"
                         className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
                       >
-                        Emergency Contact Email
+                        {t("Emergency Contact Email")}
                       </label>
                       {errors.emergencyContactEmail && (
                         <div className="text-red-500 text-sm mt-1">
-                          <div>
-                            {String(
-                              errors.emergencyContactEmail?.message || ""
-                            )}
-                          </div>
+                          {t(`${errors.emergencyContactEmail.message}`)}
                         </div>
                       )}
                     </div>
@@ -1351,15 +1274,11 @@ const GeneralForm = ({ isActiveStatus }) => {
                         htmlFor="emergencyContactAddress"
                         className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
                       >
-                        Emergency Contact Address
+                        {t("Emergency Contact Address")}
                       </label>
                       {errors.emergencyContactAddress && (
                         <div className="text-red-500 text-sm mt-1">
-                          <div>
-                            {String(
-                              errors.emergencyContactAddress?.message || ""
-                            )}
-                          </div>
+                          {t(`${errors.emergencyContactAddress.message}`)}
                         </div>
                       )}
                     </div>
@@ -1375,15 +1294,11 @@ const GeneralForm = ({ isActiveStatus }) => {
                         htmlFor="emergencyContactRelation"
                         className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
                       >
-                        Emergency Contact Relation
+                        {t("Emergency Contact Relation")}
                       </label>
                       {errors.emergencyContactRelation && (
                         <div className="text-red-500 text-sm mt-1">
-                          <div>
-                            {String(
-                              errors.emergencyContactRelation?.message || ""
-                            )}
-                          </div>
+                          {t(`${errors.emergencyContactRelation.message}`)}
                         </div>
                       )}
                     </div>
@@ -1398,7 +1313,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                     isActiveStatus !== "active" ? "" : ""
                   }`}
                 >
-                  {isPending ? `Loading...` : " Save Changes"}
+                  {isPending ? t("Loading...") : t("Save Changes")}
                 </button>
               </div>
             </form>

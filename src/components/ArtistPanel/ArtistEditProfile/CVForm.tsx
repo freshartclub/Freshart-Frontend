@@ -1,25 +1,12 @@
 import React from "react";
-import { useFieldArray, Control, Controller } from "react-hook-form";
+import { Control, Controller, useFieldArray } from "react-hook-form";
 import ReactQuill from "react-quill";
-import { options } from "./Language";
-
-interface CVEntry {
-  year: string;
-  type: string;
-  description: string;
-  location: string;
-  scope: string;
-}
-
-interface CVFormProps {
-  control: Control<any>;
-}
 
 const CVForm: React.FC<CVFormProps> = ({
   control,
-  isActiveStatus,
   eventScope,
   eventType,
+  t,
 }) => {
   const {
     fields: cvEntries,
@@ -66,7 +53,7 @@ const CVForm: React.FC<CVFormProps> = ({
   return (
     <div className="p-4 mt-4 bg-white rounded-lg shadow-md max-w-full border  mb-4">
       <h2 className="text-xl font-semibold mb-3 pb-3 text-[#1A1C21]">
-        CV & Highlight
+        {t("CV & Highlight")}
       </h2>
       <div className="w-full relative">
         <Controller
@@ -80,8 +67,7 @@ const CVForm: React.FC<CVFormProps> = ({
                 {...field}
                 className="border border-[#E6E6E6] p-3 w-full rounded-md"
                 theme="snow"
-                placeholder="Write about yourself..."
-                // readOnly={isActiveStatus !== "active"}
+                placeholder={t("Write about yourself...")}
                 modules={modules}
                 formats={formats}
               />
@@ -89,24 +75,23 @@ const CVForm: React.FC<CVFormProps> = ({
                 htmlFor="Hightlight"
                 className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
               >
-                Highlight
+                {t("Highlight")}
               </label>
             </div>
           )}
         />
       </div>
 
-      {cvEntries.map((cv, index) => (
+      {cvEntries.map((cv, index: number) => (
         <div key={cv.id} className="flex flex-wrap space-x-2 mb-3 mt-4">
           <div className="flex flex-col">
-            <label className="text-sm font-medium mb-1">Year</label>
+            <label className="text-sm font-medium mb-1">{t("Year")}</label>
             <select
-              // disabled={isActiveStatus !== "active"}
               className="border border-gray-300 rounded-md px-1 py-1 w-20 outline-none cursor-pointer"
               {...control.register(`cvEntries.${index}.year`)}
               defaultValue={cv.year}
             >
-              <option value="">Year</option>
+              <option value="">{t("Year")}</option>
               {Array.from({ length: 40 }, (_, i) => {
                 const year = new Date().getFullYear() - i;
                 return (
@@ -119,41 +104,39 @@ const CVForm: React.FC<CVFormProps> = ({
           </div>
 
           <div className="flex flex-col">
-            <label className="text-sm font-medium mb-1">Type</label>
+            <label className="text-sm font-medium mb-1">{t("Type")}</label>
             <select
-              // disabled={isActiveStatus !== "active"}
               className="border border-gray-300 rounded-md px-1 py-1 w-24 outline-none cursor-pointer"
               {...control.register(`cvEntries.${index}.Type`)}
               defaultValue={cv.Type}
             >
-              <option value="">Select</option>
+              <option value="">{t("Select")}</option>
               {eventType &&
                 eventType?.map((item, i) => (
                   <option key={i} value={item.value}>
-                    {" "}
-                    {item?.value}
+                    {t(item?.value)}
                   </option>
                 ))}
             </select>
           </div>
 
           <div className="flex flex-col flex-grow w-28">
-            <label className="text-sm font-medium mb-1">Description</label>
+            <label className="text-sm font-medium mb-1">
+              {t("Description")}
+            </label>
             <input
               type="text"
               className="border border-gray-300 rounded-md px-1 py-1  outline-none "
               placeholder="Description"
-              // disabled={isActiveStatus !== "active"}
               {...control.register(`cvEntries.${index}.Description`)}
               defaultValue={cv.Description}
             />
           </div>
 
           <div className="flex flex-col">
-            <label className="text-sm font-medium mb-1">Location</label>
+            <label className="text-sm font-medium mb-1">{t("Location")}</label>
             <input
               type="text"
-              // disabled={isActiveStatus !== "active"}
               className="border border-gray-300 rounded-md px-1 py-1 w-24 outline-none"
               placeholder="Location"
               {...control.register(`cvEntries.${index}.Location`)}
@@ -162,29 +145,26 @@ const CVForm: React.FC<CVFormProps> = ({
           </div>
 
           <div className="flex flex-col ">
-            <label className="text-sm font-medium mb-1">Scope</label>
+            <label className="text-sm font-medium mb-1">{t("Scope")}</label>
             <select
-              // disabled={isActiveStatus !== "active"}
               className="border border-gray-300 rounded-md px-1 py-1 w-20 outline-none cursor-pointer"
               {...control.register(`cvEntries.${index}.Scope`)}
               defaultValue={cv.Scope}
             >
-              <option value="">Select</option>
+              <option value="">{t("Select")}</option>
               {eventScope &&
                 eventScope?.map((item, i) => (
                   <option key={i} value={item.value}>
-                    {item?.value}
+                    {t(item?.value)}
                   </option>
                 ))}
             </select>
           </div>
 
-          {/* Remove Button */}
           <button
-            // disabled={isActiveStatus !== "active"}
             type="button"
             className="text-red-600 font-semibold mt-5 "
-            onClick={() => remove(index)} // Function to remove a CV entry
+            onClick={() => remove(index)}
           >
             ✕
           </button>
@@ -194,15 +174,21 @@ const CVForm: React.FC<CVFormProps> = ({
       <div className="mt-3">
         <button
           type="button"
-          // disabled={isActiveStatus !== "active"}
           onClick={addMoreCv}
           className="bg-[#102030] text-white px-3 py-2 rounded font-semibold"
         >
-          Add More CV
+          {t("Add More CV")}
         </button>
       </div>
     </div>
   );
 };
+
+interface CVFormProps {
+  control: Control<any>;
+  eventScope: string;
+  eventType: string;
+  t: any;
+}
 
 export default CVForm;

@@ -9,8 +9,10 @@ import print from "./assets/print.png";
 import return1 from "./assets/return.png";
 import secure from "./assets/secure.png";
 import product from "./assets/single-product.jpg.png";
+import { useTranslation } from "react-i18next";
 
-const ProductInfo = ({ data }: any) => {
+const ProductInfo = ({ data }) => {
+  const { t } = useTranslation();
   const currency = data?.data?.pricing?.currency;
 
   const mapData = (val: string[]) => {
@@ -20,69 +22,69 @@ const ProductInfo = ({ data }: any) => {
 
   const overview_date = [
     {
-      head: "Art Provider :",
+      head: "Art Provider",
       name: data?.data?.isArtProvider,
     },
 
     {
-      head: "Art Provider Name :",
+      head: "Art Provider Name",
       name: data?.data?.provideArtistName || "N/A",
     },
 
     {
-      head: "Artwork Technic:",
+      head: "Artwork Technic",
       name: data?.data?.additionalInfo?.artworkTechnic,
     },
     {
-      head: "Artwork Theme:",
+      head: "Artwork Theme",
       name: data?.data?.additionalInfo?.artworkTheme,
     },
     {
-      head: "Artwork Oriantaion:",
+      head: "Artwork Oriantaion",
       name: data?.data?.additionalInfo?.artworkOrientation,
     },
     {
-      head: "Material:",
+      head: "Material",
       name: data?.data?.additionalInfo?.material,
     },
     {
-      head: "Artwork Width :",
+      head: "Artwork Width",
       name: data?.data?.additionalInfo?.width + " " + "cm",
     },
 
     {
-      head: "Artwork Height :",
+      head: "Artwork Height",
       name: data?.data?.additionalInfo?.height + " " + "cm",
     },
     {
-      head: "Artwork Length :",
+      head: "Artwork Length",
       name: data?.data?.additionalInfo?.length + " " + "cm",
     },
   ];
 
   const artwork_detail = [
     {
-      heading: "Hanging Available: ",
+      heading: "Hanging Available",
       description: data?.data?.additionalInfo?.hangingAvailable,
     },
     {
-      heading: "Framed: ",
+      heading: "Framed",
       description: data?.data?.additionalInfo?.framed,
     },
     {
-      heading: "Framed height: ",
+      heading: "Framed height",
       description: data?.data?.additionalInfo?.frameHeight
         ? data?.data?.additionalInfo?.frameHeight + " " + "cm"
         : "N/A",
     },
     {
-      heading: "Frame Length: ",
+      heading: "Frame Length",
       description: data?.data?.additionalInfo?.frameLength
         ? data?.data?.additionalInfo?.frameLength + " " + "cm"
         : "N/A",
     },
     {
-      heading: "Frame Width: ",
+      heading: "Frame Width",
       description: data?.data?.additionalInfo?.frameWidth
         ? data?.data?.additionalInfo?.frameWidth + " " + "cm"
         : "N/A",
@@ -91,60 +93,60 @@ const ProductInfo = ({ data }: any) => {
 
   const highlight_data = [
     {
-      heading: "Artwork Style: ",
+      heading: "Artwork Style",
       description: mapData(data?.data?.additionalInfo?.artworkStyle),
     },
     {
-      heading: "Artwork Emotion: ",
+      heading: "Artwork Emotion",
       description: mapData(data?.data?.additionalInfo?.emotions),
     },
     {
-      heading: "Artwork Colors: ",
+      heading: "Artwork Colors",
       description: mapData(data?.data?.additionalInfo?.colors),
     },
   ];
 
   const purchaseData = [
     {
-      heading: "Selected Method: ",
+      heading: "Selected Method",
       description: data?.data?.commercialization?.activeTab,
     },
     {
-      heading: "Purchase Catalog: ",
+      heading: "Purchase Catalog",
       description:
         data?.data?.commercialization?.publishingCatalog?.catalogName,
     },
     {
-      heading: "Purchase Type: ",
+      heading: "Purchase Type",
       description: data?.data?.commercialization?.purchaseType,
     },
   ];
 
   const subscriptionData = [
     {
-      heading: "Selected Method: ",
+      heading: "Selected Method",
       description: data?.data?.commercialization?.activeTab,
     },
     {
-      heading: "Subscription Catalog: ",
+      heading: "Subscription Catalog",
       description:
         data?.data?.commercialization?.publishingCatalog?.catalogName,
     },
 
     {
-      heading: "Purchase Option ",
-      description: ` ${data?.data?.commercialization?.purchaseOption}` || "N/A",
+      heading: "Purchase Option",
+      description: `${data?.data?.commercialization?.purchaseOption}` || "N/A",
     },
   ];
 
   const Pricing_data = [
     {
-      heading: "Base Price: ",
+      heading: "Base Price",
       description: data?.data?.pricing?.basePrice,
     },
 
     {
-      heading: "Artist Fees: ",
+      heading: "Artist Fees",
       description:
         `${getSymbolFromCurrency(currency.slice(0, 3))} ${
           data?.data?.pricing?.artistFees
@@ -152,7 +154,7 @@ const ProductInfo = ({ data }: any) => {
     },
 
     {
-      heading: "Accept Minimum Offer: ",
+      heading: "Accept Minimum Offer",
       description: data?.data?.pricing?.acceptOfferPrice
         ? `${getSymbolFromCurrency(currency)} ${
             data?.data?.pricing?.acceptOfferPrice
@@ -161,67 +163,67 @@ const ProductInfo = ({ data }: any) => {
     },
 
     {
-      heading: "Discount Percentage: ",
+      heading: "Discount Percentage",
       description: `${data?.data?.pricing?.dpersentage}%` || "N/A",
     },
     {
-      heading: "Vat Amount: ",
+      heading: "Vat Amount",
       description: ` ${data?.data?.pricing?.vatAmount}%`,
     },
   ];
 
   const moreInfo_data = [
     {
-      heading: "Available To: ",
+      heading: "Available To",
       description: `${data?.data?.restriction?.availableTo}` || "N/A",
     },
     {
-      heading: "Discount Acceptation: ",
+      heading: "Discount Acceptation",
       description: data?.data?.restriction?.discountAcceptation || "N/A",
     },
     {
-      heading: "External Tags: ",
+      heading: "External Tags",
       description: mapData(data?.data?.tags?.extTags) || "N/A",
     },
   ];
 
   const shipping_data = [
     {
-      heading: "Location: ",
+      heading: "Location",
       description: `${data?.data?.inventoryShipping?.location || "N/A"}`,
     },
     {
-      heading: "Product Code: ",
+      heading: "Product Code",
       description: `${data?.data?.inventoryShipping?.pCode || "N/A"}`,
     },
 
     {
-      heading: "Package Material: ",
+      heading: "Package Material",
       description:
         `${data?.data?.inventoryShipping?.packageMaterial} ` || "N/A",
     },
     {
-      heading: "Package Depth: ",
+      heading: "Package Depth",
       description:
         data?.data?.inventoryShipping?.packageLength + " " + "cm" || "N/A",
     },
     {
-      heading: "Package Height: ",
+      heading: "Package Height",
       description:
         data?.data?.inventoryShipping?.packageHeight + " " + "cm" || "N/A",
     },
     {
-      heading: "Package Width: ",
+      heading: "Package Width",
       description:
         data?.data?.inventoryShipping?.packageWidth + " " + "cm" || "N/A",
     },
     {
-      heading: "Package Weight: ",
+      heading: "Package Weight",
       description:
         data?.data?.inventoryShipping?.packageWeight + " " + "kg" || "N/A",
     },
     {
-      heading: "Coming Soon: ",
+      heading: "Coming Soon",
       description: data?.data?.inventoryShipping?.commingSoon || "N/A",
     },
   ];
@@ -232,12 +234,12 @@ const ProductInfo = ({ data }: any) => {
     <div className="mt-20">
       <Tabs>
         <TabList>
-          <Tab>Description</Tab>
-          <Tab>Additional Information</Tab>
-          <Tab>Commercialization</Tab>
-          <Tab>Pricing</Tab>
-          <Tab>Inventory & Shipping</Tab>
-          <Tab>More Details</Tab>
+          <Tab>{t("Description")}</Tab>
+          <Tab>{t("Additional Information")}</Tab>
+          <Tab>{t("Commercialization")}</Tab>
+          <Tab>{t("Pricing")}</Tab>
+          <Tab>{t("Inventory & Shipping")}</Tab>
+          <Tab>{t("More Details")}</Tab>
         </TabList>
 
         <TabPanel>
@@ -246,7 +248,7 @@ const ProductInfo = ({ data }: any) => {
               <Header
                 variant={{ size: "md", theme: "dark", weight: "semiBold" }}
               >
-                Product Information
+                {t("Product Information")}
               </Header>
               <P
                 variant={{ size: "base", theme: "dark", weight: "medium" }}
@@ -263,13 +265,13 @@ const ProductInfo = ({ data }: any) => {
                   <P
                     variant={{ size: "base", weight: "medium", theme: "dark" }}
                   >
-                    Delivery 2-5 days
+                    {t("Delivery 2-5 days")}
                   </P>
                   <P
                     variant={{ size: "base", weight: "medium" }}
                     className="text-[#999999]"
                   >
-                    Get free shipping over $65.
+                    {t("Get free shipping over $65.")}
                   </P>
                 </div>
               </div>
@@ -280,13 +282,13 @@ const ProductInfo = ({ data }: any) => {
                   <P
                     variant={{ size: "base", weight: "medium", theme: "dark" }}
                   >
-                    100% secure payment
+                    {t("100% secure payment")}
                   </P>
                   <P
                     variant={{ size: "base", weight: "medium" }}
                     className="text-[#999999]"
                   >
-                    Your payment information is safe.
+                    {t("Your payment information is safe.")}
                   </P>
                 </div>
               </div>
@@ -297,13 +299,13 @@ const ProductInfo = ({ data }: any) => {
                   <P
                     variant={{ size: "base", weight: "medium", theme: "dark" }}
                   >
-                    Premium paper printed
+                    {t("Premium paper printed")}
                   </P>
                   <P
                     variant={{ size: "base", weight: "medium" }}
                     className="text-[#999999]"
                   >
-                    Printed on premium paper (250 g/m²).
+                    {t("Printed on premium paper (250 g/m²).")}
                   </P>
                 </div>
               </div>
@@ -314,13 +316,13 @@ const ProductInfo = ({ data }: any) => {
                   <P
                     variant={{ size: "base", weight: "medium", theme: "dark" }}
                   >
-                    Easy Returns
+                    {t("Easy Returns")}
                   </P>
                   <P
                     variant={{ size: "base", weight: "medium" }}
                     className="text-[#999999]"
                   >
-                    Risk-free 30-day returns.
+                    {t("Risk-free 30-day returns.")}
                   </P>
                 </div>
               </div>
@@ -337,7 +339,7 @@ const ProductInfo = ({ data }: any) => {
                     variant={{ size: "small", theme: "dark", weight: "medium" }}
                     className="w-48 my-1"
                   >
-                    {item.head}
+                    {t(item.head)} :
                   </P>
                   <P
                     variant={{ size: "small", weight: "medium" }}
@@ -356,7 +358,7 @@ const ProductInfo = ({ data }: any) => {
                     variant={{ size: "small", theme: "dark", weight: "medium" }}
                     className="w-48 my-1"
                   >
-                    {item.heading}
+                    {t(item.heading)} :
                   </P>
                   <P
                     variant={{ size: "small", weight: "medium" }}
@@ -375,7 +377,7 @@ const ProductInfo = ({ data }: any) => {
                     variant={{ size: "small", theme: "dark", weight: "medium" }}
                     className="w-48 my-1"
                   >
-                    {item.heading}
+                    {t(item.heading)} :
                   </P>
                   <P
                     variant={{ size: "small", weight: "medium" }}
@@ -389,13 +391,17 @@ const ProductInfo = ({ data }: any) => {
           </div>
 
           <div className="flex flex-col my-5">
-            <h1 className="font-semibold">Hanging Description:</h1>
-            <span className="text-[#999999] text-[14px] mt-2">{data?.data?.additionalInfo?.hangingDescription || "N/A"}</span>
+            <h1 className="font-semibold">{t("Hanging Description")}:</h1>
+            <span className="text-[#999999] text-[14px] mt-2">
+              {data?.data?.additionalInfo?.hangingDescription || "N/A"}
+            </span>
           </div>
 
           <div className="flex flex-col my-5">
-            <h1 className="font-semibold">Framed Description:</h1>
-            <span className="text-[#999999] text-[14px] mt-2">{data?.data?.additionalInfo?.framedDescription || "N/A"}</span>
+            <h1 className="font-semibold">{t("Framed Description")}:</h1>
+            <span className="text-[#999999] text-[14px] mt-2">
+              {data?.data?.additionalInfo?.framedDescription || "N/A"}
+            </span>
           </div>
         </TabPanel>
 
@@ -413,7 +419,7 @@ const ProductInfo = ({ data }: any) => {
                         }}
                         className="w-48 my-1"
                       >
-                        {item.heading}
+                        {t(item.heading)} :
                       </P>
                       <P
                         variant={{
@@ -436,7 +442,7 @@ const ProductInfo = ({ data }: any) => {
                         }}
                         className="w-48 my-1"
                       >
-                        {item.heading}
+                        {t(item.heading)} :
                       </P>
                       <P
                         variant={{
@@ -462,7 +468,7 @@ const ProductInfo = ({ data }: any) => {
                     variant={{ size: "small", theme: "dark", weight: "medium" }}
                     className="lg:w-48 my-1"
                   >
-                    {item.heading}
+                    {t(item.heading)} :
                   </P>
                   <P
                     variant={{
@@ -488,7 +494,7 @@ const ProductInfo = ({ data }: any) => {
                     variant={{ size: "small", theme: "dark", weight: "medium" }}
                     className="lg:w-48 my-1"
                   >
-                    {item.heading}
+                    {t(item.heading)} :
                   </P>
                   <P
                     variant={{
@@ -514,7 +520,7 @@ const ProductInfo = ({ data }: any) => {
                     variant={{ size: "small", theme: "dark", weight: "medium" }}
                     className="w-48 my-1"
                   >
-                    {item.heading}
+                    {t(item.heading)} :
                   </P>
                   <P
                     variant={{

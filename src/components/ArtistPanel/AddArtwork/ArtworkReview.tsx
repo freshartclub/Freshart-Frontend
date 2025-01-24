@@ -1,17 +1,17 @@
 import { useRef } from "react";
+import { useSearchParams } from "react-router-dom";
 import Slider from "react-slick";
+import Button from "../../ui/Button";
+import Header from "../../ui/Header";
+import Loader from "../../ui/Loader";
+import P from "../../ui/P";
+import { imageUrl } from "../../utils/baseUrls";
 import eye from "./assets/eye.png";
 import share from "./assets/share.png";
 import DiscoverContent from "./DiscoverContent";
-import ProductInfo from "./ProductInfo";
-import SelectedSection from "./SelectedSection";
-import { Link, useSearchParams } from "react-router-dom";
-import Loader from "../../ui/Loader";
 import { useGetArtWorkById } from "./http/useGetArtworkById";
-import P from "../../ui/P";
-import Button from "../../ui/Button";
-import Header from "../../ui/Header";
-import { baseUrl, imageUrl } from "../../utils/baseUrls";
+import ProductInfo from "./ProductInfo";
+import { useTranslation } from "react-i18next";
 
 const DiscoverMore = () => {
   const sliderRef = useRef<Slider>(null);
@@ -19,6 +19,7 @@ const DiscoverMore = () => {
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
   const preview = searchParams.get("preview") || false;
+  const { t } = useTranslation();
 
   const { data, isLoading } = useGetArtWorkById(id, preview);
 
@@ -117,7 +118,7 @@ const DiscoverMore = () => {
           variant={{ size: "xl", theme: "dark", weight: "bold" }}
           className="text-black mt-10 "
         >
-          Artwork Review
+          {t("Artwork Review")}
         </Header>
 
         <div className="flex lg:flex-row  flex-col gap-10 mt-10">
@@ -154,7 +155,7 @@ const DiscoverMore = () => {
                     (slide, index) =>
                       slide.src && (
                         <div key={index} className="">
-                          {slide.src.endsWith(".mp4") ? ( // Check if it's a video
+                          {slide.src.endsWith(".mp4") ? (
                             <video
                               src={`${url2}/${slide.src}`}
                               className="mx-auto object-cover h-[20rem] md:h-[60vh] lg:h-[60vh]"
@@ -200,13 +201,13 @@ const DiscoverMore = () => {
           <div className="flex gap-1">
             <img src={eye} alt="eye" className="w-[19px] h-[12px] mt-1" />
             <P variant={{ size: "base", theme: "dark", weight: "normal" }}>
-              View in Room
+              {t("View in Room")}
             </P>
           </div>
           <Button className="flex gap-1 !p-0">
             <img src={share} alt="share" className="w-[19px] h-[16px] mt-1" />
             <P variant={{ size: "base", theme: "dark", weight: "normal" }}>
-              Share
+              {t("Share")}
             </P>
           </Button>
         </div>

@@ -1,13 +1,15 @@
 import { useState } from "react";
-import image1 from "../assets/Circle Icon Bagde.png";
+import { GoPlus } from "react-icons/go";
+import { NavLink } from "react-router-dom";
 import image2 from "../assets/Circle Icon Bagde (1).png";
 import image3 from "../assets/Circle Icon Bagde (2).png";
 import image4 from "../assets/Circle Icon Bagde (3).png";
-import UploadArtworkBtn from "./UploadArtworkBtn";
-import SelectDateBtn from "./SelectDateBtn";
-import { NavLink } from "react-router-dom";
-import { GoPlus } from "react-icons/go";
+import image1 from "../assets/Circle Icon Bagde.png";
+import { IoOptionsOutline } from "react-icons/io5";
+import { useTranslation } from "react-i18next";
+
 const FilterProductItem = () => {
+  const { t } = useTranslation();
   const products = [
     {
       tag: "All Time",
@@ -32,7 +34,7 @@ const FilterProductItem = () => {
         },
         {
           image: image4,
-          title: "Balence",
+          title: "Balance",
           price: "24,500",
           discount: "-25%",
         },
@@ -176,23 +178,25 @@ const FilterProductItem = () => {
               key={index}
               className={`rounded-md px-1 md:px-2 ${
                 isActive === category
-                  ? "bg-[#102030] text-white rounded-md "
+                  ? "bg-[#102030] text-white rounded-md"
                   : ""
               } `}
             >
-              <button onClick={() => myProducts(category)}>{category}</button>
+              <button onClick={() => myProducts(category)}>
+                {t(category)}
+              </button>
             </div>
           ))}
         </div>
         <div className="flex gap-3 mt-2 md:mt-0">
-          <SelectDateBtn />
-
-          {/* <UploadArtworkBtn path={"/artist-panel/artwork/add"} /> */}
+          <button className="py-1 px-3 rounded-lg border-2 border-gray-50 bg-white   flex items-center gap-2 transition-all duration-200 hover:scale-95">
+            <IoOptionsOutline /> {t("Filters")}
+          </button>
           <NavLink
             className="py-1 px-2 rounded-md border-gray-100  bg-[#FF536B] text-white flex gap-1 items-center h-fit"
             to={"/artist-panel/artwork/add"}
           >
-            <GoPlus /> Upload Artwork
+            <GoPlus /> {t("Upload Artwork")}
           </NavLink>
         </div>
       </div>
@@ -210,7 +214,7 @@ const FilterProductItem = () => {
                 className="w-[3rem] h-[3rem] object-cover"
               />
               <h5 className="text-[16px] text-[#35637C] pt-3 pb-1">
-                {value.title}
+                {t(value.title)}
               </h5>
               <div className="flex gap-2 items-center">
                 <p className="font-bold text-[24px]">${value.price}</p>

@@ -77,20 +77,20 @@ const Login: React.FC = () => {
               <input
                 type="email"
                 {...register("email", {
-                  required: "Email is required",
+                  required: t("Email is required"),
                   pattern: {
                     value: /^[^@ ]+@[^@ ]+\.[^@ .]+$/,
-                    message: "Email is not valid",
+                    message: t("Email is not valid"),
                   },
                 })}
-                placeholder={t("Email or phone number")}
+                placeholder={t("Enter your Email")}
                 className={`border ${
                   errors.email ? "border-red-500" : "border-[#D3D3D3]"
                 } p-2 w-full rounded-md focus:outline-none`}
               />
               {errors.email && (
                 <div className="text-red-500 text-sm text-left">
-                  {errors.email.message}
+                  {t(`${errors.email.message}`)}
                 </div>
               )}
             </div>
@@ -98,8 +98,8 @@ const Login: React.FC = () => {
             <div className="flex">
               <input
                 type={newPasswordType}
-                {...register("password", { required: "Password is required" })}
-                placeholder={t("Password")}
+                {...register("password", { required: t("Password is required") })}
+                placeholder={t("Enter Password")}
                 className={`border ${
                   errors.password ? "border-red-500" : "border-[#D3D3D3]"
                 } p-2 w-full rounded-md focus:outline-none`}
@@ -113,7 +113,7 @@ const Login: React.FC = () => {
             </div>
             {errors.password && (
               <div className="text-red-500 text-sm text-left">
-                {errors.password.message}
+                {t(`${errors.password.message}`)}
               </div>
             )}
 
@@ -130,7 +130,7 @@ const Login: React.FC = () => {
                 type="submit"
                 disabled={isPending}
               >
-                <p>{isPending ? t("Signing in...") : t("Sign in")}</p>
+                <p>{isPending ? t("Signing In...") : t("Sign In")}</p>
                 <img src={arrow} alt="arrow" className="ml-2 mt-1" />
               </Button>
             </div>
@@ -152,7 +152,7 @@ const Login: React.FC = () => {
               to="/forget-password"
               className="text-sm text-red-500 hover:underline mt-4 sm:mt-0"
             >
-              {t("Forget Password ?")}
+              {t("Forgot Password")} ?
             </Link>
           </div>
 
@@ -166,7 +166,7 @@ const Login: React.FC = () => {
                 to="/become_artist"
                 className="hover:underline decoration-red-700  cursor-pointer"
               >
-                {t("Become an artist")}{" "}
+                {t("Become an Artist")}{" "}
               </Link>
             </P>
           </div>
@@ -174,7 +174,7 @@ const Login: React.FC = () => {
             to="/signup"
             className="font-bold uppercase ml-1 md:text-base text-sm"
           >
-            {t("Sign up")}
+            {t("Sign Up")}
           </Link>
         </div>
         <div className="my-auto">

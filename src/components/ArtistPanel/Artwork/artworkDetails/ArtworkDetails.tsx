@@ -1,13 +1,11 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ArtworkHeader from "./ArtworkHeader";
-import Header from "../ui/Header";
-
-import ProductTabs from "./ProductTabs";
-import ProductInfo from "./ProductInfo";
-import ProductImage from "./ProductImage";
 import { useSearchParams } from "react-router-dom";
 import { useGetArtWorkList } from "../../../ArtistDetail/http/getArtWorkList";
 import Loader from "../../../ui/Loader";
+import ProductImage from "./ProductImage";
+import ProductInfo from "./ProductInfo";
+import ProductTabs from "./ProductTabs";
 
 const ArtworkDetails = () => {
   const [artWork, setArtWork] = useState(null);
@@ -24,12 +22,11 @@ const ArtworkDetails = () => {
     }
   }, []);
 
-  if (!data) {
-    return <Loader />;
-  }
+  if (!data) return <Loader />;
+  
   return (
     <div className="container p-4 mx-auto">
-      <ArtworkHeader artwork={artWork} />
+      <ArtworkHeader />
 
       <div className="flex flex-col lg:flex-row mt-10">
         <div className="lg:w-1/2">

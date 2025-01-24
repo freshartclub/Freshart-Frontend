@@ -1,19 +1,20 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import usePostSeriesMutation from "./http/usePostSeries";
+import { useTranslation } from "react-i18next";
 
-export const SeriesPop = ({ isOpen, onClose, onAction }) => {
-  if (!isOpen) return null;
+export const SeriesPop = ({ isOpen, onClose }) => {
+  const { t } = useTranslation();
   const [series, setSeries] = useState("");
   const { mutateAsync, isPending } = usePostSeriesMutation();
 
-  const handleSeriesValue = (e) => {
+  const handleSeriesValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setSeries(value);
   };
 
   const handleSaveSeries = () => {
     if (!series.trim()) {
-      alert("Series name cannot be empty.");
+      alert(t("Series name cannot be empty."));
       return;
     }
 
@@ -30,16 +31,13 @@ export const SeriesPop = ({ isOpen, onClose, onAction }) => {
     }
   };
 
-  const handlePreview = () => {
-    onAction("preview");
-    onClose();
-  };
+  if (!isOpen) return null;
 
   return (
     <div className="fixed z-50 inset-0 flex justify-center items-center bg-gray-600 bg-opacity-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-[90%] sm:w-1/3 max-w-[500px] relative">
         <h2 className="text-sm sm:text-md font-bold mb-4 text-center sm:text-left">
-          Enter New Series Name
+          {t("Enter New Series Name")}
         </h2>
         <input
           type="text"
@@ -52,15 +50,14 @@ export const SeriesPop = ({ isOpen, onClose, onAction }) => {
           <span
             className="px-4 py-2 cursor-pointer bg-green-500 text-white rounded-md text-center sm:text-left"
             onClick={handleSaveSeries}
-            // disabled={isPending}
           >
-            {isPending ? "Saving..." : "Save"}
+            {isPending ? t("Saving...") : t("Save")}
           </span>
           <span
             className="px-4 py-2 bg-red-500 text-white rounded-md cursor-pointer text-center sm:text-left"
-            onClick={handlePreview}
+            onClick={() => onClose()}
           >
-            Cancel
+            {t("Cancel")}
           </span>
         </div>
         <span

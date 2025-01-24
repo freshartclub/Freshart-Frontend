@@ -6,7 +6,9 @@ import { FiMail } from "react-icons/fi";
 import { RxMobile } from "react-icons/rx";
 import { PiFilesFill } from "react-icons/pi";
 import { LuSettings } from "react-icons/lu";
+import { useTranslation } from "react-i18next";
 const OrderInformation = ({ order }: any) => {
+  const { t } = useTranslation();
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-x-4 mt-5">
       <div className="bg-white border shadow-md rounded-md p-5">
@@ -34,7 +36,7 @@ const OrderInformation = ({ order }: any) => {
             <div className="w-[2em] h-[2em] rounded-full bg-[#F9F7F6] text-black border-4 border-[#F0F1F3] flex items-center justify-center">
               <MdBookmarkAdded />
             </div>
-            <p className="text-[14px]">Added</p>
+            <p className="text-[14px]">{t("Added")}</p>
           </div>
           <div className="text-black text-[14px] font-semibold">
             <h2>{order.date}</h2>
@@ -46,7 +48,7 @@ const OrderInformation = ({ order }: any) => {
             <div className="w-[2em] h-[2em] rounded-full bg-[#F9F7F6] text-black border-4 border-[#F0F1F3] flex items-center justify-center">
               <CgBox />
             </div>
-            <p className="text-[14px]">Payment Method</p>
+            <p className="text-[14px]">{t("Payment Method")}</p>
           </div>
           <div className="text-black text-[14px] font-semibold">
             <h2>{order.paymenttype}</h2>
@@ -58,7 +60,7 @@ const OrderInformation = ({ order }: any) => {
             <div className="w-[2em] h-[2em] rounded-full bg-[#F9F7F6] text-black border-4 border-[#F0F1F3] flex items-center justify-center">
               <GrDeliver />
             </div>
-            <p className="text-[14px]">Shipping Method</p>
+            <p className="text-[14px]">{t("Shipping Method")}</p>
           </div>
           <div className="text-black text-[14px] font-semibold">
             <h2>{order.shippingmethod}</h2>
@@ -66,13 +68,15 @@ const OrderInformation = ({ order }: any) => {
         </div>
       </div>
       <div className="bg-white border rounded-md p-5 shadow-md">
-        <h2 className="text-[18px] text-black font-semibold">Customer</h2>
+        <h2 className="text-[18px] text-black font-semibold">
+          {t("Customer")}
+        </h2>
         <div className="flex justify-between items-center mt-3">
           <div className="flex gap-2 items-center">
             <div className="w-[2em] h-[2em] rounded-full bg-[#F9F7F6] text-black border-4 border-[#F0F1F3] flex items-center justify-center">
               <BsPerson />
             </div>
-            <p className="text-[14px]">Customer</p>
+            <p className="text-[14px]">{t("Customer")}</p>
           </div>
           <div className="text-black text-[14px] font-semibold">
             <h2>{order.customername}</h2>
@@ -84,7 +88,7 @@ const OrderInformation = ({ order }: any) => {
             <div className="w-[2em] h-[2em] rounded-full bg-[#F9F7F6] text-black border-4 border-[#F0F1F3] flex items-center justify-center">
               <FiMail />
             </div>
-            <p className="text-[14px]">Email</p>
+            <p className="text-[14px]">{t("Email")}</p>
           </div>
           <div className="text-black text-[14px] font-semibold">
             <h2>{order.customeremail}</h2>
@@ -96,7 +100,7 @@ const OrderInformation = ({ order }: any) => {
             <div className="w-[2em] h-[2em] rounded-full bg-[#F9F7F6] text-black border-4 border-[#F0F1F3] flex items-center justify-center">
               <RxMobile />
             </div>
-            <p className="text-[14px]">Phone</p>
+            <p className="text-[14px]">{t("Phone")}</p>
           </div>
           <div className="text-black text-[14px] font-semibold">
             <h2>{order.mobileno}</h2>
@@ -104,13 +108,15 @@ const OrderInformation = ({ order }: any) => {
         </div>
       </div>
       <div className="bg-white border rounded-md p-5 shadow-md">
-        <h2 className="text-[18px] text-black font-semibold">Document</h2>
+        <h2 className="text-[18px] text-black font-semibold">
+          {t("Document")}
+        </h2>
         <div className="flex justify-between items-center mt-3">
           <div className="flex gap-2 items-center">
             <div className="w-[2em] h-[2em] rounded-full bg-[#F9F7F6] text-black border-4 border-[#F0F1F3] flex items-center justify-center">
               <PiFilesFill />
             </div>
-            <p className="text-[14px]">Invoice</p>
+            <p className="text-[14px]">{t("Invoice")}</p>
           </div>
           <div className="text-black text-[14px] font-semibold">
             <h2>{order.invoce}</h2>
@@ -122,7 +128,7 @@ const OrderInformation = ({ order }: any) => {
             <div className="w-[2em] h-[2em] rounded-full bg-[#F9F7F6] text-black border-4 border-[#F0F1F3] flex items-center justify-center">
               <GrDeliver />
             </div>
-            <p className="text-[14px]">Shipping</p>
+            <p className="text-[14px]">{t("Shipping")}</p>
           </div>
           <div className="text-black text-[14px] font-semibold">
             <h2>{order.shippings}</h2>
@@ -134,7 +140,7 @@ const OrderInformation = ({ order }: any) => {
             <div className="w-[2em] h-[2em] rounded-full bg-[#F9F7F6] text-black border-4 border-[#F0F1F3] flex items-center justify-center">
               <LuSettings />
             </div>
-            <p className="text-[14px]">Rewards</p>
+            <p className="text-[14px]">{t("Rewards")}</p>
           </div>
           <div className="text-black text-[14px] font-semibold">
             <h2>{order.rewards}</h2>

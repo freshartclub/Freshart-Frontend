@@ -1,23 +1,24 @@
-import React, { useState, useContext } from "react";
-import { GoPlus } from "react-icons/go";
-import { CiSaveDown2 } from "react-icons/ci";
-import Allorders from "./Orders/Allorders";
-import { orderDelail } from "./Data/Orders";
-import SelectDateBtn from "./ArtistDashboard/SelectDateBtn";
-import FilterBtn from "./Artwork/FilterBtn";
-import { IoIosArrowBack } from "react-icons/io";
-import { NavLink } from "react-router-dom";
-import { tabsContext } from "./Context/Context";
-import { useGetArtistOrder } from "./Orders/http/useGetArtistOrder";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
+import { useContext, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { CiSaveDown2 } from "react-icons/ci";
+import { GoPlus } from "react-icons/go";
+import { IoIosArrowBack } from "react-icons/io";
+import { IoOptionsOutline } from "react-icons/io5";
+import { NavLink } from "react-router-dom";
 import Loader from "../ui/Loader";
+import { tabsContext } from "./Context/Context";
+import Allorders from "./Orders/Allorders";
+import { useGetArtistOrder } from "./Orders/http/useGetArtistOrder";
 dayjs.extend(duration);
 
 const Orders = () => {
   const categorys = ["All Time", "12 Months", "30 Days", "7 Days", "24 Hour"];
   const [activeTab, setActiveTab] = useState("All Time");
   const { data, isLoading } = useGetArtistOrder();
+
+  const { t } = useTranslation();
 
   const filterData =
     activeTab === "All Time"
@@ -42,18 +43,15 @@ const Orders = () => {
     setActiveTab(value);
   };
 
-  console.log(filterData);
   const Active = useContext(tabsContext);
 
-  if (isLoading) {
-    return <Loader />;
-  }
+  if (isLoading) return <Loader />;
 
   return (
     <div className="py-7">
       <div>
         <h1 className="font-bold text-[20px] mdtext-[24px] text-black">
-          Order
+          {t("Order")}
         </h1>
         <div className="flex justify-between mt-3">
           <div className="flex gap-2 items-center ">
@@ -61,19 +59,21 @@ const Orders = () => {
               className={`text-[18px] text-black`}
               onClick={() => Active("dashboard")}
             >
-              <NavLink to={"/dashboard"}>Dashboard</NavLink>
+              <NavLink to={"/dashboard"}>{t("Dashboard")}</NavLink>
             </p>
             <span>
               <IoIosArrowBack />
             </span>
-            <span className="text-[18px] hover:cursor-pointer">Order List</span>
+            <span className="text-[18px] hover:cursor-pointer">
+              {t("Order List")}
+            </span>
           </div>
           <div className="flex gap-2">
             <button className="py-1 px-2 rounded-md flex gap-2 items-center bg-[#DEDEFA] text-black hover:cursor-pointer">
-              <CiSaveDown2 /> Export
+              <CiSaveDown2 /> {t("Export")}
             </button>
             <button className="py-1 px-2 rounded-md border-gray-100 bg-black text-white flex gap-1 items-center h-fit hover:cursor-pointer">
-              <GoPlus /> Add order
+              <GoPlus /> {t("Add order")}
             </button>
           </div>
         </div>
@@ -89,14 +89,14 @@ const Orders = () => {
                 }`}
                 onClick={() => handleTabs(category)}
               >
-                <p>{category}</p>
+                <p>{t(category)}</p>
               </div>
             ))}
           </div>
-          <div className="flex gap-3">
-            <SelectDateBtn />
-            <FilterBtn />
-          </div>
+
+          <button className="py-1 px-3 rounded-lg border-2 border-gray-50 bg-white   flex items-center gap-2 transition-all duration-200 hover:scale-95">
+            <IoOptionsOutline /> {t("Filters")}
+          </button>
         </div>
         <Allorders orderDetail={filterData} />
       </div>

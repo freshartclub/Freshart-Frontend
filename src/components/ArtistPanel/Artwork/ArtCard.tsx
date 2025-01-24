@@ -1,9 +1,11 @@
+import { useTranslation } from "react-i18next";
 import { imageUrl } from "../../utils/baseUrls";
 import edit from "../assets/Container (1).png";
 import deleteimg from "../assets/Container (2).png";
 import { NavLink } from "react-router-dom";
 
-const ArtCard = ({ record, data }: any) => {
+const ArtCard = ({ record }: any) => {
+  const { t } = useTranslation();
   return (
     <>
       <div
@@ -56,7 +58,9 @@ const ArtCard = ({ record, data }: any) => {
             }`}
           ></div>
 
-          <p className="text-[12px]">{record?.discipline?.artworkDiscipline}</p>
+          <p className="text-[12px]">
+            {t(record?.discipline?.artworkDiscipline)}
+          </p>
           <p className="text-black text-[16px] font-bold">
             {record?.artworkName}
           </p>

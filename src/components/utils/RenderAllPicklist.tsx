@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { useGetPickListMutation } from "./http/useGetPickListMutation";
+import { useTranslation } from "react-i18next";
 
 export const RenderAllPicklists = (fields: string[]) => {
   const [picklist, setPicklist] = useState([]);
   const { data } = useGetPickListMutation();
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (!fields || fields.length === 0) {
@@ -21,7 +23,7 @@ export const RenderAllPicklists = (fields: string[]) => {
               fieldName: field,
               picklist: matchedField?.picklist
                 ? matchedField.picklist.map((picklistItem: any) => ({
-                    label: picklistItem.name,
+                    label: t(picklistItem.name),
                     value: picklistItem.name,
                   }))
                 : [],
@@ -67,6 +69,7 @@ export const RenderAllSinglePicklist = (fields: string[]) => {
 export const RenderAllPicklist = (field: string) => {
   const [picklst, setPicklist] = useState([]);
   const { data } = useGetPickListMutation();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const list =
@@ -77,7 +80,7 @@ export const RenderAllPicklist = (field: string) => {
     if (list?.length > 0 && list[0]?.picklist?.length > 0) {
       setPicklist(
         list[0]?.picklist.map((item: any) => ({
-          label: item.name,
+          label: t(item.name),
           value: item.name,
         }))
       );

@@ -1,29 +1,22 @@
 import { useEffect, useState } from "react";
-import Header from "../ui/Header";
-import { useGetArtWorkList } from "./http/getArtWorkList";
-import Loader from "../ui/Loader";
+import { useTranslation } from "react-i18next";
 import { NavLink } from "react-router-dom";
-import edit from "../ArtistDetail/assets/edit.png";
-import deleteimg from "../ArtistDetail/assets/Container (2).png";
-import { ArtworkViewPopup } from "./Pop";
-import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import { Swiper, SwiperSlide } from "swiper/react";
 import { useAppSelector } from "../../store/typedReduxHooks";
+import deleteimg from "../ArtistDetail/assets/Container (2).png";
+import edit from "../ArtistDetail/assets/edit.png";
+import Header from "../ui/Header";
+import Loader from "../ui/Loader";
 import { imageUrl } from "../utils/baseUrls";
-import {
-  IoIosArrowDropleftCircle,
-  IoIosArrowDroprightCircle,
-} from "react-icons/io";
-import { useGetArtistDetails } from "./http/useGetArtistDetails";
+import { useGetArtWorkList } from "./http/getArtWorkList";
+import { ArtworkViewPopup } from "./Pop";
 
 const Artwork = () => {
-  const [loading, setLoading] = useState(true);
   const [selectedArtwork, setSelectedArtwork] = useState("series");
   const isArtProvider = useAppSelector((state) => state.user.isArtProvider);
-  const [swiperInstance, setSwiperInstance] = useState(null);
-  // const { data: artistData, isLoading: artistLoading } = useGetArtistDetails();
 
   const { data, isLoading, refetch, isRefetching } =
     useGetArtWorkList(selectedArtwork);
@@ -47,14 +40,6 @@ const Artwork = () => {
     refetch();
   }, [selectedArtwork]);
 
-  useEffect(() => {
-    if (isLoading) {
-      setLoading(true);
-    } else {
-      setLoading(false);
-    }
-  }, [isLoading, data]);
-
   const handleArtworkSelect = (artwork) => {
     const currentValue = artwork.target.innerHTML;
     setSelectedArtwork(currentValue);
@@ -70,21 +55,9 @@ const Artwork = () => {
     setStatus(status);
   };
 
-  const handleArrowClick = () => {
-    if (swiperInstance) {
-      swiperInstance.slideNext();
-    }
-  };
+  const { t } = useTranslation();
 
-  const handleArrowRightClick = () => {
-    if (swiperInstance) {
-      swiperInstance.slidePrev();
-    }
-  };
-
-  if (isLoading) {
-    return <Loader />;
-  }
+  if (isLoading) return <Loader />;
 
   return (
     <div className="px-3 lg:px-0  ">
@@ -92,7 +65,7 @@ const Artwork = () => {
         variant={{ size: "xl", theme: "dark", weight: "semiBold" }}
         className="mb-4 mt-4"
       >
-        Artworks
+        {t("Artworks")}
       </Header>
 
       <div className="flex flex-col sm:flex-row justify-start mb-4 gap-3 pb-3 ">
@@ -100,14 +73,14 @@ const Artwork = () => {
           onClick={handleArtworkSelect}
           className="px-2 py-2 bg-white font-medium rounded cursor-pointer text-md"
         >
-          Series
+          {t("Series")}
         </span>
 
         <span
           onClick={handleArtworkSelect}
           className="px-2 py-2 bg-white font-medium rounded cursor-pointer text-md"
         >
-          Discipline
+          {t("Discipline")}
         </span>
 
         {isArtProvider === "Yes" ? (
@@ -115,47 +88,44 @@ const Artwork = () => {
             onClick={() => handleArtistName("artprovider")}
             className="px-2 py-2 bg-white font-medium rounded cursor-pointer text-md"
           >
-            Artist Name
+            {t("Artist Name")}
           </span>
         ) : null}
 
         <div className="flex gap-2 flex-wrap justify-end pt-2">
           <div className="flex gap-2 items-center">
             <div className="w-[.8em] h-[.8em] rounded-full bg-[#00DE00] flex items-center"></div>
-            <p className="text-[14px] text-black">Published</p>
+            <p className="text-[14px] text-black">{t("Published")}</p>
           </div>
           <div className="flex gap-2 items-center">
             <div className="w-[.8em] h-[.8em] rounded-full bg-[#f0dd32] flex items-center"></div>
-            <p className="text-[14px] text-black">Draft</p>
+            <p className="text-[14px] text-black">{t("Draft")}</p>
           </div>
           <div className="flex gap-2 items-center">
             <div className="w-[.8em] h-[.8em] rounded-full bg-[#D8F002] flex items-center"></div>
-            <p className="text-[14px] text-black">Pending Approval</p>
+            <p className="text-[14px] text-black">P{t("ending Approval")}</p>
           </div>
           <div className="flex gap-2 items-center">
             <div className="w-[.8em] h-[.8em] rounded-full bg-[#ac329e] flex items-center"></div>
-            <p className="text-[14px] text-black">Modified</p>
+            <p className="text-[14px] text-black">{t("Modified")}</p>
           </div>
           <div className="flex gap-2 items-center">
             <div className="w-[.8em] h-[.8em] rounded-full bg-blue-600 flex items-center"></div>
-            <p className="text-[14px] text-black">Subscription</p>
+            <p className="text-[14px] text-black">{t("Subscription")}</p>
           </div>
-          {/* <div className="flex gap-2 items-center">
-          <div className="w-[.8em] h-[.8em] rounded-full bg-[#FFA600] flex items-center"></div>
-          <p className="text-[14px] text-black">In subscription</p>
-        </div> */}
+
           <div className="flex gap-2 items-center">
             <div className="w-[.8em] h-[.8em] rounded-full   bg-[#EE1D52]   flex items-center"></div>
-            <p className="text-[14px] text-black">Not Available</p>
+            <p className="text-[14px] text-black">{t("Not Available")}</p>
           </div>
           <div className="flex gap-2 items-center">
             <div className="w-[.8em] h-[.8em] rounded-full bg-[#696868] flex items-center"></div>
-            <p className="text-[14px] text-black">Purchased</p>
+            <p className="text-[14px] text-black">{t("Purchased")}</p>
           </div>
 
           <div className="flex gap-2 items-center">
             <div className="w-[.8em] h-[.8em] rounded-full bg-[#a74343] flex items-center"></div>
-            <p className="text-[14px] text-black">Coming Soon</p>
+            <p className="text-[14px] text-black">{t("Coming Soon")}</p>
           </div>
         </div>
       </div>
@@ -167,26 +137,8 @@ const Artwork = () => {
             data?.data.map((item, i) => (
               <div key={i} className="mb-5 relative">
                 <h1 className="font-bold mb-5 mt-5 text-[20px]  capitalize text-[#333333] xl:w-[80%] lg:w-[70%] w-[80%] line-clamp-2">
-                  {item?.groupName || "No Name"}
+                  {item?.groupName || t("No Name")}
                 </h1>
-
-                {/* {item?.artworks < 4 ? (
-                  <>
-                    <IoIosArrowDropleftCircle
-                      onClick={handleArrowClick}
-                      size="3.5em"
-                      color="white"
-                      className="absolute   top-1/2 left-4  transform -translate-x-1/2 -translate-y-1/2 z-[999] cursor-pointer"
-                    />
-
-                    <IoIosArrowDroprightCircle
-                      onClick={handleArrowRightClick}
-                      size="3.5em"
-                      color="white"
-                      className="absolute   top-1/2 left-[98%]  transform -translate-x-1/2 -translate-y-1/2 z-[999] cursor-pointer"
-                    />
-                  </>
-                ) : null} */}
 
                 <Swiper
                   spaceBetween={20}
@@ -194,7 +146,6 @@ const Artwork = () => {
                   autoplay={false}
                   loop
                   pagination={{ clickable: true }}
-                  onSwiper={(swiper) => setSwiperInstance(swiper)}
                 >
                   {item?.artworks?.map((art, idx) => (
                     <div
@@ -240,13 +191,13 @@ const Artwork = () => {
                           alt=""
                         />
                         <p className="text-[14px] text-center text-zinc-800]">
-                          {art?.discipline?.artworkDiscipline}
+                          {t(art?.discipline?.artworkDiscipline)}
                         </p>
                         <h1 className="font-semibold text-center text-[20px] text-black ">
                           {art?.artworkName}
                         </h1>
                         <p className="text-[12px] text-center text-zinc-800">
-                          {art?.artworkTechnic}
+                          {t(art?.artworkTechnic)}
                         </p>
 
                         {profile === "artist" && (
@@ -277,11 +228,11 @@ const Artwork = () => {
           ) : (
             <div className="flex flex-col items-center justify-center h-[300px] border border-zinc-300">
               <p className="text-lg text-center font-medium mb-4">
-                You don't have any artwork yet.
+                {t("You don't have any artwork yet.")}
               </p>
               <NavLink to="/artist-panel/artwork/add">
                 <button className="px-6 py-2 bg-zinc-800 text-white rounded-lg">
-                  Add Artwork
+                  {t("Add Artwork")}
                 </button>
               </NavLink>
             </div>

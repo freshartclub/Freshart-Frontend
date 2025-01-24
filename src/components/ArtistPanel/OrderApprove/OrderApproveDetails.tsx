@@ -1,24 +1,17 @@
 import React, { useState } from "react";
-
-import edit from "../assets/icon.png";
-
-import add from "../assets/add.png";
-
-import select_file from "../assets/select_file.png";
-
-import Loader from "../../ui/Loader";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { formateCurrency } from "../../utils/FormatCurrency";
 import { useForm } from "react-hook-form";
-import usePostEvidenceMutation from "./https/usePostEvidenceMutation";
-
-import usePostCancelItem from "./https/usePostCancelItem";
-
-import { useGetOrderDetails } from "./https/useGetOrderDetails";
-import { MdCancel } from "react-icons/md";
+import { useTranslation } from "react-i18next";
 import { BiSolidImageAdd } from "react-icons/bi";
 import { MdDelete } from "react-icons/md";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import Loader from "../../ui/Loader";
 import { imageUrl } from "../../utils/baseUrls";
+import { formateCurrency } from "../../utils/FormatCurrency";
+import edit from "../assets/icon.png";
+import select_file from "../assets/select_file.png";
+import { useGetOrderDetails } from "./https/useGetOrderDetails";
+import usePostCancelItem from "./https/usePostCancelItem";
+import usePostEvidenceMutation from "./https/usePostEvidenceMutation";
 import ProductPopup from "./ProductPopup";
 
 const OrderApproveDetails = () => {
@@ -29,43 +22,17 @@ const OrderApproveDetails = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [selectedProductPop, setSelectedProductPop] = useState(null);
 
+  const { t } = useTranslation();
+
   const [id, setId] = useState("");
   const [orderType, setOrderType] = useState("");
   const [artworkId, setArtworkId] = useState("");
   const navigate = useNavigate();
 
   const [searchParams] = useSearchParams();
-  const apiId = searchParams.get("id");
-  const apiOrderType = searchParams.get("orderType");
+  const apiId = searchParams.get("id") || "";
 
-  const { data, isRefetching } = useGetOrderDetails(apiId, apiOrderType);
-
-  const discountAmounts = data?.data?.items?.map((item) => {
-    const basePrice = parseFloat(
-      item?.artWork?.pricing?.basePrice?.replace("$", "")
-    );
-
-    const discountPercentage = item?.artWork?.pricing?.dpersentage || 0;
-    const discountAmount = (basePrice * discountPercentage) / 100;
-
-    const quantity = item?.quantity || 1;
-    const totalDiscountAmount = discountAmount * quantity;
-
-    return totalDiscountAmount;
-  });
-
-  const subTotalAmount = data?.data?.items?.map((item) => {
-    const basePrice = parseFloat(
-      item?.artWork?.pricing?.basePrice?.replace("$", "")
-    );
-
-    const quantity = item?.quantity || 1;
-    const totalAmount = basePrice * quantity;
-
-    return totalAmount;
-  });
-
-  const totalAmount = subTotalAmount - discountAmounts;
+  const { data, isRefetching } = useGetOrderDetails(apiId);
 
   const {
     register,
@@ -73,7 +40,6 @@ const OrderApproveDetails = () => {
     formState: { errors },
     setValue,
     reset,
-    getValues,
   } = useForm();
 
   const { mutateAsync, isPending } = usePostEvidenceMutation();
@@ -105,7 +71,7 @@ const OrderApproveDetails = () => {
     }
   };
 
-  const handleFileSelect = (event) => {
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
 
     if (files && files.length > 0) {
@@ -144,23 +110,21 @@ const OrderApproveDetails = () => {
     });
   };
 
-  const reviewArtWork = (id) => {
-    // Call your review artwork API here
+  const reviewArtWork = (id: string) => {
     navigate(
       `/artist-panel/artwork/preview?id=${id}&preview=true&type=orderReview=true`
     );
   };
 
-  if (isRefetching) {
-    return <Loader />;
-  }
+  if (isRefetching) return <Loader />;
+
   return (
     <>
       <div className="flex flex-col  justify-between w-full gap-5">
         <div className="left flex flex-col w-full ">
           <div className="bg-white p-4 md:p-6 shadow-md border rounded-lg mt-4">
             <h2 className="text-base md:text-lg font-bold mb-4">
-              Order Details
+              {t("Order Details")}
             </h2>
 
             <div className="overflow-x-auto w-full">
@@ -171,43 +135,43 @@ const OrderApproveDetails = () => {
                       scope="col"
                       className="px-3 md:px-6 py-2 md:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
-                      Artwork Details
+                      {t("Artwork Details")}
                     </th>
                     <th
                       scope="col"
                       className="px-3 md:px-6 py-2 md:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
-                      Type
+                      {t("Type")}
                     </th>
                     <th
                       scope="col"
                       className="px-3 md:px-6 py-2 md:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
-                      Price
+                      {t("Price")}
                     </th>
                     <th
                       scope="col"
                       className="px-3 md:px-6 py-2 md:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
-                      Quantity
+                      {t("Quantity")}
                     </th>
                     <th
                       scope="col"
                       className="px-3 md:px-6 py-2 md:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
-                      Discount
+                      {t("Discount")}
                     </th>
                     <th
                       scope="col"
                       className="px-3 md:px-6 py-2 md:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
-                      Evidence
+                      {t("Evidence")}
                     </th>
                     <th
                       scope="col"
                       className="px-3 md:px-6 py-2 md:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
-                      Actions
+                      {t("Actions")}
                     </th>
                   </tr>
                 </thead>
@@ -241,7 +205,7 @@ const OrderApproveDetails = () => {
                         </td>
                         <td className="px-3 md:px-6 py-2 md:py-4">
                           <p className="text-sm md:text-base text-gray-600 capitalize font-semibold">
-                            {product?.type}
+                            {product?.artWork?.commercialization?.activeTab}
                           </p>
                         </td>
                         <td className="px-3 md:px-6 py-2 md:py-4">
@@ -324,7 +288,7 @@ const OrderApproveDetails = () => {
                                 setSelectedProductPop(product);
                               }}
                             >
-                              View All
+                              {t("View All")}
                             </button>
                           ) : null}
                         </td>
@@ -344,7 +308,7 @@ const OrderApproveDetails = () => {
                               </span>
                             ) : (
                               <span className="cursor-pointer w-full sm:w-[5.5rem] bg-red-300 text-black pointer-events-none font-medium text-xs sm:text-sm p-1.5 sm:p-2 rounded-md inline-block text-center">
-                                Cancelled
+                                {t("Cancelled")}
                               </span>
                             )}
                           </div>
@@ -358,31 +322,31 @@ const OrderApproveDetails = () => {
             {/* Summary Section */}
             <div className="mt-6 p-4 rounded-lg w-full lg:w-2/5 lg:ml-auto">
               <div className="flex justify-between text-sm md:text-base text-gray-400 mb-1 font-bold">
-                <span>Subtotal :</span>
+                <span>{t("Subtotal")} :</span>
                 <span className="font-semibold text-black">
                   {formateCurrency(data?.data?.subTotal, "$")}
                 </span>
               </div>
               <div className="flex justify-between text-sm md:text-base text-gray-400 mb-1 font-semibold">
-                <span>Shipping :</span>
+                <span>{t("Shipping")} :</span>
                 <span className="text-red-400">
                   {formateCurrency(data?.data?.shipping, "$")}
                 </span>
               </div>
               <div className="flex justify-between text-sm md:text-base text-gray-400 mb-1 font-semibold">
-                <span>Discount :</span>
+                <span>{t("Discount")} :</span>
                 <span className="text-red-400">
                   {formateCurrency(data?.data?.discount, "$")}
                 </span>
               </div>
               <div className="flex justify-between text-sm md:text-base text-gray-400 mb-1">
-                <span>Taxes:</span>
+                <span>{t("Taxes")}:</span>
                 <span className="text-black font-semibold">
                   {formateCurrency(data?.data?.taxAmount, "$")}
                 </span>
               </div>
               <div className="flex justify-between text-gray-800 font-semibold text-sm md:text-md mt-4">
-                <span>Total</span>
+                <span>{"Total"}</span>
                 {formateCurrency(data?.data?.total, "$")}
               </div>
             </div>
@@ -391,17 +355,18 @@ const OrderApproveDetails = () => {
 
         <div className="bg-[#fff] right border border-gray-100 shadow-lg mt-4 h-auto rounded-lg w-full lg:w-2/5 p-4 md:p-6">
           <div className="flex justify-between items-center">
-            <h1 className="font-bold text-base md:text-lg">Customer Info</h1>
+            <h1 className="font-bold text-base md:text-lg">
+              {t("Customer Info")}
+            </h1>
           </div>
 
-          <div className="flex flex-col sm:flex-row mt-6 md:mt-8 gap-4 sm:gap-10 border-b-2 border-dashed">
-            <div className="">
-              <img
-                className="rounded-full w-16 h-16 md:w-20 md:h-20 object-cover"
-                src={`${imageUrl}/users/${data?.data?.user?.mainImage}`}
-                alt=""
-              />
-            </div>
+          <div className="flex flex-row items-center gap-4 border-b-2 border-dashed py-4">
+            <img
+              className="rounded-full w-14 h-14 object-cover"
+              src={`${imageUrl}/users/${data?.data?.user?.mainImage}`}
+              alt="Image"
+            />
+
             <div>
               <p className="font-bold text-sm md:text-base text-gray-600">
                 {`${data?.data?.user?.artistName} 
@@ -410,13 +375,6 @@ const OrderApproveDetails = () => {
               <p className="text-gray-400 text-xs md:text-sm">
                 {data?.data?.user?.email}
               </p>
-
-              <div className="flex items-center mt-3 md:mt-4 gap-2 mb-6 md:mb-8">
-                <img src={add} alt="" className="w-4 h-4 md:w-5 md:h-5" />
-                <button className="text-[#FF5630] font-bold text-xs md:text-sm">
-                  Add to blacklist
-                </button>
-              </div>
             </div>
           </div>
 
@@ -431,23 +389,23 @@ const OrderApproveDetails = () => {
 
           <div className="w-full mt-4 md:mt-6">
             <div className="flex justify-between text-sm md:text-base text-gray-400 mb-1">
-              <span>Ship by</span>
+              <span>{t("Ship by")}</span>
               <span className="text-black w-1/2">{delivery.shipping}</span>
             </div>
 
             <div className="flex justify-between text-sm md:text-base text-gray-400 mb-1">
-              <span>Speedy</span>
+              <span>{t("Speedy")}</span>
               <span className="text-black w-1/2">{delivery.speedy}</span>
             </div>
 
             <div className="flex justify-between text-sm md:text-base text-gray-400 mb-1">
-              <span>Tracking No.</span>
+              <span>{t("Tracking No.")}</span>
               <span className="text-black w-1/2">{delivery.tracking_no}</span>
             </div>
           </div>
 
           <button className="w-full md:w-auto px-4 py-2 border border-zinc-800 rounded-md bg-black text-white text-sm md:text-base mt-4 md:mt-5">
-            Track Order
+            {t("Track Order")}
           </button>
         </div>
       </div>
@@ -457,11 +415,13 @@ const OrderApproveDetails = () => {
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[999999]">
             <div className="bg-white p-6 rounded-lg shadow-lg w-2/3 ">
               <h2 className="text-lg font-bold mb-4 pb-4 border-b-2">
-                Reason For Cancel
+                {t("Reason For Cancel")}
               </h2>
 
               <form onSubmit={handleSubmit(handleCancelItem)}>
-                <h2 className="text- font-semibold mb-2">Product Title</h2>
+                <h2 className="text- font-semibold mb-2">
+                  {t("Artwork Title")}
+                </h2>
 
                 <input
                   type="text"
@@ -478,27 +438,33 @@ const OrderApproveDetails = () => {
                   className="h-12 w-full border rounded-lg p-2 mb-3 outline-none"
                   {...register("reason", { required: true })}
                 >
-                  <option value="">Select a reason for cancellation</option>
-                  <option value="damaged">Product Damaged</option>
-                  <option value="wrong item">Wrong Item Received</option>
-                  <option value="quality issues">Quality Issues</option>
-                  <option value="shipping delay">Shipping Delay</option>
-                  <option value="customer request">Customer Request</option>
-                  <option value="out of stock">Out of Stock</option>
-                  <option value="other">Other</option>
+                  <option value="">
+                    {t("Select a reason for cancellation")}
+                  </option>
+                  <option value="damaged">{t("Product Damaged")}</option>
+                  <option value="wrong item">{t("Wrong Item Received")}</option>
+                  <option value="quality issues">{t("Quality Issues")}</option>
+                  <option value="shipping delay">{t("Shipping Delay")}</option>
+                  <option value="customer request">
+                    {t("Customer Request")}
+                  </option>
+                  <option value="out of stock">{t("Out of Stock")}</option>
+                  <option value="other">{t("Other")}</option>
                 </select>
                 {errors.reason && (
                   <p className="text-red-500 text-sm mb-3">
-                    Please select a reason
+                    {t("Please select a reason")}
                   </p>
                 )}
 
                 <h2 className="text- font-semibold mb-2">
-                  Describe the reason
+                  {t("Describe the reason")}
                 </h2>
                 <textarea
                   {...register("description", { required: true })}
-                  placeholder="Please describe the reason for cancellation..."
+                  placeholder={t(
+                    "Please describe the reason for cancellation..."
+                  )}
                   className="h-20 w-full border rounded-lg p-2 resize-none"
                 />
 
@@ -507,14 +473,14 @@ const OrderApproveDetails = () => {
                     onClick={closeModal}
                     className="bg-white-500 text-black text-md px-2 py-2 rounded-lg border-2 font-bold"
                   >
-                    Cancel
+                    {t("Cancel")}
                   </span>
                   <button
                     type="submit"
                     disabled={cancelItemPending}
                     className="px-2 py-2 rounded-lg bg-black text-white text-md font-bold"
                   >
-                    {cancelItemPending ? "Rejecting..." : "Reject"}
+                    {cancelItemPending ? t("Rejecting...") : t("Reject")}
                   </button>
                 </div>
               </form>
@@ -529,11 +495,10 @@ const OrderApproveDetails = () => {
             <div className="bg-white p-6 rounded-lg shadow-lg w-2/3 ">
               <form onSubmit={handleSubmit((data) => onSubmit(data, reset))}>
                 <h2 className="text-lg font-bold mb-3 border-b-2 pb-4">
-                  Upload Evidence
+                  {t("Upload Evidence")}
                 </h2>
                 <h2 className="text-sm font-semibold mb-2 mt-4">
-                  {" "}
-                  upload your images{" "}
+                  {t("Upload Images")}
                 </h2>
 
                 <div className="flex flex-col items-center justify-center gap-x-4 bg-[#919EAB33] rounded-lg">
@@ -542,23 +507,24 @@ const OrderApproveDetails = () => {
                       id="fileInput"
                       type="file"
                       accept="image/*"
-                      multiple // Ensures multiple file selection
+                      multiple
                       style={{ display: "none" }}
                       {...register("evidenceImg", {
-                        onChange: (e) => handleFileSelect(e), // Ensure react-hook-form integrates with the handler
+                        onChange: (e) => handleFileSelect(e),
                       })}
                     />
                     <img src={select_file} alt="Select file" />
                     <h1 className="font-bold text-base mb-4">
-                      Drop or select file
+                      {t("Drop or select file")}
                     </h1>
                     <p
                       className="text-sm mb-10 text-gray-600 cursor-pointer"
                       onClick={handleClick}
                     >
-                      Drop files here or click to{" "}
-                      <span className="text-[#00A76F]">browse</span> through
-                      your machine.
+                      {t("Drop files here or click to")}{" "}
+                      <span className="text-[#00A76F]">{t("browse")}</span>{" "}
+                      {t("through")}
+                      {"your machine."}
                     </p>
                   </div>
                 </div>
@@ -580,7 +546,9 @@ const OrderApproveDetails = () => {
                       ))}
                     </div>
                   ) : (
-                    <p className="text-gray-500 text-sm">No images selected</p>
+                    <p className="text-gray-500 text-sm">
+                      {t("No Images Selected")}
+                    </p>
                   )}
                 </div>
 
@@ -592,14 +560,14 @@ const OrderApproveDetails = () => {
                     }}
                     className="bg-white-500 cursor-pointer text-black text-md px-2 py-2 rounded-lg border-2 font-bold"
                   >
-                    Cancel
+                    {t("Cancel")}
                   </span>
                   <button
                     type="submit"
                     className="px-2 py-2 rounded-lg bg-black text-white text-md font-bold"
                   >
                     {" "}
-                    {isPending ? "Submiting..." : "Submit"}
+                    {isPending ? t("Submiting...") : t("Submit")}
                   </button>
                 </div>
               </form>

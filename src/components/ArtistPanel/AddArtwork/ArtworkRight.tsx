@@ -1,5 +1,6 @@
 import { Controller } from "react-hook-form";
 import Header from "../../ui/Header";
+import { useTranslation } from "react-i18next";
 
 const ArtworkRight = ({
   query,
@@ -15,6 +16,8 @@ const ArtworkRight = ({
 
   const firstValueAvaliableTo = availableTo?.[0]?.value || null;
   const firstValueDiscountAcceptance = discountAcceptation?.[0]?.value || null;
+
+  const { t } = useTranslation();
 
   const restrictions = [
     {
@@ -46,13 +49,12 @@ const ArtworkRight = ({
   return (
     <div>
       <div className="rounded-md">
-        {/* Restrictions Section */}
         <div className="bg-white rounded-lg shadow-md p-6 mt-4 border border-[#E0E2E7]">
           <Header
             variant={{ size: "md", theme: "dark", weight: "semiBold" }}
             className="mb-3"
           >
-            Restrictions
+            {t("Restrictions")}
           </Header>
           {restrictions.map(({ id, name, label, options, firstValue }) => (
             <div key={id} className="mb-4">
@@ -60,7 +62,7 @@ const ArtworkRight = ({
                 htmlFor={id}
                 className="block text-sm sm:text-base font-semibold text-[#203F58] mb-2"
               >
-                {label}
+                {t(label)}
               </label>
               <Controller
                 control={control}
@@ -73,10 +75,10 @@ const ArtworkRight = ({
                     disabled={query}
                     className="block w-full p-1 sm:px-4 sm:py-2 bg-[#F9F9FC] outline-none border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >
-                    <option value="">Select</option>
-                    {options.map((option, index) => (
+                    <option value="">{t("Select")}</option>
+                    {options.map((option, index: number) => (
                       <option key={index} value={option}>
-                        {option}
+                        {t(option)}
                       </option>
                     ))}
                   </select>
@@ -91,7 +93,7 @@ const ArtworkRight = ({
             variant={{ size: "md", theme: "dark", weight: "semiBold" }}
             className="mb-3"
           >
-            Collection
+            {t("Collection")}
           </Header>
           {collection.map(({ id, name, label, options }) => (
             <div key={id} className="mb-4">
@@ -99,12 +101,12 @@ const ArtworkRight = ({
                 htmlFor={id}
                 className="block text-sm sm:text-base font-semibold text-[#203F58] mb-2"
               >
-                {label}
+                {t(label)}
               </label>
               <Controller
                 control={control}
                 name={name}
-                defaultValue={getValue(name)} // Set default value here
+                defaultValue={getValue(name)}
                 render={({ field }) => (
                   <select
                     {...field.value}
@@ -112,9 +114,10 @@ const ArtworkRight = ({
                     disabled
                     className="block  w-full p-1 sm:px-4 sm:py-2 bg-[#F9F9FC] outline-none border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >
+                    <option value="">{t("Select")}</option>
                     {options.map((option, index) => (
                       <option key={index} value={option}>
-                        {option}
+                        {t(option)}
                       </option>
                     ))}
                   </select>

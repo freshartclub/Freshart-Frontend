@@ -1,16 +1,13 @@
-import React, { useRef, useState, useEffect } from "react";
-import {
-  useFieldArray,
-  Control,
-  useFormContext,
-  useForm,
-} from "react-hook-form";
-import Header from "../../ui/Header";
+import { useEffect, useRef, useState } from "react";
+import { useFieldArray, useFormContext } from "react-hook-form";
 import image_icon from "../../../assets/image_icon.png";
 import video_icon from "../../../assets/video_icon.png";
+import Header from "../../ui/Header";
 import { imageUrl } from "../../utils/baseUrls";
+import { useTranslation } from "react-i18next";
 
 const GeneralMedia = ({ control, data, isActiveStatus }) => {
+  const { t } = useTranslation();
   const { setValue, getValues, watch } = useFormContext();
 
   useEffect(() => {
@@ -22,62 +19,42 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
     watch("additionalVideo");
   }, []);
 
-  const {
-    fields: videoFields,
-    append: appendVideo,
-
-    remove: removeVideo,
-  } = useFieldArray({
+  const { append: appendVideo, remove: removeVideo } = useFieldArray({
     control,
     name: "additionalVideo",
   });
 
-  const {
-    fields: mainVideoFields,
-
-    remove: removeMainVideo,
-  } = useFieldArray({
+  const { remove: removeMainVideo } = useFieldArray({
     control,
     name: "mainVideo",
   });
 
-  const {
-    fields: inProcessImageField,
-
-    remove: removeInProcessImage,
-  } = useFieldArray({
+  const { remove: removeInProcessImage } = useFieldArray({
     control,
     name: "inProcessImage",
   });
 
-  const { fields: mainImageFields, remove: removeMainImage } = useFieldArray({
+  const { remove: removeMainImage } = useFieldArray({
     control,
     name: "mainImage",
   });
 
-  const {
-    fields: additionalImage,
-    append: appendAdditionalImage,
-    remove: removeAdditionalImageFrom,
-  } = useFieldArray({
-    control,
-    name: "additionalImage",
-  });
+  const { append: appendAdditionalImage, remove: removeAdditionalImageFrom } =
+    useFieldArray({
+      control,
+      name: "additionalImage",
+    });
 
   const mainImageInputRef = useRef<HTMLInputElement>(null);
-  const backImageInputRef = useRef<HTMLInputElement>(null);
   const inProcessImageInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
 
   const [existingMainImage, setExistingMainImage] = useState(null);
   const [existingMainVideo, setExistingMainVideo] = useState(null);
 
-  const [mainImageChanged, setMainImageChanged] = useState(false);
-
   const [existingAdditionalImage, setExistingAdditionalImage] = useState([]);
   const [existingAdditionalVideo, setExistingAdditionalVideo] = useState([]);
   const [existingInProcessImage, setExistingInProcessImage] = useState(null);
-  const [inProcessImageChanged, setInProcessImageChanged] = useState(false);
 
   useEffect(() => {
     setExistingMainImage(
@@ -132,8 +109,6 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
     const files = e.target.files;
 
     Array.from(files).forEach((val) => {
-      console.log(val);
-
       appendVideo(val);
     });
   };
@@ -191,8 +166,6 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
 
   const handleRemoveMainVidoe = async (typeFile: string) => {
     if (typeFile === "File") {
-      console.log("File");
-
       removeMainVideo("mainVideo");
     } else {
       setExistingMainVideo(null);
@@ -215,22 +188,20 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
     }
   };
 
-  // reomve isActive Before final
-
   return (
     <div className="p-6 mt-6 bg-white rounded-lg shadow-md border mb-4 ">
       <Header
         variant={{ theme: "dark", weight: "bold" }}
         className="text-xl mb-2"
       >
-        Media
+        {t("Media")}
       </Header>
 
       <Header
         variant={{ size: "lg", weight: "semiBold" }}
         className="mb-4 text-[#203F58]"
       >
-        Photos
+        {t("Photos")}
       </Header>
 
       <div className="border-dashed border-2 border-gray-400 rounded-md p-4">
@@ -241,7 +212,7 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
                 variant={{ size: "base", theme: "dark", weight: "semiBold" }}
                 className="mb-2 text-[#203F58]"
               >
-                Main Photo
+                {t("Main Photo")}
               </Header>
               <input
                 type="file"
@@ -249,7 +220,6 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
                 className="hidden "
                 ref={mainImageInputRef}
                 onChange={(e) => handleMainImageChange(e)}
-                // disabled={isActiveStatus !== "active"}
               />
               <div className="bg-[#F9F9FC] border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
                 <div className="relative">
@@ -277,7 +247,7 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
                   </span>
                 </div>
                 <p className="text-center text-xs md:text-base">
-                  Drag and drop image here, or click to add image
+                  {t("Drag and drop image here, or click to add image")}
                 </p>
                 <span
                   className={`bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer ${
@@ -285,7 +255,7 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
                   }`}
                   onClick={triggerMainImageInput}
                 >
-                  Add Image
+                  {t("Add Image")}
                 </span>
               </div>
             </div>
@@ -295,7 +265,7 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
                 variant={{ size: "base", theme: "dark", weight: "semiBold" }}
                 className="mb-2 text-[#203F58]"
               >
-                In-Process Photo
+                {t("In-Process Photo")}
               </Header>
               <input
                 type="file"
@@ -328,7 +298,7 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
                   />
                 )}
                 <p className="text-center text-xs md:text-base">
-                  Drag and drop image here, or click to add image
+                  {t("Drag and drop image here, or click to add image")}
                 </p>
                 <span
                   className={`bg-[#DEDEFA]  font-bold mt-2 p-3 px-4 rounded-md cursor-pointer ${
@@ -336,7 +306,7 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
                   }`}
                   onClick={triggerInProcessImageInput}
                 >
-                  Add Image
+                  {t("Add Image")}
                 </span>
               </div>
             </div>
@@ -348,7 +318,7 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
             variant={{ size: "lg", weight: "semiBold" }}
             className="mb-2 text-[#203F58]"
           >
-            Additional Photos
+            {t("Additional Photos")}
           </Header>
           <input
             type="file"
@@ -403,7 +373,7 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
                 className="w-28 h-28 bg-gray-200 rounded-md mb-4"
               />
               <p className="text-center text-xs md:text-base mt-4">
-                Click to add additional images
+                {t("Click to add additional images")}
               </p>
             </>
           )}
@@ -413,17 +383,16 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
             }`}
             onClick={() => document.querySelector("#photos-input").click()}
           >
-            Add Image
+            {t("Add Image")}
           </span>
         </div>
 
-        {/* vidoes for */}
         <div>
           <Header
             variant={{ size: "lg", weight: "semiBold" }}
             className="mb-4 text-[#203F58] mt-5"
           >
-            Videos
+            {t("Videos")}
           </Header>
 
           <div className="grid lg:grid-cols-1 gap-4">
@@ -432,7 +401,7 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
                 variant={{ size: "base", theme: "dark", weight: "semiBold" }}
                 className="mb-2 text-[#203F58]"
               >
-                Main Video
+                {t("Main Video")}
               </Header>
               <input
                 type="file"
@@ -467,7 +436,7 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
                   </span>
                 </div>
                 <p className="text-center  text-sm md:text-base">
-                  Drag and drop Video here, or click to add Video
+                  {t("Drag and drop Video here, or click to add Video")}
                 </p>
                 <span
                   className={`bg-[#DEDEFA]  font-bold mt-2 p-3 px-4 rounded-md cursor-pointer ${
@@ -475,7 +444,7 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
                   }`}
                   onClick={triggerVideoInput}
                 >
-                  Add Video
+                  {t("Add Video")}
                 </span>
               </div>
             </div>
@@ -485,7 +454,7 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
                 variant={{ size: "lg", weight: "semiBold" }}
                 className="mb-2 text-[#203F58]"
               >
-                Additional Videos
+                {t("Additional Videos")}
               </Header>
               <input
                 type="file"
@@ -555,7 +524,7 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
                 }`}
                 onClick={() => document.querySelector("#Videos-input").click()}
               >
-                Add Video
+                {t("Add Video")}
               </span>
             </div>
           </div>

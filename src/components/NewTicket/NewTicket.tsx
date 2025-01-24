@@ -8,8 +8,11 @@ import Loader from "../ui/Loader";
 import P from "../ui/P";
 import { RenderAllPicklists } from "../utils/RenderAllPicklist";
 import useGetPostArtistTicketMutation from "./ticket history/http/usePostTicket";
+import { useTranslation } from "react-i18next";
 
 const NewTicket = () => {
+  const { t } = useTranslation();
+  
   const validationSchema = Yup.object({
     subject: Yup.string().required("Title is required"),
     message: Yup.string()
@@ -24,8 +27,14 @@ const NewTicket = () => {
 
   const user = useAppSelector((state) => state.user.user);
 
-  const requestedName =
-    user.artistName + " " + user.artistSurname1 + " " + user.artistSurname2;
+  const fetchName = (val) => {
+    let fullName = val?.artistName || "";
+
+    if (val?.artistSurname1) fullName += " " + val?.artistSurname1;
+    if (val?.artistSurname2) fullName += " " + val?.artistSurname2;
+
+    return fullName.trim();
+  };
 
   const { data, isLoading } = useGetArtistDetails();
   const picklist = RenderAllPicklists([
@@ -56,13 +65,6 @@ const NewTicket = () => {
     return 0;
   });
 
-  const name =
-    data?.data?.artist?.artistName +
-    " " +
-    data?.data?.artist?.artistSurname1 +
-    " " +
-    data?.data?.artist?.artistSurname2;
-
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const { mutate, isPending } = useGetPostArtistTicketMutation();
 
@@ -77,7 +79,7 @@ const NewTicket = () => {
     impact: sortedticketImpact?.[0]?.value || "",
   };
 
-  const onSubmit = (values, action) => {
+  const onSubmit = (values) => {
     try {
       const formData = new FormData();
       Object.keys(values).forEach((key) => {
@@ -106,7 +108,7 @@ const NewTicket = () => {
     <div className="container mx-auto sm:px-6 px-3">
       <div className="lg:w-[80%] w-full mx-auto mt-8">
         <Header variant={{ size: "xl", theme: "dark", weight: "bold" }}>
-          New Tickets
+          {t("New Ticket")}
         </Header>
         <P
           variant={{ size: "base", theme: "dark", weight: "normal" }}
@@ -119,7 +121,7 @@ const NewTicket = () => {
           adipiscing elit.
         </P>
 
-        <div className="w-full ">
+        <div className="w-full">
           <Formik
             initialValues={initialValues}
             validationSchema={validationSchema}
@@ -132,14 +134,14 @@ const NewTicket = () => {
                     className="block text-gray-700 text-sm font-bold mb-2"
                     htmlFor="requestedBy"
                   >
-                    Requested By
+                    {t("Requested By")}
                   </label>
                   <Field
                     name="requestedBy"
                     type="text"
-                    placeholder="Requested By"
-                    setFieldValue={requestedName}
-                    value={requestedName || name}
+                    placeholder={t("Requested By")}
+                    setFieldValue={fetchName(user)}
+                    value={fetchName(user) || fetchName(data?.data?.artist)}
                     readOnly
                     className="outline-[#FDB7DC] bg-[#FFD1D114] shadow border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-[#FDB7DC] focus:shadow-outline"
                   />
@@ -155,12 +157,12 @@ const NewTicket = () => {
                     className="block text-gray-700 text-sm font-bold mb-2"
                     htmlFor="subject"
                   >
-                    Title
+                    {t("Title")}
                   </label>
                   <Field
                     name="subject"
                     type="text"
-                    placeholder="Enter Subject"
+                    placeholder={t("Enter Subject")}
                     className="outline-[#FDB7DC] bg-[#FFD1D114] shadow border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-[#FDB7DC] focus:shadow-outline"
                   />
                   <ErrorMessage
@@ -174,18 +176,18 @@ const NewTicket = () => {
                     htmlFor="ticketType"
                     className="block mb-2 text-sm font-bold text-gray-900 "
                   >
-                    Select Ticket Type*
+                    {t("Select Ticket Type")} *
                   </label>
                   <Field
                     name="ticketType"
                     as="select"
                     className="outline-[#FDB7DC] bg-[#FFD1D114] shadow border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-[#FDB7DC] focus:shadow-outline"
                   >
-                    <option value="">Choose Ticket Type</option>
+                    <option value="">{t("Choose Ticket Type")}</option>
                     {ticketType
-                      ? ticketType?.map((item, i) => (
+                      ? ticketType?.map((item, i: number) => (
                           <option key={i} value={item?.value}>
-                            {item.value}
+                            {t(item.value)}
                           </option>
                         ))
                       : null}
@@ -203,7 +205,7 @@ const NewTicket = () => {
                       htmlFor="urgency"
                       className="block mb-2 text-sm font-bold text-gray-900 "
                     >
-                      Select Urgency
+                      {t("Select Urgency")}
                     </label>
                     <Field
                       name="urgency"
@@ -213,7 +215,7 @@ const NewTicket = () => {
                       {sortedticketUrgency
                         ? sortedticketUrgency?.map((item, i) => (
                             <option key={i} value={item?.value}>
-                              {item.value}
+                              {t(item.value)}
                             </option>
                           ))
                         : null}
@@ -230,7 +232,7 @@ const NewTicket = () => {
                       htmlFor="impact"
                       className="block mb-2 text-sm font-bold text-gray-900 "
                     >
-                      Select Impact
+                      {t("Select Impact")}
                     </label>
                     <Field
                       name="impact"
@@ -240,7 +242,7 @@ const NewTicket = () => {
                       {sortedticketImpact
                         ? sortedticketImpact?.map((item, i) => (
                             <option key={i} value={item?.value}>
-                              {item.value}
+                              {t(item.value)}
                             </option>
                           ))
                         : null}
@@ -258,13 +260,15 @@ const NewTicket = () => {
                     htmlFor="message"
                     className="block mb-2 text-sm font-bold text-gray-900 "
                   >
-                    Ticket Description
+                    {t("Ticket Description")}
                   </label>
                   <Field
                     name="message"
                     as="textarea"
                     rows={5}
-                    placeholder="Write description here minimum words should be at least 10 characters"
+                    placeholder={t(
+                      "Write description here minimum words should be at least 10 characters"
+                    )}
                     className="outline-[#FDB7DC] bg-[#FFD1D114] shadow border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-[#FDB7DC] focus:shadow-outline"
                   />
                   <ErrorMessage
@@ -279,11 +283,11 @@ const NewTicket = () => {
                     htmlFor="message"
                     className="block mb-2 text-sm font-bold text-gray-900 "
                   >
-                    Upload Your File
+                    {t("Upload Your File")}
                   </label>
                   <div className="border-2 border-dashed border-gray-300 py-10 px-6 bg-[#FFD1D114] rounded-lg text-center flex sm:flex-row flex-col gap-4 items-center justify-center">
                     <label className="text-md mb-2 text-center">
-                      Upload Your File Here
+                      {t("Upload Your File Here")}
                     </label>
                     <label className="block text-center">
                       <input
@@ -298,7 +302,6 @@ const NewTicket = () => {
                             setFieldValue("ticketImg", file);
                           }
                         }}
-                        className=""
                       />
                       <ErrorMessage
                         name="ticketImg"
@@ -313,7 +316,7 @@ const NewTicket = () => {
                     type="submit"
                     className=" text-white rounded-md py-2 px-10  mr-4 bg-black"
                   >
-                    {isPending ? "Loading..." : "Submit"}
+                    {isPending ? t("Loading...") : t("Submit")}
                   </button>
 
                   <span
@@ -326,7 +329,7 @@ const NewTicket = () => {
                     }}
                     className=" py-2 px-10 rounded border-2 border-[#102030] text-[#102030]"
                   >
-                    Reset
+                    {t("Reset")}
                   </span>
                 </div>
               </Form>

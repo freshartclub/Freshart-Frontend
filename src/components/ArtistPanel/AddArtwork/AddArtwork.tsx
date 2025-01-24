@@ -48,6 +48,8 @@ const AddArtwork = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [catalogPrice, setCatalogPrice] = useState(null);
 
+  const { t } = useTranslation();
+
   const [showCalendar, setShowCalendar] = useState(false);
   const [qrVisible, setQrVisible] = useState(false);
 
@@ -95,7 +97,7 @@ const AddArtwork = () => {
               onClickYear={(date) => {
                 const year = date.getFullYear();
 
-                handleYearSelect(year); // Update the form value manually
+                handleYearSelect(year);
               }}
               showNeighboringMonth={false}
               value={selectedYear ? new Date(selectedYear, 0) : new Date()}
@@ -282,21 +284,21 @@ const AddArtwork = () => {
         "artworkStyleType",
         data?.data?.additionalInfo?.artworkStyle?.map((opt) => ({
           value: opt,
-          label: opt,
+          label: t(opt),
         })) || ""
       );
       setValue(
         "emotions",
         data?.data?.additionalInfo?.emotions?.map((opt) => ({
           value: opt,
-          label: opt,
+          label: t(opt),
         })) || ""
       );
       setValue(
         "colors",
         data?.data?.additionalInfo?.colors?.map((opt) => ({
           value: opt,
-          label: opt,
+          label: t(opt),
         })) || ""
       );
 
@@ -396,8 +398,6 @@ const AddArtwork = () => {
     setQrVisible(true);
   };
 
-  const { t } = useTranslation();
-
   const picklist = RenderAllPicklists([
     "Commercialization Options",
     "Currency",
@@ -421,13 +421,20 @@ const AddArtwork = () => {
   const availableTo = picklistMap["Artwork Available To"];
   const discountAcceptation = picklistMap["Artwork Discount Options"];
 
-  const getMaterial = getMediaSupport?.data?.filter(
+  let getMaterial = getMediaSupport?.data?.filter(
     (item) =>
       item.discipline &&
       item.discipline.some((newItem) =>
         newItem.disciplineName.includes(artDicipline)
       )
   );
+
+  getMaterial = getMaterial?.map((item) => {
+    return {
+      label: item.mediaName,
+      value: item.mediaName,
+    };
+  });
 
   const handleNavigate = () => {
     navigate("/artist-panel/artwork");
@@ -606,7 +613,7 @@ const AddArtwork = () => {
         mutate(newData);
       }
     } else {
-      return toast("Please Check Base Price & Package Dimesions Values");
+      return toast(t("Please Check Base Price & Package Dimesions Values"));
     }
   });
 
@@ -805,21 +812,21 @@ const AddArtwork = () => {
 
                 <div className="mb-4">
                   <label className="block  text-sm sm:text-base text-[#203F58] font-semibold mb-2">
-                    {t("Artwork Name *")}
+                    {t("Artwork Name")} *
                   </label>
                   <input
                     {...register("artworkName", {
-                      required: "Artwork Name is required",
+                      required: t("Artwork Name is required"),
                     })}
                     type="text"
                     id="artworkName"
                     readOnly={query ? true : false}
-                    placeholder="Type artwork name here..."
+                    placeholder={t("Type artwork name here...")}
                     className="w-full bg-[#F9F9FC] border text-sm sm:text-base border-gray-300 rounded-md p-1 sm:p-3 outline-none"
                   />
                   {errors.artworkName ? (
                     <div className="error text-red-500 mt-1 text-sm">
-                      {errors.artworkName.message}
+                      {t(`${errors.artworkName.message}`)}
                     </div>
                   ) : null}
                 </div>
@@ -831,7 +838,6 @@ const AddArtwork = () => {
                     </label>
                     <select
                       {...register("isArtProvider")}
-                      as="select"
                       id="isArtProvider"
                       name="isArtProvider"
                       disabled={query ? true : false}
@@ -851,7 +857,7 @@ const AddArtwork = () => {
                 {isArtProviderField === "Yes" ? (
                   <div className="mb-4">
                     <label className="block text-sm sm:text-base text-[#203F58] font-semibold mb-2">
-                      {t("Artist name")}
+                      {t("Artist Name")}
                     </label>
                     <input
                       type="text"
@@ -914,7 +920,7 @@ const AddArtwork = () => {
                           className="w-full bg-[#F9F9FC] border cursor-pointer  border-gray-300 rounded-md  p-1 sm:p-3 outline-none text-sm sm:text-base"
                           onClick={handleDropDown}
                           autoComplete="off"
-                          placeholder="Select Series"
+                          placeholder={t("Select Series")}
                         />
                       </div>
 
@@ -922,7 +928,7 @@ const AddArtwork = () => {
                         <div className="absolute top-full left-0 w-full mt-2 bg-white border border-gray-300 rounded-lg shadow-lg">
                           <ul className="max-h-60 overflow-y-auto flex flex-col gap-2 p-2">
                             {seriesOptions.map((option) => (
-                              <div className="flex justify-between  ">
+                              <div className="flex justify-between">
                                 <li
                                   key={option.value}
                                   onClick={() => {
@@ -958,7 +964,7 @@ const AddArtwork = () => {
                     {...register("productDescription")}
                     rows={6}
                     name="productDescription"
-                    placeholder="Type product description here..."
+                    placeholder={t("Type product description here...")}
                     readOnly={query ? true : false}
                     className="w-full  bg-[#F9F9FC] border border-gray-300 rounded-md  p-1 sm:p-3 outline-none"
                   />
@@ -1463,35 +1469,37 @@ const AddArtwork = () => {
 
                 <div className="grid md:grid-cols-2 gap-3 mb-4 mt-3">
                   <label className="text-[#203F58] text-sm sm:text-base font-semibold">
-                    {t("Artwork Technic *")}
+                    {t("Artwork Technic")} *
                     <select
                       {...register("artworkTechnic", {
-                        required: "ArtworkTechnic is required",
+                        required: t("Artwork Technic is required"),
                       })}
                       id="artworkTechnic"
                       disabled={query ? true : false}
                       className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full  p-1 sm:p-2.5 "
                     >
-                      <option value="">Select type</option>
+                      <option value="">{t("Select Type")}</option>
                       {technicLoading ? null : newTechnic &&
                         Array.isArray(newTechnic) &&
                         newTechnic.length > 0 ? (
                         newTechnic.map((item, i) => (
-                          <option key={i}>{item.technicName}</option>
+                          <option value={item.technicName} key={i}>
+                            {t(item.technicName)}
+                          </option>
                         ))
                       ) : (
-                        <option disabled>No technics available</option>
+                        <option disabled>{t("No Technics Available")}</option>
                       )}
                     </select>
                     {errors.artworkTechnic ? (
                       <div className="error text-red-500 mt-1 text-sm">
-                        {errors.artworkTechnic.message}
+                        {t(`${errors.artworkTechnic.message}`)}
                       </div>
                     ) : null}
                   </label>
 
                   <label className="text-[#203F58] text-sm sm:text-base font-semibold">
-                    Artwork theme *
+                    {t("Artwork Theme")} *
                     <select
                       id="artworkTheme"
                       {...register("artworkTheme", {
@@ -1500,26 +1508,24 @@ const AddArtwork = () => {
                       disabled={query ? true : false}
                       className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
                     >
-                      <option value="">Select Type</option>
-                      {themeLoading ? (
-                        <option value="" disabled>
-                          Loading...
-                        </option>
-                      ) : newTheme &&
+                      <option value="">{t("Select Type")}</option>
+                      {themeLoading ? null : newTheme &&
                         Array.isArray(newTheme) &&
                         newTheme.length > 0 ? (
-                        newTheme.map((item) => (
-                          <option key={item.themeName}>{item.themeName}</option>
+                        newTheme.map((item, i: number) => (
+                          <option value={item.themeName} key={i}>
+                            {t(item.themeName)}
+                          </option>
                         ))
                       ) : (
                         <option value="" disabled>
-                          No Themes Available
+                          {t("No Themes Available")}
                         </option>
                       )}
                     </select>
                     {errors.artworkTheme ? (
                       <div className="error text-red-500 mt-1 text-sm">
-                        {errors.artworkTheme.message}
+                        {t(`${errors.artworkTheme.message}`)}
                       </div>
                     ) : null}
                   </label>
@@ -1529,9 +1535,9 @@ const AddArtwork = () => {
                   <Select
                     options={newArtworkStyle?.map((item) => ({
                       value: item,
-                      label: item,
+                      label: t(item),
                     }))}
-                    placeholder="Select Artwork Style *"
+                    placeholder={t("Select Artwork Style")}
                     isMulti
                     isDisabled={query ? true : false}
                     value={getValues("artworkStyleType")}
@@ -1558,7 +1564,7 @@ const AddArtwork = () => {
                   />
                   {errors.artworkStyleType ? (
                     <div className="error text-red-500 mt-1 text-sm">
-                      {errors.artworkStyleType.message}
+                      {t(`${errors.artworkStyleType.message}`)}
                     </div>
                   ) : null}
                 </div>
@@ -1566,11 +1572,11 @@ const AddArtwork = () => {
                 <div className="mt-3 mb-2">
                   <Select
                     options={emotions ? emotions : []}
-                    placeholder="Emotions *"
+                    placeholder={t("Emotions")}
                     isMulti
                     isDisabled={query ? true : false}
                     {...register("emotions", {
-                      required: "Emotions are required",
+                      required: t("Emotions are required"),
                     })}
                     value={getValues("emotions")}
                     onChange={(selectedOptions) =>
@@ -1596,7 +1602,7 @@ const AddArtwork = () => {
                   />
                   {errors.emotions ? (
                     <div className="error text-red-500 mt-1 text-sm">
-                      {errors.emotions.message}
+                      {t(`${errors.emotions.message}`)}
                     </div>
                   ) : null}
                 </div>
@@ -1605,9 +1611,8 @@ const AddArtwork = () => {
                   <Select
                     options={colors ? colors : []}
                     placeholder="Select Color  *"
-                    // name="colors"
                     {...register("colors", {
-                      required: "Colors are required",
+                      required: t("Colors are required"),
                     })}
                     isDisabled={query ? true : false}
                     value={getValues("colors")}
@@ -1639,18 +1644,17 @@ const AddArtwork = () => {
                   />
                   {errors.colors ? (
                     <div className="error text-red-500 mt-1 text-sm">
-                      {errors.colors.message}
+                      {t(`${errors.colors.message}`)}
                     </div>
                   ) : null}
                 </div>
 
                 <label className="text-[#203F58] text-sm sm:text-base font-semibold  ">
-                  Offensive
+                  {t("Offensive")}
                   <select
-                    as="select"
                     id="offensive"
                     {...register("offensive", {
-                      required: "Offensive option is required",
+                      required: t("Offensive is required"),
                     })}
                     disabled={query ? true : false}
                     className="bg-[#F9F9FC] mt-1 border mb-3 border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
@@ -1661,7 +1665,7 @@ const AddArtwork = () => {
                 </label>
 
                 <label className="text-[#203F58] text-sm sm:text-base font-semibold ">
-                  Tags External
+                  {t("Tags External")}
                   <div className="flex flex-wrap gap-2 mt-1">
                     <input
                       type="text"
@@ -1698,25 +1702,26 @@ const AddArtwork = () => {
 
                 <div className=" md:grid-cols-2 gap-3 mt-4 mb-4">
                   <label className="text-[#203F58] font-semibold">
-                    Material *
+                    {t("Material")} *
                     <select
                       id="Material"
                       {...register("material", {
-                        required: "Material type is required",
+                        required: t("Material is required"),
                       })}
                       disabled={query ? true : false}
                       className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5"
                     >
-                      <option value="">Select type</option>
-                      {getMaterial?.map((item, index: number) => (
-                        <option key={index} value={item?.mediaName}>
-                          {item?.mediaName}
-                        </option>
-                      ))}
+                      <option value="">{t("Select Type")}</option>
+                      {getMaterial &&
+                        getMaterial?.map((item, index: number) => (
+                          <option key={index} value={item?.value}>
+                            {t(item?.label)}
+                          </option>
+                        ))}
                     </select>
                     {errors.material ? (
                       <div className="error text-red-500 mt-1 text-sm">
-                        {errors.material.message}
+                        {t(`${errors.material.message}`)}
                       </div>
                     ) : null}
                   </label>
@@ -1726,25 +1731,25 @@ const AddArtwork = () => {
                   {artwork_orientation?.map((field) => (
                     <span key={field.name}>
                       <label className="p-1 text-[14px] text-[#203F58] font-semibold">
-                        {field.label} *
+                        {t(field.label)} *
                       </label>
                       <input
                         type="text"
                         {...register(field.name, {
-                          required: `${field.name} is required`
+                          required: t(`${field.name} is required`)
                             ? field.name
                             : "",
                         })}
                         name={field.name}
                         id={field.name}
-                        placeholder={field.placeholder}
+                        placeholder={t(field.placeholder)}
                         readOnly={query ? true : false}
                         className="bg-[#F9F9FC] border mb-2 border-gray-300 outline-none text-[#203F58] text-sm rounded-lg block w-full p-1 sm:p-2.5"
                       />
 
                       {errors[field.name] ? (
                         <div className="error text-red-500 mt-1 text-sm">
-                          {errors[field.name].message}
+                          {t(`${errors[field.name].message}`)}
                         </div>
                       ) : null}
                     </span>
@@ -1753,9 +1758,8 @@ const AddArtwork = () => {
 
                 <div className="flex flex-col space-y-4">
                   <label className="text-[#203F58] font-semibold ">
-                    Hanging available
+                    {t("Hanging Available")}
                     <select
-                      as="select"
                       id="hangingAvailable"
                       {...register("hangingAvailable", {
                         required: "Hanging availability is required",
@@ -1763,50 +1767,49 @@ const AddArtwork = () => {
                       disabled={query ? true : false}
                       className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
                     >
-                      <option value="">Select</option>
+                      <option value="">{t("Select")}</option>
                       <option>Yes </option>
                       <option>No</option>
                     </select>
                     {errors.hangingAvailable ? (
                       <div className="error text-red-500 mt-1 text-sm">
-                        {errors.hangingAvailable.message}
+                        {t(`${errors.hangingAvailable.message}`)}
                       </div>
                     ) : null}
                   </label>
 
                   {getValues("hangingAvailable") === "Yes" ? (
                     <label className="text-[#203F58] text-sm sm:text-base font-semibold ">
-                      Hanging Description
+                      {t("Hanging Description")}
                       <textarea
                         id="hangingDescription"
                         {...register("hangingDescription", {
-                          required: "Hanging description is required",
+                          required: t("Hanging Description is required"),
                         })}
                         readOnly={query ? true : false}
-                        placeholder="Type Hanging description here..."
+                        placeholder={t("Type Hanging description here...")}
                         className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full  p-1 sm:p-2.5 pb-10 "
                       />
                     </label>
                   ) : null}
 
                   <label className="text-[#203F58] text-sm sm:text-bas  font-semibold ">
-                    Framed *
+                    {t("Framed")} *
                     <select
-                      as="select"
                       id="Farmed"
                       {...register("framed", {
-                        required: "Framed option is required",
+                        required: t("Framed Option is required"),
                       })}
                       disabled={query ? true : false}
                       className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
                     >
-                      <option value="">Select</option>
+                      <option value="">{t("Select")}</option>
                       <option>Yes </option>
                       <option>No</option>
                     </select>
                     {errors.framed ? (
                       <div className="error text-red-500 mt-1 text-sm">
-                        {errors.framed.message}
+                        {t(`${errors.framed.message}`)}
                       </div>
                     ) : null}
                   </label>
@@ -1814,19 +1817,19 @@ const AddArtwork = () => {
                   {getValues("framed") === "Yes" ? (
                     <>
                       <label className="text-[#203F58] text-sm sm:text-base font-semibold">
-                        Framed Description *
+                        {t("Frame Description")} *
                         <textarea
                           id="framedDescription"
                           {...register("framedDescription", {
-                            required: "Framed description is required",
+                            required: t("Frame Description is required"),
                           })}
-                          placeholder="Type Framed description here..."
+                          placeholder={t("Type Framed description here...")}
                           readOnly={query ? true : false}
                           className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5 pb-10"
                         />
                         {errors?.framedDescription && (
                           <div className="error text-red-500 mt-1 text-sm">
-                            {errors?.framedDescription?.message}
+                            {t(`${errors.framedDescription.message}`)}
                           </div>
                         )}
                       </label>
@@ -1835,23 +1838,23 @@ const AddArtwork = () => {
                         {Framed_dimension?.map((field) => (
                           <span key={field.name}>
                             <label className="p-1 text-[14px] text-[#203F58] font-semibold">
-                              {field.label} (cm) *
+                              {t(field.label)} *
                             </label>
                             <input
                               {...register(field.name, {
-                                required: `${field.label} is required`, // Dynamic required message
+                                required: t(`${field.label} is required`),
                               })}
                               type="text"
                               name={field.name}
                               id={field.name}
                               readOnly={query ? true : false}
-                              placeholder={field.placeholder}
+                              placeholder={t(field.placeholder)}
                               className="bg-[#F9F9FC] border mb-2 border-gray-300 outline-none text-[#203F58] text-sm rounded-lg block w-full p-1 sm:p-2.5"
                             />
 
                             {errors?.[field.name] && (
                               <div className="error text-red-500 mt-1 text-sm">
-                                {errors?.[field.name]?.message}
+                                {t(`${errors?.[field.name]?.message}`)}
                               </div>
                             )}
                           </span>
@@ -1861,24 +1864,24 @@ const AddArtwork = () => {
                   ) : null}
 
                   <label className="text-[#203F58] text-sm sm:text-base font-semibold  ">
-                    Artwork Orientation *
+                    {t("Artwork Orientation")} *
                     <select
                       id="artworkOrientation"
                       {...register("artworkOrientation", {
-                        required: "Artwork orientation is required",
+                        required: t("Artwork Orientation is required"),
                       })}
                       disabled={query ? true : false}
                       className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
                     >
-                      <option value="">Select type</option>
-                      <option>Square </option>
-                      <option>Rectangle</option>
-                      <option>Circle</option>
-                      <option>Star</option>
+                      <option value="">{t("Select Type")}</option>
+                      <option value="Square">{t("Square")} </option>
+                      <option value="Rectangle">{t("Rectangle")}</option>
+                      <option value="Circle">{t("Circle")}</option>
+                      <option value="Star">{t("Star")}</option>
                     </select>
                     {errors.artworkOrientation ? (
                       <div className="error text-red-500 mt-1 text-sm">
-                        {errors.artworkOrientation.message}
+                        {t(`${errors.artworkOrientation.message}`)}
                       </div>
                     ) : null}
                   </label>
@@ -1894,7 +1897,7 @@ const AddArtwork = () => {
                   }}
                   className="mb-4"
                 >
-                  Commercialization *
+                  {t("Commercialization")} *
                 </Header>
 
                 <div
@@ -1921,7 +1924,7 @@ const AddArtwork = () => {
                         : "text-gray-500"
                     }`}
                   >
-                    Subscription
+                    {t("Subscription")}
                   </span>
                   <span
                     onClick={() => {
@@ -1942,7 +1945,7 @@ const AddArtwork = () => {
                         : "text-gray-500"
                     }`}
                   >
-                    Purchase
+                    {t("Purchase")}
                   </span>
                 </div>
 
@@ -1951,7 +1954,7 @@ const AddArtwork = () => {
                     <>
                       <div className="mt-4 space-y-2">
                         <label className="text-[#203F58] text-sm sm:text-base font-semibold ">
-                          Subscription Catalog
+                          {t("Subscription Catalog")}
                           <select
                             id="subscriptionCatalog"
                             {...register("subscriptionCatalog")}
@@ -1960,19 +1963,19 @@ const AddArtwork = () => {
                               setValue("purchaseOption", "");
                               setsubscriptionCatlogValue(val.target.value);
                             }}
-                            disabled={query}
+                            disabled={query ? true : false}
                             className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
                           >
-                            <option value="">Select</option>
+                            <option value="">{t("Select")}</option>
 
                             {seriesData?.subscriptionCatalog?.map(
-                              (series, index) => (
+                              (series, index: number) => (
                                 <option
                                   key={index}
                                   label={series?.catalogName}
                                   value={series?._id || subscriptionCatlogValue}
                                 >
-                                  {series?.catalogName}
+                                  {t(series?.catalogName)}
                                 </option>
                               )
                             )}
@@ -1982,14 +1985,14 @@ const AddArtwork = () => {
 
                       <div className="mt-4 space-y-2">
                         <label className="text-[#203F58] text-sm sm:text-base font-semibold ">
-                          Purchase Option
+                          {t("Purchase Option")}
                           <select
                             {...register("purchaseOption")}
                             id="purchaseOption"
-                            disabled={query}
+                            disabled={query ? true : false}
                             className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
                           >
-                            <option value="">Select</option>
+                            <option value="">{t("Select")}</option>
                             <option>Yes</option>
                             <option>No</option>
                           </select>
@@ -2004,7 +2007,7 @@ const AddArtwork = () => {
                     <div>
                       <div className="space-y-2">
                         <label className="text-[#203F58] text-sm sm:text-base font-semibold ">
-                          Purchase Catalog
+                          {t("Purchase Catalog")}
                           <select
                             id="purchaseCatalog"
                             {...register("purchaseCatalog")}
@@ -2015,17 +2018,17 @@ const AddArtwork = () => {
                               setsubscriptionCatlogValue("");
                               setValue("purchaseType", "");
                             }}
-                            disabled={query}
+                            disabled={query ? true : false}
                             className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
                           >
-                            <option value="">Select</option>
+                            <option value="">{t("Select")}</option>
                             {seriesData?.purchaseCatalog?.map((item, index) => (
                               <option
                                 value={item?._id || purchaseCatlogValue}
-                                label={item?.catalogName}
+                                label={t(item?.catalogName)}
                                 key={index}
                               >
-                                {item?.catalogName}
+                                {t(item?.catalogName)}
                               </option>
                             ))}
                           </select>
@@ -2034,18 +2037,20 @@ const AddArtwork = () => {
 
                       <div className="mt-4">
                         <label className="text-[#203F58] sm:text-base font-semibold ">
-                          Purchase Type
+                          {t("Purchase Type")}
                           <select
                             id="purchaseType"
                             {...register("purchaseType")}
                             value={getValues("purchaseType") || ""}
-                            disabled={query}
+                            disabled={query ? true : false}
                             className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg block w-full p-1 sm:p-2.5"
                           >
-                            <option value="">Select</option>
+                            <option value="">{t("Select")}</option>
                             {purOption
                               ? purOption.map((item, i) => (
-                                  <option key={i}>{item?.value}</option>
+                                  <option value={item?.value} key={i}>
+                                    {t(item?.value)}
+                                  </option>
                                 ))
                               : []}
                           </select>
@@ -2065,7 +2070,7 @@ const AddArtwork = () => {
                   }}
                   className="mb-4"
                 >
-                  Pricing
+                  {t("Pricing")}
                 </Header>
 
                 <div
@@ -2074,17 +2079,16 @@ const AddArtwork = () => {
                   } ? "flex justify-between" : ""`}
                 >
                   <label className="text-[#203F58] text-sm sm:text-base font-semibold ">
-                    Currency
+                    {t("Currency")}
                     <select
                       {...register("currency")}
                       id="currency"
-                      // name="currency"
-                      disabled={query}
+                      disabled={query ? true : false}
                       className="bg-[#F9F9FC] mb-3 mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
                     >
                       {currency?.map((item: any, i: number) => (
                         <option key={i} value={item?.value}>
-                          {item?.value}
+                          {t(item?.value)}
                         </option>
                       ))}
                     </select>
@@ -2109,29 +2113,30 @@ const AddArtwork = () => {
                         />
                       </svg>
 
-                      {/* Warning Message */}
                       <span>
-                        Price must be less than or equal to the specified
-                        amount. {basePriceError}
+                        {t(
+                          "Price must be less than or equal to the specified amount"
+                        )}
+                        . {basePriceError}
                       </span>
                     </div>
                   ) : null}
 
                   {activeTab === "subscription" ? (
                     <label className="text-[#203F58] text-sm sm:text-base font-semibold ">
-                      Base Price
+                      {t("Base Price")}
                       <input
                         {...register("basePrice", {
-                          required: "Base Price Required",
+                          required: t("Base Price Required"),
                         })}
                         id="basePrice"
-                        placeholder="Enter Base Price"
-                        disabled={query}
+                        placeholder={t("Enter Base Price")}
+                        disabled={query ? true : false}
                         className="bg-[#F9F9FC] mb-3 mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
                       />
                       {activeTab === "subscription" && errors.basePrice ? (
                         <div className="error text-red-500 mt-1 text-sm">
-                          {errors.basePrice.message}
+                          {t(`${errors.basePrice.message}`)}
                         </div>
                       ) : null}
                     </label>
@@ -2147,7 +2152,6 @@ const AddArtwork = () => {
                   <>
                     {activeTab === "purchase" || watch("purchaseCatalog") ? (
                       <div className="flex items-center border border-zinc-500 w-full py-3 px-4 bg-yellow-100 text-yellow-800">
-                        {/* Warning Icon */}
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           className="w-6 h-6 mr-2"
@@ -2162,41 +2166,40 @@ const AddArtwork = () => {
                             d="M12 9v2m0 4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"
                           />
                         </svg>
-
-                        {/* Warning Message */}
                         <span>
-                          Price must be less than or equal to the specified
-                          amount. {basePriceError}
+                          {t(
+                            "Price must be less than or equal to the specified amount"
+                          )}{" "}
+                          {basePriceError}
                         </span>
                       </div>
                     ) : null}
 
                     <span>
                       <label className="text-[#203F58] text-sm sm:text-base font-semibold">
-                        Base Price{" "}
+                        {t("Base Price")}
                       </label>
 
                       <div className="flex flex-col space-x-2">
                         <input
                           {...register("basePrice", {
-                            required: "Base Price is Required",
+                            required: t("Base Price is Required"),
                           })}
                           type="text"
                           name="basePrice"
                           id="basePrice"
-                          placeholder="€ Type base price here..."
+                          placeholder={t("Type base price here...")}
                           readOnly={query ? true : false}
                           className="bg-[#F9F9FC] border mb-3 border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5"
                         />
 
                         {activeTab === "purchase" && errors.basePrice ? (
                           <div className="error text-red-500 mt-1 text-sm">
-                            {errors.basePrice.message}
+                            {t(`${errors.basePrice.message}`)}
                           </div>
                         ) : null}
                       </div>
 
-                      {/* Discount Percentage Field */}
                       <div
                         className={`${
                           getValues("purchaseType") === "Downword Offer"
@@ -2205,13 +2208,13 @@ const AddArtwork = () => {
                         } grid md:grid-cols-2 gap-3`}
                       >
                         <label className="text-[#203F58] text-sm sm:text-base font-semibold">
-                          Discount Percentage
+                          {t("Discount Percentage")}
                           <input
                             {...register("dpersentage")}
                             type="text"
                             name="dpersentage"
                             id="dpersentage"
-                            placeholder="$ 00  %"
+                            placeholder="0.0 %"
                             readOnly={query ? true : false}
                             className="bg-[#F9F9FC] border mb-3 border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5"
                           />
@@ -2220,12 +2223,12 @@ const AddArtwork = () => {
                         {watch("purchaseType") === "Downward Offer" ||
                         watch("purchaseType") === "Upward Offer" ? (
                           <label className="text-[#203F58] text-sm sm:text-base font-semibold">
-                            Accept Offer Minimum Price
+                            {t("Accept Offer Minimum Price")}
                             <input
                               {...register("acceptOfferPrice")}
                               type="text"
                               id="acceptOfferPrice"
-                              placeholder="Eur "
+                              placeholder={t("Accept Offer Minimum Price")}
                               readOnly={query ? true : false}
                               className="bg-[#F9F9FC] border mb-3 border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5"
                             />
@@ -2238,27 +2241,26 @@ const AddArtwork = () => {
 
                 <div className="grid md:grid-cols-2 gap-3">
                   <label className="text-[#203F58] text-sm sm:text-base font-semibold">
-                    Artist Base Fees
+                    {t("Artist Base Fees")}
                     <div className="flex space-x-2">
                       <input
                         id="artistFees"
                         name="artistFees"
                         value={catalogPrice}
-                        placeholder="€ Artist Base Fees"
+                        placeholder={t("€ Artist Base Fees")}
                         readOnly={true}
                         className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5"
                       />
                     </div>
                   </label>
 
-                  {/* VAT Amount Field */}
                   <label className="text-[#203F58] text-sm sm:text-base font-semibold">
-                    VAT Amount (%)
+                    {t("VAT Amount")} (%)
                     <input
                       type="text"
                       id="vatAmount"
                       {...register("vatAmount")}
-                      placeholder="Type VAT amount..."
+                      placeholder={t("Enter VAT amount")}
                       value={vatAmount}
                       readOnly={true}
                       className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5"
@@ -2276,21 +2278,21 @@ const AddArtwork = () => {
                   }}
                   className="mb-2"
                 >
-                  Inventory & Shipping
+                  {t("Inventory & Shipping")}
                 </Header>
 
                 <div className="grid md:grid-cols-2 gap-3 items-center">
                   {shipping_inventry.map((shipping) => (
                     <span key={shipping.name}>
                       <label className="p-1 text-[14px] text-sm sm:text-base font-semibold">
-                        {shipping.label}
+                        {t(shipping.label)}
                       </label>
                       <input
                         type="text"
                         {...register(shipping.name)}
                         name={shipping.name}
                         id={shipping.name}
-                        placeholder={shipping.placeholder}
+                        placeholder={t(shipping.placeholder)}
                         readOnly={query ? true : false}
                         className="bg-[#F9F9FC] border mb-2 border-gray-300 outline-none text-[#203F58] text-sm rounded-lg block w-full p-1 sm:p-2.5"
                       />
@@ -2299,13 +2301,12 @@ const AddArtwork = () => {
 
                   <span>
                     <label className="p-1 text-[14px] text-sm sm:text-base font-semibold">
-                      Location
+                      {t("Location")}
                     </label>
                     <input
                       type="text"
-                      // name="location"
                       id="location"
-                      placeholder="Enter Your Location"
+                      placeholder={t("Enter Your Location")}
                       {...register("location")}
                       readOnly={query ? true : false}
                       className="bg-[#F9F9FC] border mb-2 border-gray-300 outline-none text-[#203F58] text-sm rounded-lg block w-full p-1 sm:p-2.5"
@@ -2313,35 +2314,33 @@ const AddArtwork = () => {
                   </span>
                 </div>
 
-                <div className="">
+                <div>
                   <label className="text-[#203F58] sm:text-base font-semibold ">
-                    Package Material *
+                    {t("Package Material")} *
                     <select
-                      as="select"
                       id="packageMaterial"
-                      // name="packageMaterial"
                       {...register("packageMaterial", {
-                        required: "Package Material is required",
+                        required: t("Package Material is required"),
                       })}
-                      placeholder="Select"
-                      disabled={query}
-                      className="bg-[#F9F9FC] mt-1 border mb-3 border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
+                      disabled={query ? true : false}
+                      className="bg-[#F9F9FC] mt-1 border mb-3 border-gray-300 outline-none text-[#203F58] text-sm rounded-lg block w-full p-1 sm:p-2.5"
                     >
-                      <option value="">Select</option>
-                      {packMaterial?.map((item, i) => (
-                        <option>{item.value}</option>
+                      <option value="">{t("Select")}</option>
+                      {packMaterial?.map((item, i: number) => (
+                        <option value={item.value} key={i}>
+                          {t(item.value)}
+                        </option>
                       ))}
                     </select>
                     {errors.packageMaterial ? (
                       <div className="error text-red-500 mt-1 text-sm">
-                        {errors.packageMaterial.message}
+                        {t(`${errors.packageMaterial.message}`)}
                       </div>
                     ) : null}
                   </label>
                 </div>
 
                 <div className="flex items-center border border-zinc-500 w-full py-3 px-4 mb-3 bg-yellow-100 text-yellow-800">
-                  {/* Warning Icon */}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="w-6 h-6 mr-2"
@@ -2358,13 +2357,22 @@ const AddArtwork = () => {
                   </svg>
 
                   <span>
-                    Max Dimensions should not be greater than the Dimensions in
-                    selected Catalog.
+                    {t(
+                      "Max Dimensions should not be greater than the Dimensions in selected Catalog."
+                    )}
                     <ul className="list-disc ml-5 mt-2">
-                      <li>Max Height : {packageHeightError}</li>
-                      <li>Max Width : {packageWidthError}</li>
-                      <li>Max Depth : {packageDepthError}</li>
-                      <li>Max Weight :{packageWeightError}</li>
+                      <li>
+                        {t("Max Height")} : {packageHeightError}
+                      </li>
+                      <li>
+                        {t("Max Width")} : {packageWidthError}
+                      </li>
+                      <li>
+                        {t("Max Depth")} : {packageDepthError}
+                      </li>
+                      <li>
+                        {t("Max Weight")} :{packageWeightError}
+                      </li>
                     </ul>
                   </span>
                 </div>
@@ -2373,22 +2381,22 @@ const AddArtwork = () => {
                   {package_dimension.map((field) => (
                     <span key={field.name}>
                       <label className="p-1 text-[14px] text-[#203F58] font-semibold">
-                        {field.label} *
+                        {t(field.label)} *
                       </label>
                       <input
                         type="text"
                         {...register(field.name, {
-                          required: `${field.label} is required`,
+                          required: t(`${field.label} is required`),
                         })}
                         id={field.name}
                         readOnly={query ? true : false}
-                        placeholder={field.placeholder}
+                        placeholder={t(field.placeholder)}
                         className="bg-[#F9F9FC] border mb-2 border-gray-300 outline-none text-[#203F58] text-sm rounded-lg block w-full p-1 sm:p-2.5 "
                       />
 
                       {errors[field.name] ? (
                         <div className="error text-red-500 mt-1 text-sm">
-                          {errors[field.name].message}
+                          {t(`${errors[field.name].message}`)}
                         </div>
                       ) : null}
                     </span>
@@ -2399,15 +2407,13 @@ const AddArtwork = () => {
                   <label className="flex items-center text-sm">
                     <input
                       type="checkbox"
-                      onChange={(e) => {
-                        setIsComingSoon((prev) => !prev);
-                      }}
-                      checked={isComingSoon}
+                      onChange={() => setIsComingSoon((prev) => !prev)}
+                      checked={isComingSoon == true}
                       id="comingSoon"
                       className="mr-2"
                     />
                     <span className="p-1 text-[14px] text-[#203F58] font-semibold">
-                      Coming Soon
+                      {t("Coming Soon")}
                     </span>
                   </label>
                 </div>
@@ -2431,7 +2437,7 @@ const AddArtwork = () => {
                   onClick={() => handleNavigate()}
                   className="border border-[#7E98B5] rounded px-4 py-3 text-sm font-semibold cursor-pointer"
                 >
-                  ✕ Cancel
+                  ✕ {t("Cancel")}
                 </span>
 
                 <div className="flex justify-end ">
@@ -2449,7 +2455,9 @@ const AddArtwork = () => {
                         modifyIsPending ? "opacity-70 pointer-events-none" : ""
                       }`}
                     >
-                      {modifyIsPending ? "Modifying..." : "Modify Artwork"}
+                      {modifyIsPending
+                        ? t("Modifying...")
+                        : t("Modify Artwork")}
                     </Button>
                   ) : (
                     <Button
@@ -2464,7 +2472,7 @@ const AddArtwork = () => {
                         isPending ? "opacity-70 pointer-events-none" : ""
                       }`}
                     >
-                      {isPending ? "Previewing..." : "Save & Preview"}
+                      {isPending ? t("Previewing...") : t("Save & Preview")}
                     </Button>
                   )}
                 </div>
@@ -2477,7 +2485,9 @@ const AddArtwork = () => {
       {qrVisible && (
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-blue-50 w-[80%] sm:w-[60%] md:w-[50%] lg:w-[40%] h-[80vh] sm:h-[75vh] md:h-[75vh] lg:h-[75vh] p-4 rounded-lg shadow-lg">
           <div className="flex flex-col justify-center items-center">
-            <h1 className="font-bold text-lg text-center mt-3">QR Code</h1>
+            <h1 className="font-bold text-lg text-center mt-3">
+              {t("QR Code")}
+            </h1>
             <img
               src={logoIcon}
               alt="Logo"
@@ -2525,7 +2535,7 @@ const AddArtwork = () => {
                   onClick={handleCopy}
                   className="bg-black text-white px-4 py-2 rounded-md text-md cursor-pointer hover:bg-blue-600 transition mb-2 sm:mb-0"
                 >
-                  Copy Link
+                  {t("Copy Link")}
                 </button>
 
                 <button
@@ -2533,19 +2543,19 @@ const AddArtwork = () => {
                   className="bg-black text-white px-4 py-2 rounded-md text-md cursor-pointer hover:bg-green-600 transition"
                   disabled={isLoading}
                 >
-                  {isLoadingPdf ? "Downloading PDF..." : "Download PDF"}
+                  {isLoadingPdf ? t("Downloading PDF...") : t("Download PDF")}
                 </button>
               </div>
 
               {copySuccess && (
                 <p className="mt-2 text-green-500 font-semibold">
-                  {copySuccess}
+                  {t(copySuccess)}
                 </p>
               )}
 
               {errorMessage && (
                 <p className="mt-2 text-red-500 font-semibold">
-                  {errorMessage}
+                  {t(errorMessage)}
                 </p>
               )}
             </div>

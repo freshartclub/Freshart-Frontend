@@ -1,24 +1,20 @@
+import dayjs from "dayjs";
 import { useState } from "react";
-import { PaginationData } from "../Data/PaginationData";
 import { LuEye } from "react-icons/lu";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import PaginationTabs from "./PaginationTabs";
-import { useGetArtistOrder } from "../Orders/http/useGetArtistOrder";
-import dayjs from "dayjs";
-import { NavLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Loader from "../../ui/Loader";
 import { formateCurrency } from "../../utils/FormatCurrency";
 import { imageUrl } from "../../utils/baseUrls";
+import { useGetArtistOrder } from "../Orders/http/useGetArtistOrder";
+import PaginationTabs from "./PaginationTabs";
+import { useTranslation } from "react-i18next";
 
 const Pagination = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const recordPerPage = 5;
-  const lastIndex = currentPage * recordPerPage;
-  const firstIndex = lastIndex - recordPerPage;
-  const records = PaginationData.slice(firstIndex, lastIndex);
 
   const navigate = useNavigate();
-
   const { data, isLoading } = useGetArtistOrder();
 
   const headerData = [
@@ -36,14 +32,12 @@ const Pagination = () => {
     navigate(`/artist-panel/order/approve-order?id=${value?._id}`);
   };
 
-  console.log(data);
-
   const nPages = Math.ceil((data?.length || 0) / recordPerPage);
   const numbers = [...Array(nPages).keys()].map((num) => num + 1);
 
-  if (isLoading) {
-    return <Loader />;
-  }
+  const { t } = useTranslation();
+
+  if (isLoading) return <Loader />;
 
   return (
     <>
@@ -51,7 +45,6 @@ const Pagination = () => {
         {data && data.length > 0 ? (
           <div className="w-full overflow-x-auto">
             <table className="w-full min-w-[800px] table-auto border-collapse text-sm">
-              {/* Table Header */}
               <thead>
                 <tr className="bg-gray-50">
                   {headerData.map((header, index) => (
@@ -59,17 +52,15 @@ const Pagination = () => {
                       key={index}
                       className="text-left px-4 py-2 font-semibold text-black whitespace-nowrap"
                     >
-                      {header.title}
+                      {t(header.title)}
                     </th>
                   ))}
                 </tr>
               </thead>
 
-              {/* Table Body */}
               <tbody>
                 {data.map((value, index) => (
                   <tr key={index} className="border-b hover:bg-gray-100">
-                    {/* Product Column */}
                     <td
                       className="px-8 py-3 flex items-center gap-2 cursor-pointer whitespace-nowrap"
                       onClick={() => handelClickData(value)}
@@ -89,7 +80,6 @@ const Pagination = () => {
                       </div>
                     </td>
 
-                    {/* Customer Column */}
                     <td className="px-4 py-3 whitespace-nowrap">
                       <p className="text-black font-semibold text-[12px] lg:text-[14px]">
                         {value?.artistName
@@ -103,7 +93,7 @@ const Pagination = () => {
 
                     {/* Order Type */}
                     <td className="px-4 py-3 text-[12px] lg:text-[14px] font-bold capitalize whitespace-nowrap">
-                      {value?.items[0]?.type}
+                      {value?.items[0]?.type || "N/A"}
                     </td>
 
                     {/* Total */}
@@ -113,7 +103,7 @@ const Pagination = () => {
 
                     {/* Payment Type */}
                     <td className="px-4 py-3 text-[12px] lg:text-[14px] font-bold whitespace-nowrap">
-                      {value?.paymenttype}
+                      {value?.paymenttype || "N/A"}
                     </td>
 
                     {/* Date */}
@@ -121,7 +111,6 @@ const Pagination = () => {
                       {dayjs(value?.createdAt).format("MMM D, YYYY")}
                     </td>
 
-                    {/* Status */}
                     <td className="px-4 py-3 whitespace-nowrap">
                       <div
                         className={`w-fit rounded-lg py-1 px-2 text-center capitalize ${
@@ -132,11 +121,10 @@ const Pagination = () => {
                             : "bg-[#E7F4EE] text-[#0D894F]"
                         }`}
                       >
-                        {value.status}
+                        {t(value.status)}
                       </div>
                     </td>
 
-                    {/* Actions */}
                     <td className="px-4 py-3 whitespace-nowrap">
                       <div className="flex gap-4">
                         <LuEye
@@ -154,7 +142,7 @@ const Pagination = () => {
         ) : (
           <div className="flex flex-col items-center justify-center bg-white h-[300px] border border-zinc-300">
             <p className="text-lg text-center font-medium mb-4">
-              You don't have any Order yet.
+              {t("You don't have any Order yet.")}
             </p>
           </div>
         )}

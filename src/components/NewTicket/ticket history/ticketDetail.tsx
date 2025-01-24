@@ -9,25 +9,20 @@ import Loader from "../../ui/Loader";
 import { useGetTicketDetails } from "./http/useGetTicketDetails";
 import usePatchFeedbackMutation from "./http/usePatchFeedback";
 import useGetPostArtistTicketReplyMutation from "./http/usePostReply";
-
-// interface Ticket {
-//   ticketId: string;
-//   ticketType: string;
-//   subject: string;
-//   message: string;
-//   ticketDate: string;
-// }
+import { useTranslation } from "react-i18next";
+import toast from "react-hot-toast";
 
 const SingleTicket = () => {
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
   const [reply, setReply] = useState("");
-  const [openTicketId, setOpenTicketId] = useState<string | null>(null);
   const [file, setFile] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [feedback, setFeedback] = useState("");
   const [fileName, setFileName] = useState("Attach File");
   const [yesOrNo, setYesOrNo] = useState(null);
+
+  const { t } = useTranslation();
 
   const user = useAppSelector((state) => state.user.user);
   const navigate = useNavigate();
@@ -46,6 +41,7 @@ const SingleTicket = () => {
     : null;
 
   const handleReply = (ticket) => {
+    if (!reply) return toast.error("Please write your reply");
     const newData = {
       id: ticket._id,
       message: reply,
@@ -99,7 +95,6 @@ const SingleTicket = () => {
       if (yesOrNo) {
         navigate("/artist-panel/ticket/tickets");
       }
-      setOpenTicketId(null);
       setFile(null);
       setIsModalOpen(false);
     });
@@ -132,8 +127,6 @@ const SingleTicket = () => {
     setFile(null);
   };
 
-  console.log(data?.data?.status);
-
   if (isFetching) return <Loader />;
 
   return (
@@ -146,21 +139,21 @@ const SingleTicket = () => {
             <span className="font-semibold text-gray-800">
               {data?.data?.ticketId}
             </span>
-            <span className="text-[#84818A]">({data?.data?.ticketType})</span>
+            <span className="text-[#84818A]">({t(data?.data?.ticketType)})</span>
             <span className="font-semibold">{newDate}</span>
           </div>
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2">
-              <h4 className="text-sm">Urgency:</h4>
+              <h4 className="text-sm">{t("Urgency")}:</h4>
               <span className="text-sm font-semibold text-gray-800">
-                {data?.data?.urgency}
+                {t(data?.data?.urgency)}
               </span>
             </div>
 
             <div className="flex items-center gap-2">
               <h4 className="text-sm">Impact:</h4>
               <span className="text-sm font-semibold text-gray-800">
-                {data?.data?.impact}
+                {t(data?.data?.impact)}
               </span>
             </div>
           </div>
@@ -169,7 +162,7 @@ const SingleTicket = () => {
           <div className="flex items-center gap-1">
             <div className="w-[16px] h-[16px] bg-[#F8A53499] rounded-full"></div>
             <span className="text-xs font-semibold text-gray-800">
-              {data?.data?.status}
+              {t(data?.data?.status)}
             </span>
           </div>
         </div>
@@ -183,11 +176,7 @@ const SingleTicket = () => {
 
       <div className=" flex flex-col gap-2  w-full md:w-2/3  cursor-pointer ">
         <div className="flex items-center">
-          <div
-            className={` p-3 flex flex-col w-full
-                 "bg-zinc-200" 
-             `}
-          >
+          <div className="p-3 flex flex-col w-full bg-zinc-200">
             <div className="flex  sm:flex-row justify-between">
               <div className="flex items-center  gap-2 ">
                 <span>
@@ -200,7 +189,6 @@ const SingleTicket = () => {
 
               <div className="flex gap-3 text-xs">
                 <div className="font-semibold">{newDate} </div>
-
                 <div className="font-semibold">{newTime}</div>
               </div>
             </div>
@@ -236,7 +224,7 @@ const SingleTicket = () => {
                     <span className=" text-sm font-semibold  ">
                       {item?.userType === "user"
                         ? `${user?.artistName} (${user?.email})`
-                        : `Admin wrote (admin) :`}
+                        : `${t("Admin wrote (admin)")} :`}
                     </span>
                   </div>
 
@@ -274,8 +262,8 @@ const SingleTicket = () => {
         <h2 className="font-montserrat text-lg font-semibold mt-4">
           {data?.data?.status === "Technical Finish" ||
           data?.data?.status === "Closed"
-            ? "Send Your Feedback"
-            : "Reply to Ticket"}
+            ? t("Send Your Feedback")
+            : t("Reply to Ticket")}
         </h2>
 
         <div className="flex items-center gap-3 mt-3">
@@ -329,7 +317,7 @@ const SingleTicket = () => {
             <div className="flex flex-col gap-2 items-end rounded-md py-3 w-full">
               <textarea
                 className="border border-gray-300 rounded-lg p-2 w-full "
-                placeholder="Enter Your Message here..."
+                placeholder={t("Enter Your Message here...")}
                 onChange={(e) => setReply(e.target.value)}
                 rows={4}
                 value={reply}
@@ -352,7 +340,7 @@ const SingleTicket = () => {
                             : "bg-white border-red-300"
                         }`}
                       >
-                        Choose File
+                        {t("Choose File")}
                       </label>
                     </>
                   )}
@@ -367,7 +355,7 @@ const SingleTicket = () => {
                       onClick={handleRemoveFile}
                       className="text-red-500 font-semibold border border-red-500 px-4 py-2 rounded-md hover:bg-red-100 transition duration-300"
                     >
-                      Remove
+                      {t("Remove")}
                     </button>
                   </div>
                 )}
@@ -376,7 +364,7 @@ const SingleTicket = () => {
                   onClick={() => handleReply(data?.data)}
                   className="bg-black text-white rounded-lg px-4 py-2 hover:bg-gray-800 transition duration-300"
                 >
-                  {isPending ? "Loading..." : "Submit"}
+                  {isPending ? t("Loading...") : t("Submit")}
                 </button>
               </div>
             </div>
@@ -385,25 +373,27 @@ const SingleTicket = () => {
           {isModalOpen ? (
             <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[999]">
               <div className="bg-white p-6 rounded-lg lg:w-1/3">
-                <h2 className="  xl:text-xl mb-4">We'd love your feedback!</h2>
+                <h2 className="  xl:text-xl mb-4">
+                  {t("We'd love your feedback!")}
+                </h2>
                 <textarea
                   value={feedback}
                   onChange={(val) => setFeedback(val.target.value)}
                   className="text-sm w-full h-20 border rounded-lg p-2"
-                  placeholder="Please leave your feedback..."
+                  placeholder={t("Please leave your feedback...")}
                 />
                 <div className="mt-4 flex flex-col md:flex-row justify-center gap-4">
                   <button
                     onClick={handleCloseModal}
                     className="bg-gray-300 p-2 rounded"
                   >
-                    Close
+                    {t("Close")}
                   </button>
                   <button
                     className="bg-blue-500 text-white p-2 rounded"
                     onClick={() => handleFeedBack(data?.data?._id)}
                   >
-                    {isFeedbackLoading ? "Submiting..." : "Submit"}
+                    {isFeedbackLoading ? t("Submiting...") : t("Submit")}
                   </button>
                 </div>
               </div>

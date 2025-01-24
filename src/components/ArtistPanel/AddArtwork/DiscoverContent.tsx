@@ -6,8 +6,10 @@ import P from "../../ui/P";
 import cart from "./assets/cart.png";
 import mark from "./assets/offer.png";
 import useGetPublishedArtwork from "./http/useGetPublishedArtwork";
+import { useTranslation } from "react-i18next";
 
-const DiscoverContent = ({ data }: any) => {
+const DiscoverContent = ({ data}) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const { mutate, isPending } = useGetPublishedArtwork();
@@ -59,7 +61,7 @@ const DiscoverContent = ({ data }: any) => {
                 <Header
                   variant={{ size: "base", theme: "dark", weight: "medium" }}
                 >
-                  Author :
+                  {t("Author")} :
                 </Header>
                 <P
                   className="text-[#999999]"
@@ -80,7 +82,7 @@ const DiscoverContent = ({ data }: any) => {
                   }}
                   className="flex justify-center border border-[#263238] w-full font-medium text-sm"
                 >
-                  {isPending ? "Publishing..." : "Publish"}
+                  {isPending ? t("Publishing...") : t("Publish")}
                 </Button>
               ) : null}
 
@@ -93,7 +95,7 @@ const DiscoverContent = ({ data }: any) => {
                   }}
                   className="text-sm border border-[#263238] w-full font-medium"
                 >
-                  Continue Edit
+                  {t("Continue Edit")}
                 </Button>
               ) : null}
             </div>
@@ -103,7 +105,7 @@ const DiscoverContent = ({ data }: any) => {
 
       <div className="flex gap-2 lg:mt-2 mt-1">
         <P variant={{ size: "small", theme: "dark", weight: "medium" }}>
-          Artwork ID :
+          {t("Artwork ID")} :
         </P>
         <P
           className="text-[#999999]"
@@ -115,7 +117,7 @@ const DiscoverContent = ({ data }: any) => {
 
       <div className="flex gap-2 lg:mt-2 mt-1">
         <P variant={{ size: "small", theme: "dark", weight: "medium" }}>
-          Year of Creation :
+          {t("Year of Creation")} :
         </P>
         <P
           className="text-[#999999]"
@@ -127,7 +129,7 @@ const DiscoverContent = ({ data }: any) => {
 
       <div className="flex gap-2 lg:mt-2 mt-1 ">
         <P variant={{ size: "small", theme: "dark", weight: "medium" }}>
-          Artwork Series :
+          {t("Artwork Series")} :
         </P>
         <P
           className="text-[#999999]"
@@ -146,7 +148,7 @@ const DiscoverContent = ({ data }: any) => {
 
       <div className="flex gap-3 ">
         <P variant={{ size: "small", theme: "dark", weight: "medium" }}>
-          Size :
+          {t("Size")} :
         </P>
         <P
           className="text-[#999999]"
@@ -181,7 +183,7 @@ const DiscoverContent = ({ data }: any) => {
         >
           <img src={cart} alt="" className="md:mx-2 mx-1" />
           <P variant={{ size: "base", theme: "light", weight: "normal" }}>
-            Add to Cart
+            {t("Add to Cart")}
           </P>
         </Button>
 
@@ -191,7 +193,7 @@ const DiscoverContent = ({ data }: any) => {
         >
           <img src={mark} alt="" className="md:mx-2 mx-1" />
           <P variant={{ size: "base", theme: "dark", weight: "normal" }}>
-            Make an Offer
+            {t("Make an Offer")}
           </P>
         </Button>
       </div>
@@ -202,7 +204,7 @@ const DiscoverContent = ({ data }: any) => {
             variant={{ size: "small", theme: "dark", weight: "medium" }}
             className="uppercase"
           >
-            Product Code :
+            {t("Product Code")} :
           </P>
           <P
             variant={{ size: "small", weight: "medium" }}
@@ -216,7 +218,7 @@ const DiscoverContent = ({ data }: any) => {
             variant={{ size: "small", theme: "dark", weight: "medium" }}
             className="uppercase"
           >
-            Discipline :
+            {t("Discipline")} :
           </P>
           <P
             variant={{ size: "small", weight: "medium" }}

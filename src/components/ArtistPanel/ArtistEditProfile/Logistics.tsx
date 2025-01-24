@@ -1,12 +1,7 @@
-import React from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 
-const Logistics = ({ control }) => {
-  const {} = useFieldArray({
-    control,
-    name: "logistics",
-  });
-
+const Logistics = ({ control}) => {
+  const { t } = useTranslation();
   const logisticsData = [
     {
       name: "logName",
@@ -58,7 +53,9 @@ const Logistics = ({ control }) => {
 
   return (
     <div className="p-4 mt-4 bg-white rounded-lg shadow-md max-w-full border">
-      <h2 className="text-xl font-semibold mb-3 text-[#1A1C21]">Logistics</h2>
+      <h2 className="text-xl font-semibold mb-3 text-[#1A1C21]">
+        {t("Logistics")}
+      </h2>
       <div className="flex flex-wrap justify-between w-full gap-4 mb-4">
         {logisticsData.map(({ name, label, message }) => (
           <div key={name} className="md:w-[48%] w-full relative">
@@ -72,7 +69,7 @@ const Logistics = ({ control }) => {
               htmlFor={name}
               className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
             >
-              {label}
+              {t(label)}
             </label>
           </div>
         ))}

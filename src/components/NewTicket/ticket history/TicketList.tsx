@@ -8,16 +8,15 @@ import green from "../ticket history/assets/green.png";
 import orange from "../ticket history/assets/orange.png";
 import artistImg from "../ticket history/assets/People.png";
 import usePatchFeedbackMutation from "./http/usePatchFeedback";
+import { useTranslation } from "react-i18next";
 
 const TicketsList: FC<{
   tickets: any[];
-  currentPage: number;
-  totalPages: number;
-  searchQuery: string;
   isLoading: any;
-  onPageChange: (page: number) => void;
-}> = ({ tickets, currentPage, totalPages, onPageChange, isLoading }) => {
+}> = ({ tickets, isLoading }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
   const [feedbackData, setFeedbackData] = useState<{
     [key: string]: { feedback: string; isLiked: boolean };
   }>({});
@@ -70,7 +69,7 @@ const TicketsList: FC<{
   return (
     <div>
       {tickets?.length === 0 ? (
-        <p>No tickets available.</p>
+        <p>{t("No Tickets Found")}</p>
       ) : (
         tickets?.map((ticket) => {
           let imageSrc;
@@ -133,14 +132,14 @@ const TicketsList: FC<{
                         : "border-green-300"
                     }`}
                   >
-                    {ticket?.status}
+                    {t(ticket?.status)}
                   </span>
 
                   <span className={`border px-3 py-1 rounded-md`}>
-                    {ticket?.impact}
+                    {t(ticket?.impact)}
                   </span>
                   <span className={`border px-3 py-1 rounded-md`}>
-                    {ticket?.urgency}
+                    {t(ticket?.urgency)}
                   </span>
                 </div>
               </div>
@@ -211,7 +210,7 @@ const TicketsList: FC<{
                     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
                       <div className="bg-white p-6 rounded-lg lg:w-1/3">
                         <h2 className="  xl:text-xl mb-4">
-                          We'd love your feedback!
+                          {t("We'd love your feedback!")}
                         </h2>
                         <textarea
                           value={feedbackData[ticket._id]?.feedback || ""}
@@ -225,20 +224,20 @@ const TicketsList: FC<{
                             }))
                           }
                           className="text-sm w-full h-20 border rounded-lg p-2"
-                          placeholder="Please leave your feedback..."
+                          placeholder={t("Please leave your feedback...")}
                         />
                         <div className="mt-4 flex flex-col md:flex-row justify-center gap-4">
                           <button
                             onClick={handleCloseModal}
                             className="bg-gray-300 p-2 rounded"
                           >
-                            Close
+                            {t("Close")}
                           </button>
                           <button
                             className="bg-blue-500 text-white p-2 rounded"
                             onClick={() => handleFeedBack(ticket._id)}
                           >
-                            {isPending ? "Submiting..." : "Submit"}
+                            {isPending ? t("Submiting...") : t("Submit")}
                           </button>
                         </div>
                       </div>
@@ -249,7 +248,7 @@ const TicketsList: FC<{
                     onClick={() => handleClick(ticket?._id)}
                     className="font-bold mt-2 border-b-[1px] border-[#102030] text-xs sm:text-sm"
                   >
-                    Open Ticket
+                    {t("Open Ticket")}
                   </button>
                 </div>
               </div>
@@ -257,8 +256,6 @@ const TicketsList: FC<{
           );
         })
       )}
-
-      {/* Pagination code remains unchanged */}
     </div>
   );
 };

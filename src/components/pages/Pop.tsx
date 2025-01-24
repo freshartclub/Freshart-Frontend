@@ -40,17 +40,19 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({
           validateEmail === "Email Verified" ? "pointer-events-none" : ""
         }`}
       >
-        {sendMailPending ? "Sending..." : t(validateEmail)}
+        {sendMailPending ? t("Sending...") : t(validateEmail)}
       </span>
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded-lg max-w-sm w-full">
-            <h3 className="text-xl font-semibold mb-4">Email Verification</h3>
+            <h3 className="text-xl font-semibold mb-4">
+              {t("Email Verification")}
+            </h3>
 
             <div className="mb-4">
               <label htmlFor="verificationCode" className="block text-gray-700">
-                Enter the code we sent to your email:
+                {t("Enter the code we sent to your email")}:
               </label>
               <input
                 id="verificationCode"
@@ -58,7 +60,7 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({
                 value={verificationCode}
                 onChange={handleCodeChange}
                 className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter verification code"
+                placeholder={`${t("Enter verification code")}`}
               />
             </div>
 
@@ -67,13 +69,13 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({
                 onClick={validateEmailOtp}
                 className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 cursor-pointer"
               >
-                {verifyOtpPending ? " Verifying..." : "Verify Code"}
+                {verifyOtpPending ? t("Verifying...") : t("Verify Code")}
               </span>
               <span
                 onClick={() => handleCloseModel()}
                 className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 cursor-pointer"
               >
-                Close
+                {t("Close")}
               </span>
             </div>
           </div>

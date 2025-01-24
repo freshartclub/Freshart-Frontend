@@ -1,23 +1,20 @@
+import dayjs from "dayjs";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { LuEye } from "react-icons/lu";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { useState } from "react";
-import PaginationTabs from "../ArtistDashboard/PaginationTabs";
 import { useNavigate } from "react-router-dom";
-import { useGetArtistOrder } from "./http/useGetArtistOrder";
-import dayjs from "dayjs";
-import Loader from "../../ui/Loader";
 import { formateCurrency } from "../../utils/FormatCurrency";
 import { imageUrl } from "../../utils/baseUrls";
+import PaginationTabs from "../ArtistDashboard/PaginationTabs";
 
 const Allorders = ({ orderDetail }: any) => {
   const [expandedOrderID, setExpandedOrderID] = useState<string | null>(null);
-  const { data, isLoading } = useGetArtistOrder();
+  const { t } = useTranslation();
 
   const [currentPage, setCurrentPage] = useState(1);
   const recordPerPage = 10;
-  const lastIndex = currentPage * recordPerPage;
-  const firstIndex = lastIndex - recordPerPage;
-  const records = orderDetail?.slice(firstIndex, lastIndex);
+
   const nPages = orderDetail
     ? Math.ceil(orderDetail.length / recordPerPage)
     : 0;
@@ -29,7 +26,6 @@ const Allorders = ({ orderDetail }: any) => {
     { key: "product", label: "Product", colSpan: 2 },
     { key: "date", label: "Date", colSpan: 1 },
     { key: "customer", label: "Customer", colSpan: 2 },
-    { key: "orderType", label: "Order Type", colSpan: 1 },
     { key: "total", label: "Total", colSpan: 1 },
     { key: "payment", label: "Payment", colSpan: 1 },
     { key: "status", label: "Status", colSpan: 1 },
@@ -37,7 +33,6 @@ const Allorders = ({ orderDetail }: any) => {
   ];
 
   const navigate = useNavigate();
-  const url = "https://dev.freshartclub.com/images";
 
   const handelClickData = (value) => {
     navigate(
@@ -49,104 +44,30 @@ const Allorders = ({ orderDetail }: any) => {
     setExpandedOrderID(expandedOrderID === orderID ? null : orderID);
   };
 
-  // Group items by orderID
   const groupedData = orderDetail?.reduce((acc: any, curr: any) => {
     acc[curr.orderID] = acc[curr.orderID] || [];
     acc[curr.orderID].push(curr);
     return acc;
   }, {});
 
-  console.log(orderDetail);
+  const name = (val) => {
+    let fullName = val?.artistName || "";
 
-  if (isLoading) {
-    return <Loader />;
-  }
+    if (val?.artistSurname1) fullName += " " + val?.artistSurname1;
+    if (val?.artistSurname2) fullName += " " + val?.artistSurname2;
+
+    return fullName.trim();
+  };
+
   return (
     <>
       <div className="rounded-md border border-1 mt-3 w-full overflow-x-auto">
-        {/* <div className="block lg:hidden bg-white">
-          {orderDetail && orderDetail?.length > 0 ? (
-            orderDetail?.map((value: any, index: any) => (
-              <div key={index} className="p-4 border-b">
-                <div className="flex items-center justify-between mb-2">
-                  <p className="font-bold text-sm">Order #{value.orderID}</p>
-                  <div
-                    className={`rounded-lg py-1 px-2 text-xs capitalize ${
-                      value?.status === "pending"
-                        ? "bg-[#FDF1E8] text-[#E46A11]"
-                        : value.status === "success"
-                        ? "bg-[#E8F8FD] text-[#13B2E4]"
-                        : value.status === "cancelled"
-                        ? "bg-[#FEEDEC] text-[#F04438]"
-                        : "bg-[#E7F4EE] text-[#0D894F]"
-                    }`}
-                  >
-                    {value?.status}
-                  </div>
-                </div>
-
-                <div className="flex gap-3 mb-3">
-                  <img
-                    src={`${imageUrl}/users/${value?.image}`}
-                    alt="product"
-                    className="w-20 h-20 rounded-lg object-cover"
-                  />
-                  <div>
-                    <p className="font-bold text-sm">{value?.artWorkName}</p>
-                    <p className="text-xs text-gray-600">{`${value?.length} x ${value?.width} x ${value?.height} cm`}</p>
-                    <p className="text-sm mt-1">
-                      {formateCurrency(value?.subTotal, "$")}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="space-y-1 mb-3">
-                  <p className="text-sm">
-                    <span className="font-semibold">Customer:</span>{" "}
-                    {`${value?.artistName}${value?.artistSurname1}${value?.artistSurname2}`}
-                  </p>
-                  <p className="text-sm">
-                    <span className="font-semibold">Date:</span>{" "}
-                    {dayjs(value?.createdAt).format("MMM D, YYYY")}
-                  </p>
-                  <p className="text-sm">
-                    <span className="font-semibold">Order Type:</span>{" "}
-                    {value?.orderType}
-                  </p>
-                  <p className="text-sm">
-                    <span className="font-semibold">Payment:</span>{" "}
-                    {value?.paymenttype}
-                  </p>
-                </div>
-
-                <div className="flex gap-4 justify-end">
-                  <button
-                    onClick={() => handelClickData(value)}
-                    className="p-2 hover:bg-gray-100 rounded-full"
-                  >
-                    <LuEye className="text-xl" />
-                  </button>
-                  <button className="p-2 hover:bg-gray-100 rounded-full">
-                    <RiDeleteBin6Line className="text-xl" />
-                  </button>
-                </div>
-              </div>
-            ))
-          ) : (
-            <div className="flex flex-col items-center justify-center bg-white h-[300px] border border-zinc-300">
-              <p className="text-lg text-center font-medium mb-4">
-                You don't have any Order yet.
-              </p>
-            </div>
-          )}
-        </div> */}
-
         <div className="  min-w-[1000px]">
-          <div className="grid grid-cols-11 bg-[#F9F9FC] items-center my-auto h-10 p-2 border-b">
+          <div className="grid grid-cols-10 bg-[#F9F9FC] items-center my-auto h-10 p-2 border-b">
             {columns?.map((column) => (
               <div key={column.key} className={`col-span-${column.colSpan}`}>
                 <p className="font-semibold text-sm xl:text-base text-black">
-                  {column.label}
+                  {t(column.label)}
                 </p>
               </div>
             ))}
@@ -157,9 +78,7 @@ const Allorders = ({ orderDetail }: any) => {
               const items = groupedData[orderID];
               return (
                 <div className="bg-white p-2" key={orderID}>
-                  {/* Display the first item in the group */}
-
-                  <div className="grid grid-cols-11 h-auto pb-3 pt-3">
+                  <div className="grid grid-cols-10 items-center h-auto pb-3 pt-3">
                     <div className="col-span-1">
                       <p className="text-xs xl:text-sm font-bold">
                         {items[0]?.orderID}
@@ -173,7 +92,7 @@ const Allorders = ({ orderDetail }: any) => {
                         <img
                           src={`${imageUrl}/users/${items[0]?.image}`}
                           alt="product image"
-                          className="w-10 h-12 rounded-xl object-cover"
+                          className="w-10 h-10 rounded object-cover"
                         />
                       </div>
                       <div>
@@ -193,15 +112,9 @@ const Allorders = ({ orderDetail }: any) => {
                     </div>
                     <div className="col-span-2">
                       <p className="text-black font-semibold text-xs xl:text-sm">
-                        {`${items[0]?.artistName}${items[0]?.artistSurname1}${items[0]?.artistSurname2}`}
+                        {name(items[0])}
                       </p>
                       <p className="text-xs">{items[0]?.email}</p>
-                    </div>
-
-                    <div className="col-span-1">
-                      <p className="text-xs xl:text-sm font-bold capitalize">
-                        {items[0]?.items[0]?.type}
-                      </p>
                     </div>
 
                     <div className="col-span-1">
@@ -212,7 +125,7 @@ const Allorders = ({ orderDetail }: any) => {
 
                     <div className="col-span-1">
                       <p className="text-xs xl:text-sm font-bold">
-                        {items[0]?.paymenttype}
+                        {items[0]?.type || "N/A"}
                       </p>
                     </div>
                     <div className="col-span-1">
@@ -266,7 +179,6 @@ const Allorders = ({ orderDetail }: any) => {
                           key={index}
                           className="grid grid-cols-11 h-auto pb-3 pt-3"
                         >
-                          {/* Same layout as the first item */}
                           <div className="col-span-1">
                             <p className="text-xs xl:text-sm font-bold">
                               {item.orderID}

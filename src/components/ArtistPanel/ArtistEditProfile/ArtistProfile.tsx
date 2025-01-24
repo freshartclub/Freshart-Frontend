@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
 import Header from "../../ui/Header";
+import Loader from "../../ui/Loader";
+import { useGetArtistDetails } from "../../UserProfile/http/useGetDetails";
 import dot from "./assets/dot.png";
 import GeneralUpload from "./GeneralUpload";
-import { useGetArtistDetails } from "../../UserProfile/http/useGetDetails";
-import Loader from "../../ui/Loader";
-import { useDispatch } from "react-redux";
+import { useTranslation } from "react-i18next";
 
 const ArtistProfile = () => {
   const { data, isLoading } = useGetArtistDetails();
-
   const [isActiveStatus, setIsActiveStatus] = useState("");
+
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (data?.data?.artist?.isActivated !== undefined) {
@@ -17,9 +18,7 @@ const ArtistProfile = () => {
     }
   }, [data]);
 
-  if (isLoading) {
-    return <Loader />;
-  }
+  if (isLoading) return <Loader />;
 
   return (
     <div className="bg-white p-10  ">
@@ -27,7 +26,7 @@ const ArtistProfile = () => {
         variant={{ size: "2xl", theme: "dark", weight: "semiBold" }}
         className="mt-6 flex gap-2 items-center"
       >
-        Artist Profile
+        {t("Artist Profile")}
       </Header>
 
       <nav className="flex" aria-label="Breadcrumb">
@@ -37,14 +36,14 @@ const ArtistProfile = () => {
               href="#"
               className="inline-flex items-center mx-2 text-sm font-medium text-gray-700 "
             >
-              Artist
+              {t("Artist")}
             </a>
           </li>
           <img src={dot} alt="dot" />
           <li>
             <div className="flex items-center">
               <a href="#" className=" text-sm mx-2 font-medium text-[#919EAB]">
-                Profile
+                {t("Profile")}
               </a>
             </div>
           </li>

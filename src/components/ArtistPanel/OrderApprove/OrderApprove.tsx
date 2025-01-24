@@ -1,18 +1,18 @@
-import React from "react";
+import dayjs from "dayjs";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import Loader from "../../ui/Loader";
 import arrow from "../assets/orderApprove1.png";
 import print from "../assets/orderApprove2.png";
-import OrderApproveDetails from "./OrderApproveDetails";
-import { useNavigate, useSearchParams } from "react-router-dom";
 import { useGetOrderDetails } from "./https/useGetOrderDetails";
 import usePostAcceptMutation from "./https/usePostAcceptMutation";
-import Loader from "../../ui/Loader";
-import dayjs from "dayjs";
+import OrderApproveDetails from "./OrderApproveDetails";
+import { useTranslation } from "react-i18next";
 
 const OrderApprove = () => {
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
-  const orderType = searchParams.get("orderType");
   const naviagte = useNavigate();
+  const { t } = useTranslation();
 
   const { data, isLoading } = useGetOrderDetails(id);
   const { mutate, isPending } = usePostAcceptMutation();
@@ -30,23 +30,14 @@ const OrderApprove = () => {
     }
   };
 
-  console.log(data);
-
-  const order = {
-    order_id: "Order #6079",
-    order_time: "12 Aug 2022 10:00 PM",
-  };
-
   const handleNavigate = () => {
     naviagte("/artist-panel/order");
   };
 
-  if (isLoading) {
-    return <Loader />;
-  }
+  if (isLoading) return <Loader />;
+
   return (
     <div className="px-5 py-7 ">
-      {/*Header section*/}
       <div className="flex flex-col sm:flex-row justify-between">
         <div className="flex  gap-4 items-center mb-6">
           <div onClick={() => handleNavigate()} className="cursor-pointer">
@@ -54,7 +45,7 @@ const OrderApprove = () => {
           </div>
           <div className="">
             <div className="font-bold text-[#1C252E] text-lg mb-2">
-              Order ID : {data?.data?.orderID}
+              {t("Order ID")} : {data?.data?.orderID}
             </div>
 
             <p className="text-[#919EAB] text-xs">
@@ -78,7 +69,7 @@ const OrderApprove = () => {
               py-2 px-2
              sm:py-3 sm:px-8 rounded-md text-white font-bold"
                 >
-                  {isPending ? "Accepting.." : "Accept"}
+                  {isPending ? t("Accepting..") : t("Accept")}
                 </button>
               </div>
               <div>
@@ -87,7 +78,7 @@ const OrderApprove = () => {
                py-2 px-2
              sm:py-3 sm:px-8 rounded-md  text-white font-bold "
                 >
-                  Reject
+                  {t("Reject")}
                 </button>
               </div>
             </div>
@@ -95,9 +86,7 @@ const OrderApprove = () => {
         </div>
       </div>
 
-      {/*details & History & customer info*/}
-
-      <OrderApproveDetails data={data} />
+      <OrderApproveDetails />
     </div>
   );
 };

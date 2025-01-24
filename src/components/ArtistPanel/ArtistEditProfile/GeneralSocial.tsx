@@ -1,7 +1,8 @@
-import { useFieldArray, Controller } from "react-hook-form";
-import { ARTIST_SOCIAL_LINKS } from "../../utils/mockData";
+import { Controller, useFieldArray } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 
 const SocialMediaLinks = ({ control, isActiveStatus, socialMedia }) => {
+  const { t } = useTranslation();
   const { fields, append, remove } = useFieldArray({
     control,
     name: "accounts",
@@ -14,7 +15,7 @@ const SocialMediaLinks = ({ control, isActiveStatus, socialMedia }) => {
   return (
     <div className="p-4 mx-auto border border-custom-gray bg-white rounded-md shadow-custom mb-4 mt-4">
       <h2 className="pb-3 font-medium text-lg leading-7 tracking-wider text-[#1A1C21]">
-        Add Social Media
+        {t("Add Social Media")}
       </h2>
       {fields.map((account, index) => (
         <div key={account.id} className="mb-6">
@@ -22,22 +23,23 @@ const SocialMediaLinks = ({ control, isActiveStatus, socialMedia }) => {
             <div className="flex flex-col lg:flex-row w-full gap-4 items-center">
               <div className="w-full">
                 <label className="block font-semibold text-sm leading-5 tracking-wide text-[#203F58] mb-1">
-                  Select Social Media
+                  {t("Select Social Media")}
                 </label>
                 <Controller
                   control={control}
                   name={`accounts.${index}.name`}
                   render={({ field }) => (
                     <select
-                      // disabled={isActiveStatus !== "active"}
                       {...field}
                       className={`border border-gray-300 rounded p-3 w-full outline-none cursor-pointer ${
                         isActiveStatus !== "active" ? "" : ""
                       }`}
                     >
                       <option value="">Select</option>
-                      {socialMedia?.map((item, index) => (
-                        <option value={item.value}>{item.value}</option>
+                      {socialMedia?.map((item, i: number) => (
+                        <option key={i} value={item.value}>
+                          {item.value}
+                        </option>
                       ))}
                     </select>
                   )}
@@ -45,17 +47,16 @@ const SocialMediaLinks = ({ control, isActiveStatus, socialMedia }) => {
               </div>
               <div className="w-full">
                 <label className="block font-semibold text-sm leading-5 tracking-wide text-[#203F58] mb-1 ">
-                  Social Link
+                  {t("Social Link")}
                 </label>
                 <Controller
                   control={control}
                   name={`accounts.${index}.link`}
                   render={({ field }) => (
                     <input
-                      // disabled={isActiveStatus !== "active"}
                       {...field}
                       type="text"
-                      placeholder="www.instagram.com/bgsdd845?"
+                      placeholder="https://www.example.com"
                       className="border border-gray-300 rounded p-3 w-full outline-none"
                     />
                   )}
@@ -67,7 +68,7 @@ const SocialMediaLinks = ({ control, isActiveStatus, socialMedia }) => {
               className={`hover:bg-red-300 px-4 py-3 mt-5 rounded-lg gap-1 bg-[#FCDAD7] text-[#F04438] ${
                 isActiveStatus !== "active" ? "" : ""
               }`}
-              title="Remove account "
+              title={t("Remove account")}
             >
               X
             </button>
@@ -75,13 +76,12 @@ const SocialMediaLinks = ({ control, isActiveStatus, socialMedia }) => {
         </div>
       ))}
       <span
-        variant={{ size: "base", weight: "500", rounded: "lg" }}
         onClick={handleAddAccount}
         className={`bg-[#DEDEFA] font-semibold py-3 px-2 rounded cursor-pointer ${
           isActiveStatus !== "active" ? "" : ""
         }`}
       >
-        + Add social media account
+        + {t("Add social media account")}
       </span>
     </div>
   );

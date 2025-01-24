@@ -1,17 +1,18 @@
-import { useFieldArray, Controller, useForm } from "react-hook-form";
+import { useFieldArray, Controller } from "react-hook-form";
 import Select from "react-select";
 import { useGetDiscipline } from "../../pages/http/useGetDiscipline";
 import { useGetStyle } from "../../pages/http/useGetStyle";
+import { useTranslation } from "react-i18next";
 
 const Dicipline = ({ control, isActiveStatus, prefillValues, watch }) => {
+  const { t } = useTranslation();
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "discipline", // The name of the field array
+    name: "discipline",
   });
 
-  const { data, isLoading } = useGetDiscipline();
-
-  const { data: styleData, isLoading: styleLoading } = useGetStyle();
+  const { data } = useGetDiscipline();
+  const { data: styleData } = useGetStyle();
 
   const disciplineValues = watch("discipline");
 
@@ -41,7 +42,7 @@ const Dicipline = ({ control, isActiveStatus, prefillValues, watch }) => {
   return (
     <div className="p-4 mx-auto border border-custom-gray bg-white rounded-md shadow-custom mb-4 mt-4">
       <h2 className="pb-3 font-medium text-lg leading-7 tracking-wider text-[#1A1C21]">
-        Discipline
+        {t("Discipline")}
       </h2>
       {fields.map((account, index) => {
         const selectedDiscipline = disciplineValues?.[index]?.discipline;
@@ -53,23 +54,22 @@ const Dicipline = ({ control, isActiveStatus, prefillValues, watch }) => {
               <div className="flex flex-col lg:flex-row w-full gap-4 items-center">
                 <div className="w-full">
                   <label className="block font-semibold text-sm leading-5 tracking-wide text-[#203F58] mb-1">
-                    {`Dicipline ${index + 1}`}
+                    {`${t("Discipline")} ${index + 1}`}
                   </label>
                   <Controller
                     control={control}
                     name={`discipline.${index}.discipline`}
                     render={({ field }) => (
                       <select
-                        // disabled={isActiveStatus !== "active"}
                         {...field}
                         className={`border border-gray-300 rounded p-3 w-full outline-none cursor-pointer ${
                           isActiveStatus !== "active" ? "" : ""
                         }`}
                       >
-                        <option value="">Select</option>
+                        <option value="">{t("Select")}</option>
                         {data?.data?.map((item, index) => (
                           <option key={index} value={item.disciplineName}>
-                            {item.disciplineName}
+                            {t(item.disciplineName)}
                           </option>
                         ))}
                       </select>
@@ -79,7 +79,7 @@ const Dicipline = ({ control, isActiveStatus, prefillValues, watch }) => {
 
                 <div className="w-full">
                   <label className="block font-semibold text-sm leading-5 tracking-wide text-[#203F58] mb-1">
-                    Style
+                    {t("Style")}
                   </label>
                   <Controller
                     control={control}
@@ -89,19 +89,18 @@ const Dicipline = ({ control, isActiveStatus, prefillValues, watch }) => {
                       const selectedStyles =
                         field.value?.map((style) => ({
                           value: style,
-                          label: style,
+                          label: t(style),
                         })) || [];
 
                       return (
                         <Select
                           isMulti
-                          // isDisabled={isActiveStatus !== "active"}
                           options={
                             selectedDiscipline
                               ? getStylesForDiscipline(selectedDiscipline)?.map(
                                   (styl) => ({
                                     value: styl?.styleName,
-                                    label: styl?.styleName,
+                                    label: t(styl?.styleName),
                                   })
                                 )
                               : [{ value: "", label: "" }]
@@ -114,7 +113,6 @@ const Dicipline = ({ control, isActiveStatus, prefillValues, watch }) => {
                                 : []
                             );
                           }}
-                          //   {...field} // Spread the other props (onBlur, etc.)
                           className="react-select-container"
                           classNamePrefix="react-select"
                         />
@@ -128,7 +126,7 @@ const Dicipline = ({ control, isActiveStatus, prefillValues, watch }) => {
                 className={`hover:bg-red-300 px-4 py-3 mt-5 rounded-lg gap-1 bg-[#FCDAD7] text-[#F04438] ${
                   isActiveStatus !== "active" ? "" : ""
                 }`}
-                title="Remove Discipline"
+                title={t("Remove Discipline")}
               >
                 X
               </button>
@@ -142,7 +140,7 @@ const Dicipline = ({ control, isActiveStatus, prefillValues, watch }) => {
           isActiveStatus !== "active" ? "" : ""
         }`}
       >
-        + Add Discipline
+        + {t("Add Discipline")}
       </span>
     </div>
   );

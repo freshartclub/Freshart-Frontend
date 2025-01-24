@@ -2,8 +2,10 @@ import { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import useChnagePasswordMutation from "./http/useChnagePasswordMutation";
+import { useTranslation } from "react-i18next";
 
 const Security = () => {
+  const { t } = useTranslation();
   const [showPassword, setShowPassword] = useState({
     oldPassword: false,
     newPassword: false,
@@ -16,7 +18,7 @@ const Security = () => {
       .min(6, "Password must be at least 6 characters")
       .required("New password is required"),
     confirmPassword: Yup.string()
-      .oneOf([Yup.ref("newPassword"), null], "Passwords must match")
+      .oneOf([Yup.ref("newPassword"), null], "Confirm Password must match")
       .required("Confirm password is required"),
   });
 
@@ -150,7 +152,7 @@ const Security = () => {
                 type="submit"
                 className="bg-[#102030] text-white py-2 px-4 rounded hover:bg-[#0d1a26] transition duration-300"
               >
-                {isPending ? "Saving..." : " Save changes"}
+                {isPending ? t("Saving...") : t("Save changes")}
               </button>
             </div>
           </Form>

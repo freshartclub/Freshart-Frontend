@@ -3,9 +3,11 @@ import { FaArrowLeft } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import Loader from "../ui/Loader";
 import { useGetFaq } from "./http/useGetFaq";
+import { useTranslation } from "react-i18next";
 
 const Faq = () => {
   const [openIndex, setOpenIndex] = useState(null);
+  const { t } = useTranslation();
 
   const toggleFAQ = (index) => {
     setOpenIndex(openIndex === index ? null : index);
@@ -30,12 +32,12 @@ const Faq = () => {
       </span>
       <div className="container  mx-auto p-5 max-w-3xl">
         <h1 className="text-lg md:text-2xl font-bold mb-6">
-          Frequently Asked Questions
+          {t("Frequently Asked Questions")}
         </h1>
         <div className="space-y-4">
           {data?.data &&
             data?.data?.length > 0 &&
-            data?.data?.map((item, index) => (
+            data?.data?.map((item, index: number) => (
               <div
                 key={index}
                 className="border border-gray-200 rounded-lg shadow-sm"

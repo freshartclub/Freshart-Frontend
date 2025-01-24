@@ -14,9 +14,12 @@ import Loader from "../ui/Loader";
 import P from "../ui/P";
 import { useGetFaq } from "./http/useGetFaq";
 import { useGetKbDataBase } from "./http/useGetKbDataBase";
+import { useTranslation } from "react-i18next";
 
 const Support = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
   const [getSearchValue, setSearchValue] = useState("");
   const [isModalOpen, setIsModelOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -132,20 +135,20 @@ const Support = () => {
       <div className="container mx-auto md:px-6 px-3">
         {newIncident && newIncident?.length > 0 ? (
           <div className="bg-[#E9E4DF] border-2 border-[#FF536B] p-4 mb-4 rounded-md mt-6">
-            <h3 className="font-semibold">Important Notice:</h3>
+            <h3 className="font-semibold">{t("Important Notice")}:</h3>
             {isLoading ? (
-              <h1>Loading...</h1>
+              <h1>{t("Loading...")}</h1>
             ) : (
-              newIncident?.map((item, i) => (
+              newIncident?.map((item, i: number) => (
                 <p className="mt-1" key={i}>
                   {item?.description?.replace(/(^<p>|<\/p>$)/g, "")}
                 </p>
               ))
             )}
 
-            <h3 className="font-semibold mt-3">Up Coming</h3>
+            <h3 className="font-semibold mt-3">{t("Up Coming")}</h3>
             {isLoading ? (
-              <h1>Loading...</h1>
+              <h1>{t("Loading...")}</h1>
             ) : (
               incidentAfterSevenDay?.map((item, i) => (
                 <p className="mt-1 flex items-center gap-3" key={i}>
@@ -168,13 +171,12 @@ const Support = () => {
                 thickness: "thick",
                 fontSize: "base",
               }}
-              // onClick={handleKbDatabse}
-              className="bg-[#FF536B] rounded-md text-white mb-5 uppercase"
+              className="bg-[#FF536B] rounded-md text-white mb-5"
             >
-              Help Center
+              {t("Help Center")}
             </Button>
             <Header variant={{ size: "2xl", theme: "dark", weight: "bold" }}>
-              How we can help you!
+              {t("How we can help you!")}
             </Header>
             <div className="border border-lightgray py-2 px-2 md:w-[70%] w-full flex justify-between my-5 bg-[#ffff] rounded-md">
               <div className="flex w-full relative rounded-md">
@@ -185,7 +187,7 @@ const Support = () => {
                 />
                 <input
                   type="text"
-                  placeholder="Enter your question or keyword"
+                  placeholder={t("Enter your question or keyword")}
                   className="w-[90%] outline-none"
                   onChange={(e) => setSearchValue(e.target.value)}
                 />
@@ -220,7 +222,7 @@ const Support = () => {
                       className="bg-white p-6 rounded-md shadow-lg max-w-md w-full"
                     >
                       <h2 className="text-lg font-semibold mb-4">
-                        FAQ Details
+                        {t("FAQ Details")}
                       </h2>
                       <p className="mb-4 flex flex-col gap-2">
                         <span className="text-md font-semibold leading-none tracking-tight">{`Question: ${selectedItem.faqQues}`}</span>
@@ -238,7 +240,7 @@ const Support = () => {
                         }}
                         className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                       >
-                        Close
+                        {t("Close")}
                       </button>
                     </div>
                   </div>
@@ -253,7 +255,7 @@ const Support = () => {
                 }}
                 className="rounded-sm"
               >
-                Search
+                {t("Search")}
               </Button>
             </div>
           </div>
@@ -270,7 +272,7 @@ const Support = () => {
             variant={{ size: "2xl", weight: "bold", theme: "dark" }}
             className="mb-10 text-center"
           >
-            What can we assist you with today?
+            {t("What can we assist you with today?")}
           </Header>
           <div className="grid xl:grid-cols-4 md:grid-cols-3 grid-cols-1  gap-4">
             {kbData?.data?.map((item, index) => (
@@ -297,12 +299,12 @@ const Support = () => {
             variant={{ size: "2xl", theme: "dark", weight: "bold" }}
             className="text-center mb-10"
           >
-            Popular Topics
+            {t("Popular Topics")}
           </Header>
           <div className="grid xl:grid-cols-3 md:grid-cols-2 justify-between px-3 gap-5">
             {faqData?.data &&
               faqData?.data?.length > 0 &&
-              faqData?.data?.map((item, index) => (
+              faqData?.data?.map((item, index: number) => (
                 <div
                   onClick={() => handleFaq()}
                   key={index}
@@ -318,7 +320,7 @@ const Support = () => {
             onClick={() => handleFaq()}
             className=" bg-black text-white px-4 py-2 rounded-md "
           >
-            View All
+            {t("View All")}
           </button>
         </div>
       </div>
@@ -330,19 +332,19 @@ const Support = () => {
               variant={{ fontSize: "md", fontWeight: "400" }}
               className="uppercase text-white bg-[#FF536B] mb-3"
             >
-              Contact Us
+              {t("Contact Us")}
             </Button>
             <Header
               variant={{ size: "2xl", weight: "bold", theme: "dark" }}
               className="mb-3"
             >
-              Don’t find your answer.
+              {t("Didn’t find your answer")}
             </Header>
             <Header
               variant={{ size: "2xl", weight: "bold", theme: "dark" }}
               className="mb-3"
             >
-              Contact with us
+              {t("Contact with us")}
             </Header>
           </div>
 
@@ -356,14 +358,15 @@ const Support = () => {
                   variant={{ size: "xl", theme: "dark", weight: "semiBold" }}
                   className="mb-3"
                 >
-                  Submit a ticket
+                  {t("Submit a ticket")}
                 </Header>
                 <P
                   variant={{ size: "md", theme: "dark", weight: "normal" }}
                   className="mb-4 pr-10"
                 >
-                  we are available online from 9:00 AM to 5:00 PM (GMT95:45)
-                  Talk with use now
+                  {t(
+                    "We are available online from 9:00 AM to 5:00 PM (GMT95:45) Talk with use now"
+                  )}
                 </P>
 
                 <Button
@@ -375,7 +378,7 @@ const Support = () => {
                   }}
                   className="uppercase flex mt-8"
                 >
-                  Submit ticket
+                  {t("Submit Ticket")}
                   <img src={arrow} alt="arrow" className="mt-1 ml-2" />
                 </Button>
               </div>
@@ -386,7 +389,7 @@ const Support = () => {
               to={isArtistProfile ? "/artist-panel/ticket/tickets" : "/tickets"}
               className="text-red-400 font-medium text-center underline"
             >
-              See Recent Ticket History
+              {t("See Recent Ticket History")}
             </Link>
           </div>
         </div>

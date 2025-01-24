@@ -7,13 +7,14 @@ import { IoNotifications } from "react-icons/io5";
 import { Link, useNavigate } from "react-router-dom";
 import useLogOutMutation from "../../http/auth/useLogOutMutation";
 import { useAppSelector } from "../../store/typedReduxHooks";
-import useClickOutside from "../utils/useClickOutside";
 import { imageUrl } from "../utils/baseUrls";
-import { useGetNotification } from "./http/useGetNotification";
+import useClickOutside from "../utils/useClickOutside";
+import { useTranslation } from "react-i18next";
 
-const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
+const ArtistNavBar = ({ setSidebarOpen }) => {
   const [isToogleOpen, setIsToggelOpen] = useState(false);
-  const [isOpenNotify, setIsOpenNotify] = useState(false);
+
+  const { t } = useTranslation();
 
   const navigate = useNavigate();
   const user = useAppSelector((state) => state.user.user);
@@ -23,12 +24,7 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
 
   useClickOutside(closePopup, () => {
     setIsToggelOpen(false);
-    // setSidebarOpen(false);
   });
-
-  // const { data, isLoading } = useGetNotification();
-
-  // console.log(data)
 
   const handleLogOut = () => {
     try {
@@ -46,8 +42,14 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
     navigate("/artist-panel/artdashboard");
   };
 
-  const handleNotifaction = () => {
-    setIsOpenNotify((prev) => !prev);
+  const name = (val) => {
+    let fullName = val?.artistName || "";
+
+    if (val?.nickName) fullName += " " + `"${val?.nickName}"`;
+    if (val?.artistSurname1) fullName += " " + val?.artistSurname1;
+    if (val?.artistSurname2) fullName += " " + val?.artistSurname2;
+
+    return fullName.trim();
   };
 
   return (
@@ -58,7 +60,6 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
           size="2em"
           onClick={() => setSidebarOpen((prev) => !prev)}
         />
-        {/* Logo */}
         <div className="overflow-hidden cursor-pointer ">
           <img
             onClick={handleRedirect}
@@ -67,18 +68,13 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
             alt="Logo"
           />
         </div>
-        {/* {isOpenNotify ? (
-          <div className="absolute transition-all duration-500 top-[100%] right-0 w-[20vw] h-[100vh] bg-red-200"></div>
-        ) : null} */}
 
         <div className="flex items-center gap-5 ">
           <div className="relative">
             <IoNotifications
-              // onClick={handleNotifaction}
               className="cursor-pointer hidden lg:block"
               size="1.5em"
             />
-            {/* <div className="w-4 h-4 text-center bg-red-400 absolute rounded-full bottom-3 left-3 text-black"></div> */}
           </div>
 
           <span
@@ -90,9 +86,7 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
               alt="User Profile"
               className="w-8 h-8 object-cover rounded-full "
             />
-            <p className="font-semibold ml-2 hidden lg:block">
-              {user.artistName} {user.artistSurname1} {user.artistSurname2}
-            </p>
+            <p className="font-semibold ml-2 hidden lg:block">{name(user)}</p>
             <img
               className={`ml-1 transition-transform duration-300 ${
                 isToogleOpen ? "rotate-180" : "rotate-0"
@@ -102,7 +96,6 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
             />
           </span>
 
-          {/* Dropdown Menu */}
           {isToogleOpen && (
             <div
               ref={closePopup}
@@ -113,7 +106,7 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
                 to="/artist-panel/edit-artistprofile"
                 onClick={() => setIsToggelOpen(false)}
               >
-                Profile
+                {t("Profile")}
               </Link>
 
               <Link
@@ -121,7 +114,7 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
                 to="/artist-panel/user/settings"
                 onClick={() => setIsToggelOpen(false)}
               >
-                User Settings
+                {t("User Settings")}
               </Link>
 
               <Link
@@ -129,20 +122,20 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
                 to="/artist-panel/user/settings"
                 onClick={() => setIsToggelOpen(false)}
               >
-                Notification
+                {t("Notification")}
               </Link>
 
               <button
                 className="font-medium hover:bg-zinc-200"
                 onClick={handleProfile}
               >
-                Switch To User Profile
+                {t("Switch To User Profile")}
               </button>
               <button
                 className="bg-red-300 flex flex-col items-center justify-center gap-1 py-2 rounded hover:bg-red-400 font-medium"
                 onClick={handleLogOut}
               >
-                <span>Sign Out</span>
+                <span>{t("Sign Out")}</span>
                 <span className="text-[12px]">{user.email}</span>
               </button>
             </div>

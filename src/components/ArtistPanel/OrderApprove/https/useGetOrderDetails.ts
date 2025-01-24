@@ -2,16 +2,17 @@ import { useQuery } from "@tanstack/react-query";
 import { ORDERS_ENDPOINTS } from "../../../../http/apiEndPoints/Orders";
 import axiosInstance from "../../../utils/axios";
 
-export const useGetOrderDetails = (id) => {
-  const url = `${ORDERS_ENDPOINTS.GetArtistOrderDetails}`;
+async function fetchData(id: string) {
+  if (!id) return {};
+  const { data } = await axiosInstance.get(
+    `${ORDERS_ENDPOINTS.GetArtistOrderDetails}/${id}`
+  );
+  return data;
+}
 
-  async function fetchData(id) {
-    const { data } = await axiosInstance.get(`${url}/${id}`);
-    return data;
-  }
-
+export const useGetOrderDetails = (id: string) => {
   return useQuery({
-    queryKey: ["acceptOrder"],
+    queryKey: [ORDERS_ENDPOINTS.GetArtistOrderDetails],
     queryFn: () => fetchData(id),
   });
 };

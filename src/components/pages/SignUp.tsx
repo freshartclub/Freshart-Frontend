@@ -1,16 +1,14 @@
-import { Link, useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
+import * as Yup from "yup";
+import arrow from "../../assets/arrow.png";
+import loginimage from "../../assets/login.png";
+import useSignUpMutation from "../../http/auth/useSignUpMutation";
+import Button from "../ui/Button";
 import Header from "../ui/Header";
 import P from "../ui/P";
-import Button from "../ui/Button";
-import loginimage from "../../assets/login.png";
-import arrow from "../../assets/arrow.png";
-import facebook from "../../assets/facebook.png";
-import google from "../../assets/google.png";
-import apple from "../../assets/apple.png";
-import useSignUpMutation from "../../http/auth/useSignUpMutation";
+import { useTranslation } from "react-i18next";
 
 const SignUp = () => {
   const validationSchema = Yup.object().shape({
@@ -21,7 +19,7 @@ const SignUp = () => {
       .min(6, "Password must be at least 6 characters")
       .required("Password is required"),
     cpassword: Yup.string()
-      .oneOf([Yup.ref("password")], "Passwords must match")
+      .oneOf([Yup.ref("password")], "Confirm Passwords must match")
       .required("Confirm Password is required"),
     terms: Yup.boolean().oneOf(
       [true],
@@ -51,6 +49,8 @@ const SignUp = () => {
     window.open("/terms", "_blank");
   };
 
+  const { t } = useTranslation();
+
   return (
     <div className="bg-[#F9F7F6]">
       <div className="container mx-auto md:px-6 px-3">
@@ -59,20 +59,20 @@ const SignUp = () => {
             <Header
               variant={{ size: "2xl", theme: "dark", weight: "semiBold" }}
             >
-              Sign Up
+              {t("Sign Up")}
             </Header>
             <P
               variant={{ size: "base", theme: "dark", weight: "normal" }}
               className="lg:w-[60%] md:w-[80%] mx-auto mt-4 font-medium tracking-tight leading-none font-[poppins]"
             >
-              Enter your details to register to your account
+              {t("Enter your details to register to your account")}
             </P>
 
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="my-5">
                 <input
                   type="email"
-                  placeholder="Email Address"
+                  placeholder={t("Enter Email")}
                   {...register("email")}
                   className={`border ${
                     errors.email ? "border-red-500" : "border-[#D3D3D3]"
@@ -80,7 +80,7 @@ const SignUp = () => {
                 />
                 {errors.email && (
                   <div className="text-red-500 text-sm text-left">
-                    {errors.email.message}
+                    {t(`${errors.email.message}`)}
                   </div>
                 )}
               </div>
@@ -88,7 +88,7 @@ const SignUp = () => {
               <div>
                 <input
                   type="password"
-                  placeholder="Password"
+                  placeholder={t("Enter Password")}
                   {...register("password")}
                   className={`border ${
                     errors.password ? "border-red-500" : "border-[#D3D3D3]"
@@ -96,7 +96,7 @@ const SignUp = () => {
                 />
                 {errors.password && (
                   <div className="text-red-500 text-sm text-left">
-                    {errors.password.message}
+                    {t(`${errors.password.message}`)}
                   </div>
                 )}
               </div>
@@ -104,7 +104,7 @@ const SignUp = () => {
               <div className="my-5">
                 <input
                   type="password"
-                  placeholder="Confirm Password"
+                  placeholder={t("Confirm Password")}
                   {...register("cpassword")}
                   className={`border ${
                     errors.cpassword ? "border-red-500" : "border-[#D3D3D3]"
@@ -112,7 +112,7 @@ const SignUp = () => {
                 />
                 {errors.cpassword && (
                   <div className="text-red-500 text-sm text-left">
-                    {errors.cpassword.message}
+                    {t(`${errors.cpassword.message}`)}
                   </div>
                 )}
               </div>
@@ -124,25 +124,25 @@ const SignUp = () => {
                   className="mt-2"
                 />
                 <p className="ml-3 font-medium tracking-tight leading-1">
-                  By signing up, I have read and agree to
+                  {t("By signing up, I have read and agree to")}
                   <span
                     onClick={handleTerms}
                     className="text-red-600 mx-1  cursor-pointer hover:underline"
                   >
-                    Terms
+                    {t("Terms")}
                   </span>
-                  &
+                  {t("&")}
                   <span
                     onClick={handleTerms}
                     className="text-red-600 ml-1 cursor-pointer hover:underline"
                   >
-                    Privacy Policy.
+                    {t("Privacy Policy.")}
                   </span>
                 </p>
               </div>
               {errors.terms && (
                 <div className="text-red-500 text-sm text-left">
-                  {errors.terms.message}
+                  {t(`${errors.terms.message}`)}
                 </div>
               )}
 
@@ -159,7 +159,7 @@ const SignUp = () => {
                   className={`mt-3 flex justify-center w-full`}
                   disabled={isSubmitting || isPending}
                 >
-                  {isPending ? "SignUp..." : "SignUp"}
+                  {isPending ? t("Loading...") : t("Sign Up")}
 
                   <img src={arrow} alt="arrow" className="ml-2 mt-1" />
                 </Button>
@@ -170,12 +170,12 @@ const SignUp = () => {
                   variant={{ theme: "dark", weight: "medium" }}
                   className="md:text-base text-sm"
                 >
-                  Don’t have account ?{" "}
+                  {t("Don’t have account ?")}{" "}
                   <Link
                     to="/become_artist"
                     className="hover:underline decoration-red-700  cursor-pointer"
                   >
-                    Become an Artist{" "}
+                    {t("Become an Artist")}{" "}
                   </Link>
                 </P>
               </div>
@@ -183,7 +183,7 @@ const SignUp = () => {
                 to="/login"
                 className="font-bold uppercase ml-1 md:text-base text-sm"
               >
-                Sign IN
+                {t("Sign In")}
               </Link>
             </form>
           </div>

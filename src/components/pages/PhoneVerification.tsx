@@ -46,7 +46,7 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
             : "border-zinc-600 text-black py-2 px-4 rounded border cursor-pointer pointer-events-none  text-center opacity-40 w-[11rem]"
         }`}
       >
-        {requestOtpPending ? "Sending..." : t(validatePhone)}
+        {requestOtpPending ? t("Sending...") : t(validatePhone)}
       </span>
 
       {isModalOpenPhone && (
@@ -71,13 +71,13 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
                 onClick={handleRevalidatePhone}
                 className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 cursor-pointer"
               >
-                {verifyPhoneOtpPending ? "Varifying..." : validatePhone}
+                {verifyPhoneOtpPending ? t("Verifying...") : t(validatePhone)}
               </span>
               <span
                 onClick={() => setIsModalOpenPhone(false)}
                 className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 cursor-pointer"
               >
-                Close
+                {t("Close")}
               </span>
             </div>
           </div>

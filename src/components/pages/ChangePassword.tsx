@@ -12,6 +12,7 @@ import BackButton from "../ui/BackButton";
 import Button from "../ui/Button";
 import Header from "../ui/Header";
 import P from "../ui/P";
+import { useTranslation } from "react-i18next";
 
 const ChangePassword = () => {
   const navigate = useNavigate();
@@ -44,10 +45,10 @@ const ChangePassword = () => {
   // Validation schema using Yup
   const validationSchema = Yup.object({
     newPassword: Yup.string()
-      .min(8, "Password must be at least 8 characters")
+      .min(6, "Password must be at least 6 characters")
       .required("New Password is required"),
     confirmPassword: Yup.string()
-      .oneOf([Yup.ref("newPassword")], "Passwords must match")
+      .oneOf([Yup.ref("newPassword")], "Confirm Password must match")
       .required("Confirm Password is required"),
   });
 
@@ -74,48 +75,13 @@ const ChangePassword = () => {
       console.error(error.message);
     }
   });
+
+  const { t } = useTranslation();
+
   return (
     <div className="bg-[#F5F2EB] min-h-screen flex flex-col justify-center">
       {/* Navbar  */}
       <div className="container mx-auto md:px-6 px-3 py-10">
-        {/* <header className="relative py-4">
-          <div className="flex md:flex-row flex-col justify-between items-center">
-            <div>
-              <img src={logo} alt="Fresh Art Club" className="h-10" />
-            </div>
-            <div className="flex items-center mt-6 md:mt-0">
-              <Link to="/">
-                <img src={globe} alt="" className="mr-5" />
-              </Link>
-
-              <Link to="/signup" className="text-black mr-4">
-                SIGN UP
-              </Link>
-              <Button
-                variant={{
-                  theme: "dark",
-                  rounded: "full",
-                  fontWeight: "500",
-                  thickness: "thick",
-                  fontSize: "base",
-                }}
-                className="flex justify-center items-center"
-              >
-                <P variant={{ size: "base", theme: "light", weight: "normal" }}>
-                  Artist Login
-                </P>
-                <img src={arrow3} alt="arrow" className="ml-2 mt-1" />
-              </Button>
-            </div>
-          </div>
-
-          <img
-            src={semicircle}
-            alt="Semicircle"
-            className="md:absolute right-[50%] left-[50%] top-0 h-full"
-          />
-        </header> */}
-
         <div className="grid md:grid-cols-2 grid-cols-1 lg:gap-10 py-10 items-center">
           <div className="text-center shadow-xl bg-white lg:px-10 px-5 lg:pt-10 pt-5 lg:pb-16 pb-10 my-auto xl:w-[80%] w-full">
             <BackButton
@@ -125,13 +91,13 @@ const ChangePassword = () => {
             />
 
             <Header variant={{ size: "2xl", theme: "dark", weight: "bold" }}>
-              Reset Password
+              {t("Reset Password")}
             </Header>
             <P
               variant={{ size: "base", theme: "dark", weight: "normal" }}
               className="lg:w-[60%] md:w-[80%] mx-auto mt-4"
             >
-              Enter your Password to reset forget password.
+              {t("Enter your Password to reset forget password.")}
             </P>
 
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -139,7 +105,7 @@ const ChangePassword = () => {
                 <div className="flex">
                   <input
                     type={newPasswordType}
-                    placeholder="New Password"
+                    placeholder={t("New Password")}
                     {...register("newPassword")}
                     className="border border-[#D3D3D3] p-2 w-full rounded-md focus:outline-none"
                   />
@@ -152,7 +118,7 @@ const ChangePassword = () => {
                 </div>
                 {errors.newPassword && (
                   <div className="text-red-500 text-left">
-                    {errors.newPassword.message}
+                    {t(`${errors.newPassword.message}`)}
                   </div>
                 )}
               </div>
@@ -161,7 +127,7 @@ const ChangePassword = () => {
                 <div className="flex">
                   <input
                     type={confirmPasswordType}
-                    placeholder="Confirm Password"
+                    placeholder={t("Confirm Password")}
                     {...register("confirmPassword")}
                     className="border border-[#D3D3D3] p-2 w-full rounded-md focus:outline-none"
                   />
@@ -174,7 +140,7 @@ const ChangePassword = () => {
                 </div>
                 {errors.confirmPassword && (
                   <div className="text-red-500 text-left">
-                    {errors.confirmPassword.message}
+                    {t(`${errors.confirmPassword.message}`)}
                   </div>
                 )}
               </div>
@@ -191,7 +157,7 @@ const ChangePassword = () => {
                   className="mt-3 flex justify-center w-full"
                   type="submit"
                 >
-                  {isPending ? "Submiting..." : "Submit"}
+                  {isPending ? t("Submiting...") : t("Submit")}
                   <img src={arrow} alt="arrow" className="ml-2 mt-1" />
                 </Button>
               </div>

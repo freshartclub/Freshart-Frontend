@@ -1,24 +1,25 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import useClickOutside from "../utils/useClickOutside";
+import circle from "./assets/bar.png";
 import dashboard from "./assets/dashboard.png";
 import artwork from "./assets/HANGER.png";
-import user from "./assets/user.png";
+import mail from "./assets/mail.png";
 import order from "./assets/SHOPPING.png";
 import invoice from "./assets/sign.png";
-import circle from "./assets/bar.png";
-import mail from "./assets/mail.png";
 import toggle from "./assets/toggle_arrow.png";
 import arrow from "./assets/turn-right.png";
-import logo from "../../assets/loginlogo.png";
-import useClickOutside from "../utils/useClickOutside";
-export const sections = [
+import user from "./assets/user.png";
+import { useTranslation } from "react-i18next";
+
+const sections = [
   {
     key: "dashboard",
     label: "Dashboard",
     icon: dashboard,
     path: "artdashboard",
     submenu: [
-      { key: "overview", label: "Overview", path: "artdashboard" },
+      { key: "overview", label: "OverView", path: "artdashboard" },
       { key: "analytics", label: "Analytics", path: "artdashboard/analytics" },
     ],
   },
@@ -39,7 +40,6 @@ export const sections = [
     path: "edit-artistprofile",
     submenu: [
       { key: "profile", label: "Artist Profile", path: "edit-artistprofile" },
-      // { key: "settings", label: "User Settings", path: "user/settings" },
     ],
   },
   {
@@ -47,10 +47,7 @@ export const sections = [
     label: "Order",
     icon: order,
     path: "order",
-    submenu: [
-      { key: "current", label: "Current Orders", path: "order" },
-      // { key: "history", label: "Order History", path: "order/approve-order" },
-    ],
+    submenu: [{ key: "current", label: "Current Orders", path: "order" }],
   },
   {
     key: "invoice",
@@ -82,15 +79,12 @@ export const sections = [
   },
 ];
 
-const Sidebar: React.FC = ({
-  sidebarOpen,
-  setSidebarOpen,
-  setIsOpen,
-  isOpen,
-}) => {
+const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen, isOpen }) => {
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
   const location = useLocation();
   const closePopup = useRef(null);
+
+  const { t } = useTranslation();
 
   useEffect(() => {
     const handleResize = () => {
@@ -122,7 +116,6 @@ const Sidebar: React.FC = ({
   };
 
   useClickOutside(closePopup, () => {
-    console.log("clickOutside");
     setSidebarOpen(false);
   });
 
@@ -139,7 +132,6 @@ const Sidebar: React.FC = ({
       }  `}
     >
       <div
-        // ref={closePopup}
         className={`${isOpen ? "w-64" : "w-14"} ${
           sidebarOpen ? "left-[-20rem]" : "left-0"
         } transition-all duration-300 h-screen absolute sm:relative md:relative lg:relative z-[50] flex flex-col bg-white`}
@@ -154,7 +146,6 @@ const Sidebar: React.FC = ({
         </button>
 
         <ul className="space-y-2 mt-4">
-          {/* <img src={logo} alt="logo" className="px-4" /> */}
           {sections.map((section) => (
             <li key={section.key}>
               <Link to={`/artist-panel/${section.path}`}>
@@ -167,7 +158,9 @@ const Sidebar: React.FC = ({
                   }`}
                 >
                   <img src={section.icon} alt={section.label} className="w-6" />
-                  {isOpen && <span className="flex-grow">{section.label}</span>}
+                  {isOpen && (
+                    <span className="flex-grow">{t(section.label)}</span>
+                  )}
                 </button>
               </Link>
 
@@ -193,7 +186,7 @@ const Sidebar: React.FC = ({
                                 : ""
                             }`}
                           >
-                            <span>{sub.label}</span>
+                            <span>{t(sub.label)}</span>
                           </button>
                         </Link>
                       </li>

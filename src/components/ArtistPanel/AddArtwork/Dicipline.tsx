@@ -2,6 +2,7 @@ import { Controller } from "react-hook-form";
 import Header from "../../ui/Header";
 import { useGetDiscipline } from "../../pages/http/useGetDiscipline";
 import Loader from "../../ui/Loader";
+import { useTranslation } from "react-i18next";
 
 const Dicipline = ({
   query,
@@ -13,6 +14,7 @@ const Dicipline = ({
   setValue,
 }) => {
   const { data, isLoading } = useGetDiscipline();
+  const { t } = useTranslation();
 
   const diciplineOption = data?.data.map((item) => {
     return item.disciplineName;
@@ -33,7 +35,7 @@ const Dicipline = ({
         variant={{ size: "md", theme: "dark", weight: "semiBold" }}
         className="mb-3"
       >
-        Discipline
+        {t("Discipline")}
       </Header>
       {isLoading ? (
         <Loader />
@@ -45,7 +47,7 @@ const Dicipline = ({
                 htmlFor={id}
                 className="block text-sm sm:text-base font-semibold text-[#203F58] mb-2"
               >
-                {label}*
+                {t(label)} *
               </label>
 
               <Controller
@@ -66,11 +68,11 @@ const Dicipline = ({
                     className="block w-full p-1 sm:px-4 sm:py-2 bg-[#F9F9FC] outline-none border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >
                     <option value="" disabled>
-                      Select Discipline
+                      {t("Select Discipline")}
                     </option>
-                    {options?.map((option, index) => (
+                    {options?.map((option, index: number) => (
                       <option key={index} value={option}>
-                        {option}
+                        {t(option)}
                       </option>
                     ))}
                   </select>
