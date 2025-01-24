@@ -138,7 +138,7 @@ const LogNaveBar = () => {
             </div>
 
             <div className="flex items-center gap-3 mt-6 md:mt-0 relative">
-              <div className="">
+              <div>
                 <span
                   className=" py-3 flex gap-5 items-center cursor-pointer justify-between text-sm border border-zinc-200 px-5 font-medium text-gray-700 hover:text-gray-800 focus:outline-none"
                   onClick={handeleLanguage}
@@ -148,7 +148,7 @@ const LogNaveBar = () => {
                     src={`https://flagcdn.com/w320/${flag}.png`}
                     alt=""
                   />
-                  <h1 className=" font-semibold">{languageSettings}</h1>
+                  <h1 className="font-semibold">{languageSettings}</h1>
                 </span>
 
                 {isLanguageDropdownOpen && (
@@ -179,20 +179,11 @@ const LogNaveBar = () => {
                 )}
               </div>
 
-              {/* <Link to="/">
-                <img src={globe} alt="" className="mr-5" />
-              </Link> */}
-
-              {
-                isSignupPage ? (
-                  <Link to="/login" className="text-black mr-4 uppercase">
-                    {t("Sign in")}
-                  </Link>
-                ) : null
-                // <Link to="/signup" className="text-black mr-4 uppercase">
-                //   {t("Sign up")}
-                // </Link>
-              }
+              {isSignupPage ? (
+                <Link to="/login" className="text-black mr-4 uppercase">
+                  {t("Sign In")}
+                </Link>
+              ) : null}
 
               {isSignupPage ? (
                 <Button
@@ -210,7 +201,7 @@ const LogNaveBar = () => {
                     variant={{ theme: "light", weight: "normal" }}
                     className="md:text-base text-sm"
                   >
-                    {t("Become an artist")}
+                    {t("Become an Artist")}
                   </P>
                   <img src={arrow3} alt="arrow" className="ml-2 mt-1" />
                 </Button>
@@ -229,7 +220,7 @@ const LogNaveBar = () => {
                     variant={{ size: "base", theme: "light", weight: "normal" }}
                     onClick={handleRedirectToArtistLogin}
                   >
-                    {t("Become an artist")}
+                    {t("Become an Artist")}
                   </P>
                   <img src={arrow3} alt="arrow" className="ml-2 mt-1" />
                 </Button>
