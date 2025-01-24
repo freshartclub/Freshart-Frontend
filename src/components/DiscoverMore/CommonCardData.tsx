@@ -58,7 +58,7 @@ const CommonCardData = ({
   const navigate = useNavigate();
 
   const handleRedirectToDescription = (id: string) => {
-    navigate(`/discover_more?id=${id}`);
+    navigate(`/discover_more/${id}`);
     window.scroll(0, 0);
   };
 
