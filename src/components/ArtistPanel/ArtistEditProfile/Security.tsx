@@ -13,13 +13,16 @@ const Security = () => {
   });
 
   const validationSchema = Yup.object({
-    oldPassword: Yup.string().required("Old password is required"),
+    oldPassword: Yup.string().required(t("Old password is required")),
     newPassword: Yup.string()
-      .min(6, "Password must be at least 6 characters")
-      .required("New password is required"),
+      .min(6, `${t("Password must be at least 6 characters")}`)
+      .required(t("New password is required")),
     confirmPassword: Yup.string()
-      .oneOf([Yup.ref("newPassword"), null], "Confirm Password must match")
-      .required("Confirm password is required"),
+      .oneOf(
+        [Yup.ref("newPassword"), null],
+        `${t("Confirm Password must match")}`
+      )
+      .required(t("Confirm password is required")),
   });
 
   const { mutateAsync, isPending } = useChnagePasswordMutation();

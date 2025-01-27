@@ -53,8 +53,8 @@ const Commercilization = ({ control }) => {
   ];
 
   return (
-    <div className="p-4 mx-auto border border-custom-gray bg-white rounded-md shadow-custom mb-4 mt-4">
-      <h2 className="pb-3 font-medium text-lg leading-7 tracking-wider text-[#1A1C21]">
+    <div className="p-4 pb-0 mx-auto border border-custom-gray bg-white rounded-md shadow-custom mb-4 mt-4">
+      <h2 className="sm:text-xl text-lg font-semibold mb-3 pb-3 text-[#1A1C21]">
         {t("Commercilization")}
       </h2>
       <div className="flex flex-wrap justify-between w-full gap-4 mb-4">

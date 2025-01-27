@@ -8,7 +8,7 @@ import mark from "./assets/offer.png";
 import useGetPublishedArtwork from "./http/useGetPublishedArtwork";
 import { useTranslation } from "react-i18next";
 
-const DiscoverContent = ({ data}) => {
+const DiscoverContent = ({ data }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -224,7 +224,7 @@ const DiscoverContent = ({ data}) => {
             variant={{ size: "small", weight: "medium" }}
             className="capitalize text-[#999999]"
           >
-            {data?.discipline?.artworkDiscipline}
+            {t(data?.discipline?.artworkDiscipline)}
           </P>
         </div>
       </div>

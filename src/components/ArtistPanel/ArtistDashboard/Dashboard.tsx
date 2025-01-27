@@ -12,10 +12,10 @@ const Dashboard = () => {
       <ArtCardPagination />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 my-10">
-        <div className="bg-white ">
+        <div className="bg-white">
           <Progress />
         </div>
-        <div className="col-span-2 bg-white overflow-hidden ">
+        <div className="col-span-2">
           <LineChart />
         </div>
       </div>

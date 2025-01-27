@@ -21,10 +21,10 @@ const ArtistProfile = () => {
   if (isLoading) return <Loader />;
 
   return (
-    <div className="bg-white p-10  ">
+    <div className="bg-white p-4">
       <Header
-        variant={{ size: "2xl", theme: "dark", weight: "semiBold" }}
-        className="mt-6 flex gap-2 items-center"
+        variant={{ theme: "dark", weight: "semiBold" }}
+        className="mt-6 ml-2 text-xl sm:text-2xl flex gap-2 items-center"
       >
         {t("Artist Profile")}
       </Header>

@@ -365,7 +365,7 @@ const Support = () => {
                   className="mb-4 pr-10"
                 >
                   {t(
-                    "We are available online from 9:00 AM to 5:00 PM (GMT95:45) Talk with use now"
+                    "We are available online from 9:00 AM to 5:00 PM (GMT +1). Talk with us now."
                   )}
                 </P>
 

@@ -23,9 +23,9 @@ const Allorders = ({ orderDetail }: any) => {
 
   const columns = [
     { key: "orderId", label: "Order ID", colSpan: 1 },
-    { key: "product", label: "Product", colSpan: 2 },
-    { key: "date", label: "Date", colSpan: 1 },
+    { key: "product", label: "Artwork", colSpan: 2 },
     { key: "customer", label: "Customer", colSpan: 2 },
+    { key: "date", label: "Date", colSpan: 1 },
     { key: "total", label: "Total", colSpan: 1 },
     { key: "payment", label: "Payment", colSpan: 1 },
     { key: "status", label: "Status", colSpan: 1 },
@@ -63,7 +63,7 @@ const Allorders = ({ orderDetail }: any) => {
     <>
       <div className="rounded-md border border-1 mt-3 w-full overflow-x-auto">
         <div className="  min-w-[1000px]">
-          <div className="grid grid-cols-10 bg-[#F9F9FC] items-center my-auto h-10 p-2 border-b">
+          <div className="grid grid-cols-10 bg-gray-200 items-center my-auto h-10 p-2 border-b">
             {columns?.map((column) => (
               <div key={column.key} className={`col-span-${column.colSpan}`}>
                 <p className="font-semibold text-sm xl:text-base text-black">
@@ -105,16 +105,17 @@ const Allorders = ({ orderDetail }: any) => {
                       </div>
                     </div>
 
-                    <div className="col-span-1">
-                      <p className="text-xs xl:text-sm font-bold">
-                        {dayjs(items[0]?.createdAt).format("MMM D, YYYY")}
-                      </p>
-                    </div>
                     <div className="col-span-2">
                       <p className="text-black font-semibold text-xs xl:text-sm">
                         {name(items[0])}
                       </p>
                       <p className="text-xs">{items[0]?.email}</p>
+                    </div>
+
+                    <div className="col-span-1">
+                      <p className="text-xs xl:text-sm font-bold">
+                        {dayjs(items[0]?.createdAt).format("MMM D, YYYY")}
+                      </p>
                     </div>
 
                     <div className="col-span-1">

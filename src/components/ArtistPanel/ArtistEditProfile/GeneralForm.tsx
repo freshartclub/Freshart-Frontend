@@ -427,13 +427,13 @@ const GeneralForm = ({ isActiveStatus }) => {
   if (isFetching) return <Loader />;
 
   return (
-    <div className="w-full md:w-full flex shadow-lg justify-center items-center">
+    <div className="w-full flex justify-center items-center">
       <div className="rounded-md w-full bg-white">
-        <div className="xl:p-4 lg:p-3 md:p-4 p-3 w-full">
+        <div className="p-1 w-full">
           <FormProvider {...methods}>
             <form onSubmit={handleSubmit(onSubmit)}>
-              <div className="flex  justify-between mb-3 pb-3">
-                <h2 className="text-xl font-semibold  text-[#1A1C21]">
+              <div className="flex flex-wrap justify-between mb-3 pb-3">
+                <h2 className="sm:text-xl text-lg font-semibold  text-[#1A1C21]">
                   {t("General Information")}
                 </h2>
 
@@ -498,7 +498,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                   </label>
                   {errors.artistSurname1 && (
                     <div className="text-red-500 text-sm mt-1">
-                      <div>{String(errors.artistSurname1?.message || "")}</div>
+                      {t(`${errors.artistSurname1?.message}`)}
                     </div>
                   )}
                 </div>
@@ -562,7 +562,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                 <div className="md:w-[48%] w-full relative">
                   <PhoneInput
                     className="appearance-none border flex outline-none rounded  py-3 px-3 text-gray-700 leading-tight text-sm"
-                    placeholder="Enter phone number"
+                    placeholder={t("Enter phone number")}
                     value={getValues("phoneNumber")}
                     onChange={(val) => setValue("phoneNumber", val)}
                     disabled
@@ -586,7 +586,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                 <div className="md:w-[48%] w-full relative">
                   <select
                     {...register("gender", {
-                      required: t("Gender is required"),
+                      required: "Gender is required",
                     })}
                     disabled
                     className={`border  ${
@@ -595,7 +595,9 @@ const GeneralForm = ({ isActiveStatus }) => {
                   >
                     {gender &&
                       gender.map((item, i: number) => (
-                        <option key={i}>{t(item?.label)}</option>
+                        <option value={item?.value} key={i}>
+                          {t(item?.label)}
+                        </option>
                       ))}
                   </select>
                   <label
@@ -613,7 +615,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                 <div className="md:w-[48%] w-full relative">
                   <select
                     {...register("language", {
-                      required: t("Language is required"),
+                      required: "Language is required",
                     })}
                     disabled
                     className={`border  ${
@@ -668,7 +670,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                   <input
                     type="text"
                     {...register("zip", {
-                      required: t("Zip Code is required"),
+                      required: "Zip Code is required",
                     })}
                     disabled
                     className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
@@ -691,8 +693,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                 <div className="md:w-[48%] w-full relative">
                   <input
                     type="text"
-                    // placeholder="Enter Your City"
-                    {...register("city", { required: t("City is required") })}
+                    {...register("city", { required: "City is required" })}
                     disabled
                     className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-[#1C252E] outline-none"
                   />
@@ -712,7 +713,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                   <input
                     type="text"
                     {...register("stateRegion", {
-                      required: t("State/Region is required"),
+                      required: "State/Region is required",
                     })}
                     disabled
                     className="border border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500 outline-none"
@@ -730,8 +731,8 @@ const GeneralForm = ({ isActiveStatus }) => {
                   )}
                 </div>
               </div>
-              <div className="flex  w-full gap-4 mb-4">
-                <div className=" w-full relative">
+              <div className="flex w-full gap-4 mb-4">
+                <div className="w-full relative">
                   <Autocomplete
                     className={`border pointer-events-none bg-zinc-100 border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-zinc-500`}
                     value={searchResult}
@@ -768,44 +769,47 @@ const GeneralForm = ({ isActiveStatus }) => {
               />
 
               <div className="w-full relative">
-                <h2 className="text-xl font-semibold mb-3 pb-3 text-[#1A1C21]">
-                  {t("About")}
-                </h2>
-                <Controller
-                  name="about"
-                  control={control}
-                  defaultValue=""
-                  render={({ field }) => (
-                    <div className="relative">
-                      <style>{defaultSizeStyle}</style>
-                      <ReactQuill
-                        {...field}
-                        className="border border-[#E6E6E6] p-3 w-full rounded-md"
-                        theme="snow"
-                        placeholder={t("Write about yourself...")}
-                        modules={modules}
-                        formats={formats}
-                      />
-                      <label
-                        htmlFor="about"
-                        className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
-                      >
-                        {t("About")}
-                      </label>
-                    </div>
-                  )}
-                />
+                <div className="p-4 mt-4 bg-white rounded-lg shadow-md border">
+                  <h2 className="sm:text-xl text-lg font-semibold mb-3 pb-3 text-[#1A1C21]">
+                    {t("About")}
+                  </h2>
+                  <Controller
+                    name="about"
+                    control={control}
+                    defaultValue=""
+                    render={({ field }) => (
+                      <div className="relative">
+                        <style>{defaultSizeStyle}</style>
+                        <ReactQuill
+                          {...field}
+                          className="border border-[#E6E6E6] p-3 w-full rounded-md"
+                          theme="snow"
+                          placeholder={t("Write about yourself...")}
+                          modules={modules}
+                          formats={formats}
+                        />
+                        <label
+                          htmlFor="about"
+                          className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
+                        >
+                          {t("About")}
+                        </label>
+                      </div>
+                    )}
+                  />
+                </div>
 
-                <div className="p-4 mt-4 bg-white rounded-lg shadow-md max-w-full ">
-                  <h2 className="text-xl font-medium mb-3 text-[#1A1C21]">
+                <div className="p-4 mt-4 bg-white rounded-lg shadow-md border">
+                  <h2 className="sm:text-xl text-lg font-semibold mb-3 text-[#1A1C21]">
                     {t("Insignia")}
                   </h2>
-                  <div className="flex gap-3 items-center justify-center">
+                  <div className="flex w-full overflow-x-auto gap-3 items-center justify-start scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 whitespace-nowrap scroll-smooth">
                     {data?.data?.artist?.insignia?.map((item, i: number) => (
-                      <div key={i}>
+                      <div className="min-w-[10rem] flex-shrink-0" key={i}>
                         <img
                           src={`${imageUrl}/users/${item.insigniaImage}`}
-                          className="lg:w-[10vw] lg:h-[15vh] object-cover"
+                          className="w-[10rem] h-[5rem] rounded object-cover"
+                          alt={item.credentialName || "Insignia"}
                         />
                         <h1 className="text-center font-medium">
                           {t(item.credentialName)}
@@ -839,17 +843,23 @@ const GeneralForm = ({ isActiveStatus }) => {
               <Logistics control={control} />
               <Commercilization control={control} />
 
-              <div className="p-4 mt-4 bg-white rounded-lg shadow-md max-w-full">
-                <h2 className="text-xl font-semibold mb-3 text-[#1A1C21]">
+              <div className="p-4 mt-4 bg-white rounded-lg shadow-md border">
+                <h2 className="sm:text-xl text-lg font-semibold mb-3 pb-3 text-[#1A1C21]">
                   {t("Others")}
                 </h2>
                 <div className="flex  flex-col gap-5">
-                  <div className="md:w-[48%] w-full relative flex flex-col gap-3 items-center">
+                  <div className="w-full relative flex flex-col gap-3 items-center">
                     {data?.data?.artist?.documents?.map((item, index) => (
                       <div
                         key={index}
-                        className="w-full flex gap-3 items-center"
+                        className="w-full flex gap-2 relative"
                       >
+                        <label
+                          htmlFor={item?.documentName}
+                          className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381] pointer-events-none"
+                        >
+                          {t("Document") + " " + (index + 1)}
+                        </label>
                         <input
                           disabled
                           type="text"
@@ -857,13 +867,6 @@ const GeneralForm = ({ isActiveStatus }) => {
                           readOnly
                           className="border border-[#E6E6E6] p-3 w-full rounded-md font-montserrat text-left placeholder:text-zinc-500 outline-none"
                         />
-                        <label
-                          htmlFor={`documentName-${index}`}
-                          className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
-                        >
-                          {t("Documents")}
-                        </label>
-
                         <span
                           onClick={() => handlePDF(item?.uploadDocs)}
                           className={`cursor-pointer flex flex-col justify-center ${
@@ -878,7 +881,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                     ))}
                   </div>
 
-                  <div className=" w-full relative">
+                  <div className="w-full relative">
                     <input
                       type="text"
                       {...register("externalTags")}
@@ -921,7 +924,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                     )}
                   </div>
 
-                  <div className="flex gap-5">
+                  <div className="flex items-center gap-5">
                     <h2 className="text-md font-semibold mb-3 text-[#1A1C21] ">
                       {t("Revalidation Information")}
                     </h2>

@@ -18,7 +18,7 @@ const Pagination = () => {
   const { data, isLoading } = useGetArtistOrder();
 
   const headerData = [
-    { title: "Products" },
+    { title: "Artwork" },
     { title: "Customer" },
     { title: "Type" },
     { title: "Total" },
@@ -41,16 +41,16 @@ const Pagination = () => {
 
   return (
     <>
-      <div className="bg-white p-4 rounded-lg shadow-md">
+      <div className="mt-4">
         {data && data.length > 0 ? (
           <div className="w-full overflow-x-auto">
             <table className="w-full min-w-[800px] table-auto border-collapse text-sm">
-              <thead>
-                <tr className="bg-gray-50">
+              <thead className="bg-gray-200">
+                <tr className="[&>*:nth-child(1)]:pl-4">
                   {headerData.map((header, index) => (
                     <th
                       key={index}
-                      className="text-left px-4 py-2 font-semibold text-black whitespace-nowrap"
+                      className="text-left py-2 font-semibold text-black whitespace-nowrap"
                     >
                       {t(header.title)}
                     </th>
@@ -60,15 +60,18 @@ const Pagination = () => {
 
               <tbody>
                 {data.map((value, index) => (
-                  <tr key={index} className="border-b hover:bg-gray-100">
+                  <tr
+                    key={index}
+                    className="[&>*:nth-child(1)]:pl-4 border-b hover:bg-gray-100 bg-slate-50"
+                  >
                     <td
-                      className="px-8 py-3 flex items-center gap-2 cursor-pointer whitespace-nowrap"
+                      className="py-3 flex items-center gap-2 cursor-pointer whitespace-nowrap"
                       onClick={() => handelClickData(value)}
                     >
                       <img
                         src={`${imageUrl}/users/${value?.image}`}
                         alt="product image"
-                        className="w-10 h-12 rounded-md object-cover"
+                        className="w-10 h-9 rounded object-cover"
                       />
                       <div>
                         <p className="text-black font-bold text-[12px] lg:text-[14px]">
@@ -80,7 +83,7 @@ const Pagination = () => {
                       </div>
                     </td>
 
-                    <td className="px-4 py-3 whitespace-nowrap">
+                    <td className="py-3 whitespace-nowrap">
                       <p className="text-black font-semibold text-[12px] lg:text-[14px]">
                         {value?.artistName
                           ? `${value?.artistName} ${value?.artistSurname1} ${value?.artistSurname2}`
@@ -92,26 +95,26 @@ const Pagination = () => {
                     </td>
 
                     {/* Order Type */}
-                    <td className="px-4 py-3 text-[12px] lg:text-[14px] font-bold capitalize whitespace-nowrap">
+                    <td className="py-3 text-[12px] lg:text-[14px] font-bold capitalize whitespace-nowrap">
                       {value?.items[0]?.type || "N/A"}
                     </td>
 
                     {/* Total */}
-                    <td className="px-4 py-3 text-[12px] lg:text-[14px] font-bold whitespace-nowrap">
+                    <td className="py-3 text-[12px] lg:text-[14px] font-bold whitespace-nowrap">
                       {formateCurrency(value?.subTotal, "$")}
                     </td>
 
                     {/* Payment Type */}
-                    <td className="px-4 py-3 text-[12px] lg:text-[14px] font-bold whitespace-nowrap">
+                    <td className="py-3 text-[12px] lg:text-[14px] font-bold whitespace-nowrap">
                       {value?.paymenttype || "N/A"}
                     </td>
 
                     {/* Date */}
-                    <td className="px-4 py-3 text-[12px] lg:text-[14px] font-bold whitespace-nowrap">
+                    <td className="py-3 text-[12px] lg:text-[14px] font-bold whitespace-nowrap">
                       {dayjs(value?.createdAt).format("MMM D, YYYY")}
                     </td>
 
-                    <td className="px-4 py-3 whitespace-nowrap">
+                    <td className="py-3 whitespace-nowrap">
                       <div
                         className={`w-fit rounded-lg py-1 px-2 text-center capitalize ${
                           value.status === "processing"
@@ -125,7 +128,7 @@ const Pagination = () => {
                       </div>
                     </td>
 
-                    <td className="px-4 py-3 whitespace-nowrap">
+                    <td className="py-3 whitespace-nowrap">
                       <div className="flex gap-4">
                         <LuEye
                           onClick={() => handelClickData(value)}
@@ -148,14 +151,12 @@ const Pagination = () => {
         )}
       </div>
 
-      <div className="bg-white mt-4 rounded-xl">
-        <PaginationTabs
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-          numbers={numbers}
-          nPages={nPages}
-        />
-      </div>
+      <PaginationTabs
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        numbers={numbers}
+        nPages={nPages}
+      />
     </>
   );
 };

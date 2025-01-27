@@ -2,22 +2,22 @@ export const package_dimension = [
   {
     name: "packageHeight",
     label: "Height (cm)",
-    placeholder: "Height (cm)",
+    placeholder: "Package Height",
   },
   {
     name: "packageWidth",
     label: "Width (cm)",
-    placeholder: "Width (cm)",
+    placeholder: "Package Width",
   },
   {
     name: "packageLength",
     label: "Depth (cm)",
-    placeholder: "Length (cm)",
+    placeholder: "Package Depth",
   },
   {
     name: "packageWeight",
     label: "Weight (kg)",
-    placeholder: "Weight (kg)",
+    placeholder: "Package Weight",
   },
 ];
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import Artwork from "../ArtistDetail/Artwork";
 import CirclePage from "../CirclePage/CirclePage";
@@ -22,12 +22,31 @@ import Sidebar from "./Sidebar";
 
 const ArtistPanel = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [smallWidth, setSmallWidth] = useState(false);
   const [isOpen, setIsOpen] = useState(true);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 640) {
+        setSmallWidth(true);
+      } else {
+        setSmallWidth(false);
+      }
+    };
+
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   return (
     <>
       <ArtistNavBar setSidebarOpen={setSidebarOpen} />
-      <div className=" flex w-full overflow-hidden mt-[12vh] ">
+      <div className="flex w-full h-screen overflow-hidden">
         <Sidebar
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
@@ -36,15 +55,14 @@ const ArtistPanel = () => {
         />
 
         <div
-          className={`flex-1 ml-0 sm:px-6 lg:px-3 bg-zinc-100 overflow-auto ${
-            isOpen ? "lg:ml-64" : "lg:ml-14 md:ml-14 xl:ml-14"
-          }  `}
+          className={`flex-1 mt-20 transition-all duration-300 bg-zinc-100 overflow-auto ${
+            smallWidth ? "ml-0" : isOpen ? "ml-64" : "ml-14"
+          }`}
         >
           <Routes>
             <Route index element={<Dashboard />} />
             <Route path="artdashboard" element={<Dashboard />} />
             <Route path="artwork" element={<Artwork />} />
-            {/* <Route path="artwork/details" element={<ArtworkDetails />} /> */}
             <Route path="order" element={<Orders />} />
             <Route path="order/orderDetail" element={<OrdersDetail />} />
             <Route path="order/approve-order" element={<OrderApprove />} />
@@ -52,14 +70,12 @@ const ArtistPanel = () => {
             <Route path="edit-artistprofile" element={<ArtistProfile />} />
             <Route path="user/settings" element={<Settings />} />
             <Route path="circle" element={<CirclePage />} />
-
             <Route path="ticket/tickets" element={<TicketHistory />} />
             <Route path="/ticket" element={<Support />} />
             <Route path="/new_ticket" element={<NewTicket />} />
             <Route path="/kb-database" element={<KbDatabase />} />
             <Route path="/kb-details" element={<KbDetails />} />
             <Route path="/faq" element={<Faq />} />
-
             <Route path="/ticket_detail" element={<SingleTicket />} />
             <Route path="artwork/preview" element={<ArtworkReview />} />
           </Routes>

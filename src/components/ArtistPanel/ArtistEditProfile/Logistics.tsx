@@ -52,8 +52,8 @@ const Logistics = ({ control}) => {
   ];
 
   return (
-    <div className="p-4 mt-4 bg-white rounded-lg shadow-md max-w-full border">
-      <h2 className="text-xl font-semibold mb-3 text-[#1A1C21]">
+    <div className="p-4 pb-0 mt-4 bg-white rounded-lg shadow-md max-w-full border">
+      <h2 className="sm:text-xl text-lg font-semibold mb-3 pb-3 text-[#1A1C21]">
         {t("Logistics")}
       </h2>
       <div className="flex flex-wrap justify-between w-full gap-4 mb-4">

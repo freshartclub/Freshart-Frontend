@@ -101,7 +101,7 @@ const TicketHistory: React.FC = () => {
   if (isLoading) return <Loader />;
 
   return (
-    <div className="container mx-auto sm:px-6 px-3 mb-[3rem]">
+    <div className="container mx-auto px-3 mb-[3rem]">
       <h1 className="font-bold text-xl sm:p-4 py-2">{t("Tickets")}</h1>
       <SearchDropdown
         searchQuery={searchQuery}

@@ -537,10 +537,6 @@ const ProductInfo = ({ data }) => {
           </div>
         </TabPanel>
       </Tabs>
-
-      {/* <div>
-        <img src={product} alt="only image" className="w-full" />
-      </div> */}
     </div>
   );
 };

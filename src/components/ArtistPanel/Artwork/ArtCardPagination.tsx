@@ -1,14 +1,11 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import "react-datepicker/dist/react-datepicker.css";
+import { useTranslation } from "react-i18next";
 import { IoIosSearch } from "react-icons/io";
-import ArtCard from "./ArtCard";
-import PaginationTabs from "../ArtistDashboard/PaginationTabs";
-import { IoOptionsOutline } from "react-icons/io5";
 import { useGetArtWorkList } from "../../ArtistDetail/http/getArtWorkList";
 import Loader from "../../ui/Loader";
-import { useTranslation } from "react-i18next";
-import { MdOutlineDateRange } from "react-icons/md";
-import "react-datepicker/dist/react-datepicker.css";
-import DatePicker from "react-datepicker";
+import PaginationTabs from "../ArtistDashboard/PaginationTabs";
+import ArtCard from "./ArtCard";
 
 interface ArtworkItem {
   _id: string;
@@ -27,8 +24,7 @@ interface ArtworkItem {
 
 const ArtCardPagination = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [startDate, setStartDate] = useState(new Date());
-  const recordPerPage = 8;
+  const recordPerPage = 6;
   const lastIndex = currentPage * recordPerPage;
   const firstIndex = lastIndex - recordPerPage;
 
@@ -69,32 +65,22 @@ const ArtCardPagination = () => {
   if (isFetching) return <Loader />;
 
   return (
-    <div>
-      <div className="flex flex-wrap justify-between mt-5">
-        <div className="relative">
+    <div className="mt-5 border bg-white p-4 pb-0 rounded-lg shadow-sm">
+      <div className="flex flex-wrap justify-between">
+        <p className="text-black text-[18px] font-semibold text-center sm:text-left">
+          {t("Artworks")}
+        </p>
+        <div className="relative border rounded">
           <input
             type="text"
-            placeholder={t("Search Artworks...")}
+            placeholder={t("Search Artwork...")}
             className="border bottom-2 border-gray-50 bg-white rounded-md py-1 pr-2 pl-8"
             onChange={(e) => handleSearch(e.target.value)}
             value={searchData}
           />
           <IoIosSearch className="absolute left-2 top-2 flex items-center" />
         </div>
-        <div className="flex gap-2">
-          <button className="py-1 px-2 h-auto rounded-md border-gray-100 bg-white flex gap-1 items-center w-fit outline-none">
-            <MdOutlineDateRange />
-            <DatePicker
-              selected={startDate}
-              onChange={(date) => setStartDate(date)}
-            />
-          </button>
-          <button className="py-1 px-3 rounded-lg border-2 border-gray-50 bg-white   flex items-center gap-2 transition-all duration-200 hover:scale-95">
-            <IoOptionsOutline /> {t("Filters")}
-          </button>
-        </div>
       </div>
-
       <div className="flex flex-wrap justify-center gap-5 mt-6">
         {artwork?.slice(firstIndex, lastIndex).map((record, index) => (
           <div key={index}>
@@ -103,7 +89,7 @@ const ArtCardPagination = () => {
         ))}
       </div>
 
-      <div className="flex gap-2 flex-wrap justify-end pt-2">
+      <div className="flex gap-2 flex-wrap justify-center mt-4">
         <div className="flex gap-2 items-center">
           <div className="w-[.8em] h-[.8em] rounded-full bg-[#00DE00] flex items-center"></div>
           <p className="text-[14px] text-black">{t("Published")}</p>
@@ -134,14 +120,12 @@ const ArtCardPagination = () => {
         </div>
       </div>
 
-      <div className="bg-gray-50 mt-3">
-        <PaginationTabs
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-          numbers={numbers}
-          nPages={nPages}
-        />
-      </div>
+      <PaginationTabs
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        numbers={numbers}
+        nPages={nPages}
+      />
     </div>
   );
 };

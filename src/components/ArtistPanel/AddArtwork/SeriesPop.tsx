@@ -43,7 +43,7 @@ export const SeriesPop = ({ isOpen, onClose }) => {
           type="text"
           value={series}
           onChange={handleSeriesValue}
-          placeholder="Enter new series name"
+          placeholder="Enter New Series Name"
           className="py-2 px-3 border border-zinc-800 mb-5 w-full rounded-md outline-none"
         />
         <div className="flex flex-col sm:flex-row justify-center sm:justify-end gap-4">

@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { MdModeEditOutline } from "react-icons/md";
 import { NavLink } from "react-router-dom";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import { Swiper, SwiperSlide } from "swiper/react";
 import { useAppSelector } from "../../store/typedReduxHooks";
 import deleteimg from "../ArtistDetail/assets/Container (2).png";
-import edit from "../ArtistDetail/assets/edit.png";
 import Header from "../ui/Header";
 import Loader from "../ui/Loader";
 import { imageUrl } from "../utils/baseUrls";
@@ -15,25 +14,18 @@ import { useGetArtWorkList } from "./http/getArtWorkList";
 import { ArtworkViewPopup } from "./Pop";
 
 const Artwork = () => {
-  const [selectedArtwork, setSelectedArtwork] = useState("series");
+  const [selectedArtwork, setSelectedArtwork] = useState("Series");
   const isArtProvider = useAppSelector((state) => state.user.isArtProvider);
 
   const { data, isLoading, refetch, isRefetching } =
     useGetArtWorkList(selectedArtwork);
 
-  const profile = localStorage.getItem("profile");
-
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [action, setAction] = useState("");
   const [selectedArtworkId, setSelectedArtworkId] = useState(null);
   const [status, setStatus] = useState(null);
 
   const closePopup = () => {
     setIsPopupOpen(false);
-  };
-
-  const handleAction = (actionType) => {
-    setAction(actionType);
   };
 
   useEffect(() => {
@@ -60,39 +52,48 @@ const Artwork = () => {
   if (isLoading) return <Loader />;
 
   return (
-    <div className="px-3 lg:px-0  ">
+    <div className="px-3">
       <Header
         variant={{ size: "xl", theme: "dark", weight: "semiBold" }}
-        className="mb-4 mt-4"
+        className="mb-4 mt-3"
       >
         {t("Artworks")}
       </Header>
 
-      <div className="flex flex-col sm:flex-row justify-start mb-4 gap-3 pb-3 ">
-        <span
-          onClick={handleArtworkSelect}
-          className="px-2 py-2 bg-white font-medium rounded cursor-pointer text-md"
-        >
-          {t("Series")}
-        </span>
-
-        <span
-          onClick={handleArtworkSelect}
-          className="px-2 py-2 bg-white font-medium rounded cursor-pointer text-md"
-        >
-          {t("Discipline")}
-        </span>
-
-        {isArtProvider === "Yes" ? (
+      <div className="flex flex-col mb-4 gap-3">
+        <div className="flex gap-2">
           <span
-            onClick={() => handleArtistName("artprovider")}
-            className="px-2 py-2 bg-white font-medium rounded cursor-pointer text-md"
+            onClick={handleArtworkSelect}
+            className={`border px-2 py-2 font-medium rounded cursor-pointer text-md ${
+              selectedArtwork === "Series" && "bg-black text-white"
+            }`}
           >
-            {t("Artist Name")}
+            {t("Series")}
           </span>
-        ) : null}
 
-        <div className="flex gap-2 flex-wrap justify-end pt-2">
+          <span
+            onClick={handleArtworkSelect}
+            className={`border px-2 py-2 font-medium rounded cursor-pointer text-md ${
+              selectedArtwork === "Discipline" && "bg-black text-white"
+            }`}
+          >
+            {t("Discipline")}
+          </span>
+          {isArtProvider === "Yes" ? (
+            <span
+              onClick={() => handleArtistName("artprovider")}
+              className={`border ${
+                selectedArtwork !== "Series" && selectedArtwork !== "Discipline"
+                  ? "bg-black text-white"
+                  : ""
+              }px-2 py-2 bg-white font-medium rounded cursor-pointer text-md`}
+            >
+              {t("Artist Name")}
+            </span>
+          ) : null}
+        </div>
+
+        <div className="flex gap-2 scrollbar overflow-x-auto pt-2">
           <div className="flex gap-2 items-center">
             <div className="w-[.8em] h-[.8em] rounded-full bg-[#00DE00] flex items-center"></div>
             <p className="text-[14px] text-black">{t("Published")}</p>
@@ -103,7 +104,9 @@ const Artwork = () => {
           </div>
           <div className="flex gap-2 items-center">
             <div className="w-[.8em] h-[.8em] rounded-full bg-[#D8F002] flex items-center"></div>
-            <p className="text-[14px] text-black">P{t("ending Approval")}</p>
+            <p className="text-[14px] w-[8rem] text-black">
+              {t("Pending Approval")}
+            </p>
           </div>
           <div className="flex gap-2 items-center">
             <div className="w-[.8em] h-[.8em] rounded-full bg-[#ac329e] flex items-center"></div>
@@ -116,7 +119,9 @@ const Artwork = () => {
 
           <div className="flex gap-2 items-center">
             <div className="w-[.8em] h-[.8em] rounded-full   bg-[#EE1D52]   flex items-center"></div>
-            <p className="text-[14px] text-black">{t("Not Available")}</p>
+            <p className="text-[14px] w-[5.8rem] text-black">
+              {t("Not Available")}
+            </p>
           </div>
           <div className="flex gap-2 items-center">
             <div className="w-[.8em] h-[.8em] rounded-full bg-[#696868] flex items-center"></div>
@@ -125,7 +130,9 @@ const Artwork = () => {
 
           <div className="flex gap-2 items-center">
             <div className="w-[.8em] h-[.8em] rounded-full bg-[#a74343] flex items-center"></div>
-            <p className="text-[14px] text-black">{t("Coming Soon")}</p>
+            <p className="text-[14px] w-[7rem] text-black">
+              {t("Coming Soon")}
+            </p>
           </div>
         </div>
       </div>
@@ -135,94 +142,72 @@ const Artwork = () => {
         <div>
           {data?.data && data?.data.length > 0 ? (
             data?.data.map((item, i) => (
-              <div key={i} className="mb-5 relative">
-                <h1 className="font-bold mb-5 mt-5 text-[20px]  capitalize text-[#333333] xl:w-[80%] lg:w-[70%] w-[80%] line-clamp-2">
+              <div key={i} className="mb-5">
+                <h1 className="font-semibold mb-3 mt-5 text-xl capitalize text-[#333333] xl:w-[80%] lg:w-[70%] w-[90%] line-clamp-2">
                   {item?.groupName || t("No Name")}
                 </h1>
 
-                <Swiper
-                  spaceBetween={20}
-                  slidesPerView={"auto"}
-                  autoplay={false}
-                  loop
-                  pagination={{ clickable: true }}
-                >
+                <div className="flex flex-wrap gap-6">
                   {item?.artworks?.map((art, idx) => (
                     <div
                       key={idx}
-                      className={`bg-red-300 rounded-lg pb-5 border-4 ${
+                      className={`bg-white relative rounded-lg border-4 pb-5 overflow-hidden flex  flex-col items-center ${
                         art?.status === "published"
                           ? "border-[#00DE00]"
                           : art?.status === "pending"
                           ? "border-[#D8F002]"
                           : art?.status === "draft"
                           ? "border-[#696868]"
-                          : art?.status === "pending"
-                          ? "border-[#D8F002]"
                           : art?.status === "modified"
                           ? "border-[#ac329e]"
                           : art?.status === "notAvailable"
                           ? "border-[#e53a3a]"
                           : "border-[#D8F002]"
                       }`}
+                      style={{
+                        flex: "1 1 calc(33.333% - 1rem)",
+                        minWidth: "250px",
+                        maxWidth: "calc(33.333% - 1rem)",
+                      }}
                     >
-                      <SwiperSlide
-                        className={`w-fit rounded-lg pb-5 border-4 overflow-hidden ${
-                          art?.status === "published"
-                            ? "border-[#00DE00]"
-                            : art?.status === "pending"
-                            ? "border-[#D8F002]"
-                            : art?.status === "modified"
-                            ? "border-[#ac329e]"
-                            : art?.status === "subscription"
-                            ? "border-blue-600"
-                            : art?.status === "draft"
-                            ? "border-[#f0dd32]"
-                            : art.status === "notAvailable"
-                            ? "border-[#e53a3a]"
-                            : art?.status === "purchased"
-                            ? "border-[#D8F002]"
-                            : null
-                        }`}
-                      >
+                      <div className="w-full">
                         <img
-                          className="w-[20rem] h-[20rem] object-cover"
+                          className="w-full h-[200px] sm:h-[250px] md:h-[300px] object-cover"
                           src={`${imageUrl}/users/${art?.media}`}
-                          alt=""
+                          alt={art?.artworkName || "Artwork"}
                         />
-                        <p className="text-[14px] text-center text-zinc-800]">
+                        <p className="text-sm sm:text-base text-center text-zinc-800 mt-2">
                           {t(art?.discipline?.artworkDiscipline)}
                         </p>
-                        <h1 className="font-semibold text-center text-[20px] text-black ">
+                        <h1 className="font-semibold text-center text-lg sm:text-xl text-black mt-1">
                           {art?.artworkName}
                         </h1>
-                        <p className="text-[12px] text-center text-zinc-800">
+                        <p className="text-sm text-center text-zinc-800 mt-1">
                           {t(art?.artworkTechnic)}
                         </p>
-
-                        {profile === "artist" && (
-                          <div
-                            onClick={() =>
-                              handleArtworkClick(art._id, art?.status)
-                            }
-                            className="absolute bottom-0 left-0 right-0 top-0 h-full w-full overflow-hidden bg-[#D9D9D9] bg-fixed flex gap-10 items-center justify-center opacity-0 transition duration-300 ease-in-out hover:opacity-[0.7] hover:cursor-pointer"
-                          >
-                            {item?.status === "draft" ? (
-                              <div className="flex gap-5">
-                                <NavLink
-                                  to={`/artist-panel/artwork/add?id=${item._id}`}
-                                >
-                                  <img src={edit} alt="edit" />
-                                </NavLink>
-                                <img src={deleteimg} alt="delete" />
-                              </div>
-                            ) : null}
+                        <div
+                          onClick={() =>
+                            handleArtworkClick(art._id, art?.status)
+                          }
+                          className="absolute inset-0 bg-[#D9D9D9] bg-opacity-70 flex items-center justify-center opacity-0 hover:opacity-70 transition duration-300 cursor-pointer z-10"
+                        >
+                          <div className="flex gap-5">
+                            <NavLink
+                              className="flex items-center py-1 px-3 bg-zinc-800"
+                              to={`/artist-panel/artwork/add?id=${item._id}`}
+                            >
+                              <MdModeEditOutline
+                                className="text-white"
+                                fontSize={20}
+                              />
+                            </NavLink>
+                            <img src={deleteimg} alt="delete" />
                           </div>
-                        )}
-                      </SwiperSlide>
+                        </div>
+                      </div>
                     </div>
                   ))}
-                </Swiper>
+                </div>
               </div>
             ))
           ) : (
@@ -243,7 +228,6 @@ const Artwork = () => {
       <ArtworkViewPopup
         isOpen={isPopupOpen}
         onClose={closePopup}
-        onAction={handleAction}
         id={selectedArtworkId}
         status={status}
       />

@@ -5,12 +5,15 @@ import { useGetBillingAddress } from "./http/useGetBillingAddress";
 import Loader from "../../ui/Loader";
 import useDefaultMutation from "./http/useDefaultMutation";
 import useRemoveBillingMutation from "./http/useRemoveBillingMutation";
+import { useTranslation } from "react-i18next";
 
 const Billing = () => {
   const [checkBox, setCheckBox] = useState(false);
   const [activeActionPop, setActiveActionPop] = useState(null);
   const [updateData, setUpdateData] = useState(null);
   const [addAdress, setAddAdress] = useState(false);
+
+  const { t } = useTranslation();
 
   const { data, isLoading } = useGetBillingAddress();
 
@@ -62,13 +65,13 @@ const Billing = () => {
           >
             <div className="flex justify-between items-center">
               <h2 className="text-lg md:text-xl font-semibold text-[#000000]">
-                Address Book
+                {t("Address Book")}
               </h2>
               <button
                 onClick={handleAddress}
                 className="text-[#FF536B] text-sm md:text-base font-semibold"
               >
-                + Address
+                + {t("Address")}
               </button>
             </div>
             <div className="mt-4 space-y-4">
@@ -98,7 +101,7 @@ const Billing = () => {
                     <div className="flex items-start">
                       {address?.isDefault && (
                         <span className="font-medium bg-[#00B8D929] text-[#006C9C] px-2 py-1 rounded-lg mr-2 text-xs md:text-sm">
-                          Default
+                          {t("Default")}
                         </span>
                       )}
                       <span className="">
@@ -125,13 +128,13 @@ const Billing = () => {
                               onClick={() => handleUpdate(address, i)}
                               className="text-sm font-medium hover:bg-gray-300 p-2 rounded-md"
                             >
-                              Update
+                              {t("Update")}
                             </button>
                             <button
                               onClick={() => handleRemove(address?._id, i)}
                               className="text-sm font-medium hover:bg-gray-300 p-2 rounded-md"
                             >
-                              {removeIspending ? "Removing..." : "Remove"}
+                              {removeIspending ? t("Removing...") : t("Remove")}
                             </button>
                           </div>
                         )}

@@ -133,14 +133,12 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
 
   const removeAdditionalImage = async (index: number, typeFile: string) => {
     if (typeFile === "File") {
-      removeAdditionalImageFrom("additionalImage", index);
+      removeAdditionalImageFrom(index);
     } else {
-      // Create a filtered version first
       const updatedImages = existingAdditionalImage.filter(
         (_, i) => i !== index
       );
 
-      // Update state and form field consistently
       setExistingAdditionalImage(updatedImages);
       setValue("existingAdditionalImage", updatedImages);
     }
@@ -189,23 +187,22 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
   };
 
   return (
-    <div className="p-6 mt-6 bg-white rounded-lg shadow-md border mb-4 ">
+    <div className="p-4 mt-6 bg-white rounded-lg shadow-md border mb-4 ">
       <Header
-        variant={{ theme: "dark", weight: "bold" }}
-        className="text-xl mb-2"
+        variant={{ theme: "dark", weight: "semiBold" }}
+        className="sm:text-xl text-lg mb-2"
       >
         {t("Media")}
       </Header>
 
-      <Header
-        variant={{ size: "lg", weight: "semiBold" }}
-        className="mb-4 text-[#203F58]"
-      >
-        {t("Photos")}
-      </Header>
-
       <div className="border-dashed border-2 border-gray-400 rounded-md p-4">
-        <div className="bg-white p-4 rounded-md mt-4">
+        <div className="bg-white rounded-md">
+          <Header
+            variant={{ size: "lg", weight: "semiBold" }}
+            className="mb-4 text-[#203F58]"
+          >
+            {t("Photos")}
+          </Header>
           <div className="grid lg:grid-cols-2 gap-4">
             <div>
               <Header
@@ -221,7 +218,7 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
                 ref={mainImageInputRef}
                 onChange={(e) => handleMainImageChange(e)}
               />
-              <div className="bg-[#F9F9FC] border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
+              <div className="bg-[#F9F9FC] shadow rounded-md border border-dashed py-4 sm:py-6 px-4 sm:px-12 flex flex-col items-center">
                 <div className="relative">
                   {existingMainImage ? (
                     <img
@@ -246,13 +243,13 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
                     &times;
                   </span>
                 </div>
-                <p className="text-center text-xs md:text-base">
-                  {t("Drag and drop image here, or click to add image")}
-                </p>
+                {existingMainImage ? null : (
+                  <p className="text-center text-xs md:text-base">
+                    {t("Drag and drop image here, or click to add image")}
+                  </p>
+                )}
                 <span
-                  className={`bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer ${
-                    isActiveStatus !== "active" ? "" : ""
-                  }`}
+                  className="bg-[#DEDEFA] sm:w-fit w-full text-center font-bold mt-2 p-3 px-4 rounded-md cursor-pointer"
                   onClick={triggerMainImageInput}
                 >
                   {t("Add Image")}
@@ -274,7 +271,7 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
                 ref={inProcessImageInputRef}
                 onChange={(e) => handleInProcessImageUpload(e)}
               />
-              <div className="bg-[#F9F9FC] border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
+              <div className="bg-[#F9F9FC] shadow rounded-md border border-dashed py-4 sm:py-6 px-4 sm:px-12 flex flex-col items-center">
                 {existingInProcessImage ? (
                   <div className="relative">
                     <img
@@ -283,9 +280,7 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
                       className="w-28 h-28 object-cover"
                     />
                     <span
-                      className={`absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer ${
-                        isActiveStatus !== "active" ? "" : ""
-                      }`}
+                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer"
                       onClick={() => handleRemoveInProcessImage("url")}
                     >
                       &times;
@@ -297,13 +292,13 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
                     className="w-28 h-28 bg-gray-200 rounded-md mb-4"
                   />
                 )}
-                <p className="text-center text-xs md:text-base">
-                  {t("Drag and drop image here, or click to add image")}
-                </p>
+                {existingInProcessImage ? null : (
+                  <p className="text-center text-xs md:text-base">
+                    {t("Drag and drop image here, or click to add image")}
+                  </p>
+                )}
                 <span
-                  className={`bg-[#DEDEFA]  font-bold mt-2 p-3 px-4 rounded-md cursor-pointer ${
-                    isActiveStatus !== "active" ? "" : ""
-                  }`}
+                  className="bg-[#DEDEFA] sm:w-fit w-full text-center font-bold mt-2 p-3 px-4 rounded-md cursor-pointer"
                   onClick={triggerInProcessImageInput}
                 >
                   {t("Add Image")}
@@ -312,10 +307,9 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
             </div>
           </div>
         </div>
-        {/* Additional Images Section */}
-        <div className="bg-white p-4 rounded-md mt-4">
+        <div className="bg-white rounded-md mt-4">
           <Header
-            variant={{ size: "lg", weight: "semiBold" }}
+            variant={{ size: "base", theme: "dark", weight: "semiBold" }}
             className="mb-2 text-[#203F58]"
           >
             {t("Additional Photos")}
@@ -328,7 +322,7 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
             multiple
             onChange={(e) => handleAdditionalImageUpload(e)}
           />
-          <div className="flex flex-col sm:flex-row flex-wrap gap-4 items-center">
+          <div className="flex flex-col p-4 shadow rounded-md border border-dashed flex-wrap gap-4 items-center">
             {getValues("additionalImage") &&
               getValues("additionalImage").length > 0 &&
               getValues("additionalImage").map((field, i) => (
@@ -356,35 +350,33 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
                     className="w-full h-full object-cover"
                   />
                   <span
-                    className={`absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer ${
-                      isActiveStatus !== "active" ? "" : ""
-                    }`}
+                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer"
                     onClick={() => removeAdditionalImage(i, "Url")}
                   >
                     &times;
                   </span>
                 </div>
               ))}
+
+            {getValues("additionalImage")?.length === 0 &&
+            existingAdditionalImage.length === 0 ? (
+              <div className="flex flex-col items-center">
+                <img
+                  src={image_icon}
+                  className="w-28 h-28 bg-gray-200 rounded-md mb-4"
+                />
+                <p className="text-center text-xs md:text-base">
+                  {t("Click to add additional images")}
+                </p>
+              </div>
+            ) : null}
+            <span
+              className="bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md w-full text-center cursor-pointer flex items-center justify-center"
+              onClick={() => document.querySelector("#photos-input").click()}
+            >
+              {t("Add Image")}
+            </span>
           </div>
-          {getValues("additionalImage") || existingAdditionalImage ? null : (
-            <>
-              <img
-                src={image_icon}
-                className="w-28 h-28 bg-gray-200 rounded-md mb-4"
-              />
-              <p className="text-center text-xs md:text-base mt-4">
-                {t("Click to add additional images")}
-              </p>
-            </>
-          )}
-          <span
-            className={`bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer flex items-center justify-center ${
-              isActiveStatus !== "active" ? "" : ""
-            }`}
-            onClick={() => document.querySelector("#photos-input").click()}
-          >
-            {t("Add Image")}
-          </span>
         </div>
 
         <div>
@@ -410,7 +402,7 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
                 ref={videoInputRef}
                 onChange={(e) => handleMainVideoChange(e)}
               />
-              <div className="bg-[#F9F9FC] border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
+              <div className="bg-[#F9F9FC] shadow rounded border border-dashed p-4 flex flex-col items-center">
                 <div className="relative">
                   {existingMainVideo ? (
                     <video
@@ -427,21 +419,19 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
                   <span
                     className={`absolute ${
                       existingMainVideo ? "block" : "hidden"
-                    } top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer ${
-                      isActiveStatus !== "active" ? "" : ""
-                    }`}
+                    } top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer`}
                     onClick={(e) => handleRemoveMainVidoe("Url")}
                   >
                     &times;
                   </span>
                 </div>
-                <p className="text-center  text-sm md:text-base">
-                  {t("Drag and drop Video here, or click to add Video")}
-                </p>
+                {existingMainVideo ? null : (
+                  <p className="text-center  text-sm md:text-base">
+                    {t("Drag and drop Video here, or click to add Video")}
+                  </p>
+                )}
                 <span
-                  className={`bg-[#DEDEFA]  font-bold mt-2 p-3 px-4 rounded-md cursor-pointer ${
-                    isActiveStatus !== "active" ? "" : ""
-                  }`}
+                  className="bg-[#DEDEFA] font-bold mt-2 p-3 px-4 w-full text-center rounded-md cursor-pointer"
                   onClick={triggerVideoInput}
                 >
                   {t("Add Video")}
@@ -449,7 +439,7 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
               </div>
             </div>
 
-            <div className="bg-white p-4 rounded-md mt-4">
+            <div className="bg-white rounded-md mt-4">
               <Header
                 variant={{ size: "lg", weight: "semiBold" }}
                 className="mb-2 text-[#203F58]"
@@ -464,7 +454,7 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
                 multiple
                 onChange={(e) => handleAdditionalVideoUpload(e)}
               />
-              <div className="flex flex-col md:flex-row items-center flex-wrap gap-4">
+              <div className="flex flex-col p-4 shadow rounded-md border border-dashed flex-wrap gap-2 items-center">
                 {getValues("additionalVideo") &&
                   getValues("additionalVideo").length > 0 &&
                   getValues("additionalVideo")?.map((field, i) => (
@@ -496,9 +486,7 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
                           className="w-full h-full object-cover"
                         />
                         <span
-                          className={`absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer ${
-                            isActiveStatus !== "active" ? "" : ""
-                          }`}
+                          className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer"
                           onClick={() => removeAdditionalVideo(i, "Url")}
                         >
                           &times;
@@ -506,26 +494,29 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
                       </div>
                     )
                   )}
+
+                {existingAdditionalVideo.length === 0 &&
+                getValues("additionalVideo")?.length === 0 ? (
+                  <div className="flex flex-col items-center">
+                    <img
+                      src={video_icon}
+                      className="w-28 h-28 bg-gray-200 rounded-md mb-4"
+                    />
+                    <p className="text-center  text-sm md:text-base">
+                      {t("Drag and drop Video here, or click to add Video")}
+                    </p>
+                  </div>
+                ) : null}
+
+                <span
+                  className="bg-[#DEDEFA] font-bold mt-2 p-3 px-4 w-full text-center rounded-md cursor-pointer flex items-center justify-center"
+                  onClick={() =>
+                    document.querySelector("#Videos-input").click()
+                  }
+                >
+                  {t("Add Video")}
+                </span>
               </div>
-
-              {existingAdditionalVideo ||
-              getValues("additionalVideo") ? null : (
-                <>
-                  <img
-                    src={video_icon}
-                    className="w-28 h-28 bg-gray-200 rounded-md mb-4"
-                  />
-                </>
-              )}
-
-              <span
-                className={`bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer flex items-center justify-center ${
-                  isActiveStatus !== "active" ? "" : ""
-                }`}
-                onClick={() => document.querySelector("#Videos-input").click()}
-              >
-                {t("Add Video")}
-              </span>
             </div>
           </div>
         </div>

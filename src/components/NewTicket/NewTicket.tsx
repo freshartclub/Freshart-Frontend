@@ -12,17 +12,17 @@ import { useTranslation } from "react-i18next";
 
 const NewTicket = () => {
   const { t } = useTranslation();
-  
+
   const validationSchema = Yup.object({
-    subject: Yup.string().required("Title is required"),
+    subject: Yup.string().required(t("Ticket subject is required")),
     message: Yup.string()
-      .required("Message is required")
+      .required(t("Ticket description is required"))
       .test(
         "min-words",
-        "Message must be at least 10 words",
+        `${t("Ticket description must be at least 10 words")}`,
         (value) => value && value.split(/\s+/).length >= 10
       ),
-    ticketType: Yup.string().required("Ticket type is required"),
+    ticketType: Yup.string().required(t("Ticket type is required")),
   });
 
   const user = useAppSelector((state) => state.user.user);
@@ -114,11 +114,9 @@ const NewTicket = () => {
           variant={{ size: "base", theme: "dark", weight: "normal" }}
           className="my-7"
         >
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum
-          dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit
-          amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet,
-          consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur
-          adipiscing elit.
+          {t(
+            "Please categorize and describe your issue as much as you can in order our support team can help you properly and promptly. Also provide screen shots or files as required."
+          )}
         </P>
 
         <div className="w-full">
@@ -134,7 +132,7 @@ const NewTicket = () => {
                     className="block text-gray-700 text-sm font-bold mb-2"
                     htmlFor="requestedBy"
                   >
-                    {t("Requested By")}
+                    {t("Requested By")} *
                   </label>
                   <Field
                     name="requestedBy"
@@ -157,12 +155,12 @@ const NewTicket = () => {
                     className="block text-gray-700 text-sm font-bold mb-2"
                     htmlFor="subject"
                   >
-                    {t("Title")}
+                    {t("Ticket Subject")} *
                   </label>
                   <Field
                     name="subject"
                     type="text"
-                    placeholder={t("Enter Subject")}
+                    placeholder={t("Enter Ticket Subject")}
                     className="outline-[#FDB7DC] bg-[#FFD1D114] shadow border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-[#FDB7DC] focus:shadow-outline"
                   />
                   <ErrorMessage
@@ -205,7 +203,7 @@ const NewTicket = () => {
                       htmlFor="urgency"
                       className="block mb-2 text-sm font-bold text-gray-900 "
                     >
-                      {t("Select Urgency")}
+                      {t("Select Urgency")} *
                     </label>
                     <Field
                       name="urgency"
@@ -232,7 +230,7 @@ const NewTicket = () => {
                       htmlFor="impact"
                       className="block mb-2 text-sm font-bold text-gray-900 "
                     >
-                      {t("Select Impact")}
+                      {t("Select Impact")} *
                     </label>
                     <Field
                       name="impact"
@@ -260,7 +258,7 @@ const NewTicket = () => {
                     htmlFor="message"
                     className="block mb-2 text-sm font-bold text-gray-900 "
                   >
-                    {t("Ticket Description")}
+                    {t("Ticket Description")} *
                   </label>
                   <Field
                     name="message"

@@ -83,41 +83,38 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen, isOpen }) => {
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
   const location = useLocation();
   const closePopup = useRef(null);
-
+  const [smallWidth, setSmallWidth] = useState(false);
   const { t } = useTranslation();
 
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 640) {
-        setIsOpen(true);
-      }
-    };
-
-    const handleNormal = () => {
-      if (window.innerWidth > 640) {
+        setIsOpen(false);
+        setSmallWidth(true);
         setSidebarOpen(false);
+      } else {
+        setIsOpen(true);
+        setSmallWidth(false);
       }
     };
-
-    handleResize();
-    handleNormal();
 
     window.addEventListener("resize", handleResize);
-    window.addEventListener("resize", handleNormal);
+    handleResize();
 
     return () => {
       window.removeEventListener("resize", handleResize);
-      window.removeEventListener("resize", handleNormal);
     };
-  }, []);
+  }, [setIsOpen, setSidebarOpen]);
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
 
-  useClickOutside(closePopup, () => {
-    setSidebarOpen(false);
-  });
+  // useClickOutside(closePopup, () => {
+  //   if (window.innerWidth < 640) {
+  //     setSidebarOpen(false);
+  //   }
+  // });
 
   const handleSubmenuToggle = (key: string) => {
     setOpenSubmenu(openSubmenu === key ? null : key);
@@ -125,75 +122,68 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen, isOpen }) => {
 
   return (
     <div
-      className={`flex transition-width duration-300 relative md:w-14  ${
-        isOpen
-          ? "lg:fixed lg:w-64 xl:fixed xl:w-64 md:fixed md:w-64 "
-          : "lg:fixed lg:w-14 xl:fixed xl:w-14 md:fixed md:w-14"
-      }  `}
+      className={`flex transition-all h-[90vh] max-h-[90vh] scrollbar overflow-y-auto overflow-x-hidden duration-300 fixed top-14 left-0 z-50 ${
+        smallWidth
+          ? sidebarOpen
+            ? "fixed left-[0] w-64"
+            : "left-[-20rem]"
+          : isOpen
+          ? "w-64"
+          : "w-14"
+      } h-screen bg-white shadow-md`}
     >
-      <div
-        className={`${isOpen ? "w-64" : "w-14"} ${
-          sidebarOpen ? "left-[-20rem]" : "left-0"
-        } transition-all duration-300 h-screen absolute sm:relative md:relative lg:relative z-[50] flex flex-col bg-white`}
-      >
+      <div ref={closePopup} className="flex flex-col w-full">
         <button
           onClick={toggleSidebar}
-          className={`absolute top-0 invisible sm:visible lg:visible md:visible -right-5 bg-white shadow-lg px-4 py-3.5 rounded-full transform transition-transform ${
+          className={`absolute z-10 top-6 invisible sm:visible right-0 bg-white shadow-lg px-4 py-3.5 rounded-full transform transition-transform ${
             isOpen ? "" : "rotate-180"
           }`}
         >
           <img src={toggle} alt="Toggle Arrow" />
         </button>
 
-        <ul className="space-y-2 mt-4">
+        <ul className="space-y-2 mt-8">
           {sections.map((section) => (
-            <li key={section.key}>
+            <li key={section.key} className="relative">
               <Link to={`/artist-panel/${section.path}`}>
                 <button
                   onClick={() => handleSubmenuToggle(section.key)}
                   className={`w-full text-left flex items-center space-x-4 p-4 hover:bg-gray-100 ${
                     location.pathname.includes(section.path)
-                      ? "bg-[#919EAB14 font-bold"
+                      ? "bg-gray-200"
                       : ""
                   }`}
                 >
                   <img src={section.icon} alt={section.label} className="w-6" />
-                  {isOpen && (
-                    <span className="flex-grow">{t(section.label)}</span>
-                  )}
+                  {(isOpen || smallWidth) && <span>{t(section.label)}</span>}
                 </button>
               </Link>
-
-              {section.submenu && openSubmenu === section.key && isOpen && (
-                <ul className="ml-10 space-y-1">
-                  {section.submenu && (
-                    <img
-                      src={arrow}
-                      alt="Arrow"
-                      className={`w-4 h-4  ${
-                        openSubmenu === section.key ? "rotate-0" : ""
-                      }`}
-                    />
-                  )}
-                  {section.submenu.map((sub) => (
-                    <div className="">
-                      <li key={sub.key} className="ml-4 ">
+              {section.submenu &&
+                openSubmenu === section.key &&
+                (isOpen || smallWidth) && (
+                  <ul className="ml-6 space-y-2">
+                    {section.submenu.map((sub) => (
+                      <li key={sub.key}>
                         <Link to={`/artist-panel/${sub.path}`}>
                           <button
-                            className={`text-left flex space-x-4 p-2 hover:bg-gray-100 ${
+                            className={`text-left flex items-center space-x-2 p-2 hover:bg-gray-100 ${
                               location.pathname === `/artist-panel/${sub.path}`
                                 ? "font-bold"
                                 : ""
                             }`}
                           >
+                            <img
+                              src={arrow}
+                              alt="Submenu Arrow"
+                              className="w-4"
+                            />
                             <span>{t(sub.label)}</span>
                           </button>
                         </Link>
                       </li>
-                    </div>
-                  ))}
-                </ul>
-              )}
+                    ))}
+                  </ul>
+                )}
             </li>
           ))}
         </ul>

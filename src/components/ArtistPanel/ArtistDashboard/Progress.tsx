@@ -17,7 +17,7 @@ const Progress = () => {
   ];
 
   return (
-    <div className="p-4 ">
+    <div className="p-4 border shadow rounded-md">
       <div className="flex justify-between items-center">
         <p className="text-[18px] font-semibold text-black">
           {t("Sales Progress")}

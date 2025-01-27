@@ -52,7 +52,7 @@ const CVForm: React.FC<CVFormProps> = ({
 
   return (
     <div className="p-4 mt-4 bg-white rounded-lg shadow-md max-w-full border  mb-4">
-      <h2 className="text-xl font-semibold mb-3 pb-3 text-[#1A1C21]">
+      <h2 className="sm:text-xl text-lg font-semibold mb-3 pb-3 text-[#1A1C21]">
         {t("CV & Highlight")}
       </h2>
       <div className="w-full relative">
@@ -82,104 +82,115 @@ const CVForm: React.FC<CVFormProps> = ({
         />
       </div>
 
-      {cvEntries.map((cv, index: number) => (
-        <div key={cv.id} className="flex flex-wrap space-x-2 mb-3 mt-4">
-          <div className="flex flex-col">
-            <label className="text-sm font-medium mb-1">{t("Year")}</label>
-            <select
-              className="border border-gray-300 rounded-md px-1 py-1 w-20 outline-none cursor-pointer"
-              {...control.register(`cvEntries.${index}.year`)}
-              defaultValue={cv.year}
-            >
-              <option value="">{t("Year")}</option>
-              {Array.from({ length: 40 }, (_, i) => {
-                const year = new Date().getFullYear() - i;
-                return (
-                  <option key={year} value={year}>
-                    {year}
-                  </option>
-                );
-              })}
-            </select>
-          </div>
-
-          <div className="flex flex-col">
-            <label className="text-sm font-medium mb-1">{t("Type")}</label>
-            <select
-              className="border border-gray-300 rounded-md px-1 py-1 w-24 outline-none cursor-pointer"
-              {...control.register(`cvEntries.${index}.Type`)}
-              defaultValue={cv.Type}
-            >
-              <option value="">{t("Select")}</option>
-              {eventType &&
-                eventType?.map((item, i) => (
-                  <option key={i} value={item.value}>
-                    {t(item?.value)}
-                  </option>
-                ))}
-            </select>
-          </div>
-
-          <div className="flex flex-col flex-grow w-28">
-            <label className="text-sm font-medium mb-1">
-              {t("Description")}
-            </label>
-            <input
-              type="text"
-              className="border border-gray-300 rounded-md px-1 py-1  outline-none "
-              placeholder="Description"
-              {...control.register(`cvEntries.${index}.Description`)}
-              defaultValue={cv.Description}
-            />
-          </div>
-
-          <div className="flex flex-col">
-            <label className="text-sm font-medium mb-1">{t("Location")}</label>
-            <input
-              type="text"
-              className="border border-gray-300 rounded-md px-1 py-1 w-24 outline-none"
-              placeholder="Location"
-              {...control.register(`cvEntries.${index}.Location`)}
-              defaultValue={cv.Location}
-            />
-          </div>
-
-          <div className="flex flex-col ">
-            <label className="text-sm font-medium mb-1">{t("Scope")}</label>
-            <select
-              className="border border-gray-300 rounded-md px-1 py-1 w-20 outline-none cursor-pointer"
-              {...control.register(`cvEntries.${index}.Scope`)}
-              defaultValue={cv.Scope}
-            >
-              <option value="">{t("Select")}</option>
-              {eventScope &&
-                eventScope?.map((item, i) => (
-                  <option key={i} value={item.value}>
-                    {t(item?.value)}
-                  </option>
-                ))}
-            </select>
-          </div>
-
-          <button
-            type="button"
-            className="text-red-600 font-semibold mt-5 "
-            onClick={() => remove(index)}
+      <div className="flex flex-col mt-4">
+        {cvEntries.map((cv, index: number) => (
+          <div
+            key={index}
+            className="flex flex-col md:flex-row md:items-center gap-2 mb-4"
           >
-            ✕
-          </button>
-        </div>
-      ))}
+            {/* Year Field */}
+            <div className="flex flex-col w-full md:w-[10%]">
+              <label className="text-sm font-medium mb-1">{t("Year")}</label>
+              <select
+                className="border border-gray-300 rounded-md px-2 py-2 w-full outline-none cursor-pointer"
+                {...control.register(`cvEntries.${index}.year`)}
+                defaultValue={cv.year}
+              >
+                <option value="">{t("Year")}</option>
+                {Array.from({ length: 40 }, (_, i) => {
+                  const year = new Date().getFullYear() - i;
+                  return (
+                    <option key={year} value={year}>
+                      {year}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
 
-      <div className="mt-3">
-        <button
-          type="button"
-          onClick={addMoreCv}
-          className="bg-[#102030] text-white px-3 py-2 rounded font-semibold"
-        >
-          {t("Add More CV")}
-        </button>
+            {/* Type Field */}
+            <div className="flex flex-col w-full md:w-[15%]">
+              <label className="text-sm font-medium mb-1">{t("Type")}</label>
+              <select
+                className="border border-gray-300 rounded-md px-2 py-2 w-full outline-none cursor-pointer"
+                {...control.register(`cvEntries.${index}.Type`)}
+                defaultValue={cv.Type}
+              >
+                <option value="">{t("Select")}</option>
+                {eventType &&
+                  eventType.map((item, i) => (
+                    <option key={i} value={item.value}>
+                      {t(item?.value)}
+                    </option>
+                  ))}
+              </select>
+            </div>
+
+            {/* Description Field */}
+            <div className="flex flex-col w-full md:w-[40%]">
+              <label className="text-sm font-medium mb-1">
+                {t("Description")}
+              </label>
+              <input
+                type="text"
+                className="border border-gray-300 rounded-md px-2 py-2 w-full outline-none"
+                placeholder="Description"
+                {...control.register(`cvEntries.${index}.Description`)}
+                defaultValue={cv.Description}
+              />
+            </div>
+
+            {/* Location Field */}
+            <div className="flex flex-col w-full md:w-[15%]">
+              <label className="text-sm font-medium mb-1">
+                {t("Location")}
+              </label>
+              <input
+                type="text"
+                className="border border-gray-300 rounded-md px-2 py-2 w-full outline-none"
+                placeholder="Location"
+                {...control.register(`cvEntries.${index}.Location`)}
+                defaultValue={cv.Location}
+              />
+            </div>
+
+            {/* Scope Field */}
+            <div className="flex flex-col w-full md:w-[15%]">
+              <label className="text-sm font-medium mb-1">{t("Scope")}</label>
+              <select
+                className="border border-gray-300 rounded-md px-2 py-2 w-full outline-none cursor-pointer"
+                {...control.register(`cvEntries.${index}.Scope`)}
+                defaultValue={cv.Scope}
+              >
+                <option value="">{t("Select")}</option>
+                {eventScope &&
+                  eventScope.map((item, i) => (
+                    <option key={i} value={item.value}>
+                      {t(item?.value)}
+                    </option>
+                  ))}
+              </select>
+            </div>
+
+            {/* Remove Button */}
+            <button
+              type="button"
+              className="text-red-600 md:w-fit w-full border border-red-600 px-3 rounded font-semibold translate-y-[-3px] mt-3 md:mt-auto h-[2.4rem]"
+              onClick={() => remove(index)}
+            >
+              Remove
+            </button>
+          </div>
+        ))}
       </div>
+
+      <button
+        type="button"
+        onClick={addMoreCv}
+        className="bg-[#102030] md:w-fit w-full text-center text-white px-3 py-2 rounded font-semibold"
+      >
+        {t("Add More CV")}
+      </button>
     </div>
   );
 };

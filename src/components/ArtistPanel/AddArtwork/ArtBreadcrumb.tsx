@@ -1,8 +1,10 @@
 import { IoIosArrowBack } from "react-icons/io";
 import { NavLink } from "react-router-dom";
 import P from "../../ui/P";
+import { useTranslation } from "react-i18next";
 
 const ArtBreadcrumbs = () => {
+  const { t } = useTranslation();
   const breadcrumbs = [
     {
       label: "Dashboard",
@@ -22,10 +24,9 @@ const ArtBreadcrumbs = () => {
   ];
 
   return (
-    <div className="flex gap-2 items-start">
+    <div className="flex flex-wrap items-center">
       {breadcrumbs.map((breadcrumb, index) => (
         <div className="flex items-center" key={index}>
-          {/* Link for non-last breadcrumb items */}
           {!breadcrumb.isLast ? (
             <>
               <P variant={{ size: "base", theme: "dark", weight: "semiBold" }}>
@@ -33,19 +34,19 @@ const ArtBreadcrumbs = () => {
                   to={breadcrumb.link}
                   className="text-[#102030] text-sm md:text-md font-semibold"
                 >
-                  {breadcrumb.label}
+                  {t(breadcrumb.label)}
                 </NavLink>
               </P>
-              <span className="mx-2">
+              <span className="mx-1">
                 <IoIosArrowBack />
               </span>
             </>
           ) : (
             <P
               variant={{ size: "base", theme: "dark", weight: "normal" }}
-              className="md:text-[18px]  text-sm hover:cursor-pointer"
+              className="text-sm"
             >
-              {breadcrumb.label}
+              {t(breadcrumb.label)}
             </P>
           )}
         </div>

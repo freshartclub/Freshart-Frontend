@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 const LineChart = () => {
   const { t } = useTranslation();
   return (
-    <div className="p-3">
+    <div className="p-4 bg-white border shadow rounded-md">
       <div className="flex justify-between gap-3">
         <div>
           <p className="text-black font-semibold text-[18px]">

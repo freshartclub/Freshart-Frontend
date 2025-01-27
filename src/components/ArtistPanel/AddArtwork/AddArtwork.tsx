@@ -766,12 +766,10 @@ const AddArtwork = () => {
 
   return (
     <>
-      <div
-        className={`${qrVisible ? "py-10 bg-white blur-sm" : "py-10 bg-white"}`}
-      >
+      <div className={`${qrVisible ? "bg-white blur-sm" : ""}`}>
         <Header
           variant={{ size: "xl", theme: "dark", weight: "bold" }}
-          className="text-black "
+          className="text-black ml-2 mt-3"
         >
           {t("Add Artwork")}
         </Header>
@@ -796,9 +794,9 @@ const AddArtwork = () => {
             </div>
           </div>
 
-          <div className="grid xl:grid-cols-4 gap-5 w-full">
-            <div className="md:col-span-3 rounded-md">
-              <div className="bg-white p-6 rounded-md shadow-md border ">
+          <div className="grid xl:grid-cols-4 gap-4 mx-2">
+            <div className="xl:col-span-3 rounded-md">
+              <div className="bg-white p-6 rounded-md shadow-md border">
                 <Header
                   variant={{
                     size: "base",
@@ -821,7 +819,7 @@ const AddArtwork = () => {
                     type="text"
                     id="artworkName"
                     readOnly={query ? true : false}
-                    placeholder={t("Type artwork name here...")}
+                    placeholder={t("Enter Artwork Name")}
                     className="w-full bg-[#F9F9FC] border text-sm sm:text-base border-gray-300 rounded-md p-1 sm:p-3 outline-none"
                   />
                   {errors.artworkName ? (
@@ -876,7 +874,7 @@ const AddArtwork = () => {
                     className={`w-full ${query ? "pointer-events-none" : ""}`}
                   >
                     <label className="block text-sm sm:text-base text-[#203F58] font-semibold mb-2">
-                      {t("Artwork Creation Year ")}*
+                      {t("Artwork Creation Year")}*
                     </label>
 
                     <Controller
@@ -916,7 +914,7 @@ const AddArtwork = () => {
                           {...register("artworkSeries")}
                           value={getValues("artworkSeries")}
                           type="text"
-                          readOnly="true"
+                          readOnly={query ? true : false}
                           className="w-full bg-[#F9F9FC] border cursor-pointer  border-gray-300 rounded-md  p-1 sm:p-3 outline-none text-sm sm:text-base"
                           onClick={handleDropDown}
                           autoComplete="off"
@@ -1472,7 +1470,7 @@ const AddArtwork = () => {
                     {t("Artwork Technic")} *
                     <select
                       {...register("artworkTechnic", {
-                        required: t("Artwork Technic is required"),
+                        required: "Artwork Technic is required",
                       })}
                       id="artworkTechnic"
                       disabled={query ? true : false}
@@ -1503,7 +1501,7 @@ const AddArtwork = () => {
                     <select
                       id="artworkTheme"
                       {...register("artworkTheme", {
-                        required: "Artwork theme is required",
+                        required: "Artwork Theme is required",
                       })}
                       disabled={query ? true : false}
                       className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
@@ -1537,11 +1535,13 @@ const AddArtwork = () => {
                       value: item,
                       label: t(item),
                     }))}
-                    placeholder={t("Select Artwork Style")}
+                    placeholder={t("Select Artwork Style") + " *"}
                     isMulti
                     isDisabled={query ? true : false}
                     value={getValues("artworkStyleType")}
-                    {...register("artworkStyleType")}
+                    {...register("artworkStyleType", {
+                      required: "Artwork Style is required",
+                    })}
                     onChange={(selectedOptions) =>
                       setValue("artworkStyleType", selectedOptions)
                     }
@@ -1572,11 +1572,11 @@ const AddArtwork = () => {
                 <div className="mt-3 mb-2">
                   <Select
                     options={emotions ? emotions : []}
-                    placeholder={t("Emotions")}
+                    placeholder={`${t("Select Emotions")} *`}
                     isMulti
                     isDisabled={query ? true : false}
                     {...register("emotions", {
-                      required: t("Emotions are required"),
+                      required: "Emotions are required",
                     })}
                     value={getValues("emotions")}
                     onChange={(selectedOptions) =>
@@ -1610,7 +1610,7 @@ const AddArtwork = () => {
                 <div className="mb-3">
                   <Select
                     options={colors ? colors : []}
-                    placeholder="Select Color  *"
+                    placeholder={`${t("Select Color")} *`}
                     {...register("colors", {
                       required: t("Colors are required"),
                     })}
@@ -1706,7 +1706,7 @@ const AddArtwork = () => {
                     <select
                       id="Material"
                       {...register("material", {
-                        required: t("Material is required"),
+                        required: "Material is required",
                       })}
                       disabled={query ? true : false}
                       className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5"
@@ -1762,7 +1762,7 @@ const AddArtwork = () => {
                     <select
                       id="hangingAvailable"
                       {...register("hangingAvailable", {
-                        required: "Hanging availability is required",
+                        required: "Hanging available is required",
                       })}
                       disabled={query ? true : false}
                       className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
@@ -1798,7 +1798,7 @@ const AddArtwork = () => {
                     <select
                       id="Farmed"
                       {...register("framed", {
-                        required: t("Framed Option is required"),
+                        required: t("Framed is required"),
                       })}
                       disabled={query ? true : false}
                       className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
@@ -1821,7 +1821,7 @@ const AddArtwork = () => {
                         <textarea
                           id="framedDescription"
                           {...register("framedDescription", {
-                            required: t("Frame Description is required"),
+                            required: "Frame Description is required",
                           })}
                           placeholder={t("Type Framed description here...")}
                           readOnly={query ? true : false}
@@ -1868,7 +1868,7 @@ const AddArtwork = () => {
                     <select
                       id="artworkOrientation"
                       {...register("artworkOrientation", {
-                        required: t("Artwork Orientation is required"),
+                        required: "Artwork Orientation is required",
                       })}
                       disabled={query ? true : false}
                       className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
@@ -2127,7 +2127,7 @@ const AddArtwork = () => {
                       {t("Base Price")}
                       <input
                         {...register("basePrice", {
-                          required: t("Base Price Required"),
+                          required: "Base Price is Required",
                         })}
                         id="basePrice"
                         placeholder={t("Enter Base Price")}
@@ -2247,7 +2247,7 @@ const AddArtwork = () => {
                         id="artistFees"
                         name="artistFees"
                         value={catalogPrice}
-                        placeholder={t("€ Artist Base Fees")}
+                        placeholder={t("Enter Artist Base Fees")}
                         readOnly={true}
                         className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5"
                       />
@@ -2320,7 +2320,7 @@ const AddArtwork = () => {
                     <select
                       id="packageMaterial"
                       {...register("packageMaterial", {
-                        required: t("Package Material is required"),
+                        required: "Package Material is required",
                       })}
                       disabled={query ? true : false}
                       className="bg-[#F9F9FC] mt-1 border mb-3 border-gray-300 outline-none text-[#203F58] text-sm rounded-lg block w-full p-1 sm:p-2.5"
@@ -2377,7 +2377,7 @@ const AddArtwork = () => {
                   </span>
                 </div>
 
-                <div className="flex  items-center justify-between mb-4 ">
+                <div className="flex items-center gap-2 justify-between">
                   {package_dimension.map((field) => (
                     <span key={field.name}>
                       <label className="p-1 text-[14px] text-[#203F58] font-semibold">
@@ -2386,36 +2386,34 @@ const AddArtwork = () => {
                       <input
                         type="text"
                         {...register(field.name, {
-                          required: t(`${field.label} is required`),
+                          required: `${field.label} is required`,
                         })}
                         id={field.name}
                         readOnly={query ? true : false}
-                        placeholder={t(field.placeholder)}
+                        placeholder={t(`Enter ${field.placeholder}`)}
                         className="bg-[#F9F9FC] border mb-2 border-gray-300 outline-none text-[#203F58] text-sm rounded-lg block w-full p-1 sm:p-2.5 "
                       />
 
                       {errors[field.name] ? (
                         <div className="error text-red-500 mt-1 text-sm">
-                          {t(`${errors[field.name].message}`)}
+                          {t(`${errors[field.placeholder].message}`)}
                         </div>
                       ) : null}
                     </span>
                   ))}
                 </div>
 
-                <div className="mt-4">
-                  <label className="flex items-center text-sm">
-                    <input
-                      type="checkbox"
-                      onChange={() => setIsComingSoon((prev) => !prev)}
-                      checked={isComingSoon == true}
-                      id="comingSoon"
-                      className="mr-2"
-                    />
-                    <span className="p-1 text-[14px] text-[#203F58] font-semibold">
-                      {t("Coming Soon")}
-                    </span>
-                  </label>
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    onChange={() => setIsComingSoon((prev) => !prev)}
+                    checked={isComingSoon == true}
+                    id="comingSoon"
+                    className="mr-2"
+                  />
+                  <span className="p-1 text-[14px] text-[#203F58] font-semibold">
+                    {t("Coming Soon")}
+                  </span>
                 </div>
               </div>
             </div>
@@ -2430,7 +2428,7 @@ const AddArtwork = () => {
             />
           </div>
 
-          <div className="  bg-white pt-40 flex flex-col sm:flex-row items-center justify-end border border-dotted rounded  py-2 w-full">
+          <div className="bg-white mt-10 flex flex-col sm:flex-row items-center justify-end border border-dotted rounded  py-2 w-full">
             {!query ? (
               <div className="flex space-x-2 ">
                 <span

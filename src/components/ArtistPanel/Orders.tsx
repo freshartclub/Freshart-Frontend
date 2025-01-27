@@ -48,15 +48,15 @@ const Orders = () => {
   if (isLoading) return <Loader />;
 
   return (
-    <div className="py-7">
+    <div className="mx-3 mt-7">
       <div>
         <h1 className="font-bold text-[20px] mdtext-[24px] text-black">
-          {t("Order")}
+          {t("All Orders")}
         </h1>
         <div className="flex justify-between mt-3">
           <div className="flex gap-2 items-center ">
             <p
-              className={`text-[18px] text-black`}
+              className={`text-[16px] text-black`}
               onClick={() => Active("dashboard")}
             >
               <NavLink to={"/dashboard"}>{t("Dashboard")}</NavLink>
@@ -64,7 +64,7 @@ const Orders = () => {
             <span>
               <IoIosArrowBack />
             </span>
-            <span className="text-[18px] hover:cursor-pointer">
+            <span className="text-[16px] hover:cursor-pointer">
               {t("Order List")}
             </span>
           </div>

@@ -1,24 +1,24 @@
-import { useState, useMemo, useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
-import Header from "../../ui/Header";
-import Button from "../../ui/Button";
-import P from "../../ui/P";
-import Select from "react-select";
+import { useEffect, useMemo, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import countryList from "react-select-country-list";
+import Button from "../../ui/Button";
+import Header from "../../ui/Header";
+import P from "../../ui/P";
 
 import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
 
-import { useGetArtistDetails } from "./http/useGetDetails";
+import { useTranslation } from "react-i18next";
+import { GiCancel } from "react-icons/gi";
 import CustomDropdown from "../../pages/CustomDropdown";
 import { getCityStateFromZipCountry } from "../../utils/MapWithAutocomplete";
-import { GiCancel } from "react-icons/gi";
-import Loader from "../../ui/Loader";
 import useBillingMutation from "./http/useBillingMutation";
 
 const AdressPop = ({ setCheckBox, newData = {}, setUpdateData, addAdress }) => {
   const options = useMemo(() => countryList(), []);
   const [id, setId] = useState(null);
+
+  const { t } = useTranslation();
 
   const [initialValues, setInitialValues] = useState({
     firstName: "",
@@ -56,7 +56,6 @@ const AdressPop = ({ setCheckBox, newData = {}, setUpdateData, addAdress }) => {
 
   const countryValue = getValues("country");
 
-  const { data, isLoading } = useGetArtistDetails();
   const { mutateAsync, isPending } = useBillingMutation();
 
   const watchCountry = watch("country");
@@ -86,10 +85,6 @@ const AdressPop = ({ setCheckBox, newData = {}, setUpdateData, addAdress }) => {
     });
   };
 
-  if (isLoading) {
-    return <Loader />;
-  }
-
   return (
     <div className="relative flex justify-center items-center min-h-[50vh] z-[99999] ">
       <div className="absolute  lg:top-[-110%] lg:left-[25%] bottom-0 left-0 w-full sm:w-[200%] lg:w-[100%] xl:w-[90%] max-w-[600px]">
@@ -100,7 +95,7 @@ const AdressPop = ({ setCheckBox, newData = {}, setUpdateData, addAdress }) => {
                 variant={{ size: "xl", theme: "dark", weight: "semiBold" }}
                 className="border-b"
               >
-                Billing Address
+                {t("Billing Address")}
               </Header>
               <span
                 className="cursor-pointer"
@@ -113,14 +108,13 @@ const AdressPop = ({ setCheckBox, newData = {}, setUpdateData, addAdress }) => {
             <div className="px-4 py-6">
               <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="w-full">
-                  {/* First Name and Last Name */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
                     <div className="sm:my-3 my-1 w-full">
                       <label
                         htmlFor="firstName"
                         className="block mb-2 text-sm font-semibold text-gray-700 text-left"
                       >
-                        First Name
+                        {t("First Name")}
                       </label>
                       <Controller
                         name="firstName"
@@ -141,7 +135,7 @@ const AdressPop = ({ setCheckBox, newData = {}, setUpdateData, addAdress }) => {
                         htmlFor="lastName"
                         className="block mb-2 text-sm font-semibold text-gray-700 text-left"
                       >
-                        Last Name
+                        {t("Last Name")}
                       </label>
                       <Controller
                         name="lastName"
@@ -158,14 +152,13 @@ const AdressPop = ({ setCheckBox, newData = {}, setUpdateData, addAdress }) => {
                     </div>
                   </div>
 
-                  {/* Company Name and Email */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
                     <div className="sm:my-3 my-1 w-full">
                       <label
                         htmlFor="companyName"
                         className="block mb-2 text-sm font-semibold text-gray-700 text-left"
                       >
-                        Company Name
+                        {t("Company Name")}
                       </label>
                       <Controller
                         name="companyName"
@@ -186,7 +179,7 @@ const AdressPop = ({ setCheckBox, newData = {}, setUpdateData, addAdress }) => {
                         htmlFor="email"
                         className="block mb-2 text-sm font-semibold text-gray-700 text-left"
                       >
-                        Email
+                        {t("Email")}
                       </label>
                       <Controller
                         name="email"
@@ -203,18 +196,17 @@ const AdressPop = ({ setCheckBox, newData = {}, setUpdateData, addAdress }) => {
                     </div>
                   </div>
 
-                  {/* Phone and Country */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
                     <div className="sm:my-3 my-1 w-full">
                       <label
                         htmlFor="phone"
                         className="block mb-2 text-sm font-semibold text-gray-700 text-left"
                       >
-                        Phone Number
+                        {t("Phone Number")}
                       </label>
                       <PhoneInput
                         className="appearance-none outline-none rounded py-1 w-full text-gray-700 leading-tight focus:outline-none"
-                        placeholder="Enter phone number"
+                        placeholder={t("Enter phone number")}
                         defaultCountry="in"
                         value={getValues("phone")}
                         onChange={(val) => setValue("phone", val)}
@@ -226,7 +218,7 @@ const AdressPop = ({ setCheckBox, newData = {}, setUpdateData, addAdress }) => {
                         htmlFor="email"
                         className="block mb-2 text-sm font-semibold text-gray-700 text-left"
                       >
-                        Address Type
+                        {t("Address Type")}
                       </label>
                       <Controller
                         name="addressType"
@@ -236,9 +228,9 @@ const AdressPop = ({ setCheckBox, newData = {}, setUpdateData, addAdress }) => {
                             {...field}
                             className="border border-[#D3D3D3] p-2 w-full rounded-md focus:outline-none"
                           >
-                            <option disabled>Select</option>
-                            <option value="Home">Home</option>
-                            <option value="Office">Office</option>
+                            <option disabled>{t("Select")}</option>
+                            <option value="Home">{t("Home")}</option>
+                            <option value="Office">{t("Office")}</option>
                           </select>
                         )}
                       />
@@ -252,7 +244,7 @@ const AdressPop = ({ setCheckBox, newData = {}, setUpdateData, addAdress }) => {
                         htmlFor="country"
                         className="block mb-2 text-sm font-semibold text-gray-700 text-left"
                       >
-                        Country
+                        {t("Country")}
                       </label>
                       <CustomDropdown
                         control={control}
@@ -267,7 +259,7 @@ const AdressPop = ({ setCheckBox, newData = {}, setUpdateData, addAdress }) => {
                         htmlFor="zipCode"
                         className="block mb-2 text-sm font-semibold text-gray-700 text-left"
                       >
-                        Zip Code
+                        {t("Zip Code")}
                       </label>
                       <Controller
                         name="zipCode"
@@ -291,7 +283,7 @@ const AdressPop = ({ setCheckBox, newData = {}, setUpdateData, addAdress }) => {
                         htmlFor="state"
                         className="block mb-2 text-sm font-semibold text-gray-700 text-left"
                       >
-                        State
+                        {t("State")}
                       </label>
                       <Controller
                         name="state"
@@ -300,7 +292,7 @@ const AdressPop = ({ setCheckBox, newData = {}, setUpdateData, addAdress }) => {
                           <input
                             {...field}
                             type="text"
-                            placeholder="Enter your state"
+                            placeholder={t("Enter your state")}
                             className="border border-[#D3D3D3] p-2 w-full rounded-md focus:outline-none"
                           />
                         )}
@@ -312,7 +304,7 @@ const AdressPop = ({ setCheckBox, newData = {}, setUpdateData, addAdress }) => {
                         htmlFor="city"
                         className="block mb-2 text-sm font-semibold text-gray-700 text-left"
                       >
-                        City
+                        {t("City")}
                       </label>
                       <Controller
                         name="city"
@@ -321,7 +313,7 @@ const AdressPop = ({ setCheckBox, newData = {}, setUpdateData, addAdress }) => {
                           <input
                             {...field}
                             type="text"
-                            placeholder="Enter your city"
+                            placeholder={t("Enter your city")}
                             className="border border-[#D3D3D3] p-2 w-full rounded-md focus:outline-none"
                           />
                         )}
@@ -335,7 +327,7 @@ const AdressPop = ({ setCheckBox, newData = {}, setUpdateData, addAdress }) => {
                       htmlFor="address"
                       className="block mb-2 text-sm font-semibold text-gray-700 text-left"
                     >
-                      Address
+                      {t("Address")}
                     </label>
                     <Controller
                       name="address"
@@ -369,7 +361,7 @@ const AdressPop = ({ setCheckBox, newData = {}, setUpdateData, addAdress }) => {
                           weight: "semiBold",
                         }}
                       >
-                        {isPending ? "Saving..." : "Save Changes"}
+                        {isPending ? t("Saving...") : t("Save Changes")}
                       </P>
                     </Button>
                   </div>

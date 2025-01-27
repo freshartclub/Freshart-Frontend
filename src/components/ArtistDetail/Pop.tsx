@@ -1,25 +1,22 @@
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
-export const ArtworkViewPopup = ({ isOpen, onClose, onAction, id, status }) => {
+export const ArtworkViewPopup = ({ isOpen, onClose, id, status }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
   const handleViewOnly = () => {
     navigate(`/artist-panel/artwork/add?id=${id}&view=true`);
-    onAction("view");
     onClose();
   };
 
   const handleEdit = () => {
     navigate(`/artist-panel/artwork/add?id=${id}`);
-    onAction("view");
     onClose();
   };
 
   const handlePreview = () => {
     navigate(`/artist-panel/artwork/preview?id=${id}&preview=true`);
-    onAction("preview");
     onClose();
   };
 

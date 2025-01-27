@@ -171,8 +171,8 @@ const FilterProductItem = () => {
 
   return (
     <>
-      <div className="flex xl:flex-row flex-col gap-4 justify-between mt-7">
-        <div className="flex gap-1 md:gap-2 py-1 px-1  md:px-2 bg-white w-fit rounded-md border-gray-300 ">
+      <div className="flex xl:flex-row flex-col gap-4 justify-between mt-3">
+        <div className="flex border gap-1 md:gap-2 py-1 px-1 bg-white w-fit rounded-md border-gray-300 ">
           {categoris.map((category, index) => (
             <div
               key={index}
@@ -205,7 +205,7 @@ const FilterProductItem = () => {
         {curruntProduct.map((value, index) => (
           <div
             key={index}
-            className="rounded-md overflow-hidden bg-white border border-gray-100"
+            className="rounded-md overflow-hidden bg-white border"
           >
             <div className="p-4 flex flex-col items-start">
               <img

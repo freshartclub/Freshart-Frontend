@@ -76,38 +76,40 @@ const DiscoverMore = () => {
   const additionalVideo = data?.data.media?.otherVideo?.map((item) => item);
   const url2 = `${imageUrl}/videos`;
 
-  const images = data?.data
-    ? [
-        {
-          src: data?.data.media?.mainImage ? data?.data.media?.mainImage : null,
-          alt: "Main Image",
-        },
-        {
-          src: data?.data.media?.backImage ? data?.data.media?.backImage : null,
-          alt: "Back Image",
-        },
-        {
-          src: data?.data.media?.inProcessImage
-            ? data?.data.media?.inProcessImage
-            : null,
-          alt: "In Process Image",
-        },
-
-        ...additionalImage?.map((item) => ({
-          src: item,
-          alt: "Additional Image",
-        })),
-        {
-          src: data?.data.media?.mainVideo ? data?.data.media?.mainVideo : null,
-          alt: "Main Video",
-        },
-        ...additionalVideo?.map((item) => ({
-          src: item,
-          alt: "Video",
-          type: "video",
-        })),
-      ].filter((image) => image.src !== null)
-    : [];
+  const images =
+    data && data.data
+      ? [
+          {
+            src: data.data.media?.mainImage || null,
+            alt: "Main Image",
+          },
+          {
+            src: data.data.media?.backImage || null,
+            alt: "Back Image",
+          },
+          {
+            src: data.data.media?.inProcessImage || null,
+            alt: "In Process Image",
+          },
+          ...(Array.isArray(additionalImage)
+            ? additionalImage.map((item) => ({
+                src: item,
+                alt: "Additional Image",
+              }))
+            : []),
+          {
+            src: data.data.media?.mainVideo || null,
+            alt: "Main Video",
+          },
+          ...(Array.isArray(additionalVideo)
+            ? additionalVideo.map((item) => ({
+                src: item,
+                alt: "Video",
+                type: "video",
+              }))
+            : []),
+        ].filter((image) => image.src !== null)
+      : [];
 
   if (isLoading) return <Loader />;
 
@@ -214,7 +216,6 @@ const DiscoverMore = () => {
 
         <ProductInfo data={data} />
       </div>
-      {/* <SelectedSection data={data} /> */}
     </>
   );
 };
