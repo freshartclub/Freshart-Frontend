@@ -52,7 +52,7 @@ const CVForm: React.FC<CVFormProps> = ({
 
   return (
     <div className="p-4 mt-4 bg-white rounded-lg shadow-md max-w-full border  mb-4">
-      <h2 className="sm:text-xl text-lg font-semibold mb-3 pb-3 text-[#1A1C21]">
+      <h2 className="text-lg font-semibold mb-3 pb-3 text-[#1A1C21]">
         {t("CV & Highlight")}
       </h2>
       <div className="w-full relative">
@@ -178,7 +178,7 @@ const CVForm: React.FC<CVFormProps> = ({
               className="text-red-600 md:w-fit w-full border border-red-600 px-3 rounded font-semibold translate-y-[-3px] mt-3 md:mt-auto h-[2.4rem]"
               onClick={() => remove(index)}
             >
-              Remove
+              {t("Remove")}
             </button>
           </div>
         ))}

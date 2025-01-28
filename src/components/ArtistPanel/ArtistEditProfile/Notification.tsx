@@ -76,7 +76,7 @@ export default function Notification() {
 
       <div className="flex justify-end">
         <button className="px-4 py-2 bg-[#102030] text-white rounded-md shadow ">
-          {t("Save changes")}
+          {t("Save Changes")}
         </button>
       </div>
     </div>

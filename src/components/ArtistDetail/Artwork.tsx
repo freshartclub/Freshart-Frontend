@@ -32,9 +32,8 @@ const Artwork = () => {
     refetch();
   }, [selectedArtwork]);
 
-  const handleArtworkSelect = (artwork) => {
-    const currentValue = artwork.target.innerHTML;
-    setSelectedArtwork(currentValue);
+  const handleArtworkSelect = (name:string) => {
+    setSelectedArtwork(name);
   };
 
   const handleArtistName = (artist) => {
@@ -63,7 +62,7 @@ const Artwork = () => {
       <div className="flex flex-col mb-4 gap-3">
         <div className="flex gap-2">
           <span
-            onClick={handleArtworkSelect}
+            onClick={() => handleArtworkSelect("Series")}
             className={`border px-2 py-2 font-medium rounded cursor-pointer text-md ${
               selectedArtwork === "Series" && "bg-black text-white"
             }`}
@@ -72,7 +71,7 @@ const Artwork = () => {
           </span>
 
           <span
-            onClick={handleArtworkSelect}
+            onClick={() => handleArtworkSelect("Discipline")}
             className={`border px-2 py-2 font-medium rounded cursor-pointer text-md ${
               selectedArtwork === "Discipline" && "bg-black text-white"
             }`}
@@ -93,7 +92,7 @@ const Artwork = () => {
           ) : null}
         </div>
 
-        <div className="flex gap-2 scrollbar overflow-x-auto pt-2">
+        <div className="flex bg-white p-2 rounded gap-2 w-full max-w-full scrollbar overflow-x-auto pt-2">
           <div className="flex gap-2 items-center">
             <div className="w-[.8em] h-[.8em] rounded-full bg-[#00DE00] flex items-center"></div>
             <p className="text-[14px] text-black">{t("Published")}</p>
@@ -104,7 +103,7 @@ const Artwork = () => {
           </div>
           <div className="flex gap-2 items-center">
             <div className="w-[.8em] h-[.8em] rounded-full bg-[#D8F002] flex items-center"></div>
-            <p className="text-[14px] w-[8rem] text-black">
+            <p className="text-[14px] w-max text-black">
               {t("Pending Approval")}
             </p>
           </div>
@@ -119,7 +118,7 @@ const Artwork = () => {
 
           <div className="flex gap-2 items-center">
             <div className="w-[.8em] h-[.8em] rounded-full   bg-[#EE1D52]   flex items-center"></div>
-            <p className="text-[14px] w-[5.8rem] text-black">
+            <p className="text-[14px] w-max text-black">
               {t("Not Available")}
             </p>
           </div>
@@ -130,7 +129,7 @@ const Artwork = () => {
 
           <div className="flex gap-2 items-center">
             <div className="w-[.8em] h-[.8em] rounded-full bg-[#a74343] flex items-center"></div>
-            <p className="text-[14px] w-[7rem] text-black">
+            <p className="text-[14px] w-max text-black">
               {t("Coming Soon")}
             </p>
           </div>
@@ -194,7 +193,7 @@ const Artwork = () => {
                           <div className="flex gap-5">
                             <NavLink
                               className="flex items-center py-1 px-3 bg-zinc-800"
-                              to={`/artist-panel/artwork/add?id=${item._id}`}
+                              to={`/artist-panel/artwork/add?id=${art._id}`}
                             >
                               <MdModeEditOutline
                                 className="text-white"

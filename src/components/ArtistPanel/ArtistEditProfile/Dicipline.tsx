@@ -41,7 +41,7 @@ const Dicipline = ({ control, isActiveStatus, prefillValues, watch }) => {
 
   return (
     <div className="p-4 mx-auto border border-custom-gray bg-white rounded-md shadow-custom mb-4 mt-4">
-      <h2 className="pb-3 font-semibold sm:text-xl text-lg leading-7 tracking-wider text-[#1A1C21]">
+      <h2 className="pb-3 font-semibold text-lg leading-7 tracking-wider text-[#1A1C21]">
         {t("Discipline")}
       </h2>
       {fields.map((account, index) => {
@@ -123,11 +123,9 @@ const Dicipline = ({ control, isActiveStatus, prefillValues, watch }) => {
               </div>
               <button
                 onClick={() => remove(index)}
-                className={`hover:bg-red-100 px-4 py-3 mt-0 md:mt-5 md:w-fit w-full rounded-lg gap-1 bg-[#FCDAD7] text-[#F04438] ${
-                  isActiveStatus !== "active" ? "" : ""
-                }`}
+                className="md:w-fit w-full border text-red-600 border-red-600 p-2 rounded font-semibold translate-y-[-3px] mt-3 md:mt-auto"
               >
-                Remove
+                {t("Remove")}
               </button>
             </div>
           </div>

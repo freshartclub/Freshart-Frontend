@@ -14,7 +14,7 @@ const SocialMediaLinks = ({ control, isActiveStatus, socialMedia }) => {
 
   return (
     <div className="p-4 mx-auto border border-custom-gray bg-white rounded-lg shadow-md mb-4 mt-4">
-      <h2 className="pb-3 font-semibold sm:text-xl text-lg leading-7 tracking-wider text-[#1A1C21]">
+      <h2 className="pb-3 font-semibold text-lg leading-7 tracking-wider text-[#1A1C21]">
         {t("Add Social Media")}
       </h2>
       {fields.map((account, index) => (

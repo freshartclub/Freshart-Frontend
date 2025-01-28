@@ -19,9 +19,9 @@ const PaginationTabs = ({
   };
 
   return (
-    <div className="flex gap-3 py-4 justify-end p-2">
+    <div className="flex gap-3 pb-4 pt-2 justify-end px-2">
       <div
-        className="w-[2.5em] h-[2em] rounded-lg bg-[#F2F2F2] text-black flex items-center justify-center hover:cursor-pointer"
+        className="w-[2em] h-[2em] rounded-full border bg-[#F2F2F2] text-black flex items-center justify-center hover:cursor-pointer"
         onClick={preButtonHandler}
       >
         <IoIosArrowBack />
@@ -32,7 +32,7 @@ const PaginationTabs = ({
           <div key={index}>
             <div
               onClick={() => setCurrentPage(num)}
-              className={`w-[2.5em] h-[2em] rounded-lg bg-[#F2F2F2] text-black flex items-center justify-center ${
+              className={`w-[2em] h-[2em] rounded-full bg-[#F2F2F2] text-black flex items-center justify-center ${
                 currentPage === num ? "bg-black text-white" : ""
               } hover:cursor-pointer`}
             >
@@ -43,7 +43,7 @@ const PaginationTabs = ({
       </div>
 
       <div
-        className="w-[2.5em] h-[2em] rounded-lg bg-[#F2F2F2] text-black flex items-center justify-center hover:cursor-pointer"
+        className="w-[2em] h-[2em] rounded-full border bg-[#F2F2F2] text-black flex items-center justify-center hover:cursor-pointer"
         onClick={nextButtonHandler}
       >
         <IoIosArrowForward />

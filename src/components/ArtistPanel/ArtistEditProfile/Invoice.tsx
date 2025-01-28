@@ -71,7 +71,7 @@ const Invoice = ({ control }) => {
 
   return (
     <div className="p-4 pb-0 mt-4 bg-white rounded-lg shadow-md max-w-full border">
-      <h2 className="sm:text-xl text-lg font-semibold mb-3 pb-3 text-[#1A1C21]">
+      <h2 className="text-lg font-semibold mb-3 pb-3 text-[#1A1C21]">
         {t("Invoicing & Commercialization")}
       </h2>
       <div className="flex flex-wrap justify-between w-full gap-4 mb-4">

@@ -1,6 +1,5 @@
 import { Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import Header from "../../ui/Header";
 
 const Dicipline = ({
   query,
@@ -29,7 +28,7 @@ const Dicipline = ({
           <div key={id} className="mb-4">
             <label
               htmlFor={id}
-              className="block text-sm sm:text-base font-semibold text-[#203F58] mb-2"
+              className="block text-sm font-semibold text-[#203F58] mb-2"
             >
               {t(label)} *
             </label>
@@ -49,7 +48,7 @@ const Dicipline = ({
                     setValue("artworkStyleType", "");
                   }}
                   value={artDicipline}
-                  className="block w-full p-1 sm:px-4 sm:py-2 bg-[#F9F9FC] outline-none border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="block w-full text-sm p-2 bg-[#F9F9FC] outline-none border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 >
                   <option value="" disabled>
                     {t("Select Discipline")}

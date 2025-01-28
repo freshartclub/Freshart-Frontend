@@ -12,6 +12,7 @@ import DiscoverContent from "./DiscoverContent";
 import { useGetArtWorkById } from "./http/useGetArtworkById";
 import ProductInfo from "./ProductInfo";
 import { useTranslation } from "react-i18next";
+import { IoIosArrowBack } from "react-icons/io";
 
 const DiscoverMore = () => {
   const sliderRef = useRef<Slider>(null);
@@ -115,17 +116,20 @@ const DiscoverMore = () => {
 
   return (
     <>
-      <div className="container mx-auto md:px-6 px-3">
-        <Header
-          variant={{ size: "xl", theme: "dark", weight: "bold" }}
-          className="text-black mt-10 "
-        >
-          {t("Artwork Review")}
-        </Header>
+      <div className="container mx-auto md:px-6 sm:px-3 px-2 mt-4">
+        <div className="flex items-center flex-wrap text-lg text-black">
+          <Header variant={{ size: "xl", theme: "dark", weight: "semiBold" }}>
+            {t("Artwork Review")}
+          </Header>
+          <span className="mx-1">
+            <IoIosArrowBack />
+          </span>
+          {data?.data.artworkName} <span className="text-[12px] ml-2 text-[#a5a5a5]">({data?.data.artworkId})</span>
+        </div>
 
-        <div className="flex lg:flex-row  flex-col gap-10 mt-10">
+        <div className="flex lg:flex-row flex-col mt-5">
           <div className="flex lg:flex-row flex-col gap-4 lg:w-[50%] w-full items-center mb-2">
-            <div className="flex lg:justify-start justify-center flex-row lg:flex-col lg:max-h-[60vh] lg:h-[60vh] lg:overflow-y-auto  gap-2 w-[15%]  lg:ml-4 ">
+            <div className="flex lg:justify-start justify-center flex-row lg:flex-col lg:max-h-[60vh] lg:h-[60vh] lg:overflow-y-auto gap-2 lg:ml-4">
               {images?.map((thumb, index) => {
                 const isVideo = thumb.src && thumb.src.endsWith(".mp4");
                 if (thumb.src) {
@@ -150,7 +154,7 @@ const DiscoverMore = () => {
               })}
             </div>
 
-            <div className="flex-1 md:w-[70%] w-[50vw] ">
+            <div className="md:w-[70%] sm:w-[50vw] w-full">
               {images.length > 1 ? (
                 <Slider {...settings} ref={sliderRef} className="discover_more">
                   {images.map(
@@ -160,14 +164,14 @@ const DiscoverMore = () => {
                           {slide.src.endsWith(".mp4") ? (
                             <video
                               src={`${url2}/${slide.src}`}
-                              className="mx-auto object-cover h-[20rem] md:h-[60vh] lg:h-[60vh]"
+                              className="mx-auto w-full object-cover h-[20rem] md:h-[60vh] lg:h-[60vh]"
                               controls
                             />
                           ) : (
                             <img
                               src={`${imageUrl}/users/${slide.src}`}
                               alt={`Slide ${index + 1}`}
-                              className="mx-auto object-cover h-[20rem] md:h-[60vh] lg:h-[60vh]"
+                              className="mx-auto w-full object-cover h-[20rem] md:h-[60vh] lg:h-[60vh]"
                             />
                           )}
                         </div>
@@ -187,19 +191,19 @@ const DiscoverMore = () => {
                   <img
                     src={`${imageUrl}/users/${images[0]?.src}`}
                     alt="Single Image"
-                    className="md:w-[40vw] w-full h-[50vh] md:h-[70vh] object-cover overflow-y-hidden"
+                    className="w-[40vw] h-[50vh] md:h-[70vh] object-cover overflow-y-hidden"
                   />
                 ))
               )}
             </div>
           </div>
 
-          <div className="w-full">
+          <div className="bg-white px-4 py-2 rounded-lg border w-full">
             <DiscoverContent data={data?.data} />
           </div>
         </div>
 
-        <div className="flex justify-center md:w-[50%] w-full gap-10 mb-10">
+        <div className="flex justify-center items-center md:flex-row flex-col md:w-[50%] w-full md:gap-10 gap-2 mb-10">
           <div className="flex gap-1">
             <img src={eye} alt="eye" className="w-[19px] h-[12px] mt-1" />
             <P variant={{ size: "base", theme: "dark", weight: "normal" }}>

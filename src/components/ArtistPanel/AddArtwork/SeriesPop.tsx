@@ -34,7 +34,7 @@ export const SeriesPop = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed z-50 inset-0 flex justify-center items-center bg-gray-600 bg-opacity-50">
+    <div className="fixed z-[100] inset-0 flex justify-center items-center bg-gray-600 bg-opacity-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-[90%] sm:w-1/3 max-w-[500px] relative">
         <h2 className="text-sm sm:text-md font-bold mb-4 text-center sm:text-left">
           {t("Enter New Series Name")}
@@ -43,7 +43,7 @@ export const SeriesPop = ({ isOpen, onClose }) => {
           type="text"
           value={series}
           onChange={handleSeriesValue}
-          placeholder="Enter New Series Name"
+          placeholder={t("Enter New Series Name")}
           className="py-2 px-3 border border-zinc-800 mb-5 w-full rounded-md outline-none"
         />
         <div className="flex flex-col sm:flex-row justify-center sm:justify-end gap-4">

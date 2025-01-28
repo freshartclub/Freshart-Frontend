@@ -131,7 +131,7 @@ const Support = () => {
   if (loading) return <Loader />;
 
   return (
-    <div>
+    <div className="mt-5">
       <div className="container mx-auto md:px-6 px-3">
         {newIncident && newIncident?.length > 0 ? (
           <div className="bg-[#E9E4DF] border-2 border-[#FF536B] p-4 mb-4 rounded-md mt-6">
@@ -163,7 +163,7 @@ const Support = () => {
             )}
           </div>
         ) : null}
-        <div className="flex sm:flex-row flex-col justify-between my-10 w-full">
+        <div className="flex sm:flex-row flex-col justify-between pb-5 w-full">
           <div className="md:w-[70%] w-full">
             <Button
               variant={{
@@ -171,7 +171,7 @@ const Support = () => {
                 thickness: "thick",
                 fontSize: "base",
               }}
-              className="bg-[#FF536B] rounded-md text-white mb-5"
+              className="bg-[#fe3d57] font-semibold rounded text-white mb-5"
             >
               {t("Help Center")}
             </Button>
@@ -261,12 +261,16 @@ const Support = () => {
           </div>
 
           <div className="sm:w-[30%] w-full">
-            <img src={support} alt="support image" className="w-full" />
+            <img
+              src={support}
+              alt="support image"
+              className="w-full border shadow rounded-md"
+            />
           </div>
         </div>
       </div>
 
-      <div className="bg-[#E9E4DF] py-10">
+      <div className="bg-[#E9E4DF] pt-10 pb-5">
         <div className="container mx-auto md:px-6 px-3 mb-10">
           <Header
             variant={{ size: "2xl", weight: "bold", theme: "dark" }}
@@ -293,32 +297,31 @@ const Support = () => {
         </div>
       </div>
 
-      <div className="container m-auto px-6">
-        <div className="my-12">
-          <Header
-            variant={{ size: "2xl", theme: "dark", weight: "bold" }}
-            className="text-center mb-10"
-          >
-            {t("Popular Topics")}
-          </Header>
-          <div className="grid xl:grid-cols-3 md:grid-cols-2 justify-between px-3 gap-5">
-            {faqData?.data &&
-              faqData?.data?.length > 0 &&
-              faqData?.data?.map((item, index: number) => (
-                <div
-                  onClick={() => handleFaq()}
-                  key={index}
-                  className="cursor-pointer"
-                >
-                  <h3 className="font-semibold">{item.faqQues}</h3>
-                </div>
-              ))}
-          </div>
+      <div className="container pt-7 pb-5 m-auto px-6">
+        <Header
+          variant={{ size: "2xl", theme: "dark", weight: "bold" }}
+          className="text-center mb-10"
+        >
+          {t("Popular Topics")}
+        </Header>
+        <div className="grid xl:grid-cols-3 md:grid-cols-2 justify-between px-3 gap-5">
+          {faqData?.data &&
+            faqData?.data?.length > 0 &&
+            faqData?.data?.map((item, index: number) => (
+              <div
+                onClick={() => handleFaq()}
+                key={index}
+                className="cursor-pointer"
+              >
+                <h3 className="font-semibold">{item.faqQues}</h3>
+              </div>
+            ))}
         </div>
-        <div className="flex justify-center mb-3">
+
+        <div className="flex justify-center my-3">
           <button
             onClick={() => handleFaq()}
-            className=" bg-black text-white px-4 py-2 rounded-md "
+            className=" bg-black font-semibold text-white px-4 py-2 rounded-md "
           >
             {t("View All")}
           </button>
@@ -328,12 +331,6 @@ const Support = () => {
       <div className="bg-[#E9E4DF] py-10">
         <div className="container mx-auto px-6">
           <div className="text-center mb-8">
-            <Button
-              variant={{ fontSize: "md", fontWeight: "400" }}
-              className="uppercase text-white bg-[#FF536B] mb-3"
-            >
-              {t("Contact Us")}
-            </Button>
             <Header
               variant={{ size: "2xl", weight: "bold", theme: "dark" }}
               className="mb-3"
@@ -348,9 +345,9 @@ const Support = () => {
             </Header>
           </div>
 
-          <div className="flex justify-center">
-            <div className="flex flex-col md:flex-row bg-white py-8 pl-8">
-              <div className="bg-[#d1dde9] w-[120px] h-[80px] p-2 flex items-center justify-center mr-5">
+          <div className="bg-white border rounded w-fit mx-auto p-6">
+            <div className="flex items-center justify-center gap-6">
+              <div className="bg-[#d1dde9] flex items-center justify-center p-2 w-[120px] h-[80px]">
                 <BsFillTicketPerforatedFill size="3em" />
               </div>
               <div>
@@ -362,32 +359,36 @@ const Support = () => {
                 </Header>
                 <P
                   variant={{ size: "md", theme: "dark", weight: "normal" }}
-                  className="mb-4 pr-10"
+                  // className="mb-4 pr-10"
                 >
-                  {t(
-                    "We are available online from 9:00 AM to 5:00 PM (GMT +1). Talk with us now."
-                  )}
+                  {t("We are here to help you")}
                 </P>
-
-                <Button
-                  onClick={handleSubmitButton}
-                  variant={{
-                    fontSize: "base",
-                    fontWeight: "500",
-                    theme: "dark",
-                  }}
-                  className="uppercase flex mt-8"
-                >
-                  {t("Submit Ticket")}
-                  <img src={arrow} alt="arrow" className="mt-1 ml-2" />
-                </Button>
               </div>
             </div>
-          </div>
-          <div className="flex items-center justify-center py-5">
+            <div className="flex w-full items-center justify-center gap-6 mt-4">
+              <Button
+                variant={{ fontSize: "md", fontWeight: "500" }}
+                className="uppercase font-semibold text-white bg-[#fe3d57]"
+              >
+                {t("Contact Us")}
+              </Button>
+
+              <Button
+                onClick={handleSubmitButton}
+                variant={{
+                  fontSize: "base",
+                  fontWeight: "500",
+                  theme: "dark",
+                }}
+                className="uppercase flex"
+              >
+                {t("Submit Ticket")}
+                <img src={arrow} alt="arrow" className="mt-1 ml-2" />
+              </Button>
+            </div>
             <Link
               to={isArtistProfile ? "/artist-panel/ticket/tickets" : "/tickets"}
-              className="text-red-400 font-medium text-center underline"
+              className="text-white flex mx-auto bg-green-600 hover:bg-green-800 p-2 rounded font-semibold underline text-center justify-center mt-4"
             >
               {t("See Recent Ticket History")}
             </Link>

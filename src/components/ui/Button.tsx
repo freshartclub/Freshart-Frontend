@@ -7,6 +7,7 @@ export const ButtonVariant = cva("disabled:opacity-70", {
   variants: {
     theme: {
       dark: "bg-[#102031] text-white",
+      hoverDark:"hover:bg-white hover:text-[#102031]",
       light: "bg-white",
       secondary: "bg-gray-200 text-black",
       pink: "bg-[#FF536B] text-white",

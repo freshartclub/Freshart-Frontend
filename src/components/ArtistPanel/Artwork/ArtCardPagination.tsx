@@ -73,7 +73,7 @@ const ArtCardPagination = () => {
         <div className="relative border rounded">
           <input
             type="text"
-            placeholder={t("Search Artwork...")}
+            placeholder={t("Search Artworks...")}
             className="border bottom-2 border-gray-50 bg-white rounded-md py-1 pr-2 pl-8"
             onChange={(e) => handleSearch(e.target.value)}
             value={searchData}

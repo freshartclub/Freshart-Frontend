@@ -17,7 +17,7 @@ const ProductInfo = ({ data }) => {
 
   const mapData = (val: string[]) => {
     if (!val || val.length === 0) return "";
-    return val.join(" | ");
+    return val.map((item) => t(item)).join(" | ");
   };
 
   const overview_date = [
@@ -72,13 +72,13 @@ const ProductInfo = ({ data }) => {
       description: data?.data?.additionalInfo?.framed,
     },
     {
-      heading: "Framed height",
+      heading: "Frame Height",
       description: data?.data?.additionalInfo?.frameHeight
         ? data?.data?.additionalInfo?.frameHeight + " " + "cm"
         : "N/A",
     },
     {
-      heading: "Frame Length",
+      heading: "Frame Depth",
       description: data?.data?.additionalInfo?.frameLength
         ? data?.data?.additionalInfo?.frameLength + " " + "cm"
         : "N/A",
@@ -97,7 +97,7 @@ const ProductInfo = ({ data }) => {
       description: mapData(data?.data?.additionalInfo?.artworkStyle),
     },
     {
-      heading: "Artwork Emotion",
+      heading: "Artwork Emotions",
       description: mapData(data?.data?.additionalInfo?.emotions),
     },
     {
@@ -146,7 +146,7 @@ const ProductInfo = ({ data }) => {
     },
 
     {
-      heading: "Artist Fees",
+      heading: "Artist Fee",
       description:
         `${getSymbolFromCurrency(currency.slice(0, 3))} ${
           data?.data?.pricing?.artistFees
@@ -154,7 +154,7 @@ const ProductInfo = ({ data }) => {
     },
 
     {
-      heading: "Accept Minimum Offer",
+      heading: "Accept Offer Minimum Price",
       description: data?.data?.pricing?.acceptOfferPrice
         ? `${getSymbolFromCurrency(currency)} ${
             data?.data?.pricing?.acceptOfferPrice
@@ -167,7 +167,7 @@ const ProductInfo = ({ data }) => {
       description: `${data?.data?.pricing?.dpersentage}%` || "N/A",
     },
     {
-      heading: "Vat Amount",
+      heading: "VAT Amount (%)",
       description: ` ${data?.data?.pricing?.vatAmount}%`,
     },
   ];
@@ -337,7 +337,7 @@ const ProductInfo = ({ data }) => {
                 <div key={index} className="flex ">
                   <P
                     variant={{ size: "small", theme: "dark", weight: "medium" }}
-                    className="w-48 my-1"
+                    className="w-60 my-1"
                   >
                     {t(item.head)} :
                   </P>
@@ -345,7 +345,7 @@ const ProductInfo = ({ data }) => {
                     variant={{ size: "small", weight: "medium" }}
                     className="text-[#999999]"
                   >
-                    {item.name}
+                    {t(item.name)}
                   </P>
                 </div>
               ))}
@@ -356,7 +356,7 @@ const ProductInfo = ({ data }) => {
                 <div key={index} className="flex items-center">
                   <P
                     variant={{ size: "small", theme: "dark", weight: "medium" }}
-                    className="w-48 my-1"
+                    className="w-60 my-1"
                   >
                     {t(item.heading)} :
                   </P>
@@ -375,7 +375,7 @@ const ProductInfo = ({ data }) => {
                 <div key={index} className="flex  items-center">
                   <P
                     variant={{ size: "small", theme: "dark", weight: "medium" }}
-                    className="w-48 my-1"
+                    className="w-60 my-1"
                   >
                     {t(item.heading)} :
                   </P>
@@ -492,7 +492,7 @@ const ProductInfo = ({ data }) => {
                 <div key={index} className="flex items-center  gap-3">
                   <P
                     variant={{ size: "small", theme: "dark", weight: "medium" }}
-                    className="lg:w-48 my-1"
+                    className="w-60 my-1"
                   >
                     {t(item.heading)} :
                   </P>

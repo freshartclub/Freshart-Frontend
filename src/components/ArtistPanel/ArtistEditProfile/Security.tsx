@@ -13,16 +13,16 @@ const Security = () => {
   });
 
   const validationSchema = Yup.object({
-    oldPassword: Yup.string().required(t("Old password is required")),
+    oldPassword: Yup.string().required(t("Old Password is required")),
     newPassword: Yup.string()
       .min(6, `${t("Password must be at least 6 characters")}`)
-      .required(t("New password is required")),
+      .required(t("New Password is required")),
     confirmPassword: Yup.string()
       .oneOf(
         [Yup.ref("newPassword"), null],
         `${t("Confirm Password must match")}`
       )
-      .required(t("Confirm password is required")),
+      .required(t("Confirm Password is required")),
   });
 
   const { mutateAsync, isPending } = useChnagePasswordMutation();
@@ -67,12 +67,12 @@ const Security = () => {
               <Field
                 type={showPassword.oldPassword ? "text" : "password"}
                 name="oldPassword"
-                placeholder="Old password"
+                placeholder={t("Old Password")}
                 className={`w-full px-4 py-3 border ${
                   errors.oldPassword && touched.oldPassword
                     ? "border-red-500"
                     : "border-[#919EAB33]"
-                } rounded-md focus:outline-none focus:ring-2 focus:ring-black`}
+                } rounded-md outline-none`}
               />
               <button
                 type="button"
@@ -96,12 +96,12 @@ const Security = () => {
               <Field
                 type={showPassword.newPassword ? "text" : "password"}
                 name="newPassword"
-                placeholder="New password"
+                placeholder={t("New Password")}
                 className={`w-full px-4 py-3 border ${
                   errors.newPassword && touched.newPassword
                     ? "border-red-500"
                     : "border-[#919EAB33]"
-                } rounded-md focus:outline-none focus:ring-2 focus:ring-black`}
+                } rounded-md outline-none`}
               />
               <button
                 type="button"
@@ -125,12 +125,12 @@ const Security = () => {
               <Field
                 type={showPassword.confirmPassword ? "text" : "password"}
                 name="confirmPassword"
-                placeholder="Confirm new password"
+                placeholder={t("Confirm New Password")}
                 className={`w-full px-4 py-3 border ${
                   errors.confirmPassword && touched.confirmPassword
                     ? "border-red-500"
                     : "border-[#919EAB33]"
-                } rounded-md focus:outline-none focus:ring-2 focus:ring-black`}
+                } rounded-md outline-none`}
               />
               <button
                 type="button"
@@ -155,7 +155,7 @@ const Security = () => {
                 type="submit"
                 className="bg-[#102030] text-white py-2 px-4 rounded hover:bg-[#0d1a26] transition duration-300"
               >
-                {isPending ? t("Saving...") : t("Save changes")}
+                {isPending ? t("Saving...") : t("Save Changes")}
               </button>
             </div>
           </Form>

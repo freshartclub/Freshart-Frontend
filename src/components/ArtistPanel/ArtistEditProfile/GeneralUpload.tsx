@@ -2,7 +2,7 @@ import GeneralForm from "./GeneralForm";
 
 const GeneralUpload = ({ isActiveStatus }) => {
   return (
-    <div className="flex flex-col lg:flex-row gap-5 w-full mt-6">
+    <div className="w-full mt-4">
       <GeneralForm isActiveStatus={isActiveStatus} />
     </div>
   );

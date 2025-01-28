@@ -190,19 +190,13 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
     <div className="p-4 mt-6 bg-white rounded-lg shadow-md border mb-4 ">
       <Header
         variant={{ theme: "dark", weight: "semiBold" }}
-        className="sm:text-xl text-lg mb-2"
+        className="text-lg mb-2"
       >
         {t("Media")}
       </Header>
 
       <div className="border-dashed border-2 border-gray-400 rounded-md p-4">
         <div className="bg-white rounded-md">
-          <Header
-            variant={{ size: "lg", weight: "semiBold" }}
-            className="mb-4 text-[#203F58]"
-          >
-            {t("Photos")}
-          </Header>
           <div className="grid lg:grid-cols-2 gap-4">
             <div>
               <Header
@@ -379,144 +373,133 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
           </div>
         </div>
 
-        <div>
-          <Header
-            variant={{ size: "lg", weight: "semiBold" }}
-            className="mb-4 text-[#203F58] mt-5"
-          >
-            {t("Videos")}
-          </Header>
-
-          <div className="grid lg:grid-cols-1 gap-4">
-            <div>
-              <Header
-                variant={{ size: "base", theme: "dark", weight: "semiBold" }}
-                className="mb-2 text-[#203F58]"
-              >
-                {t("Main Video")}
-              </Header>
-              <input
-                type="file"
-                accept="video/*"
-                className="hidden"
-                ref={videoInputRef}
-                onChange={(e) => handleMainVideoChange(e)}
-              />
-              <div className="bg-[#F9F9FC] shadow rounded border border-dashed p-4 flex flex-col items-center">
-                <div className="relative">
-                  {existingMainVideo ? (
-                    <video
-                      src={existingMainVideo}
-                      controls
-                      className="w-28 h-28 object-cover"
-                    />
-                  ) : (
-                    <img
-                      src={video_icon}
-                      className="w-28 h-28 bg-gray-200 rounded-md mb-4"
-                    />
-                  )}
-                  <span
-                    className={`absolute ${
-                      existingMainVideo ? "block" : "hidden"
-                    } top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer`}
-                    onClick={(e) => handleRemoveMainVidoe("Url")}
-                  >
-                    &times;
-                  </span>
-                </div>
-                {existingMainVideo ? null : (
-                  <p className="text-center  text-sm md:text-base">
-                    {t("Drag and drop Video here, or click to add Video")}
-                  </p>
+        <div className="grid lg:grid-cols-1 gap-4">
+          <div>
+            <Header
+              variant={{ size: "base", theme: "dark", weight: "semiBold" }}
+              className="mt-4 text-[#203F58]"
+            >
+              {t("Main Video")}
+            </Header>
+            <input
+              type="file"
+              accept="video/*"
+              className="hidden"
+              ref={videoInputRef}
+              onChange={(e) => handleMainVideoChange(e)}
+            />
+            <div className="bg-[#F9F9FC] shadow rounded border border-dashed p-4 flex flex-col items-center">
+              <div className="relative">
+                {existingMainVideo ? (
+                  <video
+                    src={existingMainVideo}
+                    controls
+                    className="w-28 h-28 object-cover"
+                  />
+                ) : (
+                  <img
+                    src={video_icon}
+                    className="w-28 h-28 bg-gray-200 rounded-md mb-4"
+                  />
                 )}
                 <span
-                  className="bg-[#DEDEFA] font-bold mt-2 p-3 px-4 w-full text-center rounded-md cursor-pointer"
-                  onClick={triggerVideoInput}
+                  className={`absolute ${
+                    existingMainVideo ? "block" : "hidden"
+                  } top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer`}
+                  onClick={(e) => handleRemoveMainVidoe("Url")}
                 >
-                  {t("Add Video")}
+                  &times;
                 </span>
               </div>
-            </div>
-
-            <div className="bg-white rounded-md mt-4">
-              <Header
-                variant={{ size: "lg", weight: "semiBold" }}
-                className="mb-2 text-[#203F58]"
+              {existingMainVideo ? null : (
+                <p className="text-center  text-sm md:text-base">
+                  {t("Drag and drop Video here, or click to add Video")}
+                </p>
+              )}
+              <span
+                className="bg-[#DEDEFA] font-bold mt-2 p-3 px-4 w-full text-center rounded-md cursor-pointer"
+                onClick={triggerVideoInput}
               >
-                {t("Additional Videos")}
-              </Header>
-              <input
-                type="file"
-                accept="video/*"
-                className="hidden"
-                id="Videos-input"
-                multiple
-                onChange={(e) => handleAdditionalVideoUpload(e)}
-              />
-              <div className="flex flex-col p-4 shadow rounded-md border border-dashed flex-wrap gap-2 items-center">
-                {getValues("additionalVideo") &&
-                  getValues("additionalVideo").length > 0 &&
-                  getValues("additionalVideo")?.map((field, i) => (
+                {t("Add Video")}
+              </span>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-md">
+            <Header
+              variant={{ size: "base", weight: "semiBold" }}
+              className="mb-2 text-[#203F58]"
+            >
+              {t("Additional Videos")}
+            </Header>
+            <input
+              type="file"
+              accept="video/*"
+              className="hidden"
+              id="Videos-input"
+              multiple
+              onChange={(e) => handleAdditionalVideoUpload(e)}
+            />
+            <div className="flex flex-col p-4 shadow rounded-md border border-dashed flex-wrap gap-2 items-center">
+              {getValues("additionalVideo") &&
+                getValues("additionalVideo").length > 0 &&
+                getValues("additionalVideo")?.map((field, i) => (
+                  <div key={i} className="relative w-28 h-28">
+                    <video
+                      src={URL.createObjectURL(field)}
+                      controls
+                      className="w-full h-full object-cover"
+                    />
+                    <span
+                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer"
+                      onClick={() => removeAdditionalVideo(i, "File")}
+                    >
+                      &times;
+                    </span>
+                  </div>
+                ))}
+              {existingAdditionalVideo &&
+                existingAdditionalVideo.length > 0 &&
+                existingAdditionalVideo?.map(
+                  (
+                    field: string,
+                    i = getValues("additionalVideo")?.length + 1
+                  ) => (
                     <div key={i} className="relative w-28 h-28">
                       <video
-                        src={URL.createObjectURL(field)}
+                        src={`${imageUrl}/videos/${field}`}
                         controls
                         className="w-full h-full object-cover"
                       />
                       <span
                         className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer"
-                        onClick={() => removeAdditionalVideo(i, "File")}
+                        onClick={() => removeAdditionalVideo(i, "Url")}
                       >
                         &times;
                       </span>
                     </div>
-                  ))}
-                {existingAdditionalVideo &&
-                  existingAdditionalVideo.length > 0 &&
-                  existingAdditionalVideo?.map(
-                    (
-                      field: string,
-                      i = getValues("additionalVideo")?.length + 1
-                    ) => (
-                      <div key={i} className="relative w-28 h-28">
-                        <video
-                          src={`${imageUrl}/videos/${field}`}
-                          controls
-                          className="w-full h-full object-cover"
-                        />
-                        <span
-                          className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer"
-                          onClick={() => removeAdditionalVideo(i, "Url")}
-                        >
-                          &times;
-                        </span>
-                      </div>
-                    )
-                  )}
+                  )
+                )}
 
-                {existingAdditionalVideo.length === 0 &&
-                getValues("additionalVideo")?.length === 0 ? (
-                  <div className="flex flex-col items-center">
-                    <img
-                      src={video_icon}
-                      className="w-28 h-28 bg-gray-200 rounded-md mb-4"
-                    />
-                    <p className="text-center  text-sm md:text-base">
-                      {t("Drag and drop Video here, or click to add Video")}
-                    </p>
-                  </div>
-                ) : null}
+              {existingAdditionalVideo.length === 0 &&
+              getValues("additionalVideo")?.length === 0 ? (
+                <div className="flex flex-col items-center">
+                  <img
+                    src={video_icon}
+                    className="w-28 h-28 bg-gray-200 rounded-md mb-4"
+                  />
+                  <p className="text-center  text-sm md:text-base">
+                    {t("Drag and drop Video here, or click to add Video")}
+                  </p>
+                </div>
+              ) : null}
 
-                <span
-                  className="bg-[#DEDEFA] font-bold mt-2 p-3 px-4 w-full text-center rounded-md cursor-pointer flex items-center justify-center"
-                  onClick={() =>
-                    document.querySelector("#Videos-input").click()
-                  }
-                >
-                  {t("Add Video")}
-                </span>
-              </div>
+              <span
+                className="bg-[#DEDEFA] font-bold mt-2 p-3 px-4 w-full text-center rounded-md cursor-pointer flex items-center justify-center"
+                onClick={() => document.querySelector("#Videos-input").click()}
+              >
+                {t("Add Video")}
+              </span>
             </div>
           </div>
         </div>

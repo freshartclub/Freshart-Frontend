@@ -21,34 +21,21 @@ const ArtistProfile = () => {
   if (isLoading) return <Loader />;
 
   return (
-    <div className="bg-white p-4">
+    <div className="m-2">
       <Header
         variant={{ theme: "dark", weight: "semiBold" }}
-        className="mt-6 ml-2 text-xl sm:text-2xl flex gap-2 items-center"
+        className="mt-6 ml-2 text-xl flex gap-2 items-center"
       >
         {t("Artist Profile")}
       </Header>
 
-      <nav className="flex" aria-label="Breadcrumb">
-        <ol className="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
-          <li className="inline-flex items-center">
-            <a
-              href="#"
-              className="inline-flex items-center mx-2 text-sm font-medium text-gray-700 "
-            >
-              {t("Artist")}
-            </a>
-          </li>
-          <img src={dot} alt="dot" />
-          <li>
-            <div className="flex items-center">
-              <a href="#" className=" text-sm mx-2 font-medium text-[#919EAB]">
-                {t("Profile")}
-              </a>
-            </div>
-          </li>
-        </ol>
-      </nav>
+      <ol className="flex mt-2 items-center">
+        <li className="mx-2 text-sm font-medium text-gray-70">{t("Artist")}</li>
+        <img src={dot} alt="dot" />
+        <li className="text-[#919EAB] text-sm mx-2 font-medium">
+          {t("Profile")}
+        </li>
+      </ol>
 
       <GeneralUpload isActiveStatus={isActiveStatus} />
     </div>

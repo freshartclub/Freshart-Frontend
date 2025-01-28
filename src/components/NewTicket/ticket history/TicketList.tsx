@@ -9,6 +9,9 @@ import orange from "../ticket history/assets/orange.png";
 import artistImg from "../ticket history/assets/People.png";
 import usePatchFeedbackMutation from "./http/usePatchFeedback";
 import { useTranslation } from "react-i18next";
+import { GiGooeyImpact } from "react-icons/gi";
+import { GrStatusGood } from "react-icons/gr";
+import { TbUrgent } from "react-icons/tb";
 
 const TicketsList: FC<{
   tickets: any[];
@@ -67,9 +70,11 @@ const TicketsList: FC<{
   if (isLoading) return <Loader />;
 
   return (
-    <div>
+    <div className="h-[90vh] max-h-[90vh] scrollbar2 overflow-y-auto border p-2 rounded-b-lg bg-[#FEFEFE]">
       {tickets?.length === 0 ? (
-        <p>{t("No Tickets Found")}</p>
+        <p className="bg-[#FEFEFE] text-center text-[16px] font-semibold rounded-b-lg border p-4">
+          {t("No Tickets Found")}
+        </p>
       ) : (
         tickets?.map((ticket) => {
           let imageSrc;
@@ -90,75 +95,64 @@ const TicketsList: FC<{
           return (
             <div
               key={ticket._id}
-              className={`border p-2 sm:p-4 rounded-lg mb-4  ${
-                ticket.isRead ? "bg-zinc-200 " : "  bg-[#FEFEFE]"
+              className={`shadow border p-2 rounded mb-4  ${
+                ticket.isRead ? "bg-zinc-200 " : ""
               }`}
             >
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center px-2 w-[100%]">
-                <div className="flex items-center mb-2 sm:mb-0 w-[100%]">
-                  {imageSrc && (
-                    <img
-                      src={imageSrc}
-                      alt={`${ticket.status} icon`}
-                      className="rounded-full h-4 w-4 mr-2"
-                    />
-                  )}
-                  <div className="flex sm:flex-row flex-col justify-between w-[100%]">
-                    <h3
-                      className="text-sm sm:text-sm font-bold"
-                      style={{ color: "#2E2C34" }}
-                    >
-                      {ticket?.ticketId}
-                    </h3>
-                    <h2
-                      className="text-[13px] font-semibold"
-                      style={{ color: "#212529" }}
-                    >
-                      {dayjs(ticket?.createdAt).format("MMMM D, YYYY")}
-                    </h2>
-                  </div>
-                </div>
-              </div>
-              <div className="text-[16px] flex justify-between ml-[7px] font-semibold mt-[2px] mb-[3px]">
-                {ticket.subject}
-
-                <div className="flex justify-end items-center gap-2">
-                  <span
-                    className={`border px-3 py-1 rounded-md  ${
-                      ticket?.status === "Finalise"
-                        ? "border-red-300"
-                        : ticket?.status === "Created"
-                        ? "border-zinc-300"
-                        : "border-green-300"
-                    }`}
-                  >
-                    {t(ticket?.status)}
-                  </span>
-
-                  <span className={`border px-3 py-1 rounded-md`}>
-                    {t(ticket?.impact)}
-                  </span>
-                  <span className={`border px-3 py-1 rounded-md`}>
-                    {t(ticket?.urgency)}
-                  </span>
-                </div>
-              </div>
-              <div className="text-xs sm:text-sm mb-4 w-[90%] px-2">
-                {ticket.message}
-              </div>
-              <hr />
-              <div className="flex items-center justify-between p-2">
-                <div className="flex items-center">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-[100%]">
+                {imageSrc && (
                   <img
-                    src={artistImg}
-                    alt="user"
-                    className="rounded-full h-6 w-6 mr-2"
+                    src={imageSrc}
+                    alt={`${ticket.status} icon`}
+                    className="rounded-full h-4 w-4 mr-2"
                   />
-                  <span className="font-bold text-xs sm:text-sm">
-                    {ticket.name}
-                  </span>
+                )}
+                <div className="flex sm:flex-row flex-col justify-between w-[100%]">
+                  <h3
+                    className="text-sm font-bold"
+                    style={{ color: "#2E2C34" }}
+                  >
+                    {ticket?.ticketId}
+                  </h3>
+                  <h2
+                    className="text-[13px] font-semibold"
+                    style={{ color: "#212529" }}
+                  >
+                    {dayjs(ticket?.createdAt).format("MMMM D, YYYY")}
+                  </h2>
                 </div>
+              </div>
+              <div className="text-[16px] flex justify-between font-semibold mt-[2px] mb-[3px]">
+                {ticket.subject}
+              </div>
+              <div className="text-xs sm:text-sm my-2 w-[90%]">
+                {ticket?.message.length < 200 ? ticket.message : ticket.message?.slice(0, 200) + "..."}
+              </div>
+              <div className="bg-[#F5F5F5] w-full max-w-full overflow-x-auto scrollbar text-sm p-2 flex border items-center gap-3">
+                <span
+                  className={`flex w-max flex-shrink-0 p-2 rounded items-center hover:cursor-pointer hover:bg-[#e6e6e6] gap-1  ${
+                    ticket?.status === "Closed"
+                      ? "bg-red-300"
+                      : ticket?.status === "Created"
+                      ? "bg-green-300"
+                      : "bg-zinc-300"
+                  }`}
+                >
+                  <GrStatusGood /> {t("Status")} ({t(ticket?.status)})
+                </span>
 
+                <span
+                  className={`flex w-max flex-shrink-0 p-2 rounded hover:cursor-pointer hover:bg-[#e6e6e6] items-center gap-1`}
+                >
+                  <GiGooeyImpact /> {t("Imapct")} ({t(ticket?.impact)})
+                </span>
+                <span
+                  className={`flex w-max flex-shrink-0 p-2 rounded hover:cursor-pointer hover:bg-[#e6e6e6] items-center gap-1`}
+                >
+                  <TbUrgent /> {t("Urgency")} ({t(ticket?.urgency)})
+                </span>
+              </div>
+              <div className="flex mt-2 items-center justify-between">
                 <div className="flex items-center gap-3">
                   {ticket.status === "Technical Finish" ||
                   ticket.status === "Closed" ? (
@@ -246,7 +240,7 @@ const TicketsList: FC<{
 
                   <button
                     onClick={() => handleClick(ticket?._id)}
-                    className="font-bold mt-2 border-b-[1px] border-[#102030] text-xs sm:text-sm"
+                    className="font-bold bg-[#102030] text-sm text-white p-2 rounded"
                   >
                     {t("Open Ticket")}
                   </button>

@@ -111,8 +111,6 @@ const App: React.FC = () => {
   setup();
   const { isLoading } = useCheckIsAuthorized();
   const [isAuthenticated] = useState<boolean>(false);
-  const data = useAppSelector((state) => state.user.user);
-  const dispatch = useAppDispatch();
   const lng = useAppSelector((state) => state.user.language);
 
   useEffect(() => {

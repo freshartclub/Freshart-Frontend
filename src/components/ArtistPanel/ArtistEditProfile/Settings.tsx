@@ -6,7 +6,7 @@ import dot from "./assets/dot.png";
 const Settings = () => {
   const { t } = useTranslation();
   return (
-    <div className="bg-white p-10 ">
+    <div className="bg-white p-10">
       <Header
         variant={{ size: "2xl", theme: "dark", weight: "semiBold" }}
         className="mt-6"

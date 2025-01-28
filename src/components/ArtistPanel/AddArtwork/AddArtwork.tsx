@@ -768,7 +768,7 @@ const AddArtwork = () => {
     <>
       <div className={`${qrVisible ? "bg-white blur-sm" : ""}`}>
         <Header
-          variant={{ size: "xl", theme: "dark", weight: "bold" }}
+          variant={{ size: "xl", theme: "dark", weight: "semiBold" }}
           className="text-black ml-2 mt-3"
         >
           {t("Add Artwork")}
@@ -809,7 +809,7 @@ const AddArtwork = () => {
                 </Header>
 
                 <div className="mb-4">
-                  <label className="block  text-sm sm:text-base text-[#203F58] font-semibold mb-2">
+                  <label className="block  text-sm text-[#203F58] font-semibold mb-2">
                     {t("Artwork Name")} *
                   </label>
                   <input
@@ -820,7 +820,7 @@ const AddArtwork = () => {
                     id="artworkName"
                     readOnly={query ? true : false}
                     placeholder={t("Enter Artwork Name")}
-                    className="w-full bg-[#F9F9FC] border text-sm sm:text-base border-gray-300 rounded-md p-1 sm:p-3 outline-none"
+                    className="w-full bg-[#F9F9FC] border text-sm border-gray-300 rounded-md p-1 sm:p-3 outline-none"
                   />
                   {errors.artworkName ? (
                     <div className="error text-red-500 mt-1 text-sm">
@@ -831,7 +831,7 @@ const AddArtwork = () => {
 
                 {isArtProvider === "Yes" ? (
                   <div className="mb-4">
-                    <label className="block text-sm sm:text-base text-[#203F58] font-semibold mb-2">
+                    <label className="block text-sm text-[#203F58] font-semibold mb-2">
                       {t("Art Provider")}
                     </label>
                     <select
@@ -841,20 +841,20 @@ const AddArtwork = () => {
                       disabled={query ? true : false}
                       value={isArtProviderField}
                       onChange={(e) => setIsArtProviderField(e.target.value)}
-                      className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
+                      className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5 "
                     >
                       <option value="" disabled>
                         {t("Select")}
                       </option>
-                      <option value="Yes">Yes</option>
-                      <option value="No">No</option>
+                      <option value="Yes">{t("Yes")}</option>
+                      <option value="No">{t("No")}</option>
                     </select>
                   </div>
                 ) : null}
 
                 {isArtProviderField === "Yes" ? (
                   <div className="mb-4">
-                    <label className="block text-sm sm:text-base text-[#203F58] font-semibold mb-2">
+                    <label className="block text-sm text-[#203F58] font-semibold mb-2">
                       {t("Artist Name")}
                     </label>
                     <input
@@ -863,18 +863,20 @@ const AddArtwork = () => {
                       name="provideArtistName"
                       id="provideArtistName"
                       readOnly={query ? true : false}
-                      placeholder="Type artist name here (if different from artist). . ."
-                      className="w-full bg-[#F9F9FC] text-sm sm:text-base border border-gray-300 rounded-md p-1 sm:p-3 outline-none"
+                      placeholder={t(
+                        "Type artist name here (if different from artist)..."
+                      )}
+                      className="w-full bg-[#F9F9FC] text-sm border border-gray-300 rounded-md p-1 sm:p-3 outline-none"
                     />
                   </div>
                 ) : null}
 
-                <div className="mb-4 flex flex-col lg:flex-row  gap-2 w-full">
+                <div className="mb-4 flex flex-col lg:flex-row gap-2 w-full">
                   <div
                     className={`w-full ${query ? "pointer-events-none" : ""}`}
                   >
-                    <label className="block text-sm sm:text-base text-[#203F58] font-semibold mb-2">
-                      {t("Artwork Creation Year")}*
+                    <label className="block text-sm text-[#203F58] font-semibold mb-2">
+                      {t("Artwork Creation Year")} *
                     </label>
 
                     <Controller
@@ -894,10 +896,10 @@ const AddArtwork = () => {
 
                   <div className="w-full">
                     <div className="flex justify-between mb-1">
-                      <label className="block text-sm sm:text-base text-[#203F58] font-semibold ">
+                      <label className="block text-sm text-[#203F58] font-semibold">
                         {t("Select Series")}
                       </label>
-                      <p className="text-[#5C59E8] text-sm sm:text-base flex items-center gap-[2px] cursor-pointer">
+                      <p className="text-[#5C59E8] text-sm flex items-center gap-[2px] cursor-pointer">
                         {query ? null : (
                           <span onClick={() => setIsPopupOpen(true)}>
                             <TiPlus size="1.2em" />
@@ -915,7 +917,7 @@ const AddArtwork = () => {
                           value={getValues("artworkSeries")}
                           type="text"
                           readOnly={query ? true : false}
-                          className="w-full bg-[#F9F9FC] border cursor-pointer  border-gray-300 rounded-md  p-1 sm:p-3 outline-none text-sm sm:text-base"
+                          className="w-full bg-[#F9F9FC] border cursor-pointer  border-gray-300 rounded-md  p-1 sm:p-3 outline-none text-sm"
                           onClick={handleDropDown}
                           autoComplete="off"
                           placeholder={t("Select Series")}
@@ -955,8 +957,8 @@ const AddArtwork = () => {
                 </div>
 
                 <>
-                  <label className="block text-sm sm:text-base mb-2 font-semibold text-[#203F58]">
-                    {t("Artwork Description")}*
+                  <label className="block text-sm mb-2 font-semibold text-[#203F58]">
+                    {t("Artwork Description")} *
                   </label>
                   <textarea
                     {...register("productDescription")}
@@ -964,24 +966,24 @@ const AddArtwork = () => {
                     name="productDescription"
                     placeholder={t("Type product description here...")}
                     readOnly={query ? true : false}
-                    className="w-full  bg-[#F9F9FC] border border-gray-300 rounded-md  p-1 sm:p-3 outline-none"
+                    className="w-full text-sm bg-[#F9F9FC] border border-gray-300 rounded-md p-1 sm:p-3 outline-none"
                   />
                 </>
               </div>
 
-              <div className=" bg-white p-4 rounded-md mt-6 border shadow-md">
+              <div className=" bg-white p-4 px-6 rounded-md mt-6 border shadow-md">
                 <Header
                   variant={{
                     size: "md",
                     theme: "dark",
                     weight: "semiBold",
                   }}
-                  className="text-[18px] text-black font-semibold mb-4"
+                  className="text-[18px] text-black mt-3 font-semibold mb-4"
                 >
                   {t("Media")}
                 </Header>
 
-                <div className="bg-white p-4 rounded-md mt-4">
+                <div className="bg-white rounded-md mt-3">
                   <div className="grid lg:grid-cols-3 gap-4">
                     <div>
                       <Header
@@ -992,7 +994,7 @@ const AddArtwork = () => {
                         }}
                         className="mb-2 text-[#203F58]"
                       >
-                        {t("Main Photo")}*
+                        {t("Main Photo")} *
                       </Header>
                       <input
                         type="file"
@@ -1002,7 +1004,7 @@ const AddArtwork = () => {
                         className="hidden"
                         disabled={query ? true : false}
                       />
-                      <div className="bg-[#F9F9FC]  border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
+                      <div className="bg-[#F9F9FC] border border-dashed py-2 px-2 flex flex-col items-center">
                         {data?.data?.media?.mainImage || mainImage ? (
                           <div className="relative">
                             <img
@@ -1020,28 +1022,31 @@ const AddArtwork = () => {
                             </span>
                           </div>
                         ) : (
-                          <img
-                            src={image_icon}
-                            alt="icon"
-                            className="w-28 max-h-28 min-h-28 object-cover mb-4"
-                          />
+                          <>
+                            <img
+                              src={image_icon}
+                              alt="icon"
+                              className="w-28 max-h-28 min-h-28 object-cover mb-4"
+                            />
+                            <P
+                              variant={{
+                                size: "small",
+                                theme: "dark",
+                                weight: "normal",
+                              }}
+                              className="text-center"
+                            >
+                              {t(
+                                "Drag and drop image here, or click add image"
+                              )}
+                            </P>
+                          </>
                         )}
-
-                        <P
-                          variant={{
-                            size: "base",
-                            theme: "dark",
-                            weight: "normal",
-                          }}
-                          className="text-center"
-                        >
-                          {t("Drag and drop image here, or click add image")}
-                        </P>
                         <span
                           onClick={() =>
                             document.querySelector("#main-photo-input").click()
                           }
-                          className="bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer"
+                          className="bg-[#DEDEFA] font-bold mt-2 p-3 w-full text-center px-4 rounded-md cursor-pointer"
                         >
                           {t("Add Image")}
                         </span>
@@ -1069,7 +1074,7 @@ const AddArtwork = () => {
                         className="hidden"
                         disabled={query ? true : false}
                       />
-                      <div className="bg-[#F9F9FC]  border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
+                      <div className="bg-[#F9F9FC]  border border-dashed py-2 px-2 flex flex-col items-center">
                         {backImage ? (
                           <div className="relative">
                             <img
@@ -1087,28 +1092,32 @@ const AddArtwork = () => {
                             </span>
                           </div>
                         ) : (
-                          <img
-                            src={image_icon}
-                            alt="icon"
-                            className="w-28 max-h-28 min-h-28 object-cover mb-4"
-                          />
+                          <>
+                            <img
+                              src={image_icon}
+                              alt="icon"
+                              className="w-28 max-h-28 min-h-28 object-cover mb-4"
+                            />
+                            <P
+                              variant={{
+                                size: "small",
+                                theme: "dark",
+                                weight: "normal",
+                              }}
+                              className="text-center"
+                            >
+                              {t(
+                                "Drag and drop image here, or click add image"
+                              )}
+                            </P>
+                          </>
                         )}
 
-                        <P
-                          variant={{
-                            size: "base",
-                            theme: "dark",
-                            weight: "normal",
-                          }}
-                          className="text-center"
-                        >
-                          {t("Drag and drop image here, or click add image")}
-                        </P>
                         <span
                           onClick={() =>
                             document.querySelector("#back-photo-input").click()
                           }
-                          className="bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer"
+                          className="bg-[#DEDEFA] font-bold mt-2 p-3 w-full text-center px-4 rounded-md cursor-pointer"
                         >
                           {t("Add Image")}
                         </span>
@@ -1136,7 +1145,7 @@ const AddArtwork = () => {
                         className="hidden"
                         disabled={query ? true : false}
                       />
-                      <div className="bg-[#F9F9FC]  border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
+                      <div className="bg-[#F9F9FC]  border border-dashed py-2 px-2 flex flex-col items-center">
                         {inProcessImage ? (
                           <div className="relative">
                             <img
@@ -1152,30 +1161,34 @@ const AddArtwork = () => {
                             </span>
                           </div>
                         ) : (
-                          <img
-                            src={image_icon}
-                            alt="icon"
-                            className="w-28 max-h-28 min-h-28 object-cover mb-4"
-                          />
+                          <>
+                            <img
+                              src={image_icon}
+                              alt="icon"
+                              className="w-28 max-h-28 min-h-28 object-cover mb-4"
+                            />
+                            <P
+                              variant={{
+                                size: "small",
+                                theme: "dark",
+                                weight: "normal",
+                              }}
+                              className="text-center"
+                            >
+                              {t(
+                                "Drag and drop image here, or click add image"
+                              )}
+                            </P>
+                          </>
                         )}
 
-                        <P
-                          variant={{
-                            size: "base",
-                            theme: "dark",
-                            weight: "normal",
-                          }}
-                          className="text-center"
-                        >
-                          {t("Drag and drop image here, or click add image")}
-                        </P>
                         <span
                           onClick={() =>
                             document
                               .querySelector("#inprocess-photo-input")
                               .click()
                           }
-                          className="bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer"
+                          className="bg-[#DEDEFA] font-bold mt-2 p-3 px-4 w-full text-center rounded-md cursor-pointer"
                         >
                           {t("Add Image")}
                         </span>
@@ -1183,7 +1196,7 @@ const AddArtwork = () => {
                     </div>
                   </div>
                   {/* details photos */}
-                  <div className="grid gap-4">
+                  <div className="grid mt-4 gap-4">
                     <div>
                       <Header
                         variant={{
@@ -1207,7 +1220,7 @@ const AddArtwork = () => {
                         className="hidden"
                         disabled={query ? true : false}
                       />
-                      <div className="bg-[#F9F9FC]  border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
+                      <div className="bg-[#F9F9FC]  border border-dashed p-2 sm:py-6 sm:px-12 flex flex-col items-center">
                         <div className="flex gap-2 flex-wrap">
                           {images &&
                             images.length > 0 &&
@@ -1231,7 +1244,7 @@ const AddArtwork = () => {
                               );
                             })}
                           {getValues("existingImage") &&
-                          getValues("existingImage").length > 0 ? (
+                            getValues("existingImage").length > 0 &&
                             getValues("existingImage")?.map((img, i) => {
                               return (
                                 <div key={i} className="relative">
@@ -1254,33 +1267,37 @@ const AddArtwork = () => {
                                   </span>
                                 </div>
                               );
-                            })
-                          ) : (
-                            <img
-                              src={image_icon}
-                              alt="icon"
-                              className="w-28 max-h-28 min-h-28 object-cover mb-4"
-                            />
-                          )}
+                            })}
+                          {images?.length === 0 &&
+                          !getValues("existingImage") ? (
+                            <div className="flex flex-col items-center">
+                              <img
+                                src={image_icon}
+                                alt="icon"
+                                className="w-28 max-h-28 min-h-28 object-cover mb-4"
+                              />
+                              <P
+                                variant={{
+                                  size: "small",
+                                  theme: "dark",
+                                  weight: "normal",
+                                }}
+                                className="text-center"
+                              >
+                                {t(
+                                  "Drag and drop image here, or click add image"
+                                )}
+                              </P>
+                            </div>
+                          ) : null}
                         </div>
-
-                        <P
-                          variant={{
-                            size: "base",
-                            theme: "dark",
-                            weight: "normal",
-                          }}
-                          className="text-center"
-                        >
-                          {t("Drag and drop image here, or click add image")}
-                        </P>
                         <span
                           onClick={() =>
                             document
                               .querySelector("#details-photo-input")
                               .click()
                           }
-                          className="bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer"
+                          className="bg-[#DEDEFA] font-bold mt-2 sm:w-fit w-full text-center p-3 px-4 rounded-md cursor-pointer"
                         >
                           {t("Add Images")}
                         </span>
@@ -1288,7 +1305,7 @@ const AddArtwork = () => {
                     </div>
                   </div>
 
-                  <div className="grid lg:grid-cols-2 gap-4">
+                  <div className="grid lg:grid-cols-2 mt-4 gap-4">
                     <div>
                       <Header
                         variant={{
@@ -1308,9 +1325,9 @@ const AddArtwork = () => {
                         className="hidden"
                         disabled={query ? true : false}
                       />
-                      <div className="bg-[#F9F9FC]  border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
+                      <div className="bg-[#F9F9FC]  border border-dashed p-2 flex flex-col items-center">
                         {mainVideo ? (
-                          <div className="relative ">
+                          <div className="relative">
                             <video
                               src={mainVideo}
                               className="w-28 max-h-32 object-cover mb-4"
@@ -1335,7 +1352,7 @@ const AddArtwork = () => {
 
                         <P
                           variant={{
-                            size: "base",
+                            size: "small",
                             theme: "dark",
                             weight: "normal",
                           }}
@@ -1347,7 +1364,7 @@ const AddArtwork = () => {
                           onClick={() =>
                             document.querySelector("#main-video-input").click()
                           }
-                          className="bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer"
+                          className="bg-[#DEDEFA] font-bold mt-2 w-full text-center p-3 px-4 rounded-md cursor-pointer"
                         >
                           {t("Add Video")}
                         </span>
@@ -1374,7 +1391,7 @@ const AddArtwork = () => {
                         className="hidden"
                         disabled={query ? true : false}
                       />
-                      <div className="bg-[#F9F9FC]  border border-dashed py-2 sm:py-6 px-12 flex flex-col items-center">
+                      <div className="bg-[#F9F9FC]  border border-dashed p-2 flex flex-col items-center">
                         {otherVideo &&
                           otherVideo.length > 0 &&
                           otherVideo.map((video, i) => (
@@ -1421,7 +1438,7 @@ const AddArtwork = () => {
 
                         <P
                           variant={{
-                            size: "base",
+                            size: "small",
                             theme: "dark",
                             weight: "normal",
                           }}
@@ -1433,7 +1450,7 @@ const AddArtwork = () => {
                           onClick={() =>
                             document.querySelector("#other-video-input").click()
                           }
-                          className="bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md cursor-pointer"
+                          className="bg-[#DEDEFA] font-bold mt-2 p-3 w-full text-center px-4 rounded-md cursor-pointer"
                         >
                           {t("Add Videos")}
                         </span>
@@ -1466,8 +1483,10 @@ const AddArtwork = () => {
                 />
 
                 <div className="grid md:grid-cols-2 gap-3 mb-4 mt-3">
-                  <label className="text-[#203F58] text-sm sm:text-base font-semibold">
-                    {t("Artwork Technic")} *
+                  <div>
+                    <label className="block text-sm text-[#203F58] font-semibold mb-2">
+                      {t("Artwork Technic")} *
+                    </label>
                     <select
                       {...register("artworkTechnic", {
                         required: "Artwork Technic is required",
@@ -1494,17 +1513,19 @@ const AddArtwork = () => {
                         {t(`${errors.artworkTechnic.message}`)}
                       </div>
                     ) : null}
-                  </label>
+                  </div>
 
-                  <label className="text-[#203F58] text-sm sm:text-base font-semibold">
-                    {t("Artwork Theme")} *
+                  <div className="text-[#203F58] text-sm">
+                    <label className="text-[#203F58] text-sm font-semibold">
+                      {t("Artwork Theme")} *
+                    </label>
                     <select
                       id="artworkTheme"
                       {...register("artworkTheme", {
                         required: "Artwork Theme is required",
                       })}
                       disabled={query ? true : false}
-                      className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
+                      className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5 "
                     >
                       <option value="">{t("Select Type")}</option>
                       {themeLoading ? null : newTheme &&
@@ -1526,7 +1547,7 @@ const AddArtwork = () => {
                         {t(`${errors.artworkTheme.message}`)}
                       </div>
                     ) : null}
-                  </label>
+                  </div>
                 </div>
 
                 <div className="mt-5">
@@ -1537,6 +1558,7 @@ const AddArtwork = () => {
                     }))}
                     placeholder={t("Select Artwork Style") + " *"}
                     isMulti
+                    className="text-sm"
                     isDisabled={query ? true : false}
                     value={getValues("artworkStyleType")}
                     {...register("artworkStyleType", {
@@ -1574,6 +1596,7 @@ const AddArtwork = () => {
                     options={emotions ? emotions : []}
                     placeholder={`${t("Select Emotions")} *`}
                     isMulti
+                    className="text-sm"
                     isDisabled={query ? true : false}
                     {...register("emotions", {
                       required: "Emotions are required",
@@ -1610,6 +1633,7 @@ const AddArtwork = () => {
                 <div className="mb-3">
                   <Select
                     options={colors ? colors : []}
+                    className="text-sm"
                     placeholder={`${t("Select Color")} *`}
                     {...register("colors", {
                       required: t("Colors are required"),
@@ -1649,7 +1673,7 @@ const AddArtwork = () => {
                   ) : null}
                 </div>
 
-                <label className="text-[#203F58] text-sm sm:text-base font-semibold  ">
+                <label className="text-[#203F58] text-sm font-semibold  ">
                   {t("Offensive")}
                   <select
                     id="offensive"
@@ -1659,12 +1683,12 @@ const AddArtwork = () => {
                     disabled={query ? true : false}
                     className="bg-[#F9F9FC] mt-1 border mb-3 border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
                   >
-                    <option value="No">No</option>
-                    <option value="Yes">Yes </option>
+                    <option value="No">{t("No")}</option>
+                    <option value="Yes">{t("Yes")} </option>
                   </select>
                 </label>
 
-                <label className="text-[#203F58] text-sm sm:text-base font-semibold ">
+                <label className="text-[#203F58] text-sm font-semibold ">
                   {t("Tags External")}
                   <div className="flex flex-wrap gap-2 mt-1">
                     <input
@@ -1682,27 +1706,31 @@ const AddArtwork = () => {
                       }}
                     />
                   </div>
-                  <div className="mt-2 mb-3">
-                    {externalTags.map((tag, index) => (
-                      <span
-                        key={index}
-                        className="bg-blue-100 border border-blue-800 px-2 py-1 rounded-full text-sm mr-2 mb-2 w-fit"
-                      >
-                        {tag}
+                  {externalTags && externalTags.length > 0 ? (
+                    <div className="mt-2 mb-3">
+                      {externalTags.map((tag, index) => (
                         <span
-                          onClick={() => handleRemoveExternalTag(index)}
-                          className="ml-2 cursor-pointer text-black"
+                          key={index}
+                          className="bg-blue-100 border border-blue-800 px-2 py-1 rounded-full text-sm mr-2 mb-2 w-fit"
                         >
-                          X
+                          {tag}
+                          <span
+                            onClick={() => handleRemoveExternalTag(index)}
+                            className="ml-2 cursor-pointer text-black"
+                          >
+                            X
+                          </span>
                         </span>
-                      </span>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  ) : null}
                 </label>
 
-                <div className=" md:grid-cols-2 gap-3 mt-4 mb-4">
-                  <label className="text-[#203F58] font-semibold">
-                    {t("Material")} *
+                <div className=" md:grid-cols-2 gap-3 mb-4">
+                  <div>
+                    <label className="text-[#203F58] text-sm font-semibold">
+                      {t("Material")} *
+                    </label>
                     <select
                       id="Material"
                       {...register("material", {
@@ -1724,13 +1752,13 @@ const AddArtwork = () => {
                         {t(`${errors.material.message}`)}
                       </div>
                     ) : null}
-                  </label>
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-4 mb-4 gap-3">
                   {artwork_orientation?.map((field) => (
                     <span key={field.name}>
-                      <label className="p-1 text-[14px] text-[#203F58] font-semibold">
+                      <label className="p-1 text-[14px] text-sm text-[#203F58] font-semibold">
                         {t(field.label)} *
                       </label>
                       <input
@@ -1749,7 +1777,7 @@ const AddArtwork = () => {
 
                       {errors[field.name] ? (
                         <div className="error text-red-500 mt-1 text-sm">
-                          {t(`${errors[field.name].message}`)}
+                          {t(`${errors[field.name].message} is required`)}
                         </div>
                       ) : null}
                     </span>
@@ -1757,8 +1785,10 @@ const AddArtwork = () => {
                 </div>
 
                 <div className="flex flex-col space-y-4">
-                  <label className="text-[#203F58] font-semibold ">
-                    {t("Hanging Available")}
+                  <div>
+                    <label className="text-[#203F58] text-sm font-semibold">
+                      {t("Hanging Available")}
+                    </label>
                     <select
                       id="hangingAvailable"
                       {...register("hangingAvailable", {
@@ -1768,18 +1798,18 @@ const AddArtwork = () => {
                       className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
                     >
                       <option value="">{t("Select")}</option>
-                      <option>Yes </option>
-                      <option>No</option>
+                      <option value="Yes">{t("Yes")}</option>
+                      <option value="No">{t("No")}</option>
                     </select>
                     {errors.hangingAvailable ? (
                       <div className="error text-red-500 mt-1 text-sm">
                         {t(`${errors.hangingAvailable.message}`)}
                       </div>
                     ) : null}
-                  </label>
+                  </div>
 
                   {getValues("hangingAvailable") === "Yes" ? (
-                    <label className="text-[#203F58] text-sm sm:text-base font-semibold ">
+                    <label className="text-[#203F58] text-sm font-semibold">
                       {t("Hanging Description")}
                       <textarea
                         id="hangingDescription"
@@ -1793,8 +1823,10 @@ const AddArtwork = () => {
                     </label>
                   ) : null}
 
-                  <label className="text-[#203F58] text-sm sm:text-bas  font-semibold ">
-                    {t("Framed")} *
+                  <div>
+                    <label className="text-[#203F58] text-sm font-semibold">
+                      {t("Framed")} *
+                    </label>
                     <select
                       id="Farmed"
                       {...register("framed", {
@@ -1804,19 +1836,19 @@ const AddArtwork = () => {
                       className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
                     >
                       <option value="">{t("Select")}</option>
-                      <option>Yes </option>
-                      <option>No</option>
+                      <option value="Yes">{t("Yes")}</option>
+                      <option value="No">{t("No")}</option>
                     </select>
                     {errors.framed ? (
                       <div className="error text-red-500 mt-1 text-sm">
                         {t(`${errors.framed.message}`)}
                       </div>
                     ) : null}
-                  </label>
+                  </div>
 
                   {getValues("framed") === "Yes" ? (
                     <>
-                      <label className="text-[#203F58] text-sm sm:text-base font-semibold">
+                      <label className="text-[#203F58] text-sm font-semibold">
                         {t("Frame Description")} *
                         <textarea
                           id="framedDescription"
@@ -1837,7 +1869,7 @@ const AddArtwork = () => {
                       <div className="grid grid-cols-3 mb-4 gap-3 ">
                         {Framed_dimension?.map((field) => (
                           <span key={field.name}>
-                            <label className="p-1 text-[14px] text-[#203F58] font-semibold">
+                            <label className="p-1 text-[14px] text-sm text-[#203F58] font-semibold">
                               {t(field.label)} *
                             </label>
                             <input
@@ -1863,8 +1895,10 @@ const AddArtwork = () => {
                     </>
                   ) : null}
 
-                  <label className="text-[#203F58] text-sm sm:text-base font-semibold  ">
-                    {t("Artwork Orientation")} *
+                  <div>
+                    <label className="text-[#203F58] text-sm font-semibold">
+                      {t("Artwork Orientation")} *
+                    </label>
                     <select
                       id="artworkOrientation"
                       {...register("artworkOrientation", {
@@ -1884,7 +1918,7 @@ const AddArtwork = () => {
                         {t(`${errors.artworkOrientation.message}`)}
                       </div>
                     ) : null}
-                  </label>
+                  </div>
                 </div>
               </div>
 
@@ -1918,7 +1952,7 @@ const AddArtwork = () => {
                       setPackageHeightError(null);
                       setBasePriceError(null);
                     }}
-                    className={`py-2 font-bold cursor-pointer ${
+                    className={`py-2 font-semibold cursor-pointer ${
                       activeTab === "subscription"
                         ? "border-b-4 border-black"
                         : "text-gray-500"
@@ -1939,7 +1973,7 @@ const AddArtwork = () => {
                       setPackageHeightError(null);
                       setBasePriceError(null);
                     }}
-                    className={`py-2 mx-8 font-bold cursor-pointer ${
+                    className={`py-2 mx-8 font-semibold cursor-pointer ${
                       activeTab === "purchase"
                         ? "border-b-4 border-black"
                         : "text-gray-500"
@@ -1953,7 +1987,7 @@ const AddArtwork = () => {
                   {activeTab === "subscription" && (
                     <>
                       <div className="mt-4 space-y-2">
-                        <label className="text-[#203F58] text-sm sm:text-base font-semibold ">
+                        <label className="text-[#203F58] text-sm font-semibold ">
                           {t("Subscription Catalog")}
                           <select
                             id="subscriptionCatalog"
@@ -1984,7 +2018,7 @@ const AddArtwork = () => {
                       </div>
 
                       <div className="mt-4 space-y-2">
-                        <label className="text-[#203F58] text-sm sm:text-base font-semibold ">
+                        <label className="text-[#203F58] text-sm font-semibold ">
                           {t("Purchase Option")}
                           <select
                             {...register("purchaseOption")}
@@ -1993,8 +2027,8 @@ const AddArtwork = () => {
                             className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
                           >
                             <option value="">{t("Select")}</option>
-                            <option>Yes</option>
-                            <option>No</option>
+                            <option value="Yes">{t("Yes")}</option>
+                            <option value="No">{t("No")}</option>
                           </select>
                         </label>
                       </div>
@@ -2006,7 +2040,7 @@ const AddArtwork = () => {
                   {activeTab === "purchase" && (
                     <div>
                       <div className="space-y-2">
-                        <label className="text-[#203F58] text-sm sm:text-base font-semibold ">
+                        <label className="text-[#203F58] text-sm font-semibold ">
                           {t("Purchase Catalog")}
                           <select
                             id="purchaseCatalog"
@@ -2014,12 +2048,11 @@ const AddArtwork = () => {
                             onChange={(val) => {
                               handleCheckArtistFee(val);
                               setPurchaseCatlogValue(val.target.value);
-
                               setsubscriptionCatlogValue("");
                               setValue("purchaseType", "");
                             }}
                             disabled={query ? true : false}
-                            className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
+                            className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg block w-full p-1 sm:p-2.5"
                           >
                             <option value="">{t("Select")}</option>
                             {seriesData?.purchaseCatalog?.map((item, index) => (
@@ -2036,7 +2069,7 @@ const AddArtwork = () => {
                       </div>
 
                       <div className="mt-4">
-                        <label className="text-[#203F58] sm:text-base font-semibold ">
+                        <label className="text-[#203F58] text-sm font-semibold ">
                           {t("Purchase Type")}
                           <select
                             id="purchaseType"
@@ -2078,13 +2111,13 @@ const AddArtwork = () => {
                     activeTab === "subscription"
                   } ? "flex justify-between" : ""`}
                 >
-                  <label className="text-[#203F58] text-sm sm:text-base font-semibold ">
+                  <label className="text-[#203F58] text-sm font-semibold ">
                     {t("Currency")}
                     <select
                       {...register("currency")}
                       id="currency"
                       disabled={query ? true : false}
-                      className="bg-[#F9F9FC] mb-3 mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
+                      className="bg-[#F9F9FC] mb-3 mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg block w-full p-1 sm:p-2.5 "
                     >
                       {currency?.map((item: any, i: number) => (
                         <option key={i} value={item?.value}>
@@ -2123,7 +2156,7 @@ const AddArtwork = () => {
                   ) : null}
 
                   {activeTab === "subscription" ? (
-                    <label className="text-[#203F58] text-sm sm:text-base font-semibold ">
+                    <label className="text-[#203F58] text-sm font-semibold">
                       {t("Base Price")}
                       <input
                         {...register("basePrice", {
@@ -2176,7 +2209,7 @@ const AddArtwork = () => {
                     ) : null}
 
                     <span>
-                      <label className="text-[#203F58] text-sm sm:text-base font-semibold">
+                      <label className="text-[#203F58] text-sm font-semibold">
                         {t("Base Price")}
                       </label>
 
@@ -2207,7 +2240,7 @@ const AddArtwork = () => {
                             : "w-full"
                         } grid md:grid-cols-2 gap-3`}
                       >
-                        <label className="text-[#203F58] text-sm sm:text-base font-semibold">
+                        <label className="text-[#203F58] text-sm font-semibold">
                           {t("Discount Percentage")}
                           <input
                             {...register("dpersentage")}
@@ -2222,7 +2255,7 @@ const AddArtwork = () => {
 
                         {watch("purchaseType") === "Downward Offer" ||
                         watch("purchaseType") === "Upward Offer" ? (
-                          <label className="text-[#203F58] text-sm sm:text-base font-semibold">
+                          <label className="text-[#203F58] text-sm font-semibold">
                             {t("Accept Offer Minimum Price")}
                             <input
                               {...register("acceptOfferPrice")}
@@ -2240,7 +2273,7 @@ const AddArtwork = () => {
                 ) : null}
 
                 <div className="grid md:grid-cols-2 gap-3">
-                  <label className="text-[#203F58] text-sm sm:text-base font-semibold">
+                  <label className="text-[#203F58] text-sm font-semibold">
                     {t("Artist Base Fees")}
                     <div className="flex space-x-2">
                       <input
@@ -2254,7 +2287,7 @@ const AddArtwork = () => {
                     </div>
                   </label>
 
-                  <label className="text-[#203F58] text-sm sm:text-base font-semibold">
+                  <label className="text-[#203F58] text-sm font-semibold">
                     {t("VAT Amount")} (%)
                     <input
                       type="text"
@@ -2284,7 +2317,7 @@ const AddArtwork = () => {
                 <div className="grid md:grid-cols-2 gap-3 items-center">
                   {shipping_inventry.map((shipping) => (
                     <span key={shipping.name}>
-                      <label className="p-1 text-[14px] text-sm sm:text-base font-semibold">
+                      <label className="p-1 text-[14px] text-sm font-semibold">
                         {t(shipping.label)}
                       </label>
                       <input
@@ -2300,7 +2333,7 @@ const AddArtwork = () => {
                   ))}
 
                   <span>
-                    <label className="p-1 text-[14px] text-sm sm:text-base font-semibold">
+                    <label className="p-1 text-[14px] text-sm font-semibold">
                       {t("Location")}
                     </label>
                     <input
@@ -2315,29 +2348,29 @@ const AddArtwork = () => {
                 </div>
 
                 <div>
-                  <label className="text-[#203F58] sm:text-base font-semibold ">
+                  <label className="text-[#203F58] text-sm font-semibold">
                     {t("Package Material")} *
-                    <select
-                      id="packageMaterial"
-                      {...register("packageMaterial", {
-                        required: "Package Material is required",
-                      })}
-                      disabled={query ? true : false}
-                      className="bg-[#F9F9FC] mt-1 border mb-3 border-gray-300 outline-none text-[#203F58] text-sm rounded-lg block w-full p-1 sm:p-2.5"
-                    >
-                      <option value="">{t("Select")}</option>
-                      {packMaterial?.map((item, i: number) => (
-                        <option value={item.value} key={i}>
-                          {t(item.value)}
-                        </option>
-                      ))}
-                    </select>
-                    {errors.packageMaterial ? (
-                      <div className="error text-red-500 mt-1 text-sm">
-                        {t(`${errors.packageMaterial.message}`)}
-                      </div>
-                    ) : null}
                   </label>
+                  <select
+                    id="packageMaterial"
+                    {...register("packageMaterial", {
+                      required: "Package Material is required",
+                    })}
+                    disabled={query ? true : false}
+                    className="bg-[#F9F9FC] mt-1 border mb-3 border-gray-300 outline-none text-[#203F58] text-sm rounded-lg block w-full p-1 sm:p-2.5"
+                  >
+                    <option value="">{t("Select")}</option>
+                    {packMaterial?.map((item, i: number) => (
+                      <option value={item.value} key={i}>
+                        {t(item.value)}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.packageMaterial ? (
+                    <div className="error text-red-500 mt-1 text-sm">
+                      {t(`${errors.packageMaterial.message}`)}
+                    </div>
+                  ) : null}
                 </div>
 
                 <div className="flex items-center border border-zinc-500 w-full py-3 px-4 mb-3 bg-yellow-100 text-yellow-800">
@@ -2380,7 +2413,7 @@ const AddArtwork = () => {
                 <div className="flex items-center gap-2 justify-between">
                   {package_dimension.map((field) => (
                     <span key={field.name}>
-                      <label className="p-1 text-[14px] text-[#203F58] font-semibold">
+                      <label className="p-1 text-[14px] text-sm text-[#203F58] font-semibold">
                         {t(field.label)} *
                       </label>
                       <input
@@ -2396,7 +2429,7 @@ const AddArtwork = () => {
 
                       {errors[field.name] ? (
                         <div className="error text-red-500 mt-1 text-sm">
-                          {t(`${errors[field.placeholder].message}`)}
+                          {t(`${field.placeholder} is required`)}
                         </div>
                       ) : null}
                     </span>
@@ -2428,53 +2461,48 @@ const AddArtwork = () => {
             />
           </div>
 
-          <div className="bg-white mt-10 flex flex-col sm:flex-row items-center justify-end border border-dotted rounded  py-2 w-full">
+          <div className="my-5 px-2 gap-2 flex flex-col sm:flex-row items-center justify-end w-full">
             {!query ? (
-              <div className="flex space-x-2 ">
+              <>
                 <span
                   onClick={() => handleNavigate()}
-                  className="border border-[#7E98B5] rounded px-4 py-3 text-sm font-semibold cursor-pointer"
+                  className="border bg-red-500 text-white hover:border-red-600 hover:bg-white hover:text-red-500 rounded px-4 py-3 text-sm font-semibold cursor-pointer"
                 >
                   ✕ {t("Cancel")}
                 </span>
 
-                <div className="flex justify-end ">
-                  {status === "published" ? (
-                    <Button
-                      type="submit"
-                      variant={{
-                        fontSize: "md",
-                        thickness: "thick",
-                        fontWeight: "600",
-                        theme: "dark",
-                      }}
-                      // disabled={!isValid}
-                      className={`text-white py-2 px-4 rounded ${
-                        modifyIsPending ? "opacity-70 pointer-events-none" : ""
-                      }`}
-                    >
-                      {modifyIsPending
-                        ? t("Modifying...")
-                        : t("Modify Artwork")}
-                    </Button>
-                  ) : (
-                    <Button
-                      type="submit"
-                      variant={{
-                        fontSize: "md",
-                        thickness: "thick",
-                        fontWeight: "600",
-                        theme: "dark",
-                      }}
-                      className={`text-white py-2 px-4 rounded ${
-                        isPending ? "opacity-70 pointer-events-none" : ""
-                      }`}
-                    >
-                      {isPending ? t("Previewing...") : t("Save & Preview")}
-                    </Button>
-                  )}
-                </div>
-              </div>
+                {status === "published" ? (
+                  <Button
+                    type="submit"
+                    variant={{
+                      fontSize: "sm",
+                      thickness: "thick",
+                      fontWeight: "600",
+                      theme: "dark",
+                    }}
+                    className={`text-white px-4 py-3 hover:bg-white hover:border hover:border-[#102031] hover:text-[#102031]  rounded ${
+                      modifyIsPending ? "opacity-70 pointer-events-none" : ""
+                    }`}
+                  >
+                    {modifyIsPending ? t("Modifying...") : t("Modify Artwork")}
+                  </Button>
+                ) : (
+                  <Button
+                    type="submit"
+                    variant={{
+                      fontSize: "sm",
+                      thickness: "thick",
+                      fontWeight: "600",
+                      theme: "dark",
+                    }}
+                    className={`text-white hover:bg-white hover:border hover:border-[#102031] hover:text-[#102031] px-4 py-3 rounded ${
+                      isPending ? "opacity-70 pointer-events-none" : ""
+                    }`}
+                  >
+                    {isPending ? t("Previewing...") : t("Save & Preview")}
+                  </Button>
+                )}
+              </>
             ) : null}
           </div>
         </form>

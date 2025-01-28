@@ -101,8 +101,8 @@ const TicketHistory: React.FC = () => {
   if (isLoading) return <Loader />;
 
   return (
-    <div className="container mx-auto px-3 mb-[3rem]">
-      <h1 className="font-bold text-xl sm:p-4 py-2">{t("Tickets")}</h1>
+    <div className="container mx-auto px-3 my-4">
+      <h1 className="font-bold text-xl">{t("All Tickets")}</h1>
       <SearchDropdown
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
@@ -112,73 +112,89 @@ const TicketHistory: React.FC = () => {
         setFilterTimeframe={setFilterTimeframe}
       />
 
-      <div className="sm:mx-6">
-        <div
-          className="mb-4 md:mt-4 flex flex-col md:flex-row items-start md:items-center border-b gap-4"
-          style={{ borderColor: "#8080807a" }}
+      <ul
+        className="mt-4 border rounded-t-lg bg-gray-200 p-2 scrollbar flex gap-4 w-full max-w-full overflow-x-auto md:gap-8 text-sm font-medium items-center"
+        role="tablist"
+      >
+        <li
+          className={`pl-2 rounded flex items-center w-max flex-shrink-0 ${
+            activeTab === "all" ? "bg-[#102030] text-white" : ""
+          }`}
+          role="presentation"
         >
-          <ul
-            className="flex flex-wrap md:flex-row gap-4 md:gap-16 text-sm font-medium "
-            role="tablist"
+          <img
+            src={allTicket}
+            alt="All Tickets"
+            className={`h-6 w-6 ${activeTab === "all" ? "invert" : ""}`}
+          />
+          <button
+            className="inline-block p-2 whitespace-nowrap rounded-sm"
+            onClick={() => handleTabChange("all")}
+            role="tab"
+            aria-selected={activeTab === "all"}
           >
-            <li className="flex items-center" role="presentation">
-              <img src={allTicket} alt="All Tickets" className="h-6 w-6" />
-              <button
-                className={`inline-block p-2 rounded-sm ${
-                  activeTab === "all" ? "border-b-2 border-[#102030]" : ""
-                }`}
-                onClick={() => handleTabChange("all")}
-                role="tab"
-                aria-selected={activeTab === "all"}
-              >
-                {t("All Tickets")}
-              </button>
-            </li>
-            <li className="flex items-center" role="presentation">
-              <img src={newTicket} alt="new Tickets" className="h-6 w-6" />
-              <button
-                className={`inline-block p-2 rounded-sm ${
-                  activeTab === "new" ? "border-b-2 border-[#102030]" : ""
-                }`}
-                onClick={() => handleTabChange("new")}
-                role="tab"
-                aria-selected={activeTab === "new"}
-              >
-                {t("In Progress")}
-              </button>
-            </li>
-            <li className="flex items-center" role="presentation">
-              <img src={Resolved} alt="Resolved" className="h-6 w-6" />
-              <button
-                className={`inline-block p-2 rounded-sm ${
-                  activeTab === "Resolved" ? "border-b-2 border-[#102030]" : ""
-                }`}
-                onClick={() => handleTabChange("Resolved")}
-                role="tab"
-                aria-selected={activeTab === "Resolved"}
-              >
-                {t("Resolved(Closed)")}
-              </button>
-            </li>
-          </ul>
-        </div>
+            {t("All Tickets")}
+          </button>
+        </li>
 
-        <div>
-          <TabPanel activeTab={activeTab} tabKey="all">
-            <TicketsList tickets={ticketsdata} isLoading={isLoading} />
-          </TabPanel>
-          <TabPanel activeTab={activeTab} tabKey="new">
-            <TicketsList tickets={inProgressTicket} isLoading={isLoading} />
-          </TabPanel>
+        <li
+          className={`pl-2 rounded flex items-center w-max flex-shrink-0 ${
+            activeTab === "new" ? "bg-[#102030] text-white" : ""
+          }`}
+          role="presentation"
+        >
+          <img
+            src={newTicket}
+            alt="new Tickets"
+            className={`h-6 w-6 ${activeTab === "new" ? "invert" : ""}`}
+          />
+          <button
+            className="inline-block p-2 whitespace-nowrap rounded-sm"
+            onClick={() => handleTabChange("new")}
+            role="tab"
+            aria-selected={activeTab === "new"}
+          >
+            {t("In Progress")}
+          </button>
+        </li>
 
-          <TabPanel activeTab={activeTab} tabKey="On-Going">
-            <TicketsList tickets={onGoingTicket} isLoading={isLoading} />
-          </TabPanel>
+        <li
+          className={`pl-2 rounded flex items-center w-max flex-shrink-0 ${
+            activeTab === "Resolved" ? "bg-[#102030] text-white" : ""
+          }`}
+          role="presentation"
+        >
+          <img
+            src={Resolved}
+            alt="Resolved"
+            className={`h-6 w-6 ${activeTab === "Resolved" ? "invert" : ""}`}
+          />
+          <button
+            className="inline-block p-2 whitespace-nowrap rounded-sm"
+            onClick={() => handleTabChange("Resolved")}
+            role="tab"
+            aria-selected={activeTab === "Resolved"}
+          >
+            {t("Resolved(Closed)")}
+          </button>
+        </li>
+      </ul>
 
-          <TabPanel activeTab={activeTab} tabKey="Resolved">
-            <TicketsList tickets={solvedTicket} isLoading={isLoading} />
-          </TabPanel>
-        </div>
+      <div>
+        <TabPanel activeTab={activeTab} tabKey="all">
+          <TicketsList tickets={ticketsdata} isLoading={isLoading} />
+        </TabPanel>
+        <TabPanel activeTab={activeTab} tabKey="new">
+          <TicketsList tickets={inProgressTicket} isLoading={isLoading} />
+        </TabPanel>
+
+        <TabPanel activeTab={activeTab} tabKey="On-Going">
+          <TicketsList tickets={onGoingTicket} isLoading={isLoading} />
+        </TabPanel>
+
+        <TabPanel activeTab={activeTab} tabKey="Resolved">
+          <TicketsList tickets={solvedTicket} isLoading={isLoading} />
+        </TabPanel>
       </div>
     </div>
   );

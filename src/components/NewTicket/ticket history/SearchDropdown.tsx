@@ -45,7 +45,7 @@ const SearchDropdown: FC<SearchDropdownProps> = ({
   const ticketStatus = picklistMap["Ticket Status"];
 
   return (
-    <div className="flex flex-col lg:flex-row justify-between items-center sm:p-4 py-2 sm:mx-4">
+    <div className="flex flex-col lg:flex-row justify-between items-center py-2">
       <div className="relative w-full lg:w-[30%] mb-4 lg:mb-0">
         <img
           src={search}
@@ -60,11 +60,11 @@ const SearchDropdown: FC<SearchDropdownProps> = ({
         />
       </div>
 
-      <div className="flex flex-col sm:flex-row justify-between items-center gap-4 w-full lg:w-auto">
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-2 w-full lg:w-auto">
         <select
           value={status}
           onChange={handleStatusDropdownChange}
-          className="border p-5 sm:p-4 rounded-lg text-sm font-bold text-[#203F58] w-full sm:w-auto outline-none"
+          className="border p-5 sm:p-4 rounded-lg text-sm font-bold text-[#203F58] w-full lg:w-auto outline-none"
         >
           <option value="">{t("Select Status")}</option>
           {ticketStatus && ticketStatus
@@ -79,18 +79,19 @@ const SearchDropdown: FC<SearchDropdownProps> = ({
         <select
           value={filterTimeframe}
           onChange={handleTimeframeDropdownChange}
-          className="border p-3 sm:p-4 rounded-lg text-sm font-bold text-[#203F58] w-full sm:w-auto outline-none"
+          className="border p-3 sm:p-4 rounded-lg text-sm font-bold text-[#203F58] w-full lg:w-auto outline-none"
         >
           <option value="">{t("Select Timeframe")}</option>
           <option value="thisWeek">{t("This Week")}</option>
           <option value="thisMonth">{t("This Month")}</option>
         </select>
 
-        <Link to="/artist-panel/new_ticket">
-          <button className="text-white bg-black p-4 rounded-md flex justify-center items-center gap-1 w-full sm:w-auto">
-            <img className="bg-[#102030]" src={new_Ticket} alt="New Ticket" />
-            {t("New Ticket")}
-          </button>
+        <Link
+          to="/artist-panel/new_ticket"
+          className="text-white font-semibold bg-black p-3 rounded-md flex justify-center items-center gap-1 w-full lg:w-auto"
+        >
+          <img className="bg-[#102030]" src={new_Ticket} alt="New Ticket" />
+          {t("New Ticket")}
         </Link>
       </div>
     </div>

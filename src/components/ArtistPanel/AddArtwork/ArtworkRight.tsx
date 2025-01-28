@@ -59,7 +59,7 @@ const ArtworkRight = ({
           <div key={id} className="mb-4">
             <label
               htmlFor={id}
-              className="block text-sm sm:text-base font-semibold text-[#203F58] mb-2"
+              className="block text-sm font-semibold text-[#203F58] mb-2"
             >
               {t(label)}
             </label>
@@ -98,7 +98,7 @@ const ArtworkRight = ({
           <div key={id} className="mb-4">
             <label
               htmlFor={id}
-              className="block text-sm sm:text-base font-semibold text-[#203F58] mb-2"
+              className="block text-sm font-semibold text-[#203F58] mb-2"
             >
               {t(label)}
             </label>

@@ -92,7 +92,7 @@ const Language = () => {
           key={index}
           className="flex justify-between items-center p-4 border rounded-lg"
         >
-          <span className="text-black font-semibold">{option.label}</span>
+          <span className="text-black font-semibold">{t(option.label)}</span>
 
           {option.value === "currency" ? (
             <div className="flex items-center">

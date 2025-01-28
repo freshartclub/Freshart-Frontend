@@ -156,6 +156,18 @@
   display: none !important;
 }
 
+.scrollbar2::-webkit-scrollbar-thumb {
+  width: 8px !important;
+  height: 8px !important;
+  border-radius: 8px !important;
+  background-color: #b8b8b8 !important;
+}
+
+.scrollbar2::-webkit-scrollbar {
+  width: 4px;
+}
+
+
 @media (max-width: 1536px) {
   .banner_arrow .slick-next {
     right: 50px !important;

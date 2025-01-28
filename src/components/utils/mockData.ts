@@ -25,22 +25,22 @@ export const artwork_orientation = [
   {
     name: "Height",
     label: "Height (cm)",
-    placeholder: "Height (cm)",
+    placeholder: "Height",
   },
   {
     name: "Width",
     label: "Width (cm)",
-    placeholder: "Width (cm)",
+    placeholder: "Width",
   },
   {
-    name: "Length",
+    name: "Depth",
     label: "Depth (cm)",
-    placeholder: "Depth (cm)",
+    placeholder: "Depth",
   },
   {
     name: "Weight",
     label: "Weight (kg)",
-    placeholder: "Weight (kg)",
+    placeholder: "Weight",
   },
 ];
 
