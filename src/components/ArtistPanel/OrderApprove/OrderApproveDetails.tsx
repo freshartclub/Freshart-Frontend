@@ -420,7 +420,7 @@ const OrderApproveDetails = () => {
 
               <form onSubmit={handleSubmit(handleCancelItem)}>
                 <h2 className="text- font-semibold mb-2">
-                  {t("Artwork Title")}
+                  {t("Artwork Name")}
                 </h2>
 
                 <input
@@ -432,7 +432,7 @@ const OrderApproveDetails = () => {
                   {...register("title")}
                 />
 
-                <h2 className="text- font-semibold mb-2">Topic</h2>
+                <h2 className="text- font-semibold mb-2">{t("Topic")}</h2>
 
                 <select
                   className="h-12 w-full border rounded-lg p-2 mb-3 outline-none"
@@ -523,8 +523,7 @@ const OrderApproveDetails = () => {
                     >
                       {t("Drop files here or click to")}{" "}
                       <span className="text-[#00A76F]">{t("browse")}</span>{" "}
-                      {t("through")}
-                      {"your machine."}
+                      {t("through your computer.")}
                     </p>
                   </div>
                 </div>

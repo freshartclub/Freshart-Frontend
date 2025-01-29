@@ -46,7 +46,7 @@ const SearchDropdown: FC<SearchDropdownProps> = ({
 
   return (
     <div className="flex flex-col lg:flex-row justify-between items-center py-2">
-      <div className="relative w-full lg:w-[30%] mb-4 lg:mb-0">
+      <div className="relative w-full rounded lg:w-[30%] mb-4 lg:mb-0">
         <img
           src={search}
           className="absolute left-3 top-1/2 transform -translate-y-1/2"
@@ -56,7 +56,7 @@ const SearchDropdown: FC<SearchDropdownProps> = ({
           placeholder={t("Search for Ticket")}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="border rounded-sm p-4 w-full pl-10 bg-[#FBFBFB] sm:py-2"
+          className="border rounded-sm p-4 w-full pl-10 bg-[#FBFBFB] py-2 outline-none focus:border-gray-400"
         />
       </div>
 
@@ -64,7 +64,7 @@ const SearchDropdown: FC<SearchDropdownProps> = ({
         <select
           value={status}
           onChange={handleStatusDropdownChange}
-          className="border p-5 sm:p-4 rounded-lg text-sm font-bold text-[#203F58] w-full lg:w-auto outline-none"
+          className="border p-3 rounded text-sm font-bold text-[#203F58] w-full lg:w-auto outline-none"
         >
           <option value="">{t("Select Status")}</option>
           {ticketStatus && ticketStatus
@@ -79,7 +79,7 @@ const SearchDropdown: FC<SearchDropdownProps> = ({
         <select
           value={filterTimeframe}
           onChange={handleTimeframeDropdownChange}
-          className="border p-3 sm:p-4 rounded-lg text-sm font-bold text-[#203F58] w-full lg:w-auto outline-none"
+          className="border p-3 rounded text-sm font-bold text-[#203F58] w-full lg:w-auto outline-none"
         >
           <option value="">{t("Select Timeframe")}</option>
           <option value="thisWeek">{t("This Week")}</option>
@@ -88,7 +88,7 @@ const SearchDropdown: FC<SearchDropdownProps> = ({
 
         <Link
           to="/artist-panel/new_ticket"
-          className="text-white font-semibold bg-black p-3 rounded-md flex justify-center items-center gap-1 w-full lg:w-auto"
+          className="text-white font-semibold bg-black p-2 rounded flex justify-center items-center gap-1 w-full lg:w-auto"
         >
           <img className="bg-[#102030]" src={new_Ticket} alt="New Ticket" />
           {t("New Ticket")}

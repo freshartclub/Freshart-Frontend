@@ -40,10 +40,10 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
         onClick={handleSendOtp}
         className={`${
           isOtpVerify || validateEmail === "Email Verified"
-            ? `border-zinc-600 text-black text-center py-2 px-4 rounded border cursor-pointer w-[8rem] ${
+            ? `border-zinc-600 text-black sm:w-[8rem] w-full text-center py-2 px-4 rounded border cursor-pointer ${
                 validatePhone === "Verified" ? "pointer-events-none" : ""
               }`
-            : "border-zinc-600 text-black py-2 px-4 rounded border cursor-pointer pointer-events-none  text-center opacity-40 w-[11rem]"
+            : "border-zinc-600 text-black sm:w-[11rem] w-full py-2 px-4 rounded border cursor-pointer pointer-events-none  text-center opacity-40"
         }`}
       >
         {requestOtpPending ? t("Sending...") : t(validatePhone)}

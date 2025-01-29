@@ -9,12 +9,12 @@ const ThankYou = () => {
   return (
     <CommonPage
       image={successful}
-      heading={t("THANK  YOU!")}
+      heading={t("THANK YOU!")}
       para={t(
         "Form has been submitted and Fresh Art Club will check your request and contact within the next days. Thanks for your interest in being part of our community"
       )}
       btn1={
-        <Link to="/" className="flex justify-center mx-auto items-center">
+        <Link to="/" className="flex justify-center w-full items-center">
           {t("Explore Now")}
           <img src={arrow} alt="" />
         </Link>

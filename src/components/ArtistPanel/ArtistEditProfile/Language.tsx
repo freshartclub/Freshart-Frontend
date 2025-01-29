@@ -43,7 +43,11 @@ const options = [
 const countries = [
   { code: "GB", flag: "https://flagcdn.com/w320/gb.png", name: "English" },
   { code: "ES", flag: "https://flagcdn.com/w320/es.png", name: "Spanish" },
-  { code: "CA", flag: "https://flagcdn.com/w320/cat.png", name: "Catalan" },
+  {
+    code: "CAT",
+    flag: "https://www.flagcolorcodes.com/data/Flag-of-Catalonia.png",
+    name: "Catalan",
+  },
 ];
 
 const Language = () => {
@@ -56,16 +60,18 @@ const Language = () => {
   const [languageSettings, setLanguageSettings] = useState("");
   const [currencySettings, setCurrencySettings] = useState("");
   const [code, setCode] = useState("");
+  const [flag, setFlag] = useState("");
 
   const dispatch = useAppDispatch();
 
   const [isLanguageDropdownOpen, setLanguageDropdownOpen] = useState(false);
 
-  const handleSelectChange = (value: string, key: string) => {
+  const handleSelectChange = (value: string, key: string, flag: string) => {
     setCode(key.toLocaleLowerCase());
     setLanguageSettings(value);
     setSettings((prev) => ({ ...prev, [key]: value }));
     setLanguageDropdownOpen(false);
+    setFlag(flag);
   };
 
   useEffect(() => {
@@ -75,6 +81,10 @@ const Language = () => {
     setLanguageSettings(getLanguage || "es");
     setCurrencySettings(getCurrency || "usd");
     setCode(getLangCode || "en");
+    setFlag(
+      countries.find((country) => country.code === getLangCode?.toUpperCase()).flag ||
+        "https://flagcdn.com/w320/gb.png"
+    );
   }, []);
 
   const handleSaveChanges = () => {
@@ -82,7 +92,7 @@ const Language = () => {
     localStorage.setItem("currency", currencySettings);
     localStorage.setItem("langCode", code);
     dispatch(setLanguage(languageSettings));
-    toast(t("Settings updated"));
+    toast(t("Setting Updated"));
   };
 
   return (
@@ -120,11 +130,7 @@ const Language = () => {
                 onClick={() => setLanguageDropdownOpen(!isLanguageDropdownOpen)}
               >
                 <div className="flex items-center space-x-2">
-                  <img
-                    src={`https://flagcdn.com/w320/${code}.png`}
-                    alt="Flag"
-                    className="w-6 h-6"
-                  />
+                  <img src={flag} alt="Flag" className="w-6 h-6" />
                 </div>
                 <FaAngleDown className="text-gray-600" />
               </button>
@@ -136,7 +142,11 @@ const Language = () => {
                       key={idx}
                       className="flex items-center  p-2 hover:bg-gray-100 focus:outline-none"
                       onClick={() =>
-                        handleSelectChange(choice.name, choice.code)
+                        handleSelectChange(
+                          choice.name,
+                          choice.code,
+                          choice.flag
+                        )
                       }
                     >
                       <img

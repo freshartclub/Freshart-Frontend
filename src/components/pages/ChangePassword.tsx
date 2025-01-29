@@ -157,8 +157,8 @@ const ChangePassword = () => {
                   className="mt-3 flex justify-center w-full"
                   type="submit"
                 >
-                  {isPending ? t("Submiting...") : t("Submit")}
-                  <img src={arrow} alt="arrow" className="ml-2 mt-1" />
+                  {isPending ? t("Submitting...") : t("Submit")}
+                  {!isPending && <img src={arrow} alt="arrow" className="ml-2 mt-1" />}
                 </Button>
               </div>
             </form>

@@ -65,11 +65,9 @@ const SocialMediaLinks = ({ control, isActiveStatus, socialMedia }) => {
             </div>
             <button
               onClick={() => remove(index)}
-              className={`hover:bg-red-100 px-4 py-3 mt-0 md:mt-5 md:w-fit w-full rounded-lg gap-1 bg-[#FCDAD7] text-[#F04438] ${
-                isActiveStatus !== "active" ? "" : ""
-              }`}
+              className="md:w-fit w-full border text-red-600 border-red-600 p-2 rounded font-semibold translate-y-[-3px] mt-3 md:mt-auto"
             >
-              Remove
+              {t("Remove")}
             </button>
           </div>
         </div>

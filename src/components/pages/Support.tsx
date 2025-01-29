@@ -225,7 +225,9 @@ const Support = () => {
                         {t("FAQ Details")}
                       </h2>
                       <p className="mb-4 flex flex-col gap-2">
-                        <span className="text-md font-semibold leading-none tracking-tight">{`Question: ${selectedItem.faqQues}`}</span>
+                        <span className="text-md font-semibold leading-none tracking-tight">{`${t(
+                          "Question"
+                        )}: ${selectedItem?.faqQues}`}</span>
                         <span className="font-medium tracking-tight">{`${selectedItem?.faqAns}`}</span>
                       </p>
                       <button
@@ -345,8 +347,8 @@ const Support = () => {
             </Header>
           </div>
 
-          <div className="bg-white border rounded w-fit mx-auto p-6">
-            <div className="flex items-center justify-center gap-6">
+          <div className="bg-white border rounded sm:w-fit w-full mx-auto sm:p-6 p-3">
+            <div className="flex items-center flex-col md:flex-row justify-center gap-6">
               <div className="bg-[#d1dde9] flex items-center justify-center p-2 w-[120px] h-[80px]">
                 <BsFillTicketPerforatedFill size="3em" />
               </div>
@@ -365,10 +367,10 @@ const Support = () => {
                 </P>
               </div>
             </div>
-            <div className="flex w-full items-center justify-center gap-6 mt-4">
+            <div className="flex w-full flex-col md:flex-row items-center justify-center gap-6 mt-4">
               <Button
                 variant={{ fontSize: "md", fontWeight: "500" }}
-                className="uppercase font-semibold text-white bg-[#fe3d57]"
+                className="uppercase font-semibold text-white bg-[#fe3d57] md:w-fit w-full"
               >
                 {t("Contact Us")}
               </Button>
@@ -380,7 +382,7 @@ const Support = () => {
                   fontWeight: "500",
                   theme: "dark",
                 }}
-                className="uppercase flex"
+                className="uppercase flex md:w-fit w-full items-center justify-center"
               >
                 {t("Submit Ticket")}
                 <img src={arrow} alt="arrow" className="mt-1 ml-2" />

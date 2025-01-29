@@ -9,8 +9,10 @@ import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import useForgotPasswordMutation from "../../http/auth/useForgetPasswordMutation";
+import { useTranslation } from "react-i18next";
 
 const ForgetPassword = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const handleBack = () => {
@@ -54,19 +56,19 @@ const ForgetPassword = () => {
             <Header
               variant={{ size: "2xl", theme: "dark", weight: "semiBold" }}
             >
-              Enter Your Email
+              {t("Enter Your Email")}
             </Header>
             <P
               variant={{ size: "base", theme: "dark", weight: "medium" }}
               className="lg:w-[60%] md:w-[80%] mx-auto mt-4 tracking-tight leading-1"
             >
-              Enter your email to get a 6-digit OTP
+              {t("Enter your email to get a 6-digit OTP")}
             </P>
             <form onSubmit={handleSubmit(onSubmit)} className="my-5">
               <div>
                 <input
                   type="email"
-                  placeholder="Email"
+                  placeholder={t("Enter Email")}
                   {...register("email")}
                   className={`border ${
                     errors.email ? "border-red-500" : "border-[#D3D3D3]"
@@ -74,7 +76,7 @@ const ForgetPassword = () => {
                 />
                 {errors.email && (
                   <div className="text-red-500 text-sm text-left">
-                    {errors.email.message}
+                    {t(`${errors.email.message}`)}
                   </div>
                 )}
               </div>
@@ -93,9 +95,9 @@ const ForgetPassword = () => {
                 <P
                   variant={{ size: "base", theme: "light", weight: "semiBold" }}
                 >
-                  {isPending ? "Sending..." : "Send OTP"}
+                  {isPending ? t("Sending...") : t("Send OTP")}
                 </P>
-                <img src={arrow} alt="arrow" className="ml-2 mt-1" />
+                {!isPending && <img src={arrow} alt="arrow" className="ml-2 mt-1" />}
               </Button>
             </form>
           </div>

@@ -1,7 +1,7 @@
 import { Controller, useFieldArray } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
-const Commercilization = ({ control }) => {
+const Commercilization = ({ control, getValues }) => {
   const { t } = useTranslation();
   const { fields, remove } = useFieldArray({
     control,
@@ -63,6 +63,7 @@ const Commercilization = ({ control }) => {
             <input
               disabled
               type="text"
+              value={t(getValues(name))}
               {...control.register(name)}
               className="border pointer-events-none border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-[#1C252E] outline-none"
             />
@@ -123,10 +124,9 @@ const Commercilization = ({ control }) => {
             </div>
             <button
               onClick={() => remove(index)}
-              className={`hover:bg-red-300 px-4 py-3 mt-5 rounded-lg gap-1 bg-[#FCDAD7] text-[#F04438] pointer-events-none`}
-              title={t("Remove account")}
+              className="md:w-fit w-full border text-red-600 border-red-600 p-2 rounded font-semibold translate-y-[-3px] mt-3 md:mt-auto opacity-75 pointer-events-none"
             >
-              X
+              {t("Remove")}
             </button>
           </div>
         </div>

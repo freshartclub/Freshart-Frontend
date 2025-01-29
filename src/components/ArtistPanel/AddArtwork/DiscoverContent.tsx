@@ -189,7 +189,7 @@ const DiscoverContent = ({ data }) => {
 
         <Button
           variant={{ rounded: "full" }}
-          className="text-base flex items-center justify-center w-full"
+          className="text-base border border-[#263238] flex items-center justify-center w-full"
         >
           <img src={mark} alt="" className="md:mx-2 mx-1" />
           <P variant={{ size: "base", theme: "dark", weight: "normal" }}>

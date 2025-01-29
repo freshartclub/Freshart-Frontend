@@ -33,7 +33,11 @@ const SingleTicket = () => {
     usePatchFeedbackMutation();
 
   const newDate = data?.data?.createdAt
-    ? new Date(data.data.createdAt).toLocaleDateString()
+    ? new Date(data.data.createdAt)
+        .toUTCString()
+        .split(" ")
+        .slice(0, 4)
+        .join(" ")
     : null;
 
   const newTime = data?.data?.createdAt
@@ -41,7 +45,7 @@ const SingleTicket = () => {
     : null;
 
   const handleReply = (ticket) => {
-    if (!reply) return toast.error("Please write your reply");
+    if (!reply) return toast.error(t("Please write your reply"));
     const newData = {
       id: ticket._id,
       message: reply,
@@ -131,33 +135,31 @@ const SingleTicket = () => {
 
   return (
     <div className="container mx-auto sm:px-6 px-3 mt-[2rem] mb-[2rem]">
-      <FaArrowLeftLong onClick={handleNavigate} className="cursor-pointer" />
-      <div className="flex flex-col md:flex-row justify-between items-center w-full p-2 ">
-        <div className="flex flex-col gap-2 w-full md:w-2/3">
-          <div className="flex gap-3 items-center">
-            <span className="w-5 h-5 bg-[#F8A53499] rounded-full"></span>
-            <span className="font-semibold text-gray-800">
-              {data?.data?.ticketId}
-            </span>
-            <span className="text-[#84818A]">({t(data?.data?.ticketType)})</span>
-            <span className="font-semibold">{newDate}</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2">
-              <h4 className="text-sm">{t("Urgency")}:</h4>
-              <span className="text-sm font-semibold text-gray-800">
-                {t(data?.data?.urgency)}
-              </span>
-            </div>
+      <div className="flex gap-3 flex-wrap items-center">
+        <FaArrowLeftLong
+          onClick={handleNavigate}
+          className="cursor-pointer sm:block hidden"
+        />
+        <span className="w-5 h-5 bg-[#F8A53499] rounded-full"></span>
+        <span className="font-semibold text-gray-800">
+          {data?.data?.ticketId}
+        </span>
+        <span className="text-[#84818A]">({t(data?.data?.ticketType)})</span>
+      </div>
+      <div className="flex lg:justify-between items-center w-full p-2">
+        <div className="flex sm:gap-4 gap-2 max-w-full scrollbar bg-white border px-2 py-1 rounded overflow-auto w-full items-center sm:ml-5">
+          <span className="text-[12px] font-semibold text-gray-800 flex-shrink-0">
+            {t("Urgency")}: {t(data?.data?.urgency)}
+          </span>
 
-            <div className="flex items-center gap-2">
-              <h4 className="text-sm">Impact:</h4>
-              <span className="text-sm font-semibold text-gray-800">
-                {t(data?.data?.impact)}
-              </span>
-            </div>
-          </div>
+          <span className="text-[12px] font-semibold text-gray-800 flex-shrink-0">
+            {t("Impact")}: {t(data?.data?.impact)}
+          </span>
+          <span className="text-[12px] font-semibold text-gray-800 flex-shrink-0">
+            {t("Posted At")}: {newDate} ({newTime})
+          </span>
         </div>
+
         <div className="w-full md:w-1/3 flex justify-end items-center">
           <div className="flex items-center gap-1">
             <div className="w-[16px] h-[16px] bg-[#F8A53499] rounded-full"></div>
@@ -168,37 +170,10 @@ const SingleTicket = () => {
         </div>
       </div>
 
-      <div className="mt-8 mb-8">
-        <h1 className="w-[406px] h-[23px] top-2 font-montserrat text-[18px] font-bold leading-[14px] text-left text-[#2E2C34] ">
-          {data?.data?.subject}
-        </h1>
-      </div>
-
-      <div className=" flex flex-col gap-2  w-full md:w-2/3  cursor-pointer ">
-        <div className="flex items-center">
-          <div className="p-3 flex flex-col w-full bg-zinc-200">
-            <div className="flex  sm:flex-row justify-between">
-              <div className="flex items-center  gap-2 ">
-                <span>
-                  <FaRegUserCircle />
-                </span>
-                <span className=" text-sm font-semibold  ">
-                  {user?.artistName}
-                </span>
-              </div>
-
-              <div className="flex gap-3 text-xs">
-                <div className="font-semibold">{newDate} </div>
-                <div className="font-semibold">{newTime}</div>
-              </div>
-            </div>
-
-            <div>
-              <p className="font-montserrat text-sm font-medium  text-left  py-2 px-4 break-words ml-2 ">
-                {data?.data?.message}
-              </p>
-            </div>
-          </div>
+      <div className="bg-white border rounded-md p-2 mt-3">
+        <div className="flex flex-col gap-2 p-2">
+          <h1 className="text-md font-semibold">{data?.data?.subject}</h1>
+          <p className="text-sm text-[#84818A]">{data?.data?.message}</p>
           {data?.data?.ticketImg ? (
             <span onClick={() => handleOpenPdf(data?.data?.ticketImg)}>
               <IoDocumentTextOutline size="3em" />
@@ -206,115 +181,132 @@ const SingleTicket = () => {
           ) : null}
         </div>
 
-        {data?.reply &&
-          data?.reply?.length > 0 &&
-          data?.reply.map((item, i) => (
-            <div className="flex items-center">
-              <div
-                key={i}
-                className={` p-3 flex flex-col w-full ${
-                  item.userType === "user" ? "bg-zinc-200" : " bg-white"
-                }`}
-              >
-                <div className="flex  sm:flex-row justify-between">
-                  <div className="flex items-center  gap-2 ">
-                    <span>
+        <div className="flex mt-2 flex-col gap-2 w-full cursor-pointer max-h-[60vh] scrollbar2 overflow-y-scroll">
+          {data?.reply &&
+            data?.reply?.length > 0 &&
+            data?.reply.map((item, i) => (
+              <div className="flex items-center">
+                <div
+                  key={i}
+                  className={`p-3 rounded-md shadow flex flex-col w-full border ${
+                    item.userType === "user" ? "bg-[#dadada99]" : "bg-white"
+                  }`}
+                >
+                  <div className="flex flex-col md:flex-row sm:justify-between">
+                    <div className="flex items-center gap-2">
                       <FaRegUserCircle />
-                    </span>
-                    <span className=" text-sm font-semibold  ">
-                      {item?.userType === "user"
-                        ? `${user?.artistName} (${user?.email})`
-                        : `${t("Admin wrote (admin)")} :`}
-                    </span>
+
+                      <span className="text-sm flex items-center gap-2 font-semibold">
+                        {item?.userType === "user" ? (
+                          <>
+                            <span>{user?.artistName}</span>
+                            <span className="sm:block hidden">
+                              ({user?.email})
+                            </span>
+                          </>
+                        ) : (
+                          `${t("Admin wrote (admin)")} :`
+                        )}
+                      </span>
+                    </div>
+
+                    <div className="flex max-[300px]:flex-col md:ml-0 ml-6 max-[300px]:gap-1 gap-3 text-xs">
+                      <span>{newDate}</span>
+                      <span>{newTime}</span>
+                    </div>
                   </div>
 
-                  <div className="flex gap-3 text-xs">
-                    <div className="font-semibold">
-                      {item?.createdAt
-                        ? new Date(item.createdAt).toLocaleDateString()
-                        : null}
-                    </div>
-                    <div className="font-semibold">
-                      {item?.createdAt
-                        ? new Date(item.createdAt).toLocaleTimeString()
-                        : null}
-                    </div>
+                  <div>
+                    <p className="font-montserrat text-sm font-medium  text-left  py-2 px-4 break-words ml-2 ">
+                      {item.message}
+                    </p>
                   </div>
                 </div>
 
-                <div>
-                  <p className="font-montserrat text-sm font-medium  text-left  py-2 px-4 break-words ml-2 ">
-                    {item.message}
-                  </p>
-                </div>
+                {item?.ticketImg ? (
+                  <span onClick={() => handleOpenPdf(item?.ticketImg)}>
+                    <IoDocumentTextOutline size="3em" />
+                  </span>
+                ) : null}
               </div>
-
-              {item?.ticketImg ? (
-                <span onClick={() => handleOpenPdf(item?.ticketImg)}>
-                  <IoDocumentTextOutline size="3em" />
-                </span>
-              ) : null}
-            </div>
-          ))}
+            ))}
+        </div>
       </div>
 
-      <div className="py-2  w-full md:w-2/3">
-        <h2 className="font-montserrat text-lg font-semibold mt-4">
-          {data?.data?.status === "Technical Finish" ||
-          data?.data?.status === "Closed"
+      <div className="p-2 border mt-4 w-full bg-white rounded-md">
+        <h2 className="font-montserrat text-md font-semibold border-b px-2 pb-2">
+          {data?.data?.status === "Technical Finish"
             ? t("Send Your Feedback")
+            : data?.data?.status === "Closed"
+            ? t("Your Feedback")
             : t("Reply to Ticket")}
         </h2>
 
         <div className="flex items-center gap-3 mt-3">
           {data?.data?.status === "Technical Finish" ||
           data?.data?.status === "Closed" ? (
-            <div className="flex items-center gap-10">
-              <div className="flex items-center gap-2">
-                <span
-                  className={`${
-                    data?.data?.status === "Closed"
-                      ? "pointer-events-none"
-                      : "cursor-pointer"
-                  }`}
-                  onClick={() => handleLike()}
-                >
-                  <AiFillLike
-                    size="1.5em"
-                    color={
-                      data?.data?.ticketFeedback?.isLiked === true
-                        ? "green"
-                        : "gray"
-                    }
-                  />
-                </span>
-                <span
-                  className={`${
-                    data?.data?.status === "Closed"
-                      ? "pointer-events-none"
-                      : "cursor-pointer"
-                  }`}
-                  onClick={() => handleDisLike()}
-                >
-                  <AiFillDislike
-                    size="1.5em"
-                    color={
-                      data?.data?.ticketFeedback?.isLiked === false
-                        ? "red"
-                        : "gray"
-                    }
-                  />
-                </span>
-              </div>
-
+            <div className="flex items-center">
               {data?.data?.ticketFeedback?.message ? (
-                <textarea className="font-montserrat text-sm font-medium bg-white border rounded-md  border-zinc-200  text-left  py-2 px-8 break-words ml-2 ">
-                  {data?.data?.ticketFeedback?.message}
-                </textarea>
-              ) : null}
+                <div className="text-sm px-2 flex flex-col gap-1">
+                  <span className="text-[14px] text-[#84818A]">
+                    Feedback -{" "}
+                    <span className="font-semibold text-[#000000]">
+                      {data?.data?.ticketFeedback?.isLiked
+                        ? "Helpfull"
+                        : "Not Helpfull"}{" "}
+                      {data?.data?.ticketFeedback?.isLiked ? "👍" : "👎"}
+                    </span>
+                  </span>
+                  <span className="text-[14px] text-[#84818A]">
+                    Comment -{" "}
+                    <span className="font-semibold text-[#000000]">
+                      {data?.data?.ticketFeedback?.message
+                        ? data?.data?.ticketFeedback?.message
+                        : "N/A"}
+                    </span>
+                  </span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <span
+                    className={`${
+                      data?.data?.status === "Closed"
+                        ? "pointer-events-none"
+                        : "cursor-pointer"
+                    }`}
+                    onClick={() => handleLike()}
+                  >
+                    <AiFillLike
+                      size="1.5em"
+                      color={
+                        data?.data?.ticketFeedback?.isLiked === true
+                          ? "green"
+                          : "gray"
+                      }
+                    />
+                  </span>
+                  <span
+                    className={`${
+                      data?.data?.status === "Closed"
+                        ? "pointer-events-none"
+                        : "cursor-pointer"
+                    }`}
+                    onClick={() => handleDisLike()}
+                  >
+                    <AiFillDislike
+                      size="1.5em"
+                      color={
+                        data?.data?.ticketFeedback?.isLiked === false
+                          ? "red"
+                          : "gray"
+                      }
+                    />
+                  </span>
+                </div>
+              )}
             </div>
           ) : (
-            <div className="flex flex-col gap-2 items-end rounded-md py-3 w-full">
+            <div className="flex flex-col gap-2 items-end rounded-md px-2 w-full">
               <textarea
                 className="border border-gray-300 rounded-lg p-2 w-full "
                 placeholder={t("Enter Your Message here...")}
@@ -322,38 +314,27 @@ const SingleTicket = () => {
                 rows={4}
                 value={reply}
               />
-              <div className="flex justify-end gap-3 items-center">
-                <div className="relative">
-                  {file ? null : (
-                    <>
-                      <input
-                        type="file"
-                        id="file-upload"
-                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                        onChange={(val) => handleFileChange(val)}
-                      />
-                      <label
-                        htmlFor="file-upload"
-                        className={`inline-block px-6 py-3 font-semibold rounded-md cursor-pointer border shadow-lg transition duration-300 ${
-                          file
-                            ? "bg-gray-200 border-gray-300"
-                            : "bg-white border-red-300"
-                        }`}
-                      >
-                        {t("Choose File")}
-                      </label>
-                    </>
-                  )}
-                </div>
+              <div className="flex max-[355px]:w-full max-[355px]:flex-col justify-end gap-3 items-center">
+                {file ? null : (
+                  <div className="relative px-2 max-[355px]:w-full text-center font-semibold rounded cursor-pointer border-2 py-1 transition duration-300 bg-red-500 text-white hover:bg-white hover:text-red-500 border-red-500">
+                    <input
+                      type="file"
+                      id="file-upload"
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                      onChange={(val) => handleFileChange(val)}
+                    />
+                    <label htmlFor="file-upload">{t("Choose File")}</label>
+                  </div>
+                )}
 
                 {file && (
-                  <div className="flex items-center gap-4">
-                    <span className="truncate px-4 py-2 bg-gray-100 border rounded-md">
+                  <div className="flex items-center max-[355px]:flex-col max-[355px]:w-full gap-4">
+                    <span className="truncate text-center px-4 max-[355px]:w-full py-2 bg-gray-100 border rounded-md">
                       {fileName}
                     </span>
                     <button
                       onClick={handleRemoveFile}
-                      className="text-red-500 font-semibold border border-red-500 px-4 py-2 rounded-md hover:bg-red-100 transition duration-300"
+                      className="text-red-500 text-center max-[355px]:w-full font-semibold border-2 border-red-500 px-4 py-2 rounded-md hover:bg-red-100 transition duration-300"
                     >
                       {t("Remove")}
                     </button>
@@ -362,35 +343,35 @@ const SingleTicket = () => {
 
                 <button
                   onClick={() => handleReply(data?.data)}
-                  className="bg-black text-white rounded-lg px-4 py-2 hover:bg-gray-800 transition duration-300"
+                  className="bg-black font-semibold max-[355px]:w-full text-white rounded-md px-2 py-1 hover:bg-white hover:text-black border-2 border-black transition duration-300"
                 >
-                  {isPending ? t("Loading...") : t("Submit")}
+                  {isPending ? t("Submitting...") : t("Submit")}
                 </button>
               </div>
             </div>
           )}
 
           {isModalOpen ? (
-            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[999]">
-              <div className="bg-white p-6 rounded-lg lg:w-1/3">
-                <h2 className="  xl:text-xl mb-4">
+            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[100]">
+              <div className="bg-white p-4 rounded-lg lg:w-1/3">
+                <h2 className="text-lg font-semibold mb-4">
                   {t("We'd love your feedback!")}
                 </h2>
                 <textarea
                   value={feedback}
                   onChange={(val) => setFeedback(val.target.value)}
-                  className="text-sm w-full h-20 border rounded-lg p-2"
+                  className="text-sm w-full h-20 border rounded border-black p-2 outline-none"
                   placeholder={t("Please leave your feedback...")}
                 />
-                <div className="mt-4 flex flex-col md:flex-row justify-center gap-4">
+                <div className="mt-2 flex font-semibold flex-col md:flex-row justify-center gap-4">
                   <button
                     onClick={handleCloseModal}
-                    className="bg-gray-300 p-2 rounded"
+                    className="bg-gray-300 w-full p-2 rounded"
                   >
                     {t("Close")}
                   </button>
                   <button
-                    className="bg-blue-500 text-white p-2 rounded"
+                    className="bg-black w-full text-white p-2 rounded"
                     onClick={() => handleFeedBack(data?.data?._id)}
                   >
                     {isFeedbackLoading ? t("Submiting...") : t("Submit")}

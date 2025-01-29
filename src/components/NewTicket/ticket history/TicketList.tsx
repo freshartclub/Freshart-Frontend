@@ -1,17 +1,16 @@
 import dayjs from "dayjs";
 import { FC, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { AiFillDislike, AiFillLike } from "react-icons/ai";
+import { GiGooeyImpact } from "react-icons/gi";
+import { GrStatusGood } from "react-icons/gr";
+import { TbUrgent } from "react-icons/tb";
 import { useLocation, useNavigate } from "react-router-dom";
 import Loader from "../../ui/Loader";
 import blue from "../ticket history/assets/blue.png";
 import green from "../ticket history/assets/green.png";
 import orange from "../ticket history/assets/orange.png";
-import artistImg from "../ticket history/assets/People.png";
 import usePatchFeedbackMutation from "./http/usePatchFeedback";
-import { useTranslation } from "react-i18next";
-import { GiGooeyImpact } from "react-icons/gi";
-import { GrStatusGood } from "react-icons/gr";
-import { TbUrgent } from "react-icons/tb";
 
 const TicketsList: FC<{
   tickets: any[];
@@ -70,7 +69,7 @@ const TicketsList: FC<{
   if (isLoading) return <Loader />;
 
   return (
-    <div className="h-[90vh] max-h-[90vh] scrollbar2 overflow-y-auto border p-2 rounded-b-lg bg-[#FEFEFE]">
+    <div className="h-[90vh] max-h-[90vh] scrollbar2 overflow-y-auto rounded-b-lg">
       {tickets?.length === 0 ? (
         <p className="bg-[#FEFEFE] text-center text-[16px] font-semibold rounded-b-lg border p-4">
           {t("No Tickets Found")}
@@ -95,8 +94,8 @@ const TicketsList: FC<{
           return (
             <div
               key={ticket._id}
-              className={`shadow border p-2 rounded mb-4  ${
-                ticket.isRead ? "bg-zinc-200 " : ""
+              className={`shadow border p-2 rounded mb-2 ticket-li ${
+                ticket.isRead ? "bg-zinc-200 " : "bg-white"
               }`}
             >
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-[100%]">
@@ -126,8 +125,31 @@ const TicketsList: FC<{
                 {ticket.subject}
               </div>
               <div className="text-xs sm:text-sm my-2 w-[90%]">
-                {ticket?.message.length < 200 ? ticket.message : ticket.message?.slice(0, 200) + "..."}
+                {ticket?.message.length < 200
+                  ? ticket.message
+                  : ticket.message?.slice(0, 200) + "..."}
               </div>
+              {ticket?.ticketFeedback ? (
+                <div className="bg-[#F5F5F5] text-sm p-2 flex flex-col border gap-1">
+                  <span className="text-[14px] text-[#84818A]">
+                    Feedback -{" "}
+                    <span className="font-semibold text-[#000000]">
+                      {ticket?.ticketFeedback?.isLiked
+                        ? "Helpfull"
+                        : "Not Helpfull"}{" "}
+                      {ticket?.ticketFeedback?.isLiked ? "👍" : "👎"}
+                    </span>
+                  </span>
+                  <span className="text-[14px] text-[#84818A]">
+                    Comment -{" "}
+                    <span className="font-semibold text-[#000000]">
+                      {ticket?.ticketFeedback?.message
+                        ? ticket?.ticketFeedback?.message
+                        : "N/A"}
+                    </span>
+                  </span>
+                </div>
+              ) : null}
               <div className="bg-[#F5F5F5] w-full max-w-full overflow-x-auto scrollbar text-sm p-2 flex border items-center gap-3">
                 <span
                   className={`flex w-max flex-shrink-0 p-2 rounded items-center hover:cursor-pointer hover:bg-[#e6e6e6] gap-1  ${
@@ -144,7 +166,7 @@ const TicketsList: FC<{
                 <span
                   className={`flex w-max flex-shrink-0 p-2 rounded hover:cursor-pointer hover:bg-[#e6e6e6] items-center gap-1`}
                 >
-                  <GiGooeyImpact /> {t("Imapct")} ({t(ticket?.impact)})
+                  <GiGooeyImpact /> {t("Impact")} ({t(ticket?.impact)})
                 </span>
                 <span
                   className={`flex w-max flex-shrink-0 p-2 rounded hover:cursor-pointer hover:bg-[#e6e6e6] items-center gap-1`}
@@ -153,9 +175,15 @@ const TicketsList: FC<{
                 </span>
               </div>
               <div className="flex mt-2 items-center justify-between">
+                <button
+                  onClick={() => handleClick(ticket?._id)}
+                  className="font-bold bg-[#102030] text-sm text-white p-2 rounded"
+                >
+                  {t("Open Ticket")}
+                </button>
                 <div className="flex items-center gap-3">
-                  {ticket.status === "Technical Finish" ||
-                  ticket.status === "Closed" ? (
+                  {ticket?.ticketFeedback ? null : ticket.status ===
+                      "Technical Finish" || ticket.status === "Closed" ? (
                     <div className="flex items-center gap-2 ">
                       <p className="font-bold border px-2 rounded-md border-zinc-200 ">
                         {ticket?.ticketFeedback?.message}
@@ -199,9 +227,8 @@ const TicketsList: FC<{
                       </span>
                     </div>
                   ) : null}
-
                   {openTicketId === ticket._id && (
-                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="fixed z-[100] inset-0 flex items-center justify-center bg-black bg-opacity-50">
                       <div className="bg-white p-6 rounded-lg lg:w-1/3">
                         <h2 className="  xl:text-xl mb-4">
                           {t("We'd love your feedback!")}
@@ -237,13 +264,6 @@ const TicketsList: FC<{
                       </div>
                     </div>
                   )}
-
-                  <button
-                    onClick={() => handleClick(ticket?._id)}
-                    className="font-bold bg-[#102030] text-sm text-white p-2 rounded"
-                  >
-                    {t("Open Ticket")}
-                  </button>
                 </div>
               </div>
             </div>

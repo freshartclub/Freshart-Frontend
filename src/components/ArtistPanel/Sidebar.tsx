@@ -122,7 +122,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen, isOpen }) => {
 
   return (
     <div
-      className={`flex transition-all h-[90vh] max-h-[90vh] scrollbar overflow-y-auto overflow-x-hidden duration-300 fixed top-14 left-0 z-50 ${
+      className={`flex transition-all h-[95vh] max-h-[95vh] scrollbar overflow-y-auto overflow-x-hidden duration-300 fixed top-[5rem] left-0 z-50 ${
         smallWidth
           ? sidebarOpen
             ? "fixed left-[0] w-64"
@@ -142,9 +142,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen, isOpen }) => {
           <img src={toggle} alt="Toggle Arrow" />
         </button>
 
-        <ul className="space-y-2 mt-8">
+        <ul className="flex flex-col gap-2">
           {sections.map((section) => (
-            <li key={section.key} className="relative">
+            <li key={section.key} className="relative sidebar-li">
               <Link to={`/artist-panel/${section.path}`}>
                 <button
                   onClick={() => handleSubmenuToggle(section.key)}

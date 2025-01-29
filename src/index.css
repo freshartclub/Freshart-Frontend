@@ -167,6 +167,14 @@
   width: 4px;
 }
 
+.sidebar-li:nth-last-child(1) {
+  margin-bottom: 4rem;
+}
+
+.ticket-li:nth-child(1){
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+}
 
 @media (max-width: 1536px) {
   .banner_arrow .slick-next {

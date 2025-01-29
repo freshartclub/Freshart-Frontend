@@ -33,7 +33,7 @@ import CustomDropdown from "./CustomDropdown";
 const BecomeArtist = () => {
   const validationSchema = Yup.object().shape({
     artistName: Yup.string().required("Artist Name is required"),
-    artistSurname1: Yup.string(),
+    artistSurname1:Yup.string().required("Artist Surname 1 is required"),
     artistSurname2: Yup.string(),
     email: Yup.string()
       .email("Invalid email address")
@@ -324,11 +324,11 @@ const BecomeArtist = () => {
             popUp ? "bg-[#F9F7F6] pointer-events-none blur-sm" : "bg-[#F9F7F6]"
           }`}
         >
-          <div className="container mx-auto sm:px-6 px-3">
-            <div className="xl:w-[70%] lg:w-[90%] w-full mx-auto py-10">
+          <div className="container mx-auto sm:px-6 px-2">
+            <div className="xl:w-[70%] lg:w-[90%] w-full mx-auto pt-4 sm:py-10">
               <form
                 onSubmit={onSubmit}
-                className="bg-white rounded px-8 pt-6 pb-8 mb-4"
+                className="bg-white rounded px-2 sm:px-8 pt-6 pb-8 mb-4"
               >
                 <Header
                   variant={{ size: "3xl", weight: "bold", theme: "dark" }}
@@ -355,9 +355,9 @@ const BecomeArtist = () => {
                       className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
                       placeholder={t("Enter Artist Name")}
                     />
-                    {errors.aritstName && (
+                    {errors.artistName && (
                       <span className="text-red-500 text-xs">
-                        {t(`${errors.aritstName.message}`)}
+                        {t(`${errors.artistName.message}`)}
                       </span>
                     )}
                   </div>
@@ -400,12 +400,12 @@ const BecomeArtist = () => {
                       {t("Email")} *
                     </label>
 
-                    <div className="flex w-full gap-2">
+                    <div className="flex w-full sm:flex-row flex-col gap-2">
                       <input
                         {...register("email")}
                         onChange={(e) => setEmail(e.target.value)}
                         disabled={isValidateEmail}
-                        className={`appearance-none border rounded w-full  px-3 text-gray-700 leading-tight focus:outline-none `}
+                        className={`appearance-none border rounded w-full p-3 text-gray-700 leading-tight focus:outline-none `}
                         placeholder={t("Enter Email")}
                       />
 
@@ -437,9 +437,9 @@ const BecomeArtist = () => {
                     <label className="block text-gray-700 text-sm font-bold mb-2">
                       {t("Phone Number")} *
                     </label>
-                    <div className="flex  flex-row w-full gap-2">
+                    <div className="flex sm:flex-row flex-col w-full gap-2">
                       <PhoneInput
-                        className="appearance-none  outline-none rounded py-1   w-full text-gray-700 leading-tight focus:outline-none"
+                        className="appearance-none  outline-none rounded w-full text-gray-700 leading-tight focus:outline-none"
                         placeholder={t("Enter Phone number")}
                         defaultCountry={countryCode}
                         disabled={isValidatePhone}
@@ -675,7 +675,7 @@ const BecomeArtist = () => {
                 </div>
                 <div className="flex items-center justify-end gap-2">
                   <button
-                    className="px-5 py-3 bg-black text-white rounded-md font-bold text-sm "
+                    className="px-5 py-3 max-[430px]:w-full bg-black text-white rounded-md font-bold text-sm"
                     type="submit"
                   >
                     {isPending ? t("Loading...") : t("Submit")}
@@ -685,7 +685,7 @@ const BecomeArtist = () => {
             </div>
           </div>
         </div>
-        <div className="absolute top-[50%] left-1/2 transform -translate-x-1/2 -translate-y-[50%] ">
+        <div className="absolute w-[90%] lg:w-[50%] md:w-[70%] top-[50%] left-1/2 transform -translate-x-1/2 -translate-y-[50%] ">
           {popUp ? <ThankYou /> : null}
         </div>
       </div>

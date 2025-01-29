@@ -784,7 +784,7 @@ const AddArtwork = () => {
                   onClick={() => handleGenerateQRCode()}
                   className="cursor-pointer gap-2 bg-black text-white text-[12px] md:text-[16px] px-2 py-2 lg:px-4 lg:py-3 rounded-lg hover:bg-gray-800"
                 >
-                  {t("Generate Qr Code")}
+                  {t("Generate QR Code")}
                 </h1>
               ) : null}
 
@@ -1764,7 +1764,7 @@ const AddArtwork = () => {
                       <input
                         type="text"
                         {...register(field.name, {
-                          required: t(`${field.name} is required`)
+                          required: t(`${field.label} is required`)
                             ? field.name
                             : "",
                         })}
@@ -2288,7 +2288,7 @@ const AddArtwork = () => {
                   </label>
 
                   <label className="text-[#203F58] text-sm font-semibold">
-                    {t("VAT Amount")} (%)
+                    {t("VAT Amount (%)")}
                     <input
                       type="text"
                       id="vatAmount"
@@ -2509,35 +2509,32 @@ const AddArtwork = () => {
       </div>
 
       {qrVisible && (
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-blue-50 w-[80%] sm:w-[60%] md:w-[50%] lg:w-[40%] h-[80vh] sm:h-[75vh] md:h-[75vh] lg:h-[75vh] p-4 rounded-lg shadow-lg">
-          <div className="flex flex-col justify-center items-center">
-            <h1 className="font-bold text-lg text-center mt-3">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm z-[100]">
+          <div className="relative bg-white w-[90%] sm:w-[60%] md:w-[50%] lg:w-[40%] h-auto max-h-[80vh] p-6 rounded-2xl shadow-2xl flex flex-col items-center">
+            <h1 className="font-bold text-xl text-center mt-2 text-gray-800">
               {t("QR Code")}
             </h1>
             <img
               src={logoIcon}
               alt="Logo"
-              className="object-cover w-[40%] h-[6%] px-3 py-5"
+              className="object-contain w-24 h-12 mt-3"
             />
-          </div>
 
-          <span
-            onClick={() => setQrVisible(false)}
-            className="absolute right-5 top-5 cursor-pointer"
-          >
-            <BsBackspace size="2em" />
-          </span>
-
-          <div className="flex flex-col justify-between mt-6">
-            <div
-              style={{
-                height: "auto",
-                margin: "0 auto",
-                maxWidth: 200,
-                width: "100%",
+            <span
+              onClick={() => {
+                setQrVisible(false);
+                setCopySuccess("");
+                setErrorMessage("");
               }}
+              className="absolute right-5 top-5 cursor-pointer text-gray-500 hover:text-gray-700 transition"
+            >
+              <BsBackspace size="1.8em" />
+            </span>
+
+            <div
               ref={qrCodeRef}
-              className="flex justify-center"
+              className="flex justify-center items-center bg-gray-100 p-4 rounded-lg mt-4"
+              style={{ maxWidth: 200, width: "100%" }}
             >
               <QRCode
                 size={256}
@@ -2547,44 +2544,42 @@ const AddArtwork = () => {
               />
             </div>
 
-            <div className="flex flex-col items-center mt-6">
-              <input
-                type="text"
-                value={url}
-                id="linkInput"
-                readOnly
-                className="w-[80%] sm:w-[70%] p-3 text-lg border border-gray-300 rounded-md mb-4"
-              />
+            <input
+              type="text"
+              value={url}
+              id="linkInput"
+              readOnly
+              className="w-[80%] sm:w-[70%] p-3 text-lg border border-gray-300 rounded-md mt-5 text-center bg-gray-50 focus:outline-none"
+            />
 
-              <div className="flex flex-col sm:flex-row justify-between gap-3">
-                <button
-                  onClick={handleCopy}
-                  className="bg-black text-white px-4 py-2 rounded-md text-md cursor-pointer hover:bg-blue-600 transition mb-2 sm:mb-0"
-                >
-                  {t("Copy Link")}
-                </button>
+            <div className="flex flex-col sm:flex-row justify-center gap-3 mt-4 w-full">
+              <button
+                onClick={handleCopy}
+                className="bg-blue-600 text-white px-5 py-2 rounded-lg text-md font-medium cursor-pointer hover:bg-blue-700 transition"
+              >
+                {t("Copy Link")}
+              </button>
 
-                <button
-                  onClick={handleDownloadPDF}
-                  className="bg-black text-white px-4 py-2 rounded-md text-md cursor-pointer hover:bg-green-600 transition"
-                  disabled={isLoading}
-                >
-                  {isLoadingPdf ? t("Downloading PDF...") : t("Download PDF")}
-                </button>
-              </div>
-
-              {copySuccess && (
-                <p className="mt-2 text-green-500 font-semibold">
-                  {t(copySuccess)}
-                </p>
-              )}
-
-              {errorMessage && (
-                <p className="mt-2 text-red-500 font-semibold">
-                  {t(errorMessage)}
-                </p>
-              )}
+              <button
+                onClick={handleDownloadPDF}
+                className="bg-green-600 text-white px-5 py-2 rounded-lg text-md font-medium cursor-pointer hover:bg-green-700 transition"
+                disabled={isLoading}
+              >
+                {isLoadingPdf ? t("Downloading Image...") : t("Download Image")}
+              </button>
             </div>
+
+            {copySuccess && (
+              <p className="mt-3 text-green-500 font-semibold">
+                {t(copySuccess)}
+              </p>
+            )}
+
+            {errorMessage && (
+              <p className="mt-3 text-red-500 font-semibold">
+                {t(errorMessage)}
+              </p>
+            )}
           </div>
         </div>
       )}

@@ -28,7 +28,7 @@ const LogNaveBar = () => {
     navigate("/become_artist");
   };
 
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const handleRedirectToBecomeAnArtist = () => {
     navigate("/become_artist");
@@ -38,23 +38,7 @@ const LogNaveBar = () => {
     navigate("/");
   };
 
-  // const getLanguage = localStorage.getItem("language");
   const getCurrency = localStorage.getItem("currency");
-  const getLangCode = localStorage.getItem("langCode");
-
-  useEffect(() => {
-    const getLanguage = localStorage.getItem("language");
-    const getLangCode = localStorage.getItem("langCode");
-    setFlag(getLangCode || "gb");
-    setLanguageSettings(
-      getLanguage === "Spanish"
-        ? "Español"
-        : getLanguage === "Catalan"
-        ? "Català"
-        : "English"
-    );
-    setCurrencySettings(getCurrency || "usd");
-  }, []);
 
   const countries = [
     {
@@ -66,7 +50,7 @@ const LogNaveBar = () => {
     },
     {
       code: "CAT",
-      flag: "https://flagcdn.com/w320/ct.png",
+      flag: "https://www.flagcolorcodes.com/data/Flag-of-Catalonia.png",
       name: "Catalan",
       val: "cat",
       nativeName: "Catala",
@@ -80,25 +64,46 @@ const LogNaveBar = () => {
     },
   ];
 
+  useEffect(() => {
+    const getLanguage = localStorage.getItem("language");
+    const getLangCode = localStorage.getItem("langCode");
+    setFlag(
+      countries.find((country) => country.val === getLangCode).flag ||
+        "https://flagcdn.com/w320/gb.png"
+    );
+    setLanguageSettings(
+      getLanguage === "Spanish"
+        ? "Español"
+        : getLanguage === "Catalan"
+        ? "Català"
+        : "English"
+    );
+    setCurrencySettings(getCurrency || "usd");
+  }, []);
+
+  console.log(flag);
+
   const handleSelectChange = (
     value: string,
     key: string,
-    flag,
-    navtiveName
+    flag: string,
+    navtiveName: string
   ) => {
     localStorage.setItem("language", value);
     localStorage.setItem("langCode", flag);
     localStorage.setItem("currency", currencySettings);
 
     dispatch(setLanguage(value));
-    setFlag(flag);
+    setFlag(
+      countries.find((country) => country.val === flag).flag ||
+        "https://flagcdn.com/w320/gb.png"
+    );
     setLanguageSettings(navtiveName);
     setSettings((prev) => ({ ...prev, [key]: value }));
     setLanguageDropdownOpen(false);
   };
 
   const userLanguage = navigator.language || navigator.userLanguage;
-  console.log(userLanguage.split("-")[0]);
 
   useEffect(() => {
     if (userLanguage && !localStorage.getItem("language")) {
@@ -128,7 +133,7 @@ const LogNaveBar = () => {
     <div className="bg-[#F9F7F6]">
       <div className="container mx-auto md:px-6 px-3">
         <header className="relative py-4">
-          <div className=" flex md:flex-row relative flex-col justify-between items-center">
+          <div className="flex md:flex-row relative flex-col justify-between items-center">
             <div onClick={redirectToHomepage}>
               <img
                 src={logo}
@@ -137,17 +142,13 @@ const LogNaveBar = () => {
               />
             </div>
 
-            <div className="flex items-center gap-3 mt-6 md:mt-0 relative">
+            <div className="flex max-[430px]:flex-col-reverse max-[430px]:w-full items-center gap-3 mt-6 md:mt-0 relative">
               <div>
                 <span
-                  className=" py-3 flex gap-5 items-center cursor-pointer justify-between text-sm border border-zinc-200 px-5 font-medium text-gray-700 hover:text-gray-800 focus:outline-none"
+                  className="py-3 flex gap-5 items-center cursor-pointer justify-between text-sm border border-zinc-200 px-5 font-medium text-gray-700 hover:text-gray-800 focus:outline-none"
                   onClick={handeleLanguage}
                 >
-                  <img
-                    className="w-5 h-5 object-cover"
-                    src={`https://flagcdn.com/w320/${flag}.png`}
-                    alt=""
-                  />
+                  <img className="w-5 h-5 object-cover" src={flag} alt="" />
                   <h1 className="font-semibold">{languageSettings}</h1>
                 </span>
 
@@ -194,7 +195,7 @@ const LogNaveBar = () => {
                     thickness: "thick",
                     fontSize: "base",
                   }}
-                  className="flex justify-center items-center"
+                  className="flex max-[430px]:w-full justify-center items-center"
                   onClick={handleRedirectToBecomeAnArtist}
                 >
                   <P
@@ -214,7 +215,7 @@ const LogNaveBar = () => {
                     thickness: "thick",
                     fontSize: "base",
                   }}
-                  className="flex justify-center items-center"
+                  className="flex max-[430px]:w-full justify-center items-center"
                 >
                   <P
                     variant={{ size: "base", theme: "light", weight: "normal" }}

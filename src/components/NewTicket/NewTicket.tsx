@@ -181,7 +181,7 @@ const NewTicket = () => {
                     as="select"
                     className="outline-[#FDB7DC] bg-[#FFD1D114] shadow border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-[#FDB7DC] focus:shadow-outline"
                   >
-                    <option value="">{t("Choose Ticket Type")}</option>
+                    <option value="">{t("Select Ticket Type")}</option>
                     {ticketType
                       ? ticketType?.map((item, i: number) => (
                           <option key={i} value={item?.value}>

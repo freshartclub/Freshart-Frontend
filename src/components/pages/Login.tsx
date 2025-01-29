@@ -152,7 +152,7 @@ const Login: React.FC = () => {
               to="/forget-password"
               className="text-sm text-red-500 hover:underline mt-4 sm:mt-0"
             >
-              {t("Forgot Password")} ?
+              {t("Forgot Password ?")}
             </Link>
           </div>
 

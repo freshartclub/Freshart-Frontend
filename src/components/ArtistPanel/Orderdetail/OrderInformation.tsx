@@ -7,6 +7,7 @@ import { RxMobile } from "react-icons/rx";
 import { PiFilesFill } from "react-icons/pi";
 import { LuSettings } from "react-icons/lu";
 import { useTranslation } from "react-i18next";
+
 const OrderInformation = ({ order }: any) => {
   const { t } = useTranslation();
   return (
@@ -18,7 +19,7 @@ const OrderInformation = ({ order }: any) => {
             {order.Orderid}
           </h2>
           <div
-            className={`w-fit rounded-lg py-0 px-2 flex items-center  ${
+            className={`w-fit rounded-lg py-0 capitalize px-2 flex items-center  ${
               order.status === "processing"
                 ? "bg-[#FDF1E8] text-[#E46A11] "
                 : order.status === "Shiped"

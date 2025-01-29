@@ -23,24 +23,24 @@ export const package_dimension = [
 
 export const artwork_orientation = [
   {
-    name: "Height",
+    name: "height",
     label: "Height (cm)",
-    placeholder: "Height",
+    placeholder: "Height (cm)",
   },
   {
-    name: "Width",
+    name: "width",
     label: "Width (cm)",
-    placeholder: "Width",
+    placeholder: "Width (cm)",
   },
   {
-    name: "Depth",
+    name: "length",
     label: "Depth (cm)",
-    placeholder: "Depth",
+    placeholder: "Depth (cm)",
   },
   {
-    name: "Weight",
+    name: "weight",
     label: "Weight (kg)",
-    placeholder: "Weight",
+    placeholder: "Weight (Kg)",
   },
 ];
 

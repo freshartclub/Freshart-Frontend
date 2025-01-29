@@ -2,16 +2,17 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import axiosInstance from "../../../utils/axios";
 import { ORDERS_ENDPOINTS } from "../../../../http/apiEndPoints/Orders";
-let toastId: any;
+import { useTranslation } from "react-i18next";
 
 async function acceptOrder(newData) {
   return await axiosInstance.patch(
-    `${ORDERS_ENDPOINTS.AcceptOrder}/${newData.id}?orderType=${newData.orderType}`,
+    `${ORDERS_ENDPOINTS.AcceptOrder}/${newData.id}`,
     newData
   );
 }
 
 const usePostAcceptMutation = () => {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -22,13 +23,12 @@ const usePostAcceptMutation = () => {
         queryKey: ["acceptOrder"],
         refetchType: "all",
       });
-      toast.dismiss(toastId);
-      toast.success(res.data.message, {
+      toast.success(t(res.data.message), {
         duration: 5000,
       });
     },
     onError: (error) => {
-      toast.error(error.response?.data?.message || "An error occurred");
+      toast.error(t(error.response?.data?.message) || t("An error occurred"));
     },
   });
 };

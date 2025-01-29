@@ -20,7 +20,6 @@ const OrderApprove = () => {
   const handleAccept = () => {
     const newData = {
       id: id,
-
       status: "accept",
     };
     try {

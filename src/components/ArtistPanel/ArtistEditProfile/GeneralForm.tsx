@@ -51,7 +51,6 @@ const GeneralForm = ({ isActiveStatus }) => {
     getValues,
     watch,
     register,
-
     formState: { errors },
   } = methods;
 
@@ -386,15 +385,16 @@ const GeneralForm = ({ isActiveStatus }) => {
     setSearchResult(fullAddress);
   };
 
-  function getTimeDifference(nextRevalidationDate) {
-    const currentDate = new Date();
-    const targetDate = new Date(nextRevalidationDate);
+  const calc = (val: string) => {
+    if (!val) return;
+    const today = new Date();
+    const createdAt = new Date(val);
 
-    const differenceMs = targetDate - currentDate;
-    const days = Math.floor(differenceMs / (1000 * 60 * 60 * 24));
+    const differenceMs = today.getTime() - createdAt.getTime();
+    const days = Math.ceil(differenceMs / (1000 * 60 * 60 * 24));
 
-    return `${days} Days Remaning`;
-  }
+    return days;
+  };
 
   const modules = {
     toolbar: [
@@ -449,11 +449,11 @@ const GeneralForm = ({ isActiveStatus }) => {
             >
               <span className="w-1.5 h-1.5 block bg-black rounded-full"></span>{" "}
               {isActiveStatus === "active"
-                ? "Published"
+                ? t("Published")
                 : isActiveStatus === "under-review"
-                ? "Pending Approval"
+                ? t("Pending Approval")
                 : isActiveStatus === "inactive"
-                ? "InActive"
+                ? t("InActive")
                 : null}
             </span>
           </div>
@@ -842,7 +842,7 @@ const GeneralForm = ({ isActiveStatus }) => {
         <Invoice control={control} />
 
         <Logistics control={control} />
-        <Commercilization control={control} />
+        <Commercilization control={control} getValues={getValues} />
 
         <div className="p-4 mt-4 bg-white rounded-lg shadow-md border">
           <h2 className="text-lg font-semibold mb-3 pb-3 text-[#1A1C21]">
@@ -918,14 +918,24 @@ const GeneralForm = ({ isActiveStatus }) => {
               )}
             </div>
 
-            <div className="flex items-center gap-5">
-              <h2 className="text-md font-semibold mb-3 text-[#1A1C21] ">
+            <div className="flex items-center mb-3 gap-3">
+              <h2 className="text-md font-semibold text-[#1A1C21] ">
                 {t("Revalidation Information")}
               </h2>
 
-              <h2 className="text-md font-semibold mb-3 text-[#1A1C21] border border-green-500 px-3 py-1 rounded-md">
-                {getTimeDifference(getValues("nextRevalidationDate"))}
-              </h2>
+              {getValues("nextRevalidationDate") ? (
+                calc(getValues("nextRevalidationDate")) === 0 ? null : calc(
+                    getValues("nextRevalidationDate")
+                  ) > 0 ? (
+                  <span className="w-fit h-fit bg-[#FEEDEC] text-[#f05438] rounded-2xl text-[12px] px-2">{`${Math.abs(
+                    calc(getValues("nextRevalidationDate"))
+                  )} ${t("Oudated Days")}`}</span>
+                ) : (
+                  <span className="w-fit h-fit bg-[#f2feec] border-[#0D894F] border rounded-2xl text-[12px] px-2">{`${Math.abs(
+                    calc(getValues("nextRevalidationDate"))
+                  )} ${t("Days Left")}`}</span>
+                )
+              ) : null}
             </div>
 
             <div className="flex justify-between items-center gap-5">

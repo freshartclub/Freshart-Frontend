@@ -15,11 +15,14 @@ import useTimer, { formatTime } from "../hooks/useTimer";
 import BackButton from "../ui/BackButton";
 import Button from "../ui/Button";
 import P from "../ui/P";
+import { useTranslation } from "react-i18next";
+import toast from "react-hot-toast";
 
 const OtpPage = () => {
   const [localId, setLocalId] = useState("");
   const userId = useAppSelector((state) => state.user.userId);
   const dispatch = useAppDispatch();
+  const { t } = useTranslation();
 
   const navigate = useNavigate();
   const [otp, setOtp] = useState("");
@@ -68,6 +71,7 @@ const OtpPage = () => {
   };
 
   const onSubmit = handleSubmit(async (data) => {
+    if (!otp) return toast.error(t("Please enter OTP"));
     try {
       const newData = {
         id: localId,
@@ -98,8 +102,7 @@ const OtpPage = () => {
             variant={{ size: "base", theme: "dark", weight: "medium" }}
             className="mb-2 text-base text-text_primary_dark font-normal lg:w-[60%] md:w-[80%] mx-auto mt-4"
           >
-            Enter the Code From the Mail We Sent to{" "}
-            <strong>***************@gmail.com</strong>
+            {t("Enter the OTP From the Mail We Sent to You")}
           </P>
           <P
             variant={{ size: "base", theme: "dark", weight: "medium" }}
@@ -121,9 +124,9 @@ const OtpPage = () => {
               )}
               containerStyle="flex justify-center mb-4"
             />
-            {errors.otp && (
+            {errors?.otp && (
               <div className="text-red-500 text-sm text-left">
-                {errors.otp.message}
+                {t(`${errors?.otp?.message}`)}
               </div>
             )}
 
@@ -131,12 +134,12 @@ const OtpPage = () => {
               variant={{ size: "base", theme: "dark", weight: "medium" }}
               className="mb-8 mt-6"
             >
-              Didn’t Receive Code?{" "}
+              {t("Didn’t Receive Code ?")}{" "}
               <span
                 onClick={handleResendOtp}
                 className="font-bold cursor-pointer tracking-tight"
               >
-                {isResendPendig ? "Sending..." : "Resend"}
+                {isResendPendig ? t("Sending...") : t("Resend")}
               </span>
             </P>
 
@@ -153,9 +156,11 @@ const OtpPage = () => {
               disabled={isSubmitting}
             >
               <P variant={{ size: "base", theme: "light", weight: "semiBold" }}>
-                {isPending ? "Validating..." : "Submit OTP"}
+                {isPending ? t("Validating...") : t("Submit OTP")}
               </P>
-              <img src={arrow} alt="arrow" className="ml-2 mt-1" />
+              {!isPending && (
+                <img src={arrow} alt="arrow" className="ml-2 mt-1" />
+              )}
             </Button>
           </form>
         </div>
