@@ -1,9 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-
 import toast from "react-hot-toast";
-
 import { ARTTIST_ENDPOINTS } from "../../../../http/apiEndPoints/Artist";
 import axiosInstance from "../../../utils/axios";
+import { useTranslation } from "react-i18next";
 
 async function usePatchBilling(input: any) {
   return await axiosInstance.patch(
@@ -13,6 +12,8 @@ async function usePatchBilling(input: any) {
 
 const useUpdateBillingMutation = () => {
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
+
   return useMutation({
     mutationFn: usePatchBilling,
 
@@ -21,12 +22,12 @@ const useUpdateBillingMutation = () => {
         queryKey: [ARTTIST_ENDPOINTS.GetBillingAddress],
         refetchType: "all",
       });
-      toast.success(res.data.message, {
+      toast.success(t(res.data.message), {
         duration: 3000,
       });
     },
     onError: (error) => {
-      toast.error(error.response?.data?.message || "An error occurred");
+      toast.error(t(error.response?.data?.message));
     },
   });
 };

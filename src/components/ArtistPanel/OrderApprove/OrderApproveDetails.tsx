@@ -135,7 +135,7 @@ const OrderApproveDetails = () => {
                       scope="col"
                       className="px-3 md:px-6 py-2 md:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
-                      {t("Artwork Details")}
+                      {t("Artwork Name")}
                     </th>
                     <th
                       scope="col"
@@ -197,7 +197,7 @@ const OrderApproveDetails = () => {
                                 {product?.artWork?.artworkName}
                               </h3>
                               <p className="text-xs md:text-sm text-gray-500">
-                                Product Code:{" "}
+                                {t("Product Code")}:{" "}
                                 {product?.artWork?.inventoryShipping?.pCode}
                               </p>
                             </div>
@@ -321,7 +321,7 @@ const OrderApproveDetails = () => {
 
             {/* Summary Section */}
             <div className="mt-6 p-4 rounded-lg w-full lg:w-2/5 lg:ml-auto">
-              <div className="flex justify-between text-sm md:text-base text-gray-400 mb-1 font-bold">
+              <div className="flex justify-between text-sm md:text-base text-gray-400 mb-1 font-semibold">
                 <span>{t("Subtotal")} :</span>
                 <span className="font-semibold text-black">
                   {formateCurrency(data?.data?.subTotal, "$")}
@@ -339,7 +339,7 @@ const OrderApproveDetails = () => {
                   {formateCurrency(data?.data?.discount, "$")}
                 </span>
               </div>
-              <div className="flex justify-between text-sm md:text-base text-gray-400 mb-1">
+              <div className="flex justify-between text-sm md:text-base text-gray-400 mb-1 font-semibold">
                 <span>{t("Taxes")}:</span>
                 <span className="text-black font-semibold">
                   {formateCurrency(data?.data?.taxAmount, "$")}

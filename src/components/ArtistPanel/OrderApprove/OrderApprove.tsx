@@ -61,25 +61,22 @@ const OrderApprove = () => {
           </div>
           {data?.data?.status === "accepted" ? null : (
             <div className="flex gap-2">
-              <div className="space-x-3">
-                <button
-                  onClick={() => handleAccept()}
-                  className="bg-[#22C55E]
+              <button
+                onClick={() => handleAccept()}
+                className="bg-[#22C55E]
               py-2 px-2
              sm:py-3 sm:px-8 rounded-md text-white font-bold"
-                >
-                  {isPending ? t("Accepting..") : t("Accept")}
-                </button>
-              </div>
-              <div>
-                <button
-                  className="bg-[#FF5630]
+              >
+                {isPending ? t("Accepting..") : t("Accept")}
+              </button>
+
+              <button
+                className="bg-[#FF5630]
                py-2 px-2
              sm:py-3 sm:px-8 rounded-md  text-white font-bold "
-                >
-                  {t("Reject")}
-                </button>
-              </div>
+              >
+                {t("Reject")}
+              </button>
             </div>
           )}
         </div>

@@ -1,12 +1,10 @@
 import { useMutation } from "@tanstack/react-query";
-
 import toast from "react-hot-toast";
-
 import { useNavigate, useSearchParams } from "react-router-dom";
 import axiosInstance from "../../../utils/axios";
+import { useTranslation } from "react-i18next";
 
 async function usePostArtWork(input: any) {
-  console.log("this is input", input);
   return await axiosInstance.post(
     `/api/artist/add-artwork/${input.id}`,
     input.data,
@@ -20,6 +18,7 @@ async function usePostArtWork(input: any) {
 
 const usePostArtWorkMutation = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
 
@@ -27,8 +26,6 @@ const usePostArtWorkMutation = () => {
     mutationFn: usePostArtWork,
 
     onSuccess: async (res) => {
-      console.log("this is from res", res.data);
-      console.log(id);
       navigate(
         `${
           id
@@ -36,12 +33,12 @@ const usePostArtWorkMutation = () => {
             : `/artist-panel/artwork/preview?id=${res.data.artwork._id}&preview=true`
         }`
       );
-      toast.success(res.data.message, {
+      toast.success(t(res.data.message), {
         duration: 3000,
       });
     },
     onError: (error) => {
-      toast.error(error.response?.data?.message || "An error occurred");
+      toast.error(t(error.response?.data?.message) || t("An error occurred"));
     },
   });
 };

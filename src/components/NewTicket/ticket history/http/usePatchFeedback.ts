@@ -1,14 +1,12 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { ARTTIST_ENDPOINTS } from "../../../../http/apiEndPoints/Artist";
 import axiosInstance from "../../../utils/axios";
 
 const usePatchFeedbackMutation = () => {
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
-  //   const [searchParams] = useSearchParams();
-  //   const id = searchParams.get("id");
+  const { t } = useTranslation();
 
   const usePatchFeedback = async (input: any) => {
     return await axiosInstance.patch(
@@ -25,12 +23,12 @@ const usePatchFeedbackMutation = () => {
         refetchType: "all",
       });
 
-      toast.success(res.data.message, {
+      toast.success(t(res.data.message), {
         duration: 3000,
       });
     },
     onError: (error) => {
-      toast.error(error.response?.data?.message || "An error occurred");
+      toast.error(t(error.response?.data?.message));
     },
   });
 };

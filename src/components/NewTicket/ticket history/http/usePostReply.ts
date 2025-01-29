@@ -1,11 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { useSearchParams } from "react-router-dom";
 import { ARTTIST_ENDPOINTS } from "../../../../http/apiEndPoints/Artist";
 import axiosInstance from "../../../utils/axios";
 
 const useGetPostArtistTicketReplyMutation = () => {
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
 
@@ -22,6 +22,7 @@ const useGetPostArtistTicketReplyMutation = () => {
   };
 
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
 
   return useMutation({
     mutationFn: usePostTicketReply,
@@ -30,13 +31,13 @@ const useGetPostArtistTicketReplyMutation = () => {
         queryKey: [`${ARTTIST_ENDPOINTS.GetArtistTicketsDetails}`],
         refetchType: "all",
       });
-      // navigate("/artist-panel/ticket/tickets");
-      toast.success(res.data.message, {
+
+      toast.success(t(res.data.message), {
         duration: 3000,
       });
     },
     onError: (error) => {
-      toast.error(error.response?.data?.message || "An error occurred");
+      toast.error(t(error.response?.data?.message));
     },
   });
 };

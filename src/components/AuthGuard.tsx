@@ -1,6 +1,5 @@
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { useAppSelector } from "../store/typedReduxHooks";
-// import { components } from "react-select";
 
 interface AuthGuardProps {
   children: React.ReactNode;
@@ -8,9 +7,6 @@ interface AuthGuardProps {
 
 const AuthGuard = ({ children }: AuthGuardProps) => {
   const isAuthorized = useAppSelector((state) => state.user.isAuthorized);
-  const isArtist = useAppSelector((state) => state.user.isArtist);
-  const profile = localStorage.getItem("profile");
-  const currentPath = useLocation();
 
   if (isAuthorized && location.pathname === "/") {
     return <Navigate to="/home" replace />;
