@@ -18,7 +18,9 @@ const HomePage = () => {
   const { data: artistData } = useGetArtistDetails();
 
   if (profile === "artist") return navigate("/artist-panel");
-  
+
+  console.log(data);
+
   if (isLoading) return <Loader />;
 
   return (

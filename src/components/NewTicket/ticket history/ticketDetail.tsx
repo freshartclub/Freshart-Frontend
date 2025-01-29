@@ -146,8 +146,8 @@ const SingleTicket = () => {
         </span>
         <span className="text-[#84818A]">({t(data?.data?.ticketType)})</span>
       </div>
-      <div className="flex lg:justify-between items-center w-full p-2">
-        <div className="flex sm:gap-4 gap-2 max-w-full scrollbar bg-white border px-2 py-1 rounded overflow-auto w-full items-center sm:ml-5">
+      <div className="flex lg:justify-between items-center  p-2">
+        <div className="flex sm:gap-4 gap-2 max-w-full scrollbar  overflow-auto w-full items-center sm:ml-5">
           <span className="text-[12px] font-semibold text-gray-800 flex-shrink-0">
             {t("Urgency")}: {t(data?.data?.urgency)}
           </span>

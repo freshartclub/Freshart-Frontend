@@ -89,6 +89,8 @@ const ArtCard = ({ data, tittle, artistData }) => {
     }
   };
 
+  // console.log(data);
+
   return (
     <div className="container mx-auto md:px-6 px-3 mt-10">
       <h1 className=" text-[25px]  md:text-[30px] font-semibold mb-5 w-1/2 sm:w-full">
@@ -96,48 +98,48 @@ const ArtCard = ({ data, tittle, artistData }) => {
       </h1>
       <div>
         {data?.length < 4 ? (
-          <div className="flex flex-wrap justify-center gap-4">
-            {data?.map((item, index) => (
-              <div key={index} className="relative cursor-pointer px-3 ">
-                <img
-                  onClick={() => handleRedirectToDescription(item?._id)}
-                  src={`${imageUrl}/users/${item?.media}`}
-                  alt="image"
-                  className="w-full h-[40vh] sm:h-[45vh] md:h-[50vh] object-cover shadow-lg "
-                />
-                <button className="absolute top-2 z-[99] right-7 border border-[#FFD9DE] rounded-full p-2 bg-white cursor-pointer">
+          <div className="overflow-x-auto scrollbar-hide">
+            <div className="flex gap-6 px-4 sm:px-0">
+              {data?.map((item, index) => (
+                <div
+                  key={index}
+                  className="relative cursor-pointer min-w-[75%] sm:min-w-[48%] md:min-w-[32%] lg:min-w-[24%] xl:min-w-[19vw]"
+                >
                   <img
-                    onClick={() => handleLike(item?._id)}
-                    src={likedItems?.includes(item?._id) ? wishlist_like : like}
-                    alt="like"
-                    className={`w-5 h-5 ${
-                      likePending ? "pointer-events-none opacity-15" : ""
-                    }`}
+                    onClick={() => handleRedirectToDescription(item?._id)}
+                    src={`${imageUrl}/users/${item?.media}`}
+                    alt="image"
+                    className="xl:w-[19vw] w-full sm:w-[40vw] md:w-[60vw] lg:w-[19vw] h-auto aspect-[4/5] object-cover shadow-lg "
                   />
-                </button>
-                <div className="mt-3">
-                  <h1 className="font-bold text-lg text-gray-800 line-clamp-2">
-                    <span>{item?.artworkName}</span>
-                  </h1>
-                  <div className="flex flex-col items-start mt-2">
+                  <button className="absolute top-2 right-3 sm:right-4 border border-[#FFD9DE] rounded-full p-2 bg-white cursor-pointer">
+                    <img
+                      onClick={() => handleLike(item?._id)}
+                      src={
+                        likedItems?.includes(item?._id) ? wishlist_like : like
+                      }
+                      alt="like"
+                      className={`w-5 h-5 ${
+                        likePending ? "pointer-events-none opacity-15" : ""
+                      }`}
+                    />
+                  </button>
+                  <div className="mt-3">
+                    <h1 className="font-bold text-lg text-gray-800 line-clamp-2">
+                      {item?.artworkName}
+                    </h1>
                     <p className="text-sm text-gray-500 mt-1 font-medium">
                       {item?.owner?.artistName}
                     </p>
-                  </div>
-                  <div>
                     <p className="text-sm flex items-center justify-between text-gray-500">
                       <span>{item?.discipline?.artworkDiscipline}</span>
-                      <span> {item?.additionalInfo?.artworkTechnic}</span>
+                      <span>{item?.additionalInfo?.artworkTechnic}</span>
                     </p>
+                    <p className="text-sm text-gray-500">{item?.size}</p>
+                    <p className="text-sm text-gray-500">{`${item?.additionalInfo?.length} x ${item?.additionalInfo?.width} cm`}</p>
                   </div>
-
-                  <p className="text-sm text-gray-500">{item?.size}</p>
-                  <p className="text-sm text-gray-500">
-                    {`${item?.additionalInfo?.length} x ${item?.additionalInfo?.width} cm`}
-                  </p>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         ) : (
           <Slider {...settings}>
