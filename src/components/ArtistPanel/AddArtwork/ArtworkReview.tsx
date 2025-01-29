@@ -13,6 +13,8 @@ import { useGetArtWorkById } from "./http/useGetArtworkById";
 import ProductInfo from "./ProductInfo";
 import { useTranslation } from "react-i18next";
 import { IoIosArrowBack } from "react-icons/io";
+import { FaEye } from "react-icons/fa";
+import { FaShareFromSquare } from "react-icons/fa6";
 
 const DiscoverMore = () => {
   const sliderRef = useRef<Slider>(null);
@@ -124,12 +126,15 @@ const DiscoverMore = () => {
           <span className="mx-1">
             <IoIosArrowBack />
           </span>
-          {data?.data.artworkName} <span className="text-[12px] ml-2 text-[#a5a5a5]">({data?.data.artworkId})</span>
+          {data?.data.artworkName}{" "}
+          <span className="text-[12px] ml-2 text-[#a5a5a5]">
+            ({data?.data.artworkId})
+          </span>
         </div>
 
-        <div className="flex lg:flex-row flex-col mt-5">
+        <div className="flex lg:flex-row gap-3 flex-col mt-5">
           <div className="flex lg:flex-row flex-col gap-4 lg:w-[50%] w-full items-center mb-2">
-            <div className="flex lg:justify-start justify-center flex-row lg:flex-col lg:max-h-[60vh] lg:h-[60vh] lg:overflow-y-auto gap-2 lg:ml-4">
+            <div className="flex lg:justify-start justify-center flex-row lg:flex-col lg:max-h-[23rem] lg:h-[23rem] lg:overflow-y-auto gap-2 lg:ml-4">
               {images?.map((thumb, index) => {
                 const isVideo = thumb.src && thumb.src.endsWith(".mp4");
                 if (thumb.src) {
@@ -164,14 +169,14 @@ const DiscoverMore = () => {
                           {slide.src.endsWith(".mp4") ? (
                             <video
                               src={`${url2}/${slide.src}`}
-                              className="mx-auto w-full object-cover h-[20rem] md:h-[60vh] lg:h-[60vh]"
+                              className="mx-auto w-full object-cover h-[20rem] md:h-[60vh] lg:h-[23rem]"
                               controls
                             />
                           ) : (
                             <img
                               src={`${imageUrl}/users/${slide.src}`}
                               alt={`Slide ${index + 1}`}
-                              className="mx-auto w-full object-cover h-[20rem] md:h-[60vh] lg:h-[60vh]"
+                              className="mx-auto w-full object-cover h-[20rem] md:h-[60vh] lg:h-[23rem]"
                             />
                           )}
                         </div>
@@ -183,7 +188,7 @@ const DiscoverMore = () => {
                 (images[0].src.endsWith(".mp4") ? (
                   <video
                     src={`${url2}/${images[0].src}`}
-                    className="md:w-[40vw] w-full h-[50vh] md:h-[70vh] object-cover overflow-y-hidden"
+                    className="md:w-[40vw] md:h-[23rem] object-cover overflow-y-hidden"
                     controls
                     autoPlay={true}
                   />
@@ -191,7 +196,7 @@ const DiscoverMore = () => {
                   <img
                     src={`${imageUrl}/users/${images[0]?.src}`}
                     alt="Single Image"
-                    className="w-[40vw] h-[50vh] md:h-[70vh] object-cover overflow-y-hidden"
+                    className="w-[40vw] md:h-[23rem] object-cover overflow-y-hidden"
                   />
                 ))
               )}
@@ -203,19 +208,19 @@ const DiscoverMore = () => {
           </div>
         </div>
 
-        <div className="flex justify-center items-center md:flex-row flex-col md:w-[50%] w-full md:gap-10 gap-2 mb-10">
-          <div className="flex gap-1">
-            <img src={eye} alt="eye" className="w-[19px] h-[12px] mt-1" />
+        <div className="flex justify-center items-center mt-2 lg:mt-0 md:w-[50%] w-full gap-5">
+          <div className="flex items-center cursor-pointer gap-1">
+            <FaEye />
             <P variant={{ size: "base", theme: "dark", weight: "normal" }}>
               {t("View in Room")}
             </P>
           </div>
-          <Button className="flex gap-1 !p-0">
-            <img src={share} alt="share" className="w-[19px] h-[16px] mt-1" />
+          <div className="flex items-center cursor-pointer gap-1">
+            <FaShareFromSquare />
             <P variant={{ size: "base", theme: "dark", weight: "normal" }}>
               {t("Share")}
             </P>
-          </Button>
+          </div>
         </div>
 
         <ProductInfo data={data} />

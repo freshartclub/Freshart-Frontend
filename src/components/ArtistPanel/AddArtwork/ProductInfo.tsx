@@ -1,18 +1,18 @@
 import getSymbolFromCurrency from "currency-symbol-map";
+import { useTranslation } from "react-i18next";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
-import "react-tabs/style/react-tabs.css";
+// import "react-tabs/style/react-tabs.css";
 import Header from "../../ui/Header";
-import Loader from "../../ui/Loader";
 import P from "../../ui/P";
 import delivery from "./assets/delivery.png";
 import print from "./assets/print.png";
 import return1 from "./assets/return.png";
 import secure from "./assets/secure.png";
-import product from "./assets/single-product.jpg.png";
-import { useTranslation } from "react-i18next";
+import { useState } from "react";
 
 const ProductInfo = ({ data }) => {
   const { t } = useTranslation();
+  const [activeTab, setActiveTab] = useState(0);
   const currency = data?.data?.pricing?.currency;
 
   const mapData = (val: string[]) => {
@@ -228,22 +228,34 @@ const ProductInfo = ({ data }) => {
     },
   ];
 
-  if (!product) return <Loader />;
-
   return (
-    <div className="mt-20">
+    <div className="mt-6">
       <Tabs>
-        <TabList>
-          <Tab>{t("Description")}</Tab>
-          <Tab>{t("Additional Information")}</Tab>
-          <Tab>{t("Commercialization")}</Tab>
-          <Tab>{t("Pricing")}</Tab>
-          <Tab>{t("Inventory & Shipping")}</Tab>
-          <Tab>{t("More Details")}</Tab>
+        <TabList className="bg-gray-200 flex scrollbar gap-4 p-2 border rounded justify-between max-w-full w-full overflow-x-auto font-semibold">
+          {[
+            "Description",
+            "Additional Information",
+            "Commercialization",
+            "Pricing",
+            "Inventory & Shipping",
+            "More Details",
+          ].map((tab, index) => (
+            <Tab
+              key={index}
+              onClick={() => setActiveTab(index)}
+              className={`flex-shrink-0 px-4 py-2 rounded cursor-pointer transition ${
+                activeTab === index
+                  ? "bg-black text-white"
+                  : "bg-gray-200 text-gray-700"
+              }`}
+            >
+              {t(tab)}
+            </Tab>
+          ))}
         </TabList>
 
         <TabPanel>
-          <div className="flex flex-col lg:flex-row gap-8 justify-between my-10">
+          <div className="flex border bg-white rounded flex-col lg:flex-row gap-8 justify-between mb-10 p-2 mt-3">
             <div className="lg:w-[65%] w-full">
               <Header
                 variant={{ size: "md", theme: "dark", weight: "semiBold" }}
@@ -331,7 +343,7 @@ const ProductInfo = ({ data }) => {
         </TabPanel>
 
         <TabPanel>
-          <div className="flex flex-col lg:flex-row gap-10 justify-between w-full my-10">
+          <div className="flex border bg-white rounded flex-col lg:flex-row gap-10 justify-between w-full p-2 mb-2 mt-3">
             <div className="w-full">
               {overview_date.map((item, index) => (
                 <div key={index} className="flex ">
@@ -390,14 +402,14 @@ const ProductInfo = ({ data }) => {
             </div>
           </div>
 
-          <div className="flex flex-col my-5">
+          <div className="flex border bg-white rounded p-2 flex-col mb-2">
             <h1 className="font-semibold">{t("Hanging Description")}:</h1>
             <span className="text-[#999999] text-[14px] mt-2">
               {data?.data?.additionalInfo?.hangingDescription || "N/A"}
             </span>
           </div>
 
-          <div className="flex flex-col my-5">
+          <div className="flex border bg-white rounded p-2 flex-col mb-5">
             <h1 className="font-semibold">{t("Framed Description")}:</h1>
             <span className="text-[#999999] text-[14px] mt-2">
               {data?.data?.additionalInfo?.framedDescription || "N/A"}
@@ -406,8 +418,8 @@ const ProductInfo = ({ data }) => {
         </TabPanel>
 
         <TabPanel>
-          <div className="flex flex-col lg:flex-row gap-10 justify-between w-full mb-10">
-            <div className="w-full mt-8">
+          <div className="flex border bg-white rounded p-2 flex-col lg:flex-row gap-10 justify-between w-full mt-3 mb-5">
+            <div className="w-full">
               {data?.data?.commercialization?.activeTab === "purchase"
                 ? purchaseData.map((item, index) => (
                     <div key={index} className="flex items-center">
@@ -460,8 +472,8 @@ const ProductInfo = ({ data }) => {
         </TabPanel>
 
         <TabPanel>
-          <div className="flex gap-10 justify-between w-full mb-10">
-            <div className="w-full mt-8">
+          <div className="flex border bg-white rounded p-2 gap-10 justify-between w-full mt-3 mb-5">
+            <div className="w-full">
               {Pricing_data.map((item, index) => (
                 <div key={index} className="flex items-center gap-2 ">
                   <P
@@ -486,8 +498,8 @@ const ProductInfo = ({ data }) => {
         </TabPanel>
 
         <TabPanel>
-          <div className="flex flex-wrap gap-10 justify-between w-full mb-10">
-            <div className="w-full mt-8">
+          <div className="flex border bg-white rounded p-2 mt-3 flex-wrap gap-10 justify-between w-full mb-5">
+            <div className="w-full">
               {shipping_data.map((item, index) => (
                 <div key={index} className="flex items-center  gap-3">
                   <P
@@ -512,8 +524,8 @@ const ProductInfo = ({ data }) => {
         </TabPanel>
 
         <TabPanel>
-          <div className="flex flex-wrap gap-10 justify-between w-full mb-10">
-            <div className="mt-8 w-full">
+          <div className="flex border bg-white rounded p-2 mt-3 flex-wrap gap-10 justify-between w-full mb-5">
+            <div className="w-full">
               {moreInfo_data.map((item, index) => (
                 <div key={index} className="flex items-start ">
                   <P

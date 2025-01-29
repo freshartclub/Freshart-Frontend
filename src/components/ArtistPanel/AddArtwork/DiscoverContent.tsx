@@ -46,74 +46,56 @@ const DiscoverContent = ({ data }) => {
   };
 
   return (
-    <div>
-      <section className="flex md:items-center flex-col md:flex-row justify-between border-b pb-2 gap-1">
+    <>
+      <section className="border-b pb-2 flex md:flex-row flex-col gap-2 justify-between w-full md:items-center">
         <div className="w-full">
-          <div className="flex md:flex-row flex-col gap-2 justify-between md:items-center">
-            <div className="w-full">
-              <Header
-                variant={{ size: "xl", theme: "dark", weight: "bold" }}
-                className="items-center capitalize"
-              >
-                {data?.artworkName}
-              </Header>
-              <div className="flex items-center gap-1">
-                <Header
-                  variant={{ size: "base", theme: "dark", weight: "medium" }}
-                >
-                  {t("Author")} :
-                </Header>
-                <P
-                  className="text-[#999999]"
-                  variant={{ size: "small", weight: "medium" }}
-                >
-                  {name(data?.owner)}
-                </P>
-              </div>
-            </div>
-
-            <div className="flex w-full items-center gap-2">
-              {data?.status === "draft" ? (
-                <Button
-                  onClick={() => handlePublishedArtwork(data?._id)}
-                  variant={{
-                    rounded: "full",
-                    theme: "dark",
-                  }}
-                  className="flex justify-center border border-[#263238] w-full font-medium text-sm"
-                >
-                  {isPending ? t("Publishing...") : t("Publish")}
-                </Button>
-              ) : null}
-
-              {data?.status === "draft" ? (
-                <Button
-                  onClick={() => editArtwork(data?._id)}
-                  variant={{
-                    rounded: "full",
-                    theme: "light",
-                  }}
-                  className="text-sm border border-[#263238] w-full font-medium"
-                >
-                  {t("Continue Edit")}
-                </Button>
-              ) : null}
-            </div>
+          <Header
+            variant={{ size: "xl", theme: "dark", weight: "bold" }}
+            className="items-center capitalize w-full"
+          >
+            {data?.artworkName}
+          </Header>
+          <div className="flex items-center gap-1">
+            <Header variant={{ size: "base", theme: "dark", weight: "medium" }}>
+              {t("Author")} :
+            </Header>
+            <P
+              className="text-[#999999]"
+              variant={{ size: "small", weight: "medium" }}
+            >
+              {name(data?.owner)}
+            </P>
           </div>
         </div>
-      </section>
 
-      <div className="flex gap-2 lg:mt-2 mt-1">
-        <P variant={{ size: "small", theme: "dark", weight: "medium" }}>
-          {t("Artwork ID")} :
-        </P>
-        <P
-          className="text-[#999999]"
-          variant={{ size: "small", theme: "dark", weight: "medium" }}
-        >
-          {data?.artworkId}
-        </P>
-      </div>
+        <div className="flex w-full items-center gap-2">
+          {data?.status === "draft" ? (
+            <Button
+              onClick={() => handlePublishedArtwork(data?._id)}
+              variant={{
+                rounded: "full",
+                theme: "dark",
+              }}
+              className="flex justify-center border border-[#263238] w-full font-medium text-sm"
+            >
+              {isPending ? t("Publishing...") : t("Publish")}
+            </Button>
+          ) : null}
+
+          {data?.status === "draft" ? (
+            <Button
+              onClick={() => editArtwork(data?._id)}
+              variant={{
+                rounded: "full",
+                theme: "light",
+              }}
+              className="text-sm border border-[#263238] w-full font-medium"
+            >
+              {t("Continue Edit")}
+            </Button>
+          ) : null}
+        </div>
+      </section>
 
       <div className="flex gap-2 lg:mt-2 mt-1">
         <P variant={{ size: "small", theme: "dark", weight: "medium" }}>
@@ -127,7 +109,7 @@ const DiscoverContent = ({ data }) => {
         </P>
       </div>
 
-      <div className="flex gap-2 lg:mt-2 mt-1 ">
+      <div className="flex gap-2 mt-1 ">
         <P variant={{ size: "small", theme: "dark", weight: "medium" }}>
           {t("Artwork Series")} :
         </P>
@@ -141,7 +123,7 @@ const DiscoverContent = ({ data }) => {
 
       <P
         variant={{ size: "small", theme: "dark", weight: "medium" }}
-        className="lg:my-4 my-2 text-[#999999]"
+        className="my-2 text-[#999999]"
       >
         {description}
       </P>
@@ -213,7 +195,7 @@ const DiscoverContent = ({ data }) => {
             {data?.inventoryShipping?.pCode || "N/A"}
           </P>
         </div>
-        <div className="flex gap-2 my-2">
+        <div className="flex gap-2 my-2 mb-0">
           <P
             variant={{ size: "small", theme: "dark", weight: "medium" }}
             className="uppercase"
@@ -228,7 +210,7 @@ const DiscoverContent = ({ data }) => {
           </P>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
