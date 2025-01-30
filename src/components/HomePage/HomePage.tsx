@@ -19,12 +19,10 @@ const HomePage = () => {
 
   if (profile === "artist") return navigate("/artist-panel");
 
-  console.log(data);
-
   if (isLoading) return <Loader />;
 
   return (
-    <div className="overflow-x-hidden ">
+    <div className="overflow-x-hidden">
       <BannerSection />
       <SecondSection />
       <ArtCard

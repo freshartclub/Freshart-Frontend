@@ -6,11 +6,13 @@ import dashboard from "./assets/dashboard.png";
 import artwork from "./assets/HANGER.png";
 import mail from "./assets/mail.png";
 import order from "./assets/SHOPPING.png";
+import logo from "../../assets/loginlogo.png";
 import invoice from "./assets/sign.png";
 import toggle from "./assets/toggle_arrow.png";
 import arrow from "./assets/turn-right.png";
 import user from "./assets/user.png";
 import { useTranslation } from "react-i18next";
+import { GiHamburgerMenu } from "react-icons/gi";
 
 const sections = [
   {
@@ -86,6 +88,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen, isOpen }) => {
   const [smallWidth, setSmallWidth] = useState(false);
   const { t } = useTranslation();
 
+  const sideBarRef = useRef(null);
+
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 640) {
@@ -110,11 +114,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen, isOpen }) => {
     setIsOpen(!isOpen);
   };
 
-  // useClickOutside(closePopup, () => {
-  //   if (window.innerWidth < 640) {
-  //     setSidebarOpen(false);
-  //   }
-  // });
+  useClickOutside(sideBarRef, () => {
+    setSidebarOpen(false);
+  });
 
   const handleSubmenuToggle = (key: string) => {
     setOpenSubmenu(openSubmenu === key ? null : key);
@@ -122,11 +124,12 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen, isOpen }) => {
 
   return (
     <div
+      ref={sideBarRef}
       className={`flex transition-all h-[95vh] max-h-[95vh] scrollbar overflow-y-auto overflow-x-hidden duration-300 fixed top-[5rem] left-0 z-50 ${
         smallWidth
           ? sidebarOpen
-            ? "fixed left-[0] w-64"
-            : "left-[-20rem]"
+            ? "fixed left-[0] w-64 !max-h-[100vh] !h-[100vh] !top-0 z-[100]"
+            : "left-[-20rem] !max-h-[100vh] !h-[100vh] !top-0 z-[100]"
           : isOpen
           ? "w-64"
           : "w-14"
@@ -141,6 +144,20 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen, isOpen }) => {
         >
           <img src={toggle} alt="Toggle Arrow" />
         </button>
+
+        <div className="w-full sm:hidden py-6 pb-[1.6rem] shadow-md px-5 flex border-b items-center gap-5 relative justify-between">
+          <GiHamburgerMenu
+            className="cursor-pointer"
+            size="2em"
+            onClick={() => setSidebarOpen((prev) => !prev)}
+          />
+          <img
+            // onClick={handleRedirect}
+            className="w-[8rem]  lg:block left-[20%] top-[50%] lg:w-full object-cover"
+            src={logo}
+            alt="Logo"
+          />
+        </div>
 
         <ul className="flex flex-col gap-2">
           {sections.map((section) => (

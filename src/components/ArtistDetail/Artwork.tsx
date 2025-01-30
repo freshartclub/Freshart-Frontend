@@ -32,7 +32,7 @@ const Artwork = () => {
     refetch();
   }, [selectedArtwork]);
 
-  const handleArtworkSelect = (name:string) => {
+  const handleArtworkSelect = (name: string) => {
     setSelectedArtwork(name);
   };
 
@@ -59,12 +59,12 @@ const Artwork = () => {
         {t("Artworks")}
       </Header>
 
-      <div className="flex flex-col mb-4 gap-3">
+      <div className="flex flex-col mb-3 gap-3">
         <div className="flex gap-2">
           <span
             onClick={() => handleArtworkSelect("Series")}
-            className={`border px-2 py-2 font-medium rounded cursor-pointer text-md ${
-              selectedArtwork === "Series" && "bg-black text-white"
+            className={`p-2 font-medium shadow rounded cursor-pointer text-md ${
+              selectedArtwork === "Series" ? "bg-black text-white" : "bg-white"
             }`}
           >
             {t("Series")}
@@ -72,8 +72,10 @@ const Artwork = () => {
 
           <span
             onClick={() => handleArtworkSelect("Discipline")}
-            className={`border px-2 py-2 font-medium rounded cursor-pointer text-md ${
-              selectedArtwork === "Discipline" && "bg-black text-white"
+            className={`p-2 font-medium rounded shadow cursor-pointer text-md ${
+              selectedArtwork === "Discipline"
+                ? "bg-black text-white"
+                : "bg-white"
             }`}
           >
             {t("Discipline")}
@@ -81,18 +83,18 @@ const Artwork = () => {
           {isArtProvider === "Yes" ? (
             <span
               onClick={() => handleArtistName("artprovider")}
-              className={`border ${
+              className={`${
                 selectedArtwork !== "Series" && selectedArtwork !== "Discipline"
                   ? "bg-black text-white"
-                  : ""
-              }px-2 py-2 bg-white font-medium rounded cursor-pointer text-md`}
+                  : "bg-white"
+              } p-2 shadow font-medium rounded cursor-pointer text-md`}
             >
               {t("Artist Name")}
             </span>
           ) : null}
         </div>
 
-        <div className="flex bg-white p-2 rounded gap-2 w-full max-w-full scrollbar overflow-x-auto pt-2">
+        <div className="flex border bg-white px-2 py-1 rounded-full gap-2 w-full max-w-full scrollbar overflow-x-auto">
           <div className="flex gap-2 items-center">
             <div className="w-[.8em] h-[.8em] rounded-full bg-[#00DE00] flex items-center"></div>
             <p className="text-[14px] text-black">{t("Published")}</p>
@@ -118,9 +120,7 @@ const Artwork = () => {
 
           <div className="flex gap-2 items-center">
             <div className="w-[.8em] h-[.8em] rounded-full   bg-[#EE1D52]   flex items-center"></div>
-            <p className="text-[14px] w-max text-black">
-              {t("Not Available")}
-            </p>
+            <p className="text-[14px] w-max text-black">{t("Not Available")}</p>
           </div>
           <div className="flex gap-2 items-center">
             <div className="w-[.8em] h-[.8em] rounded-full bg-[#696868] flex items-center"></div>
@@ -129,9 +129,7 @@ const Artwork = () => {
 
           <div className="flex gap-2 items-center">
             <div className="w-[.8em] h-[.8em] rounded-full bg-[#a74343] flex items-center"></div>
-            <p className="text-[14px] w-max text-black">
-              {t("Coming Soon")}
-            </p>
+            <p className="text-[14px] w-max text-black">{t("Coming Soon")}</p>
           </div>
         </div>
       </div>
@@ -141,16 +139,16 @@ const Artwork = () => {
         <div>
           {data?.data && data?.data.length > 0 ? (
             data?.data.map((item, i) => (
-              <div key={i} className="mb-5">
-                <h1 className="font-semibold mb-3 mt-5 text-xl capitalize text-[#333333] xl:w-[80%] lg:w-[70%] w-[90%] line-clamp-2">
-                  {item?.groupName || t("No Name")}
+              <div key={i} className="mb-5 bg-white shadow rounded-lg border">
+                <h1 className="font-semibold bg-gray-200 mb-3 p-2 text-lg capitalize border-b border-gray-300 pb-1 text-[#333333]">
+                  {t("Group")} - {item?.groupName || t("No Name")}
                 </h1>
 
-                <div className="flex flex-wrap gap-6">
+                <div className="flex px-2 pb-2 w-full max-w-full overflow-x-auto scrollbar gap-6">
                   {item?.artworks?.map((art, idx) => (
                     <div
                       key={idx}
-                      className={`bg-white relative rounded-lg border-4 pb-5 overflow-hidden flex  flex-col items-center ${
+                      className={`relative rounded-lg border-2 shadow-md pb-5 overflow-hidden flex  flex-col items-center ${
                         art?.status === "published"
                           ? "border-[#00DE00]"
                           : art?.status === "pending"
@@ -165,8 +163,8 @@ const Artwork = () => {
                       }`}
                       style={{
                         flex: "1 1 calc(33.333% - 1rem)",
-                        minWidth: "250px",
-                        maxWidth: "calc(33.333% - 1rem)",
+                        minWidth: "270px",
+                        maxWidth: "270px",
                       }}
                     >
                       <div className="w-full">

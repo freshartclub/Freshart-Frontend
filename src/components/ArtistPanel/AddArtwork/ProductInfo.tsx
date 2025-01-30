@@ -229,9 +229,9 @@ const ProductInfo = ({ data }) => {
   ];
 
   return (
-    <div className="mt-6">
+    <div className="mt-6 min-[1450px]:w-[75%] mx-auto">
       <Tabs>
-        <TabList className="bg-gray-200 flex scrollbar gap-4 p-2 border rounded justify-between max-w-full w-full overflow-x-auto font-semibold">
+        <TabList className="bg-gray-200 flex scrollbar gap-4 p-2 border border-gray-300 rounded justify-between max-w-full w-full overflow-x-auto font-semibold">
           {[
             "Description",
             "Additional Information",
@@ -243,7 +243,7 @@ const ProductInfo = ({ data }) => {
             <Tab
               key={index}
               onClick={() => setActiveTab(index)}
-              className={`flex-shrink-0 px-4 py-2 rounded cursor-pointer transition ${
+              className={`flex-shrink-0 border-none px-4 py-2 rounded cursor-pointer transition ${
                 activeTab === index
                   ? "bg-black text-white"
                   : "bg-gray-200 text-gray-700"

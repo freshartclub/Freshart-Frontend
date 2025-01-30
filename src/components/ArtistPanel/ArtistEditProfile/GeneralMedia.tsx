@@ -413,7 +413,7 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
               </div>
               {existingMainVideo ? null : (
                 <p className="text-center  text-sm md:text-base">
-                  {t("Drag and drop Video here, or click to add Video")}
+                  {t("Drag and drop video here, or click add video")}
                 </p>
               )}
               <span
@@ -489,7 +489,7 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
                     className="w-28 h-28 bg-gray-200 rounded-md mb-4"
                   />
                   <p className="text-center  text-sm md:text-base">
-                    {t("Drag and drop Video here, or click to add Video")}
+                    {t("Drag and drop video here, or click add video")}
                   </p>
                 </div>
               ) : null}

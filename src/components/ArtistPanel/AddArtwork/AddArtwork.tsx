@@ -782,13 +782,13 @@ const AddArtwork = () => {
               {query ? (
                 <h1
                   onClick={() => handleGenerateQRCode()}
-                  className="cursor-pointer gap-2 bg-black text-white text-[12px] md:text-[16px] px-2 py-2 lg:px-4 lg:py-3 rounded-lg hover:bg-gray-800"
+                  className="cursor-pointer gap-2 bg-black text-white text-[12px] md:text-[16px] px-2 py-2 rounded hover:bg-gray-800"
                 >
                   {t("Generate QR Code")}
                 </h1>
               ) : null}
 
-              <h1 className="cursor-pointer gap-2 bg-black text-white text-[12px] md:text-[16px] px-2 py-2 lg:px-4 lg:py-3 rounded-lg hover:bg-gray-800">
+              <h1 className="cursor-pointer gap-2 bg-black text-white text-[12px] md:text-[16px] px-2 py-2 rounded hover:bg-gray-800">
                 {t("Generate Certificate Of Authenticity")}
               </h1>
             </div>
@@ -796,7 +796,7 @@ const AddArtwork = () => {
 
           <div className="grid xl:grid-cols-4 gap-4 mx-2">
             <div className="xl:col-span-3 rounded-md">
-              <div className="bg-white p-6 rounded-md shadow-md border">
+              <div className="bg-white p-4 rounded-md shadow-md border">
                 <Header
                   variant={{
                     size: "base",
@@ -971,14 +971,14 @@ const AddArtwork = () => {
                 </>
               </div>
 
-              <div className=" bg-white p-4 px-6 rounded-md mt-6 border shadow-md">
+              <div className=" bg-white p-4 rounded-md mt-6 border shadow-md">
                 <Header
                   variant={{
                     size: "md",
                     theme: "dark",
                     weight: "semiBold",
                   }}
-                  className="text-[18px] text-black mt-3 font-semibold mb-4"
+                  className="text-[18px] text-black font-semibold mb-4"
                 >
                   {t("Media")}
                 </Header>
@@ -1343,23 +1343,26 @@ const AddArtwork = () => {
                             </span>
                           </div>
                         ) : (
-                          <img
-                            src={video_icon}
-                            alt="icon"
-                            className="w-28 max-h-28 min-h-28 object-cover mb-4"
-                          />
+                          <>
+                            <img
+                              src={video_icon}
+                              alt="icon"
+                              className="w-28 max-h-28 min-h-28 object-cover mb-4"
+                            />
+                            <P
+                              variant={{
+                                size: "small",
+                                theme: "dark",
+                                weight: "normal",
+                              }}
+                              className="text-center"
+                            >
+                              {t(
+                                "Drag and drop video here, or click add video"
+                              )}
+                            </P>
+                          </>
                         )}
-
-                        <P
-                          variant={{
-                            size: "small",
-                            theme: "dark",
-                            weight: "normal",
-                          }}
-                          className="text-center"
-                        >
-                          {t("Drag and drop image here, or click add image")}
-                        </P>
                         <span
                           onClick={() =>
                             document.querySelector("#main-video-input").click()
@@ -1410,7 +1413,8 @@ const AddArtwork = () => {
                             </div>
                           ))}
 
-                        {exVidoes && exVidoes.length > 0 ? (
+                        {exVidoes &&
+                          exVidoes.length > 0 &&
                           exVidoes.map((video, i = otherVideo.length + 1) => (
                             <div key={i} className="relative">
                               <video
@@ -1427,25 +1431,29 @@ const AddArtwork = () => {
                                 &times;
                               </span>
                             </div>
-                          ))
-                        ) : (
-                          <img
-                            src={video_icon}
-                            alt="icon"
-                            className="w-28 max-h-28 min-h-28 object-cover mb-4"
-                          />
-                        )}
+                          ))}
 
-                        <P
-                          variant={{
-                            size: "small",
-                            theme: "dark",
-                            weight: "normal",
-                          }}
-                          className="text-center"
-                        >
-                          {t("Drag and drop image here, or click add image")}
-                        </P>
+                        {!exVidoes && otherVideo?.length === 0 && (
+                          <>
+                            <img
+                              src={video_icon}
+                              alt="icon"
+                              className="w-28 max-h-28 min-h-28 object-cover mb-4"
+                            />
+                            <P
+                              variant={{
+                                size: "small",
+                                theme: "dark",
+                                weight: "normal",
+                              }}
+                              className="text-center"
+                            >
+                              {t(
+                                "Drag and drop video here, or click add video"
+                              )}
+                            </P>
+                          </>
+                        )}
                         <span
                           onClick={() =>
                             document.querySelector("#other-video-input").click()
@@ -1755,9 +1763,9 @@ const AddArtwork = () => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-4 mb-4 gap-3">
+                <div className="flex justify-between flex-col md:flex-row mb-3 gap-3">
                   {artwork_orientation?.map((field) => (
-                    <span key={field.name}>
+                    <span key={field.name} className="w-full">
                       <label className="p-1 text-[14px] text-sm text-[#203F58] font-semibold">
                         {t(field.label)} *
                       </label>
@@ -2317,7 +2325,7 @@ const AddArtwork = () => {
                 <div className="grid md:grid-cols-2 gap-3 items-center">
                   {shipping_inventry.map((shipping) => (
                     <span key={shipping.name}>
-                      <label className="p-1 text-[14px] text-sm font-semibold">
+                      <label className="p-1 text-[#203F58] text-[14px] text-sm font-semibold">
                         {t(shipping.label)}
                       </label>
                       <input
@@ -2333,7 +2341,7 @@ const AddArtwork = () => {
                   ))}
 
                   <span>
-                    <label className="p-1 text-[14px] text-sm font-semibold">
+                    <label className="p-1 text-[#203F58] text-[14px] text-sm font-semibold">
                       {t("Location")}
                     </label>
                     <input
@@ -2410,9 +2418,9 @@ const AddArtwork = () => {
                   </span>
                 </div>
 
-                <div className="flex items-center gap-2 justify-between">
+                <div className="flex items-center flex-col md:flex-row md:gap-2 justify-between">
                   {package_dimension.map((field) => (
-                    <span key={field.name}>
+                    <span key={field.name} className="w-full">
                       <label className="p-1 text-[14px] text-sm text-[#203F58] font-semibold">
                         {t(field.label)} *
                       </label>
@@ -2466,7 +2474,7 @@ const AddArtwork = () => {
               <>
                 <span
                   onClick={() => handleNavigate()}
-                  className="border bg-red-500 text-white hover:border-red-600 hover:bg-white hover:text-red-500 rounded px-4 py-3 text-sm font-semibold cursor-pointer"
+                  className="border bg-red-500 sm:w-fit w-full text-center text-white hover:border-red-600 hover:bg-white hover:text-red-500 rounded px-4 py-3 text-sm font-semibold cursor-pointer"
                 >
                   ✕ {t("Cancel")}
                 </span>
@@ -2480,7 +2488,7 @@ const AddArtwork = () => {
                       fontWeight: "600",
                       theme: "dark",
                     }}
-                    className={`text-white px-4 py-3 hover:bg-white hover:border hover:border-[#102031] hover:text-[#102031]  rounded ${
+                    className={`text-white sm:w-fit w-full text-center px-4 py-3 hover:bg-white hover:border hover:border-[#102031] hover:text-[#102031]  rounded ${
                       modifyIsPending ? "opacity-70 pointer-events-none" : ""
                     }`}
                   >
@@ -2495,7 +2503,7 @@ const AddArtwork = () => {
                       fontWeight: "600",
                       theme: "dark",
                     }}
-                    className={`text-white hover:bg-white hover:border hover:border-[#102031] hover:text-[#102031] px-4 py-3 rounded ${
+                    className={`text-white sm:w-fit w-full text-center hover:bg-white hover:border hover:border-[#102031] hover:text-[#102031] px-4 py-3 rounded ${
                       isPending ? "opacity-70 pointer-events-none" : ""
                     }`}
                   >

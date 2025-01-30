@@ -1,28 +1,21 @@
-const getTicketDetail = async () => {
-  try {
-    const response = await axiosInstance.get(
-      `${ARTTIST_ENDPOINTS.GetArtistTicketsDetails}/${id}`
-    );
-    setTicket(response.data);
-  } catch (error) {
-    console.error("Error fetching ticket:", error);
-  }
-};
-
 import { useQuery } from "@tanstack/react-query";
-
 import { ARTTIST_ENDPOINTS } from "../../../../http/apiEndPoints/Artist";
 import axiosInstance from "../../../utils/axios";
+import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 
-export const useGetTicketDetails = (id) => {
-  let url = `${ARTTIST_ENDPOINTS.GetArtistTicketsDetails}`;
+async function fetchData(id: string, t) {
+  if (!id) return toast.error(t("Ticket not found"));
 
-  async function fetchData(id) {
-    const { data } = await axiosInstance.get(`${url}/${id}`);
-    return data;
-  }
+  const { data } = await axiosInstance.get(
+    `${ARTTIST_ENDPOINTS.GetArtistTicketsDetails}/${id}`
+  );
+  return data;
+}
+export const useGetTicketDetails = (id: string) => {
+  const { t } = useTranslation();
   return useQuery({
-    queryKey: [url],
-    queryFn: () => fetchData(id),
+    queryKey: [ARTTIST_ENDPOINTS.GetArtistTicketsDetails, id],
+    queryFn: () => fetchData(id, t),
   });
 };

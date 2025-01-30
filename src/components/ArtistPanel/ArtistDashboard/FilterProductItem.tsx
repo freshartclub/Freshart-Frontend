@@ -188,12 +188,12 @@ const FilterProductItem = () => {
             </div>
           ))}
         </div>
-        <div className="flex gap-3 mt-2 md:mt-0">
-          <button className="py-1 px-3 rounded-lg border-2 border-gray-50 bg-white   flex items-center gap-2 transition-all duration-200 hover:scale-95">
+        <div className="flex gap-3 max-[450px]:w-full">
+          <button className="max-[450px]:w-full py-1 px-3 rounded-lg border bg-white flex items-center gap-2 transition-all duration-200 hover:scale-95">
             <IoOptionsOutline /> {t("Filters")}
           </button>
           <NavLink
-            className="py-1 px-2 rounded-md border-gray-100  bg-[#FF536B] text-white flex gap-1 items-center h-fit"
+            className="max-[450px]:w-full justify-center py-1 px-2 rounded-md border-gray-100  bg-[#FF536B] text-white flex gap-1 items-center h-fit"
             to={"/artist-panel/artwork/add"}
           >
             <GoPlus /> {t("Upload Artwork")}

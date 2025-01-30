@@ -28,14 +28,6 @@ export const ARTTIST_ENDPOINTS = {
   LikeUnlikeArtwork: `${ARTIST_BASE_URl}/like-unlike-artwork`,
   GetLikedArtWork: `${ARTIST_BASE_URl}/get-liked-items`,
 
-  // AddSeries: `${ARTIST_BASE_URl}/add-series`,
-  // DeleteSeries: `${ARTIST_BASE_URl}/delete-series`,
-  // UpdateSeries: `${ARTIST_BASE_URl}/update-series`,
-  // GetArtistFeedback: `${ARTIST_BASE_URl}/get-artist-feedback`,
-
-  // GetArtistArtwork: `${ARTIST_BASE_URl}/get-artist-artwork `,
-  // DeleteArtwork: `${ARTIST_BASE_URl}/delete-artist-artwork `,
-  // UpdateArtwork: `${ARTIST_BASE_URl}/update-artist-artwork `,
   GetArtistTickets: `${ARTIST_BASE_URl}/get-user-tickets`,
   GetArtistTicketsDetails: `${ARTIST_BASE_URl}/ticket`,
   GetAllIncidents: `${ARTIST_BASE_URl}/get-all-incidents`,

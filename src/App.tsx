@@ -27,7 +27,7 @@ import KbDatabase from "./components/pages/KbDatabase.tsx";
 import LoginPage from "./components/pages/Login";
 import NotFoundPage from "./components/pages/NotFoundPage";
 import i18n from "./components/utils/i18n.ts";
-import { useAppDispatch, useAppSelector } from "./store/typedReduxHooks";
+import { useAppSelector } from "./store/typedReduxHooks";
 const SignUp = lazy(() => import("./components/pages/SignUp"));
 const ForgetPassword = lazy(() => import("./components/pages/ForgetPassword"));
 const ChangePassword = lazy(() => import("./components/pages/ChangePassword"));
@@ -207,7 +207,7 @@ const App: React.FC = () => {
 
             {/* Protected Routes */}
             <Route
-              path="/home/"
+              path="/home"
               element={
                 <AuthGuard>
                   <HomePage />

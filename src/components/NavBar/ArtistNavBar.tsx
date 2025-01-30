@@ -11,7 +11,7 @@ import { imageUrl } from "../utils/baseUrls";
 import useClickOutside from "../utils/useClickOutside";
 import { useTranslation } from "react-i18next";
 
-const ArtistNavBar = ({ setSidebarOpen }) => {
+const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
   const [isToogleOpen, setIsToggelOpen] = useState(false);
 
   const { t } = useTranslation();
@@ -56,11 +56,15 @@ const ArtistNavBar = ({ setSidebarOpen }) => {
     <div className="w-full fixed top-0 left-0 z-[99] bg-white shadow-md">
       <div className="w-full py-5 px-5 flex items-center gap-5 relative justify-between">
         <GiHamburgerMenu
-          className="cursor-pointer block sm:hidden md:hidden lg:hidden xl:hidden"
+          className="cursor-pointer block sm:hidden"
           size="2em"
           onClick={() => setSidebarOpen((prev) => !prev)}
         />
-        <div className="overflow-hidden cursor-pointer ">
+        <div
+          className={`overflow-hidden cursor-pointer ${
+            sidebarOpen ? "hidden" : "block"
+          }`}
+        >
           <img
             onClick={handleRedirect}
             className="w-[8rem]  lg:block left-[20%] top-[50%] lg:w-full object-cover"

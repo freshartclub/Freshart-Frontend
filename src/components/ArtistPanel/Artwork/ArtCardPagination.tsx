@@ -65,8 +65,8 @@ const ArtCardPagination = () => {
   if (isFetching) return <Loader />;
 
   return (
-    <div className="mt-5 border bg-white p-4 pb-0 rounded-lg shadow-sm">
-      <div className="flex flex-wrap justify-between">
+    <div className="mt-5 border bg-white rounded-lg shadow-sm">
+      <div className="flex bg-gray-200 p-2 px-3 border-b border-gray-300 items-center flex-wrap justify-between">
         <p className="text-black text-[18px] font-semibold text-center sm:text-left">
           {t("Artworks")}
         </p>
@@ -74,7 +74,7 @@ const ArtCardPagination = () => {
           <input
             type="text"
             placeholder={t("Search Artworks...")}
-            className="border bottom-2 border-gray-50 bg-white rounded-md py-1 pr-2 pl-8"
+            className="border border-gray-50 bg-white rounded-md py-1 pr-2 pl-8"
             onChange={(e) => handleSearch(e.target.value)}
             value={searchData}
           />

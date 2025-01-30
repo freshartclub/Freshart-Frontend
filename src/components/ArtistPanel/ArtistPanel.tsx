@@ -45,7 +45,7 @@ const ArtistPanel = () => {
 
   return (
     <>
-      <ArtistNavBar setSidebarOpen={setSidebarOpen} />
+      <ArtistNavBar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
       <div className="flex w-full h-screen overflow-hidden">
         <Sidebar
           sidebarOpen={sidebarOpen}

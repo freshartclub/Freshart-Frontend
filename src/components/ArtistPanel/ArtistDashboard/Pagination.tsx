@@ -41,7 +41,7 @@ const Pagination = () => {
 
   return (
     <>
-      <div className="mt-4">
+      <div className="mt-4 px-4">
         {data && data.length > 0 ? (
           <div className="w-full overflow-x-auto">
             <table className="w-full min-w-[800px] table-auto border-collapse text-sm">

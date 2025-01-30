@@ -11,6 +11,9 @@ import usePatchFeedbackMutation from "./http/usePatchFeedback";
 import useGetPostArtistTicketReplyMutation from "./http/usePostReply";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
+import { imageUrl } from "../../utils/baseUrls";
+import { FaFilePdf, FaFileExcel, FaFileImage } from "react-icons/fa6";
+import { BiSolidFileDoc } from "react-icons/bi";
 
 const SingleTicket = () => {
   const [searchParams] = useSearchParams();
@@ -27,22 +30,19 @@ const SingleTicket = () => {
   const user = useAppSelector((state) => state.user.user);
   const navigate = useNavigate();
 
-  const { data, isFetching } = useGetTicketDetails(id);
+  const { data, isFetching } = useGetTicketDetails(id || "");
   const { mutateAsync, isPending } = useGetPostArtistTicketReplyMutation();
   const { mutateAsync: sendFeedback, isPending: isFeedbackLoading } =
     usePatchFeedbackMutation();
 
-  const newDate = data?.data?.createdAt
-    ? new Date(data.data.createdAt)
-        .toUTCString()
-        .split(" ")
-        .slice(0, 4)
-        .join(" ")
-    : null;
+  const newDate = (data: string) => {
+    if (!data) return null;
+    return new Date(data).toUTCString().split(" ").slice(0, 4).join(" ");
+  };
 
-  const newTime = data?.data?.createdAt
-    ? new Date(data.data.createdAt).toLocaleTimeString()
-    : null;
+  const newTime = (data: string) => {
+    return new Date(data).toLocaleTimeString();
+  };
 
   const handleReply = (ticket) => {
     if (!reply) return toast.error(t("Please write your reply"));
@@ -76,16 +76,11 @@ const SingleTicket = () => {
     navigate(-1);
   };
 
-  const handleOpenPdf = (file) => {
-    const imageExtensions = [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp"];
-    const fileExtension = file?.toLowerCase().split(".").pop();
-
-    if (imageExtensions.includes(`.${fileExtension}`)) {
-      window.open(`${data?.url}/users/${file}`, "_blank");
-    } else if (fileExtension === "pdf") {
-      window.open(`${data?.url}/documents/${file}`, "_blank");
+  const handleOpenfile = (file: string, type: string) => {
+    if (type === "NotImg") {
+      window.open(`${imageUrl}/documents/${file}`, "_blank");
     } else {
-      console.log("Unsupported file type");
+      window.open(`${imageUrl}/users/${file}`, "_blank");
     }
   };
 
@@ -156,7 +151,8 @@ const SingleTicket = () => {
             {t("Impact")}: {t(data?.data?.impact)}
           </span>
           <span className="text-[12px] font-semibold text-gray-800 flex-shrink-0">
-            {t("Posted At")}: {newDate} ({newTime})
+            {t("Posted At")}: {newDate(data?.data?.createdAt)} (
+            {newTime(data?.data?.createdAt)})
           </span>
         </div>
 
@@ -175,57 +171,82 @@ const SingleTicket = () => {
           <h1 className="text-md font-semibold">{data?.data?.subject}</h1>
           <p className="text-sm text-[#84818A]">{data?.data?.message}</p>
           {data?.data?.ticketImg ? (
-            <span onClick={() => handleOpenPdf(data?.data?.ticketImg)}>
+            <span onClick={() => handleOpenfile(data?.data?.ticketImg, "Img")}>
               <IoDocumentTextOutline size="3em" />
             </span>
           ) : null}
         </div>
 
-        <div className="flex mt-2 flex-col gap-2 w-full cursor-pointer max-h-[60vh] scrollbar2 overflow-y-scroll">
+        <div className="flex mt-2 flex-col gap-2 w-full max-h-[70vh] scrollbar2 overflow-y-scroll">
           {data?.reply &&
             data?.reply?.length > 0 &&
-            data?.reply.map((item, i) => (
-              <div className="flex items-center">
-                <div
-                  key={i}
-                  className={`p-3 rounded-md shadow flex flex-col w-full border ${
-                    item.userType === "user" ? "bg-[#dadada99]" : "bg-white"
-                  }`}
-                >
-                  <div className="flex flex-col md:flex-row sm:justify-between">
-                    <div className="flex items-center gap-2">
-                      <FaRegUserCircle />
+            data?.reply.map((item, i: number) => (
+              <div
+                key={i}
+                className={`p-3 rounded-md shadow flex flex-col w-full border ${
+                  item.userType === "user" ? "bg-[#dadada99]" : "bg-white"
+                }`}
+              >
+                <div className="flex flex-col md:flex-row sm:justify-between">
+                  <div className="flex items-center gap-2">
+                    <FaRegUserCircle />
 
-                      <span className="text-sm flex items-center gap-2 font-semibold">
-                        {item?.userType === "user" ? (
-                          <>
-                            <span>{user?.artistName}</span>
-                            <span className="sm:block hidden">
-                              ({user?.email})
-                            </span>
-                          </>
-                        ) : (
-                          `${t("Admin wrote (admin)")} :`
-                        )}
-                      </span>
-                    </div>
-
-                    <div className="flex max-[300px]:flex-col md:ml-0 ml-6 max-[300px]:gap-1 gap-3 text-xs">
-                      <span>{newDate}</span>
-                      <span>{newTime}</span>
-                    </div>
+                    <span className="text-sm flex items-center gap-2 font-semibold">
+                      {item?.userType === "user" ? (
+                        <>
+                          <span>{user?.artistName}</span>
+                          <span className="sm:block hidden">
+                            ({user?.email})
+                          </span>
+                        </>
+                      ) : (
+                        `${t("Admin wrote (admin)")} :`
+                      )}
+                    </span>
                   </div>
 
-                  <div>
-                    <p className="font-montserrat text-sm font-medium  text-left  py-2 px-4 break-words ml-2 ">
-                      {item.message}
-                    </p>
+                  <div className="flex max-[300px]:flex-col md:ml-0 ml-6 max-[300px]:gap-1 gap-3 text-xs">
+                    <span>{newDate(item?.createdAt)}</span>
+                    <span>{newTime(item?.createdAt)}</span>
                   </div>
                 </div>
 
+                <p className="font-montserrat text-[13.5px] py-2 px-4 break-words ml-2">
+                  {item.message}
+                </p>
                 {item?.ticketImg ? (
-                  <span onClick={() => handleOpenPdf(item?.ticketImg)}>
-                    <IoDocumentTextOutline size="3em" />
+                  <span className="flex border bg-slate-100 ml-7 p-2 rounded-md items-center gap-2">
+                    <p className="text-[#3d3d3d] font-semibold text-[13px]">
+                      View Attachment
+                    </p>{" "}
+                    -
+                    {item.ticketImg.includes(".pdf") ? (
+                      <FaFilePdf
+                        onClick={() =>
+                          handleOpenfile(item?.ticketImg, "NotImg")
+                        }
+                        className="text-[1.5rem] text-red-600 cursor-pointer"
+                      />
+                    ) : item.ticketImg.includes(".docx") ? (
+                      <BiSolidFileDoc
+                        onClick={() =>
+                          handleOpenfile(item?.ticketImg, "NotImg")
+                        }
+                        className="text-[1.5rem] text-blue-600 cursor-pointer"
+                      />
+                    ) : item.ticketImg.includes(".xlsx") ? (
+                      <FaFileExcel
+                        onClick={() =>
+                          handleOpenfile(item?.ticketImg, "NotImg")
+                        }
+                        className="text-[1.5rem] text-green-600 cursor-pointer"
+                      />
+                    ) : (
+                      <FaFileImage
+                        onClick={() => handleOpenfile(item?.ticketImg, "Img")}
+                        className="text-[1.5rem] text-green-600 cursor-pointer"
+                      />
+                    )}
                   </span>
                 ) : null}
               </div>
