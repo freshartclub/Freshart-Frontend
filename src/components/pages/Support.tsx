@@ -128,6 +128,8 @@ const Support = () => {
     }
   }, [isModalOpen, closeModal]);
 
+  const stripHtmlTags = (html) => html?.replace(/<[^>]*>/g, "").trim();
+
   if (loading) return <Loader />;
 
   return (
@@ -141,7 +143,7 @@ const Support = () => {
             ) : (
               newIncident?.map((item, i: number) => (
                 <p className="mt-1" key={i}>
-                  {item?.description?.replace(/(^<p>|<\/p>$)/g, "")}
+                  {stripHtmlTags(item?.description)}
                 </p>
               ))
             )}
@@ -152,7 +154,7 @@ const Support = () => {
             ) : (
               incidentAfterSevenDay?.map((item, i) => (
                 <p className="mt-1 flex items-center gap-3" key={i}>
-                  {item?.title?.replace(/(^<p>|<\/p>$)/g, "")}
+                  {stripHtmlTags(item?.title)}
                   <span className="text-xs font-semibold">
                     {dayjs(item.initTime).format("MMM D, YYYY")}
                     {" " + "-" + " "}

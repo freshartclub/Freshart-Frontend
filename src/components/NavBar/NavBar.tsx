@@ -8,7 +8,7 @@ import Header from "../ui/Header";
 import selling from "../../assets/Images-cuate 1.png";
 import ShoppingCard from "../pages/ShoppingCard";
 import Button from "../ui/Button";
-import { useAppSelector } from "../../store/typedReduxHooks";
+import { useAppDispatch, useAppSelector } from "../../store/typedReduxHooks";
 import useLogOutMutation from "../../http/auth/useLogOutMutation";
 import { useGetDiscipline } from "../pages/http/useGetDiscipline";
 import { useGetPicklist } from "./http/getPickList";
@@ -17,6 +17,8 @@ import useClickOutside from "../utils/useClickOutside";
 import { FaUserCircle } from "react-icons/fa";
 import { useGetArtistDetails } from "../UserProfile/http/useGetDetails";
 import { imageUrl } from "../utils/baseUrls";
+import { setProfile } from "../../store/userSlice/userSlice";
+import { useDispatch } from "react-redux";
 
 const mobile_links = [
   { path: "/", label: "Home" },
@@ -93,12 +95,15 @@ const NavBar = () => {
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
+  const disptach = useDispatch();
 
   const handleProfile = () => {
     if (isArtist) {
+      disptach(setProfile("artist"));
       navigate("/artist-panel", { replace: true });
       localStorage.setItem("profile", "artist");
     } else {
+      disptach(setProfile("user"));
       navigate("/home", { replace: true });
       localStorage.setItem("profile", "user");
     }

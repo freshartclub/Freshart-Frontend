@@ -14,7 +14,7 @@ import { useGetArtWorkList } from "./http/getArtWorkList";
 import { ArtworkViewPopup } from "./Pop";
 
 const Artwork = () => {
-  const [selectedArtwork, setSelectedArtwork] = useState("Series");
+  const [selectedArtwork, setSelectedArtwork] = useState("Discipline");
   const isArtProvider = useAppSelector((state) => state.user.isArtProvider);
 
   const { data, isLoading, refetch, isRefetching } =
@@ -62,17 +62,8 @@ const Artwork = () => {
       <div className="flex flex-col mb-3 gap-3">
         <div className="flex gap-2">
           <span
-            onClick={() => handleArtworkSelect("Series")}
-            className={`p-2 font-medium shadow rounded cursor-pointer text-md ${
-              selectedArtwork === "Series" ? "bg-black text-white" : "bg-white"
-            }`}
-          >
-            {t("Series")}
-          </span>
-
-          <span
             onClick={() => handleArtworkSelect("Discipline")}
-            className={`p-2 font-medium rounded shadow cursor-pointer text-md ${
+            className={`p-2 font-medium shadow rounded cursor-pointer text-md ${
               selectedArtwork === "Discipline"
                 ? "bg-black text-white"
                 : "bg-white"
@@ -80,11 +71,23 @@ const Artwork = () => {
           >
             {t("Discipline")}
           </span>
+
+          <span
+            onClick={() => handleArtworkSelect("Series")}
+            className={`p-2 font-medium rounded shadow cursor-pointer text-md ${
+              selectedArtwork === "Series" ? "bg-black text-white" : "bg-white"
+            }`}
+          >
+            {t("Series")}
+          </span>
           {isArtProvider === "Yes" ? (
             <span
               onClick={() => handleArtistName("artprovider")}
               className={`${
-                selectedArtwork !== "Series" && selectedArtwork !== "Discipline"
+                selectedArtwork !== "Series" &&
+                selectedArtwork !== "Discipline" &&
+                selectedArtwork !== "Subscription" &&
+                selectedArtwork !== "Purchase"
                   ? "bg-black text-white"
                   : "bg-white"
               } p-2 shadow font-medium rounded cursor-pointer text-md`}
@@ -92,6 +95,28 @@ const Artwork = () => {
               {t("Artist Name")}
             </span>
           ) : null}
+
+          <span
+            onClick={() => handleArtworkSelect("Subscription")}
+            className={`p-2 font-medium rounded shadow cursor-pointer text-md ${
+              selectedArtwork === "Subscription"
+                ? "bg-black text-white"
+                : "bg-white"
+            }`}
+          >
+            {t("Subscription")}
+          </span>
+
+          <span
+            onClick={() => handleArtworkSelect("Purchase")}
+            className={`p-2 font-medium rounded shadow cursor-pointer text-md ${
+              selectedArtwork === "Purchase"
+                ? "bg-black text-white"
+                : "bg-white"
+            }`}
+          >
+            {t("Purchase")}
+          </span>
         </div>
 
         <div className="flex border bg-white px-2 py-1 rounded-full gap-2 w-full max-w-full scrollbar overflow-x-auto">

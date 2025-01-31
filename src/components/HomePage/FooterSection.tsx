@@ -9,16 +9,27 @@ import logo from "../../assets/Logo01 1.png";
 import mail from "../../assets/mail.png";
 import call from "../../assets/phone.png";
 import { useAppSelector } from "../../store/typedReduxHooks";
+import { useEffect, useLayoutEffect, useState } from "react";
+import { setProfile } from "../../store/userSlice/userSlice";
 
 const FooterSection = () => {
   const isAuthorized = useAppSelector((state) => state.user.isAuthorized);
+
+  const [profile, setprofile] = useState("");
   const scrolToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const token = localStorage.getItem("auth_token");
-  const profile = localStorage.getItem("profile");
 
+  useLayoutEffect(() => {
+    const p = localStorage.getItem("profile");
+    setprofile(p);
+  }, []);
+
+  const userProfile = useAppSelector((state) => state.user.profile);
+
+  console.log("this is profile", userProfile);
   const isArtist = useAppSelector((state) => state.user.isArtist);
 
   return (

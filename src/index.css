@@ -171,7 +171,7 @@
   margin-bottom: 4rem;
 }
 
-.ticket-li:nth-child(1){
+.ticket-li:nth-child(1) {
   border-top-left-radius: 0 !important;
   border-top-right-radius: 0 !important;
 }
@@ -271,4 +271,14 @@
 
 html {
   scroll-behavior: smooth;
+}
+
+.inner-image-zoom__zoom-hint {
+  display: none !important;
+}
+
+.inner-image-zoom__zoomed {
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
 }

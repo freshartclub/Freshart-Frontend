@@ -6,10 +6,12 @@ import { GiHamburgerMenu } from "react-icons/gi";
 import { IoNotifications } from "react-icons/io5";
 import { Link, useNavigate } from "react-router-dom";
 import useLogOutMutation from "../../http/auth/useLogOutMutation";
-import { useAppSelector } from "../../store/typedReduxHooks";
+import { useAppDispatch, useAppSelector } from "../../store/typedReduxHooks";
 import { imageUrl } from "../utils/baseUrls";
 import useClickOutside from "../utils/useClickOutside";
 import { useTranslation } from "react-i18next";
+import { useDispatch } from "react-redux";
+import { setProfile } from "../../store/userSlice/userSlice";
 
 const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
   const [isToogleOpen, setIsToggelOpen] = useState(false);
@@ -21,6 +23,7 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
   const closePopup = useRef(null);
 
   const { mutate: logOut } = useLogOutMutation();
+  const disptach = useDispatch();
 
   useClickOutside(closePopup, () => {
     setIsToggelOpen(false);
@@ -35,6 +38,7 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
   };
 
   const handleProfile = () => {
+    disptach(setProfile("user"));
     navigate("/home", { replace: true });
     localStorage.setItem("profile", "user");
   };
