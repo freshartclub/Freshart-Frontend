@@ -1,10 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
-import axiosInstance from "../../components/utils/axios";
 import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
+import axiosInstance from "../../components/utils/axios";
 import { AUTH_ENDPOINTS } from "../apiEndPoints/Auth";
-import { useNavigate } from "react-router-dom";
-
-let toastId: any;
 
 async function becomeAnArtist(input: any) {
   return await axiosInstance.post(AUTH_ENDPOINTS.BecomeAnArtist, input, {
@@ -15,22 +13,18 @@ async function becomeAnArtist(input: any) {
 }
 
 const useBecomeAnArtistMutation = () => {
-  const navigate = useNavigate();
+  const { t } = useTranslation();
 
   return useMutation({
     mutationFn: becomeAnArtist,
 
     onSuccess: async (res) => {
-      console.log(res.data.id);
-      toast.dismiss(toastId);
-      toast.success(res.data.message, {
-        duration: 5000,
+      toast.success(t(res.data.message), {
+        duration: 3000,
       });
-
-      // navigate("/home");
     },
     onError: (error) => {
-      toast.error(error.response?.data?.message || "An error occurred");
+      toast.error(t(error.response?.data?.message));
     },
   });
 };

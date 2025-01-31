@@ -9,19 +9,17 @@ import {
   setIsAuthorized,
   updateUser,
 } from "../../store/userSlice/userSlice";
-import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 
 const useCheckIsAuthorized = () => {
   const dispatch = useAppDispatch();
 
+  async function getUser() {
+    const { data } = await axiosInstance.get(AUTH_ENDPOINTS.CheckToken);
+    return data;
+  }
+
   const fetchUser = async () => {
     try {
-      async function getUser() {
-        const { data } = await axiosInstance.get(AUTH_ENDPOINTS.CheckToken);
-        return data;
-      }
-
       const res = await getUser();
 
       dispatch(updateUser(res.artist));

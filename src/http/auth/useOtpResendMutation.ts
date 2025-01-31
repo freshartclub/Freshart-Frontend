@@ -1,28 +1,23 @@
 import { useMutation } from "@tanstack/react-query";
-
-// import { paths } from 'src/routes/paths';
 import axiosInstance from "../../components/utils/axios";
-
 import toast from "react-hot-toast";
 import { AUTH_ENDPOINTS } from "../apiEndPoints/Auth";
-
-let toastId: any;
+import { useTranslation } from "react-i18next";
 
 async function resendOtp(input: any) {
   return axiosInstance.post(AUTH_ENDPOINTS.ResendOTP, input);
 }
+
 const useOtpResendMutation = () => {
+  const { t } = useTranslation();
   return useMutation({
     mutationFn: resendOtp,
 
     onSuccess: async (res, input) => {
-      console.log(res.data);
-
-      toast.dismiss(toastId);
-      toast.success(res.data.message);
+      toast.success(t(res.data.message));
     },
     onError: (res) => {
-      toast.error(res.response.data.message);
+      toast.error(t(res.response.data.message));
     },
   });
 };

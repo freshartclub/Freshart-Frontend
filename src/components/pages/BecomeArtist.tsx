@@ -33,7 +33,7 @@ import CustomDropdown from "./CustomDropdown";
 const BecomeArtist = () => {
   const validationSchema = Yup.object().shape({
     artistName: Yup.string().required("Artist Name is required"),
-    artistSurname1:Yup.string().required("Artist Surname 1 is required"),
+    artistSurname1: Yup.string().required("Artist Surname 1 is required"),
     artistSurname2: Yup.string(),
     email: Yup.string()
       .email("Invalid email address")
@@ -103,6 +103,7 @@ const BecomeArtist = () => {
 
   const { data, isLoading } = useGetDiscipline();
   const { data: styleData } = useGetStyle();
+  let langCode = localStorage.getItem("langCode") || "EN";
 
   const diciplineOption = data?.data.map((item) => {
     return item.disciplineName;
@@ -194,12 +195,13 @@ const BecomeArtist = () => {
     const result = await trigger("email");
 
     if (!result) {
-      return toast("Email Is Not Valid");
+      return toast(t("Email Is Not Valid"));
     }
 
     const data = {
       email: emails || email,
       isArtistRequest: true,
+      langCode: langCode?.toUpperCase(),
     };
 
     sendMail(data).then(() => {
@@ -212,7 +214,7 @@ const BecomeArtist = () => {
     const result = await trigger("phone");
 
     if (!result) {
-      return toast("Phone Number Is Not Valid");
+      return toast(t("Phone Number Is Not Valid"));
     }
 
     const data = {
@@ -248,7 +250,6 @@ const BecomeArtist = () => {
     });
   };
 
-  // first to send otp and open pop
   const handleSendOtp = () => {
     try {
       const data = {
@@ -265,9 +266,9 @@ const BecomeArtist = () => {
   };
 
   const onSubmit = handleSubmit(async (data) => {
-    if (!isOtpVerify) return toast("Please Verify Otp");
+    if (!isOtpVerify) return toast(t("Please Verify Otp"));
     if (!otpSent || !isValidateEmail) {
-      return toast("Please Verify Email and Phone Number");
+      return toast(t("Please Verify Email and Phone Number"));
     }
 
     const formData = new FormData();
@@ -290,6 +291,9 @@ const BecomeArtist = () => {
       }
     });
 
+    langCode = langCode?.toUpperCase();
+    formData.append("langCode", langCode);
+
     await mutateAsync(formData).then(() => {
       setPopUp(true);
     });
@@ -307,8 +311,8 @@ const BecomeArtist = () => {
   const validateWebsite = (value) => {
     const checkValue = value.target.value;
     if (!/^https?:\/\//i.test(checkValue)) {
-      setValidateError("URL must start with 'https://'");
-      return "URL must start with 'https://'";
+      setValidateError("URL must start with - https://");
+      return "URL must start with - https://";
     }
     setValidateError("");
     return true;
@@ -486,8 +490,8 @@ const BecomeArtist = () => {
                       <option value="">{t("Select Discipline")}</option>
                       {isLoading
                         ? t("Loading...")
-                        : diciplineOption?.map((item, i) => (
-                            <option className="text-black" value={item}>
+                        : diciplineOption?.map((item, i: number) => (
+                            <option key={i} className="text-black" value={item}>
                               {t(item)}
                             </option>
                           ))}
@@ -511,6 +515,7 @@ const BecomeArtist = () => {
                       render={({ field }) => (
                         <Select
                           {...field}
+                          placeholder={t("Select")}
                           isMulti
                           options={filterStyle?.map((item: string) => ({
                             value: t(item.styleName),

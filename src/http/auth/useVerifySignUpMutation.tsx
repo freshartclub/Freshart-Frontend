@@ -1,8 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-
-// import { paths } from 'src/routes/paths';
 import axiosInstance from "../../components/utils/axios";
-
 import toast from "react-hot-toast";
 import { AUTH_ENDPOINTS } from "../apiEndPoints/Auth";
 import { useNavigate } from "react-router-dom";
@@ -13,15 +10,14 @@ import {
 } from "../../store/userSlice/userSlice";
 import { useAppDispatch } from "../../store/typedReduxHooks";
 import { setToken } from "../../components/utils/tokenHelper";
-
-let toastId: any;
+import { useTranslation } from "react-i18next";
 
 async function verifyOtp(input: any) {
   return axiosInstance.post(AUTH_ENDPOINTS.ValidateSignUpOTP, input);
 }
 const VerifySignUpMutation = () => {
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const { t } = useTranslation();
 
   return useMutation({
     mutationFn: verifyOtp,
@@ -32,11 +28,10 @@ const VerifySignUpMutation = () => {
       dispatch(forgotPasswordUserId({ userId: res.data.id }));
       dispatch(setIsAuthorized(true));
       localStorage.setItem("profile", "user");
-      toast.dismiss(toastId);
-      toast.success(res.data.message);
+      toast.success(t(res.data.message));
     },
     onError: (res) => {
-      toast.error(res.response.data.message);
+      toast.error(t(res.response.data.message));
     },
   });
 };

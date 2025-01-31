@@ -1,17 +1,15 @@
 import { useMutation } from "@tanstack/react-query";
-import axiosInstance from "../../components/utils/axios";
 import toast from "react-hot-toast";
-import { AUTH_ENDPOINTS } from "../apiEndPoints/Auth";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../store/typedReduxHooks";
+import axiosInstance from "../../components/utils/axios";
+import { useAppDispatch } from "../../store/typedReduxHooks";
 import { updateUser } from "../../store/userSlice/userSlice";
-
-let toastId: any;
+import { AUTH_ENDPOINTS } from "../apiEndPoints/Auth";
 
 async function completeRegistration(input: any) {
-  console.log(input);
   return await axiosInstance.post(
-    `${AUTH_ENDPOINTS.CompleteProfile}/${input.userId}`,
+    `${AUTH_ENDPOINTS.CompleteProfile}`,
     input.data,
     {
       headers: {
@@ -22,6 +20,8 @@ async function completeRegistration(input: any) {
 }
 
 const useCompleteRegistration = () => {
+  const { t } = useTranslation();
+
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
@@ -29,14 +29,12 @@ const useCompleteRegistration = () => {
     mutationFn: completeRegistration,
 
     onSuccess: async (res) => {
-      console.log(res.data.id);
-      toast.dismiss(toastId);
       dispatch(updateUser(res.data.user));
-      toast.success(res.data.message);
+      toast.success(t(res.data.message));
       navigate("/home");
     },
     onError: (error) => {
-      toast.error(error.response?.data?.message || "An error occurred");
+      toast.error(t(error.response?.data?.message));
     },
   });
 };

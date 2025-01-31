@@ -1,54 +1,34 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
-import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import Header from "../ui/Header";
-import P from "../ui/P";
-import Select from "react-select";
-import DatePicker from "react-datepicker";
+import { useEffect, useMemo, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
-import Button from "../ui/Button";
-import arrow from "../../assets/arrow.png";
-import BackButton from "../ui/BackButton";
+import { Controller, useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import upload_image from "../../assets/Upload_image.png";
-import UploadImage from "../ui/UploadImage";
+import countryList from "react-select-country-list";
+import * as Yup from "yup";
+import arrow from "../../assets/arrow.png";
 import useCompleteRegistration from "../../http/artist/useCompleteRegistration";
 import { useAppSelector } from "../../store/typedReduxHooks";
-import CustomDropdown from "./CustomDropdown";
-import countryList from "react-select-country-list";
+import BackButton from "../ui/BackButton";
+import Button from "../ui/Button";
+import Header from "../ui/Header";
+import P from "../ui/P";
+import UploadImage from "../ui/UploadImage";
 import { getCityStateFromZipCountry } from "../utils/MapWithAutocomplete";
-import {
-  RenderAllPicklist,
-  RenderAllPicklists,
-} from "../utils/RenderAllPicklist";
+import { RenderAllPicklists } from "../utils/RenderAllPicklist";
+import CustomDropdown from "./CustomDropdown";
 
 const RegistrationProcess = () => {
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
   const { mutateAsync, isPending } = useCompleteRegistration();
+  const { t } = useTranslation();
 
   const { userId } = useAppSelector((state) => state.user);
   const options = useMemo(() => countryList(), []);
 
-  const countryOptions = [
-    { value: "us", label: "United States" },
-    { value: "ca", label: "Canada" },
-    { value: "uk", label: "United Kingdom" },
-  ];
-
-  const genderOptions = [
-    { value: "male", label: "Male" },
-    { value: "female", label: "Female" },
-    { value: "other", label: "Other" },
-  ];
-
   const navigate = useNavigate();
   const handleBack = () => {
     navigate("/");
-  };
-
-  const redirectToPricePlan = (data: any) => {
-    navigate("/priceandplans");
   };
 
   const redirectToTermAndCondition = () => {
@@ -57,16 +37,16 @@ const RegistrationProcess = () => {
   };
 
   const validationSchema = Yup.object({
-    artistName: Yup.string().required("Name is required"),
-    artistSurname1: Yup.string().required("Surname1 is required"),
-    country: Yup.string().required("Country is required"),
-    zipCode: Yup.string().required("ZipCode is required"),
-    city: Yup.string().required("City is required"),
-    state: Yup.string().required("state is required"),
-    gender: Yup.string().required("Gender is required"),
+    artistName: Yup.string().required(t("First Name is required")),
+    artistSurname1: Yup.string().required(t("Surname 1 is required")),
+    country: Yup.string().required(t("Country is required")),
+    zipCode: Yup.string().required(t("ZipCode is required")),
+    city: Yup.string().required(t("City is required")),
+    state: Yup.string().required(t("State is required")),
+    gender: Yup.string().required(t("Gender is required")),
     terms: Yup.boolean().oneOf(
       [true],
-      "You must accept the terms and conditions"
+      t("You must accept the terms and conditions")
     ),
   });
 
@@ -74,7 +54,7 @@ const RegistrationProcess = () => {
     register,
     control,
     handleSubmit,
-    formState: { errors, isSubmitting, isValid },
+    formState: { errors },
     watch,
     setValue,
   } = useForm({
@@ -115,10 +95,6 @@ const RegistrationProcess = () => {
 
   const gender = picklistMap["Gender"];
 
-  console.log(gender);
-
-  const handleRemoveImage = () => {};
-
   const onSubmit = handleSubmit(async (data) => {
     const formData = new FormData();
 
@@ -129,7 +105,6 @@ const RegistrationProcess = () => {
 
     const newData = {
       data: formData,
-      userId: userId,
     };
 
     try {
@@ -154,14 +129,15 @@ const RegistrationProcess = () => {
               variant={{ size: "3xl", theme: "dark", weight: "bold" }}
               className="mb-5"
             >
-              Complete Your Profile
+              {t("Complete Your Profile")}
             </Header>
             <P
               variant={{ size: "base", theme: "dark", weight: "normal" }}
               className="mb-5"
             >
-              Please fill the form below to become an art lover. Feel free to
-              add as much detail as needed.
+              {t(
+                "Please fill the form below to become an art lover. Feel free to add as much detail as needed."
+              )}
             </P>
 
             <div className="flex lg:flex-row flex-col xl:gap-10 gap-8 xl:items-start items-center ">
@@ -190,13 +166,12 @@ const RegistrationProcess = () => {
                           htmlFor="artistName"
                           className="block mb-2 text-sm font-semibold text-gray-700 text-left"
                         >
-                          Firstname *
+                          {t("Firstname")} *
                         </label>
                         <input
                           {...register("artistName")}
                           className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
-                          placeholder="Enter Name
-"
+                          placeholder={t("Enter Firstname")}
                         />
                         {errors.artistName && (
                           <p className="text-red-500 text-sm text-left">
@@ -210,13 +185,12 @@ const RegistrationProcess = () => {
                           htmlFor="artistSurname1"
                           className="block mb-2 text-sm font-semibold text-gray-700 text-left"
                         >
-                          Surname 1 *
+                          {t("Surname 1")} *
                         </label>
                         <input
                           {...register("artistSurname1")}
                           className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
-                          placeholder="Enter Surname
-"
+                          placeholder={t("Enter Surname")}
                         />
                         {errors.artistSurname1 && (
                           <p className="text-red-500 text-sm text-left">
@@ -232,13 +206,12 @@ const RegistrationProcess = () => {
                           htmlFor="artistSurname2"
                           className="block mb-2 text-sm font-semibold text-gray-700 text-left"
                         >
-                          Surname 2
+                          {"Surname 2"}
                         </label>
                         <input
                           {...register("artistSurname2")}
                           className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
-                          placeholder="Enter Surname
-"
+                          placeholder={t("Enter Surname 2")}
                         />
                         {errors.artistSurname2 && (
                           <p className="text-red-500 text-sm text-left">
@@ -252,18 +225,18 @@ const RegistrationProcess = () => {
                           htmlFor="gender"
                           className="block mb-2 text-sm font-semibold text-gray-700 text-left"
                         >
-                          Gender *
+                          {t("Gender")} *
                         </label>
 
                         <select
                           {...register("gender")}
                           className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
                         >
-                          <option value="">Select</option>
+                          <option value="">{t("Select")}</option>
                           {gender &&
                             gender.map((item, i) => (
                               <option key={i} value={item?.value}>
-                                {item?.value}
+                                {t(item?.value)}
                               </option>
                             ))}
                         </select>
@@ -281,7 +254,7 @@ const RegistrationProcess = () => {
                           htmlFor="country"
                           className="block mb-2 text-sm font-semibold text-gray-700 text-left"
                         >
-                          Country *
+                          {t("Country")} *
                         </label>
                         <CustomDropdown
                           control={control}
@@ -301,13 +274,12 @@ const RegistrationProcess = () => {
                           htmlFor="zipCode"
                           className="block mb-2 text-sm font-semibold text-gray-700 text-left"
                         >
-                          Zipcode *
+                          {t("ZipCode")} *
                         </label>
                         <input
                           {...register("zipCode")}
                           className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
-                          placeholder="Enter Zipcode
-"
+                          placeholder={t("Enter ZipCode")}
                         />
                         {errors.zipCode && (
                           <p className="text-red-500 text-sm text-left">
@@ -323,13 +295,12 @@ const RegistrationProcess = () => {
                           htmlFor="city"
                           className="block mb-2 text-sm font-semibold text-gray-700 text-left"
                         >
-                          City *
+                          {t("City")} *
                         </label>
                         <input
                           {...register("city")}
                           className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
-                          placeholder="Enter City
-"
+                          placeholder={t("Enter City")}
                         />
                         {errors.city && (
                           <p className="text-red-500 text-sm text-left">
@@ -343,13 +314,12 @@ const RegistrationProcess = () => {
                           htmlFor="state"
                           className="block mb-2 text-sm font-semibold text-gray-700 text-left"
                         >
-                          Province *
+                          {t("State/Region")} *
                         </label>
                         <input
                           {...register("state")}
                           className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
-                          placeholder="Enter Province
-"
+                          placeholder={t("Enter Province")}
                         />
                         {errors.state && (
                           <p className="text-red-500 text-sm text-left">
@@ -377,13 +347,13 @@ const RegistrationProcess = () => {
                       htmlFor="terms"
                       className="ml-2 text-sm text-gray-700"
                     >
-                      I accept all
+                      {t("I accept all")}
                       <a
                         href="#"
                         className="text-[#FF536B] ml-2 font-semibold border-b border-b-[#FF536B]"
                         onClick={redirectToTermAndCondition}
                       >
-                        Terms & Conditions.
+                        {t("Terms & Conditions")}
                       </a>
                     </label>
                   </div>
@@ -404,9 +374,8 @@ const RegistrationProcess = () => {
                         rounded: "full",
                       }}
                       className="flex items-center"
-                      // disabled={isSubmitting || !isValid}
                     >
-                      {isPending ? "Loading..." : "Continue"}
+                      {isPending ? t("Loading...") : t("Submit")}
                       <img src={arrow} alt="arrow" className="ml-2" />
                     </Button>
                   </div>

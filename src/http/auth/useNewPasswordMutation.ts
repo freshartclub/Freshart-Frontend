@@ -1,33 +1,29 @@
 import { useMutation } from "@tanstack/react-query";
-
 import axiosInstance from "../../components/utils/axios";
-
 import toast from "react-hot-toast";
 import { AUTH_ENDPOINTS } from "../apiEndPoints/Auth";
 import { useNavigate } from "react-router-dom";
-
-let toastId: any;
+import { useTranslation } from "react-i18next";
 
 async function newPassword(input: any) {
-  console.log(input);
   return axiosInstance.post(
     `${AUTH_ENDPOINTS.ResetPassword}?id=${input.id}&token=${input.token}`,
     input
   );
 }
 const useNewPasswordMutation = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   return useMutation({
     mutationFn: newPassword,
 
     onSuccess: async (res, input) => {
-      toast.dismiss(toastId);
-      toast.success(res.data.message);
+      toast.success(t(res.data.message));
       navigate("/login");
     },
     onError: (res) => {
-      toast.error(res.response.data.message);
+      toast.error(t(res.response.data.message));
     },
   });
 };

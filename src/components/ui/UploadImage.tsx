@@ -1,4 +1,5 @@
-import React, { useState, useRef, SetStateAction } from "react";
+import React, { SetStateAction, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import upload_image from "../../assets/Upload_image.png";
 import P from "./P";
 
@@ -9,16 +10,15 @@ const UploadImage = ({
   selectedFile: any;
   setSelectedFile: React.Dispatch<SetStateAction<any>>;
 }) => {
-  const fileInputRef = useRef<HTMLInputElement | null>(null); // Type reference for file input
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const { t } = useTranslation();
 
-  // Handle the file input click action
   const handleImageClick = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
     }
   };
 
-  // Handle the file change event
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -33,19 +33,17 @@ const UploadImage = ({
           src={URL.createObjectURL(selectedFile)}
           alt="uploaded image"
           className="w-[200px] h-[200px] cursor-pointer rounded-full object-cover"
-          onClick={handleImageClick} // Click to re-trigger file selection
+          onClick={handleImageClick}
         />
       ) : (
         <>
-          {/* Hidden file input */}
           <input
             ref={fileInputRef}
             type="file"
             accept="image/jpeg, image/jpg, image/png, image/gif"
-            className="hidden" // Hide the input element
+            className="hidden"
             onChange={handleFileChange}
           />
-          {/* Placeholder text for when no image is selected */}
           <div
             className="flex justify-center items-center w-[200px] h-[200px] border-2 border-dashed rounded-full cursor-pointer"
             onClick={handleImageClick}
@@ -53,7 +51,7 @@ const UploadImage = ({
             <img src={upload_image} alt="upload" className="w-1/2 h-1/2" />
           </div>
           <P variant={{ size: "base", theme: "dark", weight: "normal" }}>
-            Allowed *.jpeg, *.jpg, *.png Max size of 3.1 MB
+            {t("Allowed *.jpeg, *.jpg, *.png Max size of 3.1 MB")}
           </P>
         </>
       )}

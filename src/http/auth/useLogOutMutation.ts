@@ -1,19 +1,16 @@
 import { useMutation } from "@tanstack/react-query";
-import axiosInstance from "../../components/utils/axios";
-// import { useAppDispatch } from "../../store/typedReduxHooks";
-// import { setIsAuthorized, forgotPasswordUserId } from "../../store/userSlice/userSlice";
 import toast from "react-hot-toast";
-import { AUTH_ENDPOINTS } from "../apiEndPoints/Auth";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
+import axiosInstance from "../../components/utils/axios";
+import { useAppDispatch } from "../../store/typedReduxHooks";
 import {
   removeUser,
   setIsArtist,
   setIsAuthorized,
   updateUser,
 } from "../../store/userSlice/userSlice";
-import { useAppDispatch, useAppSelector } from "../../store/typedReduxHooks";
-
-let toastId: any;
+import { AUTH_ENDPOINTS } from "../apiEndPoints/Auth";
 
 async function logOut() {
   const token = localStorage.getItem("auth_token");
@@ -25,8 +22,7 @@ async function logOut() {
   });
 }
 const useLogOutMutation = () => {
-  const isAuthorized = useAppSelector((state) => state.user.isArtist);
-
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
@@ -39,8 +35,7 @@ const useLogOutMutation = () => {
       dispatch(setIsArtist(false));
       dispatch(updateUser(null));
 
-      toast.dismiss(toastId);
-      toast.success(res.data.message);
+      toast.success(t(res.data.message));
 
       dispatch(removeUser());
 
@@ -50,7 +45,7 @@ const useLogOutMutation = () => {
       navigate("/login", { replace: true });
     },
     onError: (res) => {
-      toast.error(res.response.data.message);
+      toast.error(t(res.response.data.message));
     },
   });
 };

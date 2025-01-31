@@ -12,6 +12,7 @@ import useVerifySignUpMutation from "../../http/auth/useVerifySignUpMutation";
 import { useAppDispatch, useAppSelector } from "../../store/typedReduxHooks";
 import { useEffect, useState } from "react";
 import { forgotPasswordUserId } from "../../store/userSlice/userSlice";
+import { useTranslation } from "react-i18next";
 
 const SignUpOtp = () => {
   const [localId, setLocalId] = useState("");
@@ -21,13 +22,15 @@ const SignUpOtp = () => {
     navigate("/");
   };
 
+  const { t } = useTranslation();
+
   const userId = useAppSelector((state) => state.user.userId);
   const dispatch = useAppDispatch();
 
   const validationSchema = Yup.object().shape({
     passCode: Yup.string()
-      .matches(/^[0-9]+$/, "Invalid passCode address") // Example regex for numeric passCode
-      .required("Validation Code is required"),
+      .matches(/^[0-9]+$/, t("Invalid Code"))
+      .required(t("Validation Code is required")),
   });
 
   useEffect(() => {
@@ -75,19 +78,19 @@ const SignUpOtp = () => {
             <Header
               variant={{ size: "2xl", theme: "dark", weight: "semiBold" }}
             >
-              Enter Passcode
+              {t("Enter Validation Code")}
             </Header>
             <P
               variant={{ size: "base", theme: "dark", weight: "medium" }}
               className="lg:w-[60%] md:w-[80%] mx-auto mt-4 tracking-tight leading-1"
             >
-              Enter your validation code by Email
+              {t("Enter your validation code sent to your email")}
             </P>
             <form onSubmit={handleSubmit(onSubmit)} className="my-5">
               <div>
                 <input
                   type="passCode"
-                  placeholder="Validation Code"
+                  placeholder={t("Enter Validation Code")}
                   {...register("passCode")}
                   className={`border ${
                     errors.passCode ? "border-red-500" : "border-[#D3D3D3]"
@@ -114,7 +117,7 @@ const SignUpOtp = () => {
                 <P
                   variant={{ size: "base", theme: "light", weight: "semiBold" }}
                 >
-                  {isPending ? "Vaildating..." : "Verify Otp"}
+                  {isPending ? t("Vaildating...") : t("Validate OTP")}
                 </P>
                 <img src={arrow} alt="arrow" className="ml-2 mt-1" />
               </Button>

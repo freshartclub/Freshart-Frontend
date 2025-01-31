@@ -1,13 +1,13 @@
 import { useMutation } from "@tanstack/react-query";
-
 import toast from "react-hot-toast";
-
 import axiosInstance from "../../../utils/axios";
 import { ARTTIST_ENDPOINTS } from "../../../../http/apiEndPoints/Artist";
 import { useTranslation } from "react-i18next";
 
-async function usePatchRevalidation() {
-  return await axiosInstance.patch(ARTTIST_ENDPOINTS.PatchRevalidation);
+async function usePatchRevalidation(langCode: string) {
+  return await axiosInstance.patch(ARTTIST_ENDPOINTS.PatchRevalidation, {
+    langCode: langCode,
+  });
 }
 
 const useRevalidationMutation = () => {

@@ -7,46 +7,45 @@ import ViewButton from "../ui/ViewButton";
 import "./ArtistPortfoilio.css";
 import { imageUrl } from "../utils/baseUrls";
 
-const settings = {
-  dots: true,
-  infinite: true,
-  speed: 500,
-  slidesToShow: 4,
-  slidesToScroll: 1,
-  autoplay: false,
-  autoplaySpeed: 2000,
-  responsive: [
-    {
-      breakpoint: 1024,
-      settings: {
-        slidesToShow: 3,
-        slidesToScroll: 1,
-        infinite: true,
-        dots: true,
-      },
-    },
-    {
-      breakpoint: 768,
-      settings: {
-        slidesToShow: 2,
-        slidesToScroll: 1,
-        infinite: true,
-        dots: true,
-      },
-    },
-    {
-      breakpoint: 639,
-      settings: {
-        slidesToShow: 1,
-        slidesToScroll: 1,
-        infinite: true,
-        dots: true,
-      },
-    },
-  ],
-};
-
 const ArtistPortfolio = ({ data }) => {
+  const settings = {
+    dots: true,
+    infinite: data && data.length > 1 ? true : false,
+    speed: 500,
+    slidesToShow: 4,
+    slidesToScroll: 1,
+    autoplay: false,
+    autoplaySpeed: 2000,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 1,
+          infinite: data && data.length > 1 ? true : false,
+          dots: true,
+        },
+      },
+      {
+        breakpoint: 768,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 1,
+          infinite: data && data.length > 1 ? true : false,
+          dots: true,
+        },
+      },
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+          infinite: data && data.length > 1 ? true : false,
+          dots: true,
+        },
+      },
+    ],
+  };
   const navigate = useNavigate();
 
   const redirectToAllArtistPage = () => {
@@ -80,7 +79,7 @@ const ArtistPortfolio = ({ data }) => {
   return (
     <div className="container mx-auto md:px-6 px-3 ">
       <div className="mt-10">
-        <div className="flex sm:flex-row flex-col justify-between">
+        <div className="flex max-[450px]:flex-col items-center justify-between">
           <Header
             variant={{ size: "xl", theme: "dark", weight: "semiBold" }}
             className="text-[30px] font-semibold"
@@ -92,78 +91,42 @@ const ArtistPortfolio = ({ data }) => {
         </div>
       </div>
       <div className="artist_slider h-auto  ">
-        {data?.length > 4 ? (
-          <>
-            {data?.artists?.map((item, i: number) => (
-              <div
-                key={i}
-                className="px-2 text-center cursor-pointer"
-                onClick={() => handleArtistDesc(item._id)}
-              >
-                <div className="mt-14 rounded-lg border border-[#FF536B] flex  flex-col items-center">
-                  <img
-                    src={`${imageUrl}/users/${item?.profile?.mainImage}`}
-                    alt="profile"
-                    className="-mt-10 w-[10vh] h-[10vh] rounded-full object-cover"
-                  />
-                  <h1 className="text-xl line-clamp-1">{name(item)}</h1>
-                  <p className="text-sm flex gap-2 min-h-[20px]">
-                    {item?.aboutArtist?.discipline &&
-                      mapData(
-                        item?.aboutArtist?.discipline?.map(
-                          (item) => item?.discipline
-                        )
-                      )}
-                  </p>
-                  <img
-                    src={`${imageUrl}/users/${
-                      item?.profile?.inProcessImage || item?.profile?.mainImage
-                    }`}
-                    alt="Artwork"
-                    className="p-2 rounded sm:w-[30vw] sm:h-[30vh] object-cover"
-                  />
-                </div>
-              </div>
-            ))}
-          </>
-        ) : (
-          <Slider {...settings}>
-            {data?.artists?.map((item, i) => (
-              <div
-                key={i}
-                className="px-2 text-center cursor-pointer   "
-                onClick={() => handleArtistDesc(item._id)}
-              >
-                <div className="mt-14 rounded-lg border border-[#FF536B] flex  flex-col items-center">
-                  <img
-                    src={`${imageUrl}/users/${item?.profile?.mainImage}`}
-                    alt="profile"
-                    className="-mt-10 w-[10vh] h-[10vh] rounded-full object-cover"
-                  />
-                  <h1 className="text-xl line-clamp-1 font-medium">
-                    {name(item)}
-                  </h1>
-                  <p className="text-sm flex flex-wrap justify-center gap-2 min-h-[20px]">
-                    {item?.aboutArtist?.discipline &&
-                      mapData(
-                        item?.aboutArtist?.discipline?.map(
-                          (item) => item?.discipline
-                        )
-                      )}
-                  </p>
+        <Slider {...settings}>
+          {data?.artists?.map((item, i) => (
+            <div
+              key={i}
+              className="px-2 text-center cursor-pointer   "
+              onClick={() => handleArtistDesc(item._id)}
+            >
+              <div className="mt-14 rounded-lg border border-[#FF536B] flex  flex-col items-center">
+                <img
+                  src={`${imageUrl}/users/${item?.profile?.mainImage}`}
+                  alt="profile"
+                  className="-mt-8 w-[10vh] h-[10vh] rounded-full object-cover"
+                />
+                <h1 className="text-xl line-clamp-1 font-medium">
+                  {name(item)}
+                </h1>
+                <p className="text-sm flex flex-wrap justify-center gap-2 min-h-[20px]">
+                  {item?.aboutArtist?.discipline &&
+                    mapData(
+                      item?.aboutArtist?.discipline?.map(
+                        (item) => item?.discipline
+                      )
+                    )}
+                </p>
 
-                  <img
-                    src={`${imageUrl}/users/${
-                      item?.profile?.inProcessImage || item?.profile?.mainImage
-                    }`}
-                    alt="Artwork"
-                    className="p-2 rounded sm:w-[30vw] sm:h-[30vh] object-cover"
-                  />
-                </div>
+                <img
+                  src={`${imageUrl}/users/${
+                    item?.profile?.inProcessImage || item?.profile?.mainImage
+                  }`}
+                  alt="Artwork"
+                  className="p-2 rounded w-full h-[40vh] sm:w-[30vw] sm:h-[30vh] object-cover"
+                />
               </div>
-            ))}
-          </Slider>
-        )}
+            </div>
+          ))}
+        </Slider>
       </div>
     </div>
   );

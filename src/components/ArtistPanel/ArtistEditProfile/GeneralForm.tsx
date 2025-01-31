@@ -40,6 +40,8 @@ const GeneralForm = ({ isActiveStatus }) => {
   const options = useMemo(() => countryList(), []);
   const [searchResult, setSearchResult] = useState(null);
 
+  const langCode = localStorage.getItem("langCode") || "EN";
+
   const { t } = useTranslation();
 
   const methods = useForm();
@@ -300,7 +302,7 @@ const GeneralForm = ({ isActiveStatus }) => {
 
   const handleRevelidate = () => {
     try {
-      revalidationMutation();
+      revalidationMutation(langCode);
     } catch (error) {
       console.error(error);
     }

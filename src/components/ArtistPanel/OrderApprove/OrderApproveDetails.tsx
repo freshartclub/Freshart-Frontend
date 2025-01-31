@@ -411,166 +411,160 @@ const OrderApproveDetails = () => {
       </div>
 
       {orderModal && (
-        <div>
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[999999]">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-2/3 ">
-              <h2 className="text-lg font-bold mb-4 pb-4 border-b-2">
-                {t("Reason For Cancel")}
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[100]">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-2/3 ">
+            <h2 className="text-lg font-bold mb-4 pb-4 border-b-2">
+              {t("Reason For Cancel")}
+            </h2>
+
+            <form onSubmit={handleSubmit(handleCancelItem)}>
+              <h2 className="text- font-semibold mb-2">{t("Artwork Name")}</h2>
+
+              <input
+                type="text"
+                placeholder="Ex: Adventure Seekers Expedition..."
+                defaultValue={selectedProduct?.artWork?.artworkName}
+                readOnly
+                className="h-12 w-full border rounded-lg p-2 mb-3 outline-none"
+                {...register("title")}
+              />
+
+              <h2 className="text- font-semibold mb-2">{t("Topic")}</h2>
+
+              <select
+                className="h-12 w-full border rounded-lg p-2 mb-3 outline-none"
+                {...register("reason", { required: true })}
+              >
+                <option value="">
+                  {t("Select a reason for cancellation")}
+                </option>
+                <option value="damaged">{t("Product Damaged")}</option>
+                <option value="wrong item">{t("Wrong Item Received")}</option>
+                <option value="quality issues">{t("Quality Issues")}</option>
+                <option value="shipping delay">{t("Shipping Delay")}</option>
+                <option value="customer request">
+                  {t("Customer Request")}
+                </option>
+                <option value="out of stock">{t("Out of Stock")}</option>
+                <option value="other">{t("Other")}</option>
+              </select>
+              {errors.reason && (
+                <p className="text-red-500 text-sm mb-3">
+                  {t("Please select a reason")}
+                </p>
+              )}
+
+              <h2 className="text- font-semibold mb-2">
+                {t("Describe the reason")}
               </h2>
-
-              <form onSubmit={handleSubmit(handleCancelItem)}>
-                <h2 className="text- font-semibold mb-2">
-                  {t("Artwork Name")}
-                </h2>
-
-                <input
-                  type="text"
-                  placeholder="Ex: Adventure Seekers Expedition..."
-                  defaultValue={selectedProduct?.artWork?.artworkName}
-                  readOnly
-                  className="h-12 w-full border rounded-lg p-2 mb-3 outline-none"
-                  {...register("title")}
-                />
-
-                <h2 className="text- font-semibold mb-2">{t("Topic")}</h2>
-
-                <select
-                  className="h-12 w-full border rounded-lg p-2 mb-3 outline-none"
-                  {...register("reason", { required: true })}
-                >
-                  <option value="">
-                    {t("Select a reason for cancellation")}
-                  </option>
-                  <option value="damaged">{t("Product Damaged")}</option>
-                  <option value="wrong item">{t("Wrong Item Received")}</option>
-                  <option value="quality issues">{t("Quality Issues")}</option>
-                  <option value="shipping delay">{t("Shipping Delay")}</option>
-                  <option value="customer request">
-                    {t("Customer Request")}
-                  </option>
-                  <option value="out of stock">{t("Out of Stock")}</option>
-                  <option value="other">{t("Other")}</option>
-                </select>
-                {errors.reason && (
-                  <p className="text-red-500 text-sm mb-3">
-                    {t("Please select a reason")}
-                  </p>
+              <textarea
+                {...register("description", { required: true })}
+                placeholder={t(
+                  "Please describe the reason for cancellation..."
                 )}
+                className="h-20 w-full border rounded-lg p-2 resize-none"
+              />
 
-                <h2 className="text- font-semibold mb-2">
-                  {t("Describe the reason")}
-                </h2>
-                <textarea
-                  {...register("description", { required: true })}
-                  placeholder={t(
-                    "Please describe the reason for cancellation..."
-                  )}
-                  className="h-20 w-full border rounded-lg p-2 resize-none"
-                />
-
-                <div className="flex justify-end gap-4 px-2 py-2 rounded">
-                  <span
-                    onClick={closeModal}
-                    className="bg-white-500 text-black text-md px-2 py-2 rounded-lg border-2 font-bold"
-                  >
-                    {t("Cancel")}
-                  </span>
-                  <button
-                    type="submit"
-                    disabled={cancelItemPending}
-                    className="px-2 py-2 rounded-lg bg-black text-white text-md font-bold"
-                  >
-                    {cancelItemPending ? t("Rejecting...") : t("Reject")}
-                  </button>
-                </div>
-              </form>
-            </div>
+              <div className="flex justify-end gap-4 px-2 py-2 rounded">
+                <span
+                  onClick={closeModal}
+                  className="bg-white-500 text-black text-md px-2 py-2 rounded-lg border-2 font-bold"
+                >
+                  {t("Cancel")}
+                </span>
+                <button
+                  type="submit"
+                  disabled={cancelItemPending}
+                  className="px-2 py-2 rounded-lg bg-black text-white text-md font-bold"
+                >
+                  {cancelItemPending ? t("Rejecting...") : t("Reject")}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
 
       {isModalOpen && (
-        <div>
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[999999]">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-2/3 ">
-              <form onSubmit={handleSubmit((data) => onSubmit(data, reset))}>
-                <h2 className="text-lg font-bold mb-3 border-b-2 pb-4">
-                  {t("Upload Evidence")}
-                </h2>
-                <h2 className="text-sm font-semibold mb-2 mt-4">
-                  {t("Upload Images")}
-                </h2>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[100]">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-2/3 ">
+            <form onSubmit={handleSubmit((data) => onSubmit(data, reset))}>
+              <h2 className="text-lg font-bold mb-3 border-b-2 pb-4">
+                {t("Upload Evidence")}
+              </h2>
+              <h2 className="text-sm font-semibold mb-2 mt-4">
+                {t("Upload Images")}
+              </h2>
 
-                <div className="flex flex-col items-center justify-center gap-x-4 bg-[#919EAB33] rounded-lg">
-                  <div className="mt-20 flex flex-col items-center justify-center ">
-                    <input
-                      id="fileInput"
-                      type="file"
-                      accept="image/*"
-                      multiple
-                      style={{ display: "none" }}
-                      {...register("evidenceImg", {
-                        onChange: (e) => handleFileSelect(e),
-                      })}
-                    />
-                    <img src={select_file} alt="Select file" />
-                    <h1 className="font-bold text-base mb-4">
-                      {t("Drop or select file")}
-                    </h1>
-                    <p
-                      className="text-sm mb-10 text-gray-600 cursor-pointer"
-                      onClick={handleClick}
-                    >
-                      {t("Drop files here or click to")}{" "}
-                      <span className="text-[#00A76F]">{t("browse")}</span>{" "}
-                      {t("through your computer.")}
-                    </p>
+              <div className="flex flex-col items-center justify-center gap-x-4 bg-[#919EAB33] rounded-lg">
+                <div className="mt-20 flex flex-col items-center justify-center ">
+                  <input
+                    id="fileInput"
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    style={{ display: "none" }}
+                    {...register("evidenceImg", {
+                      onChange: (e) => handleFileSelect(e),
+                    })}
+                  />
+                  <img src={select_file} alt="Select file" />
+                  <h1 className="font-bold text-base mb-4">
+                    {t("Drop or select file")}
+                  </h1>
+                  <p
+                    className="text-sm mb-10 text-gray-600 cursor-pointer"
+                    onClick={handleClick}
+                  >
+                    {t("Drop files here or click to")}{" "}
+                    <span className="text-[#00A76F]">{t("browse")}</span>{" "}
+                    {t("through your computer.")}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row mt-6">
+                {selectedImage && selectedImage.length > 0 ? (
+                  <div className="flex flex-wrap gap-4">
+                    {selectedImage.map((image, index) => (
+                      <div
+                        key={index}
+                        className="p-2 border border-gray-300 rounded-md"
+                      >
+                        <img
+                          src={image}
+                          alt={`Selected Preview ${index + 1}`}
+                          className="w-16 h-14 rounded-md object-cover"
+                        />
+                      </div>
+                    ))}
                   </div>
-                </div>
+                ) : (
+                  <p className="text-gray-500 text-sm">
+                    {t("No Images Selected")}
+                  </p>
+                )}
+              </div>
 
-                <div className="flex flex-col sm:flex-row mt-6">
-                  {selectedImage && selectedImage.length > 0 ? (
-                    <div className="flex flex-wrap gap-4">
-                      {selectedImage.map((image, index) => (
-                        <div
-                          key={index}
-                          className="p-2 border border-gray-300 rounded-md"
-                        >
-                          <img
-                            src={image}
-                            alt={`Selected Preview ${index + 1}`}
-                            className="w-16 h-14 rounded-md object-cover"
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-gray-500 text-sm">
-                      {t("No Images Selected")}
-                    </p>
-                  )}
-                </div>
-
-                <div className="flex justify-end gap-4 px-2 py-2 rounded">
-                  <span
-                    onClick={() => {
-                      setIsModalOpen(false);
-                      setSelectedImage(null);
-                    }}
-                    className="bg-white-500 cursor-pointer text-black text-md px-2 py-2 rounded-lg border-2 font-bold"
-                  >
-                    {t("Cancel")}
-                  </span>
-                  <button
-                    type="submit"
-                    className="px-2 py-2 rounded-lg bg-black text-white text-md font-bold"
-                  >
-                    {" "}
-                    {isPending ? t("Submiting...") : t("Submit")}
-                  </button>
-                </div>
-              </form>
-            </div>
+              <div className="flex justify-end gap-4 px-2 py-2 rounded">
+                <span
+                  onClick={() => {
+                    setIsModalOpen(false);
+                    setSelectedImage(null);
+                  }}
+                  className="bg-white-500 cursor-pointer text-black text-md px-2 py-2 rounded-lg border-2 font-bold"
+                >
+                  {t("Cancel")}
+                </span>
+                <button
+                  type="submit"
+                  className="px-2 py-2 rounded-lg bg-black text-white text-md font-bold"
+                >
+                  {" "}
+                  {isPending ? t("Submiting...") : t("Submit")}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

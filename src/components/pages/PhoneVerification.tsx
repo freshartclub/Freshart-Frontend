@@ -54,7 +54,7 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
           <div className="bg-white p-6 rounded-lg max-w-sm w-full">
             <div className="mb-4">
               <label htmlFor="verificationCode" className="block text-gray-700">
-                Enter the code sent to your phone:
+                {t("Enter the code sent to your phone")}
               </label>
               <input
                 id="verificationCode"
@@ -62,7 +62,7 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
                 value={verificationCode}
                 onChange={(e) => setVerificationCode(e.target.value)}
                 className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter verification code"
+                placeholder={t("Enter verification code")}
               />
             </div>
 

@@ -1,27 +1,27 @@
 import { useMutation } from "@tanstack/react-query";
-
 import toast from "react-hot-toast";
 import axiosInstance from "../../utils/axios";
 import { ARTTIST_ENDPOINTS } from "../../../http/apiEndPoints/Artist";
-
-let toastId: any;
+import { useTranslation } from "react-i18next";
 
 async function verifySMSOtp(input: any) {
   return await axiosInstance.post(ARTTIST_ENDPOINTS.VerifySMSOtp, input);
 }
 
 const usePhoneOtpVerify = () => {
+  const { t } = useTranslation();
+
   return useMutation({
     mutationFn: verifySMSOtp,
 
     onSuccess: async (res) => {
-      toast.dismiss(toastId);
-      toast.success(res.data.message, {
+      toast.success(t(res.data.message), {
         duration: 3000,
       });
     },
     onError: (error) => {
-      toast.error(error.response?.data?.message);
+      console.log(error.response?.data?.message);
+      toast.error(t(error.response?.data?.message));
     },
   });
 };

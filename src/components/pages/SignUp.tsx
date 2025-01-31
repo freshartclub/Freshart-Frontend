@@ -19,13 +19,15 @@ const SignUp = () => {
       .min(6, "Password must be at least 6 characters")
       .required("Password is required"),
     cpassword: Yup.string()
-      .oneOf([Yup.ref("password")], "Confirm Passwords must match")
+      .oneOf([Yup.ref("password")], "Confirm Password must match")
       .required("Confirm Password is required"),
     terms: Yup.boolean().oneOf(
       [true],
       "You must accept the terms and conditions"
     ),
   });
+
+  const langCode = localStorage.getItem("langCode") || "EN";
 
   const {
     register,
@@ -39,6 +41,7 @@ const SignUp = () => {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
+      data.langCode = langCode?.toUpperCase();
       await mutateAsync(data);
     } catch (error) {
       console.error(error.message);
@@ -63,7 +66,7 @@ const SignUp = () => {
             </Header>
             <P
               variant={{ size: "base", theme: "dark", weight: "normal" }}
-              className="lg:w-[60%] md:w-[80%] mx-auto mt-4 font-medium tracking-tight leading-none font-[poppins]"
+              className="lg:w-[60%] md:w-[80%] mx-auto mt-4 font-medium tracking-tight leading-none"
             >
               {t("Enter your details to register to your account")}
             </P>

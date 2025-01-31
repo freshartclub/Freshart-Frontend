@@ -9,11 +9,13 @@ import P from "../ui/P";
 import { imageUrl } from "../utils/baseUrls";
 import checkmark from "./assets/checkmark.png";
 import { useGetAllPlans } from "./http/useGetAllPlans";
+import { useTranslation } from "react-i18next";
 
 const PriceAndPlan = () => {
   const [activePlans, setActivePlans] = useState({});
   const navigate = useNavigate();
   const { data, isLoading } = useGetAllPlans();
+  const { t } = useTranslation();
 
   const redirectToPaymentPage = () => {
     navigate("/premium_payment");
@@ -51,7 +53,7 @@ const PriceAndPlan = () => {
   if (!data || Object.keys(data).length === 0) {
     return (
       <P variant={{ size: "base", theme: "dark", weight: "semiBold" }}>
-        No Plan Found
+        {t("No Plan Found")}
       </P>
     );
   }
@@ -76,14 +78,15 @@ const PriceAndPlan = () => {
             variant={{ size: "3xl", theme: "dark", weight: "bold" }}
             className="md:text-3xl sm:text-2xl text-xl"
           >
-            Become a certified Art lover, Subscribe plan and explore fresh art
-            club.
+            {t(
+              "Become a certified Art lover, Subscribe plan and explore Fresh Art Club"
+            )}
           </Header>
           <P
             variant={{ size: "md", theme: "dark", weight: "medium" }}
             className="mt-3"
           >
-            Choose the perfect plan for your business needs
+            {t("Choose the perfect plan for your business needs")}
           </P>
         </div>
 
@@ -98,7 +101,7 @@ const PriceAndPlan = () => {
                 className="w-[26px] h-[26px]"
               />
               <P variant={{ size: "md", theme: "dark", weight: "normal" }}>
-                Compare plans
+                {t("Compare plans")}
               </P>
             </div>
           </div>
@@ -136,7 +139,7 @@ const PriceAndPlan = () => {
                       }}
                       className="mt-3 ml-1"
                     >
-                      /month
+                      {t("/month")}
                     </P>
                   </div>
                   <select
@@ -185,7 +188,7 @@ const PriceAndPlan = () => {
                     className="flex items-center mt-6 w-full justify-center hover:bg-transparent border-2 hover:border-[#102031] hover:text-[#102031]"
                     onClick={redirectToPaymentPage}
                   >
-                    Get started
+                    {t("Get Started")}
                   </Button>
                 </div>
               );
@@ -203,7 +206,9 @@ const PriceAndPlan = () => {
             }}
             onClick={handleCompleteForm}
           >
-            I am not sure yet. Let me take a look, I will choose later on!
+            {t(
+              "I am not sure yet. Let me take a look, I will choose later on!"
+            )}
           </Button>
         </div>
       </div>

@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 
 const CustomDropdown = ({
   options,
@@ -11,6 +12,7 @@ const CustomDropdown = ({
   const [selectedValue, setSelectedValue] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (countryValue) {
@@ -61,7 +63,7 @@ const CustomDropdown = ({
                   <span>{selectedValue.label}</span>
                 </>
               ) : (
-                <span>Select Country</span>
+                <span>{t("Select")}</span>
               )}
             </button>
 
@@ -70,7 +72,7 @@ const CustomDropdown = ({
                 <input
                   type="text"
                   className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none"
-                  placeholder="Search country"
+                  placeholder={t("Search")}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />

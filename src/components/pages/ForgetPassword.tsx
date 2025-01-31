@@ -14,6 +14,7 @@ import { useTranslation } from "react-i18next";
 const ForgetPassword = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  let langCode = localStorage.getItem("langCode") || "EN";
 
   const handleBack = () => {
     navigate("/login");
@@ -37,6 +38,7 @@ const ForgetPassword = () => {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
+      data.langCode = langCode;
       await mutateAsync(data);
     } catch (error) {
       console.error(error.message);
@@ -97,7 +99,9 @@ const ForgetPassword = () => {
                 >
                   {isPending ? t("Sending...") : t("Send OTP")}
                 </P>
-                {!isPending && <img src={arrow} alt="arrow" className="ml-2 mt-1" />}
+                {!isPending && (
+                  <img src={arrow} alt="arrow" className="ml-2 mt-1" />
+                )}
               </Button>
             </form>
           </div>
