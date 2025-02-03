@@ -68,7 +68,7 @@ const LogNaveBar = () => {
     const getLanguage = localStorage.getItem("language");
     const getLangCode = localStorage.getItem("langCode");
     setFlag(
-      countries.find((country) => country.val === getLangCode).flag ||
+      countries.find((country) => country.val === getLangCode)?.flag ||
         "https://flagcdn.com/w320/gb.png"
     );
     setLanguageSettings(
@@ -95,7 +95,7 @@ const LogNaveBar = () => {
 
     dispatch(setLanguage(value));
     setFlag(
-      countries.find((country) => country.val === flag).flag ||
+      countries.find((country) => country.val === flag)?.flag ||
         "https://flagcdn.com/w320/gb.png"
     );
     setLanguageSettings(navtiveName);

@@ -393,7 +393,7 @@ const Support = () => {
                     }}
                     className="uppercase flex mt-8"
                   >
-                    {t("Submit ticket")}
+                    {t("SUBMIT TICKET")}
                     <img src={arrow} alt="arrow" className="mt-1 ml-2" />
                   </Button>
 

@@ -132,7 +132,7 @@ const TicketsList: FC<{
               {ticket?.ticketFeedback ? (
                 <div className="bg-[#F5F5F5] text-sm p-2 flex flex-col border gap-1">
                   <span className="text-[14px] text-[#84818A]">
-                    Feedback -{" "}
+                    {t("Feedback")} -{" "}
                     <span className="font-semibold text-[#000000]">
                       {ticket?.ticketFeedback?.isLiked
                         ? "Helpfull"
@@ -141,7 +141,7 @@ const TicketsList: FC<{
                     </span>
                   </span>
                   <span className="text-[14px] text-[#84818A]">
-                    Comment -{" "}
+                    {t("Comment")} -{" "}
                     <span className="font-semibold text-[#000000]">
                       {ticket?.ticketFeedback?.message
                         ? ticket?.ticketFeedback?.message

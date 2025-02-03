@@ -82,8 +82,8 @@ const Language = () => {
     setCurrencySettings(getCurrency || "usd");
     setCode(getLangCode || "en");
     setFlag(
-      countries.find((country) => country.code === getLangCode?.toUpperCase()).flag ||
-        "https://flagcdn.com/w320/gb.png"
+      countries.find((country) => country.code === getLangCode?.toUpperCase())
+        ?.flag || "https://flagcdn.com/w320/gb.png"
     );
   }, []);
 
