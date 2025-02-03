@@ -40,8 +40,16 @@ const SingleTicket = () => {
     return new Date(data).toUTCString().split(" ").slice(0, 4).join(" ");
   };
 
+  // const newTime = (data: string) => {
+  //   return new Date(data).toLocaleTimeString();
+  // };
+
   const newTime = (data: string) => {
-    return new Date(data).toLocaleTimeString();
+    return new Date(data).toLocaleTimeString(navigator.language, {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
   };
 
   const handleReply = (ticket) => {
@@ -217,7 +225,7 @@ const SingleTicket = () => {
                 {item?.ticketImg ? (
                   <span className="flex border bg-slate-100 ml-7 p-2 rounded-md items-center gap-2">
                     <p className="text-[#3d3d3d] font-semibold text-[13px]">
-                      View Attachment
+                      {t("View Attachment")}
                     </p>{" "}
                     -
                     {item.ticketImg.includes(".pdf") ? (

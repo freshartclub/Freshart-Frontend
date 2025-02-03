@@ -64,7 +64,7 @@ const ShoppingCard = ({
             {data?.data?.cart?.map((item: any, index: number) => (
               <div
                 key={index}
-                className="flex justify-between items-center p-2 bg-slate-100 hover:bg-gray-50 rounded shadow-sm"
+                className="flex justify-between cursor-pointer items-center p-2 bg-slate-100 hover:bg-gray-50 rounded shadow-sm"
               >
                 <div
                   className="flex gap-4 items-center"

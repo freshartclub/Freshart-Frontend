@@ -15,17 +15,16 @@ import { setProfile } from "../../store/userSlice/userSlice";
 const FooterSection = () => {
   const isAuthorized = useAppSelector((state) => state.user.isAuthorized);
 
-  const [profile, setprofile] = useState("");
+
   const scrolToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const token = localStorage.getItem("auth_token");
 
-  useLayoutEffect(() => {
-    const p = localStorage.getItem("profile");
-    setprofile(p);
-  }, []);
+
+    const profile = localStorage.getItem("profile");
+
 
   const userProfile = useAppSelector((state) => state.user.profile);
 
@@ -34,7 +33,7 @@ const FooterSection = () => {
 
   return (
     <>
-      {profile === "artist" ? null : (
+    
         <footer className="bg-[#102030] text-white pt-16 pb-6 z-[5]">
           <div className="container mx-auto px-6 lg:px-10">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
@@ -243,7 +242,7 @@ const FooterSection = () => {
             </div>
           </div>
         </footer>
-      )}
+   
     </>
   );
 };

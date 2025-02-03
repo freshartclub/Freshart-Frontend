@@ -15,6 +15,7 @@ import P from "../ui/P";
 import { useGetFaq } from "./http/useGetFaq";
 import { useGetKbDataBase } from "./http/useGetKbDataBase";
 import { useTranslation } from "react-i18next";
+import useClickOutside from "../utils/useClickOutside";
 
 const Support = () => {
   const navigate = useNavigate();
@@ -24,6 +25,12 @@ const Support = () => {
   const [isModalOpen, setIsModelOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const closePopup = useRef(null);
+
+  useClickOutside(closePopup, () => {
+    setSearchValue("");
+  });
 
   const modalRef = useRef(null);
 
@@ -194,7 +201,10 @@ const Support = () => {
                   onChange={(e) => setSearchValue(e.target.value)}
                 />
                 {getSearchValue && (
-                  <div className="search-list-container top-12 absolute w-full mt-2 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                  <div
+                    ref={closePopup}
+                    className="search-list-container top-12 absolute w-full mt-2 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto"
+                  >
                     <ul className="list-none p-2">
                       {[...(faqData?.data || []), ...(kbData?.data || [])]
                         .filter((item) =>
@@ -335,11 +345,17 @@ const Support = () => {
       <div className="bg-[#E9E4DF] py-10">
         <div className="container mx-auto px-6">
           <div className="text-center mb-8">
+            <Button
+              variant={{ fontSize: "md", fontWeight: "400" }}
+              className="uppercase text-white bg-[#FF536B] mb-3"
+            >
+              {t("Contact Us")}
+            </Button>
             <Header
               variant={{ size: "2xl", weight: "bold", theme: "dark" }}
               className="mb-3"
             >
-              {t("Didn’t find your answer")}
+              {t("Don’t find your answer.")}
             </Header>
             <Header
               variant={{ size: "2xl", weight: "bold", theme: "dark" }}
@@ -349,9 +365,9 @@ const Support = () => {
             </Header>
           </div>
 
-          <div className="bg-white border rounded w-full mx-auto sm:p-6 p-3">
-            <div className="flex items-center flex-col md:flex-row justify-center gap-6">
-              <div className="bg-[#d1dde9] flex items-center justify-center p-2 w-[120px] h-[80px]">
+          <div className="flex justify-center">
+            <div className="flex flex-col px-8 md:flex-row bg-white py-8 pl-8">
+              <div className="bg-[#d1dde9] w-[120px] h-[80px] p-2 flex items-center justify-center mr-5">
                 <BsFillTicketPerforatedFill size="3em" />
               </div>
               <div>
@@ -363,42 +379,36 @@ const Support = () => {
                 </Header>
                 <P
                   variant={{ size: "md", theme: "dark", weight: "normal" }}
-                  // className="mb-4 pr-10"
+                  className="mb-4 pr-10"
                 >
                   {t("We are here to help you")}
                 </P>
-              </div>
-            </div>
-            <div className="flex flex-col mx-auto md:w-fit w-full items-center justify-center gap-6 mt-4">
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <Button
-                  variant={{ fontSize: "md", fontWeight: "500" }}
-                  className="uppercase font-semibold text-white bg-[#fe3d57] md:w-fit w-full"
-                >
-                  {t("Contact Us")}
-                </Button>
+                <div className="flex flex-wrap items-center justify-between gap-5">
+                  <Button
+                    onClick={handleSubmitButton}
+                    variant={{
+                      fontSize: "base",
+                      fontWeight: "500",
+                      theme: "dark",
+                    }}
+                    className="uppercase flex mt-8"
+                  >
+                    {t("Submit ticket")}
+                    <img src={arrow} alt="arrow" className="mt-1 ml-2" />
+                  </Button>
 
-                <Button
-                  onClick={handleSubmitButton}
-                  variant={{
-                    fontSize: "base",
-                    fontWeight: "500",
-                    theme: "dark",
-                  }}
-                  className="uppercase flex md:w-fit w-full items-center justify-center"
-                >
-                  {t("Submit Ticket")}
-                  <img src={arrow} alt="arrow" className="mt-1 ml-2" />
-                </Button>
+                  <Link
+                    to={
+                      isArtistProfile
+                        ? "/artist-panel/ticket/tickets"
+                        : "/tickets"
+                    }
+                    className="text-white mt-8 flex mx-auto w-fit bg-green-600 hover:bg-green-800 p-2 rounded font-semibold underline text-center justify-center"
+                  >
+                    {t("See Recent Ticket History")}
+                  </Link>
+                </div>
               </div>
-              <Link
-                to={
-                  isArtistProfile ? "/artist-panel/ticket/tickets" : "/tickets"
-                }
-                className="text-white flex mx-auto w-full bg-green-600 hover:bg-green-800 p-2 rounded font-semibold underline text-center justify-center"
-              >
-                {t("See Recent Ticket History")}
-              </Link>
             </div>
           </div>
         </div>

@@ -122,6 +122,14 @@ const App: React.FC = () => {
     }
   }, [lng]);
 
+
+ 
+    const profile = localStorage.getItem("profile");
+    console.log("Profilleee" ,  profile)
+  
+
+
+  
   if (isLoading) return <Loader />;
 
   return (
@@ -506,8 +514,8 @@ const App: React.FC = () => {
               }
             />
           </Routes>
+          {profile === "user" ? <FooterSection /> : null}
         </Suspense>
-        <FooterSection />
       </Layout>
     </AuthProvider>
   );

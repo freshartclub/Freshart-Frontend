@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import logo from "../../assets/loginlogo.png";
 import navigation_1 from "../../assets/navigation_1.png";
 
@@ -12,21 +12,28 @@ import useClickOutside from "../utils/useClickOutside";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { setProfile } from "../../store/userSlice/userSlice";
+import { FaTimes } from "react-icons/fa";
 
 const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
   const [isToogleOpen, setIsToggelOpen] = useState(false);
 
   const { t } = useTranslation();
+  const [isOpen, setIsOpen] = useState(false);
 
   const navigate = useNavigate();
   const user = useAppSelector((state) => state.user.user);
   const closePopup = useRef(null);
+  const isNotificationOpen = useRef(null);
 
   const { mutate: logOut } = useLogOutMutation();
   const disptach = useDispatch();
 
   useClickOutside(closePopup, () => {
     setIsToggelOpen(false);
+  });
+
+  useClickOutside(isNotificationOpen, () => {
+    setIsOpen(false);
   });
 
   const handleLogOut = () => {
@@ -38,12 +45,16 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
   };
 
   const handleProfile = () => {
-    disptach(setProfile("user"));
     navigate("/home", { replace: true });
     localStorage.setItem("profile", "user");
   };
+
   const handleRedirect = () => {
     navigate("/artist-panel/artdashboard");
+  };
+
+  const openNotification = () => {
+    setIsOpen((prev) => !prev);
   };
 
   const name = (val) => {
@@ -77,12 +88,23 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
           />
         </div>
 
+        <div
+          ref={isNotificationOpen}
+          className={`absolute top-20 right-0 ${
+            isOpen ? "block" : "hidden"
+          } w-full max-w-sm h-screen  bg-white transition-all duration-500`}
+        >
+          <FaTimes
+            size="1.8em"
+            className="absolute top-2 right-2 cursor-pointer"
+            onClick={() => setIsOpen(false)}
+          />
+          <p>Content that will be displayed</p>
+        </div>
+
         <div className="flex items-center gap-5 ">
-          <div className="relative">
-            <IoNotifications
-              className="cursor-pointer hidden lg:block"
-              size="1.5em"
-            />
+          <div onClick={openNotification} className="relative">
+            <IoNotifications className="cursor-pointer lg:block" size="1.5em" />
           </div>
 
           <span

@@ -95,17 +95,11 @@ const NavBar = () => {
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
-  const disptach = useDispatch();
 
   const handleProfile = () => {
     if (isArtist) {
-      disptach(setProfile("artist"));
       navigate("/artist-panel", { replace: true });
       localStorage.setItem("profile", "artist");
-    } else {
-      disptach(setProfile("user"));
-      navigate("/home", { replace: true });
-      localStorage.setItem("profile", "user");
     }
   };
 
