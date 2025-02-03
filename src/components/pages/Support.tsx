@@ -355,7 +355,7 @@ const Support = () => {
               variant={{ size: "2xl", weight: "bold", theme: "dark" }}
               className="mb-3"
             >
-              {t("Didn’t find your answer.")}
+              {t("Didn’t find your answer")}
             </Header>
             <Header
               variant={{ size: "2xl", weight: "bold", theme: "dark" }}
