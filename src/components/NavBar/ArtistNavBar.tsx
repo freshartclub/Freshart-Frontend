@@ -75,14 +75,11 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
   return (
     <div className="w-full fixed top-0 left-0 z-[99] bg-white shadow-md">
       <div className="w-full py-5 px-5 flex items-center gap-5 relative justify-between">
-        <div>
         <GiHamburgerMenu
           className="cursor-pointer block sm:hidden"
           size="2em"
           onClick={() => setSidebarOpen((prev) => !prev)}
         />
-        
-        </div>
         <div
           className={`overflow-hidden cursor-pointer ${
             sidebarOpen ? "hidden" : "block"
