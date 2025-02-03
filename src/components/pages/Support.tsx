@@ -349,7 +349,7 @@ const Support = () => {
             </Header>
           </div>
 
-          <div className="bg-white border rounded sm:w-fit w-full mx-auto sm:p-6 p-3">
+          <div className="bg-white border rounded w-full mx-auto sm:p-6 p-3">
             <div className="flex items-center flex-col md:flex-row justify-center gap-6">
               <div className="bg-[#d1dde9] flex items-center justify-center p-2 w-[120px] h-[80px]">
                 <BsFillTicketPerforatedFill size="3em" />
@@ -369,33 +369,37 @@ const Support = () => {
                 </P>
               </div>
             </div>
-            <div className="flex w-full flex-col md:flex-row items-center justify-center gap-6 mt-4">
-              <Button
-                variant={{ fontSize: "md", fontWeight: "500" }}
-                className="uppercase font-semibold text-white bg-[#fe3d57] md:w-fit w-full"
-              >
-                {t("Contact Us")}
-              </Button>
+            <div className="flex flex-col mx-auto md:w-fit w-full items-center justify-center gap-6 mt-4">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <Button
+                  variant={{ fontSize: "md", fontWeight: "500" }}
+                  className="uppercase font-semibold text-white bg-[#fe3d57] md:w-fit w-full"
+                >
+                  {t("Contact Us")}
+                </Button>
 
-              <Button
-                onClick={handleSubmitButton}
-                variant={{
-                  fontSize: "base",
-                  fontWeight: "500",
-                  theme: "dark",
-                }}
-                className="uppercase flex md:w-fit w-full items-center justify-center"
+                <Button
+                  onClick={handleSubmitButton}
+                  variant={{
+                    fontSize: "base",
+                    fontWeight: "500",
+                    theme: "dark",
+                  }}
+                  className="uppercase flex md:w-fit w-full items-center justify-center"
+                >
+                  {t("Submit Ticket")}
+                  <img src={arrow} alt="arrow" className="mt-1 ml-2" />
+                </Button>
+              </div>
+              <Link
+                to={
+                  isArtistProfile ? "/artist-panel/ticket/tickets" : "/tickets"
+                }
+                className="text-white flex mx-auto w-full bg-green-600 hover:bg-green-800 p-2 rounded font-semibold underline text-center justify-center"
               >
-                {t("Submit Ticket")}
-                <img src={arrow} alt="arrow" className="mt-1 ml-2" />
-              </Button>
+                {t("See Recent Ticket History")}
+              </Link>
             </div>
-            <Link
-              to={isArtistProfile ? "/artist-panel/ticket/tickets" : "/tickets"}
-              className="text-white flex mx-auto bg-green-600 hover:bg-green-800 p-2 rounded font-semibold underline text-center justify-center mt-4"
-            >
-              {t("See Recent Ticket History")}
-            </Link>
           </div>
         </div>
       </div>
