@@ -13,6 +13,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { setProfile } from "../../store/userSlice/userSlice";
 import { FaTimes } from "react-icons/fa";
+import { useGetNotification } from "./http/useGetNotification";
 
 const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
   const [isToogleOpen, setIsToggelOpen] = useState(false);
@@ -26,6 +27,10 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
   const isNotificationOpen = useRef(null);
 
   const { mutate: logOut } = useLogOutMutation();
+
+  const { data, isLoading } = useGetNotification();
+
+  console.log(data);
   const disptach = useDispatch();
 
   useClickOutside(closePopup, () => {
@@ -70,11 +75,14 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
   return (
     <div className="w-full fixed top-0 left-0 z-[99] bg-white shadow-md">
       <div className="w-full py-5 px-5 flex items-center gap-5 relative justify-between">
+        <div>
         <GiHamburgerMenu
           className="cursor-pointer block sm:hidden"
           size="2em"
           onClick={() => setSidebarOpen((prev) => !prev)}
         />
+        
+        </div>
         <div
           className={`overflow-hidden cursor-pointer ${
             sidebarOpen ? "hidden" : "block"
@@ -92,14 +100,26 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
           ref={isNotificationOpen}
           className={`absolute top-20 right-0 ${
             isOpen ? "block" : "hidden"
-          } w-full max-w-sm h-screen  bg-white transition-all duration-500`}
+          } w-full max-w-lg h-screen  bg-white transition-all duration-500`}
         >
           <FaTimes
             size="1.8em"
             className="absolute top-2 right-2 cursor-pointer"
             onClick={() => setIsOpen(false)}
           />
-          <p>Content that will be displayed</p>
+          <ul className="px-2 py-3 ">
+            {data?.data &&
+              data?.data?.notifications?.map((item, index) => (
+                <div className="border border-zinc-300 shadow-lg rounded-lg px-3 py-3 ">
+                  <li className="text-black  font-semibold py-1" key={index}>
+                    {item?.subject}
+                  </li>
+                  <span className="text-sm font-medium tracking-tighter leading-none">
+                    {item?.message}
+                  </span>
+                </div>
+              ))}
+          </ul>
         </div>
 
         <div className="flex items-center gap-5 ">

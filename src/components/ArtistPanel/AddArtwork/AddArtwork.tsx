@@ -1705,7 +1705,7 @@ const AddArtwork = () => {
                       name="extTags"
                       readOnly={query ? true : false}
                       className="bg-[#F9F9FC] border mb-3 border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5"
-                      placeholder={t("Enter tags (e.g., #example")}
+                      placeholder={t("Enter tags (e.g., #example)")}
                       onKeyDown={(e) => {
                         if (e.key === "Enter") {
                           e.preventDefault();
