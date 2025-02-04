@@ -9,7 +9,7 @@ export default function ReferralPopup({ onClose , user }) {
 
 
 
-  const referralLink = `http://localhost:5173/become_artist?referralCode=${user?.userId}`;
+  const referralLink = `${imageUrl.replace("/images","")}?referralCode=${user?.userId}`;
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
