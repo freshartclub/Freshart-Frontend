@@ -29,6 +29,7 @@ import { useTranslation } from "react-i18next";
 import { useAppSelector } from "../../store/typedReduxHooks";
 import Loader from "../ui/Loader";
 import CustomDropdown from "./CustomDropdown";
+import { useSearchParams } from "react-router-dom";
 
 const BecomeArtist = () => {
   const validationSchema = Yup.object().shape({
@@ -70,6 +71,11 @@ const BecomeArtist = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
 
   const options = useMemo(() => countryList(), []);
+
+  const [searchParams] = useSearchParams();
+  const referralCode = searchParams.get("referralCode");
+
+  console.log(referralCode);
 
   const [email, setEmail] = useState("");
 
@@ -139,16 +145,20 @@ const BecomeArtist = () => {
   }, []);
 
   useEffect(() => {
-    const getGeoLocation = async () => {
-      const request = await fetch("https://ipapi.co/json");
-      const jsonResponse = await request.json();
-      setGeoLocation(jsonResponse);
+    // const getGeoLocation = async () => {
+    //   const request = await fetch("https://ipapi.co/json");
+    //   const jsonResponse = await request.json();
+    //   setGeoLocation(jsonResponse);
 
-      setCountryCode(jsonResponse?.country_code.toLowerCase());
-      setValue("country", jsonResponse?.country_name);
-    };
-    getGeoLocation();
+    //   setCountryCode(jsonResponse?.country_code.toLowerCase());
+    //   setValue("country", jsonResponse?.country_name);
+    // };
+    // getGeoLocation();
+
+    setValue("country", "Spain");
   }, []);
+
+  console.log(countryCode);
 
   const countryValue = getValues("country");
 
@@ -293,6 +303,7 @@ const BecomeArtist = () => {
 
     langCode = langCode?.toUpperCase();
     formData.append("langCode", langCode);
+    formData.append("referralCode" , referralCode)
 
     await mutateAsync(formData).then(() => {
       setPopUp(true);
@@ -318,7 +329,7 @@ const BecomeArtist = () => {
     return true;
   };
 
-  if (!countryCode) return <Loader />;
+  // if (!countryCode) return <Loader />;
 
   return (
     <>
@@ -445,7 +456,7 @@ const BecomeArtist = () => {
                       <PhoneInput
                         className="appearance-none  outline-none rounded w-full text-gray-700 leading-tight focus:outline-none"
                         placeholder={t("Enter Phone number")}
-                        defaultCountry={countryCode}
+                        defaultCountry={"es"}
                         disabled={isValidatePhone}
                         value={getValues("phone")}
                         onChange={(val) => {
@@ -649,6 +660,19 @@ const BecomeArtist = () => {
                     </span>
                   </div>
                 </div>
+
+                {referralCode ? (
+                  <div className="mb-4 w-full">
+                    <label className="block text-gray-700 text-sm font-bold mb-2">
+                      {t("Referral Code")}
+                    </label>
+                    <input
+                      readOnly
+                      value={referralCode}
+                      className="appearance-none border pointer-events-none  rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
+                    />
+                  </div>
+                ) : null}
 
                 <div className="mb-8 ">
                   <div className="border-2 border-dashed border-gray-300 p-6 rounded-lg text-center cursor-pointer  ">

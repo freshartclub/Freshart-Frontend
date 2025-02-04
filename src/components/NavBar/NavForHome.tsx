@@ -219,14 +219,14 @@ const NavForHome = () => {
                     isFocused ? "right-0 pr-2" : "left-0 pl-2"
                   }`}
                 >
-                  {inputValue ? (
+                  {inputValue === "" ? (
+                    <GoSearch size="1.3em" />
+                  ) : (
                     <GoX
                       size="1.3em"
                       className="cursor-pointer z-20"
                       onClick={clearInput}
                     />
-                  ) : (
-                    <GoSearch size="1.3em" />
                   )}
                 </span>
               </div>

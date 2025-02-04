@@ -1,8 +1,10 @@
-import React, { useState } from "react";
 import { BsDot } from "react-icons/bs";
-import { GoPlus } from "react-icons/go";
+
 import { NavLink } from "react-router-dom";
 import AllCircle from "./AllCircle";
+import { useState } from "react";
+import { useGetCircle } from "./https/useGetCircle";
+import Loader from "../ui/Loader";
 
 const Circle = () => {
   const [activeTab, setActiveTab] = useState("All");
@@ -13,11 +15,22 @@ const Circle = () => {
     Draft: 32,
   };
 
+  const {data , isLoading} = useGetCircle()
+
+
+  
+
+
   const handleTabClick = (tab) => {
     setActiveTab(tab);
     // You can add your filtering logic here
     console.log(`Selected Tab: ${tab}`);
   };
+
+
+  if(isLoading){
+    return <Loader/>
+  }
 
   return (
     <div className="py-7 px-2">
@@ -87,7 +100,7 @@ const Circle = () => {
         </div>
 
 <div className="mt-6">
-  {activeTab === 'All' && <AllCircle/>}
+  {activeTab === 'All' && <AllCircle data={data} />}
   {activeTab === 'Published' && 'published'}
   {activeTab === 'Draft' && 'draft'}
   

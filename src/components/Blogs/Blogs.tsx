@@ -28,11 +28,11 @@ const profile_data = [
 const Blogs = () => {
   return (
     <div>
-      <img src={banner} alt="banner" className="w-full" />
+    
       <div className="container mx-auto sm:px-6 px-3">
         <div className="flex sm:justify-between w-full flex-wrap justify-center sm:gap-0 gap-8">
-          <img src={profile_image} alt="" className="-mt-[50px]" />
-          <div className="flex gap-10">
+          {/* <img src={profile_image} alt="" className="-mt-[50px]" /> */}
+          {/* <div className="flex gap-10">
             {profile_data.map((item, index) => (
               <>
                 <Link
@@ -53,7 +53,7 @@ const Blogs = () => {
                 </Link>
               </>
             ))}
-          </div>
+          </div> */}
         </div>
         <FreshArt />
       </div>

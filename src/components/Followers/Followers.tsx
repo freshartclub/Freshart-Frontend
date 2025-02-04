@@ -132,10 +132,10 @@ const Followers = () => {
 
   return (
     <div>
-      <img src={banner} alt="banner" className="w-full" />
+      {/* <img src={banner} alt="banner" className="w-full" /> */}
       <div className="container mx-auto sm:px-6 px-3">
         <div>
-          <div className="flex sm:justify-between w-full flex-wrap justify-center sm:gap-0 gap-8">
+          {/* <div className="flex sm:justify-between w-full flex-wrap justify-center sm:gap-0 gap-8">
             <img src={profile_image} alt="" className="-mt-[50px]" />
             <div className="flex gap-10">
               {profile_data.map((item, index) => (
@@ -159,7 +159,7 @@ const Followers = () => {
                 </>
               ))}
             </div>
-          </div>
+          </div> */}
 
           <div className="lg:mt-20 md:mt-10 mt-5">
             <Header variant={{ size: "2xl", theme: "dark", weight: "bold" }}>

@@ -19,6 +19,7 @@ import OrderApprove from "./OrderApprove/OrderApprove";
 import OrdersDetail from "./Orderdetail/OrderDetails";
 import Orders from "./Orders";
 import Sidebar from "./Sidebar";
+import Circle from "../CIrcle/Circle";
 
 const ArtistPanel = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -69,7 +70,9 @@ const ArtistPanel = () => {
             <Route path="artwork/add" element={<AddArtwork />} />
             <Route path="edit-artistprofile" element={<ArtistProfile />} />
             <Route path="user/settings" element={<Settings />} />
-            <Route path="circle" element={<CirclePage />} />
+            <Route path="circle" element={<Circle />} />
+            <Route path="circle/circlepage" element={<CirclePage />} />
+
             <Route path="ticket/tickets" element={<TicketHistory />} />
             <Route path="/ticket" element={<Support />} />
             <Route path="/new_ticket" element={<NewTicket />} />

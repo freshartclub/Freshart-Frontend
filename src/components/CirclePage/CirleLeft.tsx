@@ -47,7 +47,7 @@ const social_link = [
   },
 ];
 
-const CirleLeft = () => {
+const CirleLeft = ({data}) => {
   return (
     <div className="2xl:w-[25%] xl:w-[30%] lg:w-[35%] w-full">
       <div className="shadow-xl bg-white py-6 items-center justify-center rounded-xl border border-[#919EAB20] flex">
@@ -78,8 +78,7 @@ const CirleLeft = () => {
           variant={{ size: "base", theme: "dark", weight: "medium" }}
           className="py-6"
         >
-          Tart I love sugar plum I love oat cake. Sweet roll caramels I love
-          jujubes. Topping cake wafer.
+      {data?.data?.description}
         </P>
         <div className="">
           {info_data.map((item, index) => (

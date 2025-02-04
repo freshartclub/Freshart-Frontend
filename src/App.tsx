@@ -409,7 +409,7 @@ const App: React.FC = () => {
               }
             />
             <Route
-              path="/circle"
+              path="/circlepage"
               element={
                 <AuthGuard>
                   <CirclePage />

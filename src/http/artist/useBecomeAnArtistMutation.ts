@@ -5,7 +5,7 @@ import axiosInstance from "../../components/utils/axios";
 import { AUTH_ENDPOINTS } from "../apiEndPoints/Auth";
 
 async function becomeAnArtist(input: any) {
-  return await axiosInstance.post(AUTH_ENDPOINTS.BecomeAnArtist, input, {
+  return await axiosInstance.post(`${AUTH_ENDPOINTS.BecomeAnArtist}?referralCode=${input?.referralCode}`, input, {
     headers: {
       "Content-Type": "multipart/form-data",
     },

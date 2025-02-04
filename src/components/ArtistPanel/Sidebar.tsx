@@ -62,6 +62,7 @@ const sections = [
     label: "Circle",
     icon: circle,
     path: "circle",
+    submenu: [{ key: "circle", label: "Circle List", path: "circle" }],
   },
   {
     key: "mail",

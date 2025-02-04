@@ -19,8 +19,8 @@ async function fetchData(selectedArtwork) {
 
 export const useGetArtWorkList = (selectedArtwork) => {
   return useQuery({
-    queryKey: ["Name"],
+    queryKey: [ARTTIST_ENDPOINTS.GetArtWorkList,selectedArtwork],
     queryFn: () => fetchData(selectedArtwork),
-    enabled: true,
+    // enabled: true,
   });
 };

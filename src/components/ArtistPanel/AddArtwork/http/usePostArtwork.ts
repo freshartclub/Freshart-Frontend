@@ -1,8 +1,9 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import axiosInstance from "../../../utils/axios";
 import { useTranslation } from "react-i18next";
+import { ARTTIST_ENDPOINTS } from "../../../../http/apiEndPoints/Artist";
 
 async function usePostArtWork(input: any) {
   return await axiosInstance.post(
@@ -22,6 +23,9 @@ const usePostArtWorkMutation = () => {
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
 
+  const queryClient = useQueryClient();
+
+
   return useMutation({
     mutationFn: usePostArtWork,
 
@@ -35,6 +39,11 @@ const usePostArtWorkMutation = () => {
       );
       toast.success(t(res.data.message), {
         duration: 3000,
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: [ARTTIST_ENDPOINTS.GetNotifications],
+        refetchType: "all",
       });
     },
     onError: (error) => {

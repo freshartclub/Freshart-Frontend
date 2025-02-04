@@ -11,12 +11,16 @@ import { imageUrl } from "../utils/baseUrls";
 import useClickOutside from "../utils/useClickOutside";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
-import { setProfile } from "../../store/userSlice/userSlice";
-import { FaTimes } from "react-icons/fa";
+
 import { useGetNotification } from "./http/useGetNotification";
+import { RxCross2 } from "react-icons/rx";
+import useReadNotification from "./http/useReadNotification";
+import useDeleteNotification from "./http/useDeleteNotification";
+import ReferralPopup from "./ReferralPopup";
 
 const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
   const [isToogleOpen, setIsToggelOpen] = useState(false);
+  const [popUp, setPopUp] = useState(false);
 
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
@@ -30,6 +34,10 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
 
   const { data, isLoading } = useGetNotification();
 
+  const {mutateAsync , isPending} = useReadNotification()
+
+  const {mutate } = useDeleteNotification()
+
   console.log(data);
   const disptach = useDispatch();
 
@@ -40,6 +48,27 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
   useClickOutside(isNotificationOpen, () => {
     setIsOpen(false);
   });
+
+
+  const handleReadNotification = async (id) => {
+    try {
+      await mutateAsync(id);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleDeleteNotification = async (id) => {
+    try {
+       mutate(id);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleInvitePopUp = ()=>{
+    setPopUp((prev)=> !prev)
+  }
 
   const handleLogOut = () => {
     try {
@@ -72,6 +101,9 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
     return fullName.trim();
   };
 
+  const unreadCount = data?.data?.notifications?.filter(notification => !notification.isRead)?.length || 0;
+
+
   return (
     <div className="w-full fixed top-0 left-0 z-[99] bg-white shadow-md">
       <div className="w-full py-5 px-5 flex items-center gap-5 relative justify-between">
@@ -99,29 +131,51 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
             isOpen ? "block" : "hidden"
           } w-full max-w-lg h-screen  bg-white transition-all duration-500`}
         >
-          <FaTimes
-            size="1.8em"
-            className="absolute top-2 right-2 cursor-pointer"
-            onClick={() => setIsOpen(false)}
-          />
-          <ul className="px-2 py-3 ">
-            {data?.data &&
+          <div className="flex items-center justify-end gap-3 px-5">
+            <button   
+            
+            onClick={()=>handleDeleteNotification()}
+            className="px-3 py-2 border border-zinc-200 rounded-lg font-bold bg-zinc-50 hover:bg-zinc-100">
+              Remove All
+            </button>
+            <button
+              onClick={openNotification}
+              className="px-3 py-2 border border-zinc-200 rounded-lg font-bold bg-zinc-50 hover:bg-zinc-100"
+            >
+              Close
+            </button>
+          </div>
+
+          <ul className="px-2 py-3 flex flex-col gap-3 ">
+            {data?.data?.notifications?.length ?
               data?.data?.notifications?.map((item, index) => (
-                <div className="border border-zinc-300 shadow-lg rounded-lg px-3 py-3 ">
+                <div className={`border border-zinc-300 shadow-lg rounded-lg px-3 py-3 relative flex flex-col ${item?.isRead  ? "" : "bg-zinc-100" }`}>
                   <li className="text-black  font-semibold py-1" key={index}>
                     {item?.subject}
                   </li>
-                  <span className="text-sm font-medium tracking-tighter leading-none">
+                  <span className="text-sm font-medium tracking-tighter  ">
                     {item?.message}
                   </span>
+              {item?.isRead ? null :     <button  
+                  onClick={()=>handleReadNotification(item?._id)}
+                  className="px-2 py-1 border border-zinc-200  mt-2 hover:bg-zinc-300 text-sm font-semibold tracking-tight leading-none">Mark As Read</button> }
+                  <RxCross2
+                
+                    size="1.8em"
+                    className="absolute top-2 right-2 cursor-pointer"
+                    onClick={() => handleDeleteNotification(item?._id)}
+                  />
                 </div>
-              ))}
+              )) :   <li className="text-black  font-semibold py-1">
+             No Notification
+            </li> }
           </ul>
         </div>
 
         <div className="flex items-center gap-5 ">
           <div onClick={openNotification} className="relative">
             <IoNotifications className="cursor-pointer lg:block" size="1.5em" />
+          <div className="w-5 h-5 bg-red-500 text-black rounded-full -top-3 right-0 absolute flex items-center justify-center font-semibold">{unreadCount}</div>
           </div>
 
           <span
@@ -172,6 +226,15 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
                 {t("Notification")}
               </Link>
 
+
+              <span
+                className="font-medium hover:bg-zinc-200 transition-all duration-200"
+              
+                onClick={handleInvitePopUp}
+              >
+                {t("Invite Artist")}
+              </span>
+
               <button
                 className="font-medium hover:bg-zinc-200"
                 onClick={handleProfile}
@@ -188,6 +251,10 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
             </div>
           )}
         </div>
+
+
+   
+        {popUp && <ReferralPopup onClose={() => setPopUp(false)}  user={user}/>}
       </div>
     </div>
   );

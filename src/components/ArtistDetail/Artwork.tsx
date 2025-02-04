@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import { useTranslation } from "react-i18next";
 import { MdModeEditOutline } from "react-icons/md";
 import { NavLink } from "react-router-dom";
@@ -17,7 +17,7 @@ const Artwork = () => {
   const [selectedArtwork, setSelectedArtwork] = useState("Discipline");
   const isArtProvider = useAppSelector((state) => state.user.isArtProvider);
 
-  const { data, isLoading, refetch, isRefetching } =
+  const { data, isLoading} =
     useGetArtWorkList(selectedArtwork);
 
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -28,9 +28,7 @@ const Artwork = () => {
     setIsPopupOpen(false);
   };
 
-  useEffect(() => {
-    refetch();
-  }, [selectedArtwork]);
+ 
 
   const handleArtworkSelect = (name: string) => {
     setSelectedArtwork(name);
@@ -48,7 +46,7 @@ const Artwork = () => {
 
   const { t } = useTranslation();
 
-  if (isLoading) return <Loader />;
+
 
   return (
     <div className="px-3">
@@ -158,7 +156,7 @@ const Artwork = () => {
           </div>
         </div>
       </div>
-      {isRefetching ? (
+      {isLoading ? (
         <Loader />
       ) : (
         <div>
