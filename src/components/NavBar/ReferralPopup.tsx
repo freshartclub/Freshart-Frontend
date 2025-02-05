@@ -9,7 +9,7 @@ export default function ReferralPopup({ onClose , user }) {
 
 
 
-  const referralLink = `${imageUrl.replace("/images","")}?referralCode=${user?.userId}`;
+  const referralLink = `${imageUrl.replace("/images","")}/become_artist?referralCode=${user?.userId}`;
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
@@ -20,7 +20,7 @@ export default function ReferralPopup({ onClose , user }) {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-80 relative">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-[30vw] relative">
         
         <button
           onClick={onClose}

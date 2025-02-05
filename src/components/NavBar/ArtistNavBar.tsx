@@ -228,7 +228,7 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
 
 
               <span
-                className="font-medium hover:bg-zinc-200 transition-all duration-200"
+                className="font-medium hover:bg-zinc-200 transition-all duration-200 cursor-pointer"
               
                 onClick={handleInvitePopUp}
               >
