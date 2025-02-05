@@ -75,8 +75,6 @@ const BecomeArtist = () => {
   const [searchParams] = useSearchParams();
   const referralCode = searchParams.get("referralCode");
 
-  console.log(referralCode);
-
   const [email, setEmail] = useState("");
 
   const {
@@ -157,8 +155,6 @@ const BecomeArtist = () => {
 
     setValue("country", "Spain");
   }, []);
-
-  console.log(countryCode);
 
   const countryValue = getValues("country");
 
@@ -303,9 +299,13 @@ const BecomeArtist = () => {
 
     langCode = langCode?.toUpperCase();
     formData.append("langCode", langCode);
-    formData.append("referralCode" , referralCode)
 
-    await mutateAsync(formData).then(() => {
+    const newData = {
+      formData: formData,
+      referralCode: referralCode,
+    };
+
+    await mutateAsync(newData).then(() => {
       setPopUp(true);
     });
   });
@@ -329,396 +329,392 @@ const BecomeArtist = () => {
     return true;
   };
 
-  // if (!countryCode) return <Loader />;
-
   return (
-    <>
-      <div className="relative">
-        <div
-          className={`${
-            popUp ? "bg-[#F9F7F6] pointer-events-none blur-sm" : "bg-[#F9F7F6]"
-          }`}
-        >
-          <div className="container mx-auto sm:px-6 px-2">
-            <div className="xl:w-[70%] lg:w-[90%] w-full mx-auto pt-4 sm:py-10">
-              <form
-                onSubmit={onSubmit}
-                className="bg-white rounded px-2 sm:px-8 pt-6 pb-8 mb-4"
+    <div className="relative">
+      <div
+        className={`${
+          popUp ? "bg-[#F9F7F6] pointer-events-none blur-sm" : "bg-[#F9F7F6]"
+        }`}
+      >
+        <div className="container mx-auto sm:px-6 px-2">
+          <div className="xl:w-[70%] lg:w-[90%] w-full mx-auto pt-4 sm:py-10">
+            <form
+              onSubmit={onSubmit}
+              className="bg-white rounded px-2 sm:px-8 pt-6 pb-8 mb-4"
+            >
+              <Header
+                variant={{ size: "3xl", weight: "bold", theme: "dark" }}
+                className="text-center mb-4"
               >
-                <Header
-                  variant={{ size: "3xl", weight: "bold", theme: "dark" }}
-                  className="text-center mb-4"
-                >
-                  {t("Become an Artist")}
-                </Header>
-                <P
-                  variant={{ size: "md", theme: "dark", weight: "normal" }}
-                  className="text-sm text-gray-600 mb-8 text-center"
-                >
-                  {t(
-                    "Please fill the form below to become an artist. Feel free to add as much detail as needed. Our admin will contact you."
-                  )}
-                </P>
+                {t("Become an Artist")}
+              </Header>
+              <P
+                variant={{ size: "md", theme: "dark", weight: "normal" }}
+                className="text-sm text-gray-600 mb-8 text-center"
+              >
+                {t(
+                  "Please fill the form below to become an artist. Feel free to add as much detail as needed. Our admin will contact you."
+                )}
+              </P>
 
-                <div className="flex sm:flex-row flex-col justify-between">
-                  <div className="mb-4 sm:w-[32%] w-full">
-                    <label className="block text-gray-700 text-sm font-bold mb-2">
-                      {t("Artist Name")} *
-                    </label>
-                    <input
-                      {...register("artistName")}
-                      className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
-                      placeholder={t("Enter Artist Name")}
-                    />
-                    {errors.artistName && (
-                      <span className="text-red-500 text-xs">
-                        {t(`${errors.artistName.message}`)}
-                      </span>
-                    )}
-                  </div>
-                  <div className="mb-4 sm:w-[32%] w-full">
-                    <label className="block text-gray-700 text-sm font-bold mb-2">
-                      {t("Artist Surname 1")}
-                    </label>
-                    <input
-                      {...register("artistSurname1")}
-                      className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
-                      placeholder={t("Enter Artist Surname 1")}
-                    />
-                    {errors.artistSurname1 && (
-                      <span className="text-red-500 text-xs">
-                        {t(`${errors.artistSurname1.message}`)}
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="mb-4 sm:w-[32%] w-full">
-                    <label className="block text-gray-700 text-sm font-bold mb-2">
-                      {t("Artist Surname 2")}
-                    </label>
-                    <input
-                      {...register("artistSurname2")}
-                      className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
-                      placeholder={t("Enter Artist Surname 2")}
-                    />
-                    {errors.artistSurname2 && (
-                      <span className="text-red-500 text-xs">
-                        {t(`${errors.artistSurname2.message}`)}
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                <div className="flex sm:flex-row flex-col justify-between w-full">
-                  <div className="sm:mb-4 mb-2 w-full">
-                    <label className="block text-gray-700 text-sm font-bold mb-2">
-                      {t("Email")} *
-                    </label>
-
-                    <div className="flex w-full sm:flex-row flex-col gap-2">
-                      <input
-                        {...register("email")}
-                        onChange={(e) => setEmail(e.target.value)}
-                        disabled={isValidateEmail}
-                        className={`appearance-none border rounded w-full p-3 text-gray-700 leading-tight focus:outline-none `}
-                        placeholder={t("Enter Email")}
-                      />
-
-                      <EmailVerification
-                        setVerificationCode={setVerificationCode}
-                        verificationCode={verificationCode}
-                        validateEmailOtp={validateEmailOtp}
-                        verifyOtpPending={verifyOtpPending}
-                        handleRevalidateEmail={handleRevalidateEmail}
-                        setIsModalOpen={setIsModalOpen}
-                        isModalOpen={isModalOpen}
-                        sendMailPending={sendMailPending}
-                        validateEmail={validateEmail}
-                        handleCloseModel={handleCloseModel}
-                        watchEmail={email}
-                      />
-                    </div>
-
-                    {errors.email && (
-                      <span className="text-red-500 text-xs">
-                        {t(`${errors.email.message}`)}
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                <div className="mb-4 w-full">
-                  <div className="sm:mb-4 mb-2 w-full">
-                    <label className="block text-gray-700 text-sm font-bold mb-2">
-                      {t("Phone Number")} *
-                    </label>
-                    <div className="flex sm:flex-row flex-col w-full gap-2">
-                      <PhoneInput
-                        className="appearance-none  outline-none rounded w-full text-gray-700 leading-tight focus:outline-none"
-                        placeholder={t("Enter Phone number")}
-                        defaultCountry={"es"}
-                        disabled={isValidatePhone}
-                        value={getValues("phone")}
-                        onChange={(val) => {
-                          setValue("phone", val);
-                        }}
-                      />
-
-                      <PhoneVerification
-                        handleSendOtp={handleSendOtp}
-                        requestOtpPending={requestOtpPending}
-                        isModalOpenPhone={isModalOpenPhone}
-                        setIsModalOpenPhone={setIsModalOpenPhone}
-                        phoneNumber={phoneNumber}
-                        setPhoneNumber={setPhoneNumber}
-                        handleRevalidatePhone={handleRevalidatePhone}
-                        verifyPhoneOtpPending={verifyPhoneOtpPending}
-                        isOtpVerify={isOtpVerify}
-                        setVerificationCode={setVerificationCode}
-                        verificationCode={verificationCode}
-                        validatePhone={validatePhone}
-                        validateEmail={validateEmail}
-                      />
-                    </div>
-
-                    {errors.phone && (
-                      <span className="text-red-500 text-xs">
-                        {t(`${errors.phone.message}`)}
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                <div className="flex sm:flex-row flex-col justify-between">
-                  <div className="mb-4 sm:w-[49%] w-full">
-                    <label className="block text-gray-700 text-sm font-bold mb-2">
-                      {t("Discipline")} *
-                    </label>
-                    <select
-                      {...register("discipline")}
-                      className="block appearance-none w-full bg-white border px-4 py-3 pr-8 rounded leading-tight focus:outline-none"
-                    >
-                      <option value="">{t("Select Discipline")}</option>
-                      {isLoading
-                        ? t("Loading...")
-                        : diciplineOption?.map((item, i: number) => (
-                            <option key={i} className="text-black" value={item}>
-                              {t(item)}
-                            </option>
-                          ))}
-                    </select>
-                    {errors.discipline && (
-                      <span className="text-red-500 text-xs">
-                        {t(`${errors.discipline.message}`)}
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="sm:mb-4 mb-2 sm:w-[49%] w-full">
-                    <label className="block text-gray-700 text-sm font-bold mb-2">
-                      {t("Style")} *
-                    </label>
-
-                    <Controller
-                      name="style"
-                      control={control}
-                      rules={{ required: t("Style is required") }}
-                      render={({ field }) => (
-                        <Select
-                          {...field}
-                          placeholder={t("Select")}
-                          isMulti
-                          options={filterStyle?.map((item: string) => ({
-                            value: t(item.styleName),
-                            label: t(item.styleName),
-                          }))}
-                          className="block appearance-none w-full bg-white rounded leading-tight focus:outline-none lg:py-1"
-                        />
-                      )}
-                    />
-
-                    {errors.style && (
-                      <span className="text-red-500 text-xs">
-                        {t(`${errors.style.message}`)}
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                <div className="mb-4 w-full">
+              <div className="flex sm:flex-row flex-col justify-between">
+                <div className="mb-4 sm:w-[32%] w-full">
                   <label className="block text-gray-700 text-sm font-bold mb-2">
-                    {t("Country")} *
+                    {t("Artist Name")} *
+                  </label>
+                  <input
+                    {...register("artistName")}
+                    className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
+                    placeholder={t("Enter Artist Name")}
+                  />
+                  {errors.artistName && (
+                    <span className="text-red-500 text-xs">
+                      {t(`${errors.artistName.message}`)}
+                    </span>
+                  )}
+                </div>
+                <div className="mb-4 sm:w-[32%] w-full">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    {t("Artist Surname 1")}
+                  </label>
+                  <input
+                    {...register("artistSurname1")}
+                    className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
+                    placeholder={t("Enter Artist Surname 1")}
+                  />
+                  {errors.artistSurname1 && (
+                    <span className="text-red-500 text-xs">
+                      {t(`${errors.artistSurname1.message}`)}
+                    </span>
+                  )}
+                </div>
+
+                <div className="mb-4 sm:w-[32%] w-full">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    {t("Artist Surname 2")}
+                  </label>
+                  <input
+                    {...register("artistSurname2")}
+                    className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
+                    placeholder={t("Enter Artist Surname 2")}
+                  />
+                  {errors.artistSurname2 && (
+                    <span className="text-red-500 text-xs">
+                      {t(`${errors.artistSurname2.message}`)}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex sm:flex-row flex-col justify-between w-full">
+                <div className="sm:mb-4 mb-2 w-full">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    {t("Email")} *
                   </label>
 
-                  <CustomDropdown
-                    control={control}
-                    countryValue={countryValue}
-                    options={options}
-                    name="country"
-                    isActiveStatus="active"
-                  />
+                  <div className="flex w-full sm:flex-row flex-col gap-2">
+                    <input
+                      {...register("email")}
+                      onChange={(e) => setEmail(e.target.value)}
+                      disabled={isValidateEmail}
+                      className={`appearance-none border rounded w-full p-3 text-gray-700 leading-tight focus:outline-none `}
+                      placeholder={t("Enter Email")}
+                    />
 
-                  {errors.value && (
+                    <EmailVerification
+                      setVerificationCode={setVerificationCode}
+                      verificationCode={verificationCode}
+                      validateEmailOtp={validateEmailOtp}
+                      verifyOtpPending={verifyOtpPending}
+                      handleRevalidateEmail={handleRevalidateEmail}
+                      setIsModalOpen={setIsModalOpen}
+                      isModalOpen={isModalOpen}
+                      sendMailPending={sendMailPending}
+                      validateEmail={validateEmail}
+                      handleCloseModel={handleCloseModel}
+                      watchEmail={email}
+                    />
+                  </div>
+
+                  {errors.email && (
                     <span className="text-red-500 text-xs">
-                      {t(`${errors.value.message}`)}
+                      {t(`${errors.email.message}`)}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              <div className="mb-4 w-full">
+                <div className="sm:mb-4 mb-2 w-full">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    {t("Phone Number")} *
+                  </label>
+                  <div className="flex sm:flex-row flex-col w-full gap-2">
+                    <PhoneInput
+                      className="appearance-none  outline-none rounded w-full text-gray-700 leading-tight focus:outline-none"
+                      placeholder={t("Enter Phone number")}
+                      defaultCountry={"es"}
+                      disabled={isValidatePhone}
+                      value={getValues("phone")}
+                      onChange={(val) => {
+                        setValue("phone", val);
+                      }}
+                    />
+
+                    <PhoneVerification
+                      handleSendOtp={handleSendOtp}
+                      requestOtpPending={requestOtpPending}
+                      isModalOpenPhone={isModalOpenPhone}
+                      setIsModalOpenPhone={setIsModalOpenPhone}
+                      phoneNumber={phoneNumber}
+                      setPhoneNumber={setPhoneNumber}
+                      handleRevalidatePhone={handleRevalidatePhone}
+                      verifyPhoneOtpPending={verifyPhoneOtpPending}
+                      isOtpVerify={isOtpVerify}
+                      setVerificationCode={setVerificationCode}
+                      verificationCode={verificationCode}
+                      validatePhone={validatePhone}
+                      validateEmail={validateEmail}
+                    />
+                  </div>
+
+                  {errors.phone && (
+                    <span className="text-red-500 text-xs">
+                      {t(`${errors.phone.message}`)}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex sm:flex-row flex-col justify-between">
+                <div className="mb-4 sm:w-[49%] w-full">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    {t("Discipline")} *
+                  </label>
+                  <select
+                    {...register("discipline")}
+                    className="block appearance-none w-full bg-white border px-4 py-3 pr-8 rounded leading-tight focus:outline-none"
+                  >
+                    <option value="">{t("Select Discipline")}</option>
+                    {isLoading
+                      ? t("Loading...")
+                      : diciplineOption?.map((item, i: number) => (
+                          <option key={i} className="text-black" value={item}>
+                            {t(item)}
+                          </option>
+                        ))}
+                  </select>
+                  {errors.discipline && (
+                    <span className="text-red-500 text-xs">
+                      {t(`${errors.discipline.message}`)}
                     </span>
                   )}
                 </div>
 
-                <div className="flex sm:flex-row flex-col justify-between">
-                  <div className="mb-4 sm:w-[32%] w-full">
-                    <label className="block text-gray-700 text-sm font-bold mb-2">
-                      {t("Zip Code")} *
-                    </label>
-                    <input
-                      {...register("zipCode")}
-                      className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
-                      placeholder={t("Enter Zip Code")}
-                    />
-                    {errors.zipCode && (
-                      <span className="text-red-500 text-xs">
-                        {t(`${errors.zipCode.message}`)}
-                      </span>
+                <div className="sm:mb-4 mb-2 sm:w-[49%] w-full">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    {t("Style")} *
+                  </label>
+
+                  <Controller
+                    name="style"
+                    control={control}
+                    rules={{ required: t("Style is required") }}
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        placeholder={t("Select")}
+                        isMulti
+                        options={filterStyle?.map((item: string) => ({
+                          value: t(item.styleName),
+                          label: t(item.styleName),
+                        }))}
+                        className="block appearance-none w-full bg-white rounded leading-tight focus:outline-none lg:py-1"
+                      />
                     )}
-                  </div>
+                  />
 
-                  <div className="mb-4 sm:w-[32%] w-full">
-                    <label className="block text-gray-700 text-sm font-bold mb-2">
-                      {t("City")} *
-                    </label>
-                    <input
-                      {...register("city")}
-                      className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
-                      placeholder={t("Enter City")}
-                    />
-                    {errors.city && (
-                      <span className="text-red-500 text-xs">
-                        {t(`${errors.city.message}`)}
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="mb-4 sm:w-[32%] w-full">
-                    <label className="block text-gray-700 text-sm font-bold mb-2">
-                      {t("Region")} *
-                    </label>
-                    <input
-                      {...register("region")}
-                      className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
-                      placeholder={t("Enter Region")}
-                    />
-                    {errors.region && (
-                      <span className="text-red-500 text-xs">
-                        {t(`${errors.region.message}`)}
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                <div className="flex sm:flex-row flex-col justify-between">
-                  <div className="sm:mb-4 mb-2 sm:w-[49%] w-full">
-                    <label className="block text-gray-700 text-sm font-bold mb-2">
-                      {t("Social Media Reference")}
-                    </label>
-                    <select
-                      {...register("socialMedia")}
-                      className="block appearance-none w-full bg-white border px-4 py-3 pr-8 rounded leading-tight focus:outline-none"
-                    >
-                      <option value="">{t("Select Social Media")}</option>
-                      {socialMediaPicklistLoading ? (
-                        <option>Loding...</option>
-                      ) : (
-                        GetOutSocialMedia[0]?.picklist?.map((item, index) => (
-                          <option key={index} value={item.name}>
-                            {t(item.name)}
-                          </option>
-                        ))
-                      )}
-                    </select>
-                    {errors.socialMedia && (
-                      <span className="text-red-500 text-xs">
-                        {t(`${errors.socialMedia.message}`)}
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="mb-4 sm:w-[49%] w-full">
-                    <label className="block text-gray-700 text-sm font-bold mb-2">
-                      {t("URL")}
-                    </label>
-                    <input
-                      {...register("website", {
-                        required: t("Website URL is required"),
-                      })}
-                      onChange={(val) => validateWebsite(val)}
-                      className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
-                      placeholder="https://www.example.com"
-                    />
-
+                  {errors.style && (
                     <span className="text-red-500 text-xs">
-                      {validateError && t(validateError)}
+                      {t(`${errors.style.message}`)}
                     </span>
-                  </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="mb-4 w-full">
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  {t("Country")} *
+                </label>
+
+                <CustomDropdown
+                  control={control}
+                  countryValue={countryValue}
+                  options={options}
+                  name="country"
+                  isActiveStatus="active"
+                />
+
+                {errors.value && (
+                  <span className="text-red-500 text-xs">
+                    {t(`${errors.value.message}`)}
+                  </span>
+                )}
+              </div>
+
+              <div className="flex sm:flex-row flex-col justify-between">
+                <div className="mb-4 sm:w-[32%] w-full">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    {t("Zip Code")} *
+                  </label>
+                  <input
+                    {...register("zipCode")}
+                    className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
+                    placeholder={t("Enter Zip Code")}
+                  />
+                  {errors.zipCode && (
+                    <span className="text-red-500 text-xs">
+                      {t(`${errors.zipCode.message}`)}
+                    </span>
+                  )}
                 </div>
 
-                {referralCode ? (
-                  <div className="mb-4 w-full">
-                    <label className="block text-gray-700 text-sm font-bold mb-2">
-                      {t("Referral Code")}
-                    </label>
-                    <input
-                      readOnly
-                      value={referralCode}
-                      className="appearance-none border pointer-events-none  rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
-                    />
-                  </div>
-                ) : null}
-
-                <div className="mb-8 ">
-                  <div className="border-2 border-dashed border-gray-300 p-6 rounded-lg text-center cursor-pointer  ">
-                    <div className="flex justify-center items-center">
-                      <img src={browser} alt="browse-icon" />
-                    </div>
-                    <label className="block text-gray-700 sm:text-xl text-lg font-bold mb-2 text-center ">
-                      {t("Upload Your CV Here")} *
-                    </label>
-                    <input
-                      {...register("uploadDocs", { required: true })}
-                      type="file"
-                      accept=".pdf,.doc,.docx,.xls,.xlsx"
-                      onChange={(event) => {
-                        const file = event.target.files[0];
-                        setUploadDocs(file);
-                      }}
-                      id="file-upload"
-                    />
-                    <p className="text-gray-600 sm:text-md text-base mt-4">
-                      {t("PDF, DOC, and Excel formats, up to 5MB")}
-                    </p>
-                    {errors.uploadDocs && (
-                      <span className="text-red-500 text-xs">
-                        {t(`${errors.uploadDocs.message}`)}
-                      </span>
-                    )}
-                  </div>
+                <div className="mb-4 sm:w-[32%] w-full">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    {t("City")} *
+                  </label>
+                  <input
+                    {...register("city")}
+                    className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
+                    placeholder={t("Enter City")}
+                  />
+                  {errors.city && (
+                    <span className="text-red-500 text-xs">
+                      {t(`${errors.city.message}`)}
+                    </span>
+                  )}
                 </div>
-                <div className="flex items-center justify-end gap-2">
-                  <button
-                    className="px-5 py-3 max-[430px]:w-full bg-black text-white rounded-md font-bold text-sm"
-                    type="submit"
+
+                <div className="mb-4 sm:w-[32%] w-full">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    {t("Region")} *
+                  </label>
+                  <input
+                    {...register("region")}
+                    className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
+                    placeholder={t("Enter Region")}
+                  />
+                  {errors.region && (
+                    <span className="text-red-500 text-xs">
+                      {t(`${errors.region.message}`)}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex sm:flex-row flex-col justify-between">
+                <div className="sm:mb-4 mb-2 sm:w-[49%] w-full">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    {t("Social Media Reference")}
+                  </label>
+                  <select
+                    {...register("socialMedia")}
+                    className="block appearance-none w-full bg-white border px-4 py-3 pr-8 rounded leading-tight focus:outline-none"
                   >
-                    {isPending ? t("Loading...") : t("Submit")}
-                  </button>
+                    <option value="">{t("Select Social Media")}</option>
+                    {socialMediaPicklistLoading ? (
+                      <option>Loding...</option>
+                    ) : (
+                      GetOutSocialMedia[0]?.picklist?.map((item, index) => (
+                        <option key={index} value={item.name}>
+                          {t(item.name)}
+                        </option>
+                      ))
+                    )}
+                  </select>
+                  {errors.socialMedia && (
+                    <span className="text-red-500 text-xs">
+                      {t(`${errors.socialMedia.message}`)}
+                    </span>
+                  )}
                 </div>
-              </form>
-            </div>
+
+                <div className="mb-4 sm:w-[49%] w-full">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    {t("URL")}
+                  </label>
+                  <input
+                    {...register("website", {
+                      required: t("Website URL is required"),
+                    })}
+                    onChange={(val) => validateWebsite(val)}
+                    className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
+                    placeholder="https://www.example.com"
+                  />
+
+                  <span className="text-red-500 text-xs">
+                    {validateError && t(validateError)}
+                  </span>
+                </div>
+              </div>
+
+              {referralCode ? (
+                <div className="mb-4 w-full">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    {t("Referral Code")}
+                  </label>
+                  <input
+                    readOnly
+                    value={referralCode}
+                    className="appearance-none border pointer-events-none  rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
+                  />
+                </div>
+              ) : null}
+
+              <div className="mb-8 ">
+                <div className="border-2 border-dashed border-gray-300 p-6 rounded-lg text-center cursor-pointer  ">
+                  <div className="flex justify-center items-center">
+                    <img src={browser} alt="browse-icon" />
+                  </div>
+                  <label className="block text-gray-700 sm:text-xl text-lg font-bold mb-2 text-center ">
+                    {t("Upload Your CV Here")} *
+                  </label>
+                  <input
+                    {...register("uploadDocs", { required: true })}
+                    type="file"
+                    accept=".pdf,.doc,.docx,.xls,.xlsx"
+                    onChange={(event) => {
+                      const file = event.target.files[0];
+                      setUploadDocs(file);
+                    }}
+                    id="file-upload"
+                  />
+                  <p className="text-gray-600 sm:text-md text-base mt-4">
+                    {t("PDF, DOC, and Excel formats, up to 5MB")}
+                  </p>
+                  {errors.uploadDocs && (
+                    <span className="text-red-500 text-xs">
+                      {t(`${errors.uploadDocs.message}`)}
+                    </span>
+                  )}
+                </div>
+              </div>
+              <div className="flex items-center justify-end gap-2">
+                <button
+                  className="px-5 py-3 max-[430px]:w-full bg-black text-white rounded-md font-bold text-sm"
+                  type="submit"
+                >
+                  {isPending ? t("Loading...") : t("Submit")}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
-        <div className="absolute w-[90%] lg:w-[50%] md:w-[70%] top-[50%] left-1/2 transform -translate-x-1/2 -translate-y-[50%] ">
-          {popUp ? <ThankYou /> : null}
-        </div>
       </div>
-    </>
+      <div className="absolute w-[90%] lg:w-[50%] md:w-[70%] top-[50%] left-1/2 transform -translate-x-1/2 -translate-y-[50%] ">
+        {popUp ? <ThankYou /> : null}
+      </div>
+    </div>
   );
 };
 
