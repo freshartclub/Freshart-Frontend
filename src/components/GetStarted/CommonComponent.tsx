@@ -1,5 +1,6 @@
 import arrow from "../../assets/arrow.png";
 import Button from "../ui/Button";
+import { imageUrl } from "../utils/baseUrls";
 
 const CommonComponent = ({
   paragraph,
@@ -8,12 +9,15 @@ const CommonComponent = ({
   className,
   buttonClassName,
 }: any) => {
+  const stripHtmlTags = (text) => {
+    return text.replace(/<[^>]*>/g, "");
+  };
   return (
     <div
       className={`container mx-auto md:px-6 px-3 flex md:flex-row flex-col ${className} justify-between`}
     >
       <div className="flex flex-col justify-center md:text-left md:items-start items-center text-center lg:w-[47%]">
-        <p className="md:text-[24px] text-[18px]">{paragraph}</p>
+        <p className="md:text-[24px] text-[18px]">{stripHtmlTags(paragraph)}</p>
         <div className="w-48">
           <Button
             variant={{
@@ -32,7 +36,11 @@ const CommonComponent = ({
       </div>
 
       <div className="mt-10 lg:mt-0">
-        <img src={image} alt="illustration" className="w-full" />
+        <img
+          src={`${imageUrl}/users/${image}`}
+          alt="illustration"
+          className="w-full"
+        />
       </div>
     </div>
   );

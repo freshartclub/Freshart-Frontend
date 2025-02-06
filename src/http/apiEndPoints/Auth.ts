@@ -12,6 +12,7 @@ export const AUTH_ENDPOINTS = {
   CheckToken: `${ARTIST_BASE_URl}/get-artist`,
   BecomeAnArtist: `${ARTIST_BASE_URl}/become-artist`,
   CompleteProfile: `${ARTIST_BASE_URl}/complete-profile`,
+ 
 
   // ValidateBecomeAnArtistOTP: `${ARTIST_BASE_URl}/validate-otp`,
 };

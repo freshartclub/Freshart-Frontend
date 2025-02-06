@@ -1,16 +1,18 @@
-import CommonComponent from './CommonComponent';
+import CommonComponent from "./CommonComponent";
 import image from "../../assets/proces1-il 1.png";
 
-const ThirdSection = () => {
+const ThirdSection = ({ data }) => {
+  const getContent = data?.find((item, i) => item?.type === "Main-First");
+
   return (
     <div className="py-20">
-        <CommonComponent 
-        paragraph = "Choose your artworks, receive them at home, enjoy them and whenever you want… exchange them for a new ones! Or if you have fallen in love with them, get them under very special conditions!"
-        button="Discover now"
-        image= {image}
-        />
+      <CommonComponent
+        paragraph={getContent?.content}
+        button={getContent?.link?.text}
+        image={getContent?.carouselImg}
+      />
     </div>
-  )
-}
+  );
+};
 
-export default ThirdSection
+export default ThirdSection;

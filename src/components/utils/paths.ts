@@ -19,4 +19,5 @@ export const generalPath = {
   getArtworkStyle: "api/general/list-style",
   getMediaSupport: "api/general/list-media",
   getKbDetails: "api/general/get-kb-by-id",
+  getRootPageData : "api/general/get-home-data"
 };

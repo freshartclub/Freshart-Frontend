@@ -49,7 +49,7 @@ const faqs = [
   },
 ];
 
-const FaqSection = () => {
+const FaqSection = ({ data }) => {
   return (
     <div className="bg-[#F5F2EB]">
       <img src={side} alt="" className="-mt-6" />
@@ -58,8 +58,8 @@ const FaqSection = () => {
           <h1 className="text-2xl font-bold mb-6 text-center">
             Frequently Asked Questions
           </h1>
-          {faqs.map((faq, index) => (
-            <Accordion key={index} title={faq.title} content={faq.content} />
+          {data?.map((faq, index) => (
+            <Accordion key={index} title={faq.faqQues} content={faq.faqAns} />
           ))}
         </div>
       </div>

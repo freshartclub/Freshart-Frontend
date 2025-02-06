@@ -1,14 +1,14 @@
 import CommonComponent from "./CommonComponent";
 import image from "../../assets/color.png";
-const ContactSection = () => {
+const ContactSection = ({ data }) => {
+  const getContent = data?.find((item, i) => item?.type === "Main-Fourth");
+
   return (
-    <div className="bg-[#102030] py-16">
+    <div className="py-20">
       <CommonComponent
-        className="text-white"
-        image={image}
-        paragraph="If you are an artist and want to be part of our community, contact us. Take advantage now, all our services at no cost!"
-        button="Contact us"
-        buttonClassName="!bg-[#F16E5B]"
+        paragraph={getContent?.content}
+        button={getContent?.link?.text}
+        image={getContent?.carouselImg}
       />
     </div>
   );
