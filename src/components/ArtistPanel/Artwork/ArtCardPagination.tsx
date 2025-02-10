@@ -65,8 +65,8 @@ const ArtCardPagination = () => {
   if (isFetching) return <Loader />;
 
   return (
-    <div className="mt-5 border bg-white rounded-lg shadow-sm">
-      <div className="flex bg-gray-200 p-2 px-3 border-b border-gray-300 items-center flex-wrap justify-between">
+    <div className="mt-5 border bg-white rounded shadow-sm">
+      <div className="flex rounded-t bg-gray-200 p-2 px-3 border-b border-gray-300 items-center flex-wrap justify-between">
         <p className="text-black text-[18px] font-semibold text-center sm:text-left">
           {t("Artworks")}
         </p>

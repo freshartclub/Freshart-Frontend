@@ -1,4 +1,4 @@
-import {  useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { MdModeEditOutline } from "react-icons/md";
 import { NavLink } from "react-router-dom";
@@ -17,8 +17,7 @@ const Artwork = () => {
   const [selectedArtwork, setSelectedArtwork] = useState("Discipline");
   const isArtProvider = useAppSelector((state) => state.user.isArtProvider);
 
-  const { data, isLoading} =
-    useGetArtWorkList(selectedArtwork);
+  const { data, isLoading } = useGetArtWorkList(selectedArtwork);
 
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [selectedArtworkId, setSelectedArtworkId] = useState(null);
@@ -27,8 +26,6 @@ const Artwork = () => {
   const closePopup = () => {
     setIsPopupOpen(false);
   };
-
- 
 
   const handleArtworkSelect = (name: string) => {
     setSelectedArtwork(name);
@@ -46,8 +43,6 @@ const Artwork = () => {
 
   const { t } = useTranslation();
 
-
-
   return (
     <div className="px-3">
       <Header
@@ -58,7 +53,7 @@ const Artwork = () => {
       </Header>
 
       <div className="flex flex-col mb-3 gap-3">
-        <div className="flex gap-2">
+        <div className="flex w-full max-w-full overflow-y-auto gap-2">
           <span
             onClick={() => handleArtworkSelect("Discipline")}
             className={`p-2 font-medium shadow rounded cursor-pointer text-md ${
@@ -167,11 +162,11 @@ const Artwork = () => {
                   {t("Group")} - {item?.groupName || t("No Name")}
                 </h1>
 
-                <div className="flex px-2 pb-2 w-full max-w-full overflow-x-auto scrollbar gap-6">
-                  {item?.artworks?.map((art, idx) => (
+                <div className="flex px-2 flex-wrap mx-auto pb-2 md:h-[70vh] md:max-h-[70vh] max-h-[61vh] overflow-y-auto scrollbar2 gap-6">
+                  {item?.artworks?.map((art, idx: number) => (
                     <div
                       key={idx}
-                      className={`relative rounded-lg border-2 shadow-md pb-5 overflow-hidden flex  flex-col items-center ${
+                      className={`relative rounded-lg border-2 sm:mx-0 mx-auto shadow-md pb-5 overflow-hidden flex flex-col items-center ${
                         art?.status === "published"
                           ? "border-[#00DE00]"
                           : art?.status === "pending"

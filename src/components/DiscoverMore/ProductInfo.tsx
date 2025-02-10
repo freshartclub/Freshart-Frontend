@@ -130,18 +130,18 @@ const ProductInfo = ({ data }: any) => {
           <div className="flex flex-col md:flex-row gap-8 justify-between my-10">
             {/* Product Information Section */}
             <div className="w-full md:w-[65%]">
-              <P
-                variant={{ size: "small", weight: "semiBold" }}
-                className="text-[#999999]"
-              >
-                Product information
-              </P>
               <Header
                 variant={{ size: "xl", theme: "dark", weight: "medium" }}
                 className="my-5"
               >
-                {data?.data?.productDescription}
+                Product information
               </Header>
+              <P
+                variant={{ size: "md", theme: "dark", weight: "normal" }}
+                className="text-[#999999]"
+              >
+                {data?.data?.productDescription}
+              </P>
             </div>
 
             {/* Features Section */}

@@ -1,24 +1,22 @@
 import { useEffect, useRef, useState } from "react";
-import logo from "../../assets/Logo01 1.png";
-import heart from "../../assets/Heart.png";
-import bag from "../../assets/Bag.png";
+import { FaUserCircle } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
-import P from "../ui/P";
-import Header from "../ui/Header";
+import bag from "../../assets/Bag.png";
+import heart from "../../assets/Heart.png";
 import selling from "../../assets/Images-cuate 1.png";
+import logo from "../../assets/Logo01 1.png";
+import useLogOutMutation from "../../http/auth/useLogOutMutation";
+import { useAppSelector } from "../../store/typedReduxHooks";
+import { useGetCartItems } from "../pages/http/useGetCartItems";
+import { useGetDiscipline } from "../pages/http/useGetDiscipline";
 import ShoppingCard from "../pages/ShoppingCard";
 import Button from "../ui/Button";
-import { useAppDispatch, useAppSelector } from "../../store/typedReduxHooks";
-import useLogOutMutation from "../../http/auth/useLogOutMutation";
-import { useGetDiscipline } from "../pages/http/useGetDiscipline";
-import { useGetPicklist } from "./http/getPickList";
-import { useGetCartItems } from "../pages/http/useGetCartItems";
-import useClickOutside from "../utils/useClickOutside";
-import { FaUserCircle } from "react-icons/fa";
+import Header from "../ui/Header";
+import P from "../ui/P";
 import { useGetArtistDetails } from "../UserProfile/http/useGetDetails";
 import { imageUrl } from "../utils/baseUrls";
-import { setProfile } from "../../store/userSlice/userSlice";
-import { useDispatch } from "react-redux";
+import useClickOutside from "../utils/useClickOutside";
+import { useGetPicklist } from "./http/getPickList";
 
 const mobile_links = [
   { path: "/", label: "Home" },

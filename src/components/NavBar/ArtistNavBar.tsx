@@ -1,21 +1,20 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import logo from "../../assets/loginlogo.png";
 import navigation_1 from "../../assets/navigation_1.png";
 
+import { useTranslation } from "react-i18next";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IoNotifications } from "react-icons/io5";
 import { Link, useNavigate } from "react-router-dom";
 import useLogOutMutation from "../../http/auth/useLogOutMutation";
-import { useAppDispatch, useAppSelector } from "../../store/typedReduxHooks";
+import { useAppSelector } from "../../store/typedReduxHooks";
 import { imageUrl } from "../utils/baseUrls";
 import useClickOutside from "../utils/useClickOutside";
-import { useTranslation } from "react-i18next";
-import { useDispatch } from "react-redux";
 
-import { useGetNotification } from "./http/useGetNotification";
 import { RxCross2 } from "react-icons/rx";
-import useReadNotification from "./http/useReadNotification";
 import useDeleteNotification from "./http/useDeleteNotification";
+import { useGetNotification } from "./http/useGetNotification";
+import useReadNotification from "./http/useReadNotification";
 import ReferralPopup from "./ReferralPopup";
 
 const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
@@ -32,14 +31,9 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
 
   const { mutate: logOut } = useLogOutMutation();
 
-  const { data, isLoading } = useGetNotification();
-
-  const {mutateAsync , isPending} = useReadNotification()
-
-  const {mutate } = useDeleteNotification()
-
-  console.log(data);
-  const disptach = useDispatch();
+  const { data } = useGetNotification();
+  const { mutateAsync } = useReadNotification();
+  const { mutate } = useDeleteNotification();
 
   useClickOutside(closePopup, () => {
     setIsToggelOpen(false);
@@ -48,7 +42,6 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
   useClickOutside(isNotificationOpen, () => {
     setIsOpen(false);
   });
-
 
   const handleReadNotification = async (id) => {
     try {
@@ -60,15 +53,15 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
 
   const handleDeleteNotification = async (id) => {
     try {
-       mutate(id);
+      mutate(id);
     } catch (error) {
       console.error(error);
     }
   };
 
-  const handleInvitePopUp = ()=>{
-    setPopUp((prev)=> !prev)
-  }
+  const handleInvitePopUp = () => {
+    setPopUp((prev) => !prev);
+  };
 
   const handleLogOut = () => {
     try {
@@ -101,8 +94,9 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
     return fullName.trim();
   };
 
-  const unreadCount = data?.data?.notifications?.filter(notification => !notification.isRead)?.length || 0;
-
+  const unreadCount =
+    data?.data?.notifications?.filter((notification) => !notification.isRead)
+      ?.length || 0;
 
   return (
     <div className="w-full fixed top-0 left-0 z-[99] bg-white shadow-md">
@@ -128,14 +122,14 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
         <div
           ref={isNotificationOpen}
           className={`absolute top-20 right-0 ${
-            isOpen ? "block" : "hidden"
-          } w-full max-w-lg h-screen  bg-white transition-all duration-500`}
+            isOpen ? "right-0" : "right-[-20rem]"
+          } w-80 h-screen bg-white transition-all duration-500`}
         >
-          <div className="flex items-center justify-end gap-3 px-5">
-            <button   
-            
-            onClick={()=>handleDeleteNotification()}
-            className="px-3 py-2 border border-zinc-200 rounded-lg font-bold bg-zinc-50 hover:bg-zinc-100">
+          <div className="flex items-center justify-between border-y py-2 gap-3 px-5">
+            <button
+              onClick={() => handleDeleteNotification()}
+              className="px-3 py-2 border border-zinc-200 rounded-lg font-bold bg-zinc-50 hover:bg-zinc-100"
+            >
               Remove All
             </button>
             <button
@@ -147,35 +141,49 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
           </div>
 
           <ul className="px-2 py-3 flex flex-col gap-3 ">
-            {data?.data?.notifications?.length ?
-              data?.data?.notifications?.map((item, index) => (
-                <div className={`border border-zinc-300 shadow-lg rounded-lg px-3 py-3 relative flex flex-col ${item?.isRead  ? "" : "bg-zinc-100" }`}>
+            {data?.data?.notifications?.length ? (
+              data?.data?.notifications?.map((item, index: number) => (
+                <div
+                  key={index}
+                  className={`border border-zinc-300 shadow-lg rounded-lg px-3 py-3 relative flex flex-col ${
+                    item?.isRead ? "" : "bg-zinc-100"
+                  }`}
+                >
                   <li className="text-black  font-semibold py-1" key={index}>
                     {item?.subject}
                   </li>
                   <span className="text-sm font-medium tracking-tighter  ">
                     {item?.message}
                   </span>
-              {item?.isRead ? null :     <button  
-                  onClick={()=>handleReadNotification(item?._id)}
-                  className="px-2 py-1 border border-zinc-200  mt-2 hover:bg-zinc-300 text-sm font-semibold tracking-tight leading-none">Mark As Read</button> }
+                  {item?.isRead ? null : (
+                    <button
+                      onClick={() => handleReadNotification(item?._id)}
+                      className="px-2 py-1 border border-zinc-200  mt-2 hover:bg-zinc-300 text-sm font-semibold tracking-tight leading-none"
+                    >
+                      Mark As Read
+                    </button>
+                  )}
                   <RxCross2
-                
                     size="1.8em"
                     className="absolute top-2 right-2 cursor-pointer"
                     onClick={() => handleDeleteNotification(item?._id)}
                   />
                 </div>
-              )) :   <li className="text-black  font-semibold py-1">
-             No Notification
-            </li> }
+              ))
+            ) : (
+              <li className="text-black text-center font-semibold py-1">
+                No Notification
+              </li>
+            )}
           </ul>
         </div>
 
         <div className="flex items-center gap-5 ">
-          <div onClick={openNotification} className="relative">
-            <IoNotifications className="cursor-pointer lg:block" size="1.5em" />
-          <div className="w-5 h-5 bg-red-500 text-black rounded-full -top-3 right-0 absolute flex items-center justify-center font-semibold">{unreadCount}</div>
+          <div onClick={openNotification} className="relative cursor-pointer">
+            <IoNotifications className="lg:block" size="1.5em" />
+            <div className="w-5 h-5 bg-red-500 text-black rounded-full -top-3 right-0 absolute flex items-center justify-center font-semibold">
+              {unreadCount}
+            </div>
           </div>
 
           <span
@@ -226,10 +234,8 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
                 {t("Notification")}
               </Link>
 
-
               <span
                 className="font-medium hover:bg-zinc-200 transition-all duration-200 cursor-pointer"
-              
                 onClick={handleInvitePopUp}
               >
                 {t("Invite Artist")}
@@ -252,9 +258,7 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
           )}
         </div>
 
-
-   
-        {popUp && <ReferralPopup onClose={() => setPopUp(false)}  user={user}/>}
+        {popUp && <ReferralPopup onClose={() => setPopUp(false)} user={user} />}
       </div>
     </div>
   );

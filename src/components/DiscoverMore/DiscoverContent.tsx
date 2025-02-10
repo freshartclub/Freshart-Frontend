@@ -15,8 +15,7 @@ import { AiOutlineHeart } from "react-icons/ai";
 const DiscoverContent = ({ data }: any) => {
   const { mutate, isPending } = useAddToCartMutation();
   const { data: cartItem } = useGetCartItems();
-  const { mutate: likeMutation, isPending: likePending } =
-    useLikeUnlikeArtworkMutation();
+  const { mutate: likeMutation } = useLikeUnlikeArtworkMutation();
 
   const { data: likedItems } = useGetLikedItems();
 
@@ -191,7 +190,7 @@ const DiscoverContent = ({ data }: any) => {
                 variant={{ size: "small", weight: "semiBold" }}
                 className="text-[#999999] uppercase translate-y-[3px]"
               >
-                {likePending ? "Dislike..." : "Dislike"}
+                Liked
               </P>
             </button>
           ) : (
@@ -209,7 +208,7 @@ const DiscoverContent = ({ data }: any) => {
                 variant={{ size: "small", weight: "semiBold" }}
                 className="text-[#999999] uppercase translate-y-[3px]"
               >
-                {likePending ? "Like..." : "Like"}
+                Like
               </P>
             </button>
           )}
