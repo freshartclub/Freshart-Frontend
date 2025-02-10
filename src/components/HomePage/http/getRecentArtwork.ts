@@ -14,5 +14,6 @@ export const useGetRecentArtwork = () => {
   return useQuery({
     queryKey: [ARTTIST_ENDPOINTS.GetRecentArtworks],
     queryFn: fetchData,
+    refetchOnWindowFocus: false,
   });
 };

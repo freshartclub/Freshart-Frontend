@@ -1,5 +1,4 @@
 import Loader from "../components/ui/Loader";
-import { setup } from "../components/utils/axios";
 import useCheckIsAuthorized from "../http/auth/useGetAuhtorizedUser";
 
 type Props = {

@@ -12,5 +12,6 @@ export const useGetDiscipline = () => {
   return useQuery({
     queryKey: [generalPath.getDiscipline],
     queryFn: fetchData,
+    refetchOnWindowFocus: false,
   });
 };

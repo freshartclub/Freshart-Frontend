@@ -14,5 +14,6 @@ export const useGetCircle = () => {
   return useQuery({
     queryKey: [CIRCLE_ENDPOINTS.GetCircle],
     queryFn: fetchData,
+    refetchOnWindowFocus: false,
   });
 };

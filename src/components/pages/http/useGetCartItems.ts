@@ -11,5 +11,6 @@ export const useGetCartItems = () => {
   return useQuery({
     queryKey: [ARTTIST_ENDPOINTS.cartItems],
     queryFn: fetchData,
+    refetchOnWindowFocus: false,
   });
 };

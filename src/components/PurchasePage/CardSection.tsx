@@ -57,7 +57,7 @@ const promot_artwork = [
   },
 ];
 
-const CardSection = ({ query, data, isLoading }: any) => {
+const CardSection = ({ data, isLoading }: any) => {
   const settings = {
     dots: true,
     infinite: true,
@@ -86,7 +86,7 @@ const CardSection = ({ query, data, isLoading }: any) => {
         },
       },
       {
-        breakpoint: 480,
+        breakpoint: 440,
         settings: {
           slidesToShow: 1,
           slidesToScroll: 1,
@@ -177,7 +177,7 @@ const CardSection = ({ query, data, isLoading }: any) => {
           : "No artworks available"}
       </div>
 
-      <div className="my-16">
+      {/* <div className="my-16">
         <Header variant={{ size: "xl", theme: "dark", weight: "semiBold" }}>
           Promoted artworks
         </Header>
@@ -263,7 +263,7 @@ const CardSection = ({ query, data, isLoading }: any) => {
             ))}
           </Slider>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

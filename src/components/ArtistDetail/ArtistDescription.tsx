@@ -64,100 +64,60 @@ const ArtistDescription = ({ data }) => {
           }}
           className="border border-black uppercase !py-1"
         >
-          follow
+          Follow
         </Button>
         <img src={share} alt="share icon" className="cursor-pointer" />
       </div>
 
-      <div className="mb-4 border-b border-gray-200 dark:border-gray-700 flex sm:flex-row flex-col-reverse items-center">
-        <ul
-          className="flex -mb-px text-sm font-medium text-center"
-          id="default-tab"
-          data-tabs-toggle="#default-tab-content"
-          role="tablist"
-        >
-          <li className="md:me-2 me-1" role="presentation">
-            <button
-              className={`inline-block md:p-4 p-2 rounded-t-lg ${
-                activeTab === "highlight"
-                  ? "border-b-4 border-[#EE1D52] bg-gray-100"
-                  : "hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
-              }`}
-              id="highlight-tab"
-              onClick={() => setActiveTab("highlight")}
-              data-tabs-target="#highlight"
-              type="button"
-              role="tab"
-              aria-controls="highlight"
-              aria-selected={activeTab === "highlight"}
-            >
-              Highlight
-            </button>
-          </li>
+      <div className="flex justify-between border-b border-gray-200 dark:border-gray-700 items-center">
+        <div className="flex gap-1 text-sm font-medium">
+          <span
+            className={`cursor-pointer px-3 p-2 rounded-t-lg ${
+              activeTab === "highlight"
+                ? "border-b-2 border-[#EE1D52] bg-gray-100"
+                : "hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+            }`}
+            id="highlight-tab"
+            onClick={() => setActiveTab("highlight")}
+          >
+            Highlight
+          </span>
 
-          <li className="md:me-2 me-1" role="presentation">
-            <button
-              className={`inline-block md:p-4 sm:p-2 p-2 rounded-t-lg ${
-                activeTab === "about"
-                  ? "border-b-4 border-[#EE1D52] bg-gray-100"
-                  : "hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
-              }`}
-              id="about-tab"
-              onClick={() => setActiveTab("about")}
-              data-tabs-target="#about"
-              type="button"
-              role="tab"
-              aria-controls="about"
-              aria-selected={activeTab === "about"}
-            >
-              About
-            </button>
-          </li>
+          <span
+            className={`cursor-pointer px-3 p-2 rounded-t-lg ${
+              activeTab === "about"
+                ? "border-b-2 border-[#EE1D52] bg-gray-100"
+                : "hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+            }`}
+            id="about-tab"
+            onClick={() => setActiveTab("about")}
+          >
+            About
+          </span>
 
-          <li className="md:me-2 me-1" role="presentation">
-            <button
-              className={`inline-block md:p-4 sm:p-2 p-2 rounded-t-lg ${
-                activeTab === "curriculum"
-                  ? "border-b-4 border-[#EE1D52] bg-gray-100"
-                  : "hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
-              }`}
-              id="curriculum-tab"
-              onClick={() => setActiveTab("curriculum")}
-              data-tabs-target="#curriculum"
-              type="button"
-              role="tab"
-              aria-controls="curriculum"
-              aria-selected={activeTab === "curriculum"}
-            >
-              Curriculum vitae
-            </button>
-          </li>
-        </ul>
+          <span
+            className={`cursor-pointer px-3 p-2 rounded-t-lg ${
+              activeTab === "curriculum"
+                ? "border-b-2 border-[#EE1D52] bg-gray-100"
+                : "hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+            }`}
+            id="curriculum-tab"
+            onClick={() => setActiveTab("curriculum")}
+          >
+            Curriculum vitae
+          </span>
+        </div>
 
-        <div className="md:ml-auto flex 2xl:space-x-4 lg:space-x-6 md:space-x-2 space-x-4 my:my-2 sm:my-0 my-4">
-          <Button
-            variant={{
-              fontSize: "base",
-              theme: "dark",
-              fontWeight: "500",
-              rounded: "full",
-            }}
-            className="py-2"
+        <div className="flex gap-2">
+          <span
+            className="bg-[#102031] text-white py-1 px-2 cursor-pointer rounded-full font-medium"
             onClick={redirectToCircle}
           >
             Circle
-          </Button>
-          <Button
-            variant={{
-              fontSize: "base",
-              theme: "dark",
-              fontWeight: "500",
-              rounded: "full",
-            }}
-            className="!py-2"
-          >
+          </span>
+          <span className="bg-[#102031] text-white py-1 px-2 cursor-pointer rounded-full font-medium">
             Custom order
-          </Button>
+          </span>
         </div>
       </div>
       <div id="default-tab-content">
@@ -175,42 +135,6 @@ const ArtistDescription = ({ data }) => {
             >
               {highlightText}
             </P>
-
-            <div>
-              <P
-                variant={{ size: "base", theme: "dark", weight: "semiBold" }}
-                className="py-8"
-              >
-                Credentials and Insignias Area
-              </P>
-              <div className="flex sm:flex-row flex-col sm:gap-0 gap-8 items-center shadow-2xl rounded-md xl:px-7 px-5 xl:py-4 sm:py-3 py-5">
-                {data?.artist?.insignia?.map((item, index) => (
-                  <div
-                    key={index}
-                    className={`flex flex-col gap-3 w-56 xl:px-6 px-4 justify-center items-center ${
-                      index !== credential.length - 1
-                        ? "sm:border-r-2 border-gray-300 border-r-none"
-                        : ""
-                    }`}
-                  >
-                    <img
-                      src={`${imageUrl}/users/${item.insigniaImage}`}
-                      alt=""
-                    />
-                    <P
-                      variant={{
-                        size: "base",
-                        theme: "dark",
-                        weight: "semiBold",
-                      }}
-                      className="text-center"
-                    >
-                      {item.credentialName}
-                    </P>
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
         )}
 
@@ -228,41 +152,6 @@ const ArtistDescription = ({ data }) => {
             >
               {aboutText}
             </P>
-            <div>
-              <P
-                variant={{ size: "base", theme: "dark", weight: "semiBold" }}
-                className="py-8"
-              >
-                Credentials and Insignias Area
-              </P>
-              <div className="flex sm:flex-row flex-col sm:gap-0 gap-8 items-center shadow-2xl rounded-md xl:px-7 px-5 xl:py-4 sm:py-3 py-5">
-                {data?.artist?.insignia?.map((item, index) => (
-                  <div
-                    key={index}
-                    className={`flex flex-col gap-3 w-56 xl:px-6 px-4 justify-center items-center ${
-                      index !== credential.length - 1
-                        ? "sm:border-r-2 border-gray-300 border-r-none"
-                        : ""
-                    }`}
-                  >
-                    <img
-                      src={`${imageUrl}/users/${item.insigniaImage}`}
-                      alt=""
-                    />
-                    <P
-                      variant={{
-                        size: "base",
-                        theme: "dark",
-                        weight: "semiBold",
-                      }}
-                      className="text-center"
-                    >
-                      {item.credentialName}
-                    </P>
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
         )}
 
@@ -305,46 +194,44 @@ const ArtistDescription = ({ data }) => {
                 Lorem Ipsum as their default model text, and a search for 'lorem
                 ipsum' will uncover many web sites still in their infancy.
               </P>
-
-              <div>
-                <P
-                  variant={{ size: "base", theme: "dark", weight: "semiBold" }}
-                  className="py-8"
-                >
-                  Credentials and Insignias Area
-                </P>
-
-                <div className="grid xl:grid-cols-4 lg:grid-cols-2 md:grid-cols-4 grid-cols-2 xl:gap-2 gap-5 items-center shadow-2xl rounded-md xl:py-10 py-5">
-                  {data?.artist?.insignia?.map((item, index) => (
-                    <div
-                      key={index}
-                      className={`flex flex-col gap-3 justify-center items-center ${
-                        index !== credential.length - 1
-                          ? " border-gray-300 border-r-none"
-                          : ""
-                      }`}
-                    >
-                      <img
-                        src={`${imageUrl}/users/${item.insigniaImage}`}
-                        alt=""
-                      />
-                      <P
-                        variant={{
-                          size: "base",
-                          theme: "dark",
-                          weight: "semiBold",
-                        }}
-                        className="text-center"
-                      >
-                        {item.credentialName}
-                      </P>
-                    </div>
-                  ))}
-                </div>
-              </div>
             </div>
           </div>
         )}
+
+        {data?.artist?.insignia.length > 0 ? (
+          <div>
+            <P
+              variant={{ size: "base", theme: "dark", weight: "semiBold" }}
+              className="py-8"
+            >
+              Credentials and Insignias Area
+            </P>
+            <div className="flex sm:flex-row flex-col sm:gap-0 gap-8 items-center rounded-md xl:px-7 px-5 xl:py-4 sm:py-3 py-5">
+              {data?.artist?.insignia?.map((item, index) => (
+                <div
+                  key={index}
+                  className={`flex flex-col gap-3 w-56 xl:px-6 px-4 justify-center items-center ${
+                    index !== credential.length - 1
+                      ? "sm:border-r-2 border-gray-300 border-r-none"
+                      : ""
+                  }`}
+                >
+                  <img src={`${imageUrl}/users/${item.insigniaImage}`} alt="" />
+                  <P
+                    variant={{
+                      size: "base",
+                      theme: "dark",
+                      weight: "semiBold",
+                    }}
+                    className="text-center"
+                  >
+                    {item.credentialName}
+                  </P>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : null}
       </div>
     </div>
   );

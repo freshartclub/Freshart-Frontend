@@ -15,7 +15,6 @@ import Loader from "../../ui/Loader";
 import Invoice from "./Invoice";
 import Logistics from "./Logistics";
 import useGetSaveArtistDetailsMutation from "./http/useGetSaveArtistDetails";
-import "react-country-state-city/dist/react-country-state-city.css";
 import dayjs from "dayjs";
 import countryList from "react-select-country-list";
 import { getCityStateFromZipCountry } from "../../utils/MapWithAutocomplete";
@@ -30,17 +29,18 @@ import { useTranslation } from "react-i18next";
 import Button from "../../ui/Button";
 
 const GeneralForm = ({ isActiveStatus }) => {
-  const { data, isFetching } = useGetArtistDetails();
+  const { data, isLoading } = useGetArtistDetails();
   const { mutate, isPending } = useGetSaveArtistDetailsMutation();
   const { mutate: revalidationMutation, isPending: revalidationPending } =
     useRevalidationMutation();
+
   const [isEditInfo, setIsEditInfo] = useState(false);
   const [isManagerDetails, setManagerDetails] = useState(null);
   const [tags, setTags] = useState([]);
   const options = useMemo(() => countryList(), []);
   const [searchResult, setSearchResult] = useState(null);
 
-  const langCode = localStorage.getItem("langCode") || "EN";
+  const langCode = localStorage.getItem("langCode") || "ES";
 
   const { t } = useTranslation();
 
@@ -427,7 +427,7 @@ const GeneralForm = ({ isActiveStatus }) => {
   }
 `;
 
-  if (isFetching) return <Loader />;
+  if (isLoading) return <Loader />;
 
   return (
     <FormProvider {...methods}>

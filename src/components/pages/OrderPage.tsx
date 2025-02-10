@@ -22,9 +22,6 @@ const OrderPage = () => {
     navigate(`/order_tracking?id=${item?._id}&art=${item?.artwork?._id}`);
   };
 
-  // const dataToRender =
-  //   state === "purchase" ? data?.purchase : data?.subscription;
-
   if (isLoading) return <Loader />;
 
   return (

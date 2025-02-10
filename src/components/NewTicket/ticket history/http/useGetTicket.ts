@@ -12,5 +12,6 @@ export const useGetTicket = () => {
   return useQuery({
     queryKey: [ARTTIST_ENDPOINTS.GetArtistTickets],
     queryFn: () => fetchData(),
+    refetchOnWindowFocus: false,
   });
 };

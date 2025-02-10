@@ -14,5 +14,6 @@ export const useGetArtistOrder = () => {
   return useQuery({
     queryKey: ["getorder"],
     queryFn: fetchData,
+    refetchOnWindowFocus: false,
   });
 };

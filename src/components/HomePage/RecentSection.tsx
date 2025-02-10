@@ -2,15 +2,16 @@ import { useNavigate } from "react-router-dom";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
-import like from "../../assets/like.png";
 import Loader from "../ui/Loader";
 import { imageUrl } from "../utils/baseUrls";
 import { useGetRecentArtwork } from "./http/getRecentArtwork";
 
 const RecentSection = () => {
+  const { data, isLoading } = useGetRecentArtwork();
+
   const settings = {
     dots: true,
-    infinite: true,
+    infinite: data && data.length > 1 ? true : false,
     speed: 500,
     slidesToShow: 4,
     slidesToScroll: 1,
@@ -22,7 +23,7 @@ const RecentSection = () => {
         settings: {
           slidesToShow: 3,
           slidesToScroll: 1,
-          infinite: true,
+          infinite: data && data.length > 1 ? true : false,
           dots: true,
         },
       },
@@ -31,113 +32,72 @@ const RecentSection = () => {
         settings: {
           slidesToShow: 2,
           slidesToScroll: 1,
-          infinite: true,
+          infinite: data && data.length > 1 ? true : false,
           dots: true,
         },
       },
       {
-        breakpoint: 639,
+        breakpoint: 440,
         settings: {
           slidesToShow: 1,
           slidesToScroll: 1,
-          infinite: true,
+          infinite: data && data.length > 1 ? true : false,
           dots: true,
         },
       },
     ],
   };
 
-  const { data, isLoading } = useGetRecentArtwork();
-
   const navigate = useNavigate();
   const handleRedirectToDescription = (id) => {
-    navigate(`/discover_more?id=${id}`);
+    navigate(`/discover_more/${id}`);
     window.scroll(0, 0);
   };
 
   return isLoading ? (
     <Loader />
   ) : (
-    <div className="bg-[#F5F2EB] py-24 mt-16">
-      <div className="container mx-auto md:px-6 px-3">
-        <h1 className="text-[30px] font-semibold mb-5 w-80 sm:w-full">
-          Recent Viewed Artworks
-        </h1>
+    <div className="container bg-[#F5F2EB] mx-auto pt-5 pb-10 md:px-6 px-3 mt-10">
+      <h1 className="text-[25px] md:text-[30px] font-semibold mb-5 w-1/2 sm:w-full">
+        Recent Viewed
+      </h1>
 
-        {data?.data?.length === 1 ? (
+      <Slider {...settings}>
+        {data?.data &&
+          data?.data?.length > 0 &&
           data?.data?.map((item, index) => (
-            <div
-              key={index}
-              className="sm:px-3 px-0 z-50 border-none outline-none w-[20rem] cursor-pointer relative"
-              onClick={() => handleRedirectToDescription(item?._id)}
-            >
+            <div key={index} className="relative cursor-pointer px-3 ">
               <img
-                src={`${imageUrl}/users/${item.media.mainImage}`}
+                onClick={() => handleRedirectToDescription(item?._id)}
+                src={`${imageUrl}/users/${item?.media?.mainImage}`}
                 alt="image"
-                className="w-[20rem] h-[50vh] object-cover"
+                className="w-full h-[40vh] sm:h-[45vh] md:h-[50vh] object-cover shadow-lg"
               />
 
-              <span className="absolute border top-0 right-0 border-[#FFD9DE] rounded-full px-3 py-3 bg-white cursor-pointer">
-                <img src={like} alt="like" className="w-[20px] h-[20px]" />
-              </span>
-
               <div className="mt-3">
-                <p className="text-[14px] text-[#696868]">
-                  {item?.discipline?.artworkDiscipline}
-                </p>
-                <div className="flex justify-between items-center">
-                  <h1 className="font-bold text-[20px] text-[#333333] xl:w-[80%] lg:w-[70%] w-[80%] line-clamp-2">
-                    {item?.artworkName}
-                  </h1>
-                  <p className="text-[14px] text-[#696868]">
-                    {item.additionalInfo?.length}x{item.additionalInfo?.width}
+                <h1 className="font-bold text-lg text-gray-800 line-clamp-2">
+                  <span>{item?.artworkName}</span>
+                </h1>
+                <div className="flex flex-col items-start mt-2">
+                  <p className="text-sm text-gray-500 mt-1 font-medium">
+                    {item?.owner?.artistName}
                   </p>
                 </div>
-                <p className="text-[14px] text-[#696868]">
-                  {item.owner?.artistName}
+                <div>
+                  <p className="text-sm flex items-center justify-between text-gray-500">
+                    <span>{item?.discipline?.artworkDiscipline}</span>
+                    <span> {item?.additionalInfo?.artworkTechnic}</span>
+                  </p>
+                </div>
+
+                <p className="text-sm text-gray-500">{item?.size}</p>
+                <p className="text-sm text-gray-500">
+                  {`${item?.additionalInfo?.length} x ${item?.additionalInfo?.width} cm`}
                 </p>
               </div>
             </div>
-          ))
-        ) : (
-          <Slider {...settings}>
-            {data?.data?.map((item, index) => (
-              <div
-                key={index}
-                onClick={() => handleRedirectToDescription(item?._id)}
-                className="sm:px-3 px-0 border-none outline-none relative cursor-pointer"
-              >
-                <img
-                  src={`${imageUrl}/users/${item.media.mainImage}`}
-                  alt="image"
-                  className="w-full h-[40vh] sm:h-[45vh] md:h-[50vh] object-cover "
-                />
-
-                <button className="absolute top-2 right-7 border border-[#FFD9DE] rounded-full p-2 bg-white cursor-pointer">
-                  <img src={like} alt="like" className="w-[20px] h-[20px]" />
-                </button>
-                <div className="mt-3">
-                  <p className="text-[14px] text-[#696868]">
-                    {item?.discipline?.artworkDiscipline}
-                  </p>
-                  <div className="flex justify-between items-center">
-                    <h1 className="font-bold text-[20px] text-[#333333] xl:w-[80%] lg:w-[70%] w-[80%] line-clamp-2">
-                      {item?.artworkName}
-                    </h1>
-                    <p className="text-[14px] text-[#696868]">
-                      {" "}
-                      {item.additionalInfo?.length}x{item.additionalInfo?.width}
-                    </p>
-                  </div>
-                  <p className="text-[14px] text-[#696868]">
-                    {item.owner?.artistName}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </Slider>
-        )}
-      </div>
+          ))}
+      </Slider>
     </div>
   );
 };

@@ -3,15 +3,14 @@ import { useNavigate } from "react-router-dom";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
-import "../../App.css";
-import like from "../../assets/like.png";
-import wishlist_like from "../../assets/whishlist_like.png";
 import { imageUrl } from "../utils/baseUrls";
 import postRecentArtworkMutation from "./http/postRecentView";
 import useLikeUnlikeArtworkMutation from "./http/useLikeUnLike";
+import { AiFillLike } from "react-icons/ai";
 
 const ArtCard = ({ data, tittle, artistData }) => {
   const [likedItems, setLikedItems] = useState([]);
+
   const settings = {
     dots: true,
     infinite: data && data.length > 1 ? true : false,
@@ -40,7 +39,7 @@ const ArtCard = ({ data, tittle, artistData }) => {
         },
       },
       {
-        breakpoint: 480,
+        breakpoint: 440,
         settings: {
           slidesToShow: 1,
           slidesToScroll: 1,
@@ -52,9 +51,7 @@ const ArtCard = ({ data, tittle, artistData }) => {
   };
 
   const { mutate } = postRecentArtworkMutation();
-
-  const { mutateAsync: LikeUnlikeMutate, isPending: likePending } =
-    useLikeUnlikeArtworkMutation();
+  const { mutateAsync: LikeUnlikeMutate } = useLikeUnlikeArtworkMutation();
 
   const navigate = useNavigate();
   const handleRedirectToDescription = (id) => {
@@ -91,7 +88,7 @@ const ArtCard = ({ data, tittle, artistData }) => {
 
   return (
     <div className="container mx-auto md:px-6 px-3 mt-10">
-      <h1 className=" text-[25px]  md:text-[30px] font-semibold mb-5 w-1/2 sm:w-full">
+      <h1 className="text-[25px] md:text-[30px] font-semibold mb-5 w-1/2 sm:w-full">
         {tittle}
       </h1>
       <div>
@@ -102,17 +99,17 @@ const ArtCard = ({ data, tittle, artistData }) => {
                 onClick={() => handleRedirectToDescription(item?._id)}
                 src={`${imageUrl}/users/${item?.media}`}
                 alt="image"
-                className="w-full h-[40vh] sm:h-[45vh] md:h-[50vh] object-cover shadow-lg "
+                className="w-full h-[40vh] sm:h-[45vh] md:h-[50vh] object-cover shadow-lg"
               />
-              <button className="absolute top-2 z-[99] right-7 border border-[#FFD9DE] rounded-full p-2 bg-white cursor-pointer">
-                <img
-                  onClick={() => handleLike(item?._id)}
-                  src={likedItems?.includes(item?._id) ? wishlist_like : like}
-                  alt="like"
-                  className={`w-5 h-5 ${
-                    likePending ? "pointer-events-none opacity-15" : ""
-                  }`}
-                />
+              <button
+                onClick={() => handleLike(item?._id)}
+                className="absolute top-2 z-[99] right-7 border shadow rounded-full p-2 bg-white cursor-pointer"
+              >
+                {likedItems?.includes(item?._id) ? (
+                  <AiFillLike size="1.5rem" color="red" />
+                ) : (
+                  <AiFillLike size="1.5rem" />
+                )}
               </button>
               <div className="mt-3">
                 <h1 className="font-bold text-lg text-gray-800 line-clamp-2">

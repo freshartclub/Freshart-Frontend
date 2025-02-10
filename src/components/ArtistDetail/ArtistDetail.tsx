@@ -1,4 +1,4 @@
-import { useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import ArtistDescription from "./ArtistDescription";
 import ArtistHeader from "./ArtistHeader";
 import Loader from "../ui/Loader";
@@ -7,9 +7,7 @@ import ArtworkSeries from "./ArtworkSeries";
 import { useGetArtistDetails } from "./http/useGetArtistDetails";
 
 const ArtistDetail = () => {
-  const [searchParams] = useSearchParams();
-  const id = searchParams.get("id");
-
+  const id = useParams().id;
   const { data, isLoading } = useGetArtistDetails(id);
 
   if (isLoading) return <Loader />;

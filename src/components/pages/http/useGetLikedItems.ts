@@ -11,5 +11,6 @@ export const useGetLikedItems = () => {
   return useQuery({
     queryKey: [ARTTIST_ENDPOINTS.GetLikedArtWork],
     queryFn: fetchData,
+    refetchOnWindowFocus: false,
   });
 };

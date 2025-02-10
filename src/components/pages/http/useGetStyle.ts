@@ -12,5 +12,6 @@ export const useGetStyle = () => {
   return useQuery({
     queryKey: [generalPath.getStyle],
     queryFn: fetchData,
+    refetchOnWindowFocus: false,
   });
 };

@@ -14,5 +14,6 @@ export const useGetArtWorkList = () => {
   return useQuery({
     queryKey: ["Name"],
     queryFn: fetchData,
+    refetchOnWindowFocus: false,
   });
 };

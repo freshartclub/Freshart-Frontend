@@ -13,5 +13,6 @@ export const useGetNotification = () => {
   return useQuery({
     queryKey: [`${ARTTIST_ENDPOINTS.GetNotifications}`],
     queryFn: fetchData,
+    refetchOnWindowFocus: false,
   });
 };

@@ -8,9 +8,9 @@ async function fetchData() {
 }
 
 export const useGetTheme = () => {
-  let url = `${generalPath.getTheme}`;
   return useQuery({
-    queryKey: [url],
+    queryKey: [generalPath.getTheme],
     queryFn: fetchData,
+    refetchOnWindowFocus: false,
   });
 };

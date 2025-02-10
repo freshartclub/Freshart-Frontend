@@ -14,5 +14,6 @@ export const useGetArtistDetails = (id) => {
   return useQuery({
     queryKey: [ARTTIST_ENDPOINTS.GetSingleArtistDetials, id],
     queryFn: () => fetchData(id),
+    refetchOnWindowFocus: false,
   });
 };

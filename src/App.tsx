@@ -122,14 +122,8 @@ const App: React.FC = () => {
     }
   }, [lng]);
 
+  const profile = localStorage.getItem("profile");
 
- 
-    const profile = localStorage.getItem("profile");
-    console.log("Profilleee" ,  profile)
-  
-
-
-  
   if (isLoading) return <Loader />;
 
   return (
@@ -137,8 +131,6 @@ const App: React.FC = () => {
       <Layout isAuthenticated={isAuthenticated}>
         <Suspense fallback={<Loader />}>
           <Routes>
-            {/* Public Routes */}
-
             <Route path="/" element={<GetStarted />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignUp />} />
@@ -384,7 +376,7 @@ const App: React.FC = () => {
               }
             />
             <Route
-              path="/artist_detail"
+              path="/artist_detail/:id"
               element={
                 <AuthGuard>
                   <ArtistDetail />

@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-
 import { ARTTIST_ENDPOINTS } from "../../../http/apiEndPoints/Artist";
 import axiosInstance from "../../utils/axios";
 
@@ -12,5 +11,6 @@ export const useGetArtistDetails = () => {
   return useQuery({
     queryKey: ["ntohing"],
     queryFn: fetchData,
+    refetchOnWindowFocus: false,
   });
 };

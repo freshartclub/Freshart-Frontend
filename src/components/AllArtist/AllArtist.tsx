@@ -14,9 +14,8 @@ const AllArtist = () => {
 
   const { data, isLoading } = useGetAllArtist();
 
-  if(isLoading){
-    return <Loader/>
-  }
+  if (isLoading) return <Loader />;
+
   return (
     <div>
       <BannerSection />

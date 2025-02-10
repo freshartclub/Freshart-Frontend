@@ -9,7 +9,7 @@ const HelpSection = () => {
       style={{ backgroundImage: `url(${bg_banner})` }}
     >
       <div className="container mx-auto md:px-6 px-3">
-        <div className="text-white w-full md:w-[60%] lg:w-[40%] text-center mx-auto flex flex-col items-center justify-center py-20">
+        <div className="text-white w-full md:w-[60%] text-center mx-auto flex flex-col items-center justify-center py-10">
           <p className="uppercase mb-3 text-sm sm:text-base">
             Explore Custom art
           </p>

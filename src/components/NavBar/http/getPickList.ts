@@ -11,5 +11,6 @@ export const useGetPicklist = () => {
   return useQuery({
     queryKey: [generalPath.getPickList],
     queryFn: fetchData,
+    refetchOnWindowFocus: false,
   });
 };

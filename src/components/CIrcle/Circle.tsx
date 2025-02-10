@@ -15,22 +15,13 @@ const Circle = () => {
     Draft: 32,
   };
 
-  const {data , isLoading} = useGetCircle()
-
-
-  
-
+  const { data, isLoading } = useGetCircle();
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
-    // You can add your filtering logic here
-    console.log(`Selected Tab: ${tab}`);
   };
 
-
-  if(isLoading){
-    return <Loader/>
-  }
+  if (isLoading) return <Loader />;
 
   return (
     <div className="py-7 px-2">
@@ -99,12 +90,11 @@ const Circle = () => {
           ))}
         </div>
 
-<div className="mt-6">
-  {activeTab === 'All' && <AllCircle data={data} />}
-  {activeTab === 'Published' && 'published'}
-  {activeTab === 'Draft' && 'draft'}
-  
-</div>
+        <div className="mt-6">
+          {activeTab === "All" && <AllCircle data={data} />}
+          {activeTab === "Published" && "published"}
+          {activeTab === "Draft" && "draft"}
+        </div>
 
         {/* <AllCircle /> */}
       </div>

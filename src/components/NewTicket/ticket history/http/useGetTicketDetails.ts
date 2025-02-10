@@ -17,5 +17,6 @@ export const useGetTicketDetails = (id: string) => {
   return useQuery({
     queryKey: [ARTTIST_ENDPOINTS.GetArtistTicketsDetails, id],
     queryFn: () => fetchData(id, t),
+    refetchOnWindowFocus: false,
   });
 };

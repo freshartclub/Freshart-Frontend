@@ -8,9 +8,9 @@ async function fetchData() {
 }
 
 export const useGetTechnic = () => {
-  let url = `${generalPath.getTechnic}`;
   return useQuery({
-    queryKey: [url],
+    queryKey: [generalPath.getTechnic],
     queryFn: fetchData,
+    refetchOnWindowFocus: false,
   });
 };

@@ -12,5 +12,6 @@ export const useGetHomeData = () => {
   return useQuery({
     queryKey: ["Home Data"],
     queryFn: fetchData,
+    refetchOnWindowFocus: false,
   });
 };

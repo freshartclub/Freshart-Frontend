@@ -12,5 +12,6 @@ export const useGetKbDataBase = () => {
   return useQuery({
     queryKey: [generalPath.getKbDataBase],
     queryFn: fetchData,
+    refetchOnWindowFocus: false,
   });
 };

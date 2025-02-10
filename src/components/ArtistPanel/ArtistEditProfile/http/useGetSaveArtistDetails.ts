@@ -1,11 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-
 import toast from "react-hot-toast";
-
 import { ARTTIST_ENDPOINTS } from "../../../../http/apiEndPoints/Artist";
 import axiosInstance from "../../../utils/axios";
-
-let toastId: any;
+import { useTranslation } from "react-i18next";
 
 async function editArtistProfile(input: any) {
   return await axiosInstance.patch(ARTTIST_ENDPOINTS.EditArtistProfile, input, {
@@ -17,25 +14,21 @@ async function editArtistProfile(input: any) {
 
 const useGetSaveArtistDetailsMutation = () => {
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
 
   return useMutation({
     mutationFn: editArtistProfile,
 
     onSuccess: async (res) => {
       queryClient.invalidateQueries({
-        queryKey: ["ntohing"],
+        queryKey: [ARTTIST_ENDPOINTS.GetSingleArtistDetials],
         refetchType: "all",
       });
 
-      toast.dismiss(toastId);
-      toast.success(res.data.message, {
-        duration: 3000,
-      });
-
-      // navigate("/home");
+      toast.success(t(res.data.message));
     },
     onError: (error) => {
-      toast.error(error.response?.data?.message || "An error occurred");
+      toast.error(t(error.response?.data?.message));
     },
   });
 };

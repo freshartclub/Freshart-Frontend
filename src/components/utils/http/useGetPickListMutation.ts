@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-
 import axiosInstance from "../axios";
 import { generalPath } from "../paths";
 
@@ -10,8 +9,8 @@ async function fetchData() {
 
 export const useGetPickListMutation = () => {
   return useQuery({
-    // remember query key it is using same same
     queryKey: ["home"],
     queryFn: fetchData,
+    refetchOnWindowFocus: false,
   });
 };

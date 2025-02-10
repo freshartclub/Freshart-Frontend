@@ -36,7 +36,7 @@ const ArtistPortfolio = ({ data }) => {
         },
       },
       {
-        breakpoint: 480,
+        breakpoint: 440,
         settings: {
           slidesToShow: 1,
           slidesToScroll: 1,
@@ -53,8 +53,8 @@ const ArtistPortfolio = ({ data }) => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const handleArtistDesc = (id) => {
-    navigate(`/artist_detail?id=${id}`);
+  const handleArtistDesc = (id: string) => {
+    navigate(`/artist_detail/${id}`);
     window.scroll(0, 0);
   };
 
@@ -90,12 +90,12 @@ const ArtistPortfolio = ({ data }) => {
           <ViewButton onClick={redirectToAllArtistPage} />
         </div>
       </div>
-      <div className="artist_slider h-auto  ">
+      <div className="artist_slider h-auto">
         <Slider {...settings}>
           {data?.artists?.map((item, i) => (
             <div
               key={i}
-              className="px-2 text-center cursor-pointer   "
+              className="px-2 text-center cursor-pointer"
               onClick={() => handleArtistDesc(item._id)}
             >
               <div className="mt-14 rounded-lg border border-[#FF536B] flex  flex-col items-center">
@@ -104,7 +104,7 @@ const ArtistPortfolio = ({ data }) => {
                   alt="profile"
                   className="-mt-8 w-[10vh] h-[10vh] rounded-full object-cover"
                 />
-                <h1 className="text-xl line-clamp-1 font-medium">
+                <h1 className="text-xl line-clamp-1 px-2 font-medium">
                   {name(item)}
                 </h1>
                 <p className="text-sm flex flex-wrap justify-center gap-2 min-h-[20px]">

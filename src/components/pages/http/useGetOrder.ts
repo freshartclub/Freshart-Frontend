@@ -13,5 +13,6 @@ export const useGetOrder = () => {
   return useQuery({
     queryKey: ["noKey"],
     queryFn: fetchData,
+    refetchOnWindowFocus: false,
   });
 };

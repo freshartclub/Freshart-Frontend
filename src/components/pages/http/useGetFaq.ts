@@ -12,5 +12,6 @@ export const useGetFaq = () => {
   return useQuery({
     queryKey: [generalPath.getFaq],
     queryFn: fetchData,
+    refetchOnWindowFocus: false,
   });
 };

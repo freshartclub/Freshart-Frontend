@@ -14,5 +14,6 @@ export const useGetArtWorkById = (id, preview) => {
   return useQuery({
     queryKey: [ARTTIST_ENDPOINTS.GetArtWorkListById, id, preview],
     queryFn: () => fetchData(id, preview),
+    refetchOnWindowFocus: false,
   });
 };

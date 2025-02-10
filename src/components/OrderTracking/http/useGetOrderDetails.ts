@@ -10,8 +10,10 @@ export const useGetOrderDetails = (values) => {
     );
     return data;
   }
+  
   return useQuery({
     queryKey: ["order-single"],
     queryFn: () => fetchData(values),
+    refetchOnWindowFocus: false,
   });
 };

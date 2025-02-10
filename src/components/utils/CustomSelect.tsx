@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { RiArrowDropDownLine } from "react-icons/ri";
 
 const CustomSelect = ({
@@ -40,7 +40,7 @@ const CustomSelect = ({
           >
             Select
           </li>
-          {options.map((option) => (
+          {options && options.map((option) => (
             <li
               key={option.value}
               onClick={() => handleOptionClick(option)}

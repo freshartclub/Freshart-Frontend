@@ -12,5 +12,6 @@ export const useGetAllArtist = () => {
   return useQuery({
     queryKey: [ARTTIST_ENDPOINTS.GetAllArtist],
     queryFn: fetchData,
+    refetchOnWindowFocus: false,
   });
 };
