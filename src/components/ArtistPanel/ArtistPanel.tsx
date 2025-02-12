@@ -80,7 +80,7 @@ const ArtistPanel = () => {
             <Route path="/kb-details" element={<KbDetails />} />
             <Route path="/faq" element={<Faq />} />
             <Route path="/ticket_detail" element={<SingleTicket />} />
-            <Route path="artwork/preview" element={<ArtworkReview />} />
+            <Route path="artwork/preview/:id" element={<ArtworkReview />} />
           </Routes>
         </div>
       </div>

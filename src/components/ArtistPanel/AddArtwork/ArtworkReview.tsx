@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { FaEye } from "react-icons/fa";
 import { FaShareFromSquare } from "react-icons/fa6";
 import { IoIosArrowBack } from "react-icons/io";
-import { useSearchParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Slider from "react-slick";
 import Header from "../../ui/Header";
 import Loader from "../../ui/Loader";
@@ -15,10 +15,9 @@ import ProductInfo from "./ProductInfo";
 
 const DiscoverMore = () => {
   const sliderRef = useRef<Slider>(null);
+  const id = useParams().id;
+  const preview = true;
 
-  const [searchParams] = useSearchParams();
-  const id = searchParams.get("id");
-  const preview = searchParams.get("preview") || false;
   const { t } = useTranslation();
 
   const { data, isLoading } = useGetArtWorkById(id, preview);

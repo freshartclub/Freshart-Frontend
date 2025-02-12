@@ -9,12 +9,7 @@ export const AUTH_ENDPOINTS = {
   ValidateOTP: `${ARTIST_BASE_URl}/validate-otp`,
   ValidateSignUpOTP: `${ARTIST_BASE_URl}/verify-email`,
   ResendOTP: `${ARTIST_BASE_URl}/resend-otp`,
-  CheckToken: `${ARTIST_BASE_URl}/get-artist`,
+  CheckToken: `${ARTIST_BASE_URl}/check-artist-token`,
   BecomeAnArtist: `${ARTIST_BASE_URl}/become-artist`,
   CompleteProfile: `${ARTIST_BASE_URl}/complete-profile`,
- 
-
-  // ValidateBecomeAnArtistOTP: `${ARTIST_BASE_URl}/validate-otp`,
 };
-
-// all the endpoints will be gonaa edit

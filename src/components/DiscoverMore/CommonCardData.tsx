@@ -6,6 +6,7 @@ import like from "../../assets/like.png";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import getSymbolFromCurrency from "currency-symbol-map";
+import { imageUrl } from "../utils/baseUrls";
 
 const CommonCardData = ({
   heading,
@@ -69,6 +70,8 @@ const CommonCardData = ({
     }));
   };
 
+  console.log(highlightData);
+
   const renderContent =
     highlightData?.artworks?.length === 1 ? (
       <div
@@ -77,7 +80,7 @@ const CommonCardData = ({
       >
         <div className="relative">
           <img
-            src={`${highlightData?.url}/users/${highlightData?.artworks[0]?.media?.mainImage}`}
+            src={`${imageUrl}/users/${highlightData?.artworks[0]?.mainImage}`}
             alt="image"
             className="lg:w-[35vw] md:w-[35vw]  object-cover h-[40vh]"
             onClick={() =>
@@ -99,7 +102,6 @@ const CommonCardData = ({
           </button>
         </div>
         <div className="mt-3">
-          {/* Artwork Style */}
           <p className="text-[14px] text-[#696868] mb-1">
             {Array.isArray(
               highlightData?.artworks[0]?.additionalInfo?.artworkStyle
@@ -130,12 +132,6 @@ const CommonCardData = ({
             </div>
           </div>
 
-          <p className="text-[12px] sm:text-[14px] text-[#696868] mb-1">
-            {highlightData?.data?.owner?.artistName +
-              " " +
-              highlightData?.data?.owner?.artistSurname1}
-          </p>
-
           <p className="text-[14px] font-bold text-[#333333]">
             {getSymbolFromCurrency(
               highlightData?.artworks[0]?.pricing?.currency?.slice(0, 3)
@@ -154,7 +150,7 @@ const CommonCardData = ({
           >
             <div className="relative">
               <img
-                src={`${highlightData?.url}/users/${item?.media?.mainImage}`}
+                src={`${imageUrl}/users/${item?.mainImage}`}
                 alt="image"
                 className="w-full object-cover h-[40vh] cursor-pointer"
                 onClick={() => handleRedirectToDescription(item?._id)}
@@ -196,11 +192,6 @@ const CommonCardData = ({
                 </p>
               </div>
 
-              <p className="text-[14px] text-[#696868]">
-                {highlightData?.data?.owner?.artistName +
-                  " " +
-                  highlightData?.data?.owner?.artistSurname1}
-              </p>
               <p className="text-[14px] font-bold">
                 {getSymbolFromCurrency(item?.pricing?.currency.split(" ")[0]) +
                   " " +
@@ -234,9 +225,7 @@ interface Items {
 }
 
 interface HighlightItem {
-  media: {
-    mainImage: string;
-  };
+  mainImage: string;
   additionalInfo: {
     length: string;
     width: string;

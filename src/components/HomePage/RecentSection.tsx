@@ -65,14 +65,18 @@ const RecentSection = () => {
       <Slider {...settings}>
         {data?.data &&
           data?.data?.length > 0 &&
-          data?.data?.map((item, index) => (
+          data?.data?.map((item, index: number) => (
             <div key={index} className="relative cursor-pointer px-3 ">
-              <img
-                onClick={() => handleRedirectToDescription(item?._id)}
-                src={`${imageUrl}/users/${item?.media?.mainImage}`}
-                alt="image"
-                className="w-full h-[40vh] sm:h-[45vh] md:h-[50vh] object-cover shadow-lg"
-              />
+              <div className="overflow-hidden">
+                <img
+                  onClick={() => handleRedirectToDescription(item?._id)}
+                  src={`${imageUrl}/users/${item?.media?.mainImage}`}
+                  alt="image"
+                  className={`w-full h-[40vh] sm:h-[45vh] md:h-[50vh] object-cover shadow-lg ${
+                    item?.additionalInfo?.offensive == "Yes" ? "blur-3xl" : ""
+                  }`}
+                />
+              </div>
 
               <div className="mt-3">
                 <h1 className="font-bold text-lg text-gray-800 line-clamp-2">

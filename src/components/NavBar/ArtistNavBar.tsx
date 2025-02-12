@@ -43,20 +43,12 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
     setIsOpen(false);
   });
 
-  const handleReadNotification = async (id) => {
-    try {
-      await mutateAsync(id);
-    } catch (error) {
-      console.error(error);
-    }
+  const handleReadNotification = (id: string) => {
+    mutateAsync(id);
   };
 
-  const handleDeleteNotification = async (id) => {
-    try {
-      mutate(id);
-    } catch (error) {
-      console.error(error);
-    }
+  const handleDeleteNotification = (id: string) => {
+    mutate(id);
   };
 
   const handleInvitePopUp = () => {
@@ -191,7 +183,7 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
             className="rounded-full flex items-center justify-center cursor-pointer border p-1"
           >
             <img
-              src={`${imageUrl}/users/${user.profile.mainImage}`}
+              src={`${imageUrl}/users/${user?.mainImage}`}
               alt="User Profile"
               className="w-8 h-8 object-cover rounded-full "
             />

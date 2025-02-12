@@ -142,7 +142,7 @@ const AplhaFilter = ({ query, data }: any) => {
   };
 
   const handleArtistDetail = (id: string) => {
-    navigate(`/artist_detail?id=${id}`);
+    navigate(`/artist_detail/${id}`);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -177,7 +177,7 @@ const AplhaFilter = ({ query, data }: any) => {
       <div className="grid xl:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5 mb-10">
         {filteredItems &&
           filteredItems.length > 0 &&
-          filteredItems?.map((item, index) => (
+          filteredItems?.map((item, index: number) => (
             <div key={index} className=" text-center">
               <div
                 className="mt-14 rounded-lg border cursor-pointer border-[#FF536B] flex flex-col items-center"

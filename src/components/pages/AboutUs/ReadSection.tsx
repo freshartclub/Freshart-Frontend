@@ -1,9 +1,9 @@
-import "swiper/css";
-import "swiper/css/free-mode";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
-import { Autoplay, FreeMode, Navigation, Pagination } from "swiper/modules";
-import { Swiper, SwiperSlide } from "swiper/react";
+// import "swiper/css";
+// import "swiper/css/free-mode";
+// import "swiper/css/navigation";
+// import "swiper/css/pagination";
+// import { Autoplay, FreeMode, Navigation, Pagination } from "swiper/modules";
+// import { Swiper, SwiperSlide } from "swiper/react";
 import Header from "../../ui/Header";
 import P from "../../ui/P";
 import "./../../../App.css";
@@ -129,7 +129,7 @@ const ReadSection = () => {
       <div>
         <div className="lg:w-[63%] md:w-[90%] sm:w-[50%] w-[80%] container m-auto">
           <div className="container mt-5 mb-5 pb-5 ">
-            <Swiper
+            {/* <Swiper
               pagination={{
                 clickable: true,
               }}
@@ -217,7 +217,7 @@ const ReadSection = () => {
                   </SwiperSlide>
                 </>
               ))}
-            </Swiper>
+            </Swiper> */}
           </div>
         </div>
       </div>

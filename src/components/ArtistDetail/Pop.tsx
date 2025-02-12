@@ -16,7 +16,7 @@ export const ArtworkViewPopup = ({ isOpen, onClose, id, status }) => {
   };
 
   const handlePreview = () => {
-    navigate(`/artist-panel/artwork/preview?id=${id}&preview=true`);
+    navigate(`/artist-panel/artwork/preview/${id}?preview=true`);
     onClose();
   };
 

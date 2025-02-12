@@ -95,22 +95,26 @@ const ArtCard = ({ data, tittle, artistData }) => {
         <Slider {...settings}>
           {data?.map((item, index) => (
             <div key={index} className="relative cursor-pointer px-3 ">
-              <img
-                onClick={() => handleRedirectToDescription(item?._id)}
-                src={`${imageUrl}/users/${item?.media}`}
-                alt="image"
-                className="w-full h-[40vh] sm:h-[45vh] md:h-[50vh] object-cover shadow-lg"
-              />
-              <button
-                onClick={() => handleLike(item?._id)}
-                className="absolute top-2 z-[99] right-7 border shadow rounded-full p-2 bg-white cursor-pointer"
-              >
-                {likedItems?.includes(item?._id) ? (
-                  <AiFillLike size="1.5rem" color="red" />
-                ) : (
-                  <AiFillLike size="1.5rem" />
-                )}
-              </button>
+              <div className="overflow-hidden">
+                <img
+                  onClick={() => handleRedirectToDescription(item?._id)}
+                  src={`${imageUrl}/users/${item?.media}`}
+                  alt="image"
+                  className={`w-full h-[40vh] border sm:h-[45vh] md:h-[50vh] object-cover shadow-lg ${
+                    item?.additionalInfo?.offensive == "Yes" ? "blur-3xl" : ""
+                  }`}
+                />
+                <button
+                  onClick={() => handleLike(item?._id)}
+                  className="absolute top-2 z-[99] right-7 border shadow rounded-full p-2 bg-white cursor-pointer"
+                >
+                  {likedItems?.includes(item?._id) ? (
+                    <AiFillLike size="1.5rem" color="red" />
+                  ) : (
+                    <AiFillLike size="1.5rem" />
+                  )}
+                </button>
+              </div>
               <div className="mt-3">
                 <h1 className="font-bold text-lg text-gray-800 line-clamp-2">
                   <span>{item?.artworkName}</span>
