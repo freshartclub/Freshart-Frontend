@@ -8,6 +8,8 @@ import Slider from "react-slick";
 import Header from "../../ui/Header";
 import Loader from "../../ui/Loader";
 import P from "../../ui/P";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import { imageUrl } from "../../utils/baseUrls";
 import DiscoverContent from "./DiscoverContent";
 import { useGetArtWorkById } from "./http/useGetArtworkById";

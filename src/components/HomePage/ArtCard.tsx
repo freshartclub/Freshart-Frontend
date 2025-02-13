@@ -97,7 +97,7 @@ const ArtCard = ({ data, tittle, artistData }) => {
       </h1>
       <div>
         <Slider {...settings}>
-          {data?.map((item, index) => (
+          {data?.map((item, index: number) => (
             <div key={index} className="relative cursor-pointer px-3 ">
               <div className="overflow-hidden">
                 <img

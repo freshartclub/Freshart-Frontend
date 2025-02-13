@@ -110,7 +110,7 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
             alt="Logo"
           />
         </div>
-
+        {/* 
         <div
           ref={isNotificationOpen}
           className={`absolute top-20 right-0 ${
@@ -122,13 +122,13 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
               onClick={() => handleDeleteNotification()}
               className="px-3 py-2 border border-zinc-200 rounded-lg font-bold bg-zinc-50 hover:bg-zinc-100"
             >
-              Remove All
+              {t("Remove All")}
             </button>
             <button
               onClick={openNotification}
               className="px-3 py-2 border border-zinc-200 rounded-lg font-bold bg-zinc-50 hover:bg-zinc-100"
             >
-              Close
+              {t("Close")}
             </button>
           </div>
 
@@ -152,7 +152,7 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
                       onClick={() => handleReadNotification(item?._id)}
                       className="px-2 py-1 border border-zinc-200  mt-2 hover:bg-zinc-300 text-sm font-semibold tracking-tight leading-none"
                     >
-                      Mark As Read
+                      {t("Mark As Read")}
                     </button>
                   )}
                   <RxCross2
@@ -164,19 +164,19 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
               ))
             ) : (
               <li className="text-black text-center font-semibold py-1">
-                No Notification
+                {t("No Notification")}
               </li>
             )}
           </ul>
-        </div>
+        </div> */}
 
         <div className="flex items-center gap-5 ">
-          <div onClick={openNotification} className="relative cursor-pointer">
+          {/* <div onClick={openNotification} className="relative cursor-pointer">
             <IoNotifications className="lg:block" size="1.5em" />
             <div className="w-5 h-5 bg-red-500 text-black rounded-full -top-3 right-0 absolute flex items-center justify-center font-semibold">
               {unreadCount}
             </div>
-          </div>
+          </div> */}
 
           <span
             onClick={() => setIsToggelOpen(!isToogleOpen)}
@@ -233,12 +233,12 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
                 {t("Invite Artist")}
               </span>
 
-              <button
+              {/* <button
                 className="font-medium hover:bg-zinc-200"
                 onClick={handleProfile}
               >
                 {t("Switch To User Profile")}
-              </button>
+              </button> */}
               <button
                 className="bg-red-300 flex flex-col items-center justify-center gap-1 py-2 rounded hover:bg-red-400 font-medium"
                 onClick={handleLogOut}

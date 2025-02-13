@@ -1,9 +1,8 @@
-import React from "react";
 import underConstruction from "./assets/underconstruction.png";
 
 const UnderConstruction = () => {
   return (
-    <div className="w-[100vw] h-[100vh]">
+    <div className="h-screen">
       <img
         src={underConstruction}
         className="w-full h-full  object-fill"
