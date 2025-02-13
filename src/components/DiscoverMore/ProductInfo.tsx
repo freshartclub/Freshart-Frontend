@@ -56,9 +56,9 @@ const ProductInfo = ({ data }: any) => {
     },
     {
       head: "Colour :",
-      name: data?.data?.additionalInfo?.colors?.map((item, i) => (
-        <h1 className="">{item}</h1>
-      )),
+      name: data?.data?.additionalInfo?.colors?.map(
+        (item: string, i: number) => <h1 key={i}>{item}</h1>
+      ),
     },
     {
       head: "Author type :",
@@ -112,11 +112,10 @@ const ProductInfo = ({ data }: any) => {
     ""
   );
 
-  const handleShowmore = (id) => {
+  const handleShowmore = (id: string) => {
     navigate(`/artist_detail/${id}`);
   };
 
-  if (!product) return <div>Loading...</div>;
   return (
     <div className="mt-20">
       <Tabs>
@@ -338,7 +337,7 @@ const ProductInfo = ({ data }: any) => {
                       className="pb-10 mt-1 border-b border-dashed"
                     >
                       {data?.data?.owner?.aboutArtist?.discipline?.map(
-                        (item: DisciplineItem, i) => (
+                        (item: DisciplineItem, i: number) => (
                           <h1 key={i}>{item.discipline}</h1>
                         )
                       )}

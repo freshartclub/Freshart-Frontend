@@ -10,13 +10,10 @@ async function fetchData() {
 export const useGetLikedItems = () => {
   const token = localStorage.getItem("auth_token");
 
-  if (token === null) {
-    return {};
-  }
-
   return useQuery({
     queryKey: [ARTTIST_ENDPOINTS.GetLikedArtWork],
     queryFn: fetchData,
+    enabled: !!token,
     refetchOnWindowFocus: false,
   });
 };

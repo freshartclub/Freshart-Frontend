@@ -41,7 +41,6 @@ const NavForHome = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const navigate = useNavigate();
-  const url = "https://dev.freshartclub.com/images";
 
   const closePopup = useRef(null);
   const dropDownPopup = useRef(null);
@@ -50,7 +49,7 @@ const NavForHome = () => {
   const { data: seriesPickList, isLoading: seriesPickListLoading } =
     useGetPicklist();
   const { data: cartItem, isLoading: cartLoading } = useGetCartItems();
-  const { data: disciplineData, isLoading: artistLoading } = useGetDiscipline();
+  const { data: disciplineData } = useGetDiscipline();
 
   const selectSeriesPicklist = seriesPickList?.data?.filter(
     (item) => item?.picklistName === "Series"
@@ -470,8 +469,6 @@ const NavForHome = () => {
                   )}
                 </button>
               </div>
-
-              {/* Hamburger Icon */}
             </div>
 
             <div className="hidden lg:flex lg:gap-2 xl:space-x-6 lg:space-x-0 text-white">
@@ -609,14 +606,35 @@ const NavForHome = () => {
               <img src={logo} alt="logo" className="" />
             </div>
 
-            <div className="flex items-center justify-center">
+            <div className="flex gap-4 items-center justify-center">
+              <div className="overflow-x-hidden">
+                <ShoppingCard isOpen={isSidebarOpen} onClose={toggleSidebar} />
+
+                <button
+                  onClick={toggleSidebar}
+                  className="relative focus:outline-none"
+                >
+                  <img
+                    src={bag}
+                    alt="bag"
+                    className="w-8 h-8 text-white mx-2"
+                  />
+                  <span className="absolute bg-red-300 w-4 h-4 right-0 top-0  rounded-full flex items-center justify-center">
+                    {cartItem?.data?.cart ? (
+                      <h1 className="text-sm font-semibold">
+                        {cartItem?.data?.cart?.length}
+                      </h1>
+                    ) : null}
+                  </span>
+                </button>
+              </div>
               <Link
                 to="/login"
                 className="px-4 py-2 text-sm bg-white rounded-md hover:bg-gray-200 focus:outline-none"
               >
                 Sign In
               </Link>
-              <Link to="/signup" className="ml-4 text-sm text-white ">
+              <Link to="/signup" className="text-sm text-white">
                 Sign Up
               </Link>
             </div>

@@ -1,13 +1,16 @@
-import Header from "../ui/Header";
+import { useEffect } from "react";
+import toast from "react-hot-toast";
 import { RxCross1 } from "react-icons/rx";
-import P from "../ui/P";
-import cross_icon from "../../assets/x-mark.png";
-import Button from "../ui/Button";
 import { useNavigate } from "react-router-dom";
-import { useGetCartItems } from "./http/useGetCartItems";
-import Loader from "../ui/Loader";
+import cross_icon from "../../assets/x-mark.png";
+import useAddToCartMutation from "../DiscoverMore/http/useAddToCartMutation";
 import useRemoveMutation from "../PurchasePage/http/useRemoveMutation";
+import Button from "../ui/Button";
+import Header from "../ui/Header";
+import Loader from "../ui/Loader";
+import P from "../ui/P";
 import { imageUrl } from "../utils/baseUrls";
+import { useGetCartItems } from "./http/useGetCartItems";
 
 const ShoppingCard = ({
   isOpen,
@@ -16,30 +19,56 @@ const ShoppingCard = ({
   isOpen: boolean;
   onClose: () => void;
 }) => {
-  const { data, isLoading } = useGetCartItems();
+  const { data, isLoading, refetch } = useGetCartItems();
   const { mutate } = useRemoveMutation();
+  const { mutate: addMutate } = useAddToCartMutation();
 
-  const handleCart = () => {
-    navigate("/purchase_cart");
-    onClose();
+  const handleRemoveItem = (id: string) => {
+    if (!token && data) {
+      const cartItems = JSON.parse(localStorage.getItem("_my_cart") || "[]");
+
+      const updatedCartItems = cartItems.filter((item: string) => item !== id);
+      localStorage.setItem("_my_cart", JSON.stringify(updatedCartItems));
+      refetch();
+      return toast.success("Item removed from cart");
+    } else {
+      mutate(id);
+    }
   };
 
-  const handleRemoveItem = (indexToRemove: any) => {
-    mutate(indexToRemove);
-  };
-
+  const token = localStorage.getItem("auth_token");
   const totalItems = data?.data?.cart?.length;
 
   const totalPrice = data?.data?.cart
     ?.reduce((total: any, item: any) => {
-      const itemPrice = parseFloat(
-        item?.item?.pricing?.basePrice?.replace("$", "")
-      );
+      const itemPrice = parseFloat(item?.pricing?.basePrice?.replace("$", ""));
       return total + itemPrice;
     }, 0)
     .toFixed(2);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (token) {
+      const ids = JSON.parse(localStorage.getItem("_my_cart") || "[]");
+
+      if (ids?.length > 0) {
+        ids.forEach(async (id: string) => {
+          if (data?.data?.cart?.find((item: any) => item?._id !== id)) {
+            addMutate(id);
+
+            const filterItems = JSON.parse(
+              localStorage.getItem("_my_cart") || "[]"
+            );
+            const updatedCartItems = filterItems.filter(
+              (item: string) => item !== id
+            );
+            localStorage.setItem("_my_cart", JSON.stringify(updatedCartItems));
+          }
+        });
+      }
+    }
+  }, []);
 
   return (
     <div
@@ -60,47 +89,52 @@ const ShoppingCard = ({
             </Button>
           </div>
 
-          <div className="mt-4 space-y-4 overflow-y-auto max-h-[65vh]">
-            {data?.data?.cart?.map((item: any, index: number) => (
-              <div
-                key={index}
-                className="flex justify-between cursor-pointer items-center p-2 bg-slate-100 hover:bg-gray-50 rounded shadow-sm"
-              >
+          <div className="mt-4 pb-4 space-y-4 overflow-y-auto max-h-[65vh]">
+            {data?.data?.cart &&
+              data?.data?.cart?.map((item: any, index: number) => (
                 <div
-                  className="flex gap-4 items-center"
-                  onClick={() => navigate(`/discover_more/${item?.item?._id}`)}
+                  key={index}
+                  className="flex justify-between cursor-pointer items-center p-2 bg-slate-100 hover:bg-gray-50 rounded shadow-sm"
                 >
-                  <img
-                    src={`${imageUrl}/users/${item?.item?.media?.mainImage}`}
-                    alt="cart image"
-                    className="object-cover w-[50px] h-[50px] rounded-full"
-                  />
+                  <div
+                    className="flex gap-4 items-center"
+                    onClick={() => navigate(`/discover_more/${item?._id}`)}
+                  >
+                    <img
+                      src={`${imageUrl}/users/${item?.media?.mainImage}`}
+                      alt="cart image"
+                      className="object-cover w-[50px] h-[50px] rounded-full"
+                    />
 
-                  <div>
-                    <Header
-                      variant={{
-                        size: "md",
-                        theme: "dark",
-                        weight: "semiBold",
-                      }}
-                    >
-                      {item?.item?.artworkName}
-                    </Header>
+                    <div>
+                      <Header
+                        variant={{
+                          size: "md",
+                          theme: "dark",
+                          weight: "semiBold",
+                        }}
+                      >
+                        {item?.artworkName}
+                      </Header>
 
-                    <span className="text-gray-600 text-[14px]">
-                      Price: ${item?.item?.pricing?.basePrice}
-                    </span>
+                      <span className="text-gray-600 text-[14px]">
+                        Price: ${item?.pricing?.basePrice}
+                      </span>
+                    </div>
                   </div>
-                </div>
 
-                <button
-                  onClick={() => handleRemoveItem(item?.item?._id)}
-                  className="p-2 hover:bg-red-100 rounded"
-                >
-                  <img src={cross_icon} alt="Remove item" className="w-5 h-5" />
-                </button>
-              </div>
-            ))}
+                  <button
+                    onClick={() => handleRemoveItem(item?._id)}
+                    className="p-2 hover:bg-red-100 rounded"
+                  >
+                    <img
+                      src={cross_icon}
+                      alt="Remove item"
+                      className="w-5 h-5"
+                    />
+                  </button>
+                </div>
+              ))}
           </div>
 
           {/* Footer Section */}
@@ -114,11 +148,16 @@ const ShoppingCard = ({
               </P>
             </div>
             <Button
-              onClick={handleCart}
+              onClick={() => {
+                !token ? null : navigate("/purchase_cart");
+                onClose();
+              }}
               variant={{ fontSize: "md", fontWeight: "normal" }}
-              className="w-full py-2 bg-black text-white rounded-full"
+              className={`w-full py-2 bg-black text-white rounded-full ${
+                !token ? "pointer-events-none opacity-50" : ""
+              }`}
             >
-              Go To Cart
+              {!token ? "Login To Checkout" : "Go To Cart"}
             </Button>
           </div>
         </div>

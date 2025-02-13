@@ -3,7 +3,6 @@ import Button from "../ui/Button";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/loginlogo.png";
 import semicircle from "../../assets/semicircle.png";
-import globe from "../../assets/glob.png";
 import arrow3 from "../../assets/arrow_3.png";
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -80,8 +79,6 @@ const LogNaveBar = () => {
     );
     setCurrencySettings(getCurrency || "usd");
   }, []);
-
-  console.log(flag);
 
   const handleSelectChange = (
     value: string,

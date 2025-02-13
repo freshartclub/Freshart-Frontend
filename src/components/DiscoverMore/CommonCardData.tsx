@@ -70,8 +70,6 @@ const CommonCardData = ({
     }));
   };
 
-  console.log(highlightData);
-
   const renderContent =
     highlightData?.artworks?.length === 1 ? (
       <div

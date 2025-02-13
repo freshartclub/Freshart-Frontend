@@ -8,9 +8,12 @@ async function fetchData() {
 }
 
 export const useGetArtistDetails = () => {
+  const token = localStorage.getItem("auth_token");
+
   return useQuery({
-    queryKey: ["ntohing"],
-    queryFn: fetchData,
+    queryKey: [ARTTIST_ENDPOINTS.GetArtistDetials],
+    queryFn: token ? fetchData : () => Promise.resolve(null),
+    enabled: token == null ? false : true,
     refetchOnWindowFocus: false,
   });
 };

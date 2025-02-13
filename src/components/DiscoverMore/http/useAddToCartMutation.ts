@@ -18,10 +18,6 @@ const useAddToCartMutation = () => {
         queryKey: [ARTTIST_ENDPOINTS.cartItems],
         refetchType: "all",
       });
-
-      toast.success(res.data.message, {
-        duration: 3000,
-      });
     },
     onError: (error) => {
       toast.error(error.response?.data?.message);

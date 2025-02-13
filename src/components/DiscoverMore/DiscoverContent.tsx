@@ -10,6 +10,7 @@ import mark from "./assets/offer.png";
 import question from "./assets/question.png";
 import useAddToCartMutation from "./http/useAddToCartMutation";
 
+import toast from "react-hot-toast";
 import { AiOutlineHeart } from "react-icons/ai";
 import { useGetCartItems } from "../pages/http/useGetCartItems";
 
@@ -17,7 +18,6 @@ const DiscoverContent = ({ data }: any) => {
   const { mutate, isPending } = useAddToCartMutation();
   const { data: cartItem } = useGetCartItems();
   const { mutate: likeMutation } = useLikeUnlikeArtworkMutation();
-
   const { data: likedItems } = useGetLikedItems();
 
   const maxLength = 100;
@@ -26,12 +26,28 @@ const DiscoverContent = ({ data }: any) => {
       ? `${data.productDescription.slice(0, maxLength)}...`
       : data?.productDescription;
 
+  const token = localStorage.getItem("auth_token");
+
   const addToCart = (id: string) => {
+    if (!token) {
+      const items: string[] = JSON.parse(
+        localStorage.getItem("_my_cart") || "[]"
+      );
+      if (!items.includes(id)) {
+        items.push(id);
+        localStorage.setItem("_my_cart", JSON.stringify(items));
+        return toast.success("Item Temporarily added to cart");
+      }
+
+      return toast.error("Item already in cart");
+    }
+
     mutate(id);
+    return toast.success("Item added to cart successfully");
   };
 
   const checkCartItem = cartItem?.data?.cart?.filter((item) => {
-    return item?.item?._id === data?._id;
+    return item._id == data._id;
   });
 
   const checkWishlist = likedItems?.likedArtworks?.filter((item) => {

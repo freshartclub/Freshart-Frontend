@@ -33,16 +33,15 @@ export const ARTTIST_ENDPOINTS = {
   GetAllIncidents: `${ARTIST_BASE_URl}/get-all-incidents`,
   PatchFeedback: `${ARTIST_BASE_URl}/ticket-feedback`,
   GetNotifications: `${ARTIST_BASE_URl}/get-notifications`,
-  DeleteNotification : `${ARTIST_BASE_URl}/delete-notification`,
-  ReadNotification : `${ARTIST_BASE_URl}/read-notification`,
+  DeleteNotification: `${ARTIST_BASE_URl}/delete-notification`,
+  ReadNotification: `${ARTIST_BASE_URl}/read-notification`,
 
   // circle
-
-
 
   GetAllArtist: `${ARTIST_BASE_URl}/get-all-artists`,
   addToCart: `${ARTIST_BASE_URl}/add-to-cart`,
   cartItems: `${ARTIST_BASE_URl}/get-cart`,
+  unauthorisedCartItem: `${ARTIST_BASE_URl}/get-unauthorized-cart`,
   removeItems: `${ARTIST_BASE_URl}/remove-from-cart`,
 
   editProfile: `${ARTIST_BASE_URl}/edit-user-profile`,
