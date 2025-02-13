@@ -98,7 +98,9 @@ const Login: React.FC = () => {
             <div className="flex">
               <input
                 type={newPasswordType}
-                {...register("password", { required: t("Password is required") })}
+                {...register("password", {
+                  required: t("Password is required"),
+                })}
                 placeholder={t("Enter Password")}
                 className={`border ${
                   errors.password ? "border-red-500" : "border-[#D3D3D3]"
@@ -170,12 +172,12 @@ const Login: React.FC = () => {
               </Link>
             </P>
           </div>
-          <Link
+          {/* <Link
             to="/signup"
             className="font-bold uppercase ml-1 md:text-base text-sm"
           >
             {t("Sign Up")}
-          </Link>
+          </Link> */}
         </div>
         <div className="my-auto">
           <img src={loginImage} alt="Login" />
