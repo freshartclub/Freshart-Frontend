@@ -335,7 +335,7 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
                 </div>
               ))}
             {existingAdditionalImage &&
-              existingAdditionalImage.length > 0 &&
+              existingAdditionalImage?.length > 0 &&
               existingAdditionalImage?.map((field: string, i: number) => (
                 <div key={i} className="relative w-28 h-28">
                   <img
@@ -353,7 +353,7 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
               ))}
 
             {getValues("additionalImage")?.length === 0 &&
-            existingAdditionalImage.length === 0 ? (
+            existingAdditionalImage?.length === 0 ? (
               <div className="flex flex-col items-center">
                 <img
                   src={image_icon}
@@ -443,7 +443,7 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
             <div className="flex flex-col p-4 shadow rounded-md border border-dashed flex-wrap gap-2 items-center">
               {getValues("additionalVideo") &&
                 getValues("additionalVideo").length > 0 &&
-                getValues("additionalVideo")?.map((field, i) => (
+                getValues("additionalVideo")?.map((field, i: number) => (
                   <div key={i} className="relative w-28 h-28">
                     <video
                       src={URL.createObjectURL(field)}
@@ -459,7 +459,7 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
                   </div>
                 ))}
               {existingAdditionalVideo &&
-                existingAdditionalVideo.length > 0 &&
+                existingAdditionalVideo?.length > 0 &&
                 existingAdditionalVideo?.map(
                   (
                     field: string,
@@ -481,7 +481,7 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
                   )
                 )}
 
-              {existingAdditionalVideo.length === 0 &&
+              {existingAdditionalVideo?.length === 0 &&
               getValues("additionalVideo")?.length === 0 ? (
                 <div className="flex flex-col items-center">
                   <img

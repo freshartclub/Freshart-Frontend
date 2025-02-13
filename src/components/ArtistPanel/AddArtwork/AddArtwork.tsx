@@ -927,28 +927,30 @@ const AddArtwork = () => {
                       {isDropdownOpen && !query && (
                         <div className="absolute top-full left-0 w-full mt-2 bg-white border border-gray-300 rounded-lg shadow-lg">
                           <ul className="max-h-60 overflow-y-auto flex flex-col gap-2 p-2">
-                            {seriesOptions.map((option) => (
-                              <div className="flex justify-between">
-                                <li
-                                  key={option.value}
-                                  onClick={() => {
-                                    handleDropDown();
-                                    handleSelectOption(option);
-                                  }}
-                                  className={`flex justify-between w-full items-center py-1 px-2 text-sm cursor-pointer hover:bg-blue-100 `}
-                                >
-                                  <span className="cursor-pointer w-full">
-                                    {option}
-                                  </span>
-                                </li>
-                                <span
-                                  onClick={() => handleRemoveSeries(option)}
-                                  className="cursor-pointer bg-black   px-2 py-2 rounded-md text-white"
-                                >
-                                  <MdDelete size="1em" />
-                                </span>
-                              </div>
-                            ))}
+                            {seriesOptions
+                              ? seriesOptions.map((option) => (
+                                  <div className="flex justify-between">
+                                    <li
+                                      key={option.value}
+                                      onClick={() => {
+                                        handleDropDown();
+                                        handleSelectOption(option);
+                                      }}
+                                      className={`flex justify-between w-full items-center py-1 px-2 text-sm cursor-pointer hover:bg-blue-100 `}
+                                    >
+                                      <span className="cursor-pointer w-full">
+                                        {option}
+                                      </span>
+                                    </li>
+                                    <span
+                                      onClick={() => handleRemoveSeries(option)}
+                                      className="cursor-pointer bg-black   px-2 py-2 rounded-md text-white"
+                                    >
+                                      <MdDelete size="1em" />
+                                    </span>
+                                  </div>
+                                ))
+                              : null}
                           </ul>
                         </div>
                       )}
