@@ -20,7 +20,7 @@ const BannerSection = ({ data }) => {
   const paragraphs = stripHtmlTags(getContent?.content);
 
   const handleGuestAcess = () => {
-    navigate("/guest-access");
+    navigate("/home");
   };
 
   return (
@@ -69,6 +69,7 @@ const BannerSection = ({ data }) => {
               thickness: "moderate",
               fontSize: "base",
             }}
+            onClick={handleGuestAcess}
             className="mt-10"
           >
             {getContent?.link?.text}

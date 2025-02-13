@@ -40,9 +40,13 @@ const NavBar = () => {
   const dropDownPopup = useRef(null);
   const mobileNavPopup = useRef(null);
 
+  const token = localStorage.getItem("auth_token");
+
   const { data: seriesPickList, isLoading: seriesPickListLoading } =
     useGetPicklist();
+
   const { data: cartItem, isLoading: cartLoading } = useGetCartItems();
+
   const { data: disciplineData, isLoading: artistLoading } = useGetDiscipline();
 
   const selectSeriesPicklist = seriesPickList?.data?.filter(
@@ -65,7 +69,7 @@ const NavBar = () => {
       setLoading(false);
     }
   }, [isLoading, cartLoading, seriesPickListLoading]);
-  const token = localStorage.getItem("auth_token");
+
   const isAuthorized = useAppSelector((state) => state.user.isAuthorized);
   const { mutate: logOut } = useLogOutMutation();
 

@@ -113,7 +113,7 @@ const ProductInfo = ({ data }: any) => {
   );
 
   const handleShowmore = (id) => {
-    navigate(`/artist_detail?id=${id}`);
+    navigate(`/artist_detail/${id}`);
   };
 
   if (!product) return <div>Loading...</div>;

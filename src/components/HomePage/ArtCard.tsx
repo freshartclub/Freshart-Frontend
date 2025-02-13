@@ -53,9 +53,13 @@ const ArtCard = ({ data, tittle, artistData }) => {
   const { mutate } = postRecentArtworkMutation();
   const { mutateAsync: LikeUnlikeMutate } = useLikeUnlikeArtworkMutation();
 
+  const isToken = localStorage.getItem("auth_token");
+
   const navigate = useNavigate();
   const handleRedirectToDescription = (id) => {
-    mutate(id);
+    if (isToken) {
+      mutate(id);
+    }
     navigate(`/discover_more/${id}`);
     window.scroll(0, 0);
   };

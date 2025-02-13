@@ -17,6 +17,8 @@ const HomePage = () => {
   const { data, isLoading } = useGetHomeData();
   const { data: artistData } = useGetArtistDetails();
 
+  const token = localStorage.getItem("auth_token");
+
   if (profile === "artist") return navigate("/artist-panel");
 
   if (isLoading) return <Loader />;
@@ -48,7 +50,8 @@ const HomePage = () => {
 
       <HelpSection />
       <ArtistPortfolio data={data} />
-      <RecentSection />
+      {token ? <RecentSection /> : null}
+
       <FreshArt />
     </div>
   );

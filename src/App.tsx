@@ -209,9 +209,9 @@ const App: React.FC = () => {
             <Route
               path="/home"
               element={
-                <AuthGuard>
-                  <HomePage />
-                </AuthGuard>
+                // <AuthGuard>
+                <HomePage />
+                // </AuthGuard>
               }
             />
             <Route
@@ -346,17 +346,17 @@ const App: React.FC = () => {
             <Route
               path="/discover_more/:id"
               element={
-                <AuthGuard>
-                  <DiscoverMore />
-                </AuthGuard>
+                // <AuthGuard>
+                <DiscoverMore />
+                // </AuthGuard>
               }
             />
             <Route
               path="/all-artworks"
               element={
-                <AuthGuard>
-                  <Purchase />
-                </AuthGuard>
+                // <AuthGuard>
+                <Purchase />
+                // </AuthGuard>
               }
             />
             <Route
@@ -378,9 +378,9 @@ const App: React.FC = () => {
             <Route
               path="/artist_detail/:id"
               element={
-                <AuthGuard>
-                  <ArtistDetail />
-                </AuthGuard>
+                // <AuthGuard>
+                <ArtistDetail />
+                // </AuthGuard>
               }
             />
 

@@ -13,7 +13,7 @@ i18n
     defaultNS: "translation",
     backend: {
       // loadPath: `${imageUrl}/lang/{{lng}}.json`,
-      loadPath: `http://localhost:5000/uploads/lang/{{lng}}.json`,
+      // loadPath: `http://localhost:5000/uploads/lang/{{lng}}.json`,
     },
   });
 

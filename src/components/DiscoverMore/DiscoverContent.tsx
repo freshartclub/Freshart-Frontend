@@ -9,8 +9,9 @@ import cart from "./assets/cart.png";
 import mark from "./assets/offer.png";
 import question from "./assets/question.png";
 import useAddToCartMutation from "./http/useAddToCartMutation";
-import { useGetCartItems } from "./http/useGetCartItems";
+
 import { AiOutlineHeart } from "react-icons/ai";
+import { useGetCartItems } from "../pages/http/useGetCartItems";
 
 const DiscoverContent = ({ data }: any) => {
   const { mutate, isPending } = useAddToCartMutation();
