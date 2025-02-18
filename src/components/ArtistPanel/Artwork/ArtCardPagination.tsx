@@ -6,6 +6,7 @@ import { useGetArtWorkList } from "../../ArtistDetail/http/getArtWorkList";
 import Loader from "../../ui/Loader";
 import PaginationTabs from "../ArtistDashboard/PaginationTabs";
 import ArtCard from "./ArtCard";
+import { NavLink } from "react-router-dom";
 
 interface ArtworkItem {
   _id: string;
@@ -82,11 +83,24 @@ const ArtCardPagination = () => {
         </div>
       </div>
       <div className="flex flex-wrap justify-center gap-5 mt-6">
-        {artwork?.slice(firstIndex, lastIndex).map((record, index) => (
-          <div key={index}>
-            <ArtCard record={record} data={data} />
+        {artwork && artwork.length > 0 ? (
+          artwork?.slice(firstIndex, lastIndex).map((record, index: number) => (
+            <div key={index}>
+              <ArtCard record={record} data={data} />
+            </div>
+          ))
+        ) : (
+          <div className="flex flex-col items-center justify-center w-full">
+            <p className="text-lg text-center font-medium mb-4">
+              {t("You don't have any artwork yet.")}
+            </p>
+            <NavLink to="/artist-panel/artwork/add">
+              <button className="px-6 py-2 bg-zinc-800 text-white rounded-lg">
+                {t("Add Artwork")}
+              </button>
+            </NavLink>
           </div>
-        ))}
+        )}
       </div>
 
       <div className="flex gap-2 flex-wrap justify-center mt-4">
@@ -120,12 +134,14 @@ const ArtCardPagination = () => {
         </div>
       </div>
 
-      <PaginationTabs
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
-        numbers={numbers}
-        nPages={nPages}
-      />
+      {artwork && artwork.length > 0 && (
+        <PaginationTabs
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          numbers={numbers}
+          nPages={nPages}
+        />
+      )}
     </div>
   );
 };
