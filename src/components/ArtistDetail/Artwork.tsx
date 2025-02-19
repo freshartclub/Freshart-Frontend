@@ -153,7 +153,7 @@ const Artwork = () => {
       ) : (
         <div>
           {data?.data && data?.data.length > 0 ? (
-            data?.data.map((item, i) => (
+            data?.data.map((item, i: number) => (
               <div key={i} className="mb-5 bg-white shadow rounded-lg border">
                 <h1 className="font-semibold bg-gray-200 mb-3 p-2 text-lg capitalize border-b border-gray-300 pb-1 text-[#333333]">
                   {t("Group")} - {item?.groupName || t("No Name")}

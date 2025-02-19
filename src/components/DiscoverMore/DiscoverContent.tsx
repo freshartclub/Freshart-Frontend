@@ -137,9 +137,8 @@ const DiscoverContent = ({ data }: any) => {
         variant={{ size: "xl", theme: "dark", weight: "semiBold" }}
         className="lg:my-4 my-2"
       >
-        {`${getSymbolFromCurrency(data?.pricing?.currency?.slice(0, 3))} ${
-          data?.pricing?.basePrice
-        }`}
+        {`${getSymbolFromCurrency(data?.pricing?.currency?.slice(0, 3))} ${data?.pricing?.basePrice
+          }`}
       </Header>
 
       <div className="flex lg:flex-row flex-col gap-5">
@@ -150,19 +149,18 @@ const DiscoverContent = ({ data }: any) => {
             fontWeight: "600",
             rounded: "full",
           }}
-          className={`${
-            checkCartItem?.length
-              ? "text-base flex items-center justify-center xl:!px-12 lg:px-4 lg:!py-4 !py-2 w-full pointer-events-none opacity-50"
-              : "text-base flex items-center justify-center xl:!px-12 lg:px-4 lg:!py-4 !py-2 w-full"
-          } `}
+          className={`${checkCartItem?.length
+            ? "text-base flex items-center justify-center xl:!px-12 lg:px-4 lg:!py-4 !py-2 w-full pointer-events-none opacity-50"
+            : "text-base flex items-center justify-center xl:!px-12 lg:px-4 lg:!py-4 !py-2 w-full"
+            } `}
         >
           <img src={cart} alt="" className="md:mx-2 mx-1" />
           <P variant={{ size: "base", theme: "light", weight: "normal" }}>
             {checkCartItem?.length
               ? "Already Added"
               : isPending
-              ? "Adding..."
-              : "Add to cart"}
+                ? "Adding..."
+                : "Add to cart"}
           </P>
         </Button>
 
@@ -268,7 +266,7 @@ const DiscoverContent = ({ data }: any) => {
             variant={{ size: "small", weight: "medium" }}
             className="capitalize text-[#999999]"
           >
-            {data?.discipline?.artworkDiscipline}
+            {data?.discipline}
           </P>
         </div>
       </div>

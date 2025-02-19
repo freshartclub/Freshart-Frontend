@@ -21,13 +21,13 @@ const GetStarted = () => {
   const profile = localStorage.getItem("profile");
   const { data, isLoading } = useGetRootPageData();
 
-  // useEffect(() => {
-  //   if (isAuthorized && currentPath === "/" && profile === "user") {
-  //     navigate("/home", { replace: true });
-  //   } else if (isAuthorized && currentPath === "/" && profile === "artist") {
-  //     navigate("/artist-panel", { replace: true });
-  //   }
-  // }, [isAuthorized, currentPath, navigate]);
+  useEffect(() => {
+    if (isAuthorized && currentPath === "/" && profile === "user") {
+      navigate("/home", { replace: true });
+    } else if (isAuthorized && currentPath === "/" && profile === "artist") {
+      navigate("/artist-panel", { replace: true });
+    }
+  }, [isAuthorized, currentPath, navigate]);
 
   if (isLoading) {
     return <Loader />;
@@ -35,21 +35,21 @@ const GetStarted = () => {
 
   return (
     <div>
-      <UnderConstruction />
-      {/* <BannerSection data={data?.data?.carousel} />
-      <DiscoverSection /> */}
+      {/* <UnderConstruction /> */}
+      <BannerSection data={data?.data?.carousel} />
+      <DiscoverSection />
       {/* firstsection */}
-      {/* <ThirdSection data={data?.data?.carousel} /> */}
+      <ThirdSection data={data?.data?.carousel} />
 
-      {/* <ExploreSection /> */}
+      <ExploreSection />
       {/* second section */}
-      {/* <FifthSection data={data?.data?.carousel} /> */}
+      <FifthSection data={data?.data?.carousel} />
       {/* third section */}
-      {/* <LearnMoreSection data={data?.data?.carousel} /> */}
+      <LearnMoreSection data={data?.data?.carousel} />
       {/* fouth section */}
-      {/* <ContactSection data={data?.data?.carousel} /> */}
+      <ContactSection data={data?.data?.carousel} />
       {/* Faq Section */}
-      {/* <FaqSection data={data?.data?.faqList} /> */}
+      <FaqSection data={data?.data?.faqList} />
     </div>
   );
 };

@@ -258,7 +258,7 @@ const NavForHome = () => {
                     className="w-8 h-8 text-white mx-2 "
                   />
                   <span className="absolute bg-red-300 w-4 h-4 right-0 top-0  rounded-full flex items-center justify-center">
-                    {cartItem?.data?.cart ? (
+                    {cartItem ? (
                       <h1 className="text-sm font-semibold">
                         {cartItem?.data?.cart?.length}
                       </h1>
@@ -620,7 +620,7 @@ const NavForHome = () => {
                     className="w-8 h-8 text-white mx-2"
                   />
                   <span className="absolute bg-red-300 w-4 h-4 right-0 top-0  rounded-full flex items-center justify-center">
-                    {cartItem?.data?.cart ? (
+                    {cartItem ? (
                       <h1 className="text-sm font-semibold">
                         {cartItem?.data?.cart?.length}
                       </h1>

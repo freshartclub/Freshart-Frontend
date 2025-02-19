@@ -56,7 +56,7 @@ const ArtCard = ({ data, tittle, artistData }) => {
   const isToken = localStorage.getItem("auth_token");
 
   const navigate = useNavigate();
-  const handleRedirectToDescription = (id) => {
+  const handleRedirectToDescription = (id: string) => {
     if (isToken) {
       mutate(id);
     }
@@ -70,7 +70,7 @@ const ArtCard = ({ data, tittle, artistData }) => {
     }
   }, []);
 
-  const handleLike = (id) => {
+  const handleLike = (id: string) => {
     const action = likedItems.includes(id) ? "unlike" : "like";
 
     const data = {
@@ -98,19 +98,18 @@ const ArtCard = ({ data, tittle, artistData }) => {
       <div>
         <Slider {...settings}>
           {data?.map((item, index: number) => (
-            <div key={index} className="relative cursor-pointer px-3 ">
+            <div key={index} className="relative cursor-pointer px-3 group">
               <div className="overflow-hidden">
                 <img
                   onClick={() => handleRedirectToDescription(item?._id)}
                   src={`${imageUrl}/users/${item?.media}`}
                   alt="image"
-                  className={`w-full h-[40vh] border sm:h-[45vh] md:h-[50vh] object-cover shadow-lg ${
-                    item?.additionalInfo?.offensive == "Yes" ? "blur-3xl" : ""
-                  }`}
+                  className={`w-full h-[40vh] border sm:h-[45vh] md:h-[50vh] object-cover shadow-lg ${item?.additionalInfo?.offensive == "Yes" ? "blur-3xl" : ""
+                    }`}
                 />
                 <button
                   onClick={() => handleLike(item?._id)}
-                  className="absolute top-2 z-[99] right-7 border shadow rounded-full p-2 bg-white cursor-pointer"
+                  className="absolute top-2 right-7 border shadow rounded-full p-2 bg-white cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out"
                 >
                   {likedItems?.includes(item?._id) ? (
                     <AiFillLike size="1.5rem" color="red" />

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaBars, FaSearch } from "react-icons/fa";
 import { GiHamburgerMenu } from "react-icons/gi";
 import {
@@ -15,10 +15,10 @@ import Button from "../ui/Button";
 import Header from "../ui/Header";
 import P from "../ui/P";
 import { useDebounce } from "../utils/useDebounce";
-import filter from "./assets/filter.png";
 import CardSection from "./CardSection";
 import { useGetPurchaseArtwork } from "./http/useGetPurchaseArtwork";
 import Loader from "../ui/Loader";
+import useClickOutside from "../utils/useClickOutside";
 
 const Purchase = () => {
   const [query, setQuery] = useState("");
@@ -45,13 +45,14 @@ const Purchase = () => {
 
   const { data: disciplineData } = useGetDiscipline();
   const navigate = useNavigate();
+  const openRef = useRef(null);
 
   const [searchParams] = useSearchParams();
   const type = searchParams.get("type") || "subscription";
 
   const debounceQuery = useDebounce(query, 800);
 
-  const { data, isLoading } = useGetPurchaseArtwork(
+  const { data, isLoading, refetch } = useGetPurchaseArtwork(
     type,
     debounceQuery,
     selectedTheme,
@@ -65,6 +66,10 @@ const Purchase = () => {
 
   const { data: techData } = useGetTechnic();
   const { data: theData } = useGetTheme();
+
+  useClickOutside(openRef, () => {
+    setIsOpenSidePanel(false);
+  });
 
   useEffect(() => {
     if (selectedOption) {
@@ -93,6 +98,14 @@ const Purchase = () => {
     }
   }, [selectedOption, techData, theData]);
 
+  const handleClear = async () => {
+    setSelectedOption("");
+    setSelectedTechnic("");
+    setSelectedTheme("");
+    setOptions({ cursor: "", direction: "", limit: 10, currPage: 1 });
+    await refetch();
+  }
+
   useEffect(() => {
     if (data) {
       setNextCursor(data.nextCursor || "");
@@ -114,9 +127,8 @@ const Purchase = () => {
             </button>
 
             <div
-              className={`${
-                isOpen ? "block" : "hidden"
-              } lg:flex flex-col lg:flex-row items-start lg:items-center mt-3 lg:mt-0
+              className={`${isOpen ? "block" : "hidden"
+                } lg:flex flex-col lg:flex-row items-start lg:items-center mt-3 lg:mt-0
                space-y-2 lg:space-y-0 lg:space-x-4 absolute lg:relative z-0 md:w-[40%] sm:w-[50%]
                 lg:w-auto shadow-lg lg:shadow-none p-4 lg:p-0`}
             >
@@ -152,9 +164,9 @@ const Purchase = () => {
       </div>
 
       <div
-        className={`fixed border-r shadow-md bg-white top-0 left-0 h-screen overflow-y-auto text-black w-80 transform ${
-          isOpenSidePanel ? "translate-x-0" : "-translate-x-full"
-        } transition-transform duration-300 ease-in-out z-10`}
+        ref={openRef}
+        className={`fixed border-r shadow-md bg-white top-0 left-0 h-screen overflow-y-auto text-black w-80 transform ${isOpenSidePanel ? "translate-x-0" : "-translate-x-full"
+          } transition-transform duration-300 ease-in-out z-10`}
       >
         <div className="flex items-center justify-between border-b border-gray-400 px-4 py-3">
           <GiHamburgerMenu
@@ -163,8 +175,9 @@ const Purchase = () => {
             onClick={() => setIsOpenSidePanel((prev) => !prev)}
           />
 
-          <span className="uppercase cursor-pointer bg-[#102031] text-white rounded py-1 px-3">
-            Clear
+          <span className="uppercase text-[14px] cursor-pointer bg-[#102031] text-white rounded py-1 px-3"
+            onClick={handleClear}>
+            Clear Filter
           </span>
         </div>
 
@@ -198,11 +211,10 @@ const Purchase = () => {
                 {disciplineData &&
                   disciplineData?.data?.map((item, index: number) => (
                     <span
-                      className={`cursor-pointer ${
-                        selectedOption == item?.disciplineName
-                          ? "bg-gray-300 text-black px-1 rounded"
-                          : ""
-                      }`}
+                      className={`cursor-pointer ${selectedOption == item?.disciplineName
+                        ? "bg-gray-300 text-black px-1 rounded"
+                        : ""
+                        }`}
                       onClick={() => setSelectedOption(item.disciplineName)}
                       key={index}
                     >
@@ -244,11 +256,10 @@ const Purchase = () => {
                     {themeData && themeData.length > 0 ? (
                       themeData.map((item, i: number) => (
                         <span
-                          className={`cursor-pointer ${
-                            selectedTheme == item
-                              ? "bg-gray-300 text-black px-1 rounded"
-                              : ""
-                          }`}
+                          className={`cursor-pointer ${selectedTheme == item
+                            ? "bg-gray-300 text-black px-1 rounded"
+                            : ""
+                            }`}
                           key={i}
                           onClick={() => setSelectedTheme(item)}
                         >
@@ -291,11 +302,10 @@ const Purchase = () => {
                     {technicData && technicData.length > 0 ? (
                       technicData.map((item, i: number) => (
                         <span
-                          className={`cursor-pointer ${
-                            selectedTechnic == item
-                              ? "bg-gray-300 text-black px-1 rounded"
-                              : ""
-                          }`}
+                          className={`cursor-pointer ${selectedTechnic == item
+                            ? "bg-gray-300 text-black px-1 rounded"
+                            : ""
+                            }`}
                           key={i}
                           onClick={() => setSelectedTechnic(item)}
                         >
@@ -405,11 +415,10 @@ const Purchase = () => {
               </span>
               <span className="flex gap-2 items-center">
                 <MdArrowBackIosNew
-                  className={`cursor-pointer border border-[#102031] bg-slate-200 rounded-full p-2 text-[2rem] ${
-                    !prevCursor || isLoading
-                      ? "opacity-50 pointer-events-none"
-                      : ""
-                  }`}
+                  className={`cursor-pointer border border-[#102031] bg-slate-200 rounded-full p-2 text-[2rem] ${!prevCursor || isLoading
+                    ? "opacity-50 pointer-events-none"
+                    : ""
+                    }`}
                   onClick={() => {
                     setOptions({
                       ...options,
@@ -421,11 +430,10 @@ const Purchase = () => {
                   }}
                 />
                 <MdArrowForwardIos
-                  className={`cursor-pointer border border-[#102031] bg-slate-200 rounded-full p-2 text-[2rem] ${
-                    !nextCursor || isLoading
-                      ? "opacity-50 pointer-events-none"
-                      : ""
-                  }`}
+                  className={`cursor-pointer border border-[#102031] bg-slate-200 rounded-full p-2 text-[2rem] ${!nextCursor || isLoading
+                    ? "opacity-50 pointer-events-none"
+                    : ""
+                    }`}
                   onClick={() => {
                     setOptions({
                       ...options,

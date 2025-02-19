@@ -19,6 +19,7 @@ import print from "./assets/print.png";
 import return1 from "./assets/return.png";
 import secure from "./assets/secure.png";
 import product from "./assets/single-product.jpg.png";
+import { imageUrl } from "../utils/baseUrls";
 
 interface DisciplineItem {
   discipline: string;
@@ -28,9 +29,22 @@ interface DisciplineItem {
 const ProductInfo = ({ data }: any) => {
   const artworkStyles = Array.isArray(data?.data?.additionalInfo?.artworkStyle)
     ? data.data.additionalInfo.artworkStyle.map((iw, i) => (
-        <span key={i}>{iw}</span>
-      ))
+      <span key={i}>{iw}</span>
+    ))
     : null;
+
+  const name = (val: {
+    artistName: string;
+    artistSurname1: string;
+    artistSurname2: string;
+  }) => {
+    let fullName = val?.artistName || "";
+
+    if (val?.artistSurname1) fullName += " " + val?.artistSurname1;
+    if (val?.artistSurname2) fullName += " " + val?.artistSurname2;
+
+    return fullName.trim();
+  };
 
   const overview_date = [
     {
@@ -126,12 +140,12 @@ const ProductInfo = ({ data }: any) => {
         </TabList>
 
         <TabPanel>
-          <div className="flex flex-col md:flex-row gap-8 justify-between my-10">
+          <div className="flex flex-col md:flex-row gap-8 justify-between my-5">
             {/* Product Information Section */}
             <div className="w-full md:w-[65%]">
               <Header
                 variant={{ size: "xl", theme: "dark", weight: "medium" }}
-                className="my-5"
+                className="mb-5"
               >
                 Product information
               </Header>
@@ -239,8 +253,7 @@ const ProductInfo = ({ data }: any) => {
         </TabPanel>
 
         <TabPanel>
-          <div className="flex flex-col md:flex-row gap-10 w-full my-10">
-            {/* Overview Section */}
+          <div className="flex flex-col md:flex-row gap-10 w-full my-5">
             <div className="w-full md:w-[32%]">
               <Header
                 variant={{ size: "md", theme: "dark", weight: "semiBold" }}
@@ -309,24 +322,21 @@ const ProductInfo = ({ data }: any) => {
         </TabPanel>
 
         <TabPanel>
-          <div className="flex flex-col md:flex-row gap-10 my-10">
-            {/* Profile Section */}
-            <div className="w-full md:w-[20%]">
-              <div className="bg-white shadow-2xl lg:max-w-xs sm:w-[90%] w-full p-5">
-                <div>
+          <div className="flex flex-col md:flex-row my-5">
+            <div className="w-full mt-[0.8rem] md:w-[30%]">
+              <div className="bg-white border lg:max-w-xs sm:w-[90%] w-full p-5">
+                <div className="flex items-center flex-col">
                   <img
-                    src={`${data?.url}/users/${data?.data?.owner?.profile?.mainImage}`}
+                    src={`${imageUrl}/users/${data?.data?.owner?.profile}`}
                     alt="Profile"
-                    className="object-cover w-full h-full"
+                    className="object-cover rounded-full w-[10rem] h-[10rem]"
                   />
                   {/* Profile Details */}
                   <div className="mt-4 text-center">
                     <Header
                       variant={{ size: "xl", theme: "dark", weight: "bold" }}
                     >
-                      {data?.data?.owner?.artistName +
-                        " " +
-                        data?.data?.owner?.artistSurname1}
+                      {name(data?.data?.owner)}
                     </Header>
                     <P
                       variant={{
@@ -334,7 +344,7 @@ const ProductInfo = ({ data }: any) => {
                         theme: "dark",
                         weight: "medium",
                       }}
-                      className="pb-10 mt-1 border-b border-dashed"
+                      className="pb-4 mt-1 border-b border-dashed"
                     >
                       {data?.data?.owner?.aboutArtist?.discipline?.map(
                         (item: DisciplineItem, i: number) => (
@@ -368,7 +378,7 @@ const ProductInfo = ({ data }: any) => {
                       Painting, abstract, illustration, nudity
                     </P>
                   </div>
-                  <div className="border-b border-dashed py-2">
+                  <div className="pt-2 pb-0">
                     <Header
                       variant={{
                         size: "lg",
@@ -391,8 +401,7 @@ const ProductInfo = ({ data }: any) => {
                   </div>
                 </div>
 
-                {/* Social and Action Icons */}
-                <div className="flex justify-between items-center mt-2">
+                {/* <div className="flex justify-between items-center mt-2">
                   <div className="flex">
                     <div className="relative w-12 h-12 border-4 border-white rounded-full overflow-hidden">
                       <img
@@ -409,7 +418,7 @@ const ProductInfo = ({ data }: any) => {
                       />
                     </div>
 
-                    {/* Follower Count */}
+                  
                     <div className="relative w-12 h-12 border-4 border-white rounded-full bg-gray-100 flex items-center justify-center -ml-5">
                       <span className="font-bold text-black">+256</span>
                     </div>
@@ -424,7 +433,7 @@ const ProductInfo = ({ data }: any) => {
                     <img src={chat} alt="icons" className="w-[20px] h-[20px]" />
                     <img src={dots} alt="icons" className="w-[20px] h-[20px]" />
                   </div>
-                </div>
+                </div> */}
               </div>
 
               <div className="my-6">
@@ -440,9 +449,8 @@ const ProductInfo = ({ data }: any) => {
               </div>
             </div>
 
-            {/* Content Section */}
             <div className="w-full md:w-[75%]">
-              <div className="border mt-8 p-4">
+              <div className="border mt-3 p-4">
                 <Header
                   variant={{ size: "lg", theme: "dark", weight: "semiBold" }}
                   className="mb-3 uppercase"

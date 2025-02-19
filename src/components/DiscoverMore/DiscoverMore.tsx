@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Slider from "react-slick";
 import eye from "./assets/eye.png";
 import share from "./assets/share.png";
@@ -15,37 +15,61 @@ import Loader from "../ui/Loader";
 import { imageUrl } from "../utils/baseUrls";
 
 const DiscoverMore = () => {
+  const TEN_DAYS_MS = 10 * 24 * 60 * 60 * 1000;
   const sliderRef = useRef<Slider>(null);
   const id = useParams().id;
   const preview = false;
 
   const { data, isLoading } = useGetArtWorkById(id, preview);
+  const [safeMode, setSafeMode] = useState(false);
+
+  console.log(safeMode);
+
+  useEffect(() => {
+    if (data && data?.data?.additionalInfo?.offensive == "Yes") {
+      const storedData = JSON.parse(localStorage.getItem("viewedImages") || "{}");
+      const currentTime = Date.now();
+      const filteredData: Record<string, number> = {};
+
+      Object.keys(storedData).forEach((key) => {
+        if (currentTime - storedData[key] < TEN_DAYS_MS) {
+          filteredData[key] = storedData[key];
+        }
+      });
+
+      localStorage.setItem("viewedImages", JSON.stringify(filteredData));
+
+      if (filteredData[id]) {
+        setSafeMode(false);
+      }
+    }
+  }, []);
 
   const images = data?.data
     ? [
-        {
-          src: data?.data.media?.mainImage ? data?.data.media?.mainImage : null,
-          alt: "Main Image",
-        },
-        {
-          src: data?.data.media?.backImage ? data?.data.media?.backImage : null,
-          alt: "Back Image",
-        },
-        {
-          src: data?.data.media?.mainVideo ? data?.data.media?.mainVideo : null,
-          alt: "Main Video",
-        },
-        {
-          src: data?.data.media?.inProcessImage
-            ? data?.data.media?.inProcessImage
-            : null,
-          alt: "In Process Image",
-        },
-        ...data?.data.media?.images?.map((item) => ({
-          src: item,
-          alt: "Additional Image",
-        })),
-      ].filter((image) => image.src !== null)
+      {
+        src: data?.data.media?.mainImage ? data?.data.media?.mainImage : null,
+        alt: "Main Image",
+      },
+      {
+        src: data?.data.media?.backImage ? data?.data.media?.backImage : null,
+        alt: "Back Image",
+      },
+      {
+        src: data?.data.media?.mainVideo ? data?.data.media?.mainVideo : null,
+        alt: "Main Video",
+      },
+      {
+        src: data?.data.media?.inProcessImage
+          ? data?.data.media?.inProcessImage
+          : null,
+        alt: "In Process Image",
+      },
+      ...data?.data.media?.images?.map((item) => ({
+        src: item,
+        alt: "Additional Image",
+      })),
+    ].filter((image) => image.src !== null)
     : [];
 
   const settings = {
@@ -64,6 +88,7 @@ const DiscoverMore = () => {
   };
 
   const checkArtworkType = data?.data?.commercialization?.activeTab;
+  const offensive = data?.data?.additionalInfo?.offensive == "Yes";
 
   if (isLoading) return <Loader />;
 
@@ -118,15 +143,16 @@ const DiscoverMore = () => {
 
         <div className="flex md:flex-row flex-col gap-5">
           <div className="flex lg:flex-row flex-col md:w-[50%] w-full items-center">
-            <div className="flex lg:justify-start justify-center lg:flex-col lg:max-h-[60vh] lg:h-[60vh] md:w-[20rem] overflow-x-auto lg:overflow-y-auto gap-2 lg:w-[15%] lg:ml-4 scrollbar">
+            <div className="flex overflow-hidden lg:justify-start justify-center lg:flex-col lg:max-h-[60vh] lg:h-[60vh] md:w-[20rem] overflow-x-auto lg:overflow-y-auto gap-2 lg:w-[15%] lg:ml-4 scrollbar">
               {images?.map((thumb, index) => {
                 const isVideo = thumb.src && thumb.src.endsWith(".mp4");
+
                 if (thumb.src) {
                   return isVideo ? (
                     <video
                       key={index}
                       src={`${imageUrl}/videos/${thumb.src}`}
-                      className="md:mb-0 mb-4 lg:w-20 w-24 h-24 lg:h-24 cursor-pointer object-cover"
+                      className={`${offensive ? "blur-md brightness-75" : ""} md:mb-0 mb-4 lg:w-20 w-24 h-24 lg:h-24 cursor-pointer object-cover`}
                       onClick={() => handleThumbnailClick(index)}
                     />
                   ) : (
@@ -134,7 +160,7 @@ const DiscoverMore = () => {
                       key={index}
                       src={`${imageUrl}/users/${thumb.src}`}
                       alt={thumb.alt}
-                      className="md:mb-0 mb-4 lg:w-20 w-24 h-24 lg:h-24 cursor-pointer object-cover"
+                      className={`${offensive ? "blur-md brightness-75" : ""} md:mb-0 mb-4 lg:w-20 w-24 h-24 lg:h-24 cursor-pointer object-cover`}
                       onClick={() => handleThumbnailClick(index)}
                     />
                   );
@@ -143,24 +169,24 @@ const DiscoverMore = () => {
               })}
             </div>
 
-            <div className="flex-1 md:w-[80%] w-full">
+            <div className="flex-1 md:w-[80%] w-full overflow-hidden">
               {images.length > 1 ? (
                 <Slider {...settings} ref={sliderRef} className="discover_more">
                   {images.map(
                     (slide, index) =>
                       slide.src && (
-                        <div key={index}>
-                          {slide.src.endsWith(".mp4") ? ( // Check if it's a video
+                        <div key={index} className="overflow-hidden">
+                          {slide.src.endsWith(".mp4") ? (
                             <video
                               src={`${imageUrl}/videos/${slide.src}`}
-                              className="shadow rounded mx-auto object-cover md:w-[25rem] lg:w-[25rem] h-[20rem] md:h-[60vh] lg:h-[60vh]"
+                              className={`${offensive && !safeMode ? "blur-lg brightness-75" : ""} shadow rounded mx-auto object-cover md:w-[25rem] lg:w-[25rem] h-[20rem] md:h-[60vh] lg:h-[60vh]`}
                               controls
                             />
                           ) : (
                             <img
                               src={`${imageUrl}/users/${slide.src}`}
                               alt={`Slide ${index + 1}`}
-                              className="shadow rounded mx-auto object-cover md:w-[25rem] lg:w-[25rem] h-[20rem] md:h-[60vh] lg:h-[60vh]"
+                              className={`${offensive && !safeMode ? "blur-lg brightness-75" : ""} shadow rounded mx-auto object-cover md:w-[25rem] lg:w-[25rem] h-[20rem] md:h-[60vh] lg:h-[60vh]`}
                             />
                           )}
                         </div>
@@ -172,7 +198,7 @@ const DiscoverMore = () => {
                 (images[0].src.endsWith(".mp4") ? (
                   <video
                     src={`${imageUrl}/videos/${images[0].src}`}
-                    className="shadow rounded mx-auto object-cover md:w-[25rem] lg:w-[25rem] h-[20rem] md:h-[60vh] lg:h-[60vh]"
+                    className={`${offensive && !safeMode ? "blur-lg brightness-75" : ""} shadow rounded mx-auto object-cover md:w-[25rem] lg:w-[25rem] h-[20rem] md:h-[60vh] lg:h-[60vh]`}
                     controls
                     autoPlay={true}
                   />
@@ -180,7 +206,7 @@ const DiscoverMore = () => {
                   <img
                     src={`${imageUrl}/users/${images[0]?.src}`}
                     alt="Single Image"
-                    className="shadow rounded mx-auto object-cover md:w-[25rem] lg:w-[25rem] h-[20rem] md:h-[60vh] lg:h-[60vh]"
+                    className={`${offensive && !safeMode ? "blur-lg brightness-75" : ""} shadow rounded mx-auto object-cover md:w-[25rem] lg:w-[25rem] h-[20rem] md:h-[60vh] lg:h-[60vh]`}
                   />
                 ))
               )}
