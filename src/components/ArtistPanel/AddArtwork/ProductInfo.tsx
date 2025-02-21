@@ -224,7 +224,7 @@ const ProductInfo = ({ data }) => {
     },
     {
       heading: "Coming Soon",
-      description: data?.data?.inventoryShipping?.commingSoon || "N/A",
+      description: data?.data?.inventoryShipping?.commingSoon ? "Yes" : "No",
     },
   ];
 

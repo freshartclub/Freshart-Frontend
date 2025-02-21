@@ -19,19 +19,54 @@ import CardSection from "./CardSection";
 import { useGetPurchaseArtwork } from "./http/useGetPurchaseArtwork";
 import Loader from "../ui/Loader";
 import useClickOutside from "../utils/useClickOutside";
+import { useGetStyle } from "../pages/http/useGetStyle";
+import { RenderAllPicklist } from "../utils/RenderAllPicklist";
+import Slider from "rc-slider";
+import "rc-slider/assets/index.css";
 
 const Purchase = () => {
   const [query, setQuery] = useState("");
   const [selectedOption, setSelectedOption] = useState("");
   const [selectedTheme, setSelectedTheme] = useState("");
   const [selectedTechnic, setSelectedTechnic] = useState("");
+  const [selectedStyle, setSelectedStyle] = useState("");
+  const defaultRanges = {
+    weight: { min: 0, max: 300, step: 10 },
+    height: { min: 0, max: 300, step: 10 },
+    width: { min: 0, max: 300, step: 10 },
+    depth: { min: 0, max: 300, step: 10 },
+  };
+
+  const [sliderData, setSliderData] = useState({
+    weight: [0, defaultRanges.weight.max],
+    height: [0, defaultRanges.height.max],
+    width: [0, defaultRanges.width.max],
+    depth: [0, defaultRanges.depth.max],
+  });
+
+  const handleSliderChange = (key, value) => {
+    setSliderData((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
+
+  const [moreOptions, setMoreOptions] = useState({
+    orientation: "",
+    color: "",
+    comingSoon: "",
+  });
+
+  const [tag, setTag] = useState("");
   const [technicData, setTechnicData] = useState([]);
   const [themeData, setThemeData] = useState([]);
+  const [styleData, setStyleData] = useState([]);
   const [isOpenSidePanel, setIsOpenSidePanel] = useState(false);
   const [optionOpen, setOptionOpen] = useState({
     theme: true,
     discipline: true,
     technic: true,
+    style: true,
   });
   const [isOpen, setIsOpen] = useState(false);
   const [nextCursor, setNextCursor] = useState(null);
@@ -57,7 +92,15 @@ const Purchase = () => {
     debounceQuery,
     selectedTheme,
     selectedTechnic,
+    selectedStyle,
     selectedOption,
+    moreOptions.color,
+    moreOptions.comingSoon,
+    moreOptions.orientation,
+    sliderData.depth,
+    sliderData.height,
+    sliderData.weight,
+    sliderData.width,
     options.currPage,
     options.cursor,
     options.direction,
@@ -66,6 +109,8 @@ const Purchase = () => {
 
   const { data: techData } = useGetTechnic();
   const { data: theData } = useGetTheme();
+  const { data: stData } = useGetStyle();
+  const colors = RenderAllPicklist("Colors");
 
   useClickOutside(openRef, () => {
     setIsOpenSidePanel(false);
@@ -93,18 +138,30 @@ const Purchase = () => {
         )
         .map((item) => item.themeName);
 
+      const newStyle = stData?.data
+        ?.filter(
+          (item) =>
+            item.discipline &&
+            item.discipline.some((newItem) =>
+              newItem.disciplineName.includes(selectedOption)
+            )
+        )
+        .map((item) => item.styleName);
+
       setTechnicData(newTechnic || []);
       setThemeData(newTheme || []);
+      setStyleData(newStyle || []);
     }
-  }, [selectedOption, techData, theData]);
+  }, [selectedOption, techData, theData, stData]);
 
   const handleClear = async () => {
     setSelectedOption("");
     setSelectedTechnic("");
     setSelectedTheme("");
+    setSelectedStyle("");
     setOptions({ cursor: "", direction: "", limit: 10, currPage: 1 });
     await refetch();
-  }
+  };
 
   useEffect(() => {
     if (data) {
@@ -127,8 +184,9 @@ const Purchase = () => {
             </button>
 
             <div
-              className={`${isOpen ? "block" : "hidden"
-                } lg:flex flex-col lg:flex-row items-start lg:items-center mt-3 lg:mt-0
+              className={`${
+                isOpen ? "block" : "hidden"
+              } lg:flex flex-col lg:flex-row items-start lg:items-center mt-3 lg:mt-0
                space-y-2 lg:space-y-0 lg:space-x-4 absolute lg:relative z-0 md:w-[40%] sm:w-[50%]
                 lg:w-auto shadow-lg lg:shadow-none p-4 lg:p-0`}
             >
@@ -165,8 +223,9 @@ const Purchase = () => {
 
       <div
         ref={openRef}
-        className={`fixed border-r shadow-md bg-white top-0 left-0 h-screen overflow-y-auto text-black w-80 transform ${isOpenSidePanel ? "translate-x-0" : "-translate-x-full"
-          } transition-transform duration-300 ease-in-out z-10`}
+        className={`fixed border-r shadow-md bg-white top-0 left-0 h-screen overflow-y-auto text-black w-80 transform ${
+          isOpenSidePanel ? "translate-x-0" : "-translate-x-full"
+        } transition-transform duration-300 ease-in-out z-10`}
       >
         <div className="flex items-center justify-between border-b border-gray-400 px-4 py-3">
           <GiHamburgerMenu
@@ -175,8 +234,10 @@ const Purchase = () => {
             onClick={() => setIsOpenSidePanel((prev) => !prev)}
           />
 
-          <span className="uppercase text-[14px] cursor-pointer bg-[#102031] text-white rounded py-1 px-3"
-            onClick={handleClear}>
+          <span
+            className="uppercase text-[14px] cursor-pointer bg-[#102031] text-white rounded py-1 px-3"
+            onClick={handleClear}
+          >
             Clear Filter
           </span>
         </div>
@@ -211,10 +272,11 @@ const Purchase = () => {
                 {disciplineData &&
                   disciplineData?.data?.map((item, index: number) => (
                     <span
-                      className={`cursor-pointer ${selectedOption == item?.disciplineName
-                        ? "bg-gray-300 text-black px-1 rounded"
-                        : ""
-                        }`}
+                      className={`cursor-pointer ${
+                        selectedOption == item?.disciplineName
+                          ? "bg-gray-300 text-black px-1 rounded"
+                          : ""
+                      }`}
                       onClick={() => setSelectedOption(item.disciplineName)}
                       key={index}
                     >
@@ -256,10 +318,11 @@ const Purchase = () => {
                     {themeData && themeData.length > 0 ? (
                       themeData.map((item, i: number) => (
                         <span
-                          className={`cursor-pointer ${selectedTheme == item
-                            ? "bg-gray-300 text-black px-1 rounded"
-                            : ""
-                            }`}
+                          className={`cursor-pointer ${
+                            selectedTheme == item
+                              ? "bg-gray-300 text-black px-1 rounded"
+                              : ""
+                          }`}
                           key={i}
                           onClick={() => setSelectedTheme(item)}
                         >
@@ -302,10 +365,11 @@ const Purchase = () => {
                     {technicData && technicData.length > 0 ? (
                       technicData.map((item, i: number) => (
                         <span
-                          className={`cursor-pointer ${selectedTechnic == item
-                            ? "bg-gray-300 text-black px-1 rounded"
-                            : ""
-                            }`}
+                          className={`cursor-pointer ${
+                            selectedTechnic == item
+                              ? "bg-gray-300 text-black px-1 rounded"
+                              : ""
+                          }`}
                           key={i}
                           onClick={() => setSelectedTechnic(item)}
                         >
@@ -318,26 +382,242 @@ const Purchase = () => {
                   </div>
                 ) : null}
               </div>
+
+              <div className="">
+                <Button
+                  id="dropdownDividerButton"
+                  onClick={() =>
+                    setOptionOpen((prev) => ({
+                      ...prev,
+                      style: !prev.style,
+                    }))
+                  }
+                  className="flex !px-0 justify-between w-full items-center"
+                  type="button"
+                  variant={{
+                    fontSize: "base",
+                    theme: "black",
+                    fontWeight: "600",
+                  }}
+                >
+                  Style
+                  <MdKeyboardArrowDown size={20} />
+                </Button>
+
+                {optionOpen.style ? (
+                  <div
+                    id="dropdownDivider"
+                    className="z-10 border flex flex-col p-2 gap-2 bg-[#102031] text-white rounded-lg dark:bg-gray-700 dark:divide-gray-600"
+                  >
+                    {styleData && styleData.length > 0 ? (
+                      styleData.map((item, i: number) => (
+                        <span
+                          className={`cursor-pointer ${
+                            selectedStyle == item
+                              ? "bg-gray-300 text-black px-1 rounded"
+                              : ""
+                          }`}
+                          key={i}
+                          onClick={() => setSelectedStyle(item)}
+                        >
+                          {item}
+                        </span>
+                      ))
+                    ) : (
+                      <span>No Style Found</span>
+                    )}
+                  </div>
+                ) : null}
+              </div>
             </>
           ) : null}
 
-          <div className="mb-6 lg:px-4 px-1">
-            <Header
-              variant={{ size: "base", theme: "dark", weight: "semiBold" }}
-              className="lg:py-3 py-3"
+          <div>
+            <Button
+              id="dropdownDividerButton"
+              className="flex !px-0 justify-between w-full items-center"
+              type="button"
+              variant={{
+                fontSize: "base",
+                theme: "black",
+                fontWeight: "600",
+              }}
             >
-              Size
-            </Header>
-            <div className="flex">
-              <P variant={{ size: "small", theme: "dark", weight: "light" }}>
-                Width
-              </P>
-              <span className="text-[11px] mt-2">(in Centimeter)</span>
-            </div>
-            <div className="w-full bg-gray-200 rounded-full h-1 dark:bg-gray-700 mt-4">
-              <div className="bg-[#FF536B] h-1 rounded-full w-[45%]"></div>
+              Orientation
+              <MdKeyboardArrowDown size={20} />
+            </Button>
+
+            <div className="flex gap-2 item-center">
+              <div
+                onClick={() =>
+                  setMoreOptions((prev) => ({
+                    ...prev,
+                    orientation: "vertical",
+                  }))
+                }
+                className={`${
+                  moreOptions.orientation == "vertical"
+                    ? "bg-slate-300"
+                    : "bg-[#eaeaea]"
+                } w-8 hover:bg-slate-300 cursor-pointer`}
+              >
+                <P
+                  variant={{
+                    size: "small",
+                    theme: "light",
+                    weight: "semiBold",
+                  }}
+                  className="bg-[#102030] m-2 py-4 px-1 text-center"
+                ></P>
+              </div>
+              <div
+                onClick={() =>
+                  setMoreOptions((prev) => ({
+                    ...prev,
+                    orientation: "square",
+                  }))
+                }
+                className={`${
+                  moreOptions.orientation == "square"
+                    ? "bg-slate-300"
+                    : "bg-[#eaeaea]"
+                } w-12 hover:bg-slate-300 cursor-pointer`}
+              >
+                <P
+                  variant={{
+                    size: "small",
+                    theme: "light",
+                    weight: "semiBold",
+                  }}
+                  className="bg-[#102030] m-2 py-4 px-1 text-center"
+                ></P>
+              </div>
+              <div
+                onClick={() =>
+                  setMoreOptions((prev) => ({
+                    ...prev,
+                    orientation: "horizontal",
+                  }))
+                }
+                className={`${
+                  moreOptions.orientation == "horizontal"
+                    ? "bg-slate-300"
+                    : "bg-[#eaeaea]"
+                } w-12 hover:bg-slate-300 cursor-pointer`}
+              >
+                <P
+                  variant={{
+                    size: "small",
+                    theme: "light",
+                    weight: "semiBold",
+                  }}
+                  className="bg-[#102030] mx-2 my-4 py-2 text-center"
+                ></P>
+              </div>
             </div>
           </div>
+
+          <div>
+            <Button
+              id="dropdownDividerButton"
+              className="flex !px-0 justify-between w-full items-center"
+              type="button"
+              variant={{
+                fontSize: "base",
+                theme: "black",
+                fontWeight: "600",
+              }}
+            >
+              Select Color
+            </Button>
+
+            <select
+              className="w-full border py-2 rounded"
+              onChange={(e) =>
+                setMoreOptions((prev) => ({ ...prev, color: e.target.value }))
+              }
+            >
+              <option value="">Select Color</option>
+              {colors && colors.length > 0 ? (
+                colors.map((item, i: number) => (
+                  <option value={item.value} key={i}>
+                    {item.value}
+                  </option>
+                ))
+              ) : (
+                <option disabled>No Options</option>
+              )}
+            </select>
+          </div>
+
+          <div>
+            <Button
+              id="dropdownDividerButton"
+              className="flex !px-0 justify-between w-full items-center"
+              type="button"
+              variant={{
+                fontSize: "base",
+                theme: "black",
+                fontWeight: "600",
+              }}
+            >
+              Coming Soon
+            </Button>
+
+            <select
+              className="w-full border py-2 rounded"
+              onChange={(e) =>
+                setMoreOptions((prev) => ({
+                  ...prev,
+                  comingSoon: e.target.value,
+                }))
+              }
+            >
+              <option value="">Select Option</option>
+              {["Yes", "No"].map((item, i: number) => (
+                <option value={item} key={i}>
+                  {item}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {Object.entries(defaultRanges).map(([key, range]) => {
+            if (selectedOption != "Sculpture" && key == "depth") return null;
+            return (
+              <div key={key}>
+                <Button
+                  id="dropdownDividerButton"
+                  className="flex capitalize !px-0 justify-between w-full items-center"
+                  type="button"
+                  variant={{
+                    fontSize: "base",
+                    theme: "black",
+                    fontWeight: "600",
+                  }}
+                >
+                  {key} Range {key === "weight" ? "(in kg)" : "(in cm)"}
+                </Button>
+
+                <div className="text-gray-600 font-semibold text-[12px] mb-1">
+                  {sliderData[key][0]} - {sliderData[key][1]}
+                </div>
+                <Slider
+                  range
+                  min={range.min}
+                  max={range.max}
+                  step={range.step}
+                  value={sliderData[key]}
+                  onChange={(value) => handleSliderChange(key, value)}
+                  trackStyle={[{ backgroundColor: "#4A90E2" }]}
+                  handleStyle={[
+                    { backgroundColor: "#4A90E2", borderColor: "#4A90E2" },
+                    { backgroundColor: "#4A90E2", borderColor: "#4A90E2" },
+                  ]}
+                />
+              </div>
+            );
+          })}
         </div>
       </div>
 
@@ -415,10 +695,11 @@ const Purchase = () => {
               </span>
               <span className="flex gap-2 items-center">
                 <MdArrowBackIosNew
-                  className={`cursor-pointer border border-[#102031] bg-slate-200 rounded-full p-2 text-[2rem] ${!prevCursor || isLoading
-                    ? "opacity-50 pointer-events-none"
-                    : ""
-                    }`}
+                  className={`cursor-pointer border border-[#102031] bg-slate-200 rounded-full p-2 text-[2rem] ${
+                    !prevCursor || isLoading
+                      ? "opacity-50 pointer-events-none"
+                      : ""
+                  }`}
                   onClick={() => {
                     setOptions({
                       ...options,
@@ -430,10 +711,11 @@ const Purchase = () => {
                   }}
                 />
                 <MdArrowForwardIos
-                  className={`cursor-pointer border border-[#102031] bg-slate-200 rounded-full p-2 text-[2rem] ${!nextCursor || isLoading
-                    ? "opacity-50 pointer-events-none"
-                    : ""
-                    }`}
+                  className={`cursor-pointer border border-[#102031] bg-slate-200 rounded-full p-2 text-[2rem] ${
+                    !nextCursor || isLoading
+                      ? "opacity-50 pointer-events-none"
+                      : ""
+                  }`}
                   onClick={() => {
                     setOptions({
                       ...options,

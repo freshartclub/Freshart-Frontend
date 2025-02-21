@@ -89,7 +89,7 @@ const DiscoverContent = ({ data }) => {
                 rounded: "full",
                 theme: "light",
               }}
-              className="text-sm border border-[#263238] w-full font-medium"
+              className="text-sm border border-[#263238] w-full text-nowrap font-medium"
             >
               {t("Continue Edit")}
             </Button>
