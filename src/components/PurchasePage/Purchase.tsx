@@ -35,6 +35,7 @@ const Purchase = () => {
     height: { min: 0, max: 300, step: 10 },
     width: { min: 0, max: 300, step: 10 },
     depth: { min: 0, max: 300, step: 10 },
+    price: { min: 0, max: 10000, step: 10 },
   };
 
   const [sliderData, setSliderData] = useState({
@@ -42,12 +43,13 @@ const Purchase = () => {
     height: [0, defaultRanges.height.max],
     width: [0, defaultRanges.width.max],
     depth: [0, defaultRanges.depth.max],
+    price: [0, defaultRanges.price.max],
   });
 
   const handleSliderChange = (key, value) => {
     setSliderData((prev) => ({
       ...prev,
-      [key]: value,
+      [key]: [...value],
     }));
   };
 
@@ -55,6 +57,9 @@ const Purchase = () => {
     orientation: "",
     color: "",
     comingSoon: "",
+    discount: "",
+    purchase: "",
+    purchaseOption: "",
   });
 
   const [tag, setTag] = useState("");
@@ -86,6 +91,7 @@ const Purchase = () => {
   const type = searchParams.get("type") || "subscription";
 
   const debounceQuery = useDebounce(query, 800);
+  const debounceTag = useDebounce(tag, 800);
 
   const { data, isLoading, refetch } = useGetPurchaseArtwork(
     type,
@@ -97,10 +103,15 @@ const Purchase = () => {
     moreOptions.color,
     moreOptions.comingSoon,
     moreOptions.orientation,
+    moreOptions.discount,
+    moreOptions.purchase,
+    moreOptions.purchaseOption,
     sliderData.depth,
     sliderData.height,
     sliderData.weight,
     sliderData.width,
+    sliderData.price,
+    debounceTag,
     options.currPage,
     options.cursor,
     options.direction,
@@ -111,6 +122,7 @@ const Purchase = () => {
   const { data: theData } = useGetTheme();
   const { data: stData } = useGetStyle();
   const colors = RenderAllPicklist("Colors");
+  const commOptions = RenderAllPicklist("Commercialization Options");
 
   useClickOutside(openRef, () => {
     setIsOpenSidePanel(false);
@@ -582,8 +594,31 @@ const Purchase = () => {
             </select>
           </div>
 
+          <div>
+            <Button
+              id="dropdownDividerButton"
+              className="flex !px-0 justify-between w-full items-center"
+              type="button"
+              variant={{
+                fontSize: "base",
+                theme: "black",
+                fontWeight: "600",
+              }}
+            >
+              Tags
+            </Button>
+            <input
+              type="text"
+              placeholder="Search By Keywords/Tags"
+              onChange={(e) => setTag(e.target.value)}
+              className="w-full border p-2 rounded"
+            />
+          </div>
+
           {Object.entries(defaultRanges).map(([key, range]) => {
             if (selectedOption != "Sculpture" && key == "depth") return null;
+            if (type != "purchase" && key == "price") return null;
+
             return (
               <div key={key}>
                 <Button
@@ -596,7 +631,12 @@ const Purchase = () => {
                     fontWeight: "600",
                   }}
                 >
-                  {key} Range {key === "weight" ? "(in kg)" : "(in cm)"}
+                  {key} Range{" "}
+                  {key === "weight"
+                    ? "(in kg)"
+                    : key == "price"
+                    ? ""
+                    : "(in cm)"}
                 </Button>
 
                 <div className="text-gray-600 font-semibold text-[12px] mb-1">
@@ -618,6 +658,111 @@ const Purchase = () => {
               </div>
             );
           })}
+
+          {type == "purchase" ? (
+            <>
+              <div>
+                <Button
+                  id="dropdownDividerButton"
+                  className="flex !px-0 justify-between w-full items-center"
+                  type="button"
+                  variant={{
+                    fontSize: "base",
+                    theme: "black",
+                    fontWeight: "600",
+                  }}
+                >
+                  Discount Available
+                </Button>
+
+                <select
+                  className="w-full border py-2 rounded"
+                  onChange={(e) =>
+                    setMoreOptions((prev) => ({
+                      ...prev,
+                      discount: e.target.value,
+                    }))
+                  }
+                >
+                  <option value="">Select Option</option>
+                  {["Yes", "No"].map((item, i: number) => (
+                    <option value={item} key={i}>
+                      {item}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <Button
+                  id="dropdownDividerButton"
+                  className="flex !px-0 justify-between w-full items-center"
+                  type="button"
+                  variant={{
+                    fontSize: "base",
+                    theme: "black",
+                    fontWeight: "600",
+                  }}
+                >
+                  Purchase Type
+                </Button>
+
+                <select
+                  className="w-full border py-2 rounded"
+                  onChange={(e) =>
+                    setMoreOptions((prev) => ({
+                      ...prev,
+                      purchase: e.target.value,
+                    }))
+                  }
+                >
+                  <option value="">Select Option</option>
+
+                  {commOptions && commOptions.length > 0 ? (
+                    commOptions.map((item, i: number) => (
+                      <option value={item.value} key={i}>
+                        {item.value}
+                      </option>
+                    ))
+                  ) : (
+                    <option disabled>No Options</option>
+                  )}
+                </select>
+              </div>
+            </>
+          ) : (
+            <div>
+              <Button
+                id="dropdownDividerButton"
+                className="flex !px-0 justify-between w-full items-center"
+                type="button"
+                variant={{
+                  fontSize: "base",
+                  theme: "black",
+                  fontWeight: "600",
+                }}
+              >
+                Purchase Option
+              </Button>
+
+              <select
+                className="w-full border py-2 rounded"
+                onChange={(e) =>
+                  setMoreOptions((prev) => ({
+                    ...prev,
+                    purchaseOption: e.target.value,
+                  }))
+                }
+              >
+                <option value="">Select Option</option>
+                {["Yes", "No"].map((item, i: number) => (
+                  <option value={item} key={i}>
+                    {item}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
         </div>
       </div>
 
