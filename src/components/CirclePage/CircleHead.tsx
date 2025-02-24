@@ -18,7 +18,9 @@ import Managers from "./Managers";
 import Requests from "../Followers/Requests";
 
 const CircleHead = ({ data }) => {
-  const [activeTab, setActiveTab] = useState(0); // 0 = Profile, 1 = Followers, 2 = Blogs
+  const [activeTab, setActiveTab] = useState(0);
+
+  const type = data?.data?.type;
 
   return (
     <div>
@@ -55,20 +57,22 @@ const CircleHead = ({ data }) => {
             </P>
           </Tab>
 
-          <Tab
-            className={`flex gap-1 items-center cursor-pointer pb-2 px-3 py-2 ${
-              activeTab === 2 ? "border-b-2 border-black" : ""
-            }`}
-          >
-            <MdOutlinePermIdentity size="1.4em" />
-            <P variant={{ size: "base", theme: "dark", weight: "medium" }}>
-              Requests
-            </P>
-          </Tab>
+          {type === "Private" ? (
+            <Tab
+              className={`flex gap-1 items-center cursor-pointer pb-2 px-3 py-2 ${
+                activeTab === 4 ? "border-b-2 border-black" : ""
+              }`}
+            >
+              <MdOutlinePermIdentity size="1.4em" />
+              <P variant={{ size: "base", theme: "dark", weight: "medium" }}>
+                Requests
+              </P>
+            </Tab>
+          ) : null}
 
           <Tab
             className={`flex gap-1 items-center cursor-pointer pb-2 px-3 py-2 ${
-              activeTab === 3 ? "border-b-2 border-black" : ""
+              activeTab === 2 ? "border-b-2 border-black" : ""
             }`}
           >
             <img src={profile3} alt="blogs icon" />
@@ -79,7 +83,7 @@ const CircleHead = ({ data }) => {
 
           <Tab
             className={`flex gap-1 items-center cursor-pointer pb-2 px-3 py-2 ${
-              activeTab === 4 ? "border-b-2 border-black" : ""
+              activeTab === 3 ? "border-b-2 border-black" : ""
             }`}
           >
             <GrUserManager size="1.2em" />
@@ -95,15 +99,19 @@ const CircleHead = ({ data }) => {
         <TabPanel>
           <Followers />
         </TabPanel>
-        <TabPanel>
-          <Requests />
-        </TabPanel>
+
         <TabPanel>
           <Blogs />
         </TabPanel>
         <TabPanel>
           <Managers data={data} />
         </TabPanel>
+
+        {type === "Private" && (
+          <TabPanel>
+            <Requests />
+          </TabPanel>
+        )}
       </Tabs>
     </div>
   );

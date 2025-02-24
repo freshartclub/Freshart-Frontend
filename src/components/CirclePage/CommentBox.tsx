@@ -7,11 +7,11 @@ import Loader from "../ui/Loader";
 import { imageUrl } from "../utils/baseUrls";
 
 const CommentBox = ({ circlePostId }) => {
-  // const [comments, setComments] = useState([
-  //   { name: "Alice", text: "This is an amazing post!" },
-  //   {  name: "Bob", text: "Really insightful, thanks for sharing!" },
-  //   {  name: "Charlie", text: "I learned something new today." },
-  // ]);
+  const [comments, setComments] = useState([
+    { img: "", name: "Alice", text: "This is an amazing post!" },
+    { img: "", name: "Bob", text: "Really insightful, thanks for sharing!" },
+    { img: "", name: "Charlie", text: "I learned something new today." },
+  ]);
 
   const [searchParams] = useSearchParams();
   const circleId = searchParams.get("id");

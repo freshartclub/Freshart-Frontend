@@ -8,4 +8,6 @@ export const CIRCLE_ENDPOINTS = {
   GetCirclePosts: `${CIRCLE_URL}/get-all-circle-post`,
   PostCircleComment: `${CIRCLE_URL}/post-comment`,
   GetCircleComments: `${CIRCLE_URL}/get-all-comments`,
+  LikeCirclePost: `${CIRCLE_URL}/like-post`,
+  GetLiked: `${CIRCLE_URL}/get-likes`,
 };

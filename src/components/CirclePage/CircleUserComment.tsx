@@ -2,10 +2,7 @@ import P from "../ui/P";
 import profile from "./assets/profile_img.svg";
 import dot from "./assets/dots.svg";
 import banner from "./assets/Img_Travel_M.2.png";
-import heart from "./assets/heart.svg";
-import avatar1 from "./assets/Avatar 1.svg";
-import avatar2 from "./assets/Avatar 2.svg";
-import avatar3 from "./assets/Avatar 3.svg";
+
 import more from "./assets/+more.svg";
 import msg from "./assets/msg.svg";
 import share from "./assets/share.svg";
@@ -22,52 +19,27 @@ import CommentBox from "./CommentBox";
 import { useState } from "react";
 import { FaFacebook, FaTwitter, FaLinkedin, FaShareAlt } from "react-icons/fa";
 
-const user_data = [
-  {
-    profile: profile,
-    dot: dot,
-    name: "Hudson Alvarez",
-    date: "12 Aug 2022 10:00 PM",
-    title:
-      "I love jujubes wafer pie ice cream tiramisu. Chocolate I love pastry pastry sesame snaps wafer.",
-    banner: banner,
-    heart: heart,
-    likes: 36,
-    avtar: avatar1,
-    avtar2: avatar2,
-    avtar3: avatar3,
-    more: more,
-    msg: msg,
-    share: share,
-    user: user1,
-    name1: "Lucian Obrien",
-    title1: "I love cupcake danish jujubes sweet.",
-    date1: "12 Jan 2022",
-  },
-  {
-    profile: profile,
-    dot: dot,
-    name: "Hudson Alvarez",
-    date: "12 Aug 2022 10:00 PM",
-    title:
-      "I love jujubes wafer pie ice cream tiramisu. Chocolate I love pastry pastry sesame snaps wafer.",
-    banner: banner2,
-    heart: heart,
-    likes: 36,
-    avtar: avatar1,
-    avtar2: avatar2,
-    avtar3: avatar3,
-    more: more,
-    msg: msg,
-    share: share,
-    user: user2,
-    name1: "Lainey Davidson",
-    title1: "I love cupcake danish jujubes sweet.",
-    date1: "11 Feb 2022",
-  },
-];
 import { FaRegCopy } from "react-icons/fa";
 import usePostCommentMutation from "./https/usePostCommentMutation";
+
+import { motion, AnimatePresence } from "framer-motion";
+// import heart from "../assets/heart.svg";
+import likeFilled from "../assets/like-filled.svg";
+import heart from "./assets/heart.svg";
+import avatar1 from "./assets/Avatar 1.svg";
+import avatar2 from "./assets/Avatar 2.svg";
+import avatar3 from "./assets/Avatar 3.svg";
+import usePostLikeMutation from "./https/usePostLikeMutation";
+import { useGetLikes } from "./https/useGetLikes";
+
+// Reaction Options
+const reactions = [
+  { id: "like", icon: "👍", label: "Like" },
+  { id: "love", icon: "❤️", label: "Love" },
+  { id: "haha", icon: "😂", label: "Haha" },
+  { id: "sad", icon: "😔", label: "Sad" },
+  { id: "angry", icon: "😡", label: "Angry" },
+];
 
 const CircleUserComment = () => {
   const [searchParams] = useSearchParams();
@@ -77,8 +49,20 @@ const CircleUserComment = () => {
   const [isShare, setIsShare] = useState(false);
   const [visibleCommentBoxId, setVisibleCommentBoxId] = useState(null);
 
+  const [selectedReaction, setSelectedReaction] = useState(null);
+
+  const [likesCount, setLikesCount] = useState(0);
+
+  const [postId, setPostId] = useState(null);
+
   const [link, setLink] = useState("https://example.com");
   const [copy, setCopy] = useState("Copy");
+
+  const { mutateAsync, isPending } = usePostLikeMutation();
+
+  const { data: likedData, isLoading: likeLoading } = useGetLikes();
+
+  console.log(likedData);
 
   const handleCopy = async () => {
     try {
@@ -90,10 +74,44 @@ const CircleUserComment = () => {
     }
   };
 
+  console.log(data);
+
   const handleCommentBox = (postId) => {
     setVisibleCommentBoxId((prevId) => (prevId === postId ? null : postId));
     setisVisible((prev) => !prev);
     setIsShare(false);
+  };
+
+  const handleReaction = (postId, reaction) => {
+    const data = {
+      postId,
+      reaction: reaction.id,
+    };
+    // console.log(reaction);
+    // console.log(postId);
+    mutateAsync(data).then(() => {
+      setSelectedReaction((prev) => ({
+        ...prev,
+        [postId]: reaction,
+      }));
+      setLikesCount((prev) => ({
+        ...prev,
+        [postId]: (prev[postId] || 0) + 1,
+      }));
+    });
+  };
+
+  const like =
+    "https://upload.wikimedia.org/wikipedia/commons/1/13/Facebook_like_thumb.png";
+
+  const [hoveredPostId, setHoveredPostId] = useState(null);
+
+  const handleMouseEnter = (postId) => {
+    setHoveredPostId(postId);
+  };
+
+  const handleMouseLeave = () => {
+    setHoveredPostId(null);
   };
 
   if (isLoading) {
@@ -142,40 +160,86 @@ const CircleUserComment = () => {
               </div>
 
               <div className="flex justify-between my-5">
+                {/* Like & Reactions */}
                 <div className="flex gap-3 items-center">
-                  <div className="flex items-center gap-2">
-                    <img src={heart} alt="heart icon" />
-                    <P
-                      variant={{
-                        size: "base",
-                        theme: "dark",
-                        weight: "medium",
-                      }}
-                    >
-                      {item.likes}
-                    </P>
-                  </div>
-                  <div className="flex items-center -space-x-4">
-                    <img
-                      className="w-10 h-10 rounded-full z-30"
-                      src={avatar1}
-                      alt="Avatar 1"
-                    />
-                    <img
-                      className="w-10 h-10 rounded-full z-20"
-                      src={avatar2}
-                      alt="Avatar 2"
-                    />
-                    <img
-                      className="w-10 h-10 rounded-full z-10"
-                      src={avatar3}
-                      alt="Avatar 3"
-                    />
-                    <img
-                      className="w-10 h-10 rounded-full"
-                      src={more}
-                      alt="Avatar 3"
-                    />
+                  {/* Reaction Button */}
+                  <div
+                    className="relative flex items-center gap-2 cursor-pointer"
+                    onMouseEnter={() => handleMouseEnter(item._id)}
+                    onMouseLeave={handleMouseLeave}
+                  >
+                    {selectedReaction?.[item._id]?.icon ? (
+                      typeof selectedReaction[item._id].icon === "string" &&
+                      selectedReaction[item._id].icon.startsWith("http") ? (
+                        // If it's a valid image URL, use <motion.img>
+                        <motion.img
+                          src={selectedReaction[item._id].icon}
+                          alt="reaction"
+                          className="w-6 h-6"
+                          animate={{
+                            scale:
+                              item?._id && selectedReaction?.[item._id]
+                                ? 1.2
+                                : 1,
+                          }}
+                        />
+                      ) : (
+                        // If it's an emoji, use <motion.span>
+                        <motion.span
+                          className="text-2xl"
+                          animate={{
+                            scale:
+                              item?._id && selectedReaction?.[item._id]
+                                ? 1.2
+                                : 1,
+                          }}
+                        >
+                          {selectedReaction[item._id].icon}
+                        </motion.span>
+                      )
+                    ) : (
+                      // Default like icon when no reaction is selected
+                      <motion.img
+                        src={like}
+                        alt="reaction"
+                        className="w-6 h-6"
+                        animate={{
+                          scale: 1,
+                        }}
+                      />
+                    )}
+
+                    {selectedReaction &&
+                      item?._id &&
+                      selectedReaction[item._id] && (
+                        <p className="text-base font-medium">
+                          {likesCount && likesCount[item._id]
+                            ? likesCount[item._id]
+                            : 0}
+                        </p>
+                      )}
+
+                    {/* Reaction Picker */}
+                    <AnimatePresence>
+                      {hoveredPostId === item._id && (
+                        <motion.div
+                          className="absolute bottom-10 left-0 flex gap-2 bg-white p-2 rounded-lg shadow-lg"
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.8 }}
+                        >
+                          {reactions.map((reaction) => (
+                            <motion.span
+                              key={reaction.id}
+                              className="w-8 h-8 cursor-pointer text-2xl hover:scale-110"
+                              onClick={() => handleReaction(item._id, reaction)}
+                            >
+                              {reaction.icon} {/* Directly render emoji */}
+                            </motion.span>
+                          ))}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
                 </div>
 
@@ -197,6 +261,9 @@ const CircleUserComment = () => {
                   />
                 </div>
               </div>
+              {visibleCommentBoxId === item?._id && (
+                <CommentBox circlePostId={visibleCommentBoxId} />
+              )}
 
               {isShare ? (
                 <div className="flex w-full items-center space-x-3 mt-4 p-2 bg-gray-200 rounded-lg">
@@ -216,48 +283,71 @@ const CircleUserComment = () => {
                 </div>
               ) : null}
 
-              {visibleCommentBoxId === item?._id && (
-                <CommentBox circlePostId={visibleCommentBoxId} />
-              )}
+              {/* Avatars */}
+              {/* <div className="flex items-center -space-x-4">
+                    <img
+                      className="w-10 h-10 rounded-full z-30"
+                      src={avatar1}
+                      alt="Avatar 1"
+                    />
+                    <img
+                      className="w-10 h-10 rounded-full z-20"
+                      src={avatar2}
+                      alt="Avatar 2"
+                    />
+                    <img
+                      className="w-10 h-10 rounded-full z-10"
+                      src={avatar3}
+                      alt="Avatar 3"
+                    />
+                    <img
+                      className="w-10 h-10 rounded-full"
+                      src={more}
+                      alt="More"
+                    />
+                  </div> */}
+            </div>
 
-              <div>
-                <div className="flex items-center gap-4 w-full">
-                  <img src={user1} alt="profile" />
-                  <div className="w-full flex bg-[#F4F6F8] my-2 rounded-lg justify-between p-3">
-                    <div>
-                      <P
-                        variant={{
-                          size: "base",
-                          theme: "dark",
-                          weight: "semiBold",
-                        }}
-                      >
-                        {"Lainey Davidson"}
-                      </P>
-                      <P
-                        variant={{ size: "small", weight: "normal" }}
-                        className="text-[#637381]"
-                      >
-                        {"I love cupcake danish jujubes sweet"}
-                      </P>
-                    </div>
-                    <div>
-                      <P
-                        variant={{
-                          size: "small",
-                          theme: "dark",
-                          weight: "normal",
-                        }}
-                        className="text-[#919EAB]"
-                      >
-                        {"11 Feb 2022"}
-                      </P>
-                    </div>
+            {/* Comment & Share */}
+
+            <div>
+              <div className="flex items-center gap-4 w-full">
+                <img src={user1} alt="profile" />
+                <div className="w-full flex bg-[#F4F6F8] my-2 rounded-lg justify-between p-3">
+                  <div>
+                    <P
+                      variant={{
+                        size: "base",
+                        theme: "dark",
+                        weight: "semiBold",
+                      }}
+                    >
+                      {"Lainey Davidson"}
+                    </P>
+                    <P
+                      variant={{ size: "small", weight: "normal" }}
+                      className="text-[#637381]"
+                    >
+                      {"I love cupcake danish jujubes sweet"}
+                    </P>
+                  </div>
+                  <div>
+                    <P
+                      variant={{
+                        size: "small",
+                        theme: "dark",
+                        weight: "normal",
+                      }}
+                      className="text-[#919EAB]"
+                    >
+                      {"11 Feb 2022"}
+                    </P>
                   </div>
                 </div>
               </div>
+            </div>
 
-              {/* <div className="flex gap-4 my-2">
+            {/* <div className="flex gap-4 my-2">
                 <img src={profile} alt="profile" />
                 <div className="flex w-full">
                   <input
@@ -270,7 +360,6 @@ const CircleUserComment = () => {
                   </div>
                 </div>
               </div> */}
-            </div>
           </>
         ))}
     </div>
