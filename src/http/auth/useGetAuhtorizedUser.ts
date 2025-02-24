@@ -4,6 +4,7 @@ import { AUTH_ENDPOINTS } from "../apiEndPoints/Auth";
 import axiosInstance from "../../components/utils/axios";
 import { useAppDispatch } from "../../store/typedReduxHooks";
 import {
+  forgotPasswordUserId,
   setIsArtist,
   setIsArtProvider,
   setIsAuthorized,
@@ -24,6 +25,7 @@ const useCheckIsAuthorized = () => {
 
       dispatch(updateUser(res.artist));
       dispatch(setIsAuthorized(true));
+
       dispatch(setIsArtProvider(res.artist?.commercilization?.artProvider));
 
       if (res.artist.isActivated) {

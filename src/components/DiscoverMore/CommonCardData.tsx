@@ -6,7 +6,7 @@ import like from "../../assets/like.png";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import getSymbolFromCurrency from "currency-symbol-map";
-import { imageUrl } from "../utils/baseUrls";
+import { imageUrl, lowImageUrl } from "../utils/baseUrls";
 
 const CommonCardData = ({
   heading,
@@ -78,7 +78,7 @@ const CommonCardData = ({
       >
         <div className="relative">
           <img
-            src={`${imageUrl}/users/${highlightData?.artworks[0]?.mainImage}`}
+            src={`${lowImageUrl}/${highlightData?.artworks[0]?.mainImage}`}
             alt="image"
             className="lg:w-[35vw] md:w-[35vw]  object-cover h-[40vh]"
             onClick={() =>
@@ -148,7 +148,7 @@ const CommonCardData = ({
           >
             <div className="relative">
               <img
-                src={`${imageUrl}/users/${item?.mainImage}`}
+                src={`${lowImageUrl}/${item?.mainImage}`}
                 alt="image"
                 className="w-full object-cover h-[40vh] cursor-pointer"
                 onClick={() => handleRedirectToDescription(item?._id)}

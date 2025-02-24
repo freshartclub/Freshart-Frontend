@@ -12,22 +12,27 @@ import home from "../../assets/home.png";
 import Button from "../ui/Button";
 import { useGetArtWorkById } from "./http/useGetArtWorkById";
 import Loader from "../ui/Loader";
-import { imageUrl } from "../utils/baseUrls";
+import { imageUrl, lowImageUrl } from "../utils/baseUrls";
+import { motion } from "framer-motion";
 
 const DiscoverMore = () => {
   const TEN_DAYS_MS = 10 * 24 * 60 * 60 * 1000;
   const sliderRef = useRef<Slider>(null);
   const id = useParams().id;
   const preview = false;
+  const containerRef = useRef(null);
 
   const { data, isLoading } = useGetArtWorkById(id, preview);
   const [safeMode, setSafeMode] = useState(false);
 
-  console.log(safeMode);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     if (data && data?.data?.additionalInfo?.offensive == "Yes") {
-      const storedData = JSON.parse(localStorage.getItem("viewedImages") || "{}");
+      const storedData = JSON.parse(
+        localStorage.getItem("viewedImages") || "{}"
+      );
       const currentTime = Date.now();
       const filteredData: Record<string, number> = {};
 
@@ -47,29 +52,29 @@ const DiscoverMore = () => {
 
   const images = data?.data
     ? [
-      {
-        src: data?.data.media?.mainImage ? data?.data.media?.mainImage : null,
-        alt: "Main Image",
-      },
-      {
-        src: data?.data.media?.backImage ? data?.data.media?.backImage : null,
-        alt: "Back Image",
-      },
-      {
-        src: data?.data.media?.mainVideo ? data?.data.media?.mainVideo : null,
-        alt: "Main Video",
-      },
-      {
-        src: data?.data.media?.inProcessImage
-          ? data?.data.media?.inProcessImage
-          : null,
-        alt: "In Process Image",
-      },
-      ...data?.data.media?.images?.map((item) => ({
-        src: item,
-        alt: "Additional Image",
-      })),
-    ].filter((image) => image.src !== null)
+        {
+          src: data?.data.media?.mainImage ? data?.data.media?.mainImage : null,
+          alt: "Main Image",
+        },
+        {
+          src: data?.data.media?.backImage ? data?.data.media?.backImage : null,
+          alt: "Back Image",
+        },
+        {
+          src: data?.data.media?.mainVideo ? data?.data.media?.mainVideo : null,
+          alt: "Main Video",
+        },
+        {
+          src: data?.data.media?.inProcessImage
+            ? data?.data.media?.inProcessImage
+            : null,
+          alt: "In Process Image",
+        },
+        ...data?.data.media?.images?.map((item) => ({
+          src: item,
+          alt: "Additional Image",
+        })),
+      ].filter((image) => image.src !== null)
     : [];
 
   const settings = {
@@ -86,6 +91,26 @@ const DiscoverMore = () => {
       sliderRef.current.slickGoTo(index);
     }
   };
+
+  const [size, setSize] = useState({
+    width: "0",
+    height: "0",
+  });
+
+  const handleMouseMove = (e) => {
+    const { left, top, width, height } = e.target.getBoundingClientRect();
+    const x = ((e.pageX - left) / width) * 100;
+    const y = ((e.pageY - top) / height) * 100;
+
+    setPosition({ x, y });
+    setSize({ width, height });
+
+    console.log(x, y);
+  };
+
+  // const handleMouseMove = (e) => {
+  //   setPosition({ x: e.clientX, y: e.clientY });
+  // };
 
   const checkArtworkType = data?.data?.commercialization?.activeTab;
   const offensive = data?.data?.additionalInfo?.offensive == "Yes";
@@ -152,15 +177,19 @@ const DiscoverMore = () => {
                     <video
                       key={index}
                       src={`${imageUrl}/videos/${thumb.src}`}
-                      className={`${offensive ? "blur-md brightness-75" : ""} md:mb-0 mb-4 lg:w-20 w-24 h-24 lg:h-24 cursor-pointer object-cover`}
+                      className={`${
+                        offensive ? "blur-md brightness-75" : ""
+                      } md:mb-0 mb-4 lg:w-20 w-24 h-24 lg:h-24 cursor-pointer object-cover`}
                       onClick={() => handleThumbnailClick(index)}
                     />
                   ) : (
                     <img
                       key={index}
-                      src={`${imageUrl}/users/${thumb.src}`}
+                      src={`${lowImageUrl}/${thumb.src}`}
                       alt={thumb.alt}
-                      className={`${offensive ? "blur-md brightness-75" : ""} md:mb-0 mb-4 lg:w-20 w-24 h-24 lg:h-24 cursor-pointer object-cover`}
+                      className={`${
+                        offensive ? "blur-md brightness-75" : ""
+                      } md:mb-0 mb-4 lg:w-20 w-24 h-24 lg:h-24 cursor-pointer object-cover`}
                       onClick={() => handleThumbnailClick(index)}
                     />
                   );
@@ -179,15 +208,49 @@ const DiscoverMore = () => {
                           {slide.src.endsWith(".mp4") ? (
                             <video
                               src={`${imageUrl}/videos/${slide.src}`}
-                              className={`${offensive && !safeMode ? "blur-lg brightness-75" : ""} shadow rounded mx-auto object-cover md:w-[25rem] lg:w-[25rem] h-[20rem] md:h-[60vh] lg:h-[60vh]`}
+                              className={`${
+                                offensive && !safeMode
+                                  ? "blur-lg brightness-75"
+                                  : ""
+                              } shadow rounded mx-auto object-cover md:w-[25rem] lg:w-[25rem] h-[20rem] md:h-[60vh] lg:h-[60vh]`}
                               controls
                             />
                           ) : (
-                            <img
-                              src={`${imageUrl}/users/${slide.src}`}
-                              alt={`Slide ${index + 1}`}
-                              className={`${offensive && !safeMode ? "blur-lg brightness-75" : ""} shadow rounded mx-auto object-cover md:w-[25rem] lg:w-[25rem] h-[20rem] md:h-[60vh] lg:h-[60vh]`}
-                            />
+                            <div
+                              ref={containerRef}
+                              className="relative w-full"
+                              onMouseMove={handleMouseMove}
+                              onMouseEnter={() => setVisible(true)}
+                              onMouseLeave={() => setVisible(false)}
+                            >
+                              <img
+                                src={`${lowImageUrl}/${slide.src}`}
+                                alt={`Slide ${index + 1}`}
+                                className={`${
+                                  offensive && !safeMode
+                                    ? "blur-lg brightness-75"
+                                    : ""
+                                } shadow rounded mx-auto overflow-hidden object-contain md:w-[25rem] lg:w-full h-[20rem] md:h-[60vh] lg:h-[60vh]`}
+                              />
+                              {visible && (
+                                <motion.div
+                                  className="absolute w-32 h-32 rounded-full border-2 border-gray-500 overflow-hidden bg-white shadow-lg pointer-events-none"
+                                  style={{
+                                    top: `${position.y}%`,
+                                    left: `${position.x}%`,
+                                    transform: "translate(-50%, -50%)",
+                                    backgroundImage: `url(${`${imageUrl}/users/${slide.src}`})`,
+                                    backgroundPosition: `${position.x * 1.5}% ${
+                                      position.y * 1.2
+                                    }%`,
+                                    backgroundSize: "400%",
+                                    backgroundRepeat: "no-repeat",
+                                  }}
+                                  initial={{ opacity: 0, scale: 0.8 }}
+                                  animate={{ opacity: 1, scale: 1.5 }}
+                                />
+                              )}
+                            </div>
                           )}
                         </div>
                       )
@@ -198,16 +261,44 @@ const DiscoverMore = () => {
                 (images[0].src.endsWith(".mp4") ? (
                   <video
                     src={`${imageUrl}/videos/${images[0].src}`}
-                    className={`${offensive && !safeMode ? "blur-lg brightness-75" : ""} shadow rounded mx-auto object-cover md:w-[25rem] lg:w-[25rem] h-[20rem] md:h-[60vh] lg:h-[60vh]`}
+                    className={`${
+                      offensive && !safeMode ? "blur-lg brightness-75" : ""
+                    } shadow rounded mx-auto object-cover md:w-[25rem] lg:w-[25rem] h-[20rem] md:h-[60vh] lg:h-[60vh]`}
                     controls
                     autoPlay={true}
                   />
                 ) : (
-                  <img
-                    src={`${imageUrl}/users/${images[0]?.src}`}
-                    alt="Single Image"
-                    className={`${offensive && !safeMode ? "blur-lg brightness-75" : ""} shadow rounded mx-auto object-cover md:w-[25rem] lg:w-[25rem] h-[20rem] md:h-[60vh] lg:h-[60vh]`}
-                  />
+                  <div
+                    ref={containerRef}
+                    className="relative w-full"
+                    onMouseMove={handleMouseMove}
+                    onMouseEnter={() => setVisible(true)}
+                    onMouseLeave={() => setVisible(false)}
+                  >
+                    <img
+                      src={`${lowImageUrl}/${images[0].src}`}
+                      alt="Single Image"
+                      className={`${
+                        offensive && !safeMode ? "blur-lg brightness-75" : ""
+                      } shadow rounded mx-auto object-contain md:w-[25rem] lg:w-full h-[20rem] md:h-[60vh] lg:h-[60vh]`}
+                    />
+                    {visible && (
+                      <motion.div
+                        className="absolute w-32 h-32 rounded-full border-2 border-gray-500 overflow-hidden bg-white shadow-lg pointer-events-none"
+                        style={{
+                          top: `${position.y}%`,
+                          left: `${position.x}%`,
+                          transform: "translate(-50%, -50%)",
+                          backgroundImage: `url(${`${imageUrl}/users/${images[0].src}`})`,
+                          backgroundPosition: `${position.x}% ${position.y}%`,
+                          backgroundSize: "300%",
+                          backgroundRepeat: "no-repeat",
+                        }}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1.5 }}
+                      />
+                    )}
+                  </div>
                 ))
               )}
             </div>

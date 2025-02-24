@@ -1,33 +1,27 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
-import { ORDERS_ENDPOINTS } from "../../../../http/apiEndPoints/Orders";
 import { useTranslation } from "react-i18next";
 import axiosInstance from "../../utils/axios";
 import { CIRCLE_ENDPOINTS } from "../../../http/apiEndPoints/Circle";
 
-async function circlePostMutation(data) {
-  return await axiosInstance.patch(
-    `${CIRCLE_ENDPOINTS.CreateCirclePost}/${data.id}`,
-    data,
-    {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    }
+async function circlePostCommentMutation(data) {
+  return await axiosInstance.post(
+    `${CIRCLE_ENDPOINTS.PostCircleComment}/${data.id}`,
+    data
   );
 }
 
-const useCirclePostMutation = () => {
+const usePostCommentMutation = () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: circlePostMutation,
+    mutationFn: circlePostCommentMutation,
 
     onSuccess: async (res) => {
       queryClient.invalidateQueries({
-        queryKey: ["CreateCirclePost"],
+        queryKey: ["CreateCirclePostComment"],
         refetchType: "all",
       });
       toast.success(t(res.data.message), {
@@ -40,4 +34,4 @@ const useCirclePostMutation = () => {
   });
 };
 
-export default useCirclePostMutation;
+export default usePostCommentMutation;

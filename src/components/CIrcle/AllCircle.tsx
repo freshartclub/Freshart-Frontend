@@ -108,15 +108,14 @@ const AllCircle = ({ data }) => {
   const handleCircle = (id) => {
     navigate(`/artist-panel/circle/circlepage?id=${encodeURIComponent(id)}`);
   };
-  
-  
+
   return (
     <div className="sm:px-10 py-8">
       <div className="grid grid-cols1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4 ">
         {data &&
           data?.data?.map((circle) => (
             <div
-              onClick={()=>handleCircle(circle?._id)}
+              onClick={() => handleCircle(circle?._id)}
               className="flex flex-col sm:flex-row sm:p-2 mb-20 sm:mb-0 shadow-md rounded-lg border items-center cursor-pointer"
             >
               <div className="content  p-6 sm:py-2 sm:px-4 sm:space-y-6 xl:space-y-3">

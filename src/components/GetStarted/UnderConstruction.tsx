@@ -1,5 +1,4 @@
-import underConstruction from "./assets/underconstruction.png";
-
+import underConstruction from "../../assets/construction.jpg";
 const UnderConstruction = () => {
   return (
     <div className="h-screen">

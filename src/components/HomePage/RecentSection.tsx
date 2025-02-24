@@ -3,7 +3,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
 import Loader from "../ui/Loader";
-import { imageUrl } from "../utils/baseUrls";
+import { imageUrl, lowImageUrl } from "../utils/baseUrls";
 import { useGetRecentArtwork } from "./http/getRecentArtwork";
 
 const RecentSection = () => {
@@ -70,7 +70,7 @@ const RecentSection = () => {
               <div className="overflow-hidden">
                 <img
                   onClick={() => handleRedirectToDescription(item?._id)}
-                  src={`${imageUrl}/users/${item?.media?.mainImage}`}
+                  src={`${lowImageUrl}/${item?.media?.mainImage}`}
                   alt="image"
                   className={`w-full h-[40vh] sm:h-[45vh] md:h-[50vh] object-cover shadow-lg ${
                     item?.additionalInfo?.offensive == "Yes" ? "blur-3xl" : ""

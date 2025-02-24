@@ -262,10 +262,10 @@ const NavBar = () => {
                   Artist
                 </Link>
                 <Link
-                  to="/blog"
+                  to="/circle"
                   className="group mt-3 font-semibold text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
                 >
-                  Blog
+                  Circle
                 </Link>
               </div>
 

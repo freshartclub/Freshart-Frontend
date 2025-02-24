@@ -18,7 +18,7 @@ const AllArtist = () => {
 
   return (
     <div>
-      <BannerSection />
+      <BannerSection title={"Artist"} secondTitle={"All Artist"} />
       <div className="container mx-auto sm:px-6 px-3 ">
         <FilterSection query={query} search={search} />
         <AplhaFilter query={query} data={data} />

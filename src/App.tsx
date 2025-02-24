@@ -28,6 +28,8 @@ import LoginPage from "./components/pages/Login";
 import NotFoundPage from "./components/pages/NotFoundPage";
 import i18n from "./components/utils/i18n.ts";
 import { useAppSelector } from "./store/typedReduxHooks";
+import UserCircleList from "./components/CIrcle/UserCircleList.tsx";
+import UnderConstruction from "./components/GetStarted/UnderConstruction.tsx";
 const SignUp = lazy(() => import("./components/pages/SignUp"));
 const ForgetPassword = lazy(() => import("./components/pages/ForgetPassword"));
 const ChangePassword = lazy(() => import("./components/pages/ChangePassword"));
@@ -79,7 +81,7 @@ const NewTicket = lazy(() => import("./components/NewTicket/NewTicket"));
 const CartSuccess = lazy(() => import("./components/pages/CartSuccess"));
 const UserProfile = lazy(() => import("./components/UserProfile/UserProfile"));
 const CirclePage = lazy(() => import("./components/CirclePage/CirclePage"));
-const Followers = lazy(() => import("./components/Followers/Followers"));
+const Followers = lazy(() => import("./components/Followers/Followers.tsx"));
 const AllArtist = lazy(() => import("./components/AllArtist/AllArtist"));
 const DiscoveryMore = lazy(
   () => import("./components/DiscoveryMore/DiscoveryMore")
@@ -132,6 +134,7 @@ const App: React.FC = () => {
         <Suspense fallback={<Loader />}>
           <Routes>
             <Route path="/" element={<GetStarted />} />
+            {/* <Route path="/" element={<UnderConstruction />} /> */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/become_artist" element={<BecomeArtist />} />
@@ -411,7 +414,7 @@ const App: React.FC = () => {
               path="/circle"
               element={
                 <AuthGuard>
-                  <Circle />
+                  <UserCircleList />
                 </AuthGuard>
               }
             />

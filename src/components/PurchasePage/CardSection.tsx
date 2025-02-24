@@ -10,7 +10,7 @@ import view_btn from "./assets/view.png";
 import getSymbolFromCurrency from "currency-symbol-map";
 import { useNavigate } from "react-router-dom";
 import postRecentArtworkMutation from "../HomePage/http/postRecentView";
-import { imageUrl } from "../utils/baseUrls";
+import { imageUrl, lowImageUrl } from "../utils/baseUrls";
 import { useEffect, useState } from "react";
 import { FaEye } from "react-icons/fa";
 import { FaToggleOn } from "react-icons/fa6";
@@ -108,70 +108,87 @@ const CardSection = ({ data }) => {
 
   return (
     <div className="grid max-[440px]:grid-cols-1 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 min-[1450px]:grid-cols-5 gap-x-5 gap-y-10 mx-auto">
-      {data?.data && data?.data.length > 0 ? (
-        data?.data.map((item, index: string) => {
-          const isOffensive = item?.additionalInfo?.offensive === "Yes";
-          const isViewed = viewedImages[item?._id];
+      {data?.data && data?.data.length > 0
+        ? data?.data.map((item, index: string) => {
+            const isOffensive = item?.additionalInfo?.offensive === "Yes";
+            const isViewed = viewedImages[item?._id];
 
-          return (
-            <div key={index} onClick={() => {
-              if (!isOffensive || isViewed) {
-                handleRedirectToDescription(item?._id);
-              }
-            }} className="flex flex-col outline-none cursor-pointer relative group">
-              <div className="relative overflow-hidden w-full">
-                <img
-                  src={`${imageUrl}/users/${item?.media}`}
-                  alt="Artwork"
-                  className={`w-full h-[250px] md:h-[300px] lg:h-[350px] min-[1450px]:h-[400px] object-cover shadow-lg transition-all duration-300 
-                    ${isOffensive && !isViewed ? "blur-lg brightness-75 group-hover:blur-md group-hover:brightness-50" : ""}
+            return (
+              <div
+                key={index}
+                onClick={() => {
+                  if (!isOffensive || isViewed) {
+                    handleRedirectToDescription(item?._id);
+                  }
+                }}
+                className="flex flex-col outline-none cursor-pointer relative group"
+              >
+                <div className="relative overflow-hidden w-full">
+                  <img
+                    src={`${lowImageUrl}/${item?.media}`}
+                    alt="Artwork"
+                    className={`w-full h-[250px] md:h-[300px] lg:h-[350px] min-[1450px]:h-[400px] object-cover shadow-lg transition-all duration-300 
+                    ${
+                      isOffensive && !isViewed
+                        ? "blur-lg brightness-75 group-hover:blur-md group-hover:brightness-50"
+                        : ""
+                    }
                   `}
-                />
+                  />
 
-                {isOffensive && !isViewed ? (
-                  <div className="absolute inset-0 flex flex-col justify-center items-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <button
-                      className="bg-blue-500 flex items-center gap-3 font-semibold text-white px-4 py-2 rounded-md hover:bg-blue-600"
-                      onClick={() => handleViewClick(item?._id)}
-                    >
-                      <FaEye /> View Image
-                    </button>
-                    <button onClick={() => handleRedirectToDescription(item?._id)} className="bg-red-500 flex items-center gap-3 font-semibold text-white px-4 py-2 rounded-md hover:bg-red-600">
-                      <MdOutlineOpenInNew /> View Details
-                    </button>
-                  </div>
-                ) : null}
+                  {isOffensive && !isViewed ? (
+                    <div className="absolute inset-0 flex flex-col justify-center items-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <button
+                        className="bg-blue-500 flex items-center gap-3 font-semibold text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                        onClick={() => handleViewClick(item?._id)}
+                      >
+                        <FaEye /> View Image
+                      </button>
+                      <button
+                        onClick={() => handleRedirectToDescription(item?._id)}
+                        className="bg-red-500 flex items-center gap-3 font-semibold text-white px-4 py-2 rounded-md hover:bg-red-600"
+                      >
+                        <MdOutlineOpenInNew /> View Details
+                      </button>
+                    </div>
+                  ) : null}
 
-                {isOffensive && isViewed ? (
-                  <div className="absolute bg-white px-2 py-1 rounded top-2 right-2 flex items-center gap-2">
-                    <p className="text-[12px] ">Offensive View</p>
-                    <FaToggleOn onClick={(e) => { e.stopPropagation(); handleHideClick(item?._id); }} size={20} className="text-green-500" />
-                  </div>
-                ) : null}
-              </div>
-
-              {/* Artwork Details */}
-              <div className="mt-4">
-                <p className="text-sm text-gray-500">{item?.discipline}</p>
-                <div className="flex justify-between items-center mt-2">
-                  <p className="text-md text-gray-800 font-bold line-clamp-2">{item?.artworkName}</p>
-                  <p className="text-sm text-gray-500">{item?.size}</p>
+                  {isOffensive && isViewed ? (
+                    <div className="absolute bg-white px-2 py-1 rounded top-2 right-2 flex items-center gap-2">
+                      <p className="text-[12px] ">Offensive View</p>
+                      <FaToggleOn
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleHideClick(item?._id);
+                        }}
+                        size={20}
+                        className="text-green-500"
+                      />
+                    </div>
+                  ) : null}
                 </div>
-                <p className="text-sm text-gray-500 mt-1">{name(item)}</p>
-                <p className="mt-1 text-sm text-gray-600">
-                  {getSymbolFromCurrency(item?.pricing?.currency.slice(0, 3))}{" "}
-                  {item?.pricing?.basePrice}
-                </p>
+
+                {/* Artwork Details */}
+                <div className="mt-4">
+                  <p className="text-sm text-gray-500">{item?.discipline}</p>
+                  <div className="flex justify-between items-center mt-2">
+                    <p className="text-md text-gray-800 font-bold line-clamp-2">
+                      {item?.artworkName}
+                    </p>
+                    <p className="text-sm text-gray-500">{item?.size}</p>
+                  </div>
+                  <p className="text-sm text-gray-500 mt-1">{name(item)}</p>
+                  <p className="mt-1 text-sm text-gray-600">
+                    {getSymbolFromCurrency(item?.pricing?.currency.slice(0, 3))}{" "}
+                    {item?.pricing?.basePrice}
+                  </p>
+                </div>
               </div>
-            </div>
-          );
-        })
-      ) : (
-        "No artworks available"
-      )}
+            );
+          })
+        : "No artworks available"}
     </div>
   );
 };
-
 
 export default CardSection;

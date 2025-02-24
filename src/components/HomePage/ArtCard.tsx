@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
-import { imageUrl } from "../utils/baseUrls";
+import { imageUrl, lowImageUrl } from "../utils/baseUrls";
 import postRecentArtworkMutation from "./http/postRecentView";
 import useLikeUnlikeArtworkMutation from "./http/useLikeUnLike";
 import { AiFillLike } from "react-icons/ai";
@@ -102,10 +102,11 @@ const ArtCard = ({ data, tittle, artistData }) => {
               <div className="overflow-hidden">
                 <img
                   onClick={() => handleRedirectToDescription(item?._id)}
-                  src={`${imageUrl}/users/${item?.media}`}
+                  src={`${lowImageUrl}/${item?.media}`}
                   alt="image"
-                  className={`w-full h-[40vh] border sm:h-[45vh] md:h-[50vh] object-cover shadow-lg ${item?.additionalInfo?.offensive == "Yes" ? "blur-3xl" : ""
-                    }`}
+                  className={`w-full h-[40vh] border sm:h-[45vh] md:h-[50vh] object-cover shadow-lg ${
+                    item?.additionalInfo?.offensive == "Yes" ? "blur-3xl" : ""
+                  }`}
                 />
                 <button
                   onClick={() => handleLike(item?._id)}

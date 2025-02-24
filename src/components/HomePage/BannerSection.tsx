@@ -85,7 +85,7 @@ const BannerSection = () => {
             <img
               src={item.image1}
               alt="banner"
-              className="w-full h-screen relative object-fill"
+              className="w-full h-screen relative object-cover"
             />
             <div className="container mx-auto">
               <div className="absolute top-[30%] left-12">

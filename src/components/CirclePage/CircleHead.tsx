@@ -12,18 +12,27 @@ import Followers from "../Followers/Followers";
 import Blogs from "../Blogs/Blogs";
 import { imageUrl } from "../utils/baseUrls";
 import { GrUserManager } from "react-icons/gr";
+import { RiUserFollowFill } from "react-icons/ri";
+import { MdOutlinePermIdentity } from "react-icons/md";
 import Managers from "./Managers";
+import Requests from "../Followers/Requests";
 
-const CircleHead = ({data}) => {
+const CircleHead = ({ data }) => {
   const [activeTab, setActiveTab] = useState(0); // 0 = Profile, 1 = Followers, 2 = Blogs
 
   return (
     <div>
-      <div className="flex sm:justify-between w-full flex-wrap justify-between sm:gap-0 gap-2">
-        <img src={`${imageUrl}/users/${data?.data?.mainImage}`} alt="" className="-mt-[50px] w-[18vw] h-[18vw] rounded-full object-cover" />
+      <div className="flex sm:justify-between w-full flex-wrap justify-between items-center sm:gap-0 gap-2">
+        <img
+          src={`${imageUrl}/users/${data?.data?.mainImage}`}
+          alt=""
+          className="-mt-[50px] w-[18vw] h-[18vw] rounded-full object-cover"
+        />
+        <span className="border-2 z-[999] py-2 px-3 rounded-md text-center bg-black text-white border-black font-semibold cursor-pointer text-md transition-none">
+          Follow
+        </span>
       </div>
 
-  
       <Tabs selectedIndex={activeTab} onSelect={(index) => setActiveTab(index)}>
         <TabList className="flex gap-10 justify-end border-b-2  border-gray-300">
           <Tab
@@ -40,7 +49,7 @@ const CircleHead = ({data}) => {
               activeTab === 1 ? "border-b-2 border-black" : ""
             }`}
           >
-            <img src={profile2} alt="followers icon" />
+            <RiUserFollowFill />
             <P variant={{ size: "base", theme: "dark", weight: "medium" }}>
               Followers
             </P>
@@ -51,6 +60,17 @@ const CircleHead = ({data}) => {
               activeTab === 2 ? "border-b-2 border-black" : ""
             }`}
           >
+            <MdOutlinePermIdentity size="1.4em" />
+            <P variant={{ size: "base", theme: "dark", weight: "medium" }}>
+              Requests
+            </P>
+          </Tab>
+
+          <Tab
+            className={`flex gap-1 items-center cursor-pointer pb-2 px-3 py-2 ${
+              activeTab === 3 ? "border-b-2 border-black" : ""
+            }`}
+          >
             <img src={profile3} alt="blogs icon" />
             <P variant={{ size: "base", theme: "dark", weight: "medium" }}>
               Blogs
@@ -59,28 +79,30 @@ const CircleHead = ({data}) => {
 
           <Tab
             className={`flex gap-1 items-center cursor-pointer pb-2 px-3 py-2 ${
-              activeTab === 2 ? "border-b-2 border-black" : ""
+              activeTab === 4 ? "border-b-2 border-black" : ""
             }`}
           >
-           <GrUserManager size="1.2em" />
+            <GrUserManager size="1.2em" />
             <P variant={{ size: "base", theme: "dark", weight: "medium" }}>
-             Manager
+              Manager
             </P>
           </Tab>
         </TabList>
 
-       
         <TabPanel>
-          <CircleDescription data={data}/>
+          <CircleDescription data={data} />
         </TabPanel>
         <TabPanel>
           <Followers />
         </TabPanel>
         <TabPanel>
+          <Requests />
+        </TabPanel>
+        <TabPanel>
           <Blogs />
         </TabPanel>
         <TabPanel>
-          <Managers data={data}/>
+          <Managers data={data} />
         </TabPanel>
       </Tabs>
     </div>
