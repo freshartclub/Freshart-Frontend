@@ -148,7 +148,6 @@ const App: React.FC = () => {
             <Route path="/faq" element={<Faq />} />
             <Route path="/kb-database" element={<KbDatabase />} />
             <Route path="/about-us" element={<AboutUs />} />
-            {/* <Route path="/artist-panel/*" element={<NotFoundPage />} /> */}
 
             <Route
               path="/invoice-pdf*"
@@ -207,7 +206,6 @@ const App: React.FC = () => {
               }
             />
 
-            {/* Protected Routes */}
             <Route
               path="/home"
               element={

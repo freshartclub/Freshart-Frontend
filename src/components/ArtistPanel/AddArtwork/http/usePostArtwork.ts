@@ -20,11 +20,11 @@ async function usePostArtWork(input: any) {
 const usePostArtWorkMutation = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
 
   const queryClient = useQueryClient();
-
 
   return useMutation({
     mutationFn: usePostArtWork,
@@ -33,8 +33,8 @@ const usePostArtWorkMutation = () => {
       navigate(
         `${
           id
-            ? `/artist-panel/artwork/preview?id=${id}&preview=true`
-            : `/artist-panel/artwork/preview?id=${res.data.artwork._id}&preview=true`
+            ? `/artist-panel/artwork/preview/${id}?preview=true`
+            : `/artist-panel/artwork/preview/${res.data.artwork._id}?preview=true`
         }`
       );
       toast.success(t(res.data.message), {

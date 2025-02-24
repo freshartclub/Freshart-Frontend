@@ -198,7 +198,7 @@ const AddArtwork = () => {
   ]);
 
   const getOutDiscipline = seriesData?.discipline?.map(
-    (item, i) => item?.discipline
+    (item) => item?.discipline
   );
 
   const newTechnic = technicData?.data?.filter(
@@ -258,10 +258,10 @@ const AddArtwork = () => {
       );
 
       setValue("material", data?.data?.additionalInfo?.material || "");
-      setValue("weight", data?.data?.additionalInfo?.weight || "");
-      setValue("length", data?.data?.additionalInfo?.length || "");
-      setValue("height", data?.data?.additionalInfo?.height || "");
-      setValue("width", data?.data?.additionalInfo?.width || "");
+      setValue("weight", String(data?.data?.additionalInfo?.weight) || "");
+      setValue("length", String(data?.data?.additionalInfo?.length) || "");
+      setValue("height", String(data?.data?.additionalInfo?.height) || "");
+      setValue("width", String(data?.data?.additionalInfo?.width) || "");
       setValue(
         "hangingAvailable",
         data?.data?.additionalInfo?.hangingAvailable || ""
@@ -324,7 +324,7 @@ const AddArtwork = () => {
         "artistbaseFees",
         data?.data?.commercialization?.artistbaseFees || ""
       );
-      setValue("basePrice", data?.data?.pricing?.basePrice || "");
+      setValue("basePrice", String(data?.data?.pricing?.basePrice) || "");
       setValue("dpersentage", data?.data?.pricing?.dpersentage || 0);
 
       setValue("pCode", data?.data?.inventoryShipping?.pCode || "");

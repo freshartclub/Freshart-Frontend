@@ -180,6 +180,7 @@ const Artwork = () => {
                         flex: "1 1 calc(33.333% - 1rem)",
                         minWidth: "270px",
                         maxWidth: "270px",
+                        maxHeight: "410px",
                       }}
                     >
                       <div className="w-full">
