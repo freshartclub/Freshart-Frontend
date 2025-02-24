@@ -526,7 +526,7 @@ const BecomeArtist = () => {
                         placeholder={t("Select")}
                         isMulti
                         options={filterStyle?.map((item: string) => ({
-                          value: t(item.styleName),
+                          value: item.styleName,
                           label: t(item.styleName),
                         }))}
                         className="block appearance-none w-full bg-white rounded leading-tight focus:outline-none lg:py-1"
