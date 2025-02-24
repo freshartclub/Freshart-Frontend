@@ -607,7 +607,7 @@ const NavForHome = () => {
             </div>
 
             <div className="flex gap-4 items-center justify-center">
-              {/* <div className="overflow-x-hidden">
+              <div className="overflow-x-hidden">
                 <ShoppingCard isOpen={isSidebarOpen} onClose={toggleSidebar} />
 
                 <button
@@ -627,16 +627,16 @@ const NavForHome = () => {
                     ) : null}
                   </span>
                 </button>
-              </div> */}
+              </div>
               <Link
                 to="/login"
                 className="px-4 py-2 text-sm bg-white rounded-md hover:bg-gray-200 focus:outline-none"
               >
                 Sign In
               </Link>
-              {/* <Link to="/signup" className="text-sm text-white">
+              <Link to="/signup" className="text-sm text-white">
                 Sign Up
-              </Link> */}
+              </Link>
             </div>
           </>
         )}

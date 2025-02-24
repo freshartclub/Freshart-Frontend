@@ -171,12 +171,12 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
         </div>
 
         <div className="flex items-center gap-5 ">
-          {/* <div onClick={openNotification} className="relative cursor-pointer">
+          <div onClick={openNotification} className="relative cursor-pointer">
             <IoNotifications className="lg:block" size="1.5em" />
             <div className="w-5 h-5 bg-red-500 text-black rounded-full -top-3 right-0 absolute flex items-center justify-center font-semibold">
               {unreadCount}
             </div>
-          </div> */}
+          </div>
 
           <span
             onClick={() => setIsToggelOpen(!isToogleOpen)}
@@ -233,12 +233,12 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
                 {t("Invite Artist")}
               </span>
 
-              {/* <button
+              <button
                 className="font-medium hover:bg-zinc-200"
                 onClick={handleProfile}
               >
                 {t("Switch To User Profile")}
-              </button> */}
+              </button>
               <button
                 className="bg-red-300 flex flex-col items-center justify-center gap-1 py-2 rounded hover:bg-red-400 font-medium"
                 onClick={handleLogOut}
