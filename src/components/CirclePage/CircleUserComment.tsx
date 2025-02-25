@@ -1,36 +1,27 @@
 import P from "../ui/P";
-import profile from "./assets/profile_img.svg";
-import dot from "./assets/dots.svg";
-import banner from "./assets/Img_Travel_M.2.png";
 
-import more from "./assets/+more.svg";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import Loader from "../ui/Loader";
+import { imageUrl } from "../utils/baseUrls";
 import msg from "./assets/msg.svg";
 import share from "./assets/share.svg";
-import input_image from "./assets/input_image.png";
-import smile from "./assets/smile.png";
-import user1 from "./assets/user1.png";
-import user2 from "./assets/user2.png";
-import banner2 from "./assets/Img_Travel.png";
-import { useGetCirclePosts } from "./https/useGetCirclePosts";
-import Loader from "../ui/Loader";
-import { useSearchParams } from "react-router-dom";
-import { imageUrl } from "../utils/baseUrls";
 import CommentBox from "./CommentBox";
-import { useState } from "react";
-import { FaFacebook, FaTwitter, FaLinkedin, FaShareAlt } from "react-icons/fa";
+import { useGetCirclePosts } from "./https/useGetCirclePosts";
 
 import { FaRegCopy } from "react-icons/fa";
-import usePostCommentMutation from "./https/usePostCommentMutation";
 
-import { motion, AnimatePresence } from "framer-motion";
-// import heart from "../assets/heart.svg";
-import likeFilled from "../assets/like-filled.svg";
-import heart from "./assets/heart.svg";
-import avatar1 from "./assets/Avatar 1.svg";
-import avatar2 from "./assets/Avatar 2.svg";
-import avatar3 from "./assets/Avatar 3.svg";
+import { AnimatePresence, motion } from "framer-motion";
+
+import { FaEdit } from "react-icons/fa";
+import useCirclePostMutation from "./https/useCirclePostMutation";
 import usePostLikeMutation from "./https/usePostLikeMutation";
-import { useGetLikes } from "./https/useGetLikes";
+
+import { RxCross2 } from "react-icons/rx";
+import Button from "../ui/Button";
+import image_icon from "./assets/primary-shape3.png";
+import stream from "./assets/primary-shape4.png";
+import { FaRegWindowClose } from "react-icons/fa";
 
 // Reaction Options
 const reactions = [
@@ -41,17 +32,25 @@ const reactions = [
   { id: "angry", icon: "😡", label: "Angry" },
 ];
 
-const CircleUserComment = () => {
+const CircleUserComment = ({ isManager }) => {
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
   const { data, isLoading } = useGetCirclePosts(id);
   const [isVisible, setisVisible] = useState(false);
   const [isShare, setIsShare] = useState(false);
   const [visibleCommentBoxId, setVisibleCommentBoxId] = useState(null);
+  const [hoveredPostId, setHoveredPostId] = useState(null);
 
-  const [selectedReaction, setSelectedReaction] = useState(null);
+  const [textAreaContent, setTextAreaContent] = useState({});
+  const [previewUrl, setPreviewUrl] = useState({});
+  const [file, setFile] = useState({});
 
-  const [likesCount, setLikesCount] = useState(0);
+  const [selectedReaction, setSelectedReaction] = useState({});
+  const [isEditable, setIsEditable] = useState({});
+
+  const [likesCount, setLikesCount] = useState({});
+  const [textContent, setTextContent] = useState("");
+  const [getReactionIconLocally, setReactionIconLocally] = useState({});
 
   const [postId, setPostId] = useState(null);
 
@@ -59,10 +58,10 @@ const CircleUserComment = () => {
   const [copy, setCopy] = useState("Copy");
 
   const { mutateAsync, isPending } = usePostLikeMutation();
+  const { mutateAsync: editPost, isPending: editPending } =
+    useCirclePostMutation();
 
-  const { data: likedData, isLoading: likeLoading } = useGetLikes();
-
-  console.log(likedData);
+  // const { data: likedData, isLoading: likeLoading } = useGetLikes();
 
   const handleCopy = async () => {
     try {
@@ -74,7 +73,161 @@ const CircleUserComment = () => {
     }
   };
 
-  console.log(data);
+  const getReactionIcon = (reactionString) => {
+    const reaction = reactions.find((r) => r.id === reactionString);
+    return reaction ? reaction.icon : null;
+  };
+
+  const handleImage = (postId) => (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      const url = URL.createObjectURL(selectedFile);
+      setPreviewUrl((prev) => ({ ...prev, [postId]: url }));
+      setFile((prev) => ({ ...prev, [postId]: selectedFile }));
+    }
+  };
+
+  useEffect(() => {
+    if (data && Array.isArray(data.data)) {
+      const newLikesCount = {};
+      const newReactions = {};
+      const newTextContent = {};
+      const newPreviewUrls = {};
+      const newReactionsList = {};
+
+      data.data.forEach((post) => {
+        const postId = post._id;
+
+        newLikesCount[postId] = post.totalLikes;
+        newTextContent[postId] = post.content || "";
+        newPreviewUrls[postId] = post.file || "";
+
+        if (post?.reaction && typeof post.reaction === "object") {
+          const reactionIcons = [];
+          for (const [type, count] of Object.entries(post.reaction)) {
+            const icon = getReactionIcon(type);
+            if (icon && count > 0) {
+              for (
+                let i = 0;
+                i < Math.min(count, 3 - reactionIcons.length);
+                i++
+              ) {
+                reactionIcons.push({ reactionType: type, icon });
+              }
+            }
+            if (reactionIcons.length >= 3) break;
+          }
+          newReactionsList[postId] = reactionIcons;
+        } else {
+          newReactionsList[postId] = [];
+        }
+
+        if (post.reactType) {
+          const icon = getReactionIcon(post.reactType);
+
+          if (icon) {
+            newReactions[postId] = icon;
+          }
+        }
+      });
+
+      setLikesCount(newLikesCount);
+      setSelectedReaction((prev) => ({
+        ...prev,
+        ...newReactions,
+      }));
+      setTextAreaContent(newTextContent);
+      setPreviewUrl(newPreviewUrls);
+      setReactionIconLocally(newReactionsList);
+    }
+  }, [data]);
+
+  const handleReaction = (postId, reaction) => {
+    const data = {
+      postId,
+      reaction: reaction,
+    };
+
+    mutateAsync(data).then(() => {
+      const icon = getReactionIcon(reaction);
+      if (icon) {
+        setSelectedReaction((prev) => {
+          const currentReaction = prev[postId];
+
+          if (currentReaction === icon) {
+            const { [postId]: _, ...rest } = prev;
+            return rest;
+          }
+
+          return { ...prev, [postId]: icon };
+        });
+
+        setLikesCount((prev) => {
+          const currentLikes = prev[postId] || 0;
+          const currentReaction = selectedReaction[postId];
+
+          if (currentReaction === icon) {
+            return { ...prev, [postId]: Math.max(currentLikes - 1, 0) };
+          }
+
+          return { ...prev, [postId]: currentLikes + 1 };
+        });
+
+        setReactionIconLocally((prev) => {
+          const currentReactions = prev[postId] || [];
+          const userReaction = { reactionType: reaction, icon };
+
+          // Check if reaction already exists
+          const alreadyReacted = currentReactions.some(
+            (r) => r.reactionType === reaction
+          );
+
+          if (alreadyReacted) {
+            return {
+              ...prev,
+              [postId]: currentReactions.filter(
+                (r) => r.reactionType !== reaction
+              ),
+            };
+          }
+
+          return {
+            ...prev,
+            [postId]: [...currentReactions, userReaction].slice(-3), // Keep last 3 reactions
+          };
+        });
+      }
+    });
+  };
+
+  const handleEditPost = (postId) => {
+    try {
+      const newData = {
+        content: textContent,
+        circleFile: file,
+        postId: postId,
+        id: id,
+      };
+
+      console.log(newData);
+      editPost(newData).then(() => {
+        // setTextAreaContent((prev) => ({
+        //  ...prev,
+        //   [postId]: newData.content,
+        // }));
+        // setPreviewUrl((prev) => ({
+        //  ...prev,
+        //   [postId]: newData.circleFile? URL.createObjectURL(newData.circleFile) : prev[postId],
+        // }));
+        setIsEditable((prev) => ({ ...prev, [postId]: false }));
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const like =
+    "https://upload.wikimedia.org/wikipedia/commons/1/13/Facebook_like_thumb.png";
 
   const handleCommentBox = (postId) => {
     setVisibleCommentBoxId((prevId) => (prevId === postId ? null : postId));
@@ -82,36 +235,100 @@ const CircleUserComment = () => {
     setIsShare(false);
   };
 
-  const handleReaction = (postId, reaction) => {
-    const data = {
-      postId,
-      reaction: reaction.id,
-    };
-    // console.log(reaction);
-    // console.log(postId);
-    mutateAsync(data).then(() => {
-      setSelectedReaction((prev) => ({
-        ...prev,
-        [postId]: reaction,
-      }));
-      setLikesCount((prev) => ({
-        ...prev,
-        [postId]: (prev[postId] || 0) + 1,
-      }));
-    });
-  };
-
-  const like =
-    "https://upload.wikimedia.org/wikipedia/commons/1/13/Facebook_like_thumb.png";
-
-  const [hoveredPostId, setHoveredPostId] = useState(null);
-
   const handleMouseEnter = (postId) => {
     setHoveredPostId(postId);
   };
 
   const handleMouseLeave = () => {
     setHoveredPostId(null);
+  };
+
+  const handleTextAreaChange = (postId, value) => {
+    setTextContent(value);
+    setTextAreaContent((prev) => ({
+      ...prev,
+      [postId]: value,
+    }));
+  };
+
+  const handleEdit = (postId, value) => {
+    if (value) {
+      setIsEditable({ [postId]: true });
+      setTextContent("");
+    } else {
+      setIsEditable((prev) => ({ ...prev, [postId]: false }));
+    }
+  };
+
+  const handleDoubleClick = (postId) => {
+    setIsEditable((prev) => ({ ...prev, [postId]: false }));
+    setTextContent("");
+  };
+
+  const handleLikeClick = (postId, reaction) => {
+    const icon = getReactionIcon(reaction);
+    if (icon) {
+      setSelectedReaction((prev) => {
+        const currentReaction = prev[postId];
+
+        if (currentReaction === icon) {
+          const { [postId]: _, ...rest } = prev;
+          return rest;
+        }
+
+        return { ...prev, [postId]: icon };
+      });
+
+      setLikesCount((prev) => {
+        const currentLikes = prev[postId] || 0;
+        const currentReaction = selectedReaction[postId];
+
+        if (currentReaction === icon) {
+          return { ...prev, [postId]: Math.max(currentLikes - 1, 0) };
+        }
+
+        return { ...prev, [postId]: currentLikes + 1 };
+      });
+
+      setReactionIconLocally((prev) => {
+        const currentReactions = prev[postId] || [];
+        const userReaction = { reactionType: reaction, icon };
+
+        // Check if reaction already exists
+        const alreadyReacted = currentReactions.some(
+          (r) => r.reactionType === reaction
+        );
+
+        if (alreadyReacted) {
+          return {
+            ...prev,
+            [postId]: currentReactions.filter(
+              (r) => r.reactionType !== reaction
+            ),
+          };
+        }
+
+        return {
+          ...prev,
+          [postId]: [...currentReactions, userReaction].slice(-3),
+        };
+      });
+    }
+  };
+
+  const getReactionIconsFromCounts = (reactionObj) => {
+    const icons = [];
+    for (const [type, count] of Object.entries(reactionObj)) {
+      const reaction = reactions.find((r) => r.id === type);
+      if (reaction && count > 0) {
+        for (let i = 0; i < Math.min(count, 3 - icons.length); i++) {
+          icons.push(reaction.icon);
+          if (icons.length >= 3) break;
+        }
+      }
+      if (icons.length >= 3) break;
+    }
+    return icons;
   };
 
   if (isLoading) {
@@ -122,7 +339,7 @@ const CircleUserComment = () => {
       {data &&
         data?.data?.map((item, index) => (
           <>
-            <div className="sm:p-6 p-3 w-full rounded-lg my-8 shadow-xl">
+            <div className="sm:p-6 p-3 w-full  rounded-lg my-8 shadow-xl relative">
               <div>
                 <div key={index} className="flex gap-3 mt-10">
                   <img src={item.profile} alt="profile image" />
@@ -134,13 +351,23 @@ const CircleUserComment = () => {
                         weight: "semiBold",
                       }}
                     >
-                      {"Hudson Alvarez"}
+                      {item?.owner?.artistName +
+                        " " +
+                        item?.owner?.artistSurname1 +
+                        " " +
+                        item?.owner?.artistSurname2}
                     </P>
                     <P
                       variant={{ size: "small", weight: "normal" }}
                       className="text-[#919EAB]"
                     >
-                      12 Aug 2022 10:00 PM
+                      {new Date(item?.createdAt).toLocaleString("en-US", {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
                     </P>
                   </div>
                 </div>
@@ -159,6 +386,130 @@ const CircleUserComment = () => {
                 </div>
               </div>
 
+              {isEditable[item._id] && (
+                <div
+                  className="shadow-xl sm:p-6 p-3 w-full rounded-lg "
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  // onDoubleClick={() => handleDoubleClick(item._id)}
+                >
+                  <textarea
+                    placeholder="Share what you are thinking here..."
+                    className="border w-full p-2 h-32 rounded-lg outline-none"
+                    value={textAreaContent[item._id] || ""}
+                    onChange={(e) =>
+                      handleTextAreaChange(item._id, e.target.value)
+                    }
+                  ></textarea>
+
+                  <div className="flex justify-between items-end">
+                    <div className="flex flex-wrap gap-2 items-center sm:justify-normal justify-center">
+                      <div>
+                        <input
+                          type="file"
+                          accept="image/*, video/*"
+                          hidden
+                          id={`file-input-${item._id}`}
+                          onChange={handleImage(item._id)}
+                        />
+
+                        <div className="flex items-center gap-5">
+                          <Button
+                            variant={{ rounded: "full" }}
+                            className="flex gap-2 bg-[#919EAB14]"
+                            onClick={() =>
+                              document
+                                .getElementById(`file-input-${item._id}`)
+                                .click()
+                            }
+                          >
+                            <img src={image_icon} alt="image/video" />
+                            <P
+                              variant={{
+                                size: "small",
+                                theme: "dark",
+                                weight: "semiBold",
+                              }}
+                            >
+                              Image/Video
+                            </P>
+                          </Button>
+                        </div>
+
+                        {previewUrl[item._id] && (
+                          <div className="mt-4 relative">
+                            {file[item._id] ? (
+                              // Locally uploaded file
+                              file[item._id].type.startsWith("image") ? (
+                                <img
+                                  src={previewUrl[item._id]} // Use raw blob URL
+                                  alt="Preview"
+                                  className="w-full object-contain h-[30vh]"
+                                />
+                              ) : file[item._id].type.startsWith("video") ? (
+                                <video controls className="w-full h-auto">
+                                  <source
+                                    src={previewUrl[item._id]} // Use raw blob URL
+                                    type={file[item._id].type}
+                                  />
+                                  Your browser does not support the video tag.
+                                </video>
+                              ) : null
+                            ) : (
+                              // Backend-provided URL
+                              <img
+                                src={`${imageUrl}/user/${previewUrl[item._id]}`}
+                                alt="Preview"
+                                className="w-full object-contain h-[30vh]"
+                              />
+                            )}
+                            <span
+                              onClick={() => {
+                                setPreviewUrl((prev) => ({
+                                  ...prev,
+                                  [item._id]: "",
+                                }));
+                                setFile((prev) => ({
+                                  ...prev,
+                                  [item._id]: null,
+                                }));
+                              }}
+                              className="absolute bg-white top-0 right-0 cursor-pointer rounded-full p-1"
+                            >
+                              <RxCross2 size="2em" />
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <div className=" flex gap-2  items-center">
+                      <Button
+                        onClick={() => handleDoubleClick(item._id)}
+                        className="px-4 py-2 bg-red-500 text-white font-semibold"
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        onClick={() => handleEditPost(item._id)}
+                        className="px-5 w-max py-2 bg-black text-white font-semibold"
+                      >
+                        {editPending ? "Posting..." : "Edit Post"}
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {isManager ? (
+                <span
+                  onClick={() => handleEdit(item._id, true)}
+                  className="absolute top-0 right-0 cursor-pointer"
+                >
+                  <FaEdit size="1.8em" />
+                </span>
+              ) : null}
+
               <div className="flex justify-between my-5">
                 {/* Like & Reactions */}
                 <div className="flex gap-3 items-center">
@@ -168,56 +519,52 @@ const CircleUserComment = () => {
                     onMouseEnter={() => handleMouseEnter(item._id)}
                     onMouseLeave={handleMouseLeave}
                   >
-                    {selectedReaction?.[item._id]?.icon ? (
-                      typeof selectedReaction[item._id].icon === "string" &&
-                      selectedReaction[item._id].icon.startsWith("http") ? (
-                        // If it's a valid image URL, use <motion.img>
-                        <motion.img
-                          src={selectedReaction[item._id].icon}
-                          alt="reaction"
-                          className="w-6 h-6"
-                          animate={{
-                            scale:
-                              item?._id && selectedReaction?.[item._id]
-                                ? 1.2
-                                : 1,
-                          }}
-                        />
-                      ) : (
-                        // If it's an emoji, use <motion.span>
-                        <motion.span
-                          className="text-2xl"
-                          animate={{
-                            scale:
-                              item?._id && selectedReaction?.[item._id]
-                                ? 1.2
-                                : 1,
-                          }}
-                        >
-                          {selectedReaction[item._id].icon}
-                        </motion.span>
-                      )
+                    {selectedReaction[item._id] ? (
+                      <motion.span
+                        className="text-2xl"
+                        animate={{
+                          scale: selectedReaction[item._id] ? 1.2 : 1,
+                        }}
+                      >
+                        {selectedReaction[item._id]}
+                      </motion.span>
                     ) : (
-                      // Default like icon when no reaction is selected
                       <motion.img
+                        onClick={() => handleLikeClick(item?._id, "like")}
                         src={like}
                         alt="reaction"
                         className="w-6 h-6"
-                        animate={{
-                          scale: 1,
-                        }}
+                        animate={{ scale: 1 }}
                       />
                     )}
 
-                    {selectedReaction &&
-                      item?._id &&
-                      selectedReaction[item._id] && (
-                        <p className="text-base font-medium">
-                          {likesCount && likesCount[item._id]
-                            ? likesCount[item._id]
-                            : 0}
-                        </p>
+                    <div className="flex items-center  gap-8">
+                      {getReactionIconLocally[item._id]?.length > 0 && (
+                        <div className="relative flex  items-center">
+                          {getReactionIconLocally[item._id].map(
+                            (reaction, index) => (
+                              <span
+                                key={index}
+                                className="text-lg absolute"
+                                style={{
+                                  left: `${index * -0.6}em`,
+                                  zIndex:
+                                    getReactionIconLocally[item._id].length -
+                                    index,
+                                }}
+                              >
+                                {reaction.icon}
+                              </span>
+                            )
+                          )}
+                        </div>
                       )}
+                      <p className="text-base font-medium">
+                        {likesCount[item._id] || 0}
+                      </p>
+                    </div>
+
+                    {/* )} */}
 
                     {/* Reaction Picker */}
                     <AnimatePresence>
@@ -232,9 +579,11 @@ const CircleUserComment = () => {
                             <motion.span
                               key={reaction.id}
                               className="w-8 h-8 cursor-pointer text-2xl hover:scale-110"
-                              onClick={() => handleReaction(item._id, reaction)}
+                              onClick={() =>
+                                handleReaction(item._id, reaction.id)
+                              } // Pass reaction.id, not full object
                             >
-                              {reaction.icon} {/* Directly render emoji */}
+                              {reaction.icon}
                             </motion.span>
                           ))}
                         </motion.div>
@@ -282,84 +631,7 @@ const CircleUserComment = () => {
                   </button>
                 </div>
               ) : null}
-
-              {/* Avatars */}
-              {/* <div className="flex items-center -space-x-4">
-                    <img
-                      className="w-10 h-10 rounded-full z-30"
-                      src={avatar1}
-                      alt="Avatar 1"
-                    />
-                    <img
-                      className="w-10 h-10 rounded-full z-20"
-                      src={avatar2}
-                      alt="Avatar 2"
-                    />
-                    <img
-                      className="w-10 h-10 rounded-full z-10"
-                      src={avatar3}
-                      alt="Avatar 3"
-                    />
-                    <img
-                      className="w-10 h-10 rounded-full"
-                      src={more}
-                      alt="More"
-                    />
-                  </div> */}
             </div>
-
-            {/* Comment & Share */}
-
-            <div>
-              <div className="flex items-center gap-4 w-full">
-                <img src={user1} alt="profile" />
-                <div className="w-full flex bg-[#F4F6F8] my-2 rounded-lg justify-between p-3">
-                  <div>
-                    <P
-                      variant={{
-                        size: "base",
-                        theme: "dark",
-                        weight: "semiBold",
-                      }}
-                    >
-                      {"Lainey Davidson"}
-                    </P>
-                    <P
-                      variant={{ size: "small", weight: "normal" }}
-                      className="text-[#637381]"
-                    >
-                      {"I love cupcake danish jujubes sweet"}
-                    </P>
-                  </div>
-                  <div>
-                    <P
-                      variant={{
-                        size: "small",
-                        theme: "dark",
-                        weight: "normal",
-                      }}
-                      className="text-[#919EAB]"
-                    >
-                      {"11 Feb 2022"}
-                    </P>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* <div className="flex gap-4 my-2">
-                <img src={profile} alt="profile" />
-                <div className="flex w-full">
-                  <input
-                    placeholder="Write a comment..."
-                    className="border border-gray-200 w-full p-4 rounded-lg outline-none"
-                  />
-                  <div className="flex items-center -ml-20 gap-3">
-                    <img src={input_image} alt="image" />
-                    <img src={smile} alt="smile" />
-                  </div>
-                </div>
-              </div> */}
           </>
         ))}
     </div>

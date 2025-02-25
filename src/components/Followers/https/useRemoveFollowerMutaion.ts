@@ -5,25 +5,20 @@ import { useTranslation } from "react-i18next";
 import axiosInstance from "../../utils/axios";
 import { CIRCLE_ENDPOINTS } from "../../../http/apiEndPoints/Circle";
 
-async function circlePostLikeMutation(data) {
+async function circleRemoveRequestMutation(data) {
   return await axiosInstance.patch(
-    `${CIRCLE_ENDPOINTS.LikeCirclePost}/${data?.postId}`,
+    `${CIRCLE_ENDPOINTS.RemoveFollower}/${data?.circleId}`,
     data
   );
 }
 
-const usePostLikeMutation = () => {
+const useRemoveFollowerMutaion = () => {
   const { t } = useTranslation();
-  const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: circlePostLikeMutation,
+    mutationFn: circleRemoveRequestMutation,
 
     onSuccess: async (res) => {
-      queryClient.invalidateQueries({
-        queryKey: ["LikeCirclePost", "isLiked"],
-        refetchType: "all",
-      });
       toast.success(t(res.data.message), {
         duration: 5000,
       });
@@ -34,4 +29,4 @@ const usePostLikeMutation = () => {
   });
 };
 
-export default usePostLikeMutation;
+export default useRemoveFollowerMutaion;

@@ -136,14 +136,14 @@ const CircleRight = ({ data }) => {
                 onClick={handlePost}
                 className="px-4 py-2 bg-black text-white font-semibold"
               >
-                {isPending ? "Posting..." : "Post"}
+                {isPending ? "Posting..." : "Create Post"}
               </Button>
             </div>
           </div>
         </div>
       ) : null}
 
-      <CircleUserComment />
+      <CircleUserComment isManager={isManager} />
     </div>
   );
 };

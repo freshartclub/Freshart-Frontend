@@ -17,7 +17,12 @@ import user8 from "./assets/Img_Avatar.9.png";
 import user9 from "./assets/Avatar.png";
 import Button from "../ui/Button";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
+import { useGetFollowers } from "./https/useGetFollowers";
+import Loader from "../ui/Loader";
+import { imageUrl } from "../utils/baseUrls";
+import useRemoveFollowerMutaion from "./https/useRemoveFollowerMutaion";
+import { useAppSelector } from "../../store/typedReduxHooks";
 
 const profile_data = [
   {
@@ -37,183 +42,106 @@ const profile_data = [
   },
 ];
 
-const Followers = () => {
-  const [cards, setCards] = useState([
-    {
-      id: 1,
-      profile: user1,
-      name: "Soren Durham",
-      location: "Maldives",
-      location_icon: location,
-      follow_btn: "follow",
-      isFollowing: false,
-    },
-    {
-      id: 2,
-      profile: user2,
-      name: "Lucian Obrien",
-      location: "Netherlands Antilles",
-      location_icon: location,
-      follow_btn: "follow",
-      isFollowing: false,
-    },
-    {
-      id: 3,
-      profile: user3,
-      name: "Mireya Conner",
-      location: "Bhutan",
-      location_icon: location,
-      follow_btn: "follow",
-      isFollowing: false,
-    },
-    {
-      id: 4,
-      profile: user4,
-      name: "Soren Durham",
-      location: "Greenland",
-      location_icon: location,
-      follow_btn: "follow",
-      isFollowing: false,
-    },
-    {
-      id: 5,
-      profile: user5,
-      name: "Giana Brandt",
-      location: "Nepal",
-      location_icon: location,
-      follow_btn: "follow",
-      isFollowing: false,
-    },
-    {
-      id: 6,
-      profile: user6,
-      name: "Selina Boyer",
-      location: "Comoros",
-      location_icon: location,
-      follow_btn: "follow",
-      isFollowing: false,
-    },
-    {
-      id: 7,
-      profile: user7,
-      name: "Reece Chung",
-      location: "Cambodia",
-      location_icon: location,
-      follow_btn: "follow",
-      isFollowing: false,
-    },
-    {
-      id: 8,
-      profile: user8,
-      name: "Reece Chung",
-      location: "Cambodia",
-      location_icon: location,
-      follow_btn: "follow",
-      isFollowing: false,
-    },
-    {
-      id: 9,
-      profile: user9,
-      name: "Reece Chung",
-      location: "Cambodia",
-      location_icon: location,
-      follow_btn: "follow",
-      isFollowing: false,
-    },
-  ]);
+const Followers = ({ newData }) => {
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get("id");
 
-  const handleFollowClick = (id: any) => {
-    setCards((prevCards) =>
-      prevCards.map((card) =>
-        card.id === id ? { ...card, isFollowing: !card.isFollowing } : card
-      )
-    );
+  const userId = useAppSelector((state) => state?.user?.user?._id);
+
+  const { data, isLoading } = useGetFollowers(id);
+
+  const { mutate, isPending } = useRemoveFollowerMutaion();
+
+  const isManager =
+    newData?.data?.managers?.some((manager) => manager?._id === userId) ||
+    false;
+
+  const handleFollowClick = (userId: any) => {
+    const newData = {
+      circleId: id,
+      userId: userId,
+    };
+    mutate(newData);
   };
+
+  console.log(isManager);
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <div>
       {/* <img src={banner} alt="banner" className="w-full" /> */}
       <div className="container mx-auto sm:px-6 px-3">
         <div>
-          {/* <div className="flex sm:justify-between w-full flex-wrap justify-center sm:gap-0 gap-8">
-            <img src={profile_image} alt="" className="-mt-[50px]" />
-            <div className="flex gap-10">
-              {profile_data.map((item, index) => (
-                <>
-                  <Link
-                    to={item.to}
-                    key={index}
-                    className="flex gap-1 items-center"
-                  >
-                    <img src={item.img} alt="profile image" />
-                    <P
-                      variant={{
-                        size: "base",
-                        theme: "dark",
-                        weight: "medium",
-                      }}
-                    >
-                      {item.title}
-                    </P>
-                  </Link>
-                </>
-              ))}
-            </div>
-          </div> */}
-
           <div className="lg:mt-20 md:mt-10 mt-5">
             <Header variant={{ size: "2xl", theme: "dark", weight: "bold" }}>
               Followers
             </Header>
 
             <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 2xl:gap-10 md:gap-6 gap-5 my-10">
-              {cards.map((item, index) => (
-                <div
-                  key={index}
-                  className="flex justify-between items-center shadow-xl border xl:p-8 lg:p-3 p-5 rounded-xl"
-                >
+              {data?.data?.length > 0 ? (
+                data?.data?.map((item, index) => (
                   <div
-                    key={item.id}
-                    className="flex xl:gap-4 gap-2 items-center "
+                    key={index}
+                    className="flex justify-between items-center shadow-xl border xl:p-8 lg:p-3 p-5 rounded-xl"
                   >
-                    <img src={item.profile} alt="profile image" />
-                    <div>
-                      <P
-                        variant={{
-                          size: "md",
-                          theme: "dark",
-                          weight: "semiBold",
-                        }}
-                        className="xl:text-md text-base"
-                      >
-                        {item.name}
-                      </P>
-                      <div className="flex items-center gap-2">
-                        <img src={item.location_icon} alt="location icon" />
+                    <div
+                      key={item.id}
+                      className="flex xl:gap-4 gap-2 items-center w-[5vw] h-[5vh] "
+                    >
+                      <img
+                        className="rounded-full"
+                        src={`${imageUrl}/users/${item?.user?.img}`}
+                        alt="profile image"
+                      />
+                      <div>
                         <P
-                          variant={{ size: "small", weight: "normal" }}
-                          className="text-[#919EAB]"
+                          variant={{
+                            size: "md",
+                            theme: "dark",
+                            weight: "semiBold",
+                          }}
+                          className="xl:text-md text-base"
                         >
-                          {item.location}
+                          {item?.user?.artistName +
+                            " " +
+                            item?.user?.artistSurname1 +
+                            " " +
+                            item?.user?.artistSurname2}
                         </P>
+                        <div className="flex items-center gap-2">
+                          <img src={location} alt="location icon" />
+                          <P
+                            variant={{ size: "small", weight: "normal" }}
+                            className="text-[#919EAB]"
+                          >
+                            {item?.user?.location?.country}
+                          </P>
+                        </div>
                       </div>
                     </div>
+                    <div className="">
+                      {isManager ? (
+                        <Button
+                          variant={{
+                            fontSize: "small",
+                            rounded: "md",
+                            fontWeight: "600",
+                          }}
+                          onClick={() => handleFollowClick(item?.user?._id)}
+                          className="border border-[#919EAB51] !py-1 !px-2"
+                        >
+                          {isPending ? "Removing..." : "Remove"}
+                        </Button>
+                      ) : null}
+                    </div>
                   </div>
-                  <div className="">
-                    <Button
-                      variant={{
-                        fontSize: "small",
-                        rounded: "md",
-                        fontWeight: "600",
-                      }}
-                      onClick={() => handleFollowClick(item.id)}
-                      className="border border-[#919EAB51] !py-1 !px-2"
-                    >
-                      {item.isFollowing ? "Following" : "Follow"}
-                    </Button>
-                  </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                <div>No Followers</div>
+              )}
             </div>
           </div>
         </div>
