@@ -1,200 +1,94 @@
-import { useNavigate, useSearchParams } from "react-router-dom";
-import BackButton from "../ui/BackButton";
-import { useRef, useState } from "react";
-import Slider from "react-slick";
-import slide1 from "./assets/nature.png";
-import slide2 from "./assets/Images4.png";
-import slide3 from "./assets/Images3.png";
-import slide4 from "./assets/Images1.png";
-import slide5 from "./assets/Images.png";
-import slider_show from "./assets/nature.png";
+import { useParams } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
 import Header from "../ui/Header";
 import P from "../ui/P";
-import { useGetArtWorkById } from "../DiscoverMore/http/useGetArtWorkById";
+import { useGetCollectionById } from "./http/useGetCollectionById";
+import Loader from "../ui/Loader";
+import { lowImageUrl } from "../utils/baseUrls";
+import DOMPurify from "dompurify";
 
 const DiscoveryMore = () => {
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const navigate = useNavigate();
-  const sliderRef = useRef<Slider>(null);
-  const [fade, setFade] = useState(false);
+  const [images, setImages] = useState<{ src: string; name: string }[]>([]);
+  const mainImagesContainerRef = useRef<HTMLDivElement>(null);
+  const imageRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const { id } = useParams<{ id: string }>();
+  const { data, isLoading } = useGetCollectionById(id);
 
-
-  const handleBack = () => {
-    navigate("/");
-  };
-
-  const thumbnail_data = [
-    {
-      slide_image: slide1,
-      alt: "thumbnail",
-      title: "Nature",
-    },
-    {
-      slide_image: slide2,
-      alt: "thumbnail",
-      title: "Abstract",
-    },
-    {
-      slide_image: slide3,
-      alt: "thumbnail",
-      title: "World",
-    },
-    {
-      slide_image: slide4,
-      alt: "thumbnail",
-      title: "Ocean",
-    },
-    {
-      slide_image: slide5,
-      alt: "thumbnail",
-      title: "Volcano",
-    },
-  ];
-
-  const slider_images = [
-    {
-      slide_images: slider_show,
-      alt: "slide",
-    },
-    {
-      slide_images: slider_show,
-      alt: "slide",
-    },
-    {
-      slide_images: slider_show,
-      alt: "slide",
-    },
-    {
-      slide_images: slider_show,
-      alt: "slide",
-    },
-    {
-      slide_images: slider_show,
-      alt: "slide",
-    },
-  ];
-
-  const text_data = [
-    {
-      heading: "Nature",
-      desc: "Experience the serene beauty and tranquility of the natural world.",
-    },
-    {
-      heading: "Abstract",
-      desc: "Dive into a realm of imagination with through provoking abstract design",
-    },
-    {
-      heading: "World",
-      desc: "Explore the diverse culture that make up our global tapestry.",
-    },
-    {
-      heading: "Ocean",
-      desc: "Immense yourself in the captivating depth and mysteries of the ocean.",
-    },
-    {
-      heading: "volcano",
-      desc: "Witness the awe inspiring power nd mystery of the volcanic eruption.",
-    },
-  ];
-
-  // const settings = {
-  //   dots: false,
-  //   infinite: true,
-  //   arrows: false,
-  //   speed: 500,
-  //   slidesToShow: 1,
-  //   slidesToScroll: 1,
-  //   vertical: true,
-  //   autoplay: true,
-  //   centerPadding: "10px",
-  //   draggable: false,
-  //   pauseOnHover: false,
-  //   swipe: false,
-  //   touchMove: false,
-  //   verticalScrolling: true,
-  //   autoplaySpeed: 2000,
-  //   useTransform: true,
-  //   cssEase: "cubic-bezier(0.445, 0.05, 0.55, 0.95)",
-  //   adaptiveHeight: true,
-  // };
-
-  const settings = {
-    dots: false,
-    arrow: false,
-    infinite: true,
-    autoplay: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    vertical: true,
-    afterChange: (current: any) => {
-      setFade(true);
-      setTimeout(() => {
-        setSelectedIndex(current);
-        setFade(false);
-      });
-    },
-  };
+  useEffect(() => {
+    if (data && data.artworks) {
+      const imgs = data.artworks.map((item: any) => ({
+        name: item.artworkName,
+        src: item.media,
+      }));
+      setImages(imgs);
+    }
+  }, [data]);
 
   const handleThumbnailClick = (index: number) => {
-    if (sliderRef.current) {
-      setSelectedIndex(index);
-      sliderRef.current.slickGoTo(index);
-    }
+    imageRefs.current[index]?.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+    });
   };
 
-  return (
+  return isLoading ? (
+    <Loader />
+  ) : (
     <div className="container mx-auto sm:px-6 px-3">
-      <BackButton
-        onClick={handleBack}
-        iconClass="text-text_primary_dark font-semibold"
-        className="py-4 hidden md:flex mb-4"
-      />
-
-      <div className="mt-4 flex md:flex-row flex-col gap-10">
+      <div className="mt-4 flex md:flex-row flex-col md:gap-10">
         <div className="lg:w-[47%] md:w-[48%] w-full">
           <div className="flex flex-col gap-2">
             <Header variant={{ size: "4xl", theme: "dark", weight: "bold" }}>
-              {text_data[selectedIndex].heading}
+              {data?.collectionName}
             </Header>
-
-            <P variant={{ size: "base", theme: "dark", weight: "medium" }}>
-              {text_data[selectedIndex].desc}
-            </P>
+            <div
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(data?.collectionDesc || ""),
+              }}
+            />
           </div>
 
-          <div className="flex xl:gap-5 gap-3 md:my-20 my-5">
-            {thumbnail_data.map((thumb, index) => (
-              <div className="flex flex-col gap-2">
+          <div className="overflow-x-auto flex gap-3 md:my-20 my-5">
+            {images.map((thumb, index: number) => (
+              <div
+                key={index}
+                className="flex flex-col gap-2 cursor-pointer min-w-max"
+                onClick={() => handleThumbnailClick(index)}
+              >
                 <img
-                  key={index}
-                  src={thumb.slide_image}
-                  alt={thumb.alt}
-                  className="sm:w-24 sm:h-24 w-14 h-14 rounded-xl"
-                  onClick={() => handleThumbnailClick(index)}
+                  src={`${lowImageUrl}/${thumb.src}`}
+                  alt={thumb.name}
+                  className="sm:w-24 sm:h-24 w-14 h-14 rounded-xl object-cover"
                 />
                 <P
                   variant={{ size: "small", theme: "dark", weight: "semiBold" }}
                 >
-                  {thumb.title}
+                  {thumb.name}
                 </P>
               </div>
             ))}
           </div>
         </div>
-        <div className="lg:w-[47%] md:w-[48%] w-full">
-          <Slider {...settings} ref={sliderRef} className="discover_more">
-            {slider_images.map((thumb, index) => (
-              <div className="flex flex-col gap-2">
+
+        <div className="lg:w-[47%] md:w-[48%] md:mt-5 mt-0 md:mb-0 mb-5 w-full">
+          <div
+            ref={mainImagesContainerRef}
+            className="flex flex-col overflow-y-auto gap-4 snap-y snap-mandatory scroll-smooth rounded-xl p-2 max-h-[330px]"
+          >
+            {images.map((img, index: number) => (
+              <div
+                key={index}
+                ref={(el) => (imageRefs.current[index] = el)}
+                className="snap-center flex-shrink-0 w-full"
+              >
                 <img
-                  key={index}
-                  src={thumb.slide_images}
-                  alt={thumb.alt}
-                  className="rounded-xl"
+                  src={`${lowImageUrl}/${img.src}`}
+                  alt={img.name}
+                  className="w-full h-[330px] object-cover rounded-xl"
                 />
               </div>
             ))}
-          </Slider>
+          </div>
         </div>
       </div>
     </div>

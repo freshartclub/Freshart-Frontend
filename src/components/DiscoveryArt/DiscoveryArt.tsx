@@ -1,13 +1,13 @@
-import BannerSection from './BannerSection'
-import ViewSection from './ViewSection'
+import BannerSection from "./BannerSection";
+import ViewSection from "./ViewSection";
 
 const DiscoveryArt = () => {
   return (
-    <div>
-        <BannerSection/>
-        <ViewSection/>
-    </div>
-  )
-}
+    <>
+      <BannerSection />
+      <ViewSection />
+    </>
+  );
+};
 
-export default DiscoveryArt
+export default DiscoveryArt;

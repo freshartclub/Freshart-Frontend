@@ -92,10 +92,10 @@ const DiscoverMore = () => {
     }
   };
 
-  const [size, setSize] = useState({
-    width: "0",
-    height: "0",
-  });
+  // const [size, setSize] = useState({
+  //   width: "0",
+  //   height: "0",
+  // });
 
   const handleMouseMove = (e) => {
     const { left, top, width, height } = e.target.getBoundingClientRect();
@@ -103,14 +103,8 @@ const DiscoverMore = () => {
     const y = ((e.pageY - top) / height) * 100;
 
     setPosition({ x, y });
-    setSize({ width, height });
-
-    console.log(x, y);
+    // setSize({ width, height });
   };
-
-  // const handleMouseMove = (e) => {
-  //   setPosition({ x: e.clientX, y: e.clientY });
-  // };
 
   const checkArtworkType = data?.data?.commercialization?.activeTab;
   const offensive = data?.data?.additionalInfo?.offensive == "Yes";

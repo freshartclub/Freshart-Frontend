@@ -1,3 +1,5 @@
+import Slider from "rc-slider";
+import "rc-slider/assets/index.css";
 import { useEffect, useRef, useState } from "react";
 import { FaBars, FaSearch } from "react-icons/fa";
 import { GiHamburgerMenu } from "react-icons/gi";
@@ -11,18 +13,15 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useGetTechnic } from "../ArtistPanel/AddArtwork/http/useGetTechnic";
 import { useGetTheme } from "../ArtistPanel/AddArtwork/http/useGetTheme";
 import { useGetDiscipline } from "../pages/http/useGetDiscipline";
+import { useGetStyle } from "../pages/http/useGetStyle";
 import Button from "../ui/Button";
-import Header from "../ui/Header";
+import Loader from "../ui/Loader";
 import P from "../ui/P";
+import { RenderAllPicklist } from "../utils/RenderAllPicklist";
+import useClickOutside from "../utils/useClickOutside";
 import { useDebounce } from "../utils/useDebounce";
 import CardSection from "./CardSection";
 import { useGetPurchaseArtwork } from "./http/useGetPurchaseArtwork";
-import Loader from "../ui/Loader";
-import useClickOutside from "../utils/useClickOutside";
-import { useGetStyle } from "../pages/http/useGetStyle";
-import { RenderAllPicklist } from "../utils/RenderAllPicklist";
-import Slider from "rc-slider";
-import "rc-slider/assets/index.css";
 
 const Purchase = () => {
   const [query, setQuery] = useState("");
@@ -225,7 +224,7 @@ const Purchase = () => {
 
             <span
               className="rounded-full bg-[#102031] py-2 px-3 text-white font-medium cursor-pointer"
-              onClick={() => navigate("/discovery_art")}
+              onClick={() => navigate("/collections")}
             >
               Discovery
             </span>
@@ -803,7 +802,7 @@ const Purchase = () => {
             </div>
           </div>
 
-          <CardSection data={data} />
+          <CardSection data={data?.data} />
 
           <div className="flex max-[410px]:flex-col max-[440px]:gap-5 items-center my-10 justify-between">
             <div className="bg-[#102031] text-white rounded-full flex items-center gap-2 px-4 py-2">

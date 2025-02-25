@@ -59,7 +59,10 @@ export const ARTTIST_ENDPOINTS = {
 
   getAllPlans: `${ARTIST_BASE_URl}/get-all-plans`,
 
-  // GetArtistTicket: `${ARTIST_BASE_URl}/get
+  // collection
+
+  getAllCollections: `${ARTIST_BASE_URl}/get-all-collections`,
+  useGetCollectionById: `${ARTIST_BASE_URl}/get-collection`,
 };
 
 // all the endpoints will be gonaa edit

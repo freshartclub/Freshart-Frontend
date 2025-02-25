@@ -4,7 +4,6 @@ import P from "../ui/P";
 const BannerSection = () => {
   return (
     <div className="relative bg-bg_discover_art bg-no-repeat w-full h-full bg-cover  py-[150px]">
-      {/* <img src={banner} alt="banner" className="w-full h-auto" /> */}
       <div className="container mx-auto sm:px-6 px-3">
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center p-4 rounded">

@@ -272,10 +272,18 @@ const App: React.FC = () => {
               }
             />
             <Route
-              path="/discovery_art"
+              path="/collections"
               element={
                 <AuthGuard>
                   <DiscoveryArt />
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/collections/:id"
+              element={
+                <AuthGuard>
+                  <DiscoveryMore />
                 </AuthGuard>
               }
             />
@@ -429,14 +437,6 @@ const App: React.FC = () => {
               element={
                 <AuthGuard>
                   <AllArtist />
-                </AuthGuard>
-              }
-            />
-            <Route
-              path="/more_discovery"
-              element={
-                <AuthGuard>
-                  <DiscoveryMore />
                 </AuthGuard>
               }
             />

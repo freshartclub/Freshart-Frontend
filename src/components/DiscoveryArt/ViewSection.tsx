@@ -1,135 +1,79 @@
 import share from "./assets/share.png";
-import image1 from "./assets/Image+Shadow.png";
-import image2 from "./assets/Image+Shadow (1).png";
-import image3 from "./assets/Image+Shadow (2).png";
-import image4 from "./assets/Image+Shadow (3).png";
-import image5 from "./assets/Image+Shadow (4).png";
 import Header from "../ui/Header";
 import P from "../ui/P";
 import Button from "../ui/Button";
 import like from "./assets/like.png";
 import { useNavigate } from "react-router-dom";
+import { useGetCollections } from "./http/useGetCollections";
+import Loader from "../ui/Loader";
+import { imageUrl } from "../utils/baseUrls";
+import DOMPurify from "dompurify";
 
 const ViewSection = () => {
-  const viewData = [
-    {
-      image: image2,
-      date: "August 18",
-      heading: "Peasant Scenes And Landscapes",
-      para: "The exhibition is made possible by the Laura & C. Arnold Douglas Foundation.",
-      btn: "View Collection",
-      img1: like,
-      img2: share,
-    },
-    {
-      image: image1,
-      date: "August 18",
-      heading: "Rojo Y Negro - Latin American Art",
-      para: "The exhibition is made possible by the Laura & C. Arnold Douglas Foundation.",
-      btn: "View Collection",
-      img1: like,
-      img2: share,
-    },
-    {
-      image: image3,
-      date: "August 18",
-      heading: "Naive Painting Of The 19th Century",
-      para: "The exhibition is made possible by the Laura & C. Arnold Douglas Foundation.",
-      btn: "View Collection",
-      img1: like,
-      img2: share,
-    },
-    {
-      image: image5,
-      date: "August 18",
-      heading: "Rojo Y Negro - Latin American Art",
-      para: "The exhibition is made possible by the Laura & C. Arnold Douglas Foundation.",
-      btn: "View Collection",
-      img1: like,
-      img2: share,
-    },
-    {
-      image: image4,
-      date: "August 18",
-      heading: "Naive Painting Of The 19th Century",
-      para: "The exhibition is made possible by the Laura & C. Arnold Douglas Foundation.",
-      btn: "View Collection",
-      img1: like,
-      img2: share,
-    },
-    {
-      image: image5,
-      date: "August 18",
-      heading: "Rojo Y Negro - Latin American Art",
-      para: "The exhibition is made possible by the Laura & C. Arnold Douglas Foundation.",
-      btn: "View Collection",
-      img1: like,
-      img2: share,
-    },
-  ];
+  const { data, isLoading } = useGetCollections();
 
   const navigate = useNavigate();
 
-  const redirectToMoreDiscovery = () => {
-    navigate("/more_discovery");
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  return (
-    <div className="container mx-auto sm:px-6 px-3">
-      {viewData.map((item, index) => (
-        <div
-          key={index}
-          className={`flex flex-col md:flex-row justify-between lg:gap-4 gap-2 ${
-            index % 2 === 0 ? "" : "md:flex-row-reverse"
-          }`}
-        >
-          <img
-            src={item.image}
-            alt=""
-            className="w-full md:w-[50%] h-auto object-cover"
-          />
-          <div className="flex flex-col justify-center w-full md:w-[48%] ">
-            <P
-              variant={{ size: "base", theme: "dark", weight: "medium" }}
-              className="uppercase tracking-wide text-pink text-md mb-2"
-            >
-              {item.date}
-            </P>
-            <Header
-              variant={{ size: "xl", weight: "bold", theme: "dark" }}
-              className="text-2xl mb-4"
-            >
-              {item.heading}
-            </Header>
-            <P
-              variant={{ size: "md", theme: "dark", weight: "normal" }}
-              className="mb-6"
-            >
-              {item.para}
-            </P>
-            <div
-              className="flex items-center space-x-4"
-              onClick={redirectToMoreDiscovery}
-            >
-              <Button
-                variant={{
-                  fontSize: "sm",
-                  theme: "light",
-                  fontWeight: "600",
-                  rounded: "full",
-                  thickness: "thick",
-                }}
-                className="border border-[#FF536B80]"
+  return isLoading ? (
+    <Loader />
+  ) : (
+    <div className="sm:px-6 px-3 my-5">
+      {data &&
+        data.length > 0 &&
+        data.map((item, i: number) => (
+          <div
+            key={i}
+            className={`flex flex-col md:flex-row ${
+              i % 2 === 0 ? "gap-5" : "md:flex-row-reverse justify-start gap-5"
+            }`}
+          >
+            <img
+              src={`${imageUrl}/users/${item?.collectionFile}`}
+              alt=""
+              className="h-[250px] w-[300px] rounded"
+            />
+            <div className="flex flex-col justify-center">
+              <P
+                variant={{ size: "base", theme: "dark", weight: "medium" }}
+                className="uppercase tracking-wide text-pink text-md mb-2"
               >
-                {item.btn}
-              </Button>
-              <img src={like} alt="like btn" className="w-[39px] h-[40px]" />
-              <img src={share} alt="share btn" className="w-[39px] h-[40px]" />
+                {new Date(item.createdAt).toDateString()}
+              </P>
+              <Header
+                variant={{ size: "xl", weight: "bold", theme: "dark" }}
+                className="text-2xl mb-4"
+              >
+                {item?.collectionName}
+              </Header>
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(item?.collectionDesc),
+                }}
+              />
+              <div className="flex items-center mt-4 space-x-4">
+                <Button
+                  variant={{
+                    fontSize: "sm",
+                    theme: "light",
+                    fontWeight: "600",
+                    rounded: "full",
+                    thickness: "thick",
+                  }}
+                  className="border border-[#FF536B80]"
+                  onClick={() => navigate(`/collections/${item._id}`)}
+                >
+                  View Collection
+                </Button>
+                <img src={like} alt="like btn" className="w-[39px] h-[40px]" />
+                <img
+                  src={share}
+                  alt="share btn"
+                  className="w-[39px] h-[40px]"
+                />
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        ))}
     </div>
   );
 };
