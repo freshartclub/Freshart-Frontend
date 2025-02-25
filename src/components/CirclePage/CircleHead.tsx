@@ -16,9 +16,28 @@ import { RiUserFollowFill } from "react-icons/ri";
 import { MdOutlinePermIdentity } from "react-icons/md";
 import Managers from "./Managers";
 import Requests from "../Followers/Requests";
+import useUnfollowMutation from "./https/useUnfollowMutation";
+import { useSearchParams } from "react-router-dom";
+import usePostFollowMutation from "../CIrcle/https/usePostFollowMutation";
 
 const CircleHead = ({ data }) => {
-  const [activeTab, setActiveTab] = useState(0); // 0 = Profile, 1 = Followers, 2 = Blogs
+  const [activeTab, setActiveTab] = useState(0);
+  const [searchParams] = useSearchParams();
+  const circleId = searchParams.get("id");
+  const type = data?.data?.type;
+
+  console.log(circleId);
+
+  const { mutate, isPending } = useUnfollowMutation();
+  const { mutateAsync, isPending: isFollowPending } = usePostFollowMutation();
+
+  const handleUnfollow = () => {
+    mutate(circleId);
+  };
+
+  const handleFollow = () => {
+    mutateAsync(circleId);
+  };
 
   return (
     <div>
@@ -28,9 +47,23 @@ const CircleHead = ({ data }) => {
           alt=""
           className="-mt-[50px] w-[18vw] h-[18vw] rounded-full object-cover"
         />
-        <span className="border-2 z-[999] py-2 px-3 rounded-md text-center bg-black text-white border-black font-semibold cursor-pointer text-md transition-none">
-          Follow
-        </span>
+        {data?.isMember ? (
+          <span
+            onClick={handleUnfollow}
+            className="border-2 z-[999] py-2 px-3 rounded-md text-center bg-black text-white border-black font-semibold cursor-pointer text-md transition-none"
+          >
+            {isPending ? "Loading..." : " UnFollow"}
+          </span>
+        ) : null}
+
+        {!data?.isMember ? (
+          <span
+            onClick={handleFollow}
+            className="border-2 z-[999] py-2 px-3 rounded-md text-center bg-black text-white border-black font-semibold cursor-pointer text-md transition-none"
+          >
+            {isFollowPending ? "Loading..." : " Follow"}
+          </span>
+        ) : null}
       </div>
 
       <Tabs selectedIndex={activeTab} onSelect={(index) => setActiveTab(index)}>
@@ -60,17 +93,6 @@ const CircleHead = ({ data }) => {
               activeTab === 2 ? "border-b-2 border-black" : ""
             }`}
           >
-            <MdOutlinePermIdentity size="1.4em" />
-            <P variant={{ size: "base", theme: "dark", weight: "medium" }}>
-              Requests
-            </P>
-          </Tab>
-
-          <Tab
-            className={`flex gap-1 items-center cursor-pointer pb-2 px-3 py-2 ${
-              activeTab === 3 ? "border-b-2 border-black" : ""
-            }`}
-          >
             <img src={profile3} alt="blogs icon" />
             <P variant={{ size: "base", theme: "dark", weight: "medium" }}>
               Blogs
@@ -79,7 +101,7 @@ const CircleHead = ({ data }) => {
 
           <Tab
             className={`flex gap-1 items-center cursor-pointer pb-2 px-3 py-2 ${
-              activeTab === 4 ? "border-b-2 border-black" : ""
+              activeTab === 3 ? "border-b-2 border-black" : ""
             }`}
           >
             <GrUserManager size="1.2em" />
@@ -87,23 +109,40 @@ const CircleHead = ({ data }) => {
               Manager
             </P>
           </Tab>
+
+          {type === "Private" ? (
+            <Tab
+              className={`flex gap-1 items-center cursor-pointer pb-2 px-3 py-2 ${
+                activeTab === 4 ? "border-b-2 border-black" : ""
+              }`}
+            >
+              <MdOutlinePermIdentity size="1.4em" />
+              <P variant={{ size: "base", theme: "dark", weight: "medium" }}>
+                Requests
+              </P>
+            </Tab>
+          ) : null}
         </TabList>
 
         <TabPanel>
           <CircleDescription data={data} />
         </TabPanel>
         <TabPanel>
-          <Followers />
+          <Followers newData={data} />
         </TabPanel>
-        <TabPanel>
-          <Requests />
-        </TabPanel>
+
         <TabPanel>
           <Blogs />
         </TabPanel>
         <TabPanel>
           <Managers data={data} />
         </TabPanel>
+
+        {type === "Private" && (
+          <TabPanel>
+            <Requests />
+          </TabPanel>
+        )}
       </Tabs>
     </div>
   );

@@ -112,7 +112,7 @@ const AllCircle = ({ data }) => {
   return (
     <div className="sm:px-10 py-8">
       <div className="grid grid-cols1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4 ">
-        {data &&
+        {data?.data?.length > 0 ? (
           data?.data?.map((circle) => (
             <div
               onClick={() => handleCircle(circle?._id)}
@@ -173,7 +173,12 @@ const AllCircle = ({ data }) => {
                 ></img>
               </div>
             </div>
-          ))}
+          ))
+        ) : (
+          <div className="shadow-md rounded-lg border p-6 text-center text-gray-600 font-medium">
+            No Circle Assigned
+          </div>
+        )}
       </div>
     </div>
   );

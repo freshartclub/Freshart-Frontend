@@ -47,25 +47,17 @@ const social_link = [
   },
 ];
 
-const CirleLeft = ({data}) => {
+const CirleLeft = ({ data }) => {
+  console.log(data);
   return (
     <div className="2xl:w-[25%] xl:w-[30%] lg:w-[35%] w-full">
       <div className="shadow-xl bg-white py-6 items-center justify-center rounded-xl border border-[#919EAB20] flex">
-        <div className="border-r border-dashed px-14">
+        <div className="border-r border-dashed px-14 text-center">
           <Header variant={{ size: "lg", theme: "dark", weight: "bold" }}>
-            86.6k
+            {data?.followCount}
           </Header>
           <P variant={{ size: "base", theme: "dark", weight: "normal" }}>
             Follower
-          </P>
-        </div>
-
-        <div className="px-14">
-          <Header variant={{ size: "lg", theme: "dark", weight: "bold" }}>
-            90.5k
-          </Header>
-          <P variant={{ size: "base", theme: "dark", weight: "normal" }}>
-            Following
           </P>
         </div>
       </div>
@@ -78,9 +70,9 @@ const CirleLeft = ({data}) => {
           variant={{ size: "base", theme: "dark", weight: "medium" }}
           className="py-6"
         >
-      {data?.data?.description}
+          {data?.data?.description}
         </P>
-        <div className="">
+        {/* <div className="">
           {info_data.map((item, index) => (
             <div key={index} className="flex items-center gap-4 py-1">
               <img src={item.icon} alt="icon" />
@@ -89,10 +81,10 @@ const CirleLeft = ({data}) => {
               </P>
             </div>
           ))}
-        </div>
+        </div> */}
       </div>
 
-      <div className="shadow-xl bg-white my-7 sm:p-6 p-3 rounded-xl border border-[#919EAB20]">
+      {/* <div className="shadow-xl bg-white my-7 sm:p-6 p-3 rounded-xl border border-[#919EAB20]">
         <Header variant={{ size: "lg", theme: "dark", weight: "bold" }}>
           Social
         </Header>
@@ -110,7 +102,7 @@ const CirleLeft = ({data}) => {
             </div>
           ))}
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
