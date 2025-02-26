@@ -4,22 +4,14 @@ import { RiUserFollowFill } from "react-icons/ri";
 import { IoEye } from "react-icons/io5";
 import { FaShareAlt } from "react-icons/fa";
 
-const AllCircle = ({ data }) => {
+const ArtistPublicCircle = ({ data }) => {
   const navigate = useNavigate();
 
   const handleCircle = (id) => {
     navigate(`/artist-panel/circle/circlepage?id=${encodeURIComponent(id)}`);
   };
 
-  const formatNumber = (num) => {
-    if (num >= 1000000) {
-      return (num / 1000000).toFixed(1) + "m";
-    } else if (num >= 1000) {
-      return (num / 1000).toFixed(1) + "k";
-    } else {
-      return num;
-    }
-  };
+  console.log(data);
 
   return (
     <div className="sm:px-10 ">
@@ -70,15 +62,12 @@ const AllCircle = ({ data }) => {
                   <div className="flex items-center gap-2">
                     <div className="flex items-center gap-1">
                       <IoEye />
-                      <p className="text-sm">
-                        {formatNumber(circle?.viewCount || 0)}
-                      </p>
+                      <p className="text-sm">5</p>
                     </div>
                     <span className="flex items-center gap-1">
+                      {" "}
                       <RiUserFollowFill />
-                      <p className="text-sm font-semibold">
-                        {circle?.followerCount}
-                      </p>
+                      <p className="text-sm">5</p>
                     </span>
                     <div className="flex items-center gap-1">
                       <FaShareAlt />
@@ -107,4 +96,4 @@ const AllCircle = ({ data }) => {
   );
 };
 
-export default AllCircle;
+export default ArtistPublicCircle;

@@ -1,64 +1,29 @@
 import Header from "../ui/Header";
 import P from "../ui/P";
-import location from "./assets/location.png";
-import mail from "./assets/mail.svg";
-import bag from "./assets/bag.svg";
-import college from "./assets/bag.svg";
-import facebook from "./assets/circle_facebook.png";
-import insta from "./assets/instagram.png";
-import linkedin from "./assets/linkedin.png";
-import twitter from "./assets/vector.png";
-
-const info_data = [
-  {
-    icon: location,
-    title: "USA",
-  },
-  {
-    icon: mail,
-    title: "brown.dejah@parisian.com",
-  },
-  {
-    icon: bag,
-    title: "UX Designer at google",
-  },
-  {
-    icon: college,
-    title: "Studied at College of new Jersey",
-  },
-];
-
-const social_link = [
-  {
-    icon: facebook,
-    title: "https://www.facebook.com/name",
-  },
-  {
-    icon: insta,
-    title: "https://www.instagram.com/name",
-  },
-  {
-    icon: linkedin,
-    title: "linkedin.com/in/name",
-  },
-  {
-    icon: twitter,
-    title: "https://www.twitter.com/name",
-  },
-];
 
 const CirleLeft = ({ data }) => {
   console.log(data);
   return (
     <div className="2xl:w-[25%] xl:w-[30%] lg:w-[35%] w-full">
       <div className="shadow-xl bg-white py-6 items-center justify-center rounded-xl border border-[#919EAB20] flex">
-        <div className="border-r border-dashed px-14 text-center">
-          <Header variant={{ size: "lg", theme: "dark", weight: "bold" }}>
-            {data?.followCount}
-          </Header>
-          <P variant={{ size: "base", theme: "dark", weight: "normal" }}>
-            Follower
-          </P>
+        <div className="border-r border-dashed px-14 text-center flex gap-8 items-center">
+          <div>
+            <Header variant={{ size: "lg", theme: "dark", weight: "bold" }}>
+              {data?.data?.followerCount}
+            </Header>
+            <P variant={{ size: "base", theme: "dark", weight: "medium" }}>
+              Follower
+            </P>
+          </div>
+
+          <div>
+            <Header variant={{ size: "lg", theme: "dark", weight: "bold" }}>
+              {data?.data?.postCount}
+            </Header>
+            <P variant={{ size: "base", theme: "dark", weight: "medium" }}>
+              Posts
+            </P>
+          </div>
         </div>
       </div>
 

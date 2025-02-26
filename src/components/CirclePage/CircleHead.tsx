@@ -26,8 +26,6 @@ const CircleHead = ({ data }) => {
   const circleId = searchParams.get("id");
   const type = data?.data?.type;
 
-  console.log(circleId);
-
   const { mutate, isPending } = useUnfollowMutation();
   const { mutateAsync, isPending: isFollowPending } = usePostFollowMutation();
 
@@ -41,83 +39,90 @@ const CircleHead = ({ data }) => {
 
   return (
     <div>
-      <div className="flex sm:justify-between w-full flex-wrap justify-between items-center sm:gap-0 gap-2">
-        <img
-          src={`${imageUrl}/users/${data?.data?.mainImage}`}
-          alt=""
-          className="-mt-[50px] w-[18vw] h-[18vw] rounded-full object-cover"
-        />
-        {data?.isMember ? (
-          <span
-            onClick={handleUnfollow}
-            className="border-2 z-[999] py-2 px-3 rounded-md text-center bg-black text-white border-black font-semibold cursor-pointer text-md transition-none"
-          >
-            {isPending ? "Loading..." : " UnFollow"}
-          </span>
-        ) : null}
-
-        {!data?.isMember ? (
-          <span
-            onClick={handleFollow}
-            className="border-2 z-[999] py-2 px-3 rounded-md text-center bg-black text-white border-black font-semibold cursor-pointer text-md transition-none"
-          >
-            {isFollowPending ? "Loading..." : " Follow"}
-          </span>
-        ) : null}
+      <div className="flex flex-wrap items-center justify-between w-full gap-4 sm:gap-6">
+        <div className="flex gap-4">
+          {data?.authorise ? null : data?.isMember ? (
+            <span
+              onClick={handleUnfollow}
+              className="border-2 py-2 px-4 rounded-md text-center bg-black text-white border-black font-semibold cursor-pointer text-sm sm:text-md transition-none whitespace-nowrap"
+            >
+              {isPending ? "Loading..." : "Unfollow"}
+            </span>
+          ) : (
+            <span
+              onClick={handleFollow}
+              className="border-2 py-2 px-4 rounded-md text-center bg-black text-white border-black font-semibold cursor-pointer text-sm sm:text-md transition-none whitespace-nowrap"
+            >
+              {isFollowPending ? "Loading..." : "Follow"}
+            </span>
+          )}
+        </div>
       </div>
 
       <Tabs selectedIndex={activeTab} onSelect={(index) => setActiveTab(index)}>
-        <TabList className="flex gap-10 justify-end border-b-2  border-gray-300">
+        <TabList className="flex flex-wrap gap-4 sm:gap-6 justify-start sm:justify-end border-b-2 border-gray-300 mt-6">
           <Tab
-            className={`flex gap-1 items-center cursor-pointer pb-2 px-3 py-2 ${
-              activeTab === 0 ? "border-b-2 border-black" : ""
+            className={`flex gap-1 items-center cursor-pointer px-3 py-2 ${
+              activeTab === 0 ? "border-2 border-black font-semibold  " : ""
             }`}
           >
-            <img src={profile} alt="profile icon" />
-            <p>Profile</p>
+            <img src={profile} alt="profile icon" className="w-5 h-5" />
+            <p className="text-sm sm:text-base">Profile</p>
           </Tab>
 
           <Tab
-            className={`flex gap-1 items-center cursor-pointer pb-2 px-3 py-2 ${
-              activeTab === 1 ? "border-b-2 border-black" : ""
+            className={`flex gap-1 items-center cursor-pointer px-3 py-2 ${
+              activeTab === 1 ? "border-2 border-black font-semibold " : ""
             }`}
           >
-            <RiUserFollowFill />
-            <P variant={{ size: "base", theme: "dark", weight: "medium" }}>
+            <RiUserFollowFill className="w-5 h-5" />
+            <P
+              variant={{ size: "base", theme: "dark", weight: "medium" }}
+              className="text-sm sm:text-base"
+            >
               Followers
             </P>
           </Tab>
 
           <Tab
-            className={`flex gap-1 items-center cursor-pointer pb-2 px-3 py-2 ${
-              activeTab === 2 ? "border-b-2 border-black" : ""
+            className={`flex gap-1 items-center cursor-pointer px-3 py-2 ${
+              activeTab === 2 ? "border-2 border-black font-semibold " : ""
             }`}
           >
-            <img src={profile3} alt="blogs icon" />
-            <P variant={{ size: "base", theme: "dark", weight: "medium" }}>
+            <img src={profile3} alt="blogs icon" className="w-5 h-5" />
+            <P
+              variant={{ size: "base", theme: "dark", weight: "medium" }}
+              className="text-sm sm:text-base"
+            >
               Blogs
             </P>
           </Tab>
 
           <Tab
-            className={`flex gap-1 items-center cursor-pointer pb-2 px-3 py-2 ${
-              activeTab === 3 ? "border-b-2 border-black" : ""
+            className={`flex gap-1 items-center cursor-pointer px-3 py-2 ${
+              activeTab === 3 ? "border-2 border-black font-semibold " : ""
             }`}
           >
-            <GrUserManager size="1.2em" />
-            <P variant={{ size: "base", theme: "dark", weight: "medium" }}>
+            <GrUserManager size="1.2em" className="w-5 h-5" />
+            <P
+              variant={{ size: "base", theme: "dark", weight: "medium" }}
+              className="text-sm sm:text-base"
+            >
               Manager
             </P>
           </Tab>
 
           {type === "Private" ? (
             <Tab
-              className={`flex gap-1 items-center cursor-pointer pb-2 px-3 py-2 ${
-                activeTab === 4 ? "border-b-2 border-black" : ""
+              className={`flex gap-1 items-center cursor-pointer px-3 py-2 ${
+                activeTab === 4 ? "border-2 border-black font-semibold " : ""
               }`}
             >
-              <MdOutlinePermIdentity size="1.4em" />
-              <P variant={{ size: "base", theme: "dark", weight: "medium" }}>
+              <MdOutlinePermIdentity size="1.4em" className="w-5 h-5" />
+              <P
+                variant={{ size: "base", theme: "dark", weight: "medium" }}
+                className="text-sm sm:text-base"
+              >
                 Requests
               </P>
             </Tab>
@@ -130,14 +135,12 @@ const CircleHead = ({ data }) => {
         <TabPanel>
           <Followers newData={data} />
         </TabPanel>
-
         <TabPanel>
           <Blogs />
         </TabPanel>
         <TabPanel>
           <Managers data={data} />
         </TabPanel>
-
         {type === "Private" && (
           <TabPanel>
             <Requests />

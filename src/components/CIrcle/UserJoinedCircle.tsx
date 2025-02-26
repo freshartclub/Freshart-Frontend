@@ -9,7 +9,7 @@ import { imageUrl } from "../utils/baseUrls";
 import { useAppSelector } from "../../store/typedReduxHooks";
 import toast from "react-hot-toast";
 
-const AssignedCircle = ({ data }) => {
+const UserJoinedCircle = ({ data }) => {
   const navigate = useNavigate();
   const profile = localStorage.getItem("profile");
 
@@ -18,8 +18,6 @@ const AssignedCircle = ({ data }) => {
   const showAssignedTab = data
     ?.map((item) => item?.managers?.find((_id) => _id === id))
     .filter(Boolean);
-
-  console.log(showAssignedTab.includes(id));
 
   const isAssigned = showAssignedTab.includes(id);
 
@@ -128,4 +126,4 @@ const AssignedCircle = ({ data }) => {
   );
 };
 
-export default AssignedCircle;
+export default UserJoinedCircle;

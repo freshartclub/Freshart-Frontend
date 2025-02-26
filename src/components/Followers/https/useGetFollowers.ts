@@ -12,7 +12,7 @@ async function fetchData(id) {
 
 export const useGetFollowers = (id) => {
   return useQuery({
-    queryKey: [],
+    queryKey: ["RemovedFollower"],
     queryFn: () => fetchData(id),
   });
 };

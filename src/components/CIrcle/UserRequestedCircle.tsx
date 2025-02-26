@@ -9,7 +9,7 @@ import { imageUrl } from "../utils/baseUrls";
 import { useAppSelector } from "../../store/typedReduxHooks";
 import toast from "react-hot-toast";
 
-const AssignedCircle = ({ data }) => {
+const UserRequestedCircle = ({ data }) => {
   const navigate = useNavigate();
   const profile = localStorage.getItem("profile");
 
@@ -128,4 +128,4 @@ const AssignedCircle = ({ data }) => {
   );
 };
 
-export default AssignedCircle;
+export default UserRequestedCircle;

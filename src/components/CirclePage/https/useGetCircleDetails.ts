@@ -5,12 +5,12 @@ import axiosInstance from "../../utils/axios";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
-export const useGetCircleDetails = (id) => {
+export const useGetCircleDetails = (id, isViewed) => {
   const navigate = useNavigate();
 
   async function fetchCircle() {
     const { data } = await axiosInstance.get(
-      `${CIRCLE_ENDPOINTS.GetCircleDetails}/${id}`
+      `${CIRCLE_ENDPOINTS.GetCircleDetails}/${id}?view=${isViewed}`
     );
 
     return data;

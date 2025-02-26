@@ -31,21 +31,25 @@ const HomePage = () => {
         data={data?.newAdded}
         tittle={"New Artwork"}
         artistData={artistData?.data.artist}
+        viewType="new"
       />
       <ArtCard
         data={data?.trending}
         tittle={"Trending Artwork"}
         artistData={artistData?.data.artist}
+        viewType="new"
       />
       <ArtCard
         data={data?.commingSoon}
         tittle={"Coming Soon"}
         artistData={artistData?.data.artist}
+        viewType="new"
       />
       <ArtCard
         data={data?.highlighted}
         tittle={"Highlighted Artwork"}
         artistData={artistData?.data.artist}
+        viewType="new"
       />
 
       <HelpSection />

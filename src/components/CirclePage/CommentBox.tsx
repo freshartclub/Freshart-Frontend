@@ -7,29 +7,15 @@ import Loader from "../ui/Loader";
 import { imageUrl } from "../utils/baseUrls";
 
 const CommentBox = ({ circlePostId }) => {
-  const [comments, setComments] = useState([
-    { img: "", name: "Alice", text: "This is an amazing post!" },
-    { img: "", name: "Bob", text: "Really insightful, thanks for sharing!" },
-    { img: "", name: "Charlie", text: "I learned something new today." },
-  ]);
+  const [comments, setComments] = useState(0);
 
   const [searchParams] = useSearchParams();
   const circleId = searchParams.get("id");
 
   const [newComment, setNewComment] = useState("");
-  const userName = useAppSelector(
-    (state) =>
-      state.user.user?.artistName +
-      " " +
-      state.user.user?.artistSurname1 +
-      "  " +
-      state.user.user?.artistSurname2
-  );
 
   const { mutate, isPending } = usePostCommentMutation();
-  const { data, isLoading, isFetching } = useGetComments(circlePostId);
-
-  console.log(data);
+  const { data, isLoading } = useGetComments(circlePostId);
 
   const handleAddComment = () => {
     if (newComment.trim() === "") return;

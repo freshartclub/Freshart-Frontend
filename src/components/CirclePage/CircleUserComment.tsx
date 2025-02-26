@@ -8,6 +8,7 @@ import msg from "./assets/msg.svg";
 import share from "./assets/share.svg";
 import CommentBox from "./CommentBox";
 import { useGetCirclePosts } from "./https/useGetCirclePosts";
+import { FaCommentDots } from "react-icons/fa";
 
 import { FaRegCopy } from "react-icons/fa";
 
@@ -22,6 +23,8 @@ import Button from "../ui/Button";
 import image_icon from "./assets/primary-shape3.png";
 import stream from "./assets/primary-shape4.png";
 import { FaRegWindowClose } from "react-icons/fa";
+import { useGetComments } from "./https/useGetComments";
+import { FaShareAlt } from "react-icons/fa";
 
 // Reaction Options
 const reactions = [
@@ -52,16 +55,12 @@ const CircleUserComment = ({ isManager }) => {
   const [textContent, setTextContent] = useState("");
   const [getReactionIconLocally, setReactionIconLocally] = useState({});
 
-  const [postId, setPostId] = useState(null);
-
   const [link, setLink] = useState("https://example.com");
   const [copy, setCopy] = useState("Copy");
 
   const { mutateAsync, isPending } = usePostLikeMutation();
   const { mutateAsync: editPost, isPending: editPending } =
     useCirclePostMutation();
-
-  // const { data: likedData, isLoading: likeLoading } = useGetLikes();
 
   const handleCopy = async () => {
     try {
@@ -142,7 +141,7 @@ const CircleUserComment = ({ isManager }) => {
     }
   }, [data]);
 
-  const handleReaction = (postId, reaction) => {
+  const handleReaction = (postId: String, reaction: any) => {
     const data = {
       postId,
       reaction: reaction,
@@ -177,7 +176,6 @@ const CircleUserComment = ({ isManager }) => {
           const currentReactions = prev[postId] || [];
           const userReaction = { reactionType: reaction, icon };
 
-          // Check if reaction already exists
           const alreadyReacted = currentReactions.some(
             (r) => r.reactionType === reaction
           );
@@ -193,14 +191,14 @@ const CircleUserComment = ({ isManager }) => {
 
           return {
             ...prev,
-            [postId]: [...currentReactions, userReaction].slice(-3), // Keep last 3 reactions
+            [postId]: [...currentReactions, userReaction].slice(-3),
           };
         });
       }
     });
   };
 
-  const handleEditPost = (postId) => {
+  const handleEditPost = (postId: String) => {
     try {
       const newData = {
         content: textContent,
@@ -209,16 +207,7 @@ const CircleUserComment = ({ isManager }) => {
         id: id,
       };
 
-      console.log(newData);
       editPost(newData).then(() => {
-        // setTextAreaContent((prev) => ({
-        //  ...prev,
-        //   [postId]: newData.content,
-        // }));
-        // setPreviewUrl((prev) => ({
-        //  ...prev,
-        //   [postId]: newData.circleFile? URL.createObjectURL(newData.circleFile) : prev[postId],
-        // }));
         setIsEditable((prev) => ({ ...prev, [postId]: false }));
       });
     } catch (error) {
@@ -294,7 +283,6 @@ const CircleUserComment = ({ isManager }) => {
         const currentReactions = prev[postId] || [];
         const userReaction = { reactionType: reaction, icon };
 
-        // Check if reaction already exists
         const alreadyReacted = currentReactions.some(
           (r) => r.reactionType === reaction
         );
@@ -316,21 +304,6 @@ const CircleUserComment = ({ isManager }) => {
     }
   };
 
-  const getReactionIconsFromCounts = (reactionObj) => {
-    const icons = [];
-    for (const [type, count] of Object.entries(reactionObj)) {
-      const reaction = reactions.find((r) => r.id === type);
-      if (reaction && count > 0) {
-        for (let i = 0; i < Math.min(count, 3 - icons.length); i++) {
-          icons.push(reaction.icon);
-          if (icons.length >= 3) break;
-        }
-      }
-      if (icons.length >= 3) break;
-    }
-    return icons;
-  };
-
   if (isLoading) {
     return <Loader />;
   }
@@ -342,7 +315,21 @@ const CircleUserComment = ({ isManager }) => {
             <div className="sm:p-6 p-3 w-full  rounded-lg my-8 shadow-xl relative">
               <div>
                 <div key={index} className="flex gap-3 mt-10">
-                  <img src={item.profile} alt="profile image" />
+                  {item?.owner?.image ? (
+                    <img
+                      className="w-[7vh] h-[7vh] object-cover rounded-full"
+                      src={`${imageUrl}/users/${item?.owner?.image}`}
+                      alt="profile image"
+                    />
+                  ) : (
+                    <svg
+                      className="w-[7vh] h-[7vh] text-gray-400"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                    </svg>
+                  )}
                   <div>
                     <P
                       variant={{
@@ -378,11 +365,23 @@ const CircleUserComment = ({ isManager }) => {
                   >
                     {item.content}
                   </P>
-                  <img
-                    src={`${imageUrl}/users/${item.circleFile}`}
-                    alt="image"
-                    className="rounded-xl w-full"
-                  />
+                  {item.file && (
+                    <>
+                      {/\.(jpg|jpeg|png|gif|webp)$/i.test(item.file) ? (
+                        <img
+                          src={`${imageUrl}/users/${item.file}`}
+                          alt="image"
+                          className="rounded-xl w-full aspect-[16/9] object-cover"
+                        />
+                      ) : /\.(mp4|mov|webm)$/i.test(item.file) ? (
+                        <video
+                          src={`${imageUrl}/users/${item.file}`}
+                          controls
+                          className="rounded-xl w-full h-[50vh]"
+                        />
+                      ) : null}
+                    </>
+                  )}
                 </div>
               </div>
 
@@ -392,7 +391,6 @@ const CircleUserComment = ({ isManager }) => {
                   initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
-                  // onDoubleClick={() => handleDoubleClick(item._id)}
                 >
                   <textarea
                     placeholder="Share what you are thinking here..."
@@ -443,14 +441,14 @@ const CircleUserComment = ({ isManager }) => {
                               // Locally uploaded file
                               file[item._id].type.startsWith("image") ? (
                                 <img
-                                  src={previewUrl[item._id]} // Use raw blob URL
+                                  src={previewUrl[item._id]}
                                   alt="Preview"
                                   className="w-full object-contain h-[30vh]"
                                 />
                               ) : file[item._id].type.startsWith("video") ? (
                                 <video controls className="w-full h-auto">
                                   <source
-                                    src={previewUrl[item._id]} // Use raw blob URL
+                                    src={previewUrl[item._id]}
                                     type={file[item._id].type}
                                   />
                                   Your browser does not support the video tag.
@@ -459,9 +457,11 @@ const CircleUserComment = ({ isManager }) => {
                             ) : (
                               // Backend-provided URL
                               <img
-                                src={`${imageUrl}/user/${previewUrl[item._id]}`}
+                                src={`${imageUrl}/users/${
+                                  previewUrl[item._id]
+                                }`}
                                 alt="Preview"
-                                className="w-full object-contain h-[30vh]"
+                                className="w-full object-contain h-[30vh] "
                               />
                             )}
                             <span
@@ -511,11 +511,9 @@ const CircleUserComment = ({ isManager }) => {
               ) : null}
 
               <div className="flex justify-between my-5">
-                {/* Like & Reactions */}
                 <div className="flex gap-3 items-center">
-                  {/* Reaction Button */}
                   <div
-                    className="relative flex items-center gap-2 cursor-pointer"
+                    className="relative flex items-center gap-4 cursor-pointer"
                     onMouseEnter={() => handleMouseEnter(item._id)}
                     onMouseLeave={handleMouseLeave}
                   >
@@ -564,9 +562,6 @@ const CircleUserComment = ({ isManager }) => {
                       </p>
                     </div>
 
-                    {/* )} */}
-
-                    {/* Reaction Picker */}
                     <AnimatePresence>
                       {hoveredPostId === item._id && (
                         <motion.div
@@ -581,7 +576,7 @@ const CircleUserComment = ({ isManager }) => {
                               className="w-8 h-8 cursor-pointer text-2xl hover:scale-110"
                               onClick={() =>
                                 handleReaction(item._id, reaction.id)
-                              } // Pass reaction.id, not full object
+                              }
                             >
                               {reaction.icon}
                             </motion.span>
@@ -593,21 +588,30 @@ const CircleUserComment = ({ isManager }) => {
                 </div>
 
                 <div className="flex gap-5 items-center">
-                  <img
-                    onClick={() => handleCommentBox(item?._id)}
-                    src={msg}
-                    alt="msg"
-                    className="cursor-pointer"
-                  />
-                  <img
+                  <div className="flex gap-2 items-center">
+                    <span
+                      className="cursor-pointer"
+                      onClick={() => handleCommentBox(item?._id)}
+                    >
+                      <FaCommentDots size="1.5em" />
+                    </span>
+
+                    <span>
+                      {item?.commentCount >= 1000
+                        ? `${(item.commentCount / 1000).toFixed(0)}k`
+                        : item?.commentCount}
+                    </span>
+                  </div>
+
+                  <span
                     onClick={() => {
                       setIsShare((prev) => !prev);
                       setisVisible(false);
                     }}
-                    src={share}
-                    alt="share"
                     className="cursor-pointer"
-                  />
+                  >
+                    <FaShareAlt size="1.5em" />
+                  </span>
                 </div>
               </div>
               {visibleCommentBoxId === item?._id && (

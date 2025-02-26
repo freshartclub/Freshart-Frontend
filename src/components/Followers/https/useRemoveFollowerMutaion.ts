@@ -14,11 +14,16 @@ async function circleRemoveRequestMutation(data) {
 
 const useRemoveFollowerMutaion = () => {
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: circleRemoveRequestMutation,
 
     onSuccess: async (res) => {
+      queryClient.invalidateQueries({
+        queryKey: ["RemovedFollower"],
+        refetchType: "all",
+      });
       toast.success(t(res.data.message), {
         duration: 5000,
       });

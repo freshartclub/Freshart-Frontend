@@ -1,30 +1,93 @@
 import { BsDot } from "react-icons/bs";
-
+import { FiSearch } from "react-icons/fi";
 import { NavLink } from "react-router-dom";
-import AllCircle from "./AllCircle";
-import { useState } from "react";
+import { useState, ChangeEvent } from "react";
 import { useGetCircle } from "./https/useGetCircle";
 import Loader from "../ui/Loader";
+import AllCircle from "./AllCircle";
+import ArtistPrivateCircle from "./ArtistPrivateCircle";
+import ArtistPublicCircle from "./ArtistPublicCircle";
+
+interface Circle {
+  title?: string;
+  type: string;
+  categories?: string[];
+  [key: string]: any;
+}
+
+interface CircleResponse {
+  data: Circle[];
+  [key: string]: any;
+}
 
 const Circle = () => {
-  const [activeTab, setActiveTab] = useState("All");
+  const [activeTab, setActiveTab] = useState<string>("All");
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
-  const tabCounts = {
-    All: 80,
-    Published: 18,
-    Draft: 32,
+  const { data, isLoading } = useGetCircle() as {
+    data: CircleResponse | undefined;
+    isLoading: boolean;
   };
 
-  const { data, isLoading } = useGetCircle();
-
-  const handleTabClick = (tab) => {
+  const handleTabClick = (tab: string): void => {
     setActiveTab(tab);
+  };
+
+  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    setSearchQuery(e.target.value);
+  };
+
+  const publicCircles: Circle[] =
+    data?.data?.filter((circle) => circle?.type !== "Private") || [];
+  const privateCircles: Circle[] =
+    data?.data?.filter((circle) => circle?.type === "Private") || [];
+
+  const filteredData: CircleResponse | undefined = data && {
+    ...data,
+    data: data.data.filter((item: Circle) => {
+      const searchLower = searchQuery.toLowerCase();
+      const titleMatch = item.title?.toLowerCase().includes(searchLower);
+      const categoryMatch = item.categories?.some((category) =>
+        category.toLowerCase().includes(searchLower)
+      );
+      return titleMatch || categoryMatch;
+    }),
+  };
+
+  const filteredPrivateData: any = {
+    ...privateCircles,
+    data: privateCircles.filter((item: Circle) => {
+      const searchLower = searchQuery.toLowerCase();
+      const titleMatch = item.title?.toLowerCase().includes(searchLower);
+      const categoryMatch = item.categories?.some((category) =>
+        category.toLowerCase().includes(searchLower)
+      );
+      return titleMatch || categoryMatch;
+    }),
+  };
+
+  const filteredPublicData: any = {
+    ...publicCircles,
+    data: publicCircles.filter((item: Circle) => {
+      const searchLower = searchQuery.toLowerCase();
+      const titleMatch = item.title?.toLowerCase().includes(searchLower);
+      const categoryMatch = item.categories?.some((category) =>
+        category.toLowerCase().includes(searchLower)
+      );
+      return titleMatch || categoryMatch;
+    }),
+  };
+
+  const tabCounts: Record<string, number | undefined> = {
+    All: data?.data?.length,
+    Public: publicCircles?.length,
+    Private: privateCircles?.length,
   };
 
   if (isLoading) return <Loader />;
 
   return (
-    <div className="py-7 px-2">
+    <div className="py-7 px-4">
       <div>
         {/* Header Section */}
         <div className="flex flex-col sm:flex-row justify-between gap-2">
@@ -46,44 +109,43 @@ const Circle = () => {
               </span>
             </div>
           </div>
-          <div>
-            {/* <button className="py-2 px-3 rounded-md border-gray-100 bg-black text-white flex gap-1 items-center hover:cursor-pointer font-semibold">
-              <GoPlus className="text-xl font-semibold" /> New Circle
-            </button> */}
-          </div>
+          <div></div>
         </div>
 
         {/* Search and Sort Section */}
-        <div className="flex flex-col sm:flex-row justify-between gap-2 mt-8">
-          <div>
+        <div className="flex flex-col sm:flex-row justify-center gap-2 mt-8">
+          <div className="relative w-[50vw]">
             <input
-              className="p-2 border rounded-lg"
-              placeholder="Search"
-            ></input>
+              className="p-2 border border-zinc-400 outline-none rounded-lg w-full"
+              placeholder="Search by title or category"
+              value={searchQuery}
+              onChange={handleSearchChange}
+            />
+            {searchQuery === "" && (
+              <FiSearch
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                size={20}
+              />
+            )}
           </div>
-          {/* <div>
-            <span>Sort By: </span>
-            <select className="p-2 border rounded-lg">
-              <option>Featured</option>
-              <option>Recent</option>
-            </select>
-          </div> */}
         </div>
 
         {/* Tab Filter Section */}
         <div className="tab-filter mt-8">
-          {Object.keys(tabCounts).map((tab) => (
+          {Object.keys(tabCounts).map((tab: string) => (
             <div
               key={tab}
               className={`tab-item f ${
                 activeTab === tab ? "active" : ""
-              } inline-block px-4 py-2 cursor-pointer  ${
-                activeTab === tab ? "border-b-2 border-black " : " text-black"
+              } inline-block px-4 py-2 cursor-pointer ${
+                activeTab === tab
+                  ? "border-b-2 bg-black text-white rounded-md font-semibold border-black "
+                  : " text-black"
               }`}
               onClick={() => handleTabClick(tab)}
             >
               <span>{tab}</span>
-              <span className="count ml-2 text-gray-500">
+              <span className="count ml-2 font-semibold border-black white">
                 ({tabCounts[tab]})
               </span>
             </div>
@@ -91,12 +153,14 @@ const Circle = () => {
         </div>
 
         <div className="mt-6">
-          {activeTab === "All" && <AllCircle data={data} />}
-          {activeTab === "Published" && "published"}
-          {activeTab === "Draft" && "draft"}
+          {activeTab === "All" && <AllCircle data={filteredData} />}
+          {activeTab === "Public" && (
+            <ArtistPublicCircle data={filteredPublicData} />
+          )}
+          {activeTab === "Private" && (
+            <ArtistPrivateCircle data={filteredPrivateData} />
+          )}
         </div>
-
-        {/* <AllCircle /> */}
       </div>
     </div>
   );

@@ -10,7 +10,7 @@ async function fetchData() {
 
 export const useGetAllCircleList = () => {
   return useQuery({
-    queryKey: [CIRCLE_ENDPOINTS.GetCircleList],
+    queryKey: ["FollowCircleRequest"],
     queryFn: fetchData,
     refetchOnWindowFocus: false,
   });

@@ -7,9 +7,14 @@ import { imageUrl, lowImageUrl } from "../utils/baseUrls";
 import postRecentArtworkMutation from "./http/postRecentView";
 import useLikeUnlikeArtworkMutation from "./http/useLikeUnLike";
 import { AiFillLike } from "react-icons/ai";
+import { useGetHomeData } from "./http/useGetHomeData";
 
-const ArtCard = ({ data, tittle, artistData }) => {
+const ArtCard = ({ data, tittle, artistData, viewType }) => {
   const [likedItems, setLikedItems] = useState([]);
+
+  // const [isViewed , setIsViewed] = useState();
+
+  const { data: homedata, isLoading } = useGetHomeData(viewType);
 
   const settings = {
     dots: true,

@@ -68,7 +68,7 @@ const CircleRight = ({ data }) => {
                   onChange={handleImage}
                 />
 
-                <div className="flex items-center gap-5">
+                <div className="flex items-center gap-5 flex-wrap">
                   <Button
                     variant={{ rounded: "full" }}
                     className="flex gap-2 bg-[#919EAB14]"
