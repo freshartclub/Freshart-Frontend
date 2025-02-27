@@ -9,13 +9,12 @@ import UserJoinedCircle from "./UserJoinedCircle";
 import UserRequestedCircle from "./UserRequestedCircle";
 import { FiSearch } from "react-icons/fi";
 
-// Define interfaces based on usage
 interface Circle {
   _id: string;
   title: string;
   categories: string[];
   managers: string[];
-  [key: string]: any; // For additional properties
+  [key: string]: any;
 }
 
 interface FollowRequest {
@@ -90,17 +89,13 @@ const UserCircleList: React.FC = () => {
     }),
   };
 
-  console.log(data);
-
   if (isLoading) return <Loader />;
 
   return (
     <div className="">
       <div>
-        {/* Header Section */}
         <BannerSection title={"Circles"} secondTitle={"All Circles"} />
 
-        {/* Search and Sort Section */}
         <div className="flex flex-col sm:flex-row justify-between gap-2 mt-8 px-10">
           <div className="relative w-[50vw]">
             <input

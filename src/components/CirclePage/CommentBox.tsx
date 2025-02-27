@@ -1,14 +1,11 @@
 import { useState } from "react";
-import usePostCommentMutation from "./https/usePostCommentMutation";
-import { useAppSelector } from "../../store/typedReduxHooks";
 import { useSearchParams } from "react-router-dom";
-import { useGetComments } from "./https/useGetComments";
 import Loader from "../ui/Loader";
 import { imageUrl } from "../utils/baseUrls";
+import { useGetComments } from "./https/useGetComments";
+import usePostCommentMutation from "./https/usePostCommentMutation";
 
-const CommentBox = ({ circlePostId }) => {
-  const [comments, setComments] = useState(0);
-
+const CommentBox = ({ circlePostId }: { circlePostId: string }) => {
   const [searchParams] = useSearchParams();
   const circleId = searchParams.get("id");
 
@@ -25,56 +22,57 @@ const CommentBox = ({ circlePostId }) => {
       postId: circlePostId,
     };
     mutate(newCommentObj);
-    // setComments([...comments, newCommentObj]);
     setNewComment("");
   };
 
   return (
-    <div className="max-w-full mx-auto p-4 max-h-[50vh] overflow-auto  border rounded-lg shadow-md bg-white">
-      <h2 className="text-lg font-semibold mb-3">Comments</h2>
+    <div className="max-w-full my-1 rounded border border-zinc-300 p-2 bg-zinc-100 mx-auto max-h-[50vh] overflow-y-auto">
+      {/* <h2 className="text-lg font-semibold mb-3">Comments</h2> */}
       {isLoading ? (
         <Loader />
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-3 mt-1">
           {data?.data && data?.data?.length > 0 ? (
-            data?.data?.map((comment, i) => (
-              <div key={i} className="p-3 bg-gray-100 rounded-lg">
-                <div>
-                  <div className="flex items-center space-x-2">
-                    <img
-                      className="w-6 h-6 rounded-full"
-                      src={`${imageUrl}/users/${comment?.owner?.img}`}
-                      alt="User Avatar"
-                    />
-                    <p className="font-semibold">
-                      {comment?.owner?.artistName +
-                        " " +
-                        comment?.owner?.artistSurname1 +
-                        " " +
-                        comment?.owner?.artistSurname2}
-                    </p>
-                  </div>
-                  <p>{comment?.comment}</p>
+            data?.data?.map((comment, i: number) => (
+              <div key={i} className="">
+                <div className="flex items-center gap-2">
+                  <img
+                    className="w-6 h-6 rounded-full"
+                    src={`${imageUrl}/users/${comment?.owner?.img}`}
+                    alt="User Avatar"
+                  />
+                  <p className="text-[13px] font-semibold">
+                    {comment?.owner?.artistName +
+                      " " +
+                      comment?.owner?.artistSurname1 +
+                      " " +
+                      comment?.owner?.artistSurname2}
+                  </p>
                 </div>
+                <p className="text-sm ml-8">{comment?.comment}</p>
               </div>
             ))
           ) : (
-            <div>No Comments</div>
+            <div className="p-3 bg-gray-100 ">No Comments</div>
           )}
         </div>
       )}
-      <div className="mt-4">
+      <div className="flex items-center gap-2 mt-4">
         <textarea
-          className="w-full p-2 border outline-none rounded-md focus:outline-none focus:ring-2 focus:ring-zinc-500"
+          className="w-full bg-white text-[14px] scrollbar2 h-11 p-2 border rounded outline-none focus:border-zinc-500"
           placeholder="Add a comment..."
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
         />
         <button
-          className="mt-2 px-4 py-2 bg-zinc-800 text-white rounded hover:bg-blue-600"
+          className={`${
+            newComment.trim() === ""
+              ? "cursor-not-allowed pointer-events-none opacity-50"
+              : ""
+          } px-4 py-2 bg-zinc-800 text-white rounded hover:bg-blue-600`}
           onClick={handleAddComment}
         >
-          {isPending ? "Loading.." : "Post Comment"}
+          {isPending ? "Loading.." : "Comment"}
         </button>
       </div>
     </div>

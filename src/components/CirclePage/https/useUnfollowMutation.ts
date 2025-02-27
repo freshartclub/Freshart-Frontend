@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import axiosInstance from "../../utils/axios";
 import { CIRCLE_ENDPOINTS } from "../../../http/apiEndPoints/Circle";
 
-async function circleUnfollowMutation(id) {
+async function circleUnfollowMutation(id: string) {
   return await axiosInstance.patch(`${CIRCLE_ENDPOINTS.UnfollowCircle}/${id}`);
 }
 

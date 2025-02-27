@@ -50,95 +50,92 @@ const CircleRight = ({ data }) => {
   return (
     <div className="2xl:w-[75%] xl:w-[70%] lg:w-[65%] w-full">
       {isManager ? (
-        <div className="shadow-xl sm:p-6 p-3 w-full rounded-lg ">
+        <div className="shadow border mb-3 p-3 w-full rounded-lg">
           <textarea
             placeholder="Share what you are thinking here..."
             className="border w-full p-2 h-32 rounded-lg outline-none"
             value={textAreaContent}
             onChange={(e) => setTextAreaContent(e.target.value)}
-          ></textarea>
+          />
 
-          <div className="flex justify-between">
-            <div className="flex  flex-wrap gap-2 items-center sm:justify-normal justify-center">
-              <div>
-                <input
-                  type="file"
-                  accept="image/*, video/*"
-                  hidden
-                  onChange={handleImage}
-                />
+          <div className="flex items-center justify-between">
+            <div className="flex flex-wrap gap-2 items-center sm:justify-normal justify-center">
+              <input
+                type="file"
+                accept="image/*, video/*"
+                hidden
+                onChange={handleImage}
+              />
 
-                <div className="flex items-center gap-5 flex-wrap">
-                  <Button
-                    variant={{ rounded: "full" }}
-                    className="flex gap-2 bg-[#919EAB14]"
-                    onClick={() =>
-                      document.querySelector('input[type="file"]').click()
-                    }
+              <div className="flex mt-1 items-center gap-5 flex-wrap">
+                <Button
+                  variant={{ rounded: "full" }}
+                  className="flex gap-2 bg-[#44444414]"
+                  onClick={() =>
+                    document.querySelector('input[type="file"]').click()
+                  }
+                >
+                  <img src={image_icon} alt="image/video" />
+                  <P
+                    variant={{
+                      size: "small",
+                      theme: "dark",
+                      weight: "semiBold",
+                    }}
                   >
-                    <img src={image_icon} alt="image/video" />
-                    <P
-                      variant={{
-                        size: "small",
-                        theme: "dark",
-                        weight: "semiBold",
-                      }}
-                    >
-                      Image/Video
-                    </P>
-                  </Button>
-                  <Button
-                    variant={{ rounded: "full" }}
-                    className="flex gap-2 bg-[#919EAB14]"
+                    Image/Video
+                  </P>
+                </Button>
+                <Button
+                  variant={{ rounded: "full" }}
+                  className="flex gap-2 bg-[#44444414]"
+                >
+                  <img src={stream} alt="image" />
+                  <P
+                    variant={{
+                      size: "small",
+                      theme: "dark",
+                      weight: "semiBold",
+                    }}
                   >
-                    <img src={stream} alt="image" />
-                    <P
-                      variant={{
-                        size: "small",
-                        theme: "dark",
-                        weight: "semiBold",
-                      }}
-                    >
-                      Streaming
-                    </P>
-                  </Button>
-                </div>
-
-                {previewUrl && (
-                  <div className="mt-4 relative">
-                    {file.type.startsWith("image") ? (
-                      <img
-                        src={previewUrl}
-                        alt="Preview"
-                        className="w-full object-contain h-[30vh]"
-                      />
-                    ) : file.type.startsWith("video") ? (
-                      <video controls className="w-full h-auto">
-                        <source src={previewUrl} type={file.type} />
-                        Your browser does not support the video tag.
-                      </video>
-                    ) : null}
-                    <span
-                      onClick={() => {
-                        setPreviewUrl(null);
-                        setFile(null);
-                      }}
-                      className="absolute bg-white top-0 right-0 cursor-pointer rounded-full p-1"
-                    >
-                      <RxCross2 size="2em" />
-                    </span>
-                  </div>
-                )}
+                    Streaming
+                  </P>
+                </Button>
               </div>
+
+              {previewUrl && (
+                <div className="mt-4 relative">
+                  {file.type.startsWith("image") ? (
+                    <img
+                      src={previewUrl}
+                      alt="Preview"
+                      className="w-full object-contain h-[30vh]"
+                    />
+                  ) : file.type.startsWith("video") ? (
+                    <video controls className="w-full h-auto">
+                      <source src={previewUrl} type={file.type} />
+                      Your browser does not support the video tag.
+                    </video>
+                  ) : null}
+                  <span
+                    onClick={() => {
+                      setPreviewUrl(null);
+                      setFile(null);
+                    }}
+                    className="absolute bg-white top-0 right-0 cursor-pointer rounded-full p-1"
+                  >
+                    <RxCross2 size="2em" />
+                  </span>
+                </div>
+              )}
             </div>
-            <div className="">
-              <Button
-                onClick={handlePost}
-                className="px-4 py-2 bg-black text-white font-semibold"
-              >
-                {isPending ? "Posting..." : "Create Post"}
-              </Button>
-            </div>
+
+            <Button
+              onClick={handlePost}
+              className="px-4 py-2 bg-black text-white font-semibold"
+            >
+              {isPending ? "Posting..." : "Create Post"}
+            </Button>
           </div>
         </div>
       ) : null}

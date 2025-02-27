@@ -1,5 +1,5 @@
 import { useSearchParams } from "react-router-dom";
-
+import { useEffect } from "react";
 import CircleHead from "./CircleHead";
 import { useGetCircleDetails } from "./https/useGetCircleDetails";
 import Loader from "../ui/Loader";
@@ -7,18 +7,27 @@ import { imageUrl } from "../utils/baseUrls";
 
 const CirclePage = () => {
   const [searchParams] = useSearchParams();
-  const id = searchParams.get("id");
-  const isViewed = searchParams.get("isViewed");
+  const id = searchParams.get("id") as string;
+  const isViewed = searchParams.get("isViewed") as string;
 
-  console.log(isViewed);
+  useEffect(() => {
+    if (isViewed === "see") {
+      const timer = setTimeout(() => {
+        const newParams = new URLSearchParams(searchParams);
+        newParams.delete("isViewed");
 
-  const { data, isFetching } = useGetCircleDetails(id, isViewed);
+        window.history.replaceState(null, "", `?${newParams.toString()}`);
+      }, 2000);
 
-  // if (isFetching) {
-  //   return <Loader />;
-  // }
+      return () => clearTimeout(timer);
+    }
+  }, [isViewed, searchParams]);
 
-  return (
+  const { data, isLoading } = useGetCircleDetails(id, isViewed);
+
+  return isLoading ? (
+    <Loader />
+  ) : (
     <div className="relative">
       <img
         src={`${imageUrl}/users/${data?.data?.coverImage}`}

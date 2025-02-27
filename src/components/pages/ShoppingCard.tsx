@@ -41,8 +41,8 @@ const ShoppingCard = ({
 
   const totalPrice = data?.data?.cart
     ?.reduce((total: any, item: any) => {
-      const itemPrice = parseFloat(item?.pricing?.basePrice?.replace("$", ""));
-      return total + itemPrice;
+      // const itemPrice = parseFloat(item?.pricing?.basePrice?.replace("$", ""));
+      return total + item?.pricing?.basePrice;
     }, 0)
     .toFixed(2);
 

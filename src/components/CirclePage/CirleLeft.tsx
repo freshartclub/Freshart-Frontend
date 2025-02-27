@@ -2,10 +2,9 @@ import Header from "../ui/Header";
 import P from "../ui/P";
 
 const CirleLeft = ({ data }) => {
-  console.log(data);
   return (
     <div className="2xl:w-[25%] xl:w-[30%] lg:w-[35%] w-full">
-      <div className="shadow-xl bg-white py-6 items-center justify-center rounded-xl border border-[#919EAB20] flex">
+      <div className="shadow border bg-white py-3 items-center justify-center rounded-xl flex">
         <div className="border-r border-dashed px-14 text-center flex gap-8 items-center">
           <div>
             <Header variant={{ size: "lg", theme: "dark", weight: "bold" }}>
@@ -27,13 +26,13 @@ const CirleLeft = ({ data }) => {
         </div>
       </div>
 
-      <div className="shadow-xl bg-white my-7 sm:p-6 p-3 rounded-xl border border-[#919EAB20]">
+      <div className="shadow bg-white my-5 sm:p-6 p-3 rounded-xl border">
         <Header variant={{ size: "lg", theme: "dark", weight: "bold" }}>
           About
         </Header>
         <P
           variant={{ size: "base", theme: "dark", weight: "medium" }}
-          className="py-6"
+          className="py-3"
         >
           {data?.data?.description}
         </P>

@@ -3,34 +3,29 @@ import Button from "../ui/Button";
 import Header from "../ui/Header";
 import P from "../ui/P";
 import rightarr from "./assets/ArrowRight.png";
-import usePostCheckOutMutation from "./http/usePostCheckOutMutation";
 
-const CartTotal = ({ data , state }) => {
-  const discountAmounts = data?.cart?.map((item) => {
-    const basePrice = parseFloat(
-      item?.item?.pricing?.basePrice?.replace("$", "")
-    );
-    const discountPercentage = item?.item?.pricing?.dpersentage || 0;
-    const discountAmount =
-      (basePrice * item?.quantity * discountPercentage) / 100;
+const CartTotal = ({ data, state }) => {
+  const discountAmounts = data.map((item) => {
+    const basePrice = item?.pricing?.basePrice;
+
+    const discountPercentage = item?.pricing?.dpersentage || 0;
+    const discountAmount = (basePrice * discountPercentage) / 100;
     return discountAmount;
   });
 
-  const { mutate, isPending } = usePostCheckOutMutation();
-  
   const navigate = useNavigate();
+
   const totalDiscountAmount = discountAmounts
     ?.reduce((totalDiscount, item) => {
       return totalDiscount + item;
     }, 0)
     .toFixed(2);
 
-  const totalPrice = data?.cart
+  const totalPrice = data
     ?.reduce((total, item) => {
-      const itemPrice = parseFloat(
-        item?.item?.pricing?.basePrice?.replace("$", "")
-      );
-      return total + itemPrice * item?.quantity;
+      const itemPrice = item?.pricing?.basePrice;
+
+      return total + itemPrice;
     }, 0)
     .toFixed(2);
 
@@ -54,9 +49,9 @@ const CartTotal = ({ data , state }) => {
   ];
 
   let itemQu = {};
-  data?.cart?.forEach((item) => {
-    if (item?.item?._id) {
-      itemQu[item?.item?._id] = (itemQu[item?.item?._id] || 0) + item.quantity;
+  data?.forEach((item) => {
+    if (item?._id) {
+      itemQu[item?._id] = itemQu[item?._id] || 0;
     }
   });
 
@@ -68,39 +63,38 @@ const CartTotal = ({ data , state }) => {
     <>
       <div className="p-5 mb-8 border rounded-md">
         <div>
-        <Header variant={{ size: "md", theme: "dark", weight: "semiBold" }}>
-          Card Totals
-        </Header>
+          <Header variant={{ size: "md", theme: "dark", weight: "semiBold" }}>
+            Card Totals
+          </Header>
 
-        <div className="border-b-2 border-b-[#E4E7E9] pb-2">
-          {card_total?.map((card, index) => (
-            <div key={index} className="flex justify-between my-3">
-              <P
-                variant={{ size: "small", weight: "medium" }}
-                className="text-[#636363]"
-              >
-                {card.title}
-              </P>
-              <P
-                variant={{ size: "small", weight: "medium" }}
-                className="text-[#191C1F]"
-              >
-                {card.value}
-              </P>
-            </div>
-          ))}
-        </div>
+          <div className="border-b-2 border-b-[#E4E7E9] pb-2">
+            {card_total?.map((card, index) => (
+              <div key={index} className="flex justify-between my-3">
+                <P
+                  variant={{ size: "small", weight: "medium" }}
+                  className="text-[#636363]"
+                >
+                  {card.title}
+                </P>
+                <P
+                  variant={{ size: "small", weight: "medium" }}
+                  className="text-[#191C1F]"
+                >
+                  {card.value}
+                </P>
+              </div>
+            ))}
+          </div>
 
-        <div className="flex justify-between py-5">
-          <P variant={{ size: "base", theme: "dark", weight: "medium" }}>
-            Total
-          </P>
-          <P variant={{ size: "base", theme: "dark", weight: "semiBold" }}>
-            $ {state === "subscription" ? " 00" : totalPrice - totalDiscountAmount}
-          </P>
+          <div className="flex justify-between py-5">
+            <P variant={{ size: "base", theme: "dark", weight: "medium" }}>
+              Total
+            </P>
+            <P variant={{ size: "base", theme: "dark", weight: "semiBold" }}>
+              {totalPrice - totalDiscountAmount}
+            </P>
+          </div>
         </div>
-        </div>
-      
 
         <Button
           onClick={() => handleCheckOut()}
@@ -110,7 +104,7 @@ const CartTotal = ({ data , state }) => {
           } flex gap-2 items-center w-full justify-center xl:!py-5 lg:py-3`}
         >
           <P variant={{ size: "base", theme: "light", weight: "medium" }}>
-            {isPending ? "Processing..." : "Proceed to Checkout"}
+            Proceed to Checkout
           </P>
           <img src={rightarr} alt="" />
         </Button>

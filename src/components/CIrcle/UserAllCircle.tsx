@@ -42,8 +42,6 @@ const UserAllCircle: React.FC<UserAllCircleProps> = ({ data }) => {
   const navigate = useNavigate();
   const profile = localStorage.getItem("profile") as "user" | "artist" | null;
 
-  const [isViewed, setIsViewed] = useState("");
-
   const [followStates, setFollowStates] = useState<Record<string, string>>(
     () => {
       const initialStates: Record<string, string> = {};
@@ -55,7 +53,7 @@ const UserAllCircle: React.FC<UserAllCircleProps> = ({ data }) => {
     }
   );
 
-  const { mutateAsync, isPending } = usePostFollowMutation() as {
+  const { mutateAsync } = usePostFollowMutation() as {
     mutateAsync: (id: string) => Promise<any>;
     isPending: boolean;
   };
@@ -110,7 +108,7 @@ const UserAllCircle: React.FC<UserAllCircleProps> = ({ data }) => {
         toast("You can't access private circles.");
         return;
       }
-      navigate(`/artist-panel/circle/circlepage?id=${encodeURIComponent(id)}`);
+      navigate(`/circlepage?id=${encodeURIComponent(id)}`);
     }
   };
 
@@ -146,11 +144,11 @@ const UserAllCircle: React.FC<UserAllCircleProps> = ({ data }) => {
 
   const formatNumber = (num) => {
     if (num >= 1000000) {
-      return (num / 1000000).toFixed(1) + "m"; // For millions
+      return (num / 1000000).toFixed(1) + "m";
     } else if (num >= 1000) {
-      return (num / 1000).toFixed(1) + "k"; // For thousands
+      return (num / 1000).toFixed(1) + "k";
     } else {
-      return num; // For numbers less than 1000
+      return num;
     }
   };
 
@@ -217,7 +215,7 @@ const UserAllCircle: React.FC<UserAllCircleProps> = ({ data }) => {
                   : "bg-black text-white"
               } border-black font-semibold cursor-pointer text-md`}
             >
-              {isCirclePending ? "Loading" : followStates[circle?._id]}
+              {isCirclePending ? "Loading..." : followStates[circle?._id]}
             </span>
           )}
 

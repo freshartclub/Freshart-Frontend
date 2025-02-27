@@ -1,32 +1,22 @@
 import P from "../ui/P";
 
 import { useEffect, useState } from "react";
+import { FaCommentDots } from "react-icons/fa";
 import { useSearchParams } from "react-router-dom";
 import Loader from "../ui/Loader";
 import { imageUrl } from "../utils/baseUrls";
-import msg from "./assets/msg.svg";
-import share from "./assets/share.svg";
 import CommentBox from "./CommentBox";
 import { useGetCirclePosts } from "./https/useGetCirclePosts";
-import { FaCommentDots } from "react-icons/fa";
-
 import { FaRegCopy } from "react-icons/fa";
-
 import { AnimatePresence, motion } from "framer-motion";
-
 import { FaEdit } from "react-icons/fa";
 import useCirclePostMutation from "./https/useCirclePostMutation";
 import usePostLikeMutation from "./https/usePostLikeMutation";
-
+import { FaShareAlt } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
 import Button from "../ui/Button";
 import image_icon from "./assets/primary-shape3.png";
-import stream from "./assets/primary-shape4.png";
-import { FaRegWindowClose } from "react-icons/fa";
-import { useGetComments } from "./https/useGetComments";
-import { FaShareAlt } from "react-icons/fa";
 
-// Reaction Options
 const reactions = [
   { id: "like", icon: "👍", label: "Like" },
   { id: "love", icon: "❤️", label: "Love" },
@@ -37,8 +27,9 @@ const reactions = [
 
 const CircleUserComment = ({ isManager }) => {
   const [searchParams] = useSearchParams();
-  const id = searchParams.get("id");
+  const id = searchParams.get("id") as string;
   const { data, isLoading } = useGetCirclePosts(id);
+
   const [isVisible, setisVisible] = useState(false);
   const [isShare, setIsShare] = useState(false);
   const [visibleCommentBoxId, setVisibleCommentBoxId] = useState(null);
@@ -72,12 +63,12 @@ const CircleUserComment = ({ isManager }) => {
     }
   };
 
-  const getReactionIcon = (reactionString) => {
+  const getReactionIcon = (reactionString: string) => {
     const reaction = reactions.find((r) => r.id === reactionString);
     return reaction ? reaction.icon : null;
   };
 
-  const handleImage = (postId) => (e) => {
+  const handleImage = (postId: string) => (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
       const url = URL.createObjectURL(selectedFile);
@@ -141,7 +132,7 @@ const CircleUserComment = ({ isManager }) => {
     }
   }, [data]);
 
-  const handleReaction = (postId: String, reaction: any) => {
+  const handleReaction = (postId: string, reaction: any) => {
     const data = {
       postId,
       reaction: reaction,
@@ -198,7 +189,7 @@ const CircleUserComment = ({ isManager }) => {
     });
   };
 
-  const handleEditPost = (postId: String) => {
+  const handleEditPost = (postId: string) => {
     try {
       const newData = {
         content: textContent,
@@ -218,13 +209,13 @@ const CircleUserComment = ({ isManager }) => {
   const like =
     "https://upload.wikimedia.org/wikipedia/commons/1/13/Facebook_like_thumb.png";
 
-  const handleCommentBox = (postId) => {
+  const handleCommentBox = (postId: string) => {
     setVisibleCommentBoxId((prevId) => (prevId === postId ? null : postId));
     setisVisible((prev) => !prev);
     setIsShare(false);
   };
 
-  const handleMouseEnter = (postId) => {
+  const handleMouseEnter = (postId: string) => {
     setHoveredPostId(postId);
   };
 
@@ -232,7 +223,7 @@ const CircleUserComment = ({ isManager }) => {
     setHoveredPostId(null);
   };
 
-  const handleTextAreaChange = (postId, value) => {
+  const handleTextAreaChange = (postId: string, value) => {
     setTextContent(value);
     setTextAreaContent((prev) => ({
       ...prev,
@@ -304,339 +295,332 @@ const CircleUserComment = ({ isManager }) => {
     }
   };
 
-  if (isLoading) {
-    return <Loader />;
-  }
+  if (isLoading) return <Loader />;
+
   return (
-    <div>
+    <div className="w-full flex gap-3 flex-col mb-5">
       {data &&
-        data?.data?.map((item, index) => (
-          <>
-            <div className="sm:p-6 p-3 w-full  rounded-lg my-8 shadow-xl relative">
-              <div>
-                <div key={index} className="flex gap-3 mt-10">
-                  {item?.owner?.image ? (
-                    <img
-                      className="w-[7vh] h-[7vh] object-cover rounded-full"
-                      src={`${imageUrl}/users/${item?.owner?.image}`}
-                      alt="profile image"
-                    />
-                  ) : (
-                    <svg
-                      className="w-[7vh] h-[7vh] text-gray-400"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                    </svg>
-                  )}
-                  <div>
-                    <P
-                      variant={{
-                        size: "base",
-                        theme: "dark",
-                        weight: "semiBold",
-                      }}
-                    >
-                      {item?.owner?.artistName +
-                        " " +
-                        item?.owner?.artistSurname1 +
-                        " " +
-                        item?.owner?.artistSurname2}
-                    </P>
-                    <P
-                      variant={{ size: "small", weight: "normal" }}
-                      className="text-[#919EAB]"
-                    >
-                      {new Date(item?.createdAt).toLocaleString("en-US", {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </P>
-                  </div>
-                </div>
-                <div className="mt-8">
-                  <P
-                    variant={{ size: "base", theme: "dark", weight: "medium" }}
-                    className="mb-4"
+        data?.data?.map((item, index: number) => (
+          <div
+            key={index}
+            className="border p-4 pb-2 w-full rounded-lg shadow relative"
+          >
+            <div>
+              <div key={index} className="flex gap-3">
+                {item?.owner?.image ? (
+                  <img
+                    className="w-[7vh] h-[7vh] object-cover rounded-full"
+                    src={`${imageUrl}/users/${item?.owner?.image}`}
+                    alt="profile image"
+                  />
+                ) : (
+                  <svg
+                    className="w-[7vh] h-[7vh] text-gray-400"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
                   >
-                    {item.content}
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                  </svg>
+                )}
+                <div>
+                  <P
+                    variant={{
+                      size: "base",
+                      theme: "dark",
+                      weight: "semiBold",
+                    }}
+                  >
+                    {item?.owner?.artistName +
+                      " " +
+                      item?.owner?.artistSurname1 +
+                      " " +
+                      item?.owner?.artistSurname2}
                   </P>
-                  {item.file && (
-                    <>
-                      {/\.(jpg|jpeg|png|gif|webp)$/i.test(item.file) ? (
-                        <img
-                          src={`${imageUrl}/users/${item.file}`}
-                          alt="image"
-                          className="rounded-xl w-full aspect-[16/9] object-cover"
-                        />
-                      ) : /\.(mp4|mov|webm)$/i.test(item.file) ? (
-                        <video
-                          src={`${imageUrl}/users/${item.file}`}
-                          controls
-                          className="rounded-xl w-full h-[50vh]"
-                        />
-                      ) : null}
-                    </>
-                  )}
+                  <P
+                    variant={{ size: "small", weight: "normal" }}
+                    className="text-[#919EAB]"
+                  >
+                    {new Date(item?.createdAt).toLocaleString("en-US", {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </P>
                 </div>
               </div>
-
-              {isEditable[item._id] && (
-                <div
-                  className="shadow-xl sm:p-6 p-3 w-full rounded-lg "
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
+              <div className="mt-3.5">
+                <P
+                  variant={{ size: "base", theme: "dark", weight: "medium" }}
+                  className="mb-4"
                 >
-                  <textarea
-                    placeholder="Share what you are thinking here..."
-                    className="border w-full p-2 h-32 rounded-lg outline-none"
-                    value={textAreaContent[item._id] || ""}
-                    onChange={(e) =>
-                      handleTextAreaChange(item._id, e.target.value)
-                    }
-                  ></textarea>
+                  {item.content}
+                </P>
+                {item.file && (
+                  <>
+                    {/\.(jpg|jpeg|png|gif|webp)$/i.test(item.file) ? (
+                      <img
+                        src={`${imageUrl}/users/${item.file}`}
+                        alt="image"
+                        className="rounded-xl w-full aspect-[16/9] object-cover"
+                      />
+                    ) : /\.(mp4|mov|webm)$/i.test(item.file) ? (
+                      <video
+                        src={`${imageUrl}/users/${item.file}`}
+                        controls
+                        className="rounded-xl w-full h-[50vh]"
+                      />
+                    ) : null}
+                  </>
+                )}
+              </div>
+            </div>
 
-                  <div className="flex justify-between items-end">
-                    <div className="flex flex-wrap gap-2 items-center sm:justify-normal justify-center">
-                      <div>
-                        <input
-                          type="file"
-                          accept="image/*, video/*"
-                          hidden
-                          id={`file-input-${item._id}`}
-                          onChange={handleImage(item._id)}
-                        />
+            {isEditable[item._id] && (
+              <div
+                className="shadow w-full rounded-lg"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+              >
+                <textarea
+                  placeholder="Share what you are thinking here..."
+                  className="border w-full p-2 h-32 rounded-t-lg outline-none"
+                  value={textAreaContent[item._id] || ""}
+                  onChange={(e) =>
+                    handleTextAreaChange(item._id, e.target.value)
+                  }
+                />
 
-                        <div className="flex items-center gap-5">
-                          <Button
-                            variant={{ rounded: "full" }}
-                            className="flex gap-2 bg-[#919EAB14]"
-                            onClick={() =>
-                              document
-                                .getElementById(`file-input-${item._id}`)
-                                .click()
-                            }
-                          >
-                            <img src={image_icon} alt="image/video" />
-                            <P
-                              variant={{
-                                size: "small",
-                                theme: "dark",
-                                weight: "semiBold",
-                              }}
-                            >
-                              Image/Video
-                            </P>
-                          </Button>
-                        </div>
+                <div className="flex px-2 pb-2 justify-between items-center">
+                  {/* <div className="flex flex-wrap gap-2 items-center sm:justify-normal justify-center">
+                    <input
+                      type="file"
+                      accept="image/*, video/*"
+                      hidden
+                      id={`file-input-${item._id}`}
+                      onChange={handleImage(item._id)}
+                    />
 
-                        {previewUrl[item._id] && (
-                          <div className="mt-4 relative">
-                            {file[item._id] ? (
-                              // Locally uploaded file
-                              file[item._id].type.startsWith("image") ? (
-                                <img
-                                  src={previewUrl[item._id]}
-                                  alt="Preview"
-                                  className="w-full object-contain h-[30vh]"
-                                />
-                              ) : file[item._id].type.startsWith("video") ? (
-                                <video controls className="w-full h-auto">
-                                  <source
-                                    src={previewUrl[item._id]}
-                                    type={file[item._id].type}
-                                  />
-                                  Your browser does not support the video tag.
-                                </video>
-                              ) : null
-                            ) : (
-                              // Backend-provided URL
-                              <img
-                                src={`${imageUrl}/users/${
-                                  previewUrl[item._id]
-                                }`}
-                                alt="Preview"
-                                className="w-full object-contain h-[30vh] "
-                              />
-                            )}
-                            <span
-                              onClick={() => {
-                                setPreviewUrl((prev) => ({
-                                  ...prev,
-                                  [item._id]: "",
-                                }));
-                                setFile((prev) => ({
-                                  ...prev,
-                                  [item._id]: null,
-                                }));
-                              }}
-                              className="absolute bg-white top-0 right-0 cursor-pointer rounded-full p-1"
-                            >
-                              <RxCross2 size="2em" />
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                    <div className=" flex gap-2  items-center">
-                      <Button
-                        onClick={() => handleDoubleClick(item._id)}
-                        className="px-4 py-2 bg-red-500 text-white font-semibold"
-                      >
-                        Cancel
-                      </Button>
-                      <Button
-                        onClick={() => handleEditPost(item._id)}
-                        className="px-5 w-max py-2 bg-black text-white font-semibold"
-                      >
-                        {editPending ? "Posting..." : "Edit Post"}
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {isManager ? (
-                <span
-                  onClick={() => handleEdit(item._id, true)}
-                  className="absolute top-0 right-0 cursor-pointer"
-                >
-                  <FaEdit size="1.8em" />
-                </span>
-              ) : null}
-
-              <div className="flex justify-between my-5">
-                <div className="flex gap-3 items-center">
-                  <div
-                    className="relative flex items-center gap-4 cursor-pointer"
-                    onMouseEnter={() => handleMouseEnter(item._id)}
-                    onMouseLeave={handleMouseLeave}
-                  >
-                    {selectedReaction[item._id] ? (
-                      <motion.span
-                        className="text-2xl"
-                        animate={{
-                          scale: selectedReaction[item._id] ? 1.2 : 1,
+                    <Button
+                      variant={{ rounded: "full" }}
+                      className="flex gap-2 bg-[#65656514]"
+                      onClick={() =>
+                        document
+                          .getElementById(`file-input-${item._id}`)
+                          .click()
+                      }
+                    >
+                      <img src={image_icon} alt="image/video" />
+                      <P
+                        variant={{
+                          size: "small",
+                          theme: "dark",
+                          weight: "semiBold",
                         }}
                       >
-                        {selectedReaction[item._id]}
-                      </motion.span>
-                    ) : (
-                      <motion.img
-                        onClick={() => handleLikeClick(item?._id, "like")}
-                        src={like}
-                        alt="reaction"
-                        className="w-6 h-6"
-                        animate={{ scale: 1 }}
-                      />
-                    )}
+                        Image/Video
+                      </P>
+                    </Button>
 
-                    <div className="flex items-center  gap-8">
-                      {getReactionIconLocally[item._id]?.length > 0 && (
-                        <div className="relative flex  items-center">
-                          {getReactionIconLocally[item._id].map(
-                            (reaction, index) => (
-                              <span
-                                key={index}
-                                className="text-lg absolute"
-                                style={{
-                                  left: `${index * -0.6}em`,
-                                  zIndex:
-                                    getReactionIconLocally[item._id].length -
-                                    index,
-                                }}
-                              >
-                                {reaction.icon}
-                              </span>
-                            )
-                          )}
-                        </div>
-                      )}
-                      <p className="text-base font-medium">
-                        {likesCount[item._id] || 0}
-                      </p>
-                    </div>
-
-                    <AnimatePresence>
-                      {hoveredPostId === item._id && (
-                        <motion.div
-                          className="absolute bottom-10 left-0 flex gap-2 bg-white p-2 rounded-lg shadow-lg"
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          exit={{ opacity: 0, scale: 0.8 }}
+                    {previewUrl[item._id] && (
+                      <div className="mt-4 relative">
+                        {file[item._id] ? (
+                          // Locally uploaded file
+                          file[item._id].type.startsWith("image") ? (
+                            <img
+                              src={previewUrl[item._id]}
+                              alt="Preview"
+                              className="w-full object-contain h-[30vh]"
+                            />
+                          ) : file[item._id].type.startsWith("video") ? (
+                            <video controls className="w-full h-auto">
+                              <source
+                                src={previewUrl[item._id]}
+                                type={file[item._id].type}
+                              />
+                              Your browser does not support the video tag.
+                            </video>
+                          ) : null
+                        ) : (
+                          <img
+                            src={`${imageUrl}/users/${previewUrl[item._id]}`}
+                            alt="Preview"
+                            className="w-full object-contain h-[30vh]"
+                          />
+                        )}
+                        <span
+                          onClick={() => {
+                            setPreviewUrl((prev) => ({
+                              ...prev,
+                              [item._id]: "",
+                            }));
+                            setFile((prev) => ({
+                              ...prev,
+                              [item._id]: null,
+                            }));
+                          }}
+                          className="absolute bg-white top-0 right-0 cursor-pointer rounded-full p-1"
                         >
-                          {reactions.map((reaction) => (
-                            <motion.span
-                              key={reaction.id}
-                              className="w-8 h-8 cursor-pointer text-2xl hover:scale-110"
-                              onClick={() =>
-                                handleReaction(item._id, reaction.id)
-                              }
-                            >
-                              {reaction.icon}
-                            </motion.span>
-                          ))}
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                </div>
-
-                <div className="flex gap-5 items-center">
-                  <div className="flex gap-2 items-center">
-                    <span
-                      className="cursor-pointer"
-                      onClick={() => handleCommentBox(item?._id)}
+                          <RxCross2 size="2em" />
+                        </span>
+                      </div>
+                    )}
+                  </div> */}
+                  <div className=" flex gap-2 items-center">
+                    <Button
+                      onClick={() => handleDoubleClick(item._id)}
+                      className="px-4 py-2 bg-red-500 text-white font-semibold"
                     >
-                      <FaCommentDots size="1.5em" />
-                    </span>
-
-                    <span>
-                      {item?.commentCount >= 1000
-                        ? `${(item.commentCount / 1000).toFixed(0)}k`
-                        : item?.commentCount}
-                    </span>
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={() => handleEditPost(item._id)}
+                      className="px-5 w-max py-2 bg-black text-white font-semibold"
+                    >
+                      {editPending ? "Posting..." : "Edit Post"}
+                    </Button>
                   </div>
-
-                  <span
-                    onClick={() => {
-                      setIsShare((prev) => !prev);
-                      setisVisible(false);
-                    }}
-                    className="cursor-pointer"
-                  >
-                    <FaShareAlt size="1.5em" />
-                  </span>
                 </div>
               </div>
-              {visibleCommentBoxId === item?._id && (
-                <CommentBox circlePostId={visibleCommentBoxId} />
-              )}
+            )}
 
-              {isShare ? (
-                <div className="flex w-full items-center space-x-3 mt-4 p-2 bg-gray-200 rounded-lg">
-                  <input
-                    type="text"
-                    value={link}
-                    readOnly
-                    className="px-3 w-full py-2 border border-gray-300 rounded-lg bg-white focus:outline-none"
-                  />
-                  <button
-                    onClick={handleCopy}
-                    className="py-2 px-4 bg-zinc-800 text-white rounded-lg font-semibold hover:bg-zinc-900 flex items-center"
-                  >
-                    <FaRegCopy size={18} className="mr-1" />
-                    {copy}
-                  </button>
+            {isManager ? (
+              <span
+                onClick={() => handleEdit(item._id, true)}
+                className="absolute top-2 right-2 cursor-pointer"
+              >
+                <FaEdit size="1.4em" />
+              </span>
+            ) : null}
+
+            <div className="flex justify-between pb-2 mt-5">
+              <div className="flex gap-3 items-center">
+                <div
+                  className="relative flex items-center gap-4 cursor-pointer"
+                  onMouseEnter={() => handleMouseEnter(item._id)}
+                  onMouseLeave={handleMouseLeave}
+                >
+                  {selectedReaction[item._id] ? (
+                    <motion.span
+                      className="text-2xl"
+                      animate={{
+                        scale: selectedReaction[item._id] ? 1.2 : 1,
+                      }}
+                    >
+                      {selectedReaction[item._id]}
+                    </motion.span>
+                  ) : (
+                    <motion.img
+                      onClick={() => handleLikeClick(item?._id, "like")}
+                      src={like}
+                      alt="reaction"
+                      className="w-6 h-6"
+                      animate={{ scale: 1 }}
+                    />
+                  )}
+
+                  <div className="flex items-center  gap-8">
+                    {getReactionIconLocally[item._id]?.length > 0 && (
+                      <div className="relative flex  items-center">
+                        {getReactionIconLocally[item._id].map(
+                          (reaction, index) => (
+                            <span
+                              key={index}
+                              className="text-lg absolute"
+                              style={{
+                                left: `${index * -0.6}em`,
+                                zIndex:
+                                  getReactionIconLocally[item._id].length -
+                                  index,
+                              }}
+                            >
+                              {reaction.icon}
+                            </span>
+                          )
+                        )}
+                      </div>
+                    )}
+                    <p className="text-base font-medium">
+                      {likesCount[item._id] || 0}
+                    </p>
+                  </div>
+
+                  <AnimatePresence>
+                    {hoveredPostId === item._id && (
+                      <motion.div
+                        className="absolute bottom-10 left-0 flex gap-2 bg-white p-2 rounded-lg shadow-lg"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                      >
+                        {reactions.map((reaction) => (
+                          <motion.span
+                            key={reaction.id}
+                            className="w-8 h-8 cursor-pointer text-2xl hover:scale-110"
+                            onClick={() =>
+                              handleReaction(item._id, reaction.id)
+                            }
+                          >
+                            {reaction.icon}
+                          </motion.span>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
-              ) : null}
+              </div>
+
+              <div className="flex gap-5 items-center">
+                <div className="flex gap-2 items-center">
+                  <span
+                    className="cursor-pointer"
+                    onClick={() => handleCommentBox(item?._id)}
+                  >
+                    <FaCommentDots size="1.5em" />
+                  </span>
+
+                  <span>
+                    {item?.commentCount >= 1000
+                      ? `${(item.commentCount / 1000).toFixed(0)}k`
+                      : item?.commentCount}
+                  </span>
+                </div>
+
+                <span
+                  onClick={() => {
+                    setIsShare((prev) => !prev);
+                    setisVisible(false);
+                  }}
+                  className="cursor-pointer"
+                >
+                  <FaShareAlt size="1.5em" />
+                </span>
+              </div>
             </div>
-          </>
+            {visibleCommentBoxId === item?._id && (
+              <CommentBox circlePostId={visibleCommentBoxId} />
+            )}
+
+            {isShare ? (
+              <div className="flex w-full items-center space-x-3 mt-4 p-2 bg-gray-200 rounded-lg">
+                <input
+                  type="text"
+                  value={link}
+                  readOnly
+                  className="px-3 w-full py-2 border border-gray-300 rounded-lg bg-white focus:outline-none"
+                />
+                <button
+                  onClick={handleCopy}
+                  className="py-2 px-4 bg-zinc-800 text-white rounded-lg font-semibold hover:bg-zinc-900 flex items-center"
+                >
+                  <FaRegCopy size={18} className="mr-1" />
+                  {copy}
+                </button>
+              </div>
+            ) : null}
+          </div>
         ))}
     </div>
   );

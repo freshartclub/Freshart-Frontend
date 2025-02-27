@@ -14,5 +14,6 @@ export const useGetBillingAddress = () => {
   return useQuery({
     queryKey: [ARTTIST_ENDPOINTS.GetBillingAddress],
     queryFn: fetchData,
+    refetchOnWindowFocus: false,
   });
 };

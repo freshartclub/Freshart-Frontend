@@ -5,7 +5,7 @@ import axiosInstance from "../../utils/axios";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
-export const useGetCircleDetails = (id, isViewed) => {
+export const useGetCircleDetails = (id: string, isViewed: string) => {
   const navigate = useNavigate();
 
   async function fetchCircle() {
@@ -22,13 +22,13 @@ export const useGetCircleDetails = (id, isViewed) => {
 
       return res;
     } catch (error) {
-      toast.error(error?.response?.data?.message);
+      toast.error(error.response?.data?.message);
       return navigate("/circle");
     }
   };
 
   return useQuery({
-    queryKey: [CIRCLE_ENDPOINTS.GetCircleDetails],
+    queryKey: [CIRCLE_ENDPOINTS.GetCircleDetails, id],
     queryFn: fetchData,
     refetchOnWindowFocus: false,
   });

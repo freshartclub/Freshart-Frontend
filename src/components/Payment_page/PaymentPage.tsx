@@ -2,6 +2,7 @@ import getSymbolFromCurrency from "currency-symbol-map";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { PhoneInput } from "react-international-phone";
+import "react-international-phone/style.css";
 import { useSearchParams } from "react-router-dom";
 import countryList from "react-select-country-list";
 import { useGetBillingAddress } from "../ArtistPanel/ArtistEditProfile/http/useGetBillingAddress";
@@ -15,6 +16,7 @@ import { useGetCartItems } from "../pages/http/useGetCartItems";
 import usePostCheckOutMutation from "../PurchasePage/http/usePostCheckOutMutation";
 import Header from "../ui/Header";
 import Loader from "../ui/Loader";
+import { lowImageUrl } from "../utils/baseUrls";
 import ArtBreadcrumbs1 from "./ArtBreadcrumbs1";
 
 const PaymentPage = () => {
@@ -28,11 +30,8 @@ const PaymentPage = () => {
   const [searchParams] = useSearchParams();
   const type = searchParams.get("type");
 
-  const {
-    data: billingData,
-    isLoading: billingLoading,
-    isFetching,
-  } = useGetBillingAddress();
+  const { data: billingData, isLoading: billingLoading } =
+    useGetBillingAddress();
 
   const {
     register,
@@ -43,77 +42,56 @@ const PaymentPage = () => {
     getValues,
   } = useForm();
 
-  useEffect(() => {
+  const defaultBilling = useMemo(() => {
     if (billingData) {
-      setValue("firstName", billingData[0]?.billingDetails?.billingFirstName);
-      setValue("lastName", billingData[0]?.billingDetails?.billingLastName);
-      setValue("email", billingData[0]?.billingDetails?.billingEmail);
-      setValue("phone", billingData[0]?.billingDetails?.billingPhone);
-      setValue(
-        "companyName",
-        billingData[0]?.billingDetails?.billingCompanyName
-      );
-      setValue("address", billingData[0]?.billingDetails?.billingAddress);
-      setValue("country", billingData[0]?.billingDetails?.billingCountry);
-      setValue("zipCode", billingData[0]?.billingDetails?.billingZipCode);
-      setValue("state", billingData[0]?.billingDetails?.billingState);
-      setValue("city", billingData[0]?.billingDetails?.billingCity);
-      setValue(
-        "addressType",
-        billingData[0]?.billingDetails?.billingAddressType
-      );
+      return billingData.find((item) => item.isDefault === true);
     }
   }, [billingData]);
 
-  const countryValue = getValues("country");
-
   const renderData = data?.data?.cart?.filter(
-    (item) => item?.item?.commercialization?.activeTab === type
+    (item) => item?.commercialization?.activeTab === type
   );
 
   const discountAmounts = renderData?.reduce((total, item) => {
-    const basePrice = parseFloat(
-      item?.item?.pricing?.basePrice?.replace("$", "")
-    );
-    const discountPercentage = item?.item?.pricing?.dpersentage || 0;
-    const discountAmount =
-      (basePrice * item?.quantity * discountPercentage) / 100;
+    const basePrice = item?.pricing?.basePrice;
+
+    const discountPercentage = item?.pricing?.dpersentage || 0;
+    const discountAmount = (basePrice * discountPercentage) / 100;
     return total + discountAmount;
   }, 0);
 
   const totalPrice = renderData
     ?.reduce((total, item) => {
-      const itemPrice = parseFloat(
-        item?.item?.pricing?.basePrice?.replace("$", "")
-      );
-      return total + itemPrice * item?.quantity;
+      const itemPrice = item?.pricing?.basePrice;
+
+      return total + itemPrice;
     }, 0)
     .toFixed(2);
 
-  const tax = 5;
+  const tax = 0;
   const finalPrice = totalPrice - discountAmounts + tax;
   let itemQu = {};
 
   renderData?.forEach((item) => {
-    if (item?.item?._id) {
-      itemQu[item?.item?._id] = (itemQu[item?.item?._id] || 0) + item.quantity;
+    if (item?._id) {
+      itemQu[item?._id] = itemQu[item?._id] || 0;
     }
   });
 
   const orderType = renderData?.map(
-    (item) => item?.item?.commercialization?.activeTab
+    (item) => item?.commercialization?.activeTab
   );
 
   const cartLookup = renderData?.reduce((acc, item) => {
-    if (item?.item?._id) {
-      acc[item?.item?._id] = item?.item?.commercialization?.activeTab;
+    if (item?._id) {
+      acc[item?._id] = item?.commercialization?.activeTab;
     }
     return acc;
   }, {});
 
   const onSubmit = (data: any) => {
     try {
-      const billingDetails = billingData[0]?.billingDetails || {};
+      const billingDetails = defaultBilling?.billingDetails || {};
 
       const payload = {
         shipping: 0,
@@ -171,7 +149,7 @@ const PaymentPage = () => {
     setIsCheckBox(val.target.checked);
   };
 
-  if (billingLoading || isFetching || isLoading) return <Loader />;
+  if (billingLoading || isLoading) return <Loader />;
 
   return (
     <div className="container mx-auto p-4">
@@ -191,48 +169,38 @@ const PaymentPage = () => {
                 <div>
                   <label className="block mb-1">First Name</label>
                   <input
-                    {...register("firstName", {
-                      required: "First Name is required",
-                    })}
+                    readOnly
                     type="text"
+                    value={
+                      defaultBilling?.billingDetails?.billingFirstName || ""
+                    }
                     placeholder="First Name"
-                    className="w-full p-2 border border-gray-300 rounded-lg"
+                    className="w-full p-2 border outline-none border-gray-300 rounded-lg"
                   />
-                  {errors.firstName && (
-                    <p className="text-red-500">
-                      {String(errors.firstName.message)}
-                    </p>
-                  )}
                 </div>
                 <div>
                   <label className="block mb-1">Last Name</label>
                   <input
-                    {...register("lastName", {
-                      required: "Last Name is required",
-                    })}
+                    readOnly
                     type="text"
+                    value={
+                      defaultBilling?.billingDetails?.billingLastName || ""
+                    }
                     placeholder="Last Name"
-                    className="w-full p-2 border border-gray-300 rounded-lg"
+                    className="w-full p-2 border outline-none border-gray-300 rounded-lg"
                   />
-                  {errors.lastName && (
-                    <p className="text-red-500">
-                      {String(errors.lastName.message)}
-                    </p>
-                  )}
                 </div>
 
                 <div>
                   <label className="block mb-1">Company Name (Optional)</label>
                   <input
-                    {...register("companyName")}
                     type="text"
-                    className="w-full p-2 border border-gray-300 rounded-lg"
+                    value={
+                      defaultBilling?.billingDetails?.billingCompanyName || ""
+                    }
+                    readOnly
+                    className="w-full p-2 border outline-none border-gray-300 rounded-lg"
                   />
-                  {errors.companyName && (
-                    <p className="text-red-500">
-                      {String(errors.companyName.message)}
-                    </p>
-                  )}
                 </div>
               </div>
 
@@ -240,39 +208,26 @@ const PaymentPage = () => {
                 <div>
                   <label className="block mb-1">Email</label>
                   <input
-                    {...register("email", { required: "email is required" })}
                     type="text"
-                    className="w-full p-2 border border-gray-300 rounded-lg"
+                    readOnly
+                    value={defaultBilling?.billingDetails?.billingEmail || ""}
+                    className="w-full p-2 outline-none border border-gray-300 rounded-lg"
                   />
-                  {errors.email && (
-                    <p className="text-red-500">
-                      {String(errors.email.message)}
-                    </p>
-                  )}
                 </div>
 
                 <div>
                   <label className="block mb-1">Phone Number</label>
                   <PhoneInput
-                    className="appearance-none  outline-none rounded py-1   w-full text-gray-700 leading-tight focus:outline-none"
+                    className="appearance-none outline-none rounded py-1 w-full text-gray-700 leading-tight focus:outline-none"
                     placeholder="Enter phone number"
+                    disabled
                     defaultCountry="in"
-                    value={getValues("phone")}
-                    onChange={(val) => setValue("phone", val)}
+                    value={defaultBilling?.billingDetails?.billingPhone || ""}
                   />
-
-                  {errors.phoneNumber && (
-                    <p className="text-red-500">
-                      {String(errors.phoneNumber.message)}
-                    </p>
-                  )}
                 </div>
               </div>
 
-              {/* Address Section */}
-
-              {/* Country, City, and Zip Code  */}
-              <div className="grid  grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-4">
+              <div className="grid pointer-events-none opacity-65 grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-4">
                 <div>
                   <label className="block mb-1">Country</label>
                   <CustomDropdown
@@ -280,71 +235,48 @@ const PaymentPage = () => {
                     options={options}
                     name="country"
                     isActiveStatus="active"
-                    countryValue={countryValue}
+                    countryValue={
+                      defaultBilling?.billingDetails?.billingCountry || ""
+                    }
                   />
-                  {errors.country && (
-                    <p className="text-red-500">
-                      {String(errors.country.message)}
-                    </p>
-                  )}
                 </div>
                 <div>
                   <label className="block mb-1">Region/State</label>
                   <input
-                    {...register("state", {
-                      required: "State is required",
-                    })}
                     type="text"
+                    readOnly
+                    value={defaultBilling?.billingDetails?.billingState || ""}
                     className="w-full p-2 border border-gray-300 rounded-lg"
                   />
-                  {errors.state && (
-                    <p className="text-red-500">
-                      {String(errors.state.message)}
-                    </p>
-                  )}
                 </div>
                 <div>
                   <label className="block mb-1">City</label>
                   <input
-                    {...register("city", { required: "City is required" })}
                     type="text"
+                    value={defaultBilling?.billingDetails?.billingCity || ""}
+                    readOnly
                     className="w-full p-2 border border-gray-300 rounded-lg"
                   />
-                  {errors.city && (
-                    <p className="text-red-500">
-                      {String(errors.city.message)}
-                    </p>
-                  )}
                 </div>
                 <div>
                   <label className="block mb-1">Zip Code</label>
                   <input
-                    {...register("zipCode", {
-                      required: "Zip Code is required",
-                    })}
                     type="text"
+                    value={defaultBilling?.billingDetails?.billingZipCode || ""}
+                    readOnly
                     className="w-full p-2 border border-gray-300 rounded-lg"
                   />
-                  {errors.zipCode && (
-                    <p className="text-red-500">
-                      {String(errors.zipCode.message)}
-                    </p>
-                  )}
                 </div>
               </div>
 
               <div className="mb-4">
                 <label className="block mb-1">Address</label>
                 <input
-                  {...register("address", { required: "Address is required" })}
                   type="text"
+                  readOnly
+                  value={defaultBilling?.billingDetails?.billingAddress || ""}
                   className="w-full p-2 border border-gray-300 rounded-lg"
                 />
-                {errors.address && (
-                  <p className="text-red-500">
-                    {String(errors.address.message)}
-                  </p>
-                )}
               </div>
 
               <div className=" items-center space-x-2 mb-10">
@@ -361,6 +293,7 @@ const PaymentPage = () => {
                   Ship into different address
                 </label>
               </div>
+
               {/* this is for shipping */}
               {isCheckBox ? (
                 <div>
@@ -606,43 +539,31 @@ const PaymentPage = () => {
               <div className="space-y-4">
                 {renderData &&
                   renderData.length > 0 &&
-                  renderData?.map((item) => {
-                    // console.log(item); // Logs each 'item' in the cart
-                    return (
-                      <div
-                        key={item.id}
-                        className="flex items-center space-x-4"
-                      >
-                        <img
-                          src={`${data?.url}/users/${item?.item?.media?.mainImage}`}
-                          alt={item.title}
-                          className="w-14 h-14 rounded-md object-cover"
-                        />
-                        <div>
-                          <p className="text-sm">{item?.item?.artworkName}</p>
-                          <p className="text-sm text-gray-500">
-                            {item?.item?.quantity ? item?.item?.quantity : "1"}{" "}
-                            ×{" "}
-                            <span className="text-[#FF536B] font-semibold">
-                              {getSymbolFromCurrency(
-                                item?.item?.pricing?.currency
-                              )}
-                              {" " + item?.item?.pricing?.basePrice}
-                            </span>
-                          </p>
-                        </div>
+                  renderData?.map((item, i: number) => (
+                    <div key={i} className="flex items-center space-x-4">
+                      <img
+                        src={`${lowImageUrl}/${item?.media?.mainImage}`}
+                        alt={item.title}
+                        className="w-14 h-14 rounded-md object-cover"
+                      />
+                      <div>
+                        <p className="text-sm">{item?.artworkName}</p>
+
+                        <span className="text-[#FF536B] font-semibold">
+                          {getSymbolFromCurrency(
+                            item?.pricing?.currency.slice(0, 3)
+                          )}
+                          {" " + item?.pricing?.basePrice}
+                        </span>
                       </div>
-                    );
-                  })}
+                    </div>
+                  ))}
               </div>
 
               <div className="mt-6 space-y-2 ">
                 <div className="flex justify-between text-sm ">
                   <span className="text-[#5F6C72]">Sub-total</span>
-                  <span className="font-semibold">
-                    {getSymbolFromCurrency("EUR")}
-                    {" " + totalPrice}
-                  </span>
+                  <span className="font-semibold">{totalPrice}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-[#5F6C72]">Shipping</span>
