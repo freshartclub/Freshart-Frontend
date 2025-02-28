@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 import { useAppSelector } from "../../store/typedReduxHooks";
 
 const CircleRight = ({ data }) => {
+  const [title, setTitle] = useState("");
   const [textAreaContent, setTextAreaContent] = useState("");
   const [previewUrl, setPreviewUrl] = useState(null);
   const [file, setFile] = useState(null);
@@ -51,9 +52,16 @@ const CircleRight = ({ data }) => {
     <div className="2xl:w-[75%] xl:w-[70%] lg:w-[65%] w-full">
       {isManager ? (
         <div className="shadow border mb-3 p-3 w-full rounded-lg">
+          <input
+            className="border w-full p-2 rounded mb-2 outline-none"
+            type="text"
+            placeholder="Post Title..."
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
           <textarea
             placeholder="Share what you are thinking here..."
-            className="border w-full p-2 h-32 rounded-lg outline-none"
+            className="border w-full p-2 h-32 rounded outline-none"
             value={textAreaContent}
             onChange={(e) => setTextAreaContent(e.target.value)}
           />

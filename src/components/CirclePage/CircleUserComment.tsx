@@ -35,6 +35,7 @@ const CircleUserComment = ({ isManager }) => {
   const [visibleCommentBoxId, setVisibleCommentBoxId] = useState(null);
   const [hoveredPostId, setHoveredPostId] = useState(null);
 
+  const [titleContent, setTitleContent] = useState({});
   const [textAreaContent, setTextAreaContent] = useState({});
   const [previewUrl, setPreviewUrl] = useState({});
   const [file, setFile] = useState({});
@@ -44,12 +45,13 @@ const CircleUserComment = ({ isManager }) => {
 
   const [likesCount, setLikesCount] = useState({});
   const [textContent, setTextContent] = useState("");
+  const [title, setTitle] = useState("");
   const [getReactionIconLocally, setReactionIconLocally] = useState({});
 
   const [link, setLink] = useState("https://example.com");
   const [copy, setCopy] = useState("Copy");
 
-  const { mutateAsync, isPending } = usePostLikeMutation();
+  const { mutateAsync } = usePostLikeMutation();
   const { mutateAsync: editPost, isPending: editPending } =
     useCirclePostMutation();
 
@@ -82,6 +84,7 @@ const CircleUserComment = ({ isManager }) => {
       const newLikesCount = {};
       const newReactions = {};
       const newTextContent = {};
+      const newTitle = {};
       const newPreviewUrls = {};
       const newReactionsList = {};
 
@@ -91,6 +94,7 @@ const CircleUserComment = ({ isManager }) => {
         newLikesCount[postId] = post.totalLikes;
         newTextContent[postId] = post.content || "";
         newPreviewUrls[postId] = post.file || "";
+        newTitle[postId] = post?.title || "";
 
         if (post?.reaction && typeof post.reaction === "object") {
           const reactionIcons = [];
@@ -127,6 +131,7 @@ const CircleUserComment = ({ isManager }) => {
         ...newReactions,
       }));
       setTextAreaContent(newTextContent);
+      setTitleContent(newTitle);
       setPreviewUrl(newPreviewUrls);
       setReactionIconLocally(newReactionsList);
     }
@@ -193,13 +198,16 @@ const CircleUserComment = ({ isManager }) => {
     try {
       const newData = {
         content: textContent,
-        circleFile: file,
+        title: title,
+        circleFile: file[postId],
         postId: postId,
         id: id,
       };
 
       editPost(newData).then(() => {
         setIsEditable((prev) => ({ ...prev, [postId]: false }));
+        setTextContent("");
+        setTitle("");
       });
     } catch (error) {
       console.log(error);
@@ -223,7 +231,7 @@ const CircleUserComment = ({ isManager }) => {
     setHoveredPostId(null);
   };
 
-  const handleTextAreaChange = (postId: string, value) => {
+  const handleTextAreaChange = (postId: string, value: string) => {
     setTextContent(value);
     setTextAreaContent((prev) => ({
       ...prev,
@@ -231,10 +239,26 @@ const CircleUserComment = ({ isManager }) => {
     }));
   };
 
-  const handleEdit = (postId, value) => {
+  const handleTitleChange = (postId: string, value: string) => {
+    setTitle(value);
+    setTitleContent((prev) => ({
+      ...prev,
+      [postId]: value,
+    }));
+  };
+
+  const handleEdit = (
+    postId: string,
+    value: boolean,
+    title: string,
+    content: string
+  ) => {
     if (value) {
       setIsEditable({ [postId]: true });
-      setTextContent("");
+      setTextContent(content || "");
+      setTitle(title || "");
+      setFile("");
+      setPreviewUrl("");
     } else {
       setIsEditable((prev) => ({ ...prev, [postId]: false }));
     }
@@ -243,6 +267,7 @@ const CircleUserComment = ({ isManager }) => {
   const handleDoubleClick = (postId) => {
     setIsEditable((prev) => ({ ...prev, [postId]: false }));
     setTextContent("");
+    setTitle("");
   };
 
   const handleLikeClick = (postId, reaction) => {
@@ -303,87 +328,44 @@ const CircleUserComment = ({ isManager }) => {
         data?.data?.map((item, index: number) => (
           <div
             key={index}
-            className="border p-4 pb-2 w-full rounded-lg shadow relative"
+            className="border bg-white px-3  py-2 w-full rounded-lg shadow relative"
           >
-            <div>
-              <div key={index} className="flex gap-3">
-                {item?.owner?.image ? (
-                  <img
-                    className="w-[7vh] h-[7vh] object-cover rounded-full"
-                    src={`${imageUrl}/users/${item?.owner?.image}`}
-                    alt="profile image"
-                  />
-                ) : (
-                  <svg
-                    className="w-[7vh] h-[7vh] text-gray-400"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                  </svg>
-                )}
-                <div>
-                  <P
-                    variant={{
-                      size: "base",
-                      theme: "dark",
-                      weight: "semiBold",
-                    }}
-                  >
-                    {item?.owner?.artistName +
-                      " " +
-                      item?.owner?.artistSurname1 +
-                      " " +
-                      item?.owner?.artistSurname2}
-                  </P>
-                  <P
-                    variant={{ size: "small", weight: "normal" }}
-                    className="text-[#919EAB]"
-                  >
-                    {new Date(item?.createdAt).toLocaleString("en-US", {
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </P>
-                </div>
-              </div>
-              <div className="mt-3.5">
-                <P
-                  variant={{ size: "base", theme: "dark", weight: "medium" }}
-                  className="mb-4"
-                >
-                  {item.content}
-                </P>
-                {item.file && (
-                  <>
-                    {/\.(jpg|jpeg|png|gif|webp)$/i.test(item.file) ? (
-                      <img
-                        src={`${imageUrl}/users/${item.file}`}
-                        alt="image"
-                        className="rounded-xl w-full aspect-[16/9] object-cover"
-                      />
-                    ) : /\.(mp4|mov|webm)$/i.test(item.file) ? (
-                      <video
-                        src={`${imageUrl}/users/${item.file}`}
-                        controls
-                        className="rounded-xl w-full h-[50vh]"
-                      />
-                    ) : null}
-                  </>
-                )}
-              </div>
+            <div key={index} className="flex gap-1 flex-col">
+              <span className="font-semibold text-base">{item?.title}</span>
+              <span className="text-[14px]">{item?.content}</span>
+              {item?.file && (
+                <>
+                  {/\.(jpg|jpeg|png|gif|webp)$/i.test(item.file) ? (
+                    <img
+                      src={`${imageUrl}/users/${item.file}`}
+                      alt="image"
+                      className="rounded-xl mt-2 w-full aspect-[16/9] object-cover"
+                    />
+                  ) : /\.(mp4|mov|webm)$/i.test(item.file) ? (
+                    <video
+                      src={`${imageUrl}/users/${item.file}`}
+                      controls
+                      className="rounded-xl mt-2 w-full h-[50vh]"
+                    />
+                  ) : null}
+                </>
+              )}
             </div>
 
             {isEditable[item._id] && (
               <div
-                className="shadow w-full rounded-lg"
+                className="shadow border border-zinc-300 w-full rounded-lg p-2 mt-2"
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
               >
+                <input
+                  className="border w-full p-2 rounded mb-2 outline-none"
+                  type="text"
+                  placeholder="Post Title..."
+                  value={titleContent[item._id] || ""}
+                  onChange={(e) => handleTitleChange(item._id, e.target.value)}
+                />
                 <textarea
                   placeholder="Share what you are thinking here..."
                   className="border w-full p-2 h-32 rounded-t-lg outline-none"
@@ -394,7 +376,7 @@ const CircleUserComment = ({ isManager }) => {
                 />
 
                 <div className="flex px-2 pb-2 justify-between items-center">
-                  {/* <div className="flex flex-wrap gap-2 items-center sm:justify-normal justify-center">
+                  <div className="">
                     <input
                       type="file"
                       accept="image/*, video/*"
@@ -403,6 +385,53 @@ const CircleUserComment = ({ isManager }) => {
                       onChange={handleImage(item._id)}
                     />
 
+                    {previewUrl[item._id] && (
+                      <div className="mt-2 relative">
+                        {file[item._id] ? (
+                          file[item._id].type.startsWith("image") ? (
+                            <img
+                              src={previewUrl[item._id]}
+                              alt="Preview"
+                              className="object-cover border w-[7rem] h-[5rem] rounded"
+                            />
+                          ) : file[item._id].type.startsWith("video") ? (
+                            <video
+                              controls
+                              className="object-cover border w-[7rem] h-[5rem] rounded"
+                            >
+                              <source
+                                src={previewUrl[item._id]}
+                                type={file[item._id].type}
+                              />
+                              Your browser does not support the video tag.
+                            </video>
+                          ) : null
+                        ) : (
+                          <img
+                            src={`${imageUrl}/users/${previewUrl[item._id]}`}
+                            alt="Preview"
+                            className="object-cover border w-[7rem] h-[5rem] rounded"
+                          />
+                        )}
+                        <span
+                          onClick={() => {
+                            setPreviewUrl((prev) => ({
+                              ...prev,
+                              [item._id]: "",
+                            }));
+                            setFile((prev) => ({
+                              ...prev,
+                              [item._id]: null,
+                            }));
+                          }}
+                          className="absolute bg-white top-1 right-1 cursor-pointer rounded-full p-1"
+                        >
+                          <RxCross2 size="1em" />
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex gap-2 items-center">
                     <Button
                       variant={{ rounded: "full" }}
                       className="flex gap-2 bg-[#65656514]"
@@ -420,55 +449,9 @@ const CircleUserComment = ({ isManager }) => {
                           weight: "semiBold",
                         }}
                       >
-                        Image/Video
+                        New Image/Video
                       </P>
                     </Button>
-
-                    {previewUrl[item._id] && (
-                      <div className="mt-4 relative">
-                        {file[item._id] ? (
-                          // Locally uploaded file
-                          file[item._id].type.startsWith("image") ? (
-                            <img
-                              src={previewUrl[item._id]}
-                              alt="Preview"
-                              className="w-full object-contain h-[30vh]"
-                            />
-                          ) : file[item._id].type.startsWith("video") ? (
-                            <video controls className="w-full h-auto">
-                              <source
-                                src={previewUrl[item._id]}
-                                type={file[item._id].type}
-                              />
-                              Your browser does not support the video tag.
-                            </video>
-                          ) : null
-                        ) : (
-                          <img
-                            src={`${imageUrl}/users/${previewUrl[item._id]}`}
-                            alt="Preview"
-                            className="w-full object-contain h-[30vh]"
-                          />
-                        )}
-                        <span
-                          onClick={() => {
-                            setPreviewUrl((prev) => ({
-                              ...prev,
-                              [item._id]: "",
-                            }));
-                            setFile((prev) => ({
-                              ...prev,
-                              [item._id]: null,
-                            }));
-                          }}
-                          className="absolute bg-white top-0 right-0 cursor-pointer rounded-full p-1"
-                        >
-                          <RxCross2 size="2em" />
-                        </span>
-                      </div>
-                    )}
-                  </div> */}
-                  <div className=" flex gap-2 items-center">
                     <Button
                       onClick={() => handleDoubleClick(item._id)}
                       className="px-4 py-2 bg-red-500 text-white font-semibold"
@@ -488,23 +471,25 @@ const CircleUserComment = ({ isManager }) => {
 
             {isManager ? (
               <span
-                onClick={() => handleEdit(item._id, true)}
+                onClick={() =>
+                  handleEdit(item._id, true, item.title, item.content)
+                }
                 className="absolute top-2 right-2 cursor-pointer"
               >
-                <FaEdit size="1.4em" />
+                <FaEdit size="1.2em" />
               </span>
             ) : null}
 
-            <div className="flex justify-between pb-2 mt-5">
+            <div className="flex justify-between mt-2.5">
               <div className="flex gap-3 items-center">
                 <div
-                  className="relative flex items-center gap-4 cursor-pointer"
+                  className="relative flex items-center gap-2 cursor-pointer"
                   onMouseEnter={() => handleMouseEnter(item._id)}
                   onMouseLeave={handleMouseLeave}
                 >
                   {selectedReaction[item._id] ? (
                     <motion.span
-                      className="text-2xl"
+                      className="text-md"
                       animate={{
                         scale: selectedReaction[item._id] ? 1.2 : 1,
                       }}
@@ -516,23 +501,25 @@ const CircleUserComment = ({ isManager }) => {
                       onClick={() => handleLikeClick(item?._id, "like")}
                       src={like}
                       alt="reaction"
-                      className="w-6 h-6"
+                      className="w-5 h-5"
                       animate={{ scale: 1 }}
                     />
                   )}
 
-                  <div className="flex items-center  gap-8">
+                  <div className="flex items-center">
+                    <p className="text-sm font-medium">
+                      {likesCount[item._id] || 0}
+                    </p>
                     {getReactionIconLocally[item._id]?.length > 0 && (
-                      <div className="relative flex  items-center">
+                      <div className="relative flex items-center">
                         {getReactionIconLocally[item._id].map(
-                          (reaction, index) => (
+                          (reaction, index: number) => (
                             <span
                               key={index}
-                              className="text-lg absolute"
                               style={{
-                                left: `${index * -0.6}em`,
+                                transform: `translateX(${index * -0.7}em)`,
                                 zIndex:
-                                  getReactionIconLocally[item._id].length -
+                                  getReactionIconLocally[item._id].length +
                                   index,
                               }}
                             >
@@ -542,9 +529,6 @@ const CircleUserComment = ({ isManager }) => {
                         )}
                       </div>
                     )}
-                    <p className="text-base font-medium">
-                      {likesCount[item._id] || 0}
-                    </p>
                   </div>
 
                   <AnimatePresence>
@@ -570,18 +554,15 @@ const CircleUserComment = ({ isManager }) => {
                     )}
                   </AnimatePresence>
                 </div>
-              </div>
-
-              <div className="flex gap-5 items-center">
                 <div className="flex gap-2 items-center">
                   <span
                     className="cursor-pointer"
                     onClick={() => handleCommentBox(item?._id)}
                   >
-                    <FaCommentDots size="1.5em" />
+                    <FaCommentDots size="1.2em" />
                   </span>
 
-                  <span>
+                  <span className="text-sm font-medium">
                     {item?.commentCount >= 1000
                       ? `${(item.commentCount / 1000).toFixed(0)}k`
                       : item?.commentCount}
@@ -595,8 +576,46 @@ const CircleUserComment = ({ isManager }) => {
                   }}
                   className="cursor-pointer"
                 >
-                  <FaShareAlt size="1.5em" />
+                  <FaShareAlt size="1.2em" />
                 </span>
+              </div>
+
+              <div className="flex gap-5 items-center">
+                <div className="flex gap-3">
+                  {item?.owner?.image ? (
+                    <img
+                      className="w-[6vh] h-[6vh] object-cover rounded-full"
+                      src={`${imageUrl}/users/${item?.owner?.image}`}
+                      alt="profile image"
+                    />
+                  ) : (
+                    <svg
+                      className="w-[7vh] h-[7vh] text-gray-400"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                    </svg>
+                  )}
+                  <div className="flex flex-col">
+                    <span className="font-semibold text-[13px]">
+                      {item?.owner?.artistName +
+                        " " +
+                        item?.owner?.artistSurname1 +
+                        " " +
+                        item?.owner?.artistSurname2}
+                    </span>
+                    <span className="text-[12px] text-[#919EAB]">
+                      {new Date(item?.createdAt).toLocaleString("en-US", {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
             {visibleCommentBoxId === item?._id && (
