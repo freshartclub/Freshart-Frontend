@@ -30,7 +30,6 @@ const Purchase = () => {
   const [selectedTechnic, setSelectedTechnic] = useState("");
   const [selectedStyle, setSelectedStyle] = useState("");
   const defaultRanges = {
-    weight: { min: 0, max: 300, step: 10 },
     height: { min: 0, max: 300, step: 10 },
     width: { min: 0, max: 300, step: 10 },
     depth: { min: 0, max: 300, step: 10 },
@@ -38,7 +37,6 @@ const Purchase = () => {
   };
 
   const [sliderData, setSliderData] = useState({
-    weight: [0, defaultRanges.weight.max],
     height: [0, defaultRanges.height.max],
     width: [0, defaultRanges.width.max],
     depth: [0, defaultRanges.depth.max],
@@ -107,7 +105,6 @@ const Purchase = () => {
     moreOptions.purchaseOption,
     sliderData.depth,
     sliderData.height,
-    sliderData.weight,
     sliderData.width,
     sliderData.price,
     debounceTag,
@@ -170,7 +167,22 @@ const Purchase = () => {
     setSelectedTechnic("");
     setSelectedTheme("");
     setSelectedStyle("");
+    setTag("");
     setOptions({ cursor: "", direction: "", limit: 10, currPage: 1 });
+    setMoreOptions({
+      orientation: "",
+      color: "",
+      comingSoon: "",
+      discount: "",
+      purchase: "",
+      purchaseOption: "",
+    });
+    setSliderData({
+      depth: [0, defaultRanges.depth.max],
+      height: [0, defaultRanges.height.max],
+      width: [0, defaultRanges.width.max],
+      price: [0, defaultRanges.price.max],
+    });
     await refetch();
   };
 
@@ -463,11 +475,11 @@ const Purchase = () => {
                 onClick={() =>
                   setMoreOptions((prev) => ({
                     ...prev,
-                    orientation: "vertical",
+                    orientation: "Vertical",
                   }))
                 }
                 className={`${
-                  moreOptions.orientation == "vertical"
+                  moreOptions.orientation == "Vertical"
                     ? "bg-slate-300"
                     : "bg-[#eaeaea]"
                 } w-8 hover:bg-slate-300 cursor-pointer`}
@@ -485,11 +497,11 @@ const Purchase = () => {
                 onClick={() =>
                   setMoreOptions((prev) => ({
                     ...prev,
-                    orientation: "square",
+                    orientation: "Square",
                   }))
                 }
                 className={`${
-                  moreOptions.orientation == "square"
+                  moreOptions.orientation == "Square"
                     ? "bg-slate-300"
                     : "bg-[#eaeaea]"
                 } w-12 hover:bg-slate-300 cursor-pointer`}
@@ -507,11 +519,11 @@ const Purchase = () => {
                 onClick={() =>
                   setMoreOptions((prev) => ({
                     ...prev,
-                    orientation: "horizontal",
+                    orientation: "Horizontal",
                   }))
                 }
                 className={`${
-                  moreOptions.orientation == "horizontal"
+                  moreOptions.orientation == "Horizontal"
                     ? "bg-slate-300"
                     : "bg-[#eaeaea]"
                 } w-12 hover:bg-slate-300 cursor-pointer`}

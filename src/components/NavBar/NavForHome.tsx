@@ -5,6 +5,7 @@ import bag from "../../assets/Bag.png";
 import { Link, useNavigate } from "react-router-dom";
 import P from "../ui/P";
 import Header from "../ui/Header";
+import { IoIosFlower } from "react-icons/io";
 import selling from "../../assets/Images-cuate 1.png";
 import ShoppingCard from "../pages/ShoppingCard";
 import Button from "../ui/Button";
@@ -160,51 +161,42 @@ const NavForHome = () => {
   return (
     <nav
       className={`z-[9999] ${
-        isScrolled ? "bg-[#102030]" : "bg-transparent  "
-      } hover:bg-[#102030] pt-4 py-2 px-10 fixed top-0 left-0 w-full transition-all duration-300 ${
-        isVisible ? "translate-y-0 " : "-translate-y-full "
+        isScrolled ? "bg-[#102030]" : "bg-transparent"
+      } hover:bg-[#102030] pt-4 py-2 px-6 fixed top-0 left-0 w-full transition-all duration-300 ${
+        isVisible ? "translate-y-0 " : "-translate-y-full"
       }`}
     >
-      <div className="flex justify-between  items-center ">
+      <div className="flex justify-between items-center">
         {token && isAuthorized ? (
           <div className="w-[90vw] mx-auto flex flex-col gap-2 items-center">
             <div className=" w-full mx-auto flex justify-between  items-center">
-              <div className="lg:hidden">
-                <button
-                  onClick={() => setIsOpen(!isOpen)}
-                  className="text-white focus:outline-none"
-                >
-                  <svg
-                    className="w-6 h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M4 6h16M4 12h16M4 18h16"
-                    ></path>
-                  </svg>
-                </button>
-              </div>
-
-              <div
-                className="flex items-center justify-center "
-                onClick={() => navigate("/home")}
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="text-white focus:outline-none lg:hidden"
               >
-                <img
-                  src={logo}
-                  alt="logo"
-                  className=" lg:w-full md:w-full w-[70%]  "
-                />
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M4 6h16M4 12h16M4 18h16"
+                  ></path>
+                </svg>
+              </button>
+
+              <div className="" onClick={() => navigate("/home")}>
+                <img src={logo} alt="logo" className="lg:w-full md:w-full" />
               </div>
 
-              <div className="relative hidden lg:block">
+              <div className="relative mx-2 hidden lg:block">
                 <input
-                  className="w-[50vw] bg-white/75 py-1 px-10 focus:px-3 focus:outline-none focus:border-b-2 focus:border-b-[#102030] transition-all duration-300"
+                  className="w-[45vw] bg-white/75 py-1 px-10 focus:px-3 focus:outline-none focus:border-b-2 focus:border-b-[#102030] transition-all duration-300"
                   type="text"
                   placeholder="Artwork, Categories, Topic..."
                   value={inputValue}
@@ -230,7 +222,7 @@ const NavForHome = () => {
                 </span>
               </div>
 
-              <div className="lg:flex   space-x-4  justify-end mt-3">
+              <div className="flex gap-4 justify-end">
                 <Link
                   to="/wishlist"
                   className="focus:outline-none lg:block hidden"
@@ -241,12 +233,15 @@ const NavForHome = () => {
                     className="w-8 h-8 text-white mx-2 "
                   />
                 </Link>
-                <div className="overflow-x-hidden ">
-                  <ShoppingCard
-                    isOpen={isSidebarOpen}
-                    onClose={toggleSidebar}
-                  />
-                </div>
+
+                <IoIosFlower
+                  onClick={() => navigate("/circle")}
+                  className="cursor-pointer"
+                  fontSize="2em"
+                  color="white"
+                />
+
+                <ShoppingCard isOpen={isSidebarOpen} onClose={toggleSidebar} />
 
                 <button
                   onClick={toggleSidebar}
@@ -326,13 +321,6 @@ const NavForHome = () => {
                           onClick={(prev) => setIsProfileDropdown(!prev)}
                         >
                           My Orders
-                        </Link>
-                        <Link
-                          className="text-left"
-                          to="/circle"
-                          onClick={(prev) => setIsProfileDropdown(!prev)}
-                        >
-                          Circle
                         </Link>
                         <Link
                           className="text-left"
@@ -595,12 +583,6 @@ const NavForHome = () => {
                 className="group  font-semibold text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
               >
                 Artist
-              </Link>
-              <Link
-                to="/circle"
-                className="group  font-semibold text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
-              >
-                Circle
               </Link>
             </div>
           </div>

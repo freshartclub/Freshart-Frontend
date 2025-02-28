@@ -17,6 +17,7 @@ import { useGetArtistDetails } from "../UserProfile/http/useGetDetails";
 import { imageUrl } from "../utils/baseUrls";
 import useClickOutside from "../utils/useClickOutside";
 import { useGetPicklist } from "./http/getPickList";
+import { IoIosFlower } from "react-icons/io";
 
 const mobile_links = [
   { path: "/", label: "Home" },
@@ -117,8 +118,8 @@ const NavBar = () => {
 
   return (
     <>
-      <nav className="bg-[#102030] py-6 px-10 relative">
-        <div className="flex justify-between  items-center ">
+      <nav className="bg-[#102030] py-6 px-6 relative">
+        <div className="flex justify-between items-center">
           {token && isAuthorized ? (
             <>
               <div className="lg:hidden">
@@ -143,16 +144,16 @@ const NavBar = () => {
                 </button>
               </div>
 
-              <div className="hidden lg:flex lg:gap-2 xl:space-x-6 lg:space-x-0 text-white">
+              <div className="hidden lg:flex items-center gap-5 text-white">
                 <Link
                   to="/home"
-                  className="group mt-3 font-semibold text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
+                  className="font-semibold text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
                 >
                   Home
                 </Link>
                 <div className="cursor-pointer" ref={dropDownPopup}>
                   <span
-                    className="group mt-3 font-semibold text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300 flex px-2"
+                    className="group font-semibold text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300 flex px-2"
                     onClick={() => setIsDropdownOpen((prev) => !prev)}
                   >
                     Subscribe
@@ -251,62 +252,43 @@ const NavBar = () => {
                 </div>
                 <Link
                   to="/all-artworks?type=purchase"
-                  className="group mt-3 font-semibold text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
+                  className="font-semibold text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
                 >
                   Purchase
                 </Link>
                 <Link
                   to="/all_artist"
-                  className="group mt-3 font-semibold text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
+                  className="font-semibold text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
                 >
                   Artist
                 </Link>
-                <Link
-                  to="/circle"
-                  className="group mt-3 font-semibold text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
-                >
-                  Circle
-                </Link>
               </div>
 
-              <div
-                className="flex items-center justify-center "
-                onClick={() => navigate("/home")}
-              >
-                <img
-                  src={logo}
-                  alt="logo"
-                  className=" lg:w-full md:w-full w-[70%]  "
-                />
+              <div onClick={() => navigate("/home")}>
+                <img src={logo} alt="logo" className=" lg:w-full md:w-full" />
               </div>
 
-              <div className="lg:flex   space-x-4  justify-end mt-3">
+              <div className="flex gap-5 justify-end">
                 <Link
                   to="/wishlist"
                   className="focus:outline-none lg:block hidden"
                 >
-                  <img
-                    src={heart}
-                    alt="heart"
-                    className="w-8 h-8 text-white mx-2 "
-                  />
+                  <img src={heart} alt="heart" className="w-8 h-8 text-white" />
                 </Link>
-                <div className="overflow-x-hidden ">
-                  <ShoppingCard
-                    isOpen={isSidebarOpen}
-                    onClose={toggleSidebar}
-                  />
-                </div>
+                <IoIosFlower
+                  onClick={() => navigate("/circle")}
+                  className="cursor-pointer"
+                  fontSize="2em"
+                  color="white"
+                />
+
+                <ShoppingCard isOpen={isSidebarOpen} onClose={toggleSidebar} />
 
                 <button
                   onClick={toggleSidebar}
                   className="relative focus:outline-none hidden lg:block"
                 >
-                  <img
-                    src={bag}
-                    alt="bag"
-                    className="w-8 h-8 text-white mx-2 "
-                  />
+                  <img src={bag} alt="bag" className="w-8 h-8 text-white" />
                   <span className="absolute bg-red-300 w-4 h-4 right-0 top-0  rounded-full flex items-center justify-center">
                     {cartItem ? (
                       <h1 className="text-sm font-semibold">

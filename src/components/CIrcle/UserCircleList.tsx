@@ -8,6 +8,7 @@ import UserAllCircle from "./UserAllCircle";
 import UserJoinedCircle from "./UserJoinedCircle";
 import UserRequestedCircle from "./UserRequestedCircle";
 import { FiSearch } from "react-icons/fi";
+import { useTranslation } from "react-i18next";
 
 interface Circle {
   _id: string;
@@ -34,6 +35,8 @@ interface CircleResponse {
 const UserCircleList: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState<string>("");
+
+  const { t } = useTranslation();
 
   const id = useAppSelector((state) => state.user.user?._id) as
     | string
@@ -92,83 +95,79 @@ const UserCircleList: React.FC = () => {
   if (isLoading) return <Loader />;
 
   return (
-    <div className="">
-      <div>
-        <BannerSection title={"Circles"} secondTitle={"All Circles"} />
-
-        <div className="flex flex-col sm:flex-row justify-between gap-2 mt-8 px-10">
-          <div className="relative w-[50vw]">
-            <input
-              className="p-2 border border-zinc-400 outline-none rounded-lg w-full"
-              placeholder="Search by title or category"
-              value={searchQuery}
-              onChange={handleSearchChange}
-            />
+    <>
+      <BannerSection title={"Circles"} secondTitle={"All Circles"} />
+      <div className="sm:px-10 px-4">
+        <div className="flex flex-col sm:flex-row justify-between items-center sm:gap-5 gap-2 mt-8">
+          <div className="relative w-full">
             {searchQuery === "" && (
               <FiSearch
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                className="absolute top-2.5 left-2 text-gray-400"
                 size={20}
               />
             )}
+            <input
+              className="p-2 pl-8 border border-zinc-400 outline-none rounded-lg w-full"
+              placeholder={t("Search by Circle Title or Category")}
+              value={searchQuery}
+              onChange={handleSearchChange}
+            />
           </div>
 
           <div className="flex items-center gap-3">
-            <span>Sort By: </span>
+            <span className="text-nowrap">Sort By: </span>
             <select className="p-2 border rounded-lg">
               <option>Featured</option>
               <option>Recent</option>
             </select>
           </div>
         </div>
-      </div>
 
-      {/* Tab Filter Section */}
-      <div className="tab-filter mt-8 px-10">
-        {Object.keys(tabCounts).map((tab) => (
-          <div
-            key={tab}
-            className={`tab-item f ${
-              activeTab === tab ? "active" : ""
-            } inline-block px-4 py-2 cursor-pointer ${
-              activeTab === tab
-                ? "border-2 rounded-md bg-black text-white border-black font-semibold text-md transition-none"
-                : " text-black"
-            }`}
-            onClick={() => handleTabClick(tab)}
-          >
-            <span>{tab}</span>
-            <span className="count ml-2 text-gray-500">({tabCounts[tab]})</span>
-          </div>
-        ))}
+        <div className="tab-filter mt-4 border rounded-t-lg bg-gray-200 p-2 scrollbar flex gap-4 w-full max-w-full overflow-x-auto md:gap-8 text-sm font-medium items-center">
+          {Object.keys(tabCounts).map((tab) => (
+            <div
+              key={tab}
+              className={`tab-item cursor-pointer p-2 rounded flex items-center w-max flex-shrink-0 ${
+                activeTab === tab ? "bg-[#102030] text-white" : ""
+              }`}
+              onClick={() => handleTabClick(tab)}
+            >
+              <span>{tab}</span>
+              <span className="count ml-2 font-semibold border-black white">
+                ({tabCounts[tab]})
+              </span>
+            </div>
+          ))}
 
-        {showAssignedTab && (
-          <div
-            className={`inline-block px-4 py-2 cursor-pointer ${
-              activeTab === "Assigned"
-                ? "border-2 rounded-md bg-black text-white border-black font-semibold text-md transition-none"
-                : "text-black"
-            }`}
-            onClick={() => handleTabClick("Assigned")}
-          >
-            <span>Assigned Circle</span>
-            <span className="count ml-2 text-gray-500">
-              ({assignedCircleName?.length})
-            </span>
-          </div>
-        )}
-      </div>
+          {showAssignedTab && (
+            <div
+              className={`tab-item p-2 cursor-pointer rounded flex items-center w-max flex-shrink-0 ${
+                activeTab === "Assigned" ? "bg-[#102030] text-white" : ""
+              }`}
+              onClick={() => handleTabClick("Assigned")}
+            >
+              <span>Assigned Circle</span>
+              <span className="count ml-2 font-semibold border-black white">
+                ({assignedCircleName?.length})
+              </span>
+            </div>
+          )}
+        </div>
 
-      <div className="mt-6">
-        {activeTab === "All" && <UserAllCircle data={filteredData} />}
-        {activeTab === "Joined" && <UserJoinedCircle data={followedCircles} />}
-        {activeTab === "Requested" && (
-          <UserRequestedCircle data={requestedCircles} />
-        )}
-        {activeTab === "Assigned" && (
-          <AssignedCircle data={assignedCircleName} />
-        )}
+        <div className="mt-6">
+          {activeTab === "All" && <UserAllCircle data={filteredData} />}
+          {activeTab === "Joined" && (
+            <UserJoinedCircle data={followedCircles} />
+          )}
+          {activeTab === "Requested" && (
+            <UserRequestedCircle data={requestedCircles} />
+          )}
+          {activeTab === "Assigned" && (
+            <AssignedCircle data={assignedCircleName} />
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

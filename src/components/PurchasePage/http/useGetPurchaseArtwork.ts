@@ -18,7 +18,6 @@ async function fetchData(
   purchaseOption: string,
   depth: number[],
   height: number[],
-  weight: number[],
   width: number[],
   price: number[],
   tag: string,
@@ -28,7 +27,7 @@ async function fetchData(
   limit: number
 ) {
   const { data } = await axiosInstance.get(
-    `${ARTTIST_ENDPOINTS.GetAllArtwork}?type=${type}&s=${query}&theme=${selectedTheme}&discipline=${selectedOption}&technic=${selectedTechnic}&style=${selectedStyle}&color=${color}&comingsoon=${comingSoon}&orientation=${orientation}&depth=${depth}&weight=${weight}&height=${height}&width=${width}&price=${price}&tag=${tag}&discount=${discount}&purchase=${purchase}&purchaseOption=${purchaseOption}&currPage=${currPage}&cursor=${cursor}&direction=${direction}&limit=${limit}`
+    `${ARTTIST_ENDPOINTS.GetAllArtwork}?type=${type}&s=${query}&theme=${selectedTheme}&discipline=${selectedOption}&technic=${selectedTechnic}&style=${selectedStyle}&color=${color}&comingsoon=${comingSoon}&orientation=${orientation}&depth=${depth}&&height=${height}&width=${width}&price=${price}&tag=${tag}&discount=${discount}&purchase=${purchase}&purchaseOption=${purchaseOption}&currPage=${currPage}&cursor=${cursor}&direction=${direction}&limit=${limit}`
   );
 
   return data;
@@ -49,7 +48,6 @@ export const useGetPurchaseArtwork = (
   purchaseOption: string,
   depth: number[],
   height: number[],
-  weight: number[],
   width: number[],
   price: number[],
   tag: string,
@@ -61,18 +59,15 @@ export const useGetPurchaseArtwork = (
   const debounceWidthMax = useDebounce(width[1], 800);
   const debounceHeightMax = useDebounce(height[1], 800);
   const debounceDepthMax = useDebounce(depth[1], 800);
-  const debounceWeightMax = useDebounce(weight[1], 800);
   const debouncePriceMax = useDebounce(price[1], 800);
 
   const debounceWidthMin = useDebounce(width[0], 800);
   const debounceHeightMin = useDebounce(height[0], 800);
   const debounceDepthMin = useDebounce(depth[0], 800);
-  const debounceWeightMin = useDebounce(weight[0], 800);
   const debouncePriceMin = useDebounce(price[0], 800);
 
   const dDepth = [debounceDepthMin, debounceDepthMax];
   const dHeight = [debounceHeightMin, debounceHeightMax];
-  const dWeight = [debounceWeightMin, debounceWeightMax];
   const dWidth = [debounceWidthMin, debounceWidthMax];
   const dPrice = [debouncePriceMin, debouncePriceMax];
 
@@ -93,7 +88,6 @@ export const useGetPurchaseArtwork = (
       purchaseOption,
       dDepth,
       dHeight,
-      dWeight,
       dWidth,
       dPrice,
       tag,
@@ -118,7 +112,6 @@ export const useGetPurchaseArtwork = (
         purchaseOption,
         dDepth,
         dHeight,
-        dWeight,
         dWidth,
         dPrice,
         tag,

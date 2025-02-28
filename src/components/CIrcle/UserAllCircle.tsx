@@ -6,7 +6,6 @@ import { RiUserFollowFill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../store/typedReduxHooks";
 import { imageUrl } from "../utils/baseUrls";
-import more from "./assets/more.png";
 import usePostFollowMutation from "./https/usePostFollowMutation";
 
 interface Circle {
@@ -91,10 +90,14 @@ const UserAllCircle: React.FC<UserAllCircleProps> = ({ data }) => {
   const privateCircles: Circle[] =
     data?.data?.filter((circle) => circle?.type === "Private") || [];
 
-  const handleCircle = (id: string, type: string): void => {
+  const handleCircle = (
+    id: string,
+    type: string,
+    isManager?: boolean
+  ): void => {
     if (profile === "user") {
       if (type === "Private") {
-        if (followStates[id] === "Following") {
+        if (followStates[id] === "Following" || isManager) {
           navigate(`/circlepage?id=${encodeURIComponent(id)}&isViewed=see`);
         } else {
           toast("You can't access private circles.");
@@ -157,55 +160,55 @@ const UserAllCircle: React.FC<UserAllCircleProps> = ({ data }) => {
     const isCirclePending = pendingCircles[circle?._id] || false;
 
     return (
-      <div className="flex gap-2 sm:flex-row sm:p-2 shadow-md rounded-lg border items-center bg-white">
-        <div
-          onClick={() => handleCircle(circle?._id, circle?.type)}
-          className="content p-6 sm:py-2 sm:px-4 sm:space-y-6 xl:space-y-3 cursor-pointer"
-        >
-          <div className="flex justify-between sm:flex-row gap-4 2xl:gap-2 sm:items-center">
-            <p className="bg-[#00B8D929] text-[#006C9C] text-xs font-semibold p-1 inline-block">
-              {circle?.type || "Public"}
+      <div
+        onClick={() => handleCircle(circle?._id, circle?.type, isManager)}
+        className="flex lg:h-[11rem] justify-between items-center lg:flex-row flex-col gap-2 shadow border border-zinc-300 p-2 rounded-md bg-white cursor-pointer"
+      >
+        <div className="flex flex-col justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <span className="font-semibold">
+              {circle?.title?.length > 15
+                ? circle?.title?.slice(0, 15) + "..."
+                : circle?.title}
+            </span>
+            <p className="bg-[#00B8D929] px-2 text-[#006C9C] text-[10px] font-semibold rounded-full">
+              {circle?.status}
+            </p>
+
+            <p className="bg-red-500 px-2 text-white text-[10px] font-semibold rounded-full">
+              {circle?.type}
             </p>
           </div>
-
-          <div className="font-semibold text-sm mt-4 sm:mt-0">
-            {circle?.title}
-          </div>
-
-          <p className="bg-[#00B8D929] text-[#10009c] text-xs font-semibold rounded-lg p-1 inline-block">
-            Categories: {circle?.categories?.map((item) => item).join(" | ")}
+          <p className="bg-[#00B8D929] w-max text-[#10009c] rounded-full font-semibold px-2 text-[11px]">
+            {circle?.categories?.length > 3
+              ? circle?.categories?.join(" | ").slice(0, 20) + "..."
+              : circle?.categories?.join(" | ")}
           </p>
 
-          <div className="font-sm text-gray-600 font-medium mt-4 sm:mt-0">
+          <div className="font-sm text-gray-600 font-medium text-[14px]">
             {circle?.description
               ? circle.description.split(" ").slice(0, 25).join(" ") +
                 (circle.description.split(" ").length > 25 ? " ..." : "")
               : ""}
           </div>
 
-          <div className="flex justify-between items-center mt-4 sm:mb-0 mb-4 sm:mt-0">
-            <img src={more} alt="More" />
-
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1">
-                <IoEye />
-                <p className="text-sm">
-                  {formatNumber(circle?.viewCount || 0)}
-                </p>
-              </div>
-              <span className="flex items-center gap-1">
-                <RiUserFollowFill />
-                <p className="text-sm font-semibold">{circle?.followerCount}</p>
-              </span>
-              <div className="flex items-center gap-1">
-                <FaShareAlt />
-                <p className="text-sm">5</p>
-              </div>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-1">
+              <IoEye />
+              <p className="text-sm">{formatNumber(circle?.viewCount || 0)}</p>
+            </div>
+            <span className="flex items-center gap-1">
+              <RiUserFollowFill />
+              <p className="text-sm font-semibold">{circle?.followerCount}</p>
+            </span>
+            <div className="flex items-center gap-1">
+              <FaShareAlt />
+              <p className="text-sm">5</p>
             </div>
           </div>
         </div>
 
-        <div className="img p-4 flex flex-col gap-5 sm:p-0">
+        <div className="flex flex-col gap-2 sm:p-0">
           {profile === "user" && !isManager && (
             <span
               onClick={(e) => handleFollow(e, circle?._id)}
@@ -220,12 +223,12 @@ const UserAllCircle: React.FC<UserAllCircleProps> = ({ data }) => {
           )}
 
           {isManager && (
-            <span className="font-semibold border bg-green-600 py-2 px-8 rounded-md text-white">
+            <span className="font-semibold border text-center bg-green-600 py-2 px-8 rounded-md text-white">
               Manager
             </span>
           )}
           <img
-            className="object-cover rounded-lg w-[80vh] h-[25vh]"
+            className="lg:w-[20rem] w-full h-[7rem] rounded-md object-cover"
             src={`${imageUrl}/users/${circle?.mainImage}`}
             alt={circle?.title}
           />
@@ -238,55 +241,59 @@ const UserAllCircle: React.FC<UserAllCircleProps> = ({ data }) => {
     const isManager = circle?.managers?.includes(userId);
 
     return (
-      <div className="flex gap-2 sm:flex-row sm:p-2 shadow-md rounded-lg border items-center bg-gray-100">
-        <div
-          onClick={() => handleCircle(circle?._id, circle?.type)}
-          className={`content p-6 sm:py-2 sm:px-4 sm:space-y-6 xl:space-y-3 ${
-            followStates[circle?._id] === "Following"
-              ? "cursor-pointer"
-              : "cursor-not-allowed"
-          }`}
-        >
-          <div className="flex justify-between sm:flex-row gap-4 2xl:gap-2 sm:items-center">
-            <p className="bg-[#FF000029] text-[#9C0000] text-xs font-semibold p-1 inline-block">
-              Private
+      <div
+        onClick={() => handleCircle(circle?._id, circle?.type, isManager)}
+        className={`flex lg:h-[11rem] justify-between items-center lg:flex-row flex-col gap-2 shadow border border-zinc-300 p-2 rounded-md bg-white cursor-pointer ${
+          followStates[circle?._id] === "Following" || isManager
+            ? "cursor-pointer"
+            : "cursor-not-allowed"
+        }`}
+      >
+        <div className="flex flex-col justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <span className="font-semibold">
+              {circle?.title?.length > 15
+                ? circle?.title?.slice(0, 15) + "..."
+                : circle?.title}
+            </span>
+            <p className="bg-[#00B8D929] px-2 text-[#006C9C] text-[10px] font-semibold rounded-full">
+              {circle?.status}
+            </p>
+
+            <p className="bg-red-500 px-2 text-white text-[10px] font-semibold rounded-full">
+              {circle?.type}
             </p>
           </div>
-
-          <div className="font-semibold text-sm mt-4 sm:mt-0">
-            {circle?.title}
-          </div>
-
-          <p className="bg-[#00B8D929] text-[#10009c] text-xs font-semibold rounded-lg p-1 inline-block">
-            Categories: {circle?.categories?.map((item) => item).join(" | ")}
+          <p className="bg-[#00B8D929] w-max text-[#10009c] rounded-full font-semibold px-2 text-[11px]">
+            {circle?.categories?.length > 3
+              ? circle?.categories?.join(" | ").slice(0, 20) + "..."
+              : circle?.categories?.join(" | ")}
           </p>
 
-          <div className="font-sm text-gray-600 font-medium mt-4 sm:mt-0">
-            {circle?.description}
+          <div className="font-sm text-gray-600 font-medium text-[14px]">
+            {circle?.description
+              ? circle.description.split(" ").slice(0, 25).join(" ") +
+                (circle.description.split(" ").length > 25 ? " ..." : "")
+              : ""}
           </div>
-          <div className="flex justify-between items-center mt-4 sm:mb-0 mb-4 sm:mt-0">
-            <img src={more} alt="More" />
 
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1">
-                <IoEye />
-                <p className="text-sm">
-                  {formatNumber(circle?.viewCount || 0)}
-                </p>
-              </div>
-              <span className="flex items-center gap-1">
-                <RiUserFollowFill />
-                <p className="text-sm font-semibold">{circle?.followerCount}</p>
-              </span>
-              <div className="flex items-center gap-1">
-                <FaShareAlt />
-                <p className="text-sm">5</p>
-              </div>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-1">
+              <IoEye />
+              <p className="text-sm">{formatNumber(circle?.viewCount || 0)}</p>
+            </div>
+            <span className="flex items-center gap-1">
+              <RiUserFollowFill />
+              <p className="text-sm font-semibold">{circle?.followerCount}</p>
+            </span>
+            <div className="flex items-center gap-1">
+              <FaShareAlt />
+              <p className="text-sm">5</p>
             </div>
           </div>
         </div>
 
-        <div className="img p-4 flex flex-col gap-5 sm:p-0">
+        <div className="flex flex-col gap-2 sm:p-0">
           {profile === "user" && !isManager && (
             <span
               onClick={(e) => handleFollow(e, circle?._id)}
@@ -306,7 +313,7 @@ const UserAllCircle: React.FC<UserAllCircleProps> = ({ data }) => {
             </span>
           )}
           <img
-            className="object-cover rounded-lg w-[80vh] h-[25vh]"
+            className="lg:w-[20rem] w-full h-[7rem] rounded-md object-cover"
             src={`${imageUrl}/users/${circle?.mainImage}`}
             alt={circle?.title}
           />
@@ -316,15 +323,13 @@ const UserAllCircle: React.FC<UserAllCircleProps> = ({ data }) => {
   };
 
   return (
-    <div className="sm:px-10 py-8">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4">
-        {publicCircles.map((circle) => (
-          <PublicCircleCard key={circle?._id} circle={circle} />
-        ))}
-        {privateCircles.map((circle) => (
-          <PrivateCircleCard key={circle?._id} circle={circle} />
-        ))}
-      </div>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-2 my-3 sm:gap-4">
+      {publicCircles.map((circle) => (
+        <PublicCircleCard key={circle?._id} circle={circle} />
+      ))}
+      {privateCircles.map((circle) => (
+        <PrivateCircleCard key={circle?._id} circle={circle} />
+      ))}
     </div>
   );
 };

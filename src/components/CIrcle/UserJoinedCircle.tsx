@@ -1,9 +1,6 @@
-import React from "react";
-import more from "./assets/more.png";
-import message from "./assets/message.png";
-import view from "./assets/view.png";
-import share from "./assets/share.png";
-import img from "./assets/img.png";
+import { FaShareAlt } from "react-icons/fa";
+import { IoEye } from "react-icons/io5";
+import { RiUserFollowFill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import { imageUrl } from "../utils/baseUrls";
 import { useAppSelector } from "../../store/typedReduxHooks";
@@ -11,20 +8,17 @@ import toast from "react-hot-toast";
 
 const UserJoinedCircle = ({ data }) => {
   const navigate = useNavigate();
-  const profile = localStorage.getItem("profile");
 
   const id = useAppSelector((state) => state.user.user?._id);
 
   const showAssignedTab = data
-    ?.map((item) => item?.managers?.find((_id) => _id === id))
+    ?.map((item) => item?.managers?.find((_id: string) => _id === id))
     .filter(Boolean);
 
   const isAssigned = showAssignedTab.includes(id);
 
-  const handleCircle = (id, type) => {
+  const handleCircle = (id: string, type: string) => {
     if (isAssigned) {
-      console.log("dssaddas", isAssigned);
-
       navigate(`/circlepage?id=${encodeURIComponent(id)}`);
       return;
     }
@@ -37,91 +31,90 @@ const UserJoinedCircle = ({ data }) => {
     navigate(`/circlepage?id=${encodeURIComponent(id)}`);
   };
 
-  const handleFollow = (e, id) => {
-    e.stopPropagation();
-    console.log("Follow clicked for circle ID:", id);
+  const formatNumber = (num) => {
+    if (num >= 1000000) {
+      return (num / 1000000).toFixed(1) + "m";
+    } else if (num >= 1000) {
+      return (num / 1000).toFixed(1) + "k";
+    } else {
+      return num;
+    }
   };
 
   return (
-    <div className="sm:px-10 py-8">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4">
-        {data ? (
-          data?.map((circle, i) => (
-            <div
-              key={i}
-              className="flex gap-2 sm:flex-row sm:p-2 sm:mb-0 shadow-md rounded-lg border items-center"
-            >
-              <div
-                onClick={() => handleCircle(circle?._id, circle?.type)}
-                className="content p-6 sm:py-2 sm:px-4 sm:space-y-6 xl:space-y-3 cursor-pointer"
-              >
-                <div className="flex justify-between sm:flex-row gap-4 2xl:gap-2 sm:items-center">
-                  <div>
-                    <p className="bg-[#00B8D929] text-[#006C9C] text-xs font-semibold p-1 inline-block">
-                      {circle?.type || "Public"}
-                    </p>
-                  </div>
-                  <div></div>
-                </div>
-
-                <div className="font-semibold text-sm mt-4 sm:mt-0">
-                  {circle?.title}
-                </div>
-
-                <p className="bg-[#00B8D929] text-[#10009c] text-xs font-semibold rounded-lg p-1 inline-block">
-                  Categories :{" "}
-                  {circle?.categories?.map((item) => item).join(" | ")}
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-2 my-3 sm:gap-4">
+      {data && data.length > 0 ? (
+        data?.map((circle, i: number) => (
+          <div
+            key={i}
+            onClick={() => handleCircle(circle?._id, circle?.type)}
+            className={`flex lg:h-[11rem] justify-between items-center lg:flex-row flex-col gap-2 shadow border border-zinc-300 p-2 rounded-md bg-white cursor-pointer`}
+          >
+            <div className="flex flex-col justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <span className="font-semibold">
+                  {circle?.title?.length > 15
+                    ? circle?.title?.slice(0, 15) + "..."
+                    : circle?.title}
+                </span>
+                <p className="bg-[#00B8D929] px-2 text-[#006C9C] text-[10px] font-semibold rounded-full">
+                  {circle?.status}
                 </p>
-                <div className="font-sm text-gray-600 font-medium mt-4 sm:mt-0">
-                  {circle?.description
-                    ? circle.description.split(" ").slice(0, 25).join(" ") +
-                      (circle.description.split(" ").length > 25 ? " ..." : "")
-                    : ""}
-                </div>
 
-                <div className="flex justify-between items-center mt-4 sm:mb-0 mb-4 sm:mt-0">
-                  <div>
-                    <img src={more} alt="More" />
-                  </div>
+                <p className="bg-red-500 px-2 text-white text-[10px] font-semibold rounded-full">
+                  {circle?.type}
+                </p>
+              </div>
+              <p className="bg-[#00B8D929] w-max text-[#10009c] rounded-full font-semibold px-2 text-[11px]">
+                {circle?.categories?.length > 3
+                  ? circle?.categories?.join(" | ").slice(0, 20) + "..."
+                  : circle?.categories?.join(" | ")}
+              </p>
 
-                  <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-1">
-                      <img src={message} alt="Message" />
-                      <p className="text-sm">5</p>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <img src={view} alt="View" />
-                      <p className="text-sm">5</p>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <img src={share} alt="Share" />
-                      <p className="text-sm">5</p>
-                    </div>
-                  </div>
-                </div>
+              <div className="font-sm text-gray-600 font-medium text-[14px]">
+                {circle?.description
+                  ? circle.description.split(" ").slice(0, 25).join(" ") +
+                    (circle.description.split(" ").length > 25 ? " ..." : "")
+                  : ""}
               </div>
 
-              <div className="flex flex-col gap-3">
-                {isAssigned && (
-                  <span className=" font-semibold border bg-green-600 py-2 px-8 rounded-md  text-white">
-                    Manager
-                  </span>
-                )}
-
-                <div className="img p-4 flex flex-col gap-5 sm:p-0">
-                  <img
-                    className="object-cover rounded-lg w-[80vh] h-[25vh]"
-                    src={`${imageUrl}/users/${circle?.mainImage}`}
-                    alt={circle?.title}
-                  />
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-1">
+                  <IoEye />
+                  <p className="text-sm">
+                    {formatNumber(circle?.viewCount || 0)}
+                  </p>
+                </div>
+                <span className="flex items-center gap-1">
+                  <RiUserFollowFill />
+                  <p className="text-sm font-semibold">
+                    {circle?.followerCount}
+                  </p>
+                </span>
+                <div className="flex items-center gap-1">
+                  <FaShareAlt />
+                  <p className="text-sm">5</p>
                 </div>
               </div>
             </div>
-          ))
-        ) : (
-          <div>No Circle Is Assigned</div>
-        )}
-      </div>
+            <div className="flex flex-col gap-2 sm:p-0">
+              {isAssigned && (
+                <span className="font-semibold border text-center bg-green-600 py-2 px-8 rounded-md  text-white">
+                  Manager
+                </span>
+              )}
+
+              <img
+                className="lg:w-[20rem] w-full h-[7rem] rounded-md object-cover"
+                src={`${imageUrl}/users/${circle?.mainImage}`}
+                alt={circle?.title}
+              />
+            </div>
+          </div>
+        ))
+      ) : (
+        <div className="">No Circle Is Assigned</div>
+      )}
     </div>
   );
 };
