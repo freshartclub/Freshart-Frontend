@@ -18,7 +18,6 @@ import {
   package_dimension,
   shipping_inventry,
 } from "../../utils/mockData";
-import ArtBreadcrumbs from "./ArtBreadcrumb";
 import ArtworkRight from "./ArtworkRight";
 import { useGetArtWorkById } from "./http/useGetArtworkById";
 import { useGetTechnic } from "./http/useGetTechnic";
@@ -41,12 +40,15 @@ import { useGetMediaSupport } from "./http/useGetMediaSupport";
 import { useGetSeries } from "./http/useGetSeries";
 import usePostModifyArtworkMutation from "./http/usePostModifyArtwork";
 import { SeriesPop } from "./SeriesPop";
+import { useAppSelector } from "../../../store/typedReduxHooks";
 
 const AddArtwork = () => {
   const [copySuccess, setCopySuccess] = useState("");
   const [isLoadingPdf, setIsLoadingPdf] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [catalogPrice, setCatalogPrice] = useState(null);
+
+  const user = useAppSelector((state) => state.user.user);
 
   const { t } = useTranslation();
 
@@ -86,7 +88,7 @@ const AddArtwork = () => {
           onClick={toggleCalendar}
           className="bg-[#F9F9FC] mt-1 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5 text-left cursor-pointer"
         >
-          {selectedYear ? `${selectedYear}` : "Select Year"}
+          {selectedYear ? `${selectedYear}` : t("Select Year")}
         </div>
 
         {showCalendar && (
@@ -221,11 +223,21 @@ const AddArtwork = () => {
     seriesData?.discipline?.find((item) => item?.discipline === artDicipline)
       ?.style || [];
 
+  const name = (val) => {
+    let fullName = val?.artistName || "";
+
+    if (val?.nickName) fullName += " " + `"${val?.nickName}"`;
+    if (val?.artistSurname1) fullName += " " + val?.artistSurname1;
+    if (val?.artistSurname2) fullName += " " + val?.artistSurname2;
+
+    return fullName.trim();
+  };
+
   useEffect(() => {
     if (id) {
       setIsArtProviderField(data?.data?.isArtProvider || "");
-      setArtDicipline(data?.data?.discipline?.artworkDiscipline || ""),
-        setActiveTab(data?.data?.commercialization?.activeTab || "");
+      setArtDicipline(data?.data?.discipline?.artworkDiscipline || "");
+      setActiveTab(data?.data?.commercialization?.activeTab || "");
       setInternalTags(data?.data?.tags?.intTags || []);
       setExternalTags(data?.data?.tags?.extTags || []);
       setCatalogPrice(data?.data?.pricing?.artistFees || 0);
@@ -241,7 +253,7 @@ const AddArtwork = () => {
         "discountAcceptation",
         data?.data?.restriction?.discountAcceptation
       );
-      setValue("provideArtistName", data?.data?.provideArtistName || "");
+      setValue("provideArtistName", data?.data?.provideArtistName);
       setValue("artworkSeries", data?.data?.artworkSeries);
       setValue("artworkCreationYear", data?.data?.artworkCreationYear || "");
       setValue("artworkName", data?.data?.artworkName || "");
@@ -370,6 +382,8 @@ const AddArtwork = () => {
       );
 
       setIsComingSoon(data?.data?.inventoryShipping?.comingSoon || Boolean);
+    } else {
+      setValue("provideArtistName", name(user));
     }
   }, [id, data, inProcessImage, seriesData]);
 
@@ -406,6 +420,7 @@ const AddArtwork = () => {
     "Colors",
     "Artwork Available To",
     "Artwork Discount Options",
+    "Artwork Orientation",
   ]);
 
   const picklistMap = picklist.reduce((acc, item: any) => {
@@ -420,6 +435,7 @@ const AddArtwork = () => {
   const colors = picklistMap["Colors"];
   const availableTo = picklistMap["Artwork Available To"];
   const discountAcceptation = picklistMap["Artwork Discount Options"];
+  const orientation = picklistMap["Artwork Orientation"];
 
   let getMaterial = getMediaSupport?.data?.filter(
     (item) =>
@@ -581,6 +597,12 @@ const AddArtwork = () => {
       values.hasInProcessImg = hasInProcessImg;
       values.hasMainVideo = hasMainVideo;
       values.comingSoon = isComingSoon;
+
+      if (isArtProvider === "Yes") {
+        values.isArtProvider = "Yes";
+      } else {
+        values.isArtProvider = "No";
+      }
 
       const formData = new FormData();
 
@@ -769,32 +791,32 @@ const AddArtwork = () => {
       <div className={`${qrVisible ? "bg-white blur-sm" : ""}`}>
         <Header
           variant={{ size: "xl", theme: "dark", weight: "semiBold" }}
-          className="text-black ml-2 mt-3"
+          className="text-black ml-3 mt-3"
         >
           {t("Add Artwork")}
         </Header>
 
         <form onSubmit={onSubmit}>
-          <div className="flex flex-col 2xl:flex-row justify-between 2xl:items-center mt-3 2xl:mt-0 mb-4 mx-2">
-            <ArtBreadcrumbs />
+          {/* <div className="flex flex-col 2xl:flex-row justify-between 2xl:items-center mt-3 2xl:mt-0 mb-4 mx-2"> */}
+          {/* <ArtBreadcrumbs /> */}
 
-            <div className="flex flex-col lg:flex-row w-fit gap-4 flex-wrap mt-4 md:lg-0">
-              {query ? (
-                <h1
-                  onClick={() => handleGenerateQRCode()}
-                  className="cursor-pointer gap-2 bg-black text-white text-[12px] md:text-[16px] px-2 py-2 rounded hover:bg-gray-800"
-                >
-                  {t("Generate QR Code")}
-                </h1>
-              ) : null}
-
-              <h1 className="cursor-pointer gap-2 bg-black text-white text-[12px] md:text-[16px] px-2 py-2 rounded hover:bg-gray-800">
-                {t("Generate Certificate Of Authenticity")}
+          <div className="flex flex-col lg:flex-row w-fit gap-4 flex-wrap mt-6 mx-3 mb-2">
+            {query ? (
+              <h1
+                onClick={() => handleGenerateQRCode()}
+                className="cursor-pointer gap-2 bg-black text-white text-[12px] md:text-[16px] px-2 py-2 rounded hover:bg-gray-800"
+              >
+                {t("Generate QR Code")}
               </h1>
-            </div>
-          </div>
+            ) : null}
 
-          <div className="grid xl:grid-cols-4 gap-4 mx-2">
+            <h1 className="cursor-pointer gap-2 bg-black text-white text-[12px] md:text-[16px] px-2 py-2 rounded hover:bg-gray-800">
+              {t("Generate Certificate Of Authenticity")}
+            </h1>
+          </div>
+          {/* </div> */}
+
+          <div className="grid xl:grid-cols-4 gap-4 mx-3">
             <div className="xl:col-span-3 rounded-md">
               <div className="bg-white p-4 rounded-md shadow-md border">
                 <Header
@@ -843,16 +865,12 @@ const AddArtwork = () => {
                       onChange={(e) => setIsArtProviderField(e.target.value)}
                       className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5 "
                     >
-                      <option value="" disabled>
-                        {t("Select")}
-                      </option>
                       <option value="Yes">{t("Yes")}</option>
-                      <option value="No">{t("No")}</option>
                     </select>
                   </div>
                 ) : null}
 
-                {isArtProviderField === "Yes" ? (
+                {isArtProvider === "Yes" ? (
                   <div className="mb-4">
                     <label className="block text-sm text-[#203F58] font-semibold mb-2">
                       {t("Artist Name")}
@@ -1007,7 +1025,7 @@ const AddArtwork = () => {
                         disabled={query ? true : false}
                       />
                       <div className="bg-[#F9F9FC] border border-dashed py-2 px-2 flex flex-col items-center">
-                        {data?.data?.media?.mainImage || mainImage ? (
+                        {mainImage ? (
                           <div className="relative">
                             <img
                               src={mainImage}
@@ -1247,31 +1265,35 @@ const AddArtwork = () => {
                             })}
                           {getValues("existingImage") &&
                             getValues("existingImage").length > 0 &&
-                            getValues("existingImage")?.map((img, i) => {
-                              return (
-                                <div key={i} className="relative">
-                                  <img
-                                    src={`${imageUrl}/users/${img}`}
-                                    alt="image"
-                                    className="w-28 h-28 object-cover"
-                                  />
-                                  <span
-                                    className={`absolute top-1 right-1 cursor-pointer bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center ${
-                                      query
-                                        ? "pointer-events-none opacity-50"
-                                        : ""
-                                    }`}
-                                    onClick={() =>
-                                      removeExistingImage(i, "Url")
-                                    }
-                                  >
-                                    &times;
-                                  </span>
-                                </div>
-                              );
-                            })}
-                          {images?.length === 0 &&
-                          !getValues("existingImage") ? (
+                            getValues("existingImage")?.map(
+                              (img, i: number) => {
+                                return (
+                                  <div key={i} className="relative">
+                                    <img
+                                      src={`${imageUrl}/users/${img}`}
+                                      alt="image"
+                                      className="w-28 h-28 object-cover"
+                                    />
+                                    <span
+                                      className={`absolute top-1 right-1 cursor-pointer bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center ${
+                                        query
+                                          ? "pointer-events-none opacity-50"
+                                          : ""
+                                      }`}
+                                      onClick={() =>
+                                        removeExistingImage(i, "Url")
+                                      }
+                                    >
+                                      &times;
+                                    </span>
+                                  </div>
+                                );
+                              }
+                            )}
+                          {(typeof getValues("existingImage")?.length ==
+                            "undefined" ||
+                            getValues("existingImage")?.length == 0) &&
+                          images?.length == 0 ? (
                             <div className="flex flex-col items-center">
                               <img
                                 src={image_icon}
@@ -1435,27 +1457,29 @@ const AddArtwork = () => {
                             </div>
                           ))}
 
-                        {!exVidoes && otherVideo?.length === 0 && (
-                          <>
-                            <img
-                              src={video_icon}
-                              alt="icon"
-                              className="w-28 max-h-28 min-h-28 object-cover mb-4"
-                            />
-                            <P
-                              variant={{
-                                size: "small",
-                                theme: "dark",
-                                weight: "normal",
-                              }}
-                              className="text-center"
-                            >
-                              {t(
-                                "Drag and drop video here, or click add video"
-                              )}
-                            </P>
-                          </>
-                        )}
+                        {(typeof exVidoes?.length == "undefined" ||
+                          exVidoes?.length == 0) &&
+                          otherVideo?.length == 0 && (
+                            <>
+                              <img
+                                src={video_icon}
+                                alt="icon"
+                                className="w-28 max-h-28 min-h-28 object-cover mb-4"
+                              />
+                              <P
+                                variant={{
+                                  size: "small",
+                                  theme: "dark",
+                                  weight: "normal",
+                                }}
+                                className="text-center"
+                              >
+                                {t(
+                                  "Drag and drop video here, or click add video"
+                                )}
+                              </P>
+                            </>
+                          )}
                         <span
                           onClick={() =>
                             document.querySelector("#other-video-input").click()
@@ -1918,10 +1942,17 @@ const AddArtwork = () => {
                       className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
                     >
                       <option value="">{t("Select Type")}</option>
-                      <option value="Square">{t("Square")} </option>
+                      {/* <option value="Square">{t("Square")} </option>
                       <option value="Rectangle">{t("Rectangle")}</option>
                       <option value="Circle">{t("Circle")}</option>
-                      <option value="Star">{t("Star")}</option>
+                      <option value="Star">{t("Star")}</option> */}
+                      {orientation && orientation?.length > 0
+                        ? orientation?.map((item: any, i: number) => (
+                            <option value={item?.value} key={i}>
+                              {t(item?.value)}
+                            </option>
+                          ))
+                        : null}
                     </select>
                     {errors.artworkOrientation ? (
                       <div className="error text-red-500 mt-1 text-sm">

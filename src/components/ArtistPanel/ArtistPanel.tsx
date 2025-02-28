@@ -69,7 +69,7 @@ const ArtistPanel = () => {
             <Route path="order/approve-order" element={<OrderApprove />} />
             <Route path="artwork/add" element={<AddArtwork />} />
             <Route path="edit-artistprofile" element={<ArtistProfile />} />
-            <Route path="user/settings" element={<Settings />} />
+            <Route path="settings" element={<Settings />} />
             <Route path="circle" element={<Circle />} />
             <Route path="circle/circlepage" element={<CirclePage />} />
 

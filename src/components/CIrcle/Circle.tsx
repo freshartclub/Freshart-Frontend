@@ -7,6 +7,7 @@ import Loader from "../ui/Loader";
 import AllCircle from "./AllCircle";
 import ArtistPrivateCircle from "./ArtistPrivateCircle";
 import ArtistPublicCircle from "./ArtistPublicCircle";
+import { useTranslation } from "react-i18next";
 
 interface Circle {
   title?: string;
@@ -21,6 +22,7 @@ interface CircleResponse {
 }
 
 const Circle = () => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState<string>("");
 
@@ -87,80 +89,51 @@ const Circle = () => {
   if (isLoading) return <Loader />;
 
   return (
-    <div className="py-7 px-4">
-      <div>
-        {/* Header Section */}
-        <div className="flex flex-col sm:flex-row justify-between gap-2">
-          <div className="space-y-2">
-            <h1 className="font-bold text-[20px] md:text-[24px] text-black">
-              Circle
-            </h1>
-            <div className="flex gap-2 items-center">
-              <p className="text-base text-black font-semibold">
-                <NavLink to={"/dashboard"}>Dashboard</NavLink>
-              </p>
-              <BsDot />
-              <span className="text-base text-black font-semibold hover:cursor-pointer">
-                Circle
-              </span>
-              <BsDot />
-              <span className="text-sm text-gray-400 font-semibold hover:cursor-pointer">
-                List
-              </span>
-            </div>
+    <div className="p-3">
+      <h1 className="font-bold text-[20px] md:text-[24px] text-black">
+        {t("Circle List")}
+      </h1>
+
+      <div className="mt-5 relative">
+        {searchQuery === "" && (
+          <FiSearch
+            className="absolute top-2.5 left-2 text-gray-400"
+            size={20}
+          />
+        )}
+        <input
+          className="p-2 pl-8 border border-zinc-400 outline-none rounded-lg w-full"
+          placeholder={t("Search by Circle Title or Category")}
+          value={searchQuery}
+          onChange={handleSearchChange}
+        />
+      </div>
+
+      <div className="tab-filter mt-4 border rounded-t-lg bg-gray-200 p-2 scrollbar flex gap-4 w-full max-w-full overflow-x-auto md:gap-8 text-sm font-medium items-center">
+        {Object.keys(tabCounts).map((tab: string) => (
+          <div
+            key={tab}
+            className={`tab-item p-2 rounded flex items-center w-max flex-shrink-0 ${
+              activeTab === tab ? "bg-[#102030] text-white" : ""
+            }`}
+            onClick={() => handleTabClick(tab)}
+          >
+            <span>{tab}</span>
+            <span className="count ml-2 font-semibold border-black white">
+              ({tabCounts[tab]})
+            </span>
           </div>
-          <div></div>
-        </div>
+        ))}
+      </div>
 
-        {/* Search and Sort Section */}
-        <div className="flex flex-col sm:flex-row justify-center gap-2 mt-8">
-          <div className="relative w-[50vw]">
-            <input
-              className="p-2 border border-zinc-400 outline-none rounded-lg w-full"
-              placeholder="Search by title or category"
-              value={searchQuery}
-              onChange={handleSearchChange}
-            />
-            {searchQuery === "" && (
-              <FiSearch
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                size={20}
-              />
-            )}
-          </div>
-        </div>
-
-        {/* Tab Filter Section */}
-        <div className="tab-filter mt-8">
-          {Object.keys(tabCounts).map((tab: string) => (
-            <div
-              key={tab}
-              className={`tab-item f ${
-                activeTab === tab ? "active" : ""
-              } inline-block px-4 py-2 cursor-pointer ${
-                activeTab === tab
-                  ? "border-b-2 bg-black text-white rounded-md font-semibold border-black "
-                  : " text-black"
-              }`}
-              onClick={() => handleTabClick(tab)}
-            >
-              <span>{tab}</span>
-              <span className="count ml-2 font-semibold border-black white">
-                ({tabCounts[tab]})
-              </span>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-6">
-          {activeTab === "All" && <AllCircle data={filteredData} />}
-          {activeTab === "Public" && (
-            <ArtistPublicCircle data={filteredPublicData} />
-          )}
-          {activeTab === "Private" && (
-            <ArtistPrivateCircle data={filteredPrivateData} />
-          )}
-        </div>
+      <div className="mt-6">
+        {activeTab === "All" && <AllCircle data={filteredData} />}
+        {activeTab === "Public" && (
+          <ArtistPublicCircle data={filteredPublicData} />
+        )}
+        {activeTab === "Private" && (
+          <ArtistPrivateCircle data={filteredPrivateData} />
+        )}
       </div>
     </div>
   );

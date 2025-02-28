@@ -13,86 +13,50 @@ const ArtistTabs = () => {
 
   return (
     <>
-      <div className="my-5 dark:border-gray-700 flex sm:flex-row flex-col items-center ">
-        <ul
-          className="flex -mb-px text-sm font-medium text-center overflow-x-auto scrollbar-hide w-full sm:w-auto"
-          id="default-tab"
-          data-tabs-toggle="#default-tab-content"
-          role="tablist"
+      <div className="bg-gray-200 mt-6 flex scrollbar gap-4 p-2 border border-gray-300 rounded max-w-full w-full overflow-x-auto font-semibold">
+        <P
+          variant={{ size: "base", theme: "dark", weight: "semiBold" }}
+          onClick={() => setActiveTab("notification")}
+          className={`flex items-center gap-2 flex-shrink-0 border-none px-4 py-2 rounded cursor-pointer transition ${
+            activeTab === "notification"
+              ? "bg-black text-white"
+              : "bg-gray-200 text-gray-700"
+          }`}
         >
-          <P
-            variant={{ size: "base", theme: "dark", weight: "semiBold" }}
-            className="mx-2 sm:mx-5 flex-shrink-0"
-            role="presentation"
-          >
-            <button
-              className={`pb-2 rounded-t-lg flex items-center gap-1 ${
-                activeTab === "notification"
-                  ? "border-b-2 border-black"
-                  : "hover:text-gray-600 hover:border-gray-300"
-              }`}
-              onClick={() => setActiveTab("notification")}
-              type="button"
-              role="tab"
-              aria-controls="notification"
-              aria-selected={activeTab === "notification"}
-            >
-              <img src={bell} alt="notification" className="h-4 w-4" />
-              {t("Notifications")}
-            </button>
-          </P>
+          <img src={bell} alt="notification" className="h-4 w-4" />
+          {t("Notifications")}
+        </P>
 
-          <P
-            variant={{ size: "base", theme: "dark", weight: "semiBold" }}
-            className="mx-2 sm:mx-5 flex-shrink-0"
-            role="presentation"
-          >
-            <button
-              className={`pb-2 rounded-t-lg flex items-center gap-1 ${
-                activeTab === "security"
-                  ? "border-b-2 border-black"
-                  : "hover:text-gray-600 hover:border-gray-300"
-              }`}
-              onClick={() => setActiveTab("security")}
-              type="button"
-              role="tab"
-              aria-controls="security"
-              aria-selected={activeTab === "security"}
-            >
-              <img src={security} alt="security" className="h-3 w-4" />
-              {t("Security")}
-            </button>
-          </P>
+        <P
+          variant={{ size: "base", theme: "dark", weight: "semiBold" }}
+          onClick={() => setActiveTab("security")}
+          className={`flex items-center gap-2 flex-shrink-0 border-none px-4 py-2 rounded cursor-pointer transition ${
+            activeTab === "security"
+              ? "bg-black text-white"
+              : "bg-gray-200 text-gray-700"
+          }`}
+        >
+          <img src={security} alt="security" className="h-3 w-4" />
+          {t("Security")}
+        </P>
 
-          <P
-            variant={{ size: "base", theme: "dark", weight: "semiBold" }}
-            className="mx-2 sm:mx-5 flex-shrink-0"
-            role="presentation"
-          >
-            <button
-              className={`pb-2 rounded-t-lg flex items-center gap-1 ${
-                activeTab === "language"
-                  ? "border-b-2 border-black"
-                  : "hover:text-gray-600 hover:border-gray-300"
-              }`}
-              onClick={() => setActiveTab("language")}
-              type="button"
-              role="tab"
-              aria-controls="language"
-              aria-selected={activeTab === "language"}
-            >
-              <img src={security} alt="language" className="h-3 w-4" />
-              {t("Language")}
-            </button>
-          </P>
-        </ul>
+        <P
+          variant={{ size: "base", theme: "dark", weight: "semiBold" }}
+          onClick={() => setActiveTab("language")}
+          className={`flex items-center gap-2 flex-shrink-0 border-none px-4 py-2  rounded cursor-pointer transition ${
+            activeTab === "language"
+              ? "bg-black text-white"
+              : "bg-gray-200 text-gray-700"
+          }`}
+        >
+          <img src={security} alt="language" className="h-3 w-4" />
+          {t("Language")}
+        </P>
       </div>
 
-      <div id="default-tab-content">
-        {activeTab === "notification" && <Notification />}
-        {activeTab === "security" && <Security />}
-        {activeTab === "language" && <Language />}
-      </div>
+      {activeTab === "notification" && <Notification />}
+      {activeTab === "security" && <Security />}
+      {activeTab === "language" && <Language />}
     </>
   );
 };

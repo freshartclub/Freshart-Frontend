@@ -5,7 +5,7 @@ export default function Notification() {
   const { t } = useTranslation();
   const [toggles, setToggles] = useState([
     {
-      section: "Activity",
+      section: t("Activity"),
       paragraph: "Donec mi odio, faucibus at, scelerisque quis",
       items: [
         { label: "Email me when someone comments on my article", value: true },
@@ -14,7 +14,7 @@ export default function Notification() {
       ],
     },
     {
-      section: "Application",
+      section: t("Application"),
       paragraph: "Vestibulum facilisis, purus nec pulvinar iaculis",
       items: [
         { label: "News and announcements", value: true },
@@ -32,22 +32,15 @@ export default function Notification() {
   };
 
   return (
-    <div className="mx-auto p-6 rounded-lg shadow-lg ">
+    <div className="mx-auto mt-2 bg-white p-4 rounded shadow border">
       {toggles.map((item, sectionIndex) => (
-        <div
-          key={sectionIndex}
-          className="mb-8 flex justify-between flex-col md:flex-row"
-        >
-          <div className="flex flex-col w-96">
-            <h2 className="text-md font-semibold w-[334px] h-[28px]">
-              {item.section}
-            </h2>
-            <p className="text-gray-500 mt-2 text-base w-[3x] h-[22px]">
-              {item.paragraph}
-            </p>
+        <div key={sectionIndex} className="mb-8 flex justify-between flex-col">
+          <div className="flex flex-col">
+            <h2 className="text-md font-semibold">{item.section}</h2>
+            <p className="text-gray-500 mt-1 text-sm">{item.paragraph}</p>
           </div>
 
-          <div className="bg-[#F4F6F8] px-4 py-10 rounded-lg shadow-md space-y-4 w-[60%]">
+          <div className="bg-[#F4F6F8] px-4 py-3 mt-3 rounded shadow border space-y-2">
             {item.items.map((toggle, itemIndex) => (
               <div
                 key={itemIndex}
@@ -64,7 +57,7 @@ export default function Notification() {
                   <span className="sr-only">{`Toggle ${toggle.label}`}</span>
                   <span
                     className={`${
-                      toggle.value ? "translate-x-6" : "translate-x-1"
+                      toggle.value ? "translate-x-5" : "translate-x-0"
                     } inline-block h-4 w-4 transform bg-white rounded-full transition-transform m-1`}
                   />
                 </button>

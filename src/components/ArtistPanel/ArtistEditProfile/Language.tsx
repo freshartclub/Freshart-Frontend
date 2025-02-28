@@ -96,17 +96,17 @@ const Language = () => {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="mt-2 space-y-2">
       {options.map((option, index) => (
         <div
           key={index}
-          className="flex justify-between items-center p-4 border rounded-lg"
+          className="flex justify-between items-center bg-white p-4 py-3 border rounded"
         >
           <span className="text-black font-semibold">{t(option.label)}</span>
 
           {option.value === "currency" ? (
-            <div className="flex items-center">
-              <span className="text-lg font-semibold">
+            <div className="flex gap-1 items-center">
+              <span className="text font-semibold">
                 {option.choices.find(
                   (choice) => choice.value === settings.currency
                 )?.symbol || ""}
@@ -114,7 +114,7 @@ const Language = () => {
               <select
                 value={currencySettings}
                 onChange={(e) => setCurrencySettings(e.target.value)}
-                className="rounded-md p-2 ml-2 focus:outline-none w-20 md:w-32"
+                className="rounded-md focus:outline-none"
               >
                 {option.choices.map((choice, idx) => (
                   <option key={idx} value={choice.label}>
@@ -124,23 +124,21 @@ const Language = () => {
               </select>
             </div>
           ) : (
-            <div className="relative ">
+            <div className="relative">
               <button
-                className="flex items-center justify-between  p-2 "
+                className="flex items-center justify-between gap-2"
                 onClick={() => setLanguageDropdownOpen(!isLanguageDropdownOpen)}
               >
-                <div className="flex items-center space-x-2">
-                  <img src={flag} alt="Flag" className="w-6 h-6" />
-                </div>
+                <img src={flag} alt="Flag" className="w-6 h-6" />
                 <FaAngleDown className="text-gray-600" />
               </button>
 
               {isLanguageDropdownOpen && (
-                <div className="absolute mt-1  bg-white border rounded shadow-md z-10">
+                <div className="absolute w-[8rem] right-0 top-10 bg-white border rounded shadow-md z-10">
                   {countries?.map((choice, idx) => (
                     <button
                       key={idx}
-                      className="flex items-center  p-2 hover:bg-gray-100 focus:outline-none"
+                      className="flex items-center p-2 hover:bg-gray-100 focus:outline-none"
                       onClick={() =>
                         handleSelectChange(
                           choice.name,

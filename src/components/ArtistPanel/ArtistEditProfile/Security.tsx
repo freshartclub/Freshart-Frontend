@@ -51,117 +51,122 @@ const Security = () => {
   };
 
   return (
-    <div className="p-4 md:p-6 mx-auto rounded-lg shadow-lg ">
-      <Formik
-        initialValues={{
-          oldPassword: "",
-          newPassword: "",
-          confirmPassword: "",
-        }}
-        validationSchema={validationSchema}
-        onSubmit={onSubmit}
-      >
-        {({ errors, touched }) => (
-          <Form className="space-y-6">
-            <div className="relative">
-              <Field
-                type={showPassword.oldPassword ? "text" : "password"}
-                name="oldPassword"
-                placeholder={t("Old Password")}
-                className={`w-full px-4 py-3 border ${
-                  errors.oldPassword && touched.oldPassword
-                    ? "border-red-500"
-                    : "border-[#919EAB33]"
-                } rounded-md outline-none`}
-              />
-              <button
-                type="button"
-                className="absolute right-3 top-3 text-[#637381]"
-                onClick={() => togglePasswordVisibility("oldPassword")}
-              >
-                {showPassword.oldPassword ? (
-                  <i className="bi bi-eye" />
-                ) : (
-                  <i className="bi bi-eye-slash" />
-                )}
-              </button>
-              <ErrorMessage
-                name="oldPassword"
-                component="div"
-                className="text-red-500 text-xs"
-              />
-            </div>
+    <>
+      <p className="text-black mt-2 p-2 border-l border-r border-t rounded-t bg-gray-200 font-semibold text-[18px]">
+        {t("Change Password")}
+      </p>
+      <div className="p-4 bg-white mx-auto rounded-b shadow border">
+        <Formik
+          initialValues={{
+            oldPassword: "",
+            newPassword: "",
+            confirmPassword: "",
+          }}
+          validationSchema={validationSchema}
+          onSubmit={onSubmit}
+        >
+          {({ errors, touched }) => (
+            <Form className="space-y-3">
+              <div className="relative">
+                <Field
+                  type={showPassword.oldPassword ? "text" : "password"}
+                  name="oldPassword"
+                  placeholder={t("Old Password")}
+                  className={`w-full p-2 border ${
+                    errors.oldPassword && touched.oldPassword
+                      ? "border-red-500"
+                      : "border-[#abababa6]"
+                  } rounded outline-none`}
+                />
+                <button
+                  type="button"
+                  className="absolute right-3 top-3 text-[#637381]"
+                  onClick={() => togglePasswordVisibility("oldPassword")}
+                >
+                  {showPassword.oldPassword ? (
+                    <i className="bi bi-eye" />
+                  ) : (
+                    <i className="bi bi-eye-slash" />
+                  )}
+                </button>
+                <ErrorMessage
+                  name="oldPassword"
+                  component="div"
+                  className="text-red-500 text-xs"
+                />
+              </div>
 
-            <div className="relative">
-              <Field
-                type={showPassword.newPassword ? "text" : "password"}
-                name="newPassword"
-                placeholder={t("New Password")}
-                className={`w-full px-4 py-3 border ${
-                  errors.newPassword && touched.newPassword
-                    ? "border-red-500"
-                    : "border-[#919EAB33]"
-                } rounded-md outline-none`}
-              />
-              <button
-                type="button"
-                className="absolute right-3 top-3 text-[#637381]"
-                onClick={() => togglePasswordVisibility("newPassword")}
-              >
-                {showPassword.newPassword ? (
-                  <i className="bi bi-eye" />
-                ) : (
-                  <i className="bi bi-eye-slash" />
-                )}
-              </button>
-              <ErrorMessage
-                name="newPassword"
-                component="div"
-                className="text-red-500 text-xs"
-              />
-            </div>
+              <div className="relative">
+                <Field
+                  type={showPassword.newPassword ? "text" : "password"}
+                  name="newPassword"
+                  placeholder={t("New Password")}
+                  className={`w-full p-2 border ${
+                    errors.newPassword && touched.newPassword
+                      ? "border-red-500"
+                      : "border-[#abababa6]"
+                  } rounded outline-none`}
+                />
+                <button
+                  type="button"
+                  className="absolute right-3 top-3 text-[#637381]"
+                  onClick={() => togglePasswordVisibility("newPassword")}
+                >
+                  {showPassword.newPassword ? (
+                    <i className="bi bi-eye" />
+                  ) : (
+                    <i className="bi bi-eye-slash" />
+                  )}
+                </button>
+                <ErrorMessage
+                  name="newPassword"
+                  component="div"
+                  className="text-red-500 text-xs"
+                />
+              </div>
 
-            <div className="relative">
-              <Field
-                type={showPassword.confirmPassword ? "text" : "password"}
-                name="confirmPassword"
-                placeholder={t("Confirm New Password")}
-                className={`w-full px-4 py-3 border ${
-                  errors.confirmPassword && touched.confirmPassword
-                    ? "border-red-500"
-                    : "border-[#919EAB33]"
-                } rounded-md outline-none`}
-              />
-              <button
-                type="button"
-                className="absolute right-3 top-3 text-[#637381]"
-                onClick={() => togglePasswordVisibility("confirmPassword")}
-              >
-                {showPassword.confirmPassword ? (
-                  <i className="bi bi-eye" />
-                ) : (
-                  <i className="bi bi-eye-slash" />
-                )}
-              </button>
-              <ErrorMessage
-                name="confirmPassword"
-                component="div"
-                className="text-red-500 text-xs"
-              />
-            </div>
+              <div className="relative">
+                <Field
+                  type={showPassword.confirmPassword ? "text" : "password"}
+                  name="confirmPassword"
+                  placeholder={t("Confirm New Password")}
+                  className={`w-full p-2 border ${
+                    errors.confirmPassword && touched.confirmPassword
+                      ? "border-red-500"
+                      : "border-[#abababa6]"
+                  } rounded outline-none`}
+                />
+                <button
+                  type="button"
+                  className="absolute right-3 top-3 text-[#637381]"
+                  onClick={() => togglePasswordVisibility("confirmPassword")}
+                >
+                  {showPassword.confirmPassword ? (
+                    <i className="bi bi-eye" />
+                  ) : (
+                    <i className="bi bi-eye-slash" />
+                  )}
+                </button>
+                <ErrorMessage
+                  name="confirmPassword"
+                  component="div"
+                  className="text-red-500 text-xs"
+                />
+              </div>
 
-            <div className="flex justify-end mt-4">
-              <button
-                type="submit"
-                className="bg-[#102030] text-white py-2 px-4 rounded hover:bg-[#0d1a26] transition duration-300"
-              >
-                {isPending ? t("Saving...") : t("Save Changes")}
-              </button>
-            </div>
-          </Form>
-        )}
-      </Formik>
-    </div>
+              <div className="flex justify-end mt-4">
+                <button
+                  type="submit"
+                  className="bg-[#102030] text-white py-2 px-4 rounded hover:bg-[#0d1a26] transition duration-300"
+                >
+                  {isPending ? t("Saving...") : t("Save Changes")}
+                </button>
+              </div>
+            </Form>
+          )}
+        </Formik>
+      </div>
+    </>
   );
 };
 

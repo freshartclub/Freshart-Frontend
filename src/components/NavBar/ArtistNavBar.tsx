@@ -212,19 +212,19 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
 
               <Link
                 className="font-medium hover:bg-zinc-200 transition-all duration-200"
-                to="/artist-panel/user/settings"
+                to="/artist-panel/settings"
                 onClick={() => setIsToggelOpen(false)}
               >
                 {t("User Settings")}
               </Link>
 
-              <Link
+              {/* <Link
                 className="font-medium hover:bg-zinc-200 transition-all duration-200"
-                to="/artist-panel/user/settings"
+                to="/artist-panel/settings"
                 onClick={() => setIsToggelOpen(false)}
               >
                 {t("Notification")}
-              </Link>
+              </Link> */}
 
               <span
                 className="font-medium hover:bg-zinc-200 transition-all duration-200 cursor-pointer"

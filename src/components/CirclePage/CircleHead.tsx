@@ -20,7 +20,7 @@ import Managers from "./Managers";
 const CircleHead = ({ data }) => {
   const [activeTab, setActiveTab] = useState(0);
   const [searchParams] = useSearchParams();
-  const circleId = searchParams.get("id");
+  const circleId = searchParams.get("id") as string;
   const type = data?.data?.type;
 
   const { mutate, isPending } = useUnfollowMutation();
