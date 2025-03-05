@@ -133,10 +133,10 @@ const App: React.FC = () => {
       <Layout isAuthenticated={isAuthenticated}>
         <Suspense fallback={<Loader />}>
           <Routes>
-            {/* <Route path="/" element={<GetStarted />} /> */}
-            <Route path="/" element={<UnderConstruction />} />
+            <Route path="/" element={<GetStarted />} />
+            {/* <Route path="/" element={<UnderConstruction />} /> */}
             <Route path="/login" element={<LoginPage />} />
-            {/* <Route path="/signup" element={<SignUp />} /> */}
+            <Route path="/signup" element={<SignUp />} />
             <Route path="/become_artist" element={<BecomeArtist />} />
             <Route path="/forget-password" element={<ForgetPassword />} />
             <Route path="/reset-password" element={<ChangePassword />} />
@@ -145,11 +145,11 @@ const App: React.FC = () => {
             <Route path="/terms" element={<TermAndCondition />} />
 
             <Route path="*" element={<NotFoundPage />} />
-            {/* <Route path="/faq" element={<Faq />} />
+            <Route path="/faq" element={<Faq />} />
             <Route path="/kb-database" element={<KbDatabase />} />
-            <Route path="/about-us" element={<AboutUs />} /> */}
+            <Route path="/about-us" element={<AboutUs />} />
 
-            {/* <Route
+            <Route
               path="/invoice-pdf*"
               element={
                 <AuthGuard>
@@ -168,7 +168,7 @@ const App: React.FC = () => {
                   </ArtistGuard>
                 </AuthGuard>
               }
-            /> */}
+            />
 
             <Route
               path="/artist-panel/*"
@@ -181,7 +181,7 @@ const App: React.FC = () => {
               }
             />
 
-            {/* <Route
+            <Route
               path="/tickets"
               element={
                 <AuthGuard>
@@ -504,9 +504,9 @@ const App: React.FC = () => {
                   <PaymentPage />
                 </AuthGuard>
               }
-            /> */}
+            />
           </Routes>
-          {/* {profile === "user" ? <FooterSection /> : null} */}
+          {profile === "user" ? <FooterSection /> : null}
         </Suspense>
       </Layout>
     </AuthProvider>

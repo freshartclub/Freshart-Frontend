@@ -623,9 +623,9 @@ const NavForHome = () => {
               >
                 Sign In
               </Link>
-              {/* <Link to="/signup" className="text-sm text-white">
+              <Link to="/signup" className="text-sm text-white">
                 Sign Up
-              </Link> */}
+              </Link>
             </div>
           </>
         )}
