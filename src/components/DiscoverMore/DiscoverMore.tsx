@@ -14,6 +14,7 @@ import { useGetArtWorkById } from "./http/useGetArtWorkById";
 import Loader from "../ui/Loader";
 import { imageUrl, lowImageUrl } from "../utils/baseUrls";
 import { motion } from "framer-motion";
+import { FaToggleOff, FaToggleOn } from "react-icons/fa";
 
 const DiscoverMore = () => {
   const TEN_DAYS_MS = 10 * 24 * 60 * 60 * 1000;
@@ -23,32 +24,11 @@ const DiscoverMore = () => {
   const containerRef = useRef(null);
 
   const { data, isLoading } = useGetArtWorkById(id, preview);
-  const [safeMode, setSafeMode] = useState(false);
+  const [safeMode, setSafeMode] = useState("Off");
+  const [viewedImages, setViewedImages] = useState({});
 
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    if (data && data?.data?.additionalInfo?.offensive == "Yes") {
-      const storedData = JSON.parse(
-        localStorage.getItem("viewedImages") || "{}"
-      );
-      const currentTime = Date.now();
-      const filteredData: Record<string, number> = {};
-
-      Object.keys(storedData).forEach((key) => {
-        if (currentTime - storedData[key] < TEN_DAYS_MS) {
-          filteredData[key] = storedData[key];
-        }
-      });
-
-      localStorage.setItem("viewedImages", JSON.stringify(filteredData));
-
-      if (filteredData[id]) {
-        setSafeMode(false);
-      }
-    }
-  }, []);
 
   const images = data?.data
     ? [
@@ -108,6 +88,37 @@ const DiscoverMore = () => {
 
   const checkArtworkType = data?.data?.commercialization?.activeTab;
   const offensive = data?.data?.additionalInfo?.offensive == "Yes";
+
+  const handleViewClick = (id: string) => {
+    const newViewedImages = { ...viewedImages, [id]: Date.now() }; // Store timestamp
+    localStorage.setItem("viewedImages", JSON.stringify(newViewedImages));
+    setSafeMode("On");
+    setViewedImages(newViewedImages);
+  };
+
+  const handleHideClick = (id: string) => {
+    const newViewedImages = { ...viewedImages };
+    delete newViewedImages[id];
+    localStorage.setItem("viewedImages", JSON.stringify(newViewedImages));
+    setSafeMode("Off");
+    setViewedImages(newViewedImages);
+  };
+
+  useEffect(() => {
+    const storedData = JSON.parse(localStorage.getItem("viewedImages") || "{}");
+    const currentTime = Date.now();
+    const filteredData: Record<string, number> = {};
+
+    Object.keys(storedData).forEach((key) => {
+      if (currentTime - storedData[key] < TEN_DAYS_MS) {
+        filteredData[key] = storedData[key];
+      }
+    });
+
+    localStorage.setItem("viewedImages", JSON.stringify(filteredData));
+    setSafeMode(filteredData[id] ? "On" : "Off");
+    setViewedImages(filteredData);
+  }, []);
 
   if (isLoading) return <Loader />;
 
@@ -172,7 +183,9 @@ const DiscoverMore = () => {
                       key={index}
                       src={`${imageUrl}/videos/${thumb.src}`}
                       className={`${
-                        offensive ? "blur-md brightness-75" : ""
+                        offensive && safeMode == "Off"
+                          ? "blur-md brightness-75"
+                          : ""
                       } md:mb-0 mb-4 lg:w-20 w-24 h-24 lg:h-24 cursor-pointer object-cover`}
                       onClick={() => handleThumbnailClick(index)}
                     />
@@ -182,7 +195,9 @@ const DiscoverMore = () => {
                       src={`${lowImageUrl}/${thumb.src}`}
                       alt={thumb.alt}
                       className={`${
-                        offensive ? "blur-md brightness-75" : ""
+                        offensive && safeMode == "Off"
+                          ? "blur-md brightness-75"
+                          : ""
                       } md:mb-0 mb-4 lg:w-20 w-24 h-24 lg:h-24 cursor-pointer object-cover`}
                       onClick={() => handleThumbnailClick(index)}
                     />
@@ -203,7 +218,7 @@ const DiscoverMore = () => {
                             <video
                               src={`${imageUrl}/videos/${slide.src}`}
                               className={`${
-                                offensive && !safeMode
+                                offensive && safeMode == "Off"
                                   ? "blur-lg brightness-75"
                                   : ""
                               } shadow rounded mx-auto object-cover md:w-[25rem] lg:w-[25rem] h-[20rem] md:h-[60vh] lg:h-[60vh]`}
@@ -221,11 +236,45 @@ const DiscoverMore = () => {
                                 src={`${lowImageUrl}/${slide.src}`}
                                 alt={`Slide ${index + 1}`}
                                 className={`${
-                                  offensive && !safeMode
+                                  offensive && safeMode == "Off"
                                     ? "blur-lg brightness-75"
                                     : ""
                                 } shadow rounded mx-auto overflow-hidden object-contain md:w-[25rem] lg:w-full h-[20rem] md:h-[60vh] lg:h-[60vh]`}
                               />
+
+                              {offensive && safeMode == "Off" ? (
+                                <div
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleViewClick(data?.data?._id);
+                                  }}
+                                  className="absolute z-[99] border bg-white px-2 py-1 rounded top-2 right-2 flex items-center gap-2"
+                                >
+                                  <p className="text-[12px] ">
+                                    Offensive View Off
+                                  </p>
+                                  <FaToggleOff
+                                    size={20}
+                                    className="text-green-500"
+                                  />
+                                </div>
+                              ) : offensive && safeMode == "On" ? (
+                                <div
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleHideClick(data?.data?._id);
+                                  }}
+                                  className="absolute z-[99] border bg-white px-2 py-1 rounded top-2 right-2 flex items-center gap-2"
+                                >
+                                  <p className="text-[12px] ">
+                                    Offensive View On
+                                  </p>
+                                  <FaToggleOn
+                                    size={20}
+                                    className="text-green-500"
+                                  />
+                                </div>
+                              ) : null}
                               {visible && (
                                 <motion.div
                                   className="absolute w-32 h-32 rounded-full border-2 border-gray-500 overflow-hidden bg-white shadow-lg pointer-events-none"

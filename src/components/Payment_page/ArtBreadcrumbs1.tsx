@@ -14,7 +14,7 @@ const ArtBreadcrumbs = () => {
       img: home,
     },
     {
-      label: "Purchase Cart",
+      label: "Cart",
       link: "/purchase_cart",
       isLast: false,
       img: arrow,
@@ -31,31 +31,33 @@ const ArtBreadcrumbs = () => {
     <div className="flex gap-2 items-start">
       <ul className="flex p-2 gap-4 text-xl text-[#2E4053] items-center">
         {breadcrumbs.map((item, i) => (
-          <div>
-            <li>
-              <Link
-                to={item?.link}
-                className="rounded-md transition-all flex items-center"
+          <div key={i}>
+            <Link
+              to={item?.link}
+              className={`rounded-md transition-all flex items-center ${
+                item?.link === ""
+                  ? "cursor-not-allowed pointer-events-none"
+                  : ""
+              }`}
+            >
+              <img
+                src={item.img}
+                alt="Home icon"
+                className={`${
+                  item?.label === "Home"
+                    ? "w-[14px] h-[14px] mr-2"
+                    : " w-[6px] h-[8px] mr-1"
+                }`}
+              />
+              <P
+                variant={{ size: "small", theme: "dark", weight: "medium" }}
+                className={`${
+                  item?.label === "Home" ? "text-[#FF536B]" : ""
+                } ml-2`}
               >
-                <img
-                  src={item.img}
-                  alt="Home icon"
-                  className={`${
-                    item?.label === "Home"
-                      ? "w-[14px] h-[14px] mr-2"
-                      : " w-[6px] h-[8px] mr-1"
-                  }`}
-                />
-                <P
-                  variant={{ size: "small", theme: "dark", weight: "medium" }}
-                  className={`${
-                    item?.label === "Home" ? "text-[#FF536B]" : ""
-                  }`}
-                >
-                  {item?.label}
-                </P>
-              </Link>
-            </li>
+                {item?.label}
+              </P>
+            </Link>
           </div>
         ))}
       </ul>

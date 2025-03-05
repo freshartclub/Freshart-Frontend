@@ -497,11 +497,11 @@ const Purchase = () => {
                 onClick={() =>
                   setMoreOptions((prev) => ({
                     ...prev,
-                    orientation: "Square",
+                    orientation: "Neutral",
                   }))
                 }
                 className={`${
-                  moreOptions.orientation == "Square"
+                  moreOptions.orientation == "Neutral"
                     ? "bg-slate-300"
                     : "bg-[#eaeaea]"
                 } w-12 hover:bg-slate-300 cursor-pointer`}
@@ -573,7 +573,7 @@ const Purchase = () => {
             </select>
           </div>
 
-          <div>
+          <div className="flex items-center justify-between">
             <Button
               id="dropdownDividerButton"
               className="flex !px-0 justify-between w-full items-center"
@@ -587,22 +587,25 @@ const Purchase = () => {
               Coming Soon
             </Button>
 
-            <select
-              className="w-full border py-2 rounded"
-              onChange={(e) =>
-                setMoreOptions((prev) => ({
-                  ...prev,
-                  comingSoon: e.target.value,
-                }))
-              }
-            >
-              <option value="">Select Option</option>
+            <div className="flex items-center gap-2">
               {["Yes", "No"].map((item, i: number) => (
-                <option value={item} key={i}>
-                  {item}
-                </option>
+                <span className="flex items-center gap-1" key={i}>
+                  <input
+                    type="radio"
+                    name="comingSoon"
+                    value={item}
+                    checked={moreOptions.comingSoon === item}
+                    onChange={(e) =>
+                      setMoreOptions((prev) => ({
+                        ...prev,
+                        comingSoon: e.target.value,
+                      }))
+                    }
+                  />
+                  <label>{item}</label>
+                </span>
               ))}
-            </select>
+            </div>
           </div>
 
           <div>
@@ -672,7 +675,7 @@ const Purchase = () => {
 
           {type == "purchase" ? (
             <>
-              <div>
+              <div className="flex items-center justify-between">
                 <Button
                   id="dropdownDividerButton"
                   className="flex !px-0 justify-between w-full items-center"
@@ -686,22 +689,25 @@ const Purchase = () => {
                   Discount Available
                 </Button>
 
-                <select
-                  className="w-full border py-2 rounded"
-                  onChange={(e) =>
-                    setMoreOptions((prev) => ({
-                      ...prev,
-                      discount: e.target.value,
-                    }))
-                  }
-                >
-                  <option value="">Select Option</option>
+                <div className="flex items-center gap-2">
                   {["Yes", "No"].map((item, i: number) => (
-                    <option value={item} key={i}>
-                      {item}
-                    </option>
+                    <span className="flex items-center gap-1" key={i}>
+                      <input
+                        type="radio"
+                        name="discount"
+                        value={item}
+                        checked={moreOptions.discount === item}
+                        onChange={(e) =>
+                          setMoreOptions((prev) => ({
+                            ...prev,
+                            discount: e.target.value,
+                          }))
+                        }
+                      />
+                      <label>{item}</label>
+                    </span>
                   ))}
-                </select>
+                </div>
               </div>
 
               <div>
@@ -742,7 +748,7 @@ const Purchase = () => {
               </div>
             </>
           ) : (
-            <div>
+            <div className="flex items-center justify-between">
               <Button
                 id="dropdownDividerButton"
                 className="flex !px-0 justify-between w-full items-center"
@@ -756,22 +762,25 @@ const Purchase = () => {
                 Purchase Option
               </Button>
 
-              <select
-                className="w-full border py-2 rounded"
-                onChange={(e) =>
-                  setMoreOptions((prev) => ({
-                    ...prev,
-                    purchaseOption: e.target.value,
-                  }))
-                }
-              >
-                <option value="">Select Option</option>
+              <div className="flex items-center gap-2">
                 {["Yes", "No"].map((item, i: number) => (
-                  <option value={item} key={i}>
-                    {item}
-                  </option>
+                  <span className="flex items-center gap-1" key={i}>
+                    <input
+                      type="radio"
+                      name="purchaseOption"
+                      value={item}
+                      checked={moreOptions.purchaseOption === item}
+                      onChange={(e) =>
+                        setMoreOptions((prev) => ({
+                          ...prev,
+                          purchaseOption: e.target.value,
+                        }))
+                      }
+                    />
+                    <label>{item}</label>
+                  </span>
                 ))}
-              </select>
+              </div>
             </div>
           )}
         </div>

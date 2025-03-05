@@ -10,4 +10,5 @@ export const ORDERS_ENDPOINTS = {
   CancelItem: `${ARTIST_ORDER_URl}/cancel-particular-item`,
   GetOrderDetails: `${ARTIST_ORDER_URl}/get-user-single-order`,
   ReviewArtwork: `${ARTIST_ORDER_URl}/give-review`,
+  getToken: `${ARTIST_ORDER_URl}/get-pay-token`,
 };

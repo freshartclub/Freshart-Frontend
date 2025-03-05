@@ -1,5 +1,5 @@
 import getSymbolFromCurrency from "currency-symbol-map";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
@@ -18,8 +18,103 @@ import Header from "../ui/Header";
 import Loader from "../ui/Loader";
 import { lowImageUrl } from "../utils/baseUrls";
 import ArtBreadcrumbs1 from "./ArtBreadcrumbs1";
+import { useGetSingleToken } from "./http/useGetSingleToken";
+
+declare global {
+  interface Window {
+    GlobalPayments: any;
+  }
+}
 
 const PaymentPage = () => {
+  const [isFormReady, setIsFormReady] = useState(false);
+  const formRef = useRef(null);
+  const scriptLoaded = useRef(false);
+  const initialized = useRef(false);
+  const { data: tokenData, refetch } = useGetSingleToken();
+
+  const refetchCalled = useRef(false);
+  useEffect(() => {
+    const loadGlobalPayments = async () => {
+      if (scriptLoaded.current) {
+        await waitForToken();
+        initializePaymentForm();
+        return;
+      }
+
+      const script = document.createElement("script");
+      script.src = "https://js.globalpay.com/4.1.3/globalpayments.js";
+      script.async = true;
+      script.onload = async () => {
+        scriptLoaded.current = true;
+        await waitForToken();
+        initializePaymentForm();
+      };
+      script.onerror = () =>
+        console.error("Failed to load GlobalPayments SDK.");
+      document.body.appendChild(script);
+    };
+
+    const waitForToken = async () => {
+      if (!tokenData && !refetchCalled.current) {
+        console.log("Fetching token...");
+        refetchCalled.current = true;
+        await refetch();
+      }
+
+      return new Promise((resolve) => {
+        const checkToken = setInterval(() => {
+          if (tokenData) {
+            clearInterval(checkToken);
+            resolve();
+          }
+        }, 100);
+      });
+    };
+
+    const initializePaymentForm = () => {
+      if (initialized.current || !window.GlobalPayments || !tokenData) return;
+      initialized.current = true;
+
+      console.log("Configuring GlobalPayments with token:", tokenData);
+      window.GlobalPayments.configure({
+        accessToken: tokenData,
+        apiVersion: "2021-03-22",
+        env: "sandbox",
+      });
+
+      const cardForm = window.GlobalPayments.creditCard.form("#credit-card");
+
+      cardForm.ready(() => {
+        console.log("Credit card form is ready.");
+        setIsFormReady(true);
+      });
+
+      cardForm.on("token-success", (resp) => {
+        if (formRef.current) {
+          const tokenInput = document.createElement("input");
+          tokenInput.type = "hidden";
+          tokenInput.name = "payment-reference";
+          tokenInput.value = resp.paymentReference;
+          // formRef.current.appendChild(tokenInput);
+
+          const form = document.getElementById("payment-form");
+          form.appendChild(tokenInput);
+          // formRef.current.submit();
+          handlePayment(resp, tokenInput);
+        }
+      });
+
+      cardForm.on("token-error", (error) => {
+        console.error("Tokenization Error:", error);
+      });
+    };
+
+    loadGlobalPayments();
+  }, [tokenData]);
+
+  const handlePayment = (response, tokenInput) => {};
+
   const { data, isLoading } = useGetCartItems();
 
   const { mutate: checkOutMutation, isPending: checkOutPending } =
@@ -154,6 +249,10 @@ const PaymentPage = () => {
   return (
     <div className="container mx-auto p-4">
       <ArtBreadcrumbs1 />
+      <form ref={formRef} id="payment-form">
+        <div id="credit-card"></div>
+      </form>
+
       <div className="py-10">
         <form onSubmit={handleSubmit(onSubmit)}>
           <Header

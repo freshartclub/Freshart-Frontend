@@ -63,6 +63,8 @@ export const ARTTIST_ENDPOINTS = {
 
   getAllCollections: `${ARTIST_BASE_URl}/get-all-collections`,
   useGetCollectionById: `${ARTIST_BASE_URl}/get-collection`,
+
+  getToken: `${ARTIST_BASE_URl}/get-pay-token`,
 };
 
 // all the endpoints will be gonaa edit

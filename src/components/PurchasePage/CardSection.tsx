@@ -33,7 +33,7 @@ const CardSection = ({ data }) => {
   };
 
   const handleViewClick = (id: string) => {
-    const newViewedImages = { ...viewedImages, [id]: Date.now() }; // Store timestamp
+    const newViewedImages = { ...viewedImages, [id]: Date.now() };
     localStorage.setItem("viewedImages", JSON.stringify(newViewedImages));
     setViewedImages(newViewedImages);
   };
@@ -108,16 +108,15 @@ const CardSection = ({ data }) => {
                 ) : null}
 
                 {isOffensive && isViewed ? (
-                  <div className="absolute bg-white px-2 py-1 rounded top-2 right-2 flex items-center gap-2">
+                  <div
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleHideClick(item?._id);
+                    }}
+                    className="absolute bg-white px-2 py-1 rounded top-2 right-2 flex items-center gap-2"
+                  >
                     <p className="text-[12px] ">Offensive View</p>
-                    <FaToggleOn
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleHideClick(item?._id);
-                      }}
-                      size={20}
-                      className="text-green-500"
-                    />
+                    <FaToggleOn size={20} className="text-green-500" />
                   </div>
                 ) : null}
               </div>

@@ -34,7 +34,7 @@ const PurchaseCart = () => {
   };
 
   const handlepurchase = () => {
-    navigate("/all-artworks?type=purchase");
+    navigate(`/all-artworks?type=${state}`);
   };
 
   return isLoading ? (
@@ -62,9 +62,9 @@ const PurchaseCart = () => {
           <Link to="/" className="rounded-md transition-all flex">
             <P
               variant={{ size: "small", theme: "dark", weight: "medium" }}
-              className="text-[#203F58]"
+              className="text-[#203F58] capitalize"
             >
-              Purchase Cart
+              {state} Cart
             </P>
           </Link>
         </li>
@@ -73,9 +73,9 @@ const PurchaseCart = () => {
       <div className="mt-5">
         <Header
           variant={{ theme: "dark", weight: "bold", size: "2xl" }}
-          className="text-center mb-5"
+          className="text-center mb-5 capitalize"
         >
-          My Purchase Cart
+          My {state} Cart
         </Header>
 
         <div className="flex sm:flex-row flex-col justify-between gap-5 mb-8">
