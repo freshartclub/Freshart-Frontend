@@ -1,26 +1,23 @@
 import P from "../ui/P";
-
-import { useEffect, useState } from "react";
-import { FaCommentDots } from "react-icons/fa";
-import { useSearchParams } from "react-router-dom";
-import Loader from "../ui/Loader";
-import { imageUrl } from "../utils/baseUrls";
-import CommentBox from "./CommentBox";
-import { useGetCirclePosts } from "./https/useGetCirclePosts";
-import { FaRegCopy } from "react-icons/fa";
+import { BiLike } from "react-icons/bi";
 import { AnimatePresence, motion } from "framer-motion";
-import { FaEdit } from "react-icons/fa";
-import useCirclePostMutation from "./https/useCirclePostMutation";
-import usePostLikeMutation from "./https/usePostLikeMutation";
-import { FaShareAlt } from "react-icons/fa";
+import { useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
+import { FaCommentDots, FaEdit, FaRegCopy, FaShareAlt } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
-import Button from "../ui/Button";
-import image_icon from "./assets/primary-shape3.png";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination } from "swiper/modules";
+import { useSearchParams } from "react-router-dom";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import { Swiper, SwiperSlide } from "swiper/react";
+import Button from "../ui/Button";
+import Loader from "../ui/Loader";
+import { imageUrl } from "../utils/baseUrls";
+import image_icon from "./assets/primary-shape3.png";
+import CommentBox from "./CommentBox";
+import useCirclePostMutation from "./https/useCirclePostMutation";
+import { useGetCirclePosts } from "./https/useGetCirclePosts";
+import usePostLikeMutation from "./https/usePostLikeMutation";
 
 const reactions = [
   { id: "like", icon: "👍", label: "Like" },
@@ -30,633 +27,561 @@ const reactions = [
   { id: "angry", icon: "😡", label: "Angry" },
 ];
 
-const CircleUserComment = ({ isManager }) => {
+interface PostProps {
+  id: string;
+  post: {
+    _id: string;
+    title: string;
+    content: string;
+    file: string[];
+    owner: {
+      image: string;
+      artistName: string;
+      artistSurname1: string;
+      artistSurname2: string;
+    };
+    createdAt: string;
+    commentCount: number;
+    totalLikes: number;
+    reactType: string | null;
+  };
+  isManager: boolean;
+}
+
+const CircleUserComment = ({ isManager }: PostProps) => {
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id") as string;
   const { data, isLoading } = useGetCirclePosts(id);
-
-  const [isVisible, setisVisible] = useState(false);
-  const [isShare, setIsShare] = useState(false);
-  const [visibleCommentBoxId, setVisibleCommentBoxId] = useState(null);
-  const [hoveredPostId, setHoveredPostId] = useState(null);
-
-  const [titleContent, setTitleContent] = useState({});
-  const [textAreaContent, setTextAreaContent] = useState({});
-  const [previewUrl, setPreviewUrl] = useState({});
-  const [file, setFile] = useState({});
-
-  const [selectedReaction, setSelectedReaction] = useState({});
-  const [isEditable, setIsEditable] = useState({});
-
-  const [likesCount, setLikesCount] = useState({});
-  const [textContent, setTextContent] = useState("");
-  const [title, setTitle] = useState("");
-  const [getReactionIconLocally, setReactionIconLocally] = useState({});
-
-  const [link, setLink] = useState("https://example.com");
-  const [copy, setCopy] = useState("Copy");
-
-  const { mutateAsync } = usePostLikeMutation();
-  const { mutateAsync: editPost, isPending: editPending } =
-    useCirclePostMutation();
-
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(link);
-      setCopy("Copied");
-      setTimeout(() => setCopy("Copy"), 30000);
-    } catch (err) {
-      console.error("Failed to copy: ", err);
-    }
-  };
-
-  const getReactionIcon = (reactionString: string) => {
-    const reaction = reactions.find((r) => r.id === reactionString);
-    return reaction ? reaction.icon : null;
-  };
-
-  const handleImage = (postId: string) => (e) => {
-    const selectedFile = e.target.files[0];
-    if (selectedFile) {
-      const url = URL.createObjectURL(selectedFile);
-      setPreviewUrl((prev) => ({ ...prev, [postId]: url }));
-      setFile((prev) => ({ ...prev, [postId]: selectedFile }));
-    }
-  };
-
-  useEffect(() => {
-    if (data && Array.isArray(data.data)) {
-      const newLikesCount = {};
-      const newReactions = {};
-      const newTextContent = {};
-      const newTitle = {};
-      const newPreviewUrls = {};
-      const newReactionsList = {};
-
-      data.data.forEach((post) => {
-        const postId = post._id;
-
-        newLikesCount[postId] = post.totalLikes;
-        newTextContent[postId] = post.content || "";
-        newPreviewUrls[postId] = post.file || "";
-        newTitle[postId] = post?.title || "";
-
-        if (post?.reaction && typeof post.reaction === "object") {
-          const reactionIcons = [];
-          for (const [type, count] of Object.entries(post.reaction)) {
-            const icon = getReactionIcon(type);
-            if (icon && count > 0) {
-              for (
-                let i = 0;
-                i < Math.min(count, 3 - reactionIcons.length);
-                i++
-              ) {
-                reactionIcons.push({ reactionType: type, icon });
-              }
-            }
-            if (reactionIcons.length >= 3) break;
-          }
-          newReactionsList[postId] = reactionIcons;
-        } else {
-          newReactionsList[postId] = [];
-        }
-
-        if (post.reactType) {
-          const icon = getReactionIcon(post.reactType);
-
-          if (icon) {
-            newReactions[postId] = icon;
-          }
-        }
-      });
-
-      setLikesCount(newLikesCount);
-      setSelectedReaction((prev) => ({
-        ...prev,
-        ...newReactions,
-      }));
-      setTextAreaContent(newTextContent);
-      setTitleContent(newTitle);
-      setPreviewUrl(newPreviewUrls);
-      setReactionIconLocally(newReactionsList);
-    }
-  }, [data]);
-
-  const handleReaction = (postId: string, reaction: any) => {
-    const data = {
-      postId,
-      reaction: reaction,
-    };
-
-    mutateAsync(data).then(() => {
-      const icon = getReactionIcon(reaction);
-      if (icon) {
-        setSelectedReaction((prev) => {
-          const currentReaction = prev[postId];
-
-          if (currentReaction === icon) {
-            const { [postId]: _, ...rest } = prev;
-            return rest;
-          }
-
-          return { ...prev, [postId]: icon };
-        });
-
-        setLikesCount((prev) => {
-          const currentLikes = prev[postId] || 0;
-          const currentReaction = selectedReaction[postId];
-
-          if (currentReaction === icon) {
-            return { ...prev, [postId]: Math.max(currentLikes - 1, 0) };
-          }
-
-          return { ...prev, [postId]: currentLikes + 1 };
-        });
-
-        setReactionIconLocally((prev) => {
-          const currentReactions = prev[postId] || [];
-          const userReaction = { reactionType: reaction, icon };
-
-          const alreadyReacted = currentReactions.some(
-            (r) => r.reactionType === reaction
-          );
-
-          if (alreadyReacted) {
-            return {
-              ...prev,
-              [postId]: currentReactions.filter(
-                (r) => r.reactionType !== reaction
-              ),
-            };
-          }
-
-          return {
-            ...prev,
-            [postId]: [...currentReactions, userReaction].slice(-3),
-          };
-        });
-      }
-    });
-  };
-
-  const handleEditPost = (postId: string) => {
-    try {
-      const newData = {
-        content: textContent,
-        title: title,
-        circleFile: file[postId],
-        postId: postId,
-        id: id,
-      };
-
-      editPost(newData).then(() => {
-        setIsEditable((prev) => ({ ...prev, [postId]: false }));
-        setTextContent("");
-        setTitle("");
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const like =
-    "https://upload.wikimedia.org/wikipedia/commons/1/13/Facebook_like_thumb.png";
-
-  const handleCommentBox = (postId: string) => {
-    setVisibleCommentBoxId((prevId) => (prevId === postId ? null : postId));
-    setisVisible((prev) => !prev);
-    setIsShare(false);
-  };
-
-  const handleMouseEnter = (postId: string) => {
-    setHoveredPostId(postId);
-  };
-
-  const handleMouseLeave = () => {
-    setHoveredPostId(null);
-  };
-
-  const handleTextAreaChange = (postId: string, value: string) => {
-    setTextContent(value);
-    setTextAreaContent((prev) => ({
-      ...prev,
-      [postId]: value,
-    }));
-  };
-
-  const handleTitleChange = (postId: string, value: string) => {
-    setTitle(value);
-    setTitleContent((prev) => ({
-      ...prev,
-      [postId]: value,
-    }));
-  };
-
-  const handleEdit = (
-    postId: string,
-    value: boolean,
-    title: string,
-    content: string
-  ) => {
-    if (value) {
-      setIsEditable({ [postId]: true });
-      setTextContent(content || "");
-      setTitle(title || "");
-      setFile("");
-      setPreviewUrl("");
-    } else {
-      setIsEditable((prev) => ({ ...prev, [postId]: false }));
-    }
-  };
-
-  const handleDoubleClick = (postId) => {
-    setIsEditable((prev) => ({ ...prev, [postId]: false }));
-    setTextContent("");
-    setTitle("");
-  };
-
-  const handleLikeClick = (postId, reaction) => {
-    const icon = getReactionIcon(reaction);
-    if (icon) {
-      setSelectedReaction((prev) => {
-        const currentReaction = prev[postId];
-
-        if (currentReaction === icon) {
-          const { [postId]: _, ...rest } = prev;
-          return rest;
-        }
-
-        return { ...prev, [postId]: icon };
-      });
-
-      setLikesCount((prev) => {
-        const currentLikes = prev[postId] || 0;
-        const currentReaction = selectedReaction[postId];
-
-        if (currentReaction === icon) {
-          return { ...prev, [postId]: Math.max(currentLikes - 1, 0) };
-        }
-
-        return { ...prev, [postId]: currentLikes + 1 };
-      });
-
-      setReactionIconLocally((prev) => {
-        const currentReactions = prev[postId] || [];
-        const userReaction = { reactionType: reaction, icon };
-
-        const alreadyReacted = currentReactions.some(
-          (r) => r.reactionType === reaction
-        );
-
-        if (alreadyReacted) {
-          return {
-            ...prev,
-            [postId]: currentReactions.filter(
-              (r) => r.reactionType !== reaction
-            ),
-          };
-        }
-
-        return {
-          ...prev,
-          [postId]: [...currentReactions, userReaction].slice(-3),
-        };
-      });
-    }
-  };
 
   if (isLoading) return <Loader />;
 
   return (
     <div className="w-full flex gap-3 flex-col mb-5">
-      {data &&
-        data?.data?.map((item, index: number) => (
-          <div
-            key={index}
-            className="border bg-white px-3  py-2 w-full rounded-lg shadow relative"
-          >
-            <div key={index} className="flex gap-1 flex-col">
-              <span className="font-semibold text-base">{item?.title}</span>
-              <span className="text-[14px]">{item?.content}</span>
-              {item?.file && item?.file.length > 0 && (
-                <Swiper
-                  modules={[Navigation, Pagination]}
-                  navigation
-                  pagination={{ clickable: true }}
-                  className="rounded-xl mt-2"
-                >
-                  {item.file.map((file, index: number) => (
-                    <SwiperSlide key={index} className="flex justify-center">
-                      {/\.(jpg|jpeg|png|gif|webp)$/i.test(file) ? (
-                        <img
-                          src={`${imageUrl}/users/${file}`}
-                          alt="image"
-                          className="rounded-xl w-full object-cover"
-                        />
-                      ) : /\.(mp4|mov|webm)$/i.test(file) ? (
-                        <video
-                          src={`${imageUrl}/users/${file}`}
-                          controls
-                          className="rounded-xl w-full h-[50vh]"
-                        />
-                      ) : null}
-                    </SwiperSlide>
-                  ))}
-                </Swiper>
-              )}
-            </div>
-
-            {isEditable[item._id] && (
-              <div
-                className="shadow border border-zinc-300 w-full rounded-lg p-2 mt-2"
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-              >
-                <input
-                  className="border w-full p-2 rounded mb-2 outline-none"
-                  type="text"
-                  placeholder="Post Title..."
-                  value={titleContent[item._id] || ""}
-                  onChange={(e) => handleTitleChange(item._id, e.target.value)}
-                />
-                <textarea
-                  placeholder="Share what you are thinking here..."
-                  className="border w-full p-2 h-32 rounded-t-lg outline-none"
-                  value={textAreaContent[item._id] || ""}
-                  onChange={(e) =>
-                    handleTextAreaChange(item._id, e.target.value)
-                  }
-                />
-
-                <div className="flex px-2 pb-2 justify-between items-center">
-                  <div className="">
-                    <input
-                      type="file"
-                      accept="image/*, video/*"
-                      hidden
-                      id={`file-input-${item._id}`}
-                      onChange={handleImage(item._id)}
-                    />
-
-                    {previewUrl[item._id] && (
-                      <div className="mt-2 relative">
-                        {file[item._id] ? (
-                          file[item._id].type.startsWith("image") ? (
-                            <img
-                              src={previewUrl[item._id]}
-                              alt="Preview"
-                              className="object-cover border w-[7rem] h-[5rem] rounded"
-                            />
-                          ) : file[item._id].type.startsWith("video") ? (
-                            <video
-                              controls
-                              className="object-cover border w-[7rem] h-[5rem] rounded"
-                            >
-                              <source
-                                src={previewUrl[item._id]}
-                                type={file[item._id].type}
-                              />
-                              Your browser does not support the video tag.
-                            </video>
-                          ) : null
-                        ) : (
-                          <img
-                            src={`${imageUrl}/users/${previewUrl[item._id]}`}
-                            alt="Preview"
-                            className="object-cover border w-[7rem] h-[5rem] rounded"
-                          />
-                        )}
-                        <span
-                          onClick={() => {
-                            setPreviewUrl((prev) => ({
-                              ...prev,
-                              [item._id]: "",
-                            }));
-                            setFile((prev) => ({
-                              ...prev,
-                              [item._id]: null,
-                            }));
-                          }}
-                          className="absolute bg-white top-1 right-1 cursor-pointer rounded-full p-1"
-                        >
-                          <RxCross2 size="1em" />
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex gap-2 items-center">
-                    <Button
-                      variant={{ rounded: "full" }}
-                      className="flex gap-2 bg-[#65656514]"
-                      onClick={() =>
-                        document
-                          .getElementById(`file-input-${item._id}`)
-                          .click()
-                      }
-                    >
-                      <img src={image_icon} alt="image/video" />
-                      <P
-                        variant={{
-                          size: "small",
-                          theme: "dark",
-                          weight: "semiBold",
-                        }}
-                      >
-                        New Image/Video
-                      </P>
-                    </Button>
-                    <Button
-                      onClick={() => handleDoubleClick(item._id)}
-                      className="px-4 py-2 bg-red-500 text-white font-semibold"
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      onClick={() => handleEditPost(item._id)}
-                      className="px-5 w-max py-2 bg-black text-white font-semibold"
-                    >
-                      {editPending ? "Posting..." : "Edit Post"}
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {isManager ? (
-              <span
-                onClick={() =>
-                  handleEdit(item._id, true, item.title, item.content)
-                }
-                className="absolute top-2 right-2 cursor-pointer"
-              >
-                <FaEdit size="1.2em" />
-              </span>
-            ) : null}
-
-            <div className="flex justify-between mt-2.5">
-              <div className="flex gap-3 items-center">
-                <div
-                  className="relative flex items-center gap-2 cursor-pointer"
-                  onMouseEnter={() => handleMouseEnter(item._id)}
-                  onMouseLeave={handleMouseLeave}
-                >
-                  {selectedReaction[item._id] ? (
-                    <motion.span
-                      className="text-md"
-                      animate={{
-                        scale: selectedReaction[item._id] ? 1.2 : 1,
-                      }}
-                    >
-                      {selectedReaction[item._id]}
-                    </motion.span>
-                  ) : (
-                    <motion.img
-                      onClick={() => handleLikeClick(item?._id, "like")}
-                      src={like}
-                      alt="reaction"
-                      className="w-5 h-5"
-                      animate={{ scale: 1 }}
-                    />
-                  )}
-
-                  <div className="flex items-center">
-                    <p className="text-sm font-medium">
-                      {likesCount[item._id] || 0}
-                    </p>
-                    {getReactionIconLocally[item._id]?.length > 0 && (
-                      <div className="relative flex items-center">
-                        {getReactionIconLocally[item._id].map(
-                          (reaction, index: number) => (
-                            <span
-                              key={index}
-                              style={{
-                                transform: `translateX(${index * -0.7}em)`,
-                                zIndex:
-                                  getReactionIconLocally[item._id].length +
-                                  index,
-                              }}
-                            >
-                              {reaction.icon}
-                            </span>
-                          )
-                        )}
-                      </div>
-                    )}
-                  </div>
-
-                  <AnimatePresence>
-                    {hoveredPostId === item._id && (
-                      <motion.div
-                        className="absolute bottom-10 left-0 flex gap-2 bg-white p-2 rounded-lg shadow-lg"
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.8 }}
-                      >
-                        {reactions.map((reaction) => (
-                          <motion.span
-                            key={reaction.id}
-                            className="w-8 h-8 cursor-pointer text-2xl hover:scale-110"
-                            onClick={() =>
-                              handleReaction(item._id, reaction.id)
-                            }
-                          >
-                            {reaction.icon}
-                          </motion.span>
-                        ))}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-                <div className="flex gap-2 items-center">
-                  <span
-                    className="cursor-pointer"
-                    onClick={() => handleCommentBox(item?._id)}
-                  >
-                    <FaCommentDots size="1.2em" />
-                  </span>
-
-                  <span className="text-sm font-medium">
-                    {item?.commentCount >= 1000
-                      ? `${(item.commentCount / 1000).toFixed(0)}k`
-                      : item?.commentCount}
-                  </span>
-                </div>
-
-                <span
-                  onClick={() => {
-                    setIsShare((prev) => !prev);
-                    setisVisible(false);
-                  }}
-                  className="cursor-pointer"
-                >
-                  <FaShareAlt size="1.2em" />
-                </span>
-              </div>
-
-              <div className="flex gap-5 items-center">
-                <div className="flex gap-3">
-                  {item?.owner?.image ? (
-                    <img
-                      className="w-[6vh] h-[6vh] object-cover rounded-full"
-                      src={`${imageUrl}/users/${item?.owner?.image}`}
-                      alt="profile image"
-                    />
-                  ) : (
-                    <svg
-                      className="w-[7vh] h-[7vh] text-gray-400"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                    </svg>
-                  )}
-                  <div className="flex flex-col">
-                    <span className="font-semibold text-[13px]">
-                      {item?.owner?.artistName +
-                        " " +
-                        item?.owner?.artistSurname1 +
-                        " " +
-                        item?.owner?.artistSurname2}
-                    </span>
-                    <span className="text-[12px] text-[#919EAB]">
-                      {new Date(item?.createdAt).toLocaleString("en-US", {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            {visibleCommentBoxId === item?._id && (
-              <CommentBox circlePostId={visibleCommentBoxId} />
-            )}
-
-            {isShare ? (
-              <div className="flex w-full items-center space-x-3 mt-4 p-2 bg-gray-200 rounded-lg">
-                <input
-                  type="text"
-                  value={link}
-                  readOnly
-                  className="px-3 w-full py-2 border border-gray-300 rounded-lg bg-white focus:outline-none"
-                />
-                <button
-                  onClick={handleCopy}
-                  className="py-2 px-4 bg-zinc-800 text-white rounded-lg font-semibold hover:bg-zinc-900 flex items-center"
-                >
-                  <FaRegCopy size={18} className="mr-1" />
-                  {copy}
-                </button>
-              </div>
-            ) : null}
-          </div>
-        ))}
+      {data?.data && data?.data?.length > 0 ? (
+        data?.data.map((item, i: number) => (
+          <Post post={item} isManager={isManager} id={id} key={i} />
+        ))
+      ) : (
+        <div className="border shadow-md flex h-[7rem] font-semibold rounded-xl justify-center items-center">
+          No Post Found
+        </div>
+      )}
     </div>
   );
 };
+
+function Post({ post: item, isManager, id }: PostProps) {
+  const fileInputRef = useRef(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [title, setTitle] = useState(item.title || "");
+  const [content, setContent] = useState(item.content || "");
+  const [isEdit, setIsEdit] = useState(false);
+  const [fieldTrue, setFieldTrue] = useState({
+    comment: false,
+    share: false,
+  });
+  const swiperRef = useRef(null);
+
+  const [files, setFiles] = useState([]);
+  const [existingFiles, setExistingFiles] = useState([]);
+  const [hovered, setHovered] = useState(false);
+  const [count, setCount] = useState({
+    commet: item?.commentCount || 0,
+    like: item?.totalLikes || 0,
+  });
+
+  const [selectedReaction, setSelectedReaction] = useState(
+    item?.reactType || ""
+  );
+
+  const { mutateAsync } = usePostLikeMutation();
+  const { mutateAsync: editPost, isPending: editPending } =
+    useCirclePostMutation();
+
+  useEffect(() => {
+    if (!item?.file) return;
+
+    const newFiles = item.file
+      .map((img: string) => {
+        if (img.match(/\.(jpg|jpeg|png|webp)$/i)) {
+          return `${imageUrl}/users/${img}`;
+        } else if (img.match(/\.(mp4|mov|avi|mkv|webm)$/i)) {
+          return `${imageUrl}/videos/${img}`;
+        }
+        return null;
+      })
+      .filter(Boolean);
+
+    setExistingFiles(newFiles);
+  }, [item?.file, isEdit]);
+
+  const handleImage = (e) => {
+    const selectedFiles = Array.from(e.target.files);
+    const maxAllowed = 5 - files.length;
+
+    if (selectedFiles.length === 0) return;
+    if (files.length >= 5)
+      return toast.error("You can't add more than 5 files");
+
+    const filesToAdd = selectedFiles.slice(0, maxAllowed);
+
+    setFiles((prevFiles) => [...prevFiles, ...filesToAdd]);
+  };
+
+  const handleCancel = () => {
+    setFiles([]);
+    setIsEdit(false);
+  };
+
+  const getReactionIcon = (reactionString: string) => {
+    const reaction = reactions.find((r) => r.id === reactionString);
+    return reaction ? reaction.icon.toString() : "";
+  };
+
+  const handleLikeClick = async (reaction: string) => {
+    const icon = getReactionIcon(reaction);
+
+    const isRemoving = selectedReaction === icon;
+    const newReaction = isRemoving ? "" : icon;
+
+    setSelectedReaction(newReaction);
+    setCount((prev) => ({
+      ...prev,
+      like: isRemoving ? prev.like - 1 : prev.like + (selectedReaction ? 0 : 1),
+    }));
+
+    try {
+      const data = {
+        postId: item._id,
+        reaction: reaction,
+      };
+      await mutateAsync(data);
+    } catch (error) {
+      console.error("Error updating reaction:", error);
+
+      setSelectedReaction(selectedReaction);
+      setCount((prev) => ({
+        ...prev,
+        like: isRemoving
+          ? prev.like + 1
+          : prev.like - (selectedReaction ? 0 : 1),
+      }));
+    }
+  };
+
+  const sortedReactions = Object.entries(item?.reaction)
+    .filter(([key, value]) => value > 0)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3);
+
+  const handleCopy = async () => {
+    navigator.clipboard.writeText("sometext");
+    toast.success("Copied");
+  };
+
+  const handleCloseEdit = () => {
+    if (isEdit == false) {
+      setIsEdit(true);
+    } else {
+      setFiles([]);
+      setIsEdit(false);
+    }
+  };
+
+  const handleEdit = async () => {
+    const data = {
+      id: id,
+      postId: item._id,
+      title: title,
+      content: content,
+      circleFile: files,
+      existingFiles: existingFiles,
+    };
+
+    await editPost(data);
+  };
+
+  return (
+    <div className="border bg-white px-3 py-2 w-full rounded-lg shadow relative">
+      <div className="sm:hidden flex mb-3 gap-5 items-center">
+        <div className="flex gap-3">
+          {item?.owner?.image ? (
+            <img
+              className="w-[4vh] h-[4vh] object-cover rounded-full"
+              src={`${imageUrl}/users/${item?.owner?.image}`}
+              alt="profile image"
+            />
+          ) : (
+            <svg
+              className="w-[7vh] h-[7vh] text-gray-400"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+            </svg>
+          )}
+          <div className="flex flex-col">
+            <span className="font-semibold text-[13px]">
+              {item?.owner?.artistName +
+                " " +
+                item?.owner?.artistSurname1 +
+                " " +
+                item?.owner?.artistSurname2}
+            </span>
+            <span className="text-[12px] text-[#919EAB]">
+              {new Date(item?.createdAt).toLocaleString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </span>
+          </div>
+        </div>
+      </div>
+      <div className="flex gap-1 flex-col">
+        <span className="font-semibold text-base">{item?.title}</span>
+        <span className="text-[14px]">{item?.content}</span>
+        {item?.file && item?.file.length > 0 && (
+          <div className="relative mt-2">
+            <Swiper
+              onSwiper={(swiper) => (swiperRef.current = swiper)}
+              slidesPerView={1}
+              spaceBetween={10}
+              loop={true}
+              className="rounded-xl"
+            >
+              {item.file.map((file, index: number) => (
+                <SwiperSlide key={index} className="flex justify-center">
+                  {/\.(jpg|jpeg|png|gif|webp)$/i.test(file) ? (
+                    <img
+                      src={`${imageUrl}/users/${file}`}
+                      alt="image"
+                      className="rounded-xl w-full max-h-[400px] object-cover"
+                    />
+                  ) : /\.(mp4|mov|webm)$/i.test(file) ? (
+                    <video
+                      src={`${imageUrl}/videos/${file}`}
+                      controls
+                      className="rounded-xl w-full max-h-[400px] object-cover"
+                    />
+                  ) : null}
+                </SwiperSlide>
+              ))}
+            </Swiper>
+
+            <div className="absolute sm:visible hidden bottom-[-20px] left-1/2 transform -translate-x-1/2 sm:flex gap-1">
+              {item.file.map((_, index: number) => (
+                <div
+                  key={index}
+                  onClick={() => {
+                    setActiveIndex(index);
+                    swiperRef.current?.slideTo(index);
+                  }}
+                  className={`h-2 w-2 rounded-full cursor-pointer transition-all duration-200 ${
+                    activeIndex === index
+                      ? "bg-slate-600 scale-110"
+                      : "bg-gray-400"
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {isEdit && (
+        <div
+          className="border border-zinc-300 bg-slate-100 w-full rounded-lg p-2 sm:mt-8 mt-2"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+        >
+          <input
+            className="border w-full p-2 rounded mb-2 outline-none"
+            type="text"
+            placeholder="Post Title..."
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+          <textarea
+            placeholder="Share what you are thinking here..."
+            className="border w-full p-2 h-32 rounded-t-lg outline-none"
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+          />
+
+          <div className="flex px-2 pb-2 justify-between items-center">
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*, video/*"
+              multiple
+              hidden
+              onChange={handleImage}
+            />
+
+            <div className="flex sm:flex-row flex-col gap-2 w-full justify-between items-center">
+              <Button
+                variant={{ rounded: "full" }}
+                className="flex gap-2 bg-[#65656514]"
+                onClick={() => fileInputRef.current.click()}
+              >
+                <img src={image_icon} alt="image/video" />
+                <P
+                  variant={{
+                    size: "small",
+                    theme: "dark",
+                    weight: "semiBold",
+                  }}
+                >
+                  New Image/Video
+                </P>
+              </Button>
+              <div className="min-w-[500px]:block flex w-full">
+                <Button
+                  onClick={handleCancel}
+                  className="px-4 w-full py-2 bg-red-500 text-white font-semibold"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleEdit}
+                  className="px-5 w-full ml-2 py-2 bg-black text-white font-semibold"
+                >
+                  {editPending ? "Loading..." : "Edit"}
+                </Button>
+              </div>
+            </div>
+          </div>
+          <div className="flex sm:flex-row flex-col gap-4 w-full overflow-x-auto max-w-full">
+            {existingFiles.length > 0 && (
+              <div className="mt-4 flex max-w-full w-full overflow-x-auto gap-2">
+                {existingFiles.map((url, index: number) => (
+                  <div key={index} className="relative flex-none w-24">
+                    {existingFiles[index].match(/\.(jpg|jpeg|png|webp)$/i) ? (
+                      <img
+                        src={existingFiles[index]}
+                        alt="Preview"
+                        className="w-24 h-24 object-cover"
+                      />
+                    ) : existingFiles[index].match(
+                        /\.(mp4|mov|avi|mkv|webm)$/i
+                      ) ? (
+                      <video controls className="w-24 h-24 object-cover">
+                        <source src={existingFiles[index]} />
+                        Your browser does not support the video tag.
+                      </video>
+                    ) : null}
+                    <span
+                      onClick={() =>
+                        setExistingFiles(
+                          existingFiles.filter((_, i) => i !== index)
+                        )
+                      }
+                      className="absolute top-1 right-1 bg-white cursor-pointer rounded-full p-1"
+                    >
+                      <RxCross2 size="1em" />
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+            {files.length > 0 && (
+              <div className="mt-4 flex max-w-full w-full overflow-x-auto gap-2">
+                {files.map((url, index: number) => (
+                  <div key={index} className="relative flex-none w-24">
+                    {files[index].type.startsWith("image") ? (
+                      <img
+                        src={URL.createObjectURL(url)}
+                        alt="Preview"
+                        className="w-24 h-24 object-cover"
+                      />
+                    ) : files[index].type.startsWith("video") ? (
+                      <video controls className="w-24 h-24 object-cover">
+                        <source
+                          src={URL.createObjectURL(url)}
+                          type={files[index].type}
+                        />
+                        Your browser does not support the video tag.
+                      </video>
+                    ) : null}
+                    <span
+                      onClick={() =>
+                        setFiles(files.filter((_, i) => i !== index))
+                      }
+                      className="absolute top-1 right-1 bg-white cursor-pointer rounded-full p-1"
+                    >
+                      <RxCross2 size="1em" />
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {isManager ? (
+        <span
+          onClick={handleCloseEdit}
+          className="absolute top-2 right-2 cursor-pointer"
+        >
+          <FaEdit size="1.2em" />
+        </span>
+      ) : null}
+
+      <div className="flex justify-between mt-2.5">
+        <div className="flex gap-2 items-center">
+          <div
+            className="relative flex items-center gap-2 cursor-pointer"
+            onMouseEnter={() => setHovered(true)}
+            onMouseLeave={() => setHovered(false)}
+          >
+            {selectedReaction ? (
+              <motion.span
+                className="text-md"
+                animate={{
+                  scale: selectedReaction ? 1.2 : 1,
+                }}
+              >
+                {reactions.find((i) => i.id === selectedReaction)?.icon}
+              </motion.span>
+            ) : (
+              <BiLike onClick={() => handleLikeClick("like")} />
+            )}
+
+            <AnimatePresence>
+              {hovered && (
+                <motion.div
+                  className="absolute z-[99] bottom-10 left-0 flex items-center gap-1 bg-white p-1 rounded-full shadow-lg"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                >
+                  {reactions.map((reaction) => (
+                    <motion.span
+                      key={reaction.id}
+                      className="cursor-pointer text-2xl hover:scale-110"
+                      onClick={() => handleLikeClick(reaction.id)}
+                    >
+                      {reaction.icon}
+                    </motion.span>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+          <div className="flex items-center">
+            <p className="text-sm font-medium">{count.like}</p>
+            {sortedReactions.length > 0 ? (
+              <div className="relative flex items-center">
+                {sortedReactions.map((r, index: number) => (
+                  <span
+                    key={index}
+                    style={{
+                      transform: `translateX(${index * -0.7}em)`,
+                      zIndex: sortedReactions.length + index,
+                    }}
+                  >
+                    {reactions.find((i) => i.id === r[0])?.icon}
+                  </span>
+                ))}
+              </div>
+            ) : null}
+          </div>
+          <div className="flex gap-2 items-center">
+            <span
+              className="cursor-pointer"
+              onClick={() =>
+                setFieldTrue((prev) => ({
+                  ...prev,
+                  comment: !prev.comment,
+                }))
+              }
+            >
+              <FaCommentDots size="1.2em" />
+            </span>
+
+            <span className="text-sm font-medium">
+              {count.commet >= 1000
+                ? `${(count.commet / 1000).toFixed(0)}k`
+                : count.commet}
+            </span>
+          </div>
+
+          <span
+            onClick={() =>
+              setFieldTrue((prev) => ({
+                ...prev,
+                share: !prev.share,
+              }))
+            }
+            className="cursor-pointer"
+          >
+            <FaShareAlt size="1.2em" />
+          </span>
+        </div>
+
+        <div className="sm:flex sm:visible hidden gap-5 items-center">
+          <div className="flex gap-3">
+            {item?.owner?.image ? (
+              <img
+                className="w-[6vh] h-[6vh] object-cover rounded-full"
+                src={`${imageUrl}/users/${item?.owner?.image}`}
+                alt="profile image"
+              />
+            ) : (
+              <svg
+                className="w-[7vh] h-[7vh] text-gray-400"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+              </svg>
+            )}
+            <div className="flex flex-col">
+              <span className="font-semibold text-[13px]">
+                {item?.owner?.artistName +
+                  " " +
+                  item?.owner?.artistSurname1 +
+                  " " +
+                  item?.owner?.artistSurname2}
+              </span>
+              <span className="text-[12px] text-[#919EAB]">
+                {new Date(item?.createdAt).toLocaleString("en-US", {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      {fieldTrue.comment && <CommentBox circlePostId={item?._id} />}
+
+      {fieldTrue.share ? (
+        <div className="flex w-full items-center space-x-3 mt-4 p-2 bg-gray-200 rounded-lg">
+          <input
+            type="text"
+            value={""}
+            readOnly
+            className="px-3 w-full py-2 border border-gray-300 rounded-lg bg-white focus:outline-none"
+          />
+          <button
+            onClick={handleCopy}
+            className="py-2 px-4 bg-zinc-800 text-white rounded-lg font-semibold hover:bg-zinc-900 flex items-center"
+          >
+            <FaRegCopy size={18} className="mr-1" />
+          </button>
+        </div>
+      ) : null}
+    </div>
+  );
+}
 
 export default CircleUserComment;

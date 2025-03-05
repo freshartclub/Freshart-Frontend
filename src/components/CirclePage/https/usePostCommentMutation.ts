@@ -21,8 +21,7 @@ const usePostCommentMutation = () => {
 
     onSuccess: async (res) => {
       queryClient.invalidateQueries({
-        queryKey: ["CreateCirclePostComment"],
-        refetchType: "all",
+        queryKey: [CIRCLE_ENDPOINTS.GetCircleComments],
       });
       toast.success(t(res.data.message), {
         duration: 5000,

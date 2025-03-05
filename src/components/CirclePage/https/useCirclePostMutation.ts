@@ -10,6 +10,11 @@ async function circlePostMutation(data) {
   if (data?.circleFile && data?.circleFile.length > 0)
     data.circleFile.map((file) => formData.append("circleFile", file));
 
+  if (data?.existingFiles && data?.existingFiles.length > 0)
+    data.existingFiles.map((file) => formData.append("existingFiles", file));
+
+  if (data?.postId) formData.append("postId", data?.postId);
+
   formData.append("content", data?.content);
   formData.append("title", data?.title);
 
@@ -33,15 +38,17 @@ const useCirclePostMutation = () => {
 
     onSuccess: async (res) => {
       queryClient.invalidateQueries({
-        queryKey: ["CreateCirclePost"],
-        refetchType: "all",
+        queryKey: [CIRCLE_ENDPOINTS.GetCirclePosts],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [CIRCLE_ENDPOINTS.GetCircleDetails],
       });
       toast.success(t(res.data.message), {
         duration: 5000,
       });
     },
     onError: (error) => {
-      toast.error(t(error.response?.data?.message) || t("An error occurred"));
+      toast.error(t(error.response?.data?.message));
     },
   });
 };
