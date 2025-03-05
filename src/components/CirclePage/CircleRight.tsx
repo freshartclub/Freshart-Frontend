@@ -2,7 +2,6 @@ import { useState } from "react";
 import Button from "../ui/Button";
 import P from "../ui/P";
 import image_icon from "./assets/primary-shape3.png";
-import stream from "./assets/primary-shape4.png";
 import CircleUserComment from "./CircleUserComment";
 import { RxCross2 } from "react-icons/rx";
 import useCirclePostMutation from "./https/useCirclePostMutation";
@@ -12,36 +11,44 @@ import { useAppSelector } from "../../store/typedReduxHooks";
 const CircleRight = ({ data }) => {
   const [title, setTitle] = useState("");
   const [textAreaContent, setTextAreaContent] = useState("");
-  const [previewUrl, setPreviewUrl] = useState(null);
-  const [file, setFile] = useState(null);
+  const [previewUrls, setPreviewUrls] = useState([]);
+  const [files, setFiles] = useState([]);
 
   const { mutateAsync, isPending } = useCirclePostMutation();
   const userId = useAppSelector((state) => state?.user?.user?._id);
 
   const handleImage = (e) => {
-    const selectedFile = e.target.files[0];
-    if (selectedFile) {
-      setFile(selectedFile);
+    const selectedFiles = Array.from(e.target.files).slice(0, 5 - files.length);
+    if (selectedFiles.length === 0) return;
+    if (selectedFiles.length == 5)
+      return toast.error("You can't add more than 5 files");
 
-      const objectUrl = URL.createObjectURL(selectedFile);
-      setPreviewUrl(objectUrl);
-    }
+    const newPreviewUrls = selectedFiles.map((file) =>
+      URL.createObjectURL(file)
+    );
+    setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
+    setPreviewUrls((prevUrls) => [...prevUrls, ...newPreviewUrls]);
   };
 
   const handlePost = () => {
-    if (!textAreaContent) {
-      toast("Please add some content or attach a file before posting.");
-      return;
+    if (!textAreaContent && files.length === 0) {
+      return toast.error(
+        "Please add at least one file or write something in the text area"
+      );
     }
+
     const newData = {
       content: textAreaContent,
-      circleFile: file,
+      title: title,
+      circleFile: files,
       id: data?.data?._id,
     };
+
     mutateAsync(newData).then(() => {
       setTextAreaContent("");
-      setPreviewUrl(null);
-      setFile(null);
+      setTitle("");
+      setPreviewUrls([]);
+      setFiles([]);
     });
   };
 
@@ -71,71 +78,29 @@ const CircleRight = ({ data }) => {
               <input
                 type="file"
                 accept="image/*, video/*"
+                multiple
                 hidden
                 onChange={handleImage}
               />
 
-              <div className="flex mt-1 items-center gap-5 flex-wrap">
-                <Button
-                  variant={{ rounded: "full" }}
-                  className="flex gap-2 bg-[#44444414]"
-                  onClick={() =>
-                    document.querySelector('input[type="file"]').click()
-                  }
+              <Button
+                variant={{ rounded: "full" }}
+                className="flex gap-2 bg-[#44444414]"
+                onClick={() =>
+                  document.querySelector('input[type="file"]').click()
+                }
+              >
+                <img src={image_icon} alt="image/video" />
+                <P
+                  variant={{
+                    size: "small",
+                    theme: "dark",
+                    weight: "semiBold",
+                  }}
                 >
-                  <img src={image_icon} alt="image/video" />
-                  <P
-                    variant={{
-                      size: "small",
-                      theme: "dark",
-                      weight: "semiBold",
-                    }}
-                  >
-                    Image/Video
-                  </P>
-                </Button>
-                <Button
-                  variant={{ rounded: "full" }}
-                  className="flex gap-2 bg-[#44444414]"
-                >
-                  <img src={stream} alt="image" />
-                  <P
-                    variant={{
-                      size: "small",
-                      theme: "dark",
-                      weight: "semiBold",
-                    }}
-                  >
-                    Streaming
-                  </P>
-                </Button>
-              </div>
-
-              {previewUrl && (
-                <div className="mt-4 relative">
-                  {file.type.startsWith("image") ? (
-                    <img
-                      src={previewUrl}
-                      alt="Preview"
-                      className="w-full object-contain h-[30vh]"
-                    />
-                  ) : file.type.startsWith("video") ? (
-                    <video controls className="w-full h-auto">
-                      <source src={previewUrl} type={file.type} />
-                      Your browser does not support the video tag.
-                    </video>
-                  ) : null}
-                  <span
-                    onClick={() => {
-                      setPreviewUrl(null);
-                      setFile(null);
-                    }}
-                    className="absolute bg-white top-0 right-0 cursor-pointer rounded-full p-1"
-                  >
-                    <RxCross2 size="2em" />
-                  </span>
-                </div>
-              )}
+                  Image/Video
+                </P>
+              </Button>
             </div>
 
             <Button
@@ -145,6 +110,35 @@ const CircleRight = ({ data }) => {
               {isPending ? "Posting..." : "Create Post"}
             </Button>
           </div>
+          {previewUrls.length > 0 && (
+            <div className="mt-4 flex max-w-full w-full overflow-x-auto gap-2">
+              {previewUrls.map((url, index) => (
+                <div key={index} className="relative flex-none w-24">
+                  {files[index].type.startsWith("image") ? (
+                    <img
+                      src={url}
+                      alt="Preview"
+                      className="w-24 h-24 object-cover"
+                    />
+                  ) : files[index].type.startsWith("video") ? (
+                    <video controls className="w-24 h-24 object-cover">
+                      <source src={url} type={files[index].type} />
+                      Your browser does not support the video tag.
+                    </video>
+                  ) : null}
+                  <span
+                    onClick={() => {
+                      setPreviewUrls(previewUrls.filter((_, i) => i !== index));
+                      setFiles(files.filter((_, i) => i !== index));
+                    }}
+                    className="absolute bg-white top-0 right-0 cursor-pointer rounded-full p-1"
+                  >
+                    <RxCross2 size="1.5em" />
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       ) : null}
 

@@ -16,6 +16,11 @@ import { FaShareAlt } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
 import Button from "../ui/Button";
 import image_icon from "./assets/primary-shape3.png";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 
 const reactions = [
   { id: "like", icon: "👍", label: "Like" },
@@ -333,22 +338,31 @@ const CircleUserComment = ({ isManager }) => {
             <div key={index} className="flex gap-1 flex-col">
               <span className="font-semibold text-base">{item?.title}</span>
               <span className="text-[14px]">{item?.content}</span>
-              {item?.file && (
-                <>
-                  {/\.(jpg|jpeg|png|gif|webp)$/i.test(item.file) ? (
-                    <img
-                      src={`${imageUrl}/users/${item.file}`}
-                      alt="image"
-                      className="rounded-xl mt-2 w-full aspect-[16/9] object-cover"
-                    />
-                  ) : /\.(mp4|mov|webm)$/i.test(item.file) ? (
-                    <video
-                      src={`${imageUrl}/users/${item.file}`}
-                      controls
-                      className="rounded-xl mt-2 w-full h-[50vh]"
-                    />
-                  ) : null}
-                </>
+              {item?.file && item?.file.length > 0 && (
+                <Swiper
+                  modules={[Navigation, Pagination]}
+                  navigation
+                  pagination={{ clickable: true }}
+                  className="rounded-xl mt-2"
+                >
+                  {item.file.map((file, index: number) => (
+                    <SwiperSlide key={index} className="flex justify-center">
+                      {/\.(jpg|jpeg|png|gif|webp)$/i.test(file) ? (
+                        <img
+                          src={`${imageUrl}/users/${file}`}
+                          alt="image"
+                          className="rounded-xl w-full object-cover"
+                        />
+                      ) : /\.(mp4|mov|webm)$/i.test(file) ? (
+                        <video
+                          src={`${imageUrl}/users/${file}`}
+                          controls
+                          className="rounded-xl w-full h-[50vh]"
+                        />
+                      ) : null}
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
               )}
             </div>
 

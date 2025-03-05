@@ -3,7 +3,7 @@ import P from "../ui/P";
 
 const CirleLeft = ({ data }) => {
   return (
-    <div className="2xl:w-[25%] xl:w-[30%] lg:w-[35%] w-full">
+    <div className="lg:w-[60%] w-full">
       <div className="shadow border bg-white py-3 items-center justify-center rounded-xl flex">
         <div className="border-r border-dashed px-14 text-center flex gap-8 items-center">
           <div>

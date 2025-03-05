@@ -34,7 +34,7 @@ const CirclePage = () => {
         alt="banner image"
         className="w-full h-[40vh] object-cover opacity-75"
       />
-      <div className="container mx-auto sm:px-6 px-3">
+      <div className="mx-auto sm:px-6 px-3">
         <img
           src={`${imageUrl}/users/${data?.data?.mainImage}`}
           alt="profile image"

@@ -1,13 +1,11 @@
-import { BsDot } from "react-icons/bs";
+import { ChangeEvent, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { FiSearch } from "react-icons/fi";
-import { NavLink } from "react-router-dom";
-import { useState, ChangeEvent } from "react";
-import { useGetCircle } from "./https/useGetCircle";
 import Loader from "../ui/Loader";
 import AllCircle from "./AllCircle";
 import ArtistPrivateCircle from "./ArtistPrivateCircle";
 import ArtistPublicCircle from "./ArtistPublicCircle";
-import { useTranslation } from "react-i18next";
+import { useGetCircle } from "./https/useGetCircle";
 
 interface Circle {
   title?: string;
