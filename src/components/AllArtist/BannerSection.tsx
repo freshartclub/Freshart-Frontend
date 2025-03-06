@@ -1,10 +1,14 @@
 import { Link } from "react-router-dom";
 import Header from "../ui/Header";
 import arrow from "./assets/arrow.png";
+import bgImg from "./assets/Rectangle 5330.png";
 
 const BannerSection = ({ title, secondTitle }) => {
   return (
-    <div className="relative bg-all_artist bg-no-repeat w-full h-full bg-cover bg-center py-[150px]">
+    <div
+      className="relative bg-no-repeat w-full h-full bg-cover bg-center py-[150px]"
+      style={{ backgroundImage: `url(${bgImg})` }}
+    >
       <div className="container mx-auto sm:px-6 px-3">
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="w-52 text-center">

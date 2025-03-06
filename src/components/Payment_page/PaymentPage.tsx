@@ -18,7 +18,7 @@ import Header from "../ui/Header";
 import Loader from "../ui/Loader";
 import { lowImageUrl } from "../utils/baseUrls";
 import ArtBreadcrumbs1 from "./ArtBreadcrumbs1";
-import { useGetSingleToken } from "./http/useGetSingleToken";
+import { useGenerateHash } from "./http/useGenerateHash";
 
 declare global {
   interface Window {
@@ -27,95 +27,34 @@ declare global {
 }
 
 const PaymentPage = () => {
-  const [isFormReady, setIsFormReady] = useState(false);
-  const formRef = useRef(null);
-  const scriptLoaded = useRef(false);
-  const initialized = useRef(false);
-  const { data: tokenData, refetch } = useGetSingleToken();
-
-  const refetchCalled = useRef(false);
-  useEffect(() => {
-    const loadGlobalPayments = async () => {
-      if (scriptLoaded.current) {
-        await waitForToken();
-        initializePaymentForm();
-        return;
-      }
-
-      const script = document.createElement("script");
-      script.src = "https://js.globalpay.com/4.1.3/globalpayments.js";
-      script.async = true;
-      script.onload = async () => {
-        scriptLoaded.current = true;
-        await waitForToken();
-        initializePaymentForm();
-      };
-      script.onerror = () =>
-        console.error("Failed to load GlobalPayments SDK.");
-      document.body.appendChild(script);
-    };
-
-    const waitForToken = async () => {
-      if (!tokenData && !refetchCalled.current) {
-        console.log("Fetching token...");
-        refetchCalled.current = true;
-        await refetch();
-      }
-
-      return new Promise((resolve) => {
-        const checkToken = setInterval(() => {
-          if (tokenData) {
-            clearInterval(checkToken);
-            resolve();
-          }
-        }, 100);
-      });
-    };
-
-    const initializePaymentForm = () => {
-      if (initialized.current || !window.GlobalPayments || !tokenData) return;
-      initialized.current = true;
-
-      console.log("Configuring GlobalPayments with token:", tokenData);
-      window.GlobalPayments.configure({
-        accessToken: tokenData,
-        apiVersion: "2021-03-22",
-        env: "sandbox",
-      });
-
-      const cardForm = window.GlobalPayments.creditCard.form("#credit-card");
-
-      cardForm.ready(() => {
-        console.log("Credit card form is ready.");
-        setIsFormReady(true);
-      });
-
-      cardForm.on("token-success", (resp) => {
-        if (formRef.current) {
-          const tokenInput = document.createElement("input");
-          tokenInput.type = "hidden";
-          tokenInput.name = "payment-reference";
-          tokenInput.value = resp.paymentReference;
-          // formRef.current.appendChild(tokenInput);
-
-          const form = document.getElementById("payment-form");
-          form.appendChild(tokenInput);
-          // formRef.current.submit();
-          handlePayment(resp, tokenInput);
-        }
-      });
-
-      cardForm.on("token-error", (error) => {
-        console.error("Tokenization Error:", error);
-      });
-    };
-
-    loadGlobalPayments();
-  }, [tokenData]);
-
-  const handlePayment = (response, tokenInput) => {};
-
+  const [hash, setHash] = useState("");
+  const [time, setTime] = useState("");
+  const iframeRef = useRef(null);
   const { data, isLoading } = useGetCartItems();
+
+  const generateTimestamp = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0"); // Ensure 2 digits
+    const day = String(now.getDate()).padStart(2, "0");
+    const hours = String(now.getHours()).padStart(2, "0");
+    const minutes = String(now.getMinutes()).padStart(2, "0");
+    const seconds = String(now.getSeconds()).padStart(2, "0");
+
+    return `${year}${month}${day}${hours}${minutes}${seconds}`;
+  };
+
+  const merchantId = "367155777";
+  const orderId = "N6qsk4kYRZihmPrTXWYS6g";
+  const amount = "1001";
+  const currency = "EUR";
+  const sharedSecret = "FRAC.2025!";
+
+  const {
+    data: hashData,
+    isLoading: hashLoading,
+    refetch,
+  } = useGenerateHash(time, merchantId, orderId, amount, currency);
 
   const { mutate: checkOutMutation, isPending: checkOutPending } =
     usePostCheckOutMutation();
@@ -184,6 +123,58 @@ const PaymentPage = () => {
     return acc;
   }, {});
 
+  useEffect(() => {
+    setTime(generateTimestamp());
+  }, []);
+
+  const generateSHA1Hash = async () => {
+    await refetch();
+  };
+
+  useEffect(() => {
+    if (time) {
+      if (!hashData) generateSHA1Hash();
+      if (hashData) setHash(hashData);
+    }
+  }, [time, hashData]);
+
+  useEffect(() => {
+    if (hash && time) {
+      const form = document.createElement("form");
+      form.method = "POST";
+      form.action = "https://hpp.sandbox.addonpayments.com/pay";
+      form.target = "hppFrame";
+
+      const fields = {
+        TIMESTAMP: time,
+        MERCHANT_ID: merchantId,
+        ACCOUNT: "Fresh Art Club",
+        ORDER_ID: "N6qsk4kYRZihmPrTXWYS6g",
+        AMOUNT: "1001",
+        CURRENCY: "EUR",
+        SHA1HASH: `${hash}`,
+        HPP_BILLING_CITY: "Indore",
+        HPP_BILLING_COUNTRY: "356",
+        HPP_BILLING_STREET1: "Adhartal",
+        HPP_BILLING_POSTALCODE: "482004",
+        HPP_CUSTOMER_EMAIL: "rachit@gmail.com",
+        AUTO_SETTLE_FLAG: "1",
+        MERCHANT_RESPONSE_URL: "https://www.example.com/responseUrl",
+      };
+
+      for (const key in fields) {
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.name = key;
+        input.value = fields[key];
+        form.appendChild(input);
+      }
+
+      document.body.appendChild(form);
+      form.submit();
+    }
+  }, [hash]);
+
   const onSubmit = (data: any) => {
     try {
       const billingDetails = defaultBilling?.billingDetails || {};
@@ -249,9 +240,14 @@ const PaymentPage = () => {
   return (
     <div className="container mx-auto p-4">
       <ArtBreadcrumbs1 />
-      <form ref={formRef} id="payment-form">
-        <div id="credit-card"></div>
-      </form>
+      <iframe
+        name="hppFrame"
+        ref={iframeRef}
+        title="Hosted Payment Page"
+        width="100%"
+        height="600px"
+        style={{ border: "none" }}
+      ></iframe>
 
       <div className="py-10">
         <form onSubmit={handleSubmit(onSubmit)}>

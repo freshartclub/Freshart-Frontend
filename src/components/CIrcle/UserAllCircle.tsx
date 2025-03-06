@@ -213,8 +213,8 @@ const UserAllCircle: React.FC<UserAllCircleProps> = ({ data }) => {
             <span
               onClick={(e) => handleFollow(e, circle?._id)}
               className={`border-2 py-2 px-3 rounded-md text-center ${
-                followStates[circle?._id] === "Following"
-                  ? "bg-white text-black"
+                followStates[circle?._id] == "Following"
+                  ? "bg-white text-black cursor-not-allowed pointer-events-none"
                   : "bg-black text-white"
               } border-black font-semibold cursor-pointer text-md`}
             >
@@ -298,8 +298,9 @@ const UserAllCircle: React.FC<UserAllCircleProps> = ({ data }) => {
             <span
               onClick={(e) => handleFollow(e, circle?._id)}
               className={`border-2 py-2 px-3 rounded-md text-center ${
-                followStates[circle?._id] === "Requested" || "Following"
-                  ? "bg-white text-black"
+                followStates[circle?._id] == "Requested" ||
+                followStates[circle?._id] == "Following"
+                  ? "bg-white text-black cursor-not-allowed pointer-events-none"
                   : "bg-black text-white"
               } border-black font-semibold cursor-pointer text-md`}
             >

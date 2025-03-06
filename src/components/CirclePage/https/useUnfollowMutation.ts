@@ -19,7 +19,6 @@ const useUnfollowMutation = () => {
     onSuccess: async (res) => {
       queryClient.invalidateQueries({
         queryKey: [],
-        refetchType: "all",
       });
       toast.success(t(res.data.message), {
         duration: 5000,

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import logo from "../../assets/Logo01 1.png";
 import heart from "../../assets/Heart.png";
 import bag from "../../assets/Bag.png";
@@ -78,6 +78,7 @@ const NavForHome = () => {
 
   useClickOutside(closePopup, () => {
     setIsProfileDropdown(false);
+    setIsModalOpen(false);
   });
 
   const handleClickOutside = (event) => {
@@ -162,7 +163,7 @@ const NavForHome = () => {
     <nav
       className={`z-[9999] ${
         isScrolled ? "bg-[#102030]" : "bg-transparent"
-      } hover:bg-[#102030] pt-4 py-2 px-6 fixed top-0 left-0 w-full transition-all duration-300 ${
+      } hover:bg-[#102030] pt-4 sm:pb-2 pb-4 px-6 fixed top-0 left-0 w-full transition-all duration-300 ${
         isVisible ? "translate-y-0 " : "-translate-y-full"
       }`}
     >
@@ -172,10 +173,10 @@ const NavForHome = () => {
             <div className=" w-full mx-auto flex justify-between  items-center">
               <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="text-white focus:outline-none lg:hidden"
+                className="text-white focus:outline-none sm:hidden"
               >
                 <svg
-                  className="w-6 h-6"
+                  className="w-8 h-8"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -190,7 +191,10 @@ const NavForHome = () => {
                 </svg>
               </button>
 
-              <div className="" onClick={() => navigate("/home")}>
+              <div
+                className="sm:block hidden"
+                onClick={() => navigate("/home")}
+              >
                 <img src={logo} alt="logo" className="lg:w-full md:w-full" />
               </div>
 
@@ -245,7 +249,7 @@ const NavForHome = () => {
 
                 <button
                   onClick={toggleSidebar}
-                  className="relative focus:outline-none hidden lg:block"
+                  className="relative focus:outline-none"
                 >
                   <img
                     src={bag}
@@ -425,35 +429,37 @@ const NavForHome = () => {
                                   >
                                     Click on the right to logout.
                                   </P>
-                                  <Button
-                                    variant={{
-                                      fontSize: "md",
-                                      theme: "light",
-                                      fontWeight: "500",
-                                    }}
-                                    onClick={toggleModal}
-                                    type="button"
-                                    className="mx-2 border border-gray w-40"
-                                  >
-                                    Cancel
-                                  </Button>
+                                  <div className="flex items-center justify-center">
+                                    <Button
+                                      variant={{
+                                        fontSize: "md",
+                                        theme: "light",
+                                        fontWeight: "500",
+                                      }}
+                                      onClick={toggleModal}
+                                      type="button"
+                                      className="mx-2 border border-gray w-40"
+                                    >
+                                      Cancel
+                                    </Button>
 
-                                  <Button
-                                    variant={{
-                                      fontSize: "md",
-                                      theme: "dark",
-                                      fontWeight: "400",
-                                      rounded: "md",
-                                    }}
-                                    onClick={() => {
-                                      setIsModalOpen((prev) => !prev);
-                                      logOut();
-                                    }}
-                                    type="button"
-                                    className="mx-2 bg-red-600 text-white border border-transparent w-40"
-                                  >
-                                    Yes
-                                  </Button>
+                                    <Button
+                                      variant={{
+                                        fontSize: "md",
+                                        theme: "dark",
+                                        fontWeight: "400",
+                                        rounded: "md",
+                                      }}
+                                      onClick={() => {
+                                        setIsModalOpen((prev) => !prev);
+                                        logOut();
+                                      }}
+                                      type="button"
+                                      className="mx-2 bg-red-600 text-white border border-transparent w-40"
+                                    >
+                                      Yes
+                                    </Button>
+                                  </div>
                                 </div>
                               </div>
                             </div>
@@ -631,23 +637,37 @@ const NavForHome = () => {
         )}
       </div>
 
-      {isOpen && (
+      {isOpen ? (
         <div
           ref={mobileNavPopup}
-          className="lg:hidden absolute top-18 left-0 right-0 z-10 bg-[#102030] text-white px-6 pb-4"
+          className="absolute sm:hidden border-t-2 top-16 left-0 right-0 z-10 flex flex-col gap-3 bg-[#102030] text-white px-6 pb-4"
         >
-          {mobile_links.map((link, index) => (
-            <Link
-              onClick={() => setIsOpen(false)}
-              to={link.path}
-              className="block py-2"
-              key={index}
-            >
-              {link.label}
-            </Link>
-          ))}
+          <Link
+            to="/home"
+            className="font-semibold w-max pt-3 text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
+          >
+            Home
+          </Link>
+          <Link
+            to="/all-artworks?type=subscription"
+            className="font-semibold w-max text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
+          >
+            Subscribe
+          </Link>
+          <Link
+            to="/all-artworks?type=purchase"
+            className="font-semibold w-max text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
+          >
+            Purchase
+          </Link>
+          <Link
+            to="/all_artist"
+            className="font-semibold w-max text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
+          >
+            Artist
+          </Link>
         </div>
-      )}
+      ) : null}
     </nav>
   );
 };

@@ -118,31 +118,29 @@ const NavBar = () => {
 
   return (
     <>
-      <nav className="bg-[#102030] py-6 px-6 relative">
+      <nav className="bg-[#102030] pt-4 pb-4 px-6 relative">
         <div className="flex justify-between items-center">
           {token && isAuthorized ? (
             <>
-              <div className="lg:hidden">
-                <button
-                  onClick={() => setIsOpen(!isOpen)}
-                  className="text-white focus:outline-none"
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="text-white focus:outline-none sm:hidden"
+              >
+                <svg
+                  className="w-8 h-8"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
                 >
-                  <svg
-                    className="w-6 h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M4 6h16M4 12h16M4 18h16"
-                    ></path>
-                  </svg>
-                </button>
-              </div>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M4 6h16M4 12h16M4 18h16"
+                  ></path>
+                </svg>
+              </button>
 
               <div className="hidden lg:flex items-center gap-5 text-white">
                 <Link
@@ -264,7 +262,10 @@ const NavBar = () => {
                 </Link>
               </div>
 
-              <div onClick={() => navigate("/home")}>
+              <div
+                className="hidden sm:block"
+                onClick={() => navigate("/home")}
+              >
                 <img src={logo} alt="logo" className=" lg:w-full md:w-full" />
               </div>
 
@@ -286,7 +287,7 @@ const NavBar = () => {
 
                 <button
                   onClick={toggleSidebar}
-                  className="relative focus:outline-none hidden lg:block"
+                  className="relative focus:outline-none"
                 >
                   <img src={bag} alt="bag" className="w-8 h-8 text-white" />
                   <span className="absolute bg-red-300 w-4 h-4 right-0 top-0  rounded-full flex items-center justify-center">
@@ -552,23 +553,37 @@ const NavBar = () => {
           )}
         </div>
 
-        {isOpen && (
+        {isOpen ? (
           <div
             ref={mobileNavPopup}
-            className="lg:hidden absolute top-18 left-0 right-0 z-10 bg-[#102030] text-white px-6 pb-4"
+            className="absolute sm:hidden border-t-2 top-16 left-0 right-0 z-10 flex flex-col gap-3 bg-[#102030] text-white px-6 pb-4"
           >
-            {mobile_links.map((link, index) => (
-              <Link
-                onClick={() => setIsOpen(false)}
-                to={link.path}
-                className="block py-2"
-                key={index}
-              >
-                {link.label}
-              </Link>
-            ))}
+            <Link
+              to="/home"
+              className="font-semibold w-max pt-3 text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
+            >
+              Home
+            </Link>
+            <Link
+              to="/all-artworks?type=subscription"
+              className="font-semibold w-max text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
+            >
+              Subscribe
+            </Link>
+            <Link
+              to="/all-artworks?type=purchase"
+              className="font-semibold w-max text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
+            >
+              Purchase
+            </Link>
+            <Link
+              to="/all_artist"
+              className="font-semibold w-max text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
+            >
+              Artist
+            </Link>
           </div>
-        )}
+        ) : null}
       </nav>
     </>
   );

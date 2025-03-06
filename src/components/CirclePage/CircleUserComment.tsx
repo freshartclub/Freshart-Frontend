@@ -133,16 +133,9 @@ function Post({ post: item, isManager, id }: PostProps) {
     setIsEdit(false);
   };
 
-  const getReactionIcon = (reactionString: string) => {
-    const reaction = reactions.find((r) => r.id === reactionString);
-    return reaction ? reaction.icon.toString() : "";
-  };
-
   const handleLikeClick = async (reaction: string) => {
-    const icon = getReactionIcon(reaction);
-
-    const isRemoving = selectedReaction === icon;
-    const newReaction = isRemoving ? "" : icon;
+    const isRemoving = selectedReaction === reaction;
+    const newReaction = isRemoving ? "" : reaction;
 
     setSelectedReaction(newReaction);
     setCount((prev) => ({
@@ -157,8 +150,6 @@ function Post({ post: item, isManager, id }: PostProps) {
       };
       await mutateAsync(data);
     } catch (error) {
-      console.error("Error updating reaction:", error);
-
       setSelectedReaction(selectedReaction);
       setCount((prev) => ({
         ...prev,
@@ -439,7 +430,7 @@ function Post({ post: item, isManager, id }: PostProps) {
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
           >
-            {selectedReaction ? (
+            {selectedReaction != "" ? (
               <motion.span
                 className="text-md"
                 animate={{
@@ -455,7 +446,7 @@ function Post({ post: item, isManager, id }: PostProps) {
             <AnimatePresence>
               {hovered && (
                 <motion.div
-                  className="absolute z-[99] bottom-10 left-0 flex items-center gap-1 bg-white p-1 rounded-full shadow-lg"
+                  className="absolute z-[99] bottom-7 -left-1 flex items-center gap-1 bg-white p-1 rounded-full shadow-lg"
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.8 }}
