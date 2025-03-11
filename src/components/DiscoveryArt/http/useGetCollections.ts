@@ -2,17 +2,17 @@ import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "../../utils/axios";
 import { ARTTIST_ENDPOINTS } from "../../../http/apiEndPoints/Artist";
 
-async function fetchData() {
-  const { data } = await axiosInstance.get(
-    `${ARTTIST_ENDPOINTS.getAllCollections}`
-  );
+export const useGetCollections = (search: string, currPage: number) => {
+  async function fetchData() {
+    const { data } = await axiosInstance.get(
+      `${ARTTIST_ENDPOINTS.getAllCollections}?s=${search}&currPage=${currPage}`
+    );
 
-  return data.data;
-}
+    return data;
+  }
 
-export const useGetCollections = () => {
   return useQuery({
-    queryKey: [ARTTIST_ENDPOINTS.getAllCollections],
+    queryKey: [ARTTIST_ENDPOINTS.getAllCollections, search, currPage],
     queryFn: fetchData,
     refetchOnWindowFocus: false,
   });

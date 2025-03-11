@@ -21,6 +21,20 @@ const ArtistPrivateCircle = ({ data }) => {
     }
   };
 
+  const renderTags = (tags: string[]) => {
+    if (!tags || tags.length === 0) return null;
+
+    return (
+      <div className="flex gap-2 overflow-x-auto scrollbar">
+        {tags.map((tag, index) => (
+          <span key={index} className="whitespace-nowrap">
+            #{tag}
+          </span>
+        ))}
+      </div>
+    );
+  };
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-2 my-3 sm:gap-4">
       {data?.data?.length > 0 ? (
@@ -45,11 +59,9 @@ const ArtistPrivateCircle = ({ data }) => {
                   {circle?.type}
                 </p>
               </div>
-              <p className="bg-[#00B8D929] w-max text-[#10009c] rounded-full font-semibold px-2 text-[11px]">
-                {circle?.categories?.length > 3
-                  ? circle?.categories?.join(" | ").slice(0, 20) + "..."
-                  : circle?.categories?.join(" | ")}
-              </p>
+              <div className="overflow-x-auto flex max-w-[200px] w-max scrollbar-hide bg-[#00B8D929] text-[#10009c] rounded-full font-semibold px-2 text-[11px]">
+                {renderTags(circle?.categories)}
+              </div>
 
               <div className="font-sm text-gray-600 font-medium text-[14px]">
                 {circle?.description

@@ -2,23 +2,22 @@ import { useState } from "react";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
 
+import { BiInfoCircle } from "react-icons/bi";
 import { GrUserManager } from "react-icons/gr";
-import { MdOutlinePermIdentity } from "react-icons/md";
+import { MdOutlinePermIdentity, MdOutlinePhotoLibrary } from "react-icons/md";
 import { RiUserFollowFill } from "react-icons/ri";
 import { useSearchParams } from "react-router-dom";
-import Blogs from "../Blogs/Blogs";
 import usePostFollowMutation from "../CIrcle/https/usePostFollowMutation";
 import Followers from "../Followers/Followers";
 import Requests from "../Followers/Requests";
 import P from "../ui/P";
-import profile from "./assets/primary-shape1.png";
-import profile3 from "./assets/primary-shape2.png";
+import CircleAbout from "./CircleAbout";
 import CircleDescription from "./CircleDescription";
 import useUnfollowMutation from "./https/useUnfollowMutation";
 import Managers from "./Managers";
 
 const CircleHead = ({ data }) => {
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(1);
   const [searchParams] = useSearchParams();
   const circleId = searchParams.get("id") as string;
   const type = data?.data?.type;
@@ -39,24 +38,28 @@ const CircleHead = ({ data }) => {
       <TabList className="flex items-center flex-wrap gap-4 sm:gap-6 justify-start sm:justify-end border-b-2 border-gray-300 mt-6">
         <Tab
           className={`flex gap-1 items-center cursor-pointer px-3 py-2 ${
-            activeTab === 0 ? "border-2 border-black font-semibold  " : ""
+            activeTab === 0 ? "border-2 border-black font-semibold" : ""
           }`}
         >
-          <img src={profile} alt="profile icon" className="w-5 h-5" />
-          <p className="text-sm sm:text-base">Profile</p>
-        </Tab>
-
-        <Tab
-          className={`flex gap-1 items-center cursor-pointer px-3 py-2 ${
-            activeTab === 1 ? "border-2 border-black font-semibold " : ""
-          }`}
-        >
-          <RiUserFollowFill className="w-5 h-5" />
+          <BiInfoCircle size={20} />
           <P
             variant={{ size: "base", theme: "dark", weight: "medium" }}
             className="text-sm sm:text-base"
           >
-            Followers
+            About
+          </P>
+        </Tab>
+        <Tab
+          className={`flex gap-1 items-center cursor-pointer px-3 py-2 ${
+            activeTab === 1 ? "border-2 border-black font-semibold  " : ""
+          }`}
+        >
+          <MdOutlinePhotoLibrary size={20} />
+          <P
+            variant={{ size: "base", theme: "dark", weight: "medium" }}
+            className="text-sm sm:text-base"
+          >
+            Posts
           </P>
         </Tab>
 
@@ -65,12 +68,12 @@ const CircleHead = ({ data }) => {
             activeTab === 2 ? "border-2 border-black font-semibold " : ""
           }`}
         >
-          <img src={profile3} alt="blogs icon" className="w-5 h-5" />
+          <RiUserFollowFill className="w-5 h-5" />
           <P
             variant={{ size: "base", theme: "dark", weight: "medium" }}
             className="text-sm sm:text-base"
           >
-            Blogs
+            Followers
           </P>
         </Tab>
 
@@ -124,13 +127,13 @@ const CircleHead = ({ data }) => {
       </TabList>
 
       <TabPanel>
+        <CircleAbout data={data?.data} />
+      </TabPanel>
+      <TabPanel>
         <CircleDescription data={data} />
       </TabPanel>
       <TabPanel>
         <Followers newData={data} />
-      </TabPanel>
-      <TabPanel>
-        <Blogs />
       </TabPanel>
       <TabPanel>
         <Managers data={data} />

@@ -61,7 +61,7 @@ const Login: React.FC = () => {
   return (
     <div className="container mx-auto md:px-6 px-3">
       <div className="grid md:grid-cols-2 grid-cols-1 gap-10 py-10">
-        <div className="text-center shadow-xl bg-white xl:p-10 lg:p-8 md:p-6 p-4 xl:w-[80%] w-full">
+        <div className="text-center shadow-md border border-zinc-300 rounded-xl bg-white xl:p-10 lg:p-8 md:p-6 p-4 xl:w-[80%] w-full">
           <Header variant={{ size: "2xl", theme: "dark", weight: "semiBold" }}>
             {t("Welcome Back")}
           </Header>
@@ -165,19 +165,19 @@ const Login: React.FC = () => {
             >
               {t("Don’t have account ?")}{" "}
               <Link
-                to="/become_artist"
-                className="hover:underline decoration-red-700  cursor-pointer"
+                to="/signup"
+                className="font-bold uppercase ml-1 md:text-base text-sm"
               >
-                {t("Become an Artist")}{" "}
+                {t("Sign Up")}
               </Link>
             </P>
           </div>
-          {/* <Link
-            to="/signup"
-            className="font-bold uppercase ml-1 md:text-base text-sm"
+          <Link
+            to="/become_artist"
+            className="hover:underline decoration-red-700  cursor-pointer"
           >
-            {t("Sign Up")}
-          </Link> */}
+            {t("Become an Artist")}{" "}
+          </Link>
         </div>
         <div className="my-auto">
           <img src={loginImage} alt="Login" />

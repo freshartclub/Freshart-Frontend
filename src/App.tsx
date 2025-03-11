@@ -393,7 +393,7 @@ const App: React.FC = () => {
             />
 
             <Route
-              path="/cart_success_page"
+              path="/payment-success"
               element={
                 <AuthGuard>
                   <CartSuccess />

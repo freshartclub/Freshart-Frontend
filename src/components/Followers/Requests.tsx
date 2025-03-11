@@ -16,13 +16,12 @@ const Requests = () => {
 
   const { data, isLoading } = useGetRequest(id);
   const { mutate, isPending: acceptPending } = useRequestAcceptMutation();
-  const { mutate: rejectMutation, isPending: isRejectPending } =
-    useDeleteFollowerRequest();
+  const { mutate: rejectMutation } = useDeleteFollowerRequest();
 
   const [acceptStates, setAcceptStates] = useState({});
-  const [rejectStates, setRejectStates] = useState({}); // New state for reject buttons
+  const [rejectStates, setRejectStates] = useState({});
 
-  const handleFollowClick = (requestId) => {
+  const handleFollowClick = (requestId: string) => {
     try {
       const newData = {
         circleId: id,
@@ -44,21 +43,21 @@ const Requests = () => {
     }
   };
 
-  const handleReject = (requestId) => {
+  const handleReject = (requestId: string) => {
     try {
       const newData = {
         circleId: id,
         requestId: requestId,
       };
 
-      setRejectStates((prev) => ({ ...prev, [requestId]: "Loading" })); // Set loading state for this request
+      setRejectStates((prev) => ({ ...prev, [requestId]: "Loading" }));
       rejectMutation(newData, {
         onSuccess: () => {
-          setRejectStates((prev) => ({ ...prev, [requestId]: "Rejected" })); // Optional: Update to "Rejected" on success
+          setRejectStates((prev) => ({ ...prev, [requestId]: "Rejected" }));
         },
         onError: (error) => {
           console.error(error);
-          setRejectStates((prev) => ({ ...prev, [requestId]: "Reject" })); // Reset to "Reject" on error
+          setRejectStates((prev) => ({ ...prev, [requestId]: "Reject" }));
         },
       });
     } catch (error) {
@@ -66,99 +65,99 @@ const Requests = () => {
     }
   };
 
-  if (isLoading) {
-    return <Loader />;
-  }
+  const name = (val) => {
+    let fullName = val?.artistName || "";
+
+    if (val?.nickName) fullName += " " + `"${val?.nickName}"`;
+    if (val?.artistSurname1) fullName += " " + val?.artistSurname1;
+    if (val?.artistSurname2) fullName += " " + val?.artistSurname2;
+
+    return fullName.trim();
+  };
 
   return (
-    <div>
-      <div className="container mx-auto sm:px-6 px-3 min-h-[50vh]">
-        <div>
-          <div className="lg:mt-20 md:mt-10 mt-5">
-            <Header variant={{ size: "2xl", theme: "dark", weight: "bold" }}>
-              Requests
-            </Header>
+    <div className="mx-auto px-3 sm:px-6 my-5">
+      <Header variant={{ size: "2xl", theme: "dark", weight: "bold" }}>
+        Requests
+      </Header>
 
-            <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 2xl:gap-10 md:gap-6 gap-5 my-10">
-              {data?.data?.length > 0 ? (
-                data?.data?.map((item, index) => (
-                  <div
-                    key={index}
-                    className="flex justify-between items-center shadow-xl border xl:p-8 lg:p-3 p-5 rounded-xl"
-                  >
-                    <div className="flex xl:gap-4 gap-2 items-center w-[7vh] h-[7vh]">
-                      <img
-                        className="rounded-full h-full w-full"
-                        src={`${imageUrl}/users/${item?.user?.img}`}
-                        alt="profile image"
-                      />
-                      <div>
-                        <P
-                          variant={{
-                            size: "md",
-                            theme: "dark",
-                            weight: "semiBold",
-                          }}
-                          className="xl:text-md text-base"
-                        >
-                          {item?.user?.artistName +
-                            " " +
-                            item?.user?.artistSurname1 +
-                            " " +
-                            item?.user?.artistSurname2}
-                        </P>
-                        <div className="flex items-center gap-2">
-                          <img src={location} alt="location icon" />
-                          <P
-                            variant={{ size: "small", weight: "normal" }}
-                            className="text-[#919EAB]"
-                          >
-                            {item?.user?.location?.country}
-                          </P>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex flex-col gap-3">
-                      <Button
-                        variant={{
-                          fontSize: "small",
-                          rounded: "md",
-                          fontWeight: "600",
-                        }}
-                        onClick={() => handleFollowClick(item._id)}
-                        className="border border-[#919EAB51] !py-1 !px-2"
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 2xl:gap-10 md:gap-6 gap-5 mt-5 mb-10">
+          {data?.data?.length > 0 ? (
+            data?.data?.map((item, index) => (
+              <div
+                key={index}
+                className="flex flex-wrap justify-between border border-zinc-300 items-center shadow-md p-4 rounded-lg"
+              >
+                <div className="flex items-center gap-2 xl:gap-4 w-full max-w-[70%]">
+                  <img
+                    src={`${imageUrl}/users/${item?.user?.img}`}
+                    className="w-[50px] h-[50px] rounded-full object-cover"
+                    alt="profile image"
+                  />
+                  <div className="flex flex-col gap-1">
+                    <P
+                      variant={{
+                        size: "md",
+                        theme: "dark",
+                        weight: "semiBold",
+                      }}
+                      className="xl:text-md text-base"
+                    >
+                      {name(item?.user)}
+                    </P>
+                    <div className="flex items-center gap-2">
+                      <img src={location} alt="location icon" />
+                      <P
+                        variant={{ size: "small", weight: "normal" }}
+                        className="text-[#919EAB]"
                       >
-                        {acceptStates[item._id] === "Loading" ||
-                        (acceptPending && acceptStates[item._id] === "Loading")
-                          ? "Loading.."
-                          : acceptStates[item._id] || "Accept"}
-                      </Button>
-
-                      <Button
-                        variant={{
-                          fontSize: "small",
-                          rounded: "md",
-                          fontWeight: "600",
-                        }}
-                        onClick={() => handleReject(item._id)}
-                        className="border border-[#919EAB51] !py-1 !px-2"
-                      >
-                        {rejectStates[item._id] === "Loading"
-                          ? "Loading.."
-                          : rejectStates[item._id] || "Reject"}
-                      </Button>
+                        {item?.user?.location?.country}
+                      </P>
                     </div>
                   </div>
-                ))
-              ) : (
-                <div className="col-span-full text-center text-gray-500 py-4">
-                  No Request
                 </div>
-              )}
+                <div className="flex flex-col gap-3">
+                  <Button
+                    variant={{
+                      fontSize: "small",
+                      rounded: "md",
+                      fontWeight: "600",
+                    }}
+                    onClick={() => handleFollowClick(item._id)}
+                    className="border border-[#919EAB51] !py-1 !px-2"
+                  >
+                    {acceptStates[item._id] === "Loading" ||
+                    (acceptPending && acceptStates[item._id] === "Loading")
+                      ? "Loading.."
+                      : acceptStates[item._id] || "Accept"}
+                  </Button>
+
+                  <Button
+                    variant={{
+                      fontSize: "small",
+                      rounded: "md",
+                      fontWeight: "600",
+                    }}
+                    onClick={() => handleReject(item._id)}
+                    className="border border-[#919EAB51] !py-1 !px-2"
+                  >
+                    {rejectStates[item._id] === "Loading"
+                      ? "Loading.."
+                      : rejectStates[item._id] || "Reject"}
+                  </Button>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="col-span-full text-center text-gray-500  border border-zinc-300 rounded py-4">
+              No Request Found
             </div>
-          </div>
+          )}
         </div>
-      </div>
+      )}
     </div>
   );
 };

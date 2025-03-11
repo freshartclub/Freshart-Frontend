@@ -1,6 +1,6 @@
-import { useState } from "react";
-import P from "../ui/P";
+import { IoChevronBackOutline, IoChevronForwardOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
+import P from "../ui/P";
 import { imageUrl } from "../utils/baseUrls";
 
 const filterData = [
@@ -82,64 +82,16 @@ const filterData = [
   {
     data: "Z",
   },
-  {
-    data: "0-9",
-  },
 ];
 
-const ITEMS_PER_PAGE = 8;
-
-const AplhaFilter = ({ query, data }: any) => {
-  const [selectedLetter, setSelectedLetter] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
+const AplhaFilter = ({
+  setLetter,
+  setCurrPage,
+  currPage,
+  data,
+  totalPages,
+}: any) => {
   const navigate = useNavigate();
-
-  const filteredArtists = selectedLetter
-    ? data?.artists?.filter((artist) =>
-        artist.artistName.toLowerCase().startsWith(selectedLetter.toLowerCase())
-      )
-    : data?.artists;
-
-  const totalPages = Math.ceil(filteredArtists?.length / ITEMS_PER_PAGE);
-
-  const currentItems = filteredArtists?.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
-  );
-
-  const filteredItems = currentItems?.filter((item) =>
-    item?.artistName.toLowerCase().includes(query.toLowerCase())
-  );
-
-  const handlePrevious = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  const handleNext = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const handleLetterClick = (letter: string) => {
-    const matchingArtists = data?.artists?.filter((artist) =>
-      artist?.artistName?.toLowerCase().startsWith(letter.toLowerCase())
-    );
-
-    if (matchingArtists?.length === 0) {
-      setSelectedLetter(null);
-    } else {
-      setSelectedLetter(letter);
-    }
-    setCurrentPage(1);
-  };
-
-  const handleAllClick = () => {
-    setSelectedLetter(null);
-    setCurrentPage(1);
-  };
 
   const handleArtistDetail = (id: string) => {
     navigate(`/artist_detail/${id}`);
@@ -155,7 +107,7 @@ const AplhaFilter = ({ query, data }: any) => {
     <>
       <div className="flex gap-5 my-10 flex-wrap">
         <P
-          onClick={handleAllClick}
+          onClick={() => setLetter("")}
           variant={{ size: "base", theme: "dark", weight: "semiBold" }}
           className="cursor-pointer"
         >
@@ -164,7 +116,7 @@ const AplhaFilter = ({ query, data }: any) => {
         {filterData.map((item, index) => (
           <div key={index}>
             <P
-              onClick={() => handleLetterClick(item.data)}
+              onClick={() => setLetter(item.data)}
               variant={{ size: "base", theme: "dark", weight: "semiBold" }}
               className="cursor-pointer"
             >
@@ -175,9 +127,8 @@ const AplhaFilter = ({ query, data }: any) => {
       </div>
 
       <div className="grid xl:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5 mb-10">
-        {filteredItems &&
-          filteredItems.length > 0 &&
-          filteredItems?.map((item, index: number) => (
+        {data && data.length > 0 ? (
+          data?.map((item, index: number) => (
             <div key={index} className=" text-center">
               <div
                 className="mt-14 rounded-lg border cursor-pointer border-[#FF536B] flex flex-col items-center"
@@ -206,31 +157,69 @@ const AplhaFilter = ({ query, data }: any) => {
                 />
               </div>
             </div>
-          ))}
+          ))
+        ) : (
+          <div className="text-gray-500 col-span-4 text-center w-full h-[20vh] flex items-center justify-center rounded border border-zinc-300 p-2">
+            No Artist Found for this Filter
+          </div>
+        )}
       </div>
 
-      {/* Pagination Controls */}
-      {filteredArtists?.length > ITEMS_PER_PAGE && (
-        <div className="flex justify-center my-5">
-          <button
-            className="mx-2 px-4 py-2 bg-gray-300 rounded-lg"
-            onClick={handlePrevious}
-            disabled={currentPage === 1}
-          >
-            Pre
-          </button>
-          <span className="mx-2 px-4 py-2 bg-gray-200 rounded-lg">
-            {currentPage}
-          </span>
-          <button
-            className="mx-2 px-4 py-2 bg-gray-300 rounded-lg"
-            onClick={handleNext}
-            disabled={currentPage === totalPages}
-          >
-            Next
-          </button>
-        </div>
-      )}
+      <div className="flex justify-center items-center mb-8 mt-0 gap-2">
+        <button
+          onClick={() => setCurrPage((prev) => Math.max(prev - 1, 1))}
+          disabled={currPage === 1}
+          className={`p-2 border rounded-full mr-3 ${
+            currPage === 1
+              ? "border border-zinc-300 opacity-50 cursor-not-allowed"
+              : "bg-[#102031] text-white"
+          }`}
+        >
+          <IoChevronBackOutline />
+        </button>
+
+        {[...Array(totalPages)].map((_, index) => {
+          const pageNumber = index + 1;
+          const isFirst = pageNumber === 1;
+          const isLast = pageNumber === totalPages;
+          const isNearCurrent =
+            Math.abs(currPage - pageNumber) <= 2 || isFirst || isLast;
+
+          if (isNearCurrent) {
+            return (
+              <button
+                key={index}
+                onClick={() => setCurrPage(pageNumber)}
+                className={`p-1 px-3 border rounded-full ${
+                  currPage === pageNumber
+                    ? "bg-[#ff725e] text-white"
+                    : "bg-gray-200"
+                }`}
+              >
+                {pageNumber}
+              </button>
+            );
+          } else if (
+            (pageNumber === currPage - 3 && currPage > 4) ||
+            (pageNumber === currPage + 3 && currPage < totalPages - 3)
+          ) {
+            return <span key={index}>...</span>;
+          }
+          return null;
+        })}
+
+        <button
+          onClick={() => setCurrPage((prev) => Math.min(prev + 1, totalPages))}
+          disabled={currPage === totalPages}
+          className={`p-2 border rounded-full ml-3 ${
+            currPage === totalPages || totalPages === 0
+              ? "border border-zinc-300 opacity-50 cursor-not-allowed"
+              : "bg-[#102031] text-white"
+          }`}
+        >
+          <IoChevronForwardOutline />
+        </button>
+      </div>
     </>
   );
 };

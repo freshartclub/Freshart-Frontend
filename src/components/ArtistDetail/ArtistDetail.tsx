@@ -1,7 +1,7 @@
-import { useParams, useSearchParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import Loader from "../ui/Loader";
 import ArtistDescription from "./ArtistDescription";
 import ArtistHeader from "./ArtistHeader";
-import Loader from "../ui/Loader";
 import ArtistProtfolioArtwork from "./ArtistProtfolioArtwork";
 import ArtworkSeries from "./ArtworkSeries";
 import { useGetArtistDetails } from "./http/useGetArtistDetails";

@@ -35,7 +35,7 @@ const PaymentPage = () => {
   const generateTimestamp = () => {
     const now = new Date();
     const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, "0"); // Ensure 2 digits
+    const month = String(now.getMonth() + 1).padStart(2, "0");
     const day = String(now.getDate()).padStart(2, "0");
     const hours = String(now.getHours()).padStart(2, "0");
     const minutes = String(now.getMinutes()).padStart(2, "0");
@@ -45,10 +45,9 @@ const PaymentPage = () => {
   };
 
   const merchantId = "367155777";
-  const orderId = "N6qsk4kYRZihmPrTXWYS6g";
-  const amount = "1001";
+  const orderId = "Nyre567uy2et78i4tvt6879ygjhtrTXWYS6g";
+  const amount = "1501";
   const currency = "EUR";
-  const sharedSecret = "FRAC.2025!";
 
   const {
     data: hashData,
@@ -148,10 +147,9 @@ const PaymentPage = () => {
       const fields = {
         TIMESTAMP: time,
         MERCHANT_ID: merchantId,
-        ACCOUNT: "Fresh Art Club",
-        ORDER_ID: "N6qsk4kYRZihmPrTXWYS6g",
-        AMOUNT: "1001",
-        CURRENCY: "EUR",
+        ORDER_ID: orderId,
+        AMOUNT: amount,
+        CURRENCY: currency,
         SHA1HASH: `${hash}`,
         HPP_BILLING_CITY: "Indore",
         HPP_BILLING_COUNTRY: "356",
@@ -159,7 +157,7 @@ const PaymentPage = () => {
         HPP_BILLING_POSTALCODE: "482004",
         HPP_CUSTOMER_EMAIL: "rachit@gmail.com",
         AUTO_SETTLE_FLAG: "1",
-        MERCHANT_RESPONSE_URL: "https://www.example.com/responseUrl",
+        MERCHANT_RESPONSE_URL: "http://localhost:5173/payment-success",
       };
 
       for (const key in fields) {
@@ -240,14 +238,6 @@ const PaymentPage = () => {
   return (
     <div className="container mx-auto p-4">
       <ArtBreadcrumbs1 />
-      <iframe
-        name="hppFrame"
-        ref={iframeRef}
-        title="Hosted Payment Page"
-        width="100%"
-        height="600px"
-        style={{ border: "none" }}
-      ></iframe>
 
       <div className="py-10">
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -655,7 +645,7 @@ const PaymentPage = () => {
                   ))}
               </div>
 
-              <div className="mt-6 space-y-2 ">
+              <div className="my-6 space-y-2">
                 <div className="flex justify-between text-sm ">
                   <span className="text-[#5F6C72]">Sub-total</span>
                   <span className="font-semibold">{totalPrice}</span>
@@ -688,14 +678,23 @@ const PaymentPage = () => {
                 </div>
               </div>
 
-              <button
+              {/* <button
                 type="submit"
                 className="  md:w-full bg-black text-white p-2 md:py-3 rounded-full text-sm flex  items-center  justify-center space-x-2 hover:bg-gray-800 transition mt-4"
               >
                 <span className="font-semibold">
                   {checkOutPending ? "LOADING..." : "PLACE ORDER"}
                 </span>
-              </button>
+              </button> */}
+
+              <iframe
+                name="hppFrame"
+                ref={iframeRef}
+                title="Hosted Payment Page"
+                width="100%"
+                height="600px"
+                style={{ border: "none" }}
+              ></iframe>
             </div>
           </div>
         </form>

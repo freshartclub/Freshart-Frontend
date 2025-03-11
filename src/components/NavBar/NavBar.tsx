@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import bag from "../../assets/Bag.png";
 import heart from "../../assets/Heart.png";
 import selling from "../../assets/Images-cuate 1.png";
-import logo from "../../assets/Logo01 1.png";
+import logo from "/logofarcwhite.svg";
 import useLogOutMutation from "../../http/auth/useLogOutMutation";
 import { useAppSelector } from "../../store/typedReduxHooks";
 import { useGetCartItems } from "../pages/http/useGetCartItems";
@@ -18,14 +18,6 @@ import { imageUrl } from "../utils/baseUrls";
 import useClickOutside from "../utils/useClickOutside";
 import { useGetPicklist } from "./http/getPickList";
 import { IoIosFlower } from "react-icons/io";
-
-const mobile_links = [
-  { path: "/", label: "Home" },
-  { path: "/all-artworks?type=subscription", label: "Subscribe" },
-  { path: "/all-artworks?type=purchase", label: "Purchase" },
-  { path: "/all_artist", label: "Artist" },
-  { path: "/blog", label: "Blog" },
-];
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -266,7 +258,7 @@ const NavBar = () => {
                 className="hidden sm:block"
                 onClick={() => navigate("/home")}
               >
-                <img src={logo} alt="logo" className=" lg:w-full md:w-full" />
+                <img src={logo} alt="logo" className="w-[15rem]" />
               </div>
 
               <div className="flex gap-5 justify-end">
@@ -509,7 +501,7 @@ const NavBar = () => {
                 className="flex items-center justify-center "
                 onClick={redirectToHomepage}
               >
-                <img src={logo} alt="logo" className="" />
+                <img src={logo} alt="logo" className="w-[15rem]" />
               </div>
 
               <div className="flex items-center gap-4 justify-center">

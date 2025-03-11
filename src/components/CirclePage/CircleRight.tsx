@@ -56,7 +56,7 @@ const CircleRight = ({ data }) => {
     data?.data?.managers?.some((manager) => manager?._id === userId) || false;
 
   return (
-    <div className="2xl:w-[75%] xl:w-[70%] lg:w-[65%] w-full">
+    <div className="md:w-[55%] w-full">
       {isManager ? (
         <div className="shadow border mb-3 p-3 w-full rounded-lg">
           <input

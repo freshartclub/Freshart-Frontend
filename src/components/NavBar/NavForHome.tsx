@@ -1,32 +1,24 @@
-import React, { useEffect, useRef, useState } from "react";
-import logo from "../../assets/Logo01 1.png";
-import heart from "../../assets/Heart.png";
-import bag from "../../assets/Bag.png";
-import { Link, useNavigate } from "react-router-dom";
-import P from "../ui/P";
-import Header from "../ui/Header";
+import { useEffect, useRef, useState } from "react";
+import { FaUserCircle } from "react-icons/fa";
+import { GoSearch, GoX } from "react-icons/go";
 import { IoIosFlower } from "react-icons/io";
+import { Link, useNavigate } from "react-router-dom";
+import logo from "/logofarcwhite.svg";
+import bag from "../../assets/Bag.png";
+import heart from "../../assets/Heart.png";
 import selling from "../../assets/Images-cuate 1.png";
+import useLogOutMutation from "../../http/auth/useLogOutMutation";
+import { useAppSelector } from "../../store/typedReduxHooks";
+import { useGetCartItems } from "../pages/http/useGetCartItems";
+import { useGetDiscipline } from "../pages/http/useGetDiscipline";
 import ShoppingCard from "../pages/ShoppingCard";
 import Button from "../ui/Button";
-import { useAppSelector } from "../../store/typedReduxHooks";
-import useLogOutMutation from "../../http/auth/useLogOutMutation";
-import { useGetDiscipline } from "../pages/http/useGetDiscipline";
-import { useGetPicklist } from "./http/getPickList";
-import { useGetCartItems } from "../pages/http/useGetCartItems";
-import useClickOutside from "../utils/useClickOutside";
-import { FaUserCircle } from "react-icons/fa";
+import Header from "../ui/Header";
+import P from "../ui/P";
 import { useGetArtistDetails } from "../UserProfile/http/useGetDetails";
 import { imageUrl } from "../utils/baseUrls";
-import { GoSearch, GoX } from "react-icons/go";
-
-const mobile_links = [
-  { path: "/", label: "Home" },
-  { path: "/all-artworks?type=subscription", label: "Subscribe" },
-  { path: "/all-artworks?type=purchase", label: "Purchase" },
-  { path: "/all_artist", label: "Artist" },
-  { path: "/blog", label: "Blog" },
-];
+import useClickOutside from "../utils/useClickOutside";
+import { useGetPicklist } from "./http/getPickList";
 
 const NavForHome = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -169,8 +161,8 @@ const NavForHome = () => {
     >
       <div className="flex justify-between items-center">
         {token && isAuthorized ? (
-          <div className="w-[90vw] mx-auto flex flex-col gap-2 items-center">
-            <div className=" w-full mx-auto flex justify-between  items-center">
+          <div className="w-full mx-auto flex flex-col gap-2 items-center">
+            <div className="w-full mx-auto flex justify-between  items-center">
               <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="text-white focus:outline-none sm:hidden"
@@ -195,7 +187,7 @@ const NavForHome = () => {
                 className="sm:block hidden"
                 onClick={() => navigate("/home")}
               >
-                <img src={logo} alt="logo" className="lg:w-full md:w-full" />
+                <img src={logo} alt="logo" className="w-[15rem]" />
               </div>
 
               <div className="relative mx-2 hidden lg:block">
@@ -598,7 +590,7 @@ const NavForHome = () => {
               className="flex items-center justify-center "
               onClick={redirectToHomepage}
             >
-              <img src={logo} alt="logo" className="" />
+              <img src={logo} alt="logo" className="w-[15rem]" />
             </div>
 
             <div className="flex gap-4 items-center justify-center">

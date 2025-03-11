@@ -1,77 +1,89 @@
-import Header from "../ui/Header";
-import search_icon from "./assets/search.png";
-import { useState } from "react";
 import SelectOption from "../ui/SelectOption";
+import search_icon from "./assets/search.png";
 
-const FilterSection = ({ query, search }: any) => {
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-
-  const handleSearchClick = () => {
-    setIsSearchOpen(!isSearchOpen);
-  };
-
-  const credentialOption = [
-    { value: "color1", label: "Color1" },
-    { value: "color2", label: "Color2" },
-    { value: "color3", label: "Color3" },
-  ];
-
+const FilterSection = ({
+  setSort,
+  discipline,
+  setSelectedOption,
+  setSelectedStyle,
+  setSelectedInsignia,
+  cred,
+  styleData,
+  query,
+  setQuery,
+  handleClear,
+}: any) => {
   return (
-    <div className="flex lg:flex-row flex-col xl:gap-10 gap-3 my-10 w-full">
-      <div className="flex items-center xl:gap-10 gap-2 2xl:w-[50%] lg:w-[40%]">
-        <Header
-          variant={{ theme: "dark", weight: "bold" }}
-          className="xl:text-3xl sm:text-xl text-md"
+    <div className="flex justify-between lg:flex-row flex-col xl:gap-10 gap-3 my-10 w-full">
+      <div className="flex lg:w-[30%] items-center">
+        <input
+          type="text"
+          className="w-full placeholder-gray-400 text-gray-900 p-3 outline-none  border border-[#FF536B] rounded-full"
+          placeholder="Search Artist By Name & Tags"
+          onChange={(e) => setQuery(e.target.value)}
+          value={query}
+        />
+        <img src={search_icon} alt="search icon" className="-ml-8" />
+      </div>
+
+      <div className="flex flex-wrap items-center gap-3">
+        <SelectOption
+          options={
+            discipline && discipline.length > 0 ? (
+              discipline.map((item) => ({
+                value: item?.disciplineName,
+                label: item?.disciplineName,
+              }))
+            ) : (
+              <span>No Discipline Found</span>
+            )
+          }
+          onChange={(e) => setSelectedOption(e.value)}
+          placeholder="Discipline"
+        />
+
+        <SelectOption
+          options={
+            styleData && styleData.length > 0 ? (
+              styleData.map((item) => ({ value: item, label: item }))
+            ) : (
+              <span>No Style Found</span>
+            )
+          }
+          onChange={(e) => setSelectedStyle(e.value)}
+          placeholder="Style"
+        />
+
+        <SelectOption
+          options={
+            cred && cred.length > 0 ? (
+              cred.map((item) => ({
+                value: item?.credentialName,
+                label: item?.credentialName,
+              }))
+            ) : (
+              <span>No Insignia Found</span>
+            )
+          }
+          onChange={(e) => {
+            setSelectedInsignia(e.value);
+          }}
+          placeholder="Insignia"
+        />
+        <SelectOption
+          options={["A-Z", "Z-A", "Creation Date"].map((item) => ({
+            value: item,
+            label: item,
+          }))}
+          onChange={(e) => setSort(e.value)}
+          placeholder="Sort"
+        />
+        <span
+          className="uppercase text-[14px] cursor-pointer bg-[#102031] text-white rounded p-2"
+          onClick={handleClear}
         >
-          All Artists
-        </Header>
-        <div className="xl:w-[50%] w-[60%] flex items-center">
-          <input
-            type="text"
-            className="w-full placeholder-gray-400 text-gray-900 p-3 outline-none  border border-[#FF536B] rounded-full"
-            placeholder="Search"
-            onChange={search}
-            value={query}
-          />
-          <img src={search_icon} alt="search icon" className="-ml-8" />
-        </div>
-      </div>
-
-      <div className="relative flex items-center">
-        {isSearchOpen && (
-          <input
-            type="text"
-            placeholder="Search..."
-            className="ml-3 p-2 border border-gray-300 rounded-md focus:outline-none"
-          />
-        )}
-
-        <img
-          src={search_icon}
-          alt="Search"
-          className="cursor-pointer w-6 h-6 -ml-[35px]"
-          onClick={handleSearchClick}
-        />
-      </div>
-
-      <div className="2xl:w-[50%] lg:w-[60%] flex sm:flex-row flex-col sm:gap-0 gap-4 items-center justify-between">
-        <SelectOption
-          options={credentialOption}
-          onChange={(option) => {}}
-          placeholder="Filer by Credentials & Insignias"
-        />
-
-        <SelectOption
-          options={credentialOption}
-          onChange={(option) => {}}
-          placeholder="Filter By Category"
-        />
-
-        <SelectOption
-          options={credentialOption}
-          onChange={(option) => {}}
-          placeholder="Filter By style"
-        />
+          Clear Filter
+        </span>
       </div>
     </div>
   );

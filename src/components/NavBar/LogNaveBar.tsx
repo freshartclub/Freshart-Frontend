@@ -1,20 +1,13 @@
-import P from "../ui/P";
-import Button from "../ui/Button";
-import { Link, useNavigate } from "react-router-dom";
-import logo from "../../assets/loginlogo.png";
-import semicircle from "../../assets/semicircle.png";
-import arrow3 from "../../assets/arrow_3.png";
-import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { MdArrowOutward } from "react-icons/md";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import logo from "/logofarc.svg";
+import semicircle from "../../assets/semicircle.png";
 import { useAppDispatch } from "../../store/typedReduxHooks";
 import { setLanguage } from "../../store/userSlice/userSlice";
 
 const LogNaveBar = () => {
-  const [settings, setSettings] = useState({
-    currency: "usd",
-    language: "en",
-  });
   const [isLanguageDropdownOpen, setLanguageDropdownOpen] = useState(false);
 
   const [languageSettings, setLanguageSettings] = useState("");
@@ -96,7 +89,6 @@ const LogNaveBar = () => {
         "https://flagcdn.com/w320/gb.png"
     );
     setLanguageSettings(navtiveName);
-    setSettings((prev) => ({ ...prev, [key]: value }));
     setLanguageDropdownOpen(false);
   };
 
@@ -127,111 +119,88 @@ const LogNaveBar = () => {
   const isSignupPage = location.pathname.includes("signup");
 
   return (
-    <div className="bg-[#F9F7F6]">
-      <div className="container mx-auto md:px-6 px-3">
-        <header className="relative py-4">
-          <div className="flex md:flex-row relative flex-col justify-between items-center">
-            <div onClick={redirectToHomepage}>
-              <img
-                src={logo}
-                alt="Fresh Art Club"
-                className="h-10 cursor-pointer"
-              />
-            </div>
+    <div className="mx-auto shadow-md md:px-6 px-3">
+      <header className="relative py-4">
+        <div className="flex md:flex-row relative flex-col justify-between items-center">
+          <img
+            onClick={redirectToHomepage}
+            src={logo}
+            alt="Fresh Art Club"
+            className="h-10 cursor-pointer"
+          />
 
-            <div className="flex max-[430px]:flex-col-reverse max-[430px]:w-full items-center gap-3 mt-6 md:mt-0 relative">
-              <div>
-                <span
-                  className="py-3 flex gap-5 items-center cursor-pointer justify-between text-sm border border-zinc-200 px-5 font-medium text-gray-700 hover:text-gray-800 focus:outline-none"
-                  onClick={handeleLanguage}
-                >
-                  <img className="w-5 h-5 object-cover" src={flag} alt="" />
-                  <h1 className="font-semibold">{languageSettings}</h1>
-                </span>
+          <div className="flex max-[430px]:flex-col-reverse max-[430px]:w-full items-center gap-3 mt-6 md:mt-0 relative">
+            <div>
+              <span
+                className="flex bg-[#102031] font-semibold md:text-base text-sm text-white gap-2 items-center cursor-pointer justify-between border border-zinc-200 p-2 px-3 rounded-full focus:outline-none"
+                onClick={handeleLanguage}
+              >
+                <img className="w-5 h-5 object-cover" src={flag} alt="" />
+                <h1 className="font-semibold">{languageSettings}</h1>
+              </span>
 
-                {isLanguageDropdownOpen && (
-                  <div className="absolute mt-1 top-12 left-0 bg-white border rounded shadow-md z-10">
-                    {countries?.map((choice, idx) => (
-                      <button
-                        key={idx}
-                        className="flex items-center  p-2 hover:bg-gray-100 focus:outline-none"
-                        onClick={() =>
-                          handleSelectChange(
-                            choice.name,
-                            choice.code,
-                            choice.val,
-                            choice.nativeName
-                          )
-                        }
-                      >
-                        <img
-                          src={choice.flag}
-                          alt={choice.name}
-                          className="w-6 h-6"
-                        />
+              {isLanguageDropdownOpen && (
+                <div className="absolute mt-1 top-12 left-0 bg-white border rounded shadow-md z-10">
+                  {countries?.map((choice, idx) => (
+                    <button
+                      key={idx}
+                      className="flex items-center p-2 hover:bg-gray-100 focus:outline-none"
+                      onClick={() =>
+                        handleSelectChange(
+                          choice.name,
+                          choice.code,
+                          choice.val,
+                          choice.nativeName
+                        )
+                      }
+                    >
+                      <img
+                        src={choice.flag}
+                        alt={choice.name}
+                        className="w-6 h-6"
+                      />
 
-                        <span className="ml-2">{choice.nativeName}</span>
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {isSignupPage ? (
-                <Link to="/login" className="text-black mr-4 uppercase">
-                  {t("Sign In")}
-                </Link>
-              ) : null}
-
-              {isSignupPage ? (
-                <Button
-                  variant={{
-                    theme: "dark",
-                    rounded: "full",
-                    fontWeight: "500",
-                    thickness: "thick",
-                    fontSize: "base",
-                  }}
-                  className="flex max-[430px]:w-full justify-center items-center"
-                  onClick={handleRedirectToBecomeAnArtist}
-                >
-                  <P
-                    variant={{ theme: "light", weight: "normal" }}
-                    className="md:text-base text-sm"
-                  >
-                    {t("Become an Artist")}
-                  </P>
-                  <img src={arrow3} alt="arrow" className="ml-2 mt-1" />
-                </Button>
-              ) : (
-                <Button
-                  variant={{
-                    theme: "dark",
-                    rounded: "full",
-                    fontWeight: "500",
-                    thickness: "thick",
-                    fontSize: "base",
-                  }}
-                  className="flex max-[430px]:w-full justify-center items-center"
-                >
-                  <P
-                    variant={{ size: "base", theme: "light", weight: "normal" }}
-                    onClick={handleRedirectToArtistLogin}
-                  >
-                    {t("Become an Artist")}
-                  </P>
-                  <img src={arrow3} alt="arrow" className="ml-2 mt-1" />
-                </Button>
+                      <span className="ml-2">{choice.nativeName}</span>
+                    </button>
+                  ))}
+                </div>
               )}
             </div>
+
+            {isSignupPage ? (
+              <span
+                className="cursor-pointer bg-[#102031] font-semibold md:text-base text-sm text-white p-2 rounded-full flex max-[430px]:w-full justify-center  gap-2 items-center"
+                onClick={handleRedirectToBecomeAnArtist}
+              >
+                {t("Become an Artist")}
+                <MdArrowOutward />
+              </span>
+            ) : (
+              <span
+                onClick={handleRedirectToArtistLogin}
+                className="cursor-pointer bg-[#102031] font-semibold md:text-base text-sm text-white p-2 px-2.5 rounded-full flex max-[430px]:w-full justify-center gap-2  items-center"
+              >
+                {t("Become an Artist")}
+                <MdArrowOutward />
+              </span>
+            )}
+
+            {isSignupPage ? (
+              <Link
+                to="/login"
+                className="text-black bg-orange-100 border rounded-full font-semibold p-2 px-2.5 uppercase"
+              >
+                {t("Sign In")}
+              </Link>
+            ) : null}
           </div>
-          <img
-            src={semicircle}
-            alt="Semicircle"
-            className="md:absolute hidden right-[50%] left-[50%] top-0 h-full"
-          />
-        </header>
-      </div>
+        </div>
+        <img
+          src={semicircle}
+          alt="Semicircle"
+          className="md:absolute hidden right-[50%] left-[50%] top-0 h-full"
+        />
+      </header>
     </div>
   );
 };

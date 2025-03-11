@@ -55,144 +55,136 @@ const SignUp = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="bg-[#F9F7F6]">
-      <div className="container mx-auto md:px-6 px-3">
-        <div className="grid md:grid-cols-2 grid-cols-1 gap-10 py-10 items-center">
-          <div className="text-center shadow-xl bg-white xl:p-10 lg:p-8 md:p-6 p-4 xl:w-[80%] w-full">
-            <Header
-              variant={{ size: "2xl", theme: "dark", weight: "semiBold" }}
-            >
-              {t("Sign Up")}
-            </Header>
-            <P
-              variant={{ size: "base", theme: "dark", weight: "normal" }}
-              className="lg:w-[60%] md:w-[80%] mx-auto mt-4 font-medium tracking-tight leading-none"
-            >
-              {t("Enter your details to register to your account")}
-            </P>
+    <div className="mx-auto md:px-6 px-3">
+      <div className="grid md:grid-cols-2 grid-cols-1 gap-10 py-10 items-center">
+        <div className="text-center shadow-md rounded-xl border border-zinc-300 bg-white xl:p-10 lg:p-8 md:p-6 p-4 xl:w-[80%] w-full">
+          <Header variant={{ size: "2xl", theme: "dark", weight: "semiBold" }}>
+            {t("Sign Up")}
+          </Header>
+          <P
+            variant={{ size: "base", theme: "dark", weight: "normal" }}
+            className="lg:w-[60%] md:w-[80%] mx-auto mt-4 font-medium tracking-tight leading-none"
+          >
+            {t("Enter your details to register to your account")}
+          </P>
 
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <div className="my-5">
-                <input
-                  type="email"
-                  placeholder={t("Enter Email")}
-                  {...register("email")}
-                  className={`border ${
-                    errors.email ? "border-red-500" : "border-[#D3D3D3]"
-                  } p-2 w-full rounded-md focus:outline-none`}
-                />
-                {errors.email && (
-                  <div className="text-red-500 text-sm text-left">
-                    {t(`${errors.email.message}`)}
-                  </div>
-                )}
-              </div>
-
-              <div>
-                <input
-                  type="password"
-                  placeholder={t("Enter Password")}
-                  {...register("password")}
-                  className={`border ${
-                    errors.password ? "border-red-500" : "border-[#D3D3D3]"
-                  } p-2 w-full rounded-md focus:outline-none`}
-                />
-                {errors.password && (
-                  <div className="text-red-500 text-sm text-left">
-                    {t(`${errors.password.message}`)}
-                  </div>
-                )}
-              </div>
-
-              <div className="my-5">
-                <input
-                  type="password"
-                  placeholder={t("Confirm Password")}
-                  {...register("cpassword")}
-                  className={`border ${
-                    errors.cpassword ? "border-red-500" : "border-[#D3D3D3]"
-                  } p-2 w-full rounded-md focus:outline-none`}
-                />
-                {errors.cpassword && (
-                  <div className="text-red-500 text-sm text-left">
-                    {t(`${errors.cpassword.message}`)}
-                  </div>
-                )}
-              </div>
-
-              <div className="flex text-left items-start">
-                <input
-                  type="checkbox"
-                  {...register("terms")}
-                  className="mt-2"
-                />
-                <p className="ml-3 font-medium tracking-tight leading-1">
-                  {t("By signing up, I have read and agree to")}
-                  <span
-                    onClick={handleTerms}
-                    className="text-red-600 mx-1  cursor-pointer hover:underline"
-                  >
-                    {t("Terms")}
-                  </span>
-                  {t("&")}
-                  <span
-                    onClick={handleTerms}
-                    className="text-red-600 ml-1 cursor-pointer hover:underline"
-                  >
-                    {t("Privacy Policy.")}
-                  </span>
-                </p>
-              </div>
-              {errors.terms && (
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="my-5">
+              <input
+                type="email"
+                placeholder={t("Enter Email")}
+                {...register("email")}
+                className={`border ${
+                  errors.email ? "border-red-500" : "border-[#D3D3D3]"
+                } p-2 w-full rounded-md focus:outline-none`}
+              />
+              {errors.email && (
                 <div className="text-red-500 text-sm text-left">
-                  {t(`${errors.terms.message}`)}
+                  {t(`${errors.email.message}`)}
                 </div>
               )}
+            </div>
 
-              <div className="my-5">
-                <Button
-                  variant={{
-                    theme: "dark",
-                    rounded: "full",
-                    fontWeight: "500",
-                    thickness: "thick",
-                    fontSize: "base",
-                  }}
-                  type="submit"
-                  className={`mt-3 flex justify-center w-full`}
-                  disabled={isSubmitting || isPending}
+            <div>
+              <input
+                type="password"
+                placeholder={t("Enter Password")}
+                {...register("password")}
+                className={`border ${
+                  errors.password ? "border-red-500" : "border-[#D3D3D3]"
+                } p-2 w-full rounded-md focus:outline-none`}
+              />
+              {errors.password && (
+                <div className="text-red-500 text-sm text-left">
+                  {t(`${errors.password.message}`)}
+                </div>
+              )}
+            </div>
+
+            <div className="my-5">
+              <input
+                type="password"
+                placeholder={t("Confirm Password")}
+                {...register("cpassword")}
+                className={`border ${
+                  errors.cpassword ? "border-red-500" : "border-[#D3D3D3]"
+                } p-2 w-full rounded-md focus:outline-none`}
+              />
+              {errors.cpassword && (
+                <div className="text-red-500 text-sm text-left">
+                  {t(`${errors.cpassword.message}`)}
+                </div>
+              )}
+            </div>
+
+            <div className="flex text-left items-start">
+              <input type="checkbox" {...register("terms")} className="mt-2" />
+              <p className="ml-3 font-medium tracking-tight leading-1">
+                {t("By signing up, I have read and agree to")}
+                <span
+                  onClick={handleTerms}
+                  className="text-red-600 mx-1  cursor-pointer hover:underline"
                 >
-                  {isPending ? t("Loading...") : t("Sign Up")}
-
-                  <img src={arrow} alt="arrow" className="ml-2 mt-1" />
-                </Button>
-              </div>
-
-              <div className="flex sm:flex-row flex-col mt-5 justify-center">
-                <P
-                  variant={{ theme: "dark", weight: "medium" }}
-                  className="md:text-base text-sm"
+                  {t("Terms")}
+                </span>
+                {t("&")}
+                <span
+                  onClick={handleTerms}
+                  className="text-red-600 ml-1 cursor-pointer hover:underline"
                 >
-                  {t("Don’t have account ?")}{" "}
-                  <Link
-                    to="/become_artist"
-                    className="hover:underline decoration-red-700  cursor-pointer"
-                  >
-                    {t("Become an Artist")}{" "}
-                  </Link>
-                </P>
+                  {t("Privacy Policy.")}
+                </span>
+              </p>
+            </div>
+            {errors.terms && (
+              <div className="text-red-500 text-sm text-left">
+                {t(`${errors.terms.message}`)}
               </div>
-              <Link
-                to="/login"
-                className="font-bold uppercase ml-1 md:text-base text-sm"
+            )}
+
+            <div className="my-5">
+              <Button
+                variant={{
+                  theme: "dark",
+                  rounded: "full",
+                  fontWeight: "500",
+                  thickness: "thick",
+                  fontSize: "base",
+                }}
+                type="submit"
+                className={`mt-3 flex justify-center w-full`}
+                disabled={isSubmitting || isPending}
               >
-                {t("Sign In")}
-              </Link>
-            </form>
-          </div>
-          <div>
-            <img src={loginimage} alt="image" />
-          </div>
+                {isPending ? t("Loading...") : t("Sign Up")}
+
+                <img src={arrow} alt="arrow" className="ml-2 mt-1" />
+              </Button>
+            </div>
+
+            <div className="flex sm:flex-row flex-col mt-5 justify-center">
+              <P
+                variant={{ theme: "dark", weight: "medium" }}
+                className="md:text-base text-sm"
+              >
+                {t("Already have account ?")}{" "}
+                <Link
+                  to="/login"
+                  className="font-bold uppercase ml-1 md:text-base text-sm"
+                >
+                  {t("Sign In")}
+                </Link>
+              </P>
+            </div>
+            <Link
+              to="/become_artist"
+              className="hover:underline decoration-red-700  cursor-pointer"
+            >
+              {t("Are you an artist")}{" "}
+            </Link>
+          </form>
+        </div>
+        <div>
+          <img src={loginimage} alt="image" />
         </div>
       </div>
     </div>

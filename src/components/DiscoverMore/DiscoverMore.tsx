@@ -72,11 +72,6 @@ const DiscoverMore = () => {
     }
   };
 
-  // const [size, setSize] = useState({
-  //   width: "0",
-  //   height: "0",
-  // });
-
   const handleMouseMove = (e) => {
     const { left, top, width, height } = e.target.getBoundingClientRect();
     const x = ((e.pageX - left) / width) * 100;

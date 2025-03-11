@@ -18,6 +18,7 @@ import CommentBox from "./CommentBox";
 import useCirclePostMutation from "./https/useCirclePostMutation";
 import { useGetCirclePosts } from "./https/useGetCirclePosts";
 import usePostLikeMutation from "./https/usePostLikeMutation";
+import { MdOutlinePhotoLibrary } from "react-icons/md";
 
 const reactions = [
   { id: "like", icon: "👍", label: "Like" },
@@ -76,6 +77,7 @@ function Post({ post: item, isManager, id }: PostProps) {
   const [title, setTitle] = useState(item.title || "");
   const [content, setContent] = useState(item.content || "");
   const [isEdit, setIsEdit] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const [fieldTrue, setFieldTrue] = useState({
     comment: false,
     share: false,
@@ -190,6 +192,40 @@ function Post({ post: item, isManager, id }: PostProps) {
     };
 
     await editPost(data);
+
+    setIsEdit(false);
+    setFiles([]);
+  };
+
+  const formatTextWithLinks = (text) => {
+    if (!text) return "";
+    return text.split(/\s+/).map((word, index) => {
+      if (/(https?:\/\/[^\s]+|www\.[^\s]+)/.test(word)) {
+        const url = word.startsWith("www") ? `https://${word}` : word;
+        return (
+          <a
+            key={index}
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-500 underline"
+          >
+            {word}{" "}
+          </a>
+        );
+      }
+      return word + " ";
+    });
+  };
+
+  const name = (val) => {
+    let fullName = val?.artistName || "";
+
+    if (val?.nickName) fullName += " " + `"${val?.nickName}"`;
+    if (val?.artistSurname1) fullName += " " + val?.artistSurname1;
+    if (val?.artistSurname2) fullName += " " + val?.artistSurname2;
+
+    return fullName.trim();
   };
 
   return (
@@ -213,11 +249,7 @@ function Post({ post: item, isManager, id }: PostProps) {
           )}
           <div className="flex flex-col">
             <span className="font-semibold text-[13px]">
-              {item?.owner?.artistName +
-                " " +
-                item?.owner?.artistSurname1 +
-                " " +
-                item?.owner?.artistSurname2}
+              {name(item?.owner)}
             </span>
             <span className="text-[12px] text-[#919EAB]">
               {new Date(item?.createdAt).toLocaleString("en-US", {
@@ -233,7 +265,19 @@ function Post({ post: item, isManager, id }: PostProps) {
       </div>
       <div className="flex gap-1 flex-col">
         <span className="font-semibold text-base">{item?.title}</span>
-        <span className="text-[14px]">{item?.content}</span>
+        <span className="text-[14px]">
+          {formatTextWithLinks(
+            expanded ? item?.content : item?.content?.slice(0, 300)
+          )}
+          {item?.content?.length > 300 && (
+            <button
+              onClick={() => setExpanded(!expanded)}
+              className="text-blue-800 hover:underline text-[12px] ml-1"
+            >
+              {expanded ? "Show Less" : "Show More"}
+            </button>
+          )}
+        </span>
         {item?.file && item?.file.length > 0 && (
           <div className="relative mt-2">
             <Swiper
@@ -319,7 +363,7 @@ function Post({ post: item, isManager, id }: PostProps) {
                 className="flex gap-2 bg-[#65656514]"
                 onClick={() => fileInputRef.current.click()}
               >
-                <img src={image_icon} alt="image/video" />
+                <MdOutlinePhotoLibrary className="text-green-500" size={20} />
                 <P
                   variant={{
                     size: "small",
@@ -327,10 +371,10 @@ function Post({ post: item, isManager, id }: PostProps) {
                     weight: "semiBold",
                   }}
                 >
-                  New Image/Video
+                  File's
                 </P>
               </Button>
-              <div className="min-w-[500px]:block flex w-full">
+              <div className="min-w-[500px]:block sm:w-max w-full flex">
                 <Button
                   onClick={handleCancel}
                   className="px-4 w-full py-2 bg-red-500 text-white font-semibold"

@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import logo from "../../assets/loginlogo.png";
+import logo from "/logofarc.svg";
 import navigation_1 from "../../assets/navigation_1.png";
 
 import { useTranslation } from "react-i18next";
@@ -105,7 +105,7 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
         >
           <img
             onClick={handleRedirect}
-            className="w-[8rem]  lg:block left-[20%] top-[50%] lg:w-full object-cover"
+            className="w-[15rem]"
             src={logo}
             alt="Logo"
           />

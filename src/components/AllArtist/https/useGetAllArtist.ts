@@ -1,18 +1,34 @@
 import { useQuery } from "@tanstack/react-query";
-
 import { ARTTIST_ENDPOINTS } from "../../../http/apiEndPoints/Artist";
 import axiosInstance from "../../utils/axios";
 
-async function fetchData() {
-  const { data } = await axiosInstance.get(`${ARTTIST_ENDPOINTS.GetAllArtist}`);
+export const useGetAllArtist = (
+  debounceSearch: string,
+  selectedStyle: string,
+  selectedInsignia: string,
+  sort: string,
+  selectedOption: string,
+  letter: string,
+  currPage: number
+) => {
+  async function fetchData() {
+    const { data } = await axiosInstance.get(
+      `${ARTTIST_ENDPOINTS.GetAllArtist}?s=${debounceSearch}&style=${selectedStyle}&cred=${selectedInsignia}&discipline=${selectedOption}&letter=${letter}&currPage=${currPage}&sort=${sort}`
+    );
+    return data;
+  }
 
-  return data;
-}
-
-export const useGetAllArtist = () => {
-  let url = `${ARTTIST_ENDPOINTS.GetAllArtist}`;
   return useQuery({
-    queryKey: [url],
+    queryKey: [
+      ARTTIST_ENDPOINTS.GetAllArtist,
+      debounceSearch,
+      selectedStyle,
+      selectedInsignia,
+      sort,
+      selectedOption,
+      letter,
+      currPage,
+    ],
     queryFn: fetchData,
     refetchOnWindowFocus: false,
   });

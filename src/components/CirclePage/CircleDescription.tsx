@@ -1,10 +1,8 @@
 import CircleRight from "./CircleRight";
-import CirleLeft from "./CirleLeft";
 
 const CircleDescription = ({ data }) => {
   return (
-    <div className="flex sm:w-[70%] w-full mx-auto lg:flex-row flex-col gap-2 lg:gap-5 mt-5">
-      <CirleLeft data={data} />
+    <div className="flex w-full mx-auto flex-col items-center gap-5 mt-5">
       <CircleRight data={data} />
     </div>
   );

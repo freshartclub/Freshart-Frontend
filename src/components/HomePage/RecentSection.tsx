@@ -101,8 +101,6 @@ const RecentSection = () => {
               const isOffensive = item?.additionalInfo?.offensive === "Yes";
               const isViewed = viewedImages[item?._id];
 
-              console.log("isViewed", item);
-
               return (
                 <div key={index} className="relative cursor-pointer px-3 group">
                   <div className="relative overflow-hidden w-full">
@@ -154,11 +152,7 @@ const RecentSection = () => {
                     <h1 className="font-bold text-lg text-gray-800 line-clamp-2">
                       <span>{item?.artworkName}</span>
                     </h1>
-                    <div className="flex flex-col items-start mt-2">
-                      <p className="text-sm text-gray-500 mt-1 font-medium">
-                        {item?.owner?.artistName}
-                      </p>
-                    </div>
+
                     <div>
                       <p className="text-sm flex items-center justify-between text-gray-500">
                         <span>{item?.discipline?.artworkDiscipline}</span>

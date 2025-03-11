@@ -1,46 +1,46 @@
+import getSymbolFromCurrency from "currency-symbol-map";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import "slick-carousel/slick/slick.css";
 import "../../App.css";
 import like from "../../assets/like.png";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import getSymbolFromCurrency from "currency-symbol-map";
-import { imageUrl, lowImageUrl } from "../utils/baseUrls";
+import { lowImageUrl } from "../utils/baseUrls";
 
 const CommonCardData = ({
   heading,
   highlightData,
 }: {
   heading: string;
-  highlightData: Items;
+  highlightData: HighlightItem[];
 }) => {
   const [likes, setLikes] = useState<{ [key: number]: boolean }>({});
 
   const settings = {
     dots: true,
-    infinite: highlightData?.artworks?.length > 1,
+    infinite: highlightData?.length > 1,
     speed: 500,
-    slidesToShow: highlightData?.artworks?.length === 1 ? 1 : 4,
+    slidesToShow: highlightData?.length === 1 ? 1 : 4,
     slidesToScroll: 1,
-    autoplay: highlightData?.artworks?.length > 1,
+    autoplay: highlightData?.length > 1,
     autoplaySpeed: 2000,
     responsive: [
       {
         breakpoint: 1024,
         settings: {
-          slidesToShow: highlightData?.artworks?.length === 1 ? 1 : 3,
+          slidesToShow: highlightData?.length === 1 ? 1 : 3,
           slidesToScroll: 1,
-          infinite: highlightData?.artworks?.length > 1,
+          infinite: highlightData?.length > 1,
           dots: true,
         },
       },
       {
         breakpoint: 768,
         settings: {
-          slidesToShow: highlightData?.artworks?.length === 1 ? 2 : 2,
+          slidesToShow: highlightData?.length === 1 ? 2 : 2,
           slidesToScroll: 1,
-          infinite: highlightData?.artworks?.length > 1,
+          infinite: highlightData?.length > 1,
           dots: true,
         },
       },
@@ -49,7 +49,7 @@ const CommonCardData = ({
         settings: {
           slidesToShow: 1,
           slidesToScroll: 1,
-          infinite: highlightData?.artworks?.length > 1,
+          infinite: highlightData?.length > 1,
           dots: true,
         },
       },
@@ -71,19 +71,21 @@ const CommonCardData = ({
   };
 
   const renderContent =
-    highlightData?.artworks?.length === 1 ? (
+    highlightData?.length == 0 ? (
+      <div className="p-2 border w-full bg-white mx-auto text-center font-semibold">
+        No Artwork Found
+      </div>
+    ) : highlightData?.length === 1 ? (
       <div
         key={0}
         className="sm:px-3 px-0 border-none outline-none relative  lg:w-[30vw] xl:w-[20vw] md:w-[30vw] sm:w-[50vw]"
       >
         <div className="relative">
           <img
-            src={`${lowImageUrl}/${highlightData?.artworks[0]?.mainImage}`}
+            src={`${lowImageUrl}/${highlightData[0]?.mainImage}`}
             alt="image"
             className="lg:w-[35vw] md:w-[35vw]  object-cover h-[40vh]"
-            onClick={() =>
-              handleRedirectToDescription(highlightData?.artworks[0]?._id)
-            }
+            onClick={() => handleRedirectToDescription(highlightData[0]?._id)}
           />
           <button
             onClick={() => handleLikeClick(0)}
@@ -101,16 +103,13 @@ const CommonCardData = ({
         </div>
         <div className="mt-3">
           <p className="text-[14px] text-[#696868] mb-1">
-            {Array.isArray(
-              highlightData?.artworks[0]?.additionalInfo?.artworkStyle
-            ) &&
-              highlightData?.artworks[0]?.additionalInfo?.artworkStyle.map(
-                (item, i) => (
+            {Array.isArray(highlightData[0]?.additionalInfo?.artworkStyle) &&
+              highlightData[0]?.additionalInfo?.artworkStyle.map(
+                (item, i: number) => (
                   <span key={i}>
                     {item}
                     {i <
-                      highlightData?.artworks[0]?.additionalInfo?.artworkStyle
-                        .length -
+                      highlightData[0]?.additionalInfo?.artworkStyle.length -
                         1 && ", "}
                   </span>
                 )
@@ -119,29 +118,29 @@ const CommonCardData = ({
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-1">
             <h1 className="font-bold text-[16px] sm:text-[20px] text-[#333333] sm:w-[70%] w-full line-clamp-2">
-              {highlightData?.artworks[0]?.artworkName}
+              {highlightData[0]?.artworkName}
             </h1>
 
             <div className="mt-2 sm:mt-0">
               <p className="text-[12px] sm:text-[14px] text-[#696868]">
-                {highlightData?.artworks[0]?.additionalInfo?.length || null}x
-                {highlightData?.artworks[0]?.additionalInfo?.width || null}
+                {highlightData[0]?.additionalInfo?.length || null}x
+                {highlightData[0]?.additionalInfo?.width || null}
               </p>
             </div>
           </div>
 
           <p className="text-[14px] font-bold text-[#333333]">
             {getSymbolFromCurrency(
-              highlightData?.artworks[0]?.pricing?.currency?.slice(0, 3)
+              highlightData[0]?.pricing?.currency?.slice(0, 3)
             ) +
               " " +
-              highlightData?.artworks[0]?.pricing?.basePrice}
+              highlightData[0]?.pricing?.basePrice}
           </p>
         </div>
       </div>
     ) : (
       <Slider {...settings}>
-        {highlightData?.artworks?.map((item, index) => (
+        {highlightData?.map((item, index: number) => (
           <div
             key={index}
             className="sm:px-3 px-0 border-none outline-none relative"
@@ -206,21 +205,11 @@ const CommonCardData = ({
       <h1 className="text-[30px] font-semibold mb-5 w-52 sm:w-full">
         {heading}
       </h1>
+
       {renderContent}
     </div>
   );
 };
-
-interface Items {
-  artworks: HighlightItem[];
-  url: string;
-  data: {
-    owner: {
-      artistName: string;
-      artistSurname1: string;
-    };
-  };
-}
 
 interface HighlightItem {
   mainImage: string;
