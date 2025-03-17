@@ -8,6 +8,7 @@ import {
   MdArrowForwardIos,
   MdKeyboardArrowDown,
   MdOutlineFilterList,
+  MdOutlineCancel,
 } from "react-icons/md";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useGetTechnic } from "../ArtistPanel/AddArtwork/http/useGetTechnic";
@@ -24,11 +25,16 @@ import CardSection from "./CardSection";
 import { useGetPurchaseArtwork } from "./http/useGetPurchaseArtwork";
 
 const Purchase = () => {
+  const [showAllDiscipline, setShowAllDiscipline] = useState(false);
+  const [showAllTechnic, setShowAllTechnic] = useState(false);
+  const [showAllTheme, setShowAllTheme] = useState(false);
+  const [showAllStyle, setShowAllStyle] = useState(false);
+
   const [query, setQuery] = useState("");
-  const [selectedOption, setSelectedOption] = useState("");
-  const [selectedTheme, setSelectedTheme] = useState("");
-  const [selectedTechnic, setSelectedTechnic] = useState("");
-  const [selectedStyle, setSelectedStyle] = useState("");
+  const [selectedOption, setSelectedOption] = useState<string[]>([]);
+  const [selectedTheme, setSelectedTheme] = useState<string[]>([]);
+  const [selectedTechnic, setSelectedTechnic] = useState<string[]>([]);
+  const [selectedStyle, setSelectedStyle] = useState<string[]>([]);
   const defaultRanges = {
     height: { min: 0, max: 300, step: 10 },
     width: { min: 0, max: 300, step: 10 },
@@ -120,40 +126,38 @@ const Purchase = () => {
   const colors = RenderAllPicklist("Colors");
   const commOptions = RenderAllPicklist("Commercialization Options");
 
+  const filteredDisciplineData =
+    disciplineData?.data?.filter((item) => item?.isMain) || [];
+
+  const filteredTechnicData =
+    techData?.data?.filter((item) => item?.isMain) || [];
+  const filteredThemeData = theData?.data?.filter((item) => item?.isMain) || [];
+  const filteredStyleData = stData?.data?.filter((item) => item?.isMain) || [];
+
   useClickOutside(openRef, () => {
     setIsOpenSidePanel(false);
   });
 
   useEffect(() => {
-    if (selectedOption) {
+    if (selectedOption?.length) {
+      const matchesAllSelectedOptions = (item) => {
+        const disciplineNames =
+          item.discipline?.map((newItem) => newItem.disciplineName) || [];
+        return selectedOption.every((option) =>
+          disciplineNames.includes(option)
+        );
+      };
+
       const newTechnic = techData?.data
-        ?.filter(
-          (item) =>
-            item.discipline &&
-            item.discipline.some((newItem) =>
-              newItem.disciplineName.includes(selectedOption)
-            )
-        )
+        ?.filter(matchesAllSelectedOptions)
         .map((item) => item.technicName);
 
       const newTheme = theData?.data
-        ?.filter(
-          (item) =>
-            item.discipline &&
-            item.discipline.some((newItem) =>
-              newItem.disciplineName.includes(selectedOption)
-            )
-        )
+        ?.filter(matchesAllSelectedOptions)
         .map((item) => item.themeName);
 
       const newStyle = stData?.data
-        ?.filter(
-          (item) =>
-            item.discipline &&
-            item.discipline.some((newItem) =>
-              newItem.disciplineName.includes(selectedOption)
-            )
-        )
+        ?.filter(matchesAllSelectedOptions)
         .map((item) => item.styleName);
 
       setTechnicData(newTechnic || []);
@@ -163,10 +167,10 @@ const Purchase = () => {
   }, [selectedOption, techData, theData, stData]);
 
   const handleClear = async () => {
-    setSelectedOption("");
-    setSelectedTechnic("");
-    setSelectedTheme("");
-    setSelectedStyle("");
+    setSelectedOption([]);
+    setSelectedTechnic([]);
+    setSelectedTheme([]);
+    setSelectedStyle([]);
     setTag("");
     setOptions({ cursor: "", direction: "", limit: 10, currPage: 1 });
     setMoreOptions({
@@ -192,6 +196,169 @@ const Purchase = () => {
       setPrevCursor(data.prevCursor || "");
     }
   }, [data]);
+
+  const handleOptionSelect = (option: string) => {
+    setSelectedOption((prev) =>
+      prev.includes(option)
+        ? prev.filter((item) => item !== option)
+        : [...prev, option]
+    );
+  };
+
+  const handleThemeSelect = (theme: string) => {
+    setSelectedTheme((prev) =>
+      prev.includes(theme)
+        ? prev.filter((item) => item !== theme)
+        : [...prev, theme]
+    );
+  };
+
+  const handleTechnicSelect = (theme: string) => {
+    setSelectedTechnic((prev) =>
+      prev.includes(theme)
+        ? prev.filter((item) => item !== theme)
+        : [...prev, theme]
+    );
+  };
+
+  const handleStyleSelect = (theme: string) => {
+    setSelectedStyle((prev) =>
+      prev.includes(theme)
+        ? prev.filter((item) => item !== theme)
+        : [...prev, theme]
+    );
+  };
+
+  const renderDisciplineOptions = () => {
+    const dataToShow = showAllDiscipline
+      ? disciplineData?.data
+      : filteredDisciplineData;
+
+    return (
+      <div
+        id="dropdownDivider"
+        className="z-10 border flex flex-col p-2 gap-2 bg-[#102031] text-white rounded-lg dark:bg-gray-700 dark:divide-gray-600"
+      >
+        {dataToShow?.map((item, index: number) => (
+          <span
+            className={`cursor-pointer ${
+              selectedOption.includes(item.disciplineName)
+                ? "bg-gray-300 text-black px-1 rounded"
+                : ""
+            }`}
+            onClick={() => handleOptionSelect(item.disciplineName)}
+            key={index}
+          >
+            {item.disciplineName}
+          </span>
+        ))}
+        {disciplineData?.data?.length > filteredDisciplineData.length && (
+          <span
+            className="cursor-pointer text-sm text-blue-500"
+            onClick={() => setShowAllDiscipline(!showAllDiscipline)}
+          >
+            {showAllDiscipline ? "Show Less" : "Show More"}
+          </span>
+        )}
+      </div>
+    );
+  };
+
+  const renderTechnicOptions = () => {
+    const dataToShow = showAllTechnic ? techData?.data : filteredTechnicData;
+    return (
+      <div
+        id="dropdownDivider"
+        className="z-10 border flex flex-col p-2 gap-2 bg-[#102031] text-white rounded-lg dark:bg-gray-700 dark:divide-gray-600"
+      >
+        {dataToShow?.map((item, index: number) => (
+          <span
+            className={`cursor-pointer ${
+              selectedTechnic.includes(item.technicName)
+                ? "bg-gray-300 text-black px-1 rounded"
+                : ""
+            }`}
+            onClick={() => handleTechnicSelect(item.technicName)}
+            key={index}
+          >
+            {item.technicName}
+          </span>
+        ))}
+        {techData?.data?.length > filteredTechnicData.length && (
+          <span
+            className="cursor-pointer text-sm text-blue-500"
+            onClick={() => setShowAllTechnic(!showAllTechnic)}
+          >
+            {showAllTechnic ? "Show Less" : "Show More"}
+          </span>
+        )}
+      </div>
+    );
+  };
+
+  const renderThemeOptions = () => {
+    const dataToShow = showAllTheme ? theData?.data : filteredThemeData;
+    return (
+      <div
+        id="dropdownDivider"
+        className="z-10 border flex flex-col p-2 gap-2 bg-[#102031] text-white rounded-lg dark:bg-gray-700 dark:divide-gray-600"
+      >
+        {dataToShow?.map((item, index: number) => (
+          <span
+            className={`cursor-pointer ${
+              selectedTheme.includes(item.themeName)
+                ? "bg-gray-300 text-black px-1 rounded"
+                : ""
+            }`}
+            onClick={() => handleThemeSelect(item.themeName)}
+            key={index}
+          >
+            {item.themeName}
+          </span>
+        ))}
+        {theData?.data?.length > filteredThemeData.length && (
+          <span
+            className="cursor-pointer text-sm text-blue-500"
+            onClick={() => setShowAllTheme(!showAllTheme)}
+          >
+            {showAllTheme ? "Show Less" : "Show More"}
+          </span>
+        )}
+      </div>
+    );
+  };
+
+  const renderStyleOptions = () => {
+    const dataToShow = showAllStyle ? stData?.data : filteredStyleData;
+    return (
+      <div
+        id="dropdownDivider"
+        className="z-10 border flex flex-col p-2 gap-2 bg-[#102031] text-white rounded-lg dark:bg-gray-700 dark:divide-gray-600"
+      >
+        {dataToShow?.map((item, index: number) => (
+          <span
+            className={`cursor-pointer ${
+              selectedStyle.includes(item.styleName)
+                ? "bg-gray-300 text-black px-1 rounded"
+                : ""
+            }`}
+            onClick={() => handleStyleSelect(item.styleName)}
+            key={index}
+          >
+            {item.styleName}
+          </span>
+        ))}
+        {stData?.data?.length > filteredStyleData.length && (
+          <span
+            className="cursor-pointer text-sm text-blue-500"
+            onClick={() => setShowAllStyle(!showAllStyle)}
+          >
+            {showAllStyle ? "Show Less" : "Show More"}
+          </span>
+        )}
+      </div>
+    );
+  };
 
   return (
     <>
@@ -261,11 +428,105 @@ const Purchase = () => {
             className="uppercase text-[14px] cursor-pointer bg-[#102031] text-white rounded py-1 px-3"
             onClick={handleClear}
           >
-            Clear Filter
+            Clear All
           </span>
         </div>
 
-        <div className="flex p-4 pt-2 flex-col gap-3">
+        {selectedOption.length > 0 ? (
+          <div className="flex bg-[#102031] text-white p-2 flex-col gap-2">
+            <div className="flex gap-1.5">
+              <span className="text-[13px] whitespace-nowrap font-semibold">
+                Discipline :
+              </span>
+              <div className="flex items-center gap-2 flex-wrap">
+                {selectedOption.map((item: string, i: number) => (
+                  <span
+                    key={i}
+                    className="text-[11px] text-black flex gap-1 items-center px-1 rounded-full bg-[#c3c3c3]"
+                  >
+                    {item}
+                    <MdOutlineCancel
+                      onClick={() => handleOptionSelect(item)}
+                      className="cursor-pointer"
+                    />
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {selectedTechnic.length > 0 && (
+              <div className="flex gap-1.5">
+                <span className="text-[13px] whitespace-nowrap font-semibold">
+                  Technic :
+                </span>
+                <div className="flex items-center gap-2 flex-wrap">
+                  {selectedTechnic.map((item: string, i: number) => (
+                    <span
+                      key={i}
+                      className="text-[11px] text-black flex gap-1 items-center px-1 rounded-full bg-[#c3c3c3]"
+                    >
+                      {item}
+                      <MdOutlineCancel
+                        onClick={() => handleTechnicSelect(item)}
+                        className="cursor-pointer"
+                      />
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {selectedTheme.length > 0 && (
+              <div className="flex gap-1.5">
+                <span className="text-[13px] whitespace-nowrap font-semibold">
+                  Theme :
+                </span>
+                <div className="flex items-center gap-2 flex-wrap">
+                  {selectedTheme.map((item: string, i: number) => (
+                    <span
+                      key={i}
+                      className="text-[11px] text-black flex gap-1 items-center px-1 rounded-full bg-[#c3c3c3]"
+                    >
+                      {item}
+                      <MdOutlineCancel
+                        onClick={() => handleThemeSelect(item)}
+                        className="cursor-pointer"
+                      />
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {selectedStyle.length > 0 && (
+              <div className="flex gap-1.5">
+                <span className="text-[13px] whitespace-nowrap font-semibold">
+                  Style :
+                </span>
+                <div className="flex items-center gap-2 flex-wrap">
+                  {selectedStyle.map((item: string, i: number) => (
+                    <span
+                      key={i}
+                      className="text-[11px] text-black flex gap-1 items-center px-1 rounded-full bg-[#c3c3c3]"
+                    >
+                      {item}
+                      <MdOutlineCancel
+                        onClick={() => handleStyleSelect(item)}
+                        className="cursor-pointer"
+                      />
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        ) : null}
+
+        <div
+          className={`flex p-4 ${
+            selectedOption.length > 0 ? "pt-0" : "pt-2"
+          } flex-col gap-3`}
+        >
           <div className="">
             <Button
               id="dropdownDividerButton"
@@ -287,30 +548,10 @@ const Purchase = () => {
               <MdKeyboardArrowDown size={20} />
             </Button>
 
-            {optionOpen.discipline ? (
-              <div
-                id="dropdownDivider"
-                className="z-10 border flex flex-col p-2 gap-2 bg-[#102031] text-white rounded-lg dark:bg-gray-700 dark:divide-gray-600"
-              >
-                {disciplineData &&
-                  disciplineData?.data?.map((item, index: number) => (
-                    <span
-                      className={`cursor-pointer ${
-                        selectedOption == item?.disciplineName
-                          ? "bg-gray-300 text-black px-1 rounded"
-                          : ""
-                      }`}
-                      onClick={() => setSelectedOption(item.disciplineName)}
-                      key={index}
-                    >
-                      {item.disciplineName}
-                    </span>
-                  ))}
-              </div>
-            ) : null}
+            {optionOpen.discipline ? renderDisciplineOptions() : null}
           </div>
 
-          {selectedOption ? (
+          {selectedOption.length > 0 ? (
             <>
               <div className="">
                 <Button
@@ -333,30 +574,7 @@ const Purchase = () => {
                   <MdKeyboardArrowDown size={20} />
                 </Button>
 
-                {optionOpen.theme ? (
-                  <div
-                    id="dropdownDivider"
-                    className="z-10 border flex flex-col p-2 gap-2 bg-[#102031] text-white rounded-lg dark:bg-gray-700 dark:divide-gray-600"
-                  >
-                    {themeData && themeData.length > 0 ? (
-                      themeData.map((item, i: number) => (
-                        <span
-                          className={`cursor-pointer ${
-                            selectedTheme == item
-                              ? "bg-gray-300 text-black px-1 rounded"
-                              : ""
-                          }`}
-                          key={i}
-                          onClick={() => setSelectedTheme(item)}
-                        >
-                          {item}
-                        </span>
-                      ))
-                    ) : (
-                      <span>No Theme Found</span>
-                    )}
-                  </div>
-                ) : null}
+                {optionOpen.theme ? renderThemeOptions() : null}
               </div>
 
               <div className="">
@@ -380,30 +598,7 @@ const Purchase = () => {
                   <MdKeyboardArrowDown size={20} />
                 </Button>
 
-                {optionOpen.technic ? (
-                  <div
-                    id="dropdownDivider"
-                    className="z-10 border flex flex-col p-2 gap-2 bg-[#102031] text-white rounded-lg dark:bg-gray-700 dark:divide-gray-600"
-                  >
-                    {technicData && technicData.length > 0 ? (
-                      technicData.map((item, i: number) => (
-                        <span
-                          className={`cursor-pointer ${
-                            selectedTechnic == item
-                              ? "bg-gray-300 text-black px-1 rounded"
-                              : ""
-                          }`}
-                          key={i}
-                          onClick={() => setSelectedTechnic(item)}
-                        >
-                          {item}
-                        </span>
-                      ))
-                    ) : (
-                      <span>No Technic Found</span>
-                    )}
-                  </div>
-                ) : null}
+                {optionOpen.technic ? renderTechnicOptions() : null}
               </div>
 
               <div className="">
@@ -427,30 +622,7 @@ const Purchase = () => {
                   <MdKeyboardArrowDown size={20} />
                 </Button>
 
-                {optionOpen.style ? (
-                  <div
-                    id="dropdownDivider"
-                    className="z-10 border flex flex-col p-2 gap-2 bg-[#102031] text-white rounded-lg dark:bg-gray-700 dark:divide-gray-600"
-                  >
-                    {styleData && styleData.length > 0 ? (
-                      styleData.map((item, i: number) => (
-                        <span
-                          className={`cursor-pointer ${
-                            selectedStyle == item
-                              ? "bg-gray-300 text-black px-1 rounded"
-                              : ""
-                          }`}
-                          key={i}
-                          onClick={() => setSelectedStyle(item)}
-                        >
-                          {item}
-                        </span>
-                      ))
-                    ) : (
-                      <span>No Style Found</span>
-                    )}
-                  </div>
-                ) : null}
+                {optionOpen.style ? renderStyleOptions() : null}
               </div>
             </>
           ) : null}
