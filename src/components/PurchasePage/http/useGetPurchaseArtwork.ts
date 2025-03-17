@@ -24,10 +24,11 @@ async function fetchData(
   currPage: number,
   cursor: string,
   direction: string,
-  limit: number
+  limit: number,
+  exclusive: string
 ) {
   const { data } = await axiosInstance.get(
-    `${ARTTIST_ENDPOINTS.GetAllArtwork}?type=${type}&s=${query}&theme=${selectedTheme}&discipline=${selectedOption}&technic=${selectedTechnic}&style=${selectedStyle}&color=${color}&comingsoon=${comingSoon}&orientation=${orientation}&depth=${depth}&&height=${height}&width=${width}&price=${price}&tag=${tag}&discount=${discount}&purchase=${purchase}&purchaseOption=${purchaseOption}&currPage=${currPage}&cursor=${cursor}&direction=${direction}&limit=${limit}`
+    `${ARTTIST_ENDPOINTS.GetAllArtwork}?type=${type}&s=${query}&theme=${selectedTheme}&discipline=${selectedOption}&technic=${selectedTechnic}&style=${selectedStyle}&color=${color}&comingsoon=${comingSoon}&orientation=${orientation}&depth=${depth}&&height=${height}&width=${width}&price=${price}&tag=${tag}&discount=${discount}&purchase=${purchase}&purchaseOption=${purchaseOption}&currPage=${currPage}&cursor=${cursor}&direction=${direction}&limit=${limit}&exclusive=${exclusive}`
   );
 
   return data;
@@ -54,7 +55,8 @@ export const useGetPurchaseArtwork = (
   currPage: number,
   cursor: string,
   direction: string,
-  limit: number
+  limit: number,
+  exclusive: string
 ) => {
   const debounceWidthMax = useDebounce(width[1], 800);
   const debounceHeightMax = useDebounce(height[1], 800);
@@ -95,6 +97,7 @@ export const useGetPurchaseArtwork = (
       cursor,
       direction,
       limit,
+      exclusive,
     ],
     queryFn: () =>
       fetchData(
@@ -118,7 +121,8 @@ export const useGetPurchaseArtwork = (
         currPage,
         cursor,
         direction,
-        limit
+        limit,
+        exclusive
       ),
 
     refetchOnWindowFocus: false,

@@ -68,18 +68,18 @@ const CommonCardData = ({
     ) : highlightData?.length === 1 ? (
       <div
         key={0}
-        className="sm:px-3 px-0 border-none outline-none relative  lg:w-[30vw] xl:w-[20vw] md:w-[30vw] sm:w-[50vw]"
+        className="sm:px-3 px-0 border-none outline-none relative lg:w-[30vw] xl:w-[20vw] md:w-[30vw] sm:w-[50vw]"
       >
         <div className="p-3 h-[40vh] flex items-center justify-center bg-blue-100">
           <img
             src={`${lowImageUrl}/${highlightData[0]?.mainImage}`}
             alt="image"
-            className="lg:w-[35vw] md:w-[35vw]  object-cover h-[40vh]"
+            className="lg:w-[35vw] md:w-[35vw] object-contain h-[40vh]"
             onClick={() => handleRedirectToDescription(highlightData[0]?._id)}
           />
         </div>
 
-        <div className="mt-3">
+        <div className="pt-3">
           <div className="flex flex-col">
             <h1 className="font-bold text-[16px] sm:text-[20px] text-[#333333]">
               {highlightData[0]?.artworkName}
@@ -118,7 +118,7 @@ const CommonCardData = ({
               <img
                 src={`${lowImageUrl}/${item?.mainImage}`}
                 alt="image"
-                className="max-h-[35vh] cursor-pointer"
+                className="max-h-[35vh] object-contain cursor-pointer"
                 onClick={() => handleRedirectToDescription(item?._id)}
               />
             </div>

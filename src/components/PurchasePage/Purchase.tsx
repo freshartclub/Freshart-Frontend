@@ -61,8 +61,6 @@ const Purchase = () => {
       (item) => item.discipline === hoveredDiscipline?.disciplineName
     ) || null;
 
-  console.log("Filtered Hover Data:", filteredHoverData);
-
   const [sliderData, setSliderData] = useState({
     height: [0, defaultRanges.height.max],
     width: [0, defaultRanges.width.max],
@@ -83,6 +81,7 @@ const Purchase = () => {
     comingSoon: "",
     discount: "",
     purchase: "",
+    exclusive: "",
     purchaseOption: "",
   });
 
@@ -138,7 +137,8 @@ const Purchase = () => {
     options.currPage,
     options.cursor,
     options.direction,
-    options.limit
+    options.limit,
+    moreOptions.exclusive
   );
 
   const { data: techData } = useGetTechnic();
@@ -427,7 +427,6 @@ const Purchase = () => {
                     </span>
                   </div>
 
-                  {/* Render hover content directly tied to the current item */}
                   {hoveredDiscipline?.disciplineName ===
                     item.disciplineName && (
                     <div>
@@ -444,7 +443,6 @@ const Purchase = () => {
                           onMouseLeave={() => setHoveredDiscipline(null)}
                         >
                           <div className="flex flex-wrap items-start justify-center gap-10 flex-grow">
-                            {/* Style Section */}
                             <div className="min-w-[120px]">
                               <h3 className="text-lg font-bold text-gray-900 mb-2">
                                 Style
@@ -478,7 +476,6 @@ const Purchase = () => {
                               </ul>
                             </div>
 
-                            {/* Theme Section */}
                             <div className="min-w-[120px]">
                               <h3 className="text-lg font-bold text-gray-900 mb-2">
                                 Theme
@@ -517,14 +514,76 @@ const Purchase = () => {
                                 Commercial
                               </h3>
                               <ul className="space-y-2">
-                                <li className="text-sm text-black hover:text-blue-500 transition-colors duration-150 cursor-pointer">
-                                  Exclusive
+                                <li className="text-sm  text-black hover:text-blue-500 transition-colors duration-150 cursor-pointer">
+                                  <details>
+                                    <summary className="cursor-pointer font-normal text-sm text-white">
+                                      Exclusive
+                                    </summary>
+
+                                    <div className="flex flex-col gap-2 mt-2 pl-4">
+                                      <span
+                                        className="text-black hover:text-blue-500 transition-colors duration-150 cursor-pointer"
+                                        onClick={() => {
+                                          setMoreOptions((prev) => ({
+                                            ...prev,
+                                            exclusive: "Yes",
+                                          }));
+                                          setHoveredDiscipline(null);
+                                        }}
+                                      >
+                                        Yes
+                                      </span>
+                                      <span
+                                        className="text-black hover:text-blue-500 transition-colors duration-150 cursor-pointer"
+                                        onClick={() => {
+                                          setMoreOptions((prev) => ({
+                                            ...prev,
+                                            exclusive: "No",
+                                          }));
+                                          setHoveredDiscipline(null);
+                                        }}
+                                      >
+                                        No
+                                      </span>
+                                    </div>
+                                  </details>
                                 </li>
                                 <li className="text-sm text-black hover:text-blue-500 transition-colors duration-150 cursor-pointer">
                                   New
                                 </li>
                                 <li className="text-sm text-black hover:text-blue-500 transition-colors duration-150 cursor-pointer">
-                                  Coming Soon
+                                  <details>
+                                    <summary className="cursor-pointer font-normal text-sm text-white">
+                                      Comming Soon
+                                    </summary>
+
+                                    <div className="flex flex-col gap-2 mt-2 pl-4">
+                                      <span
+                                        className="text-black hover:text-blue-500 transition-colors duration-150 cursor-pointer"
+                                        onClick={() => {
+                                          setMoreOptions((prev) => ({
+                                            ...prev,
+                                            comingSoon: "Yes",
+                                          }));
+                                          setHoveredDiscipline(null);
+                                        }}
+                                      >
+                                        Yes
+                                      </span>
+                                      <span
+                                        className="text-black hover:text-blue-500 transition-colors duration-150 cursor-pointer"
+                                        onClick={() => {
+                                          setMoreOptions((prev) => ({
+                                            ...prev,
+                                            comingSoon: "No",
+                                          }));
+                                          setHoveredDiscipline(null);
+                                        }}
+                                      >
+                                        No
+                                      </span>
+                                    </div>
+                                  </details>
                                 </li>
                                 <li className="text-sm text-black hover:text-blue-500 transition-colors duration-150 cursor-pointer">
                                   Big Discount
@@ -1094,6 +1153,41 @@ const Purchase = () => {
               </div>
             );
           })}
+
+          <div className="flex items-center justify-between">
+            <Button
+              id="dropdownDividerButton"
+              className="flex !px-0 justify-between w-full items-center"
+              type="button"
+              variant={{
+                fontSize: "base",
+                theme: "black",
+                fontWeight: "600",
+              }}
+            >
+              Exclusive Artwork
+            </Button>
+
+            <div className="flex items-center gap-2">
+              {["Yes", "No"].map((item, i: number) => (
+                <span className="flex items-center gap-1" key={i}>
+                  <input
+                    type="radio"
+                    name="discount"
+                    value={item}
+                    checked={moreOptions.exclusive === item}
+                    onChange={(e) =>
+                      setMoreOptions((prev) => ({
+                        ...prev,
+                        exclusive: e.target.value,
+                      }))
+                    }
+                  />
+                  <label>{item}</label>
+                </span>
+              ))}
+            </div>
+          </div>
 
           {type == "purchase" ? (
             <>

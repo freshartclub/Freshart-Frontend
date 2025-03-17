@@ -1,6 +1,5 @@
-import Slider from "react-slick";
-
-import { useRef } from "react";
+import { useState } from "react";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import home from "../../assets/home.png";
 import arrow from "../../assets/Vector.png";
@@ -8,62 +7,6 @@ import P from "../ui/P";
 import { imageUrl } from "../utils/baseUrls";
 
 const ArtistHeader = ({ data }) => {
-  const sliderRef = useRef<Slider>(null);
-  const settings = {
-    dots: false,
-    autoplay: true,
-    infinite: true,
-    arrows: false,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-  };
-
-  const handleThumbnailClick = (index: number) => {
-    if (sliderRef.current) {
-      sliderRef.current.slickGoTo(index);
-    }
-  };
-
-  const additionalImage = data?.artist?.profile?.additionalImage?.map(
-    (item) => item
-  );
-
-  const additionalVidoes = data?.artist?.profile?.additionalVideo?.map(
-    (item) => item
-  );
-
-  const images = data?.artist
-    ? [
-        {
-          src: data?.artist?.profile?.mainImage
-            ? data?.artist?.profile?.mainImage
-            : null,
-          alt: "Main Image",
-        },
-        {
-          src: data?.artist?.profile?.inProcessImage
-            ? data?.artist?.profile?.inProcessImage
-            : null,
-          alt: "In Process Image",
-        },
-        {
-          src: data?.artist?.profile?.mainVideo
-            ? data?.artist?.profile?.mainVideo
-            : null,
-          alt: "Main Video",
-        },
-        ...additionalImage?.map((item) => ({
-          src: item,
-          alt: "Additional Image",
-        })),
-        ...additionalVidoes?.map((item) => ({
-          src: item,
-          alt: "Additional Video",
-        })),
-      ].filter((image) => image.src !== null)
-    : [];
-
   const name = (val: {
     artistName: string;
     artistSurname1: string;
@@ -76,6 +19,23 @@ const ArtistHeader = ({ data }) => {
 
     return fullName.trim();
   };
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const mediaItems = [];
+  if (data?.profile?.mainImage)
+    mediaItems.push({ type: "image", src: data?.profile.mainImage });
+  if (data?.profile?.mainVideo)
+    mediaItems.push({ type: "video", src: data?.profile.mainVideo });
+
+  if (mediaItems.length === 0) return null;
+
+  const handleNext = () =>
+    setCurrentIndex((prev) => (prev + 1) % mediaItems.length);
+  const handlePrev = () =>
+    setCurrentIndex(
+      (prev) => (prev - 1 + mediaItems.length) % mediaItems.length
+    );
 
   return (
     <div className="lg:w-[80%] w-[90%] m-auto">
@@ -115,84 +75,45 @@ const ArtistHeader = ({ data }) => {
             variant={{ size: "small", theme: "dark", weight: "semiBold" }}
             className="text-[#203F58]"
           >
-            {name(data?.artist)}
+            {name(data)}
           </P>
         </li>
       </ul>
 
-      <div className="mt-4">
-        <div className="">
-          {images && images.length === 1 ? (
-            images.map((image, index) => {
-              const isVideo = image?.src && image?.src.endsWith(".mp4"); // Check if the source is a video
-              return (
-                <div key={index}>
-                  {isVideo ? (
-                    <video
-                      src={`${imageUrl}/videos/${image?.src}`}
-                      className="mx-auto w-full h-[40vh] sm:h-[50vh] md:h-[55vh] lg:h-[60vh] object-cover rounded-lg"
-                      controls
-                    />
-                  ) : (
-                    <img
-                      src={`${imageUrl}/users/${image?.src}`}
-                      alt={`Slide ${index + 1}`}
-                      className="mx-auto w-full h-[40vh] sm:h-[50vh] md:h-[55vh] lg:h-[60vh] object-cover rounded-lg"
-                    />
-                  )}
-                </div>
-              );
-            })
+      <div className="relative w-full py-5 max-w-3xl mx-auto">
+        {mediaItems.length > 1 && (
+          <button
+            onClick={handlePrev}
+            className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-2 rounded-full"
+          >
+            <FaChevronLeft size={24} />
+          </button>
+        )}
+
+        <div className="flex justify-center">
+          {mediaItems[currentIndex].type === "video" ? (
+            <video
+              src={`${imageUrl}/videos/${mediaItems[currentIndex].src}`}
+              className="w-full h-[60vh] rounded-lg"
+              controls
+            />
           ) : (
-            <Slider {...settings} ref={sliderRef} className="discover_more">
-              {images.map((slide, index) => {
-                const isVideo = slide?.src && slide?.src.endsWith(".mp4"); // Check if the source is a video
-                return (
-                  <div key={index}>
-                    {isVideo ? (
-                      <video
-                        src={`${imageUrl}/videos/${slide?.src}`}
-                        className="mx-auto w-full h-[40vh] sm:h-[50vh] md:h-[55vh] lg:h-[60vh] object-cover rounded-lg"
-                        controls
-                      />
-                    ) : (
-                      <img
-                        src={`${imageUrl}/users/${slide?.src}`}
-                        alt={`Slide ${index + 1}`}
-                        className="mx-auto w-full h-[40vh] sm:h-[50vh] md:h-[55vh] lg:h-[60vh] object-cover rounded-lg"
-                      />
-                    )}
-                  </div>
-                );
-              })}
-            </Slider>
+            <img
+              src={`${imageUrl}/users/${mediaItems[currentIndex].src}`}
+              alt="Main Media"
+              className="w-full h-[60vh] object-contain rounded-lg"
+            />
           )}
         </div>
 
-        <div className="flex gap-5 justify-center my-5 overflow-x-auto">
-          {images.map((thumb, index) => {
-            const isVideo = thumb?.src && thumb?.src?.endsWith(".mp4");
-            if (isVideo) {
-              return (
-                <video
-                  key={index}
-                  src={`${imageUrl}/videos/${thumb.src}`}
-                  className="mb-4 w-12 h-16 md:w-16 md:h-20 lg:w-20 lg:h-24 object-cover"
-                  controls
-                />
-              );
-            }
-            return (
-              <img
-                key={index}
-                src={`${imageUrl}/users/${thumb?.src}`}
-                alt={thumb.alt}
-                className="mb-4 w-12 h-16 md:w-16 md:h-20 lg:w-20 lg:h-24 object-cover"
-                onClick={() => handleThumbnailClick(index)}
-              />
-            );
-          })}
-        </div>
+        {mediaItems.length > 1 && (
+          <button
+            onClick={handleNext}
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-2 rounded-full"
+          >
+            <FaChevronRight size={24} />
+          </button>
+        )}
       </div>
     </div>
   );

@@ -1,22 +1,11 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Button from "../ui/Button";
 import Header from "../ui/Header";
 import P from "../ui/P";
-import profile from "./assets/profile.png";
-import share from "./assets/Vector (4).png";
-import star from "./assets/Star.png";
-import like from "./assets/Insignia.png";
-import new_icon from "./assets/New.png";
-import award from "./assets/Nomination.png";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
 import { imageUrl } from "../utils/baseUrls";
-
-const credential = [
-  { icon: star, title: "Top Seller" },
-  { icon: like, title: "Most Liked" },
-  { icon: new_icon, title: "New Added" },
-  { icon: award, title: "International Awards" },
-];
+import share from "./assets/Vector (4).png";
+import DOMPurify from "dompurify";
 
 const ArtistDescription = ({ data }) => {
   const navigate = useNavigate();
@@ -24,12 +13,14 @@ const ArtistDescription = ({ data }) => {
 
   const redirectToCircle = () => navigate("/circleblog");
 
-  const aboutText = data?.artist?.aboutArtist?.about?.replace(
+  const aboutText = data?.aboutArtist?.about?.replace(
     /<\/?(h2|p|div|li|strong|blockquote)>| |«|»/g,
     ""
   );
 
-  const highlightText = data?.artist?.highlights?.addHighlights?.replace(
+  console.log(data);
+
+  const highlightText = data?.highlights?.addHighlights?.replace(
     /<\/?(h2|p|div|li|strong|blockquote)>| |«|»/g,
     ""
   );
@@ -38,7 +29,7 @@ const ArtistDescription = ({ data }) => {
     <div>
       <div className="flex gap-5 sm:justify-end justify-center items-center my-4">
         <img
-          src={`${imageUrl}/users/${data?.artist?.profile?.mainImage}`}
+          src={`${imageUrl}/users/${data?.profile?.mainImage}`}
           alt="profile image"
           className="cursor-pointer w-10 h-10 rounded-full object-cover"
         />
@@ -111,12 +102,11 @@ const ArtistDescription = ({ data }) => {
             >
               Highlight
             </Header>
-            <P
-              variant={{ size: "base", theme: "dark", weight: "normal" }}
-              className="leading-7 mb-7"
-            >
-              {highlightText}
-            </P>
+            <div
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(data?.highlights?.addHighlights),
+              }}
+            />
           </div>
         )}
 
@@ -146,7 +136,7 @@ const ArtistDescription = ({ data }) => {
               Curriculum Vitae
             </Header>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {data?.artist?.highlights?.cv?.map((item, index) => (
+              {data?.highlights?.cv?.map((item, index) => (
                 <div
                   key={index}
                   className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
@@ -190,7 +180,7 @@ const ArtistDescription = ({ data }) => {
           </div>
         )}
 
-        {data?.artist?.insignia.length > 0 && (
+        {data?.insignia.length > 0 && (
           <div>
             <P
               variant={{ size: "base", theme: "dark", weight: "semiBold" }}
@@ -199,11 +189,11 @@ const ArtistDescription = ({ data }) => {
               Credentials and Insignias Area
             </P>
             <div className="flex sm:flex-row flex-col sm:gap-0 gap-8 items-center rounded-md xl:px-7 px-5 xl:py-4 sm:py-3 py-5">
-              {data?.artist?.insignia?.map((item, index) => (
+              {data?.insignia?.map((item, index) => (
                 <div
                   key={index}
                   className={`flex flex-col gap-3 w-56 xl:px-6 px-4 justify-center items-center ${
-                    index !== data.artist.insignia.length - 1
+                    index !== data.insignia.length - 1
                       ? "sm:border-r-2 border-gray-300"
                       : ""
                   }`}

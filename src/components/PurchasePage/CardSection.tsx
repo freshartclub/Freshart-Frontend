@@ -70,14 +70,18 @@ const CardSection = ({ data }) => {
                   handleRedirectToDescription(item?._id);
                 }
               }}
-              className="flex flex-col outline-none cursor-pointer px-5 py-2 relative bg-[#DBEAFE] group max-w-[600px] mx-auto   shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden"
+              className="flex flex-col outline-none cursor-pointer relative group max-w-[600px] mx-auto transition-all duration-300 overflow-hidden"
             >
-              <div className="relative w-[300px] h-[200px] overflow-hidden ">
+              <div className="relative overflow-hidden p-3 h-[40vh] flex items-center justify-center bg-blue-100">
                 <img
                   src={`${lowImageUrl}/${item?.media}`}
                   alt="Artwork"
-                  className={`w-full h-full object-contain transition-all duration-300 
-                    ${isOffensive && !isViewed ? "blur-lg brightness-75 group-hover:blur-md" : "hover:scale-105"}`}
+                  className={`w-full transition-all duration-300 lg:w-[35vw] md:w-[35vw] object-contain h-[40vh]
+                    ${
+                      isOffensive && !isViewed
+                        ? "blur-lg brightness-75 group-hover:blur-md"
+                        : "hover:scale-105"
+                    }`}
                 />
 
                 {isOffensive && !isViewed ? (
@@ -111,18 +115,21 @@ const CardSection = ({ data }) => {
                 ) : null}
               </div>
 
-              {/* Artwork Details */}
-              <div className="p-4 flex flex-col bg-white mt-3 ">
+              <div className="flex flex-col bg-white pt-4">
                 <p className="text-xs text-gray-600 font-medium uppercase tracking-wide">
                   {item?.discipline}
                 </p>
                 <div className="flex justify-between items-start mt-2">
                   <p className="text-lg text-gray-900 font-semibold line-clamp-2 leading-tight">
-                    {item?.artworkName}
+                    {item?.artworkName?.length > 20
+                      ? `${item?.artworkName?.slice(0, 20)}...`
+                      : item?.artworkName}
                   </p>
                   <p className="text-xs text-gray-500 mt-1">{item?.size}</p>
                 </div>
-                <p className="text-sm text-gray-600 mt-1 font-medium">{name(item)}</p>
+                <p className="text-sm text-gray-600 mt-1 font-medium">
+                  {name(item)}
+                </p>
                 <p className="mt-2 text-md text-gray-800 font-bold">
                   {getSymbolFromCurrency(item?.pricing?.currency.slice(0, 3))}{" "}
                   {item?.pricing?.basePrice}
