@@ -1,65 +1,126 @@
-import icon1 from "../../assets/file.png";
-import icon2 from "../../assets/expertus-icon 1.png";
-import icon3 from "../../assets/eruditus 1.png";
-import icon4 from "../../assets/aisthetes 1.png";
 import Button from "../ui/Button";
-import arrow from "../../assets/arrow.png";
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
+import arrow from "../../assets/arrow.png";
 
-const DiscoverSection = () => {
+const CenteredSection = ({
+  title,
+  text,
+  imageSrc,
+  buttonText,
+  buttonLink,
+
+  backgroundColor = "#F5F2EB",
+  titleColor = "#102030",
+  textColor = "#102030",
+  imageSize = "150px",
+
+  className = "",
+  containerClassName = "",
+}) => {
   const navigate = useNavigate();
-  const redirectToPricePlane = () => {
-    navigate("/priceandplans");
+
+  const handleButtonClick = () => {
+    if (buttonLink) {
+      navigate(buttonLink);
+    }
   };
 
   return (
-    <div className="bg-[#F5F2EB] py-20">
-      <div className="container mx-auto md:px-6 px-3 text-center">
-        <h1 className="md:text-[36px] text-[30px] text-[#102030] font-semibold pb-10">
-          Discover the different plans to join our community
-        </h1>
-        <div className="flex flex-col sm:flex-row justify-center items-center lg:gap-32 md:gap-10 sm:gap-14 gap-0">
-          <img
-            src={icon1}
-            alt="icon1"
-            className="md:mb-0 mb-4   md:w-[150px] md:h-[150px] sm:w-[100px] sm:h-[100px] w-[150px] h-[150px]"
-          />
-          <img
-            src={icon2}
-            alt="icon1"
-            className="md:mb-0 mb-4   md:w-[150px] md:h-[150px] sm:w-[100px] sm:h-[100px] w-[150px] h-[150px]"
-          />
-          <img
-            src={icon3}
-            alt="icon1"
-            className="md:mb-0 mb-4   md:w-[150px] md:h-[150px] sm:w-[100px] sm:h-[100px] w-[150px] h-[150px]"
-          />
-          <img
-            src={icon4}
-            alt="icon1"
-            className="md:mb-0 mb-4   md:w-[150px] md:h-[150px] sm:w-[100px] sm:h-[100px] w-[150px] h-[150px]"
-          />
-        </div>
-        <div className="flex justify-center items-center mt-10">
-          <Button
-            variant={{
-              theme: "dark",
-              // text: "white",
-              rounded: "full",
-              fontWeight: "500",
-              thickness: "thick",
-              fontSize: "base",
-            }}
-            className=" flex justify-center items-center self-center"
-            onClick={redirectToPricePlane}
+    <div
+      className={`py-20 ${className}`}
+      style={{ backgroundColor: backgroundColor }}
+    >
+      <div
+        className={`container mx-auto md:px-6 px-3 text-center ${containerClassName}`}
+      >
+        {title && (
+          <h1
+            className="md:text-[36px] text-[30px] font-semibold pb-10"
+            style={{ color: titleColor }}
           >
-            Compare our plans
-            <img src={arrow} alt="arrow" className="ml-2" />
-          </Button>
-        </div>
+            {title}
+          </h1>
+        )}
+
+        {text && (
+          <p
+            className="md:text-[18px] text-[16px] mb-10"
+            style={{ color: textColor }}
+          >
+            {text}
+          </p>
+        )}
+
+        {imageSrc && (
+          <div className="flex justify-center items-center mb-10">
+            {Array.isArray(imageSrc) ? (
+              <div className="flex flex-col sm:flex-row justify-center items-center lg:gap-32 md:gap-10 sm:gap-14 gap-0">
+                {imageSrc.map((src, index) => (
+                  <img
+                    key={index}
+                    src={src}
+                    alt={`icon${index + 1}`}
+                    className="md:mb-0 mb-4"
+                    style={{
+                      width: imageSize,
+                      height: imageSize,
+                    }}
+                  />
+                ))}
+              </div>
+            ) : (
+              <img
+                src={imageSrc}
+                alt="section image"
+                className="md:mb-0 mb-4"
+                style={{
+                  width: imageSize,
+                  height: imageSize,
+                }}
+              />
+            )}
+          </div>
+        )}
+
+        {buttonText && (
+          <div className="flex justify-center items-center">
+            <Button
+              variant={{
+                theme: "dark",
+                rounded: "full",
+                fontWeight: "500",
+                thickness: "thick",
+                fontSize: "base",
+              }}
+              className="flex justify-center items-center"
+              onClick={handleButtonClick}
+            >
+              {buttonText}
+              {buttonLink && <img src={arrow} alt="arrow" className="ml-2" />}
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
-export default DiscoverSection;
+CenteredSection.propTypes = {
+  title: PropTypes.string,
+  text: PropTypes.string,
+  imageSrc: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.arrayOf(PropTypes.string),
+  ]),
+  buttonText: PropTypes.string,
+  buttonLink: PropTypes.string,
+  backgroundColor: PropTypes.string,
+  titleColor: PropTypes.string,
+  textColor: PropTypes.string,
+  imageSize: PropTypes.string,
+  className: PropTypes.string,
+  containerClassName: PropTypes.string,
+};
+
+export default CenteredSection;

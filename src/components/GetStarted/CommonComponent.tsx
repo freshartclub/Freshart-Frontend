@@ -8,15 +8,21 @@ const CommonComponent = ({
   image,
   className,
   buttonClassName,
+  imageSide = "right",
 }: any) => {
   const stripHtmlTags = (text) => {
     return text.replace(/<[^>]*>/g, "");
   };
+
   return (
     <div
       className={`container mx-auto md:px-6 px-3 flex md:flex-row flex-col ${className} justify-between`}
     >
-      <div className="flex flex-col justify-center md:text-left md:items-start items-center text-center lg:w-[47%]">
+      <div
+        className={`flex flex-col justify-center md:text-left md:items-start items-center text-center lg:w-[47%] ${
+          imageSide === "left" ? "md:order-2" : "md:order-1"
+        }`}
+      >
         <p className="md:text-[24px] text-[18px]">{stripHtmlTags(paragraph)}</p>
         <div className="w-48">
           <Button
@@ -35,7 +41,11 @@ const CommonComponent = ({
         </div>
       </div>
 
-      <div className="mt-10 lg:mt-0">
+      <div
+        className={`mt-10 lg:mt-0 ${
+          imageSide === "left" ? "md:order-1" : "md:order-2"
+        }`}
+      >
         <img
           src={`${imageUrl}/users/${image}`}
           alt="illustration"

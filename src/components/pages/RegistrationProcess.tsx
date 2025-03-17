@@ -17,6 +17,7 @@ import UploadImage from "../ui/UploadImage";
 import { getCityStateFromZipCountry } from "../utils/MapWithAutocomplete";
 import { RenderAllPicklists } from "../utils/RenderAllPicklist";
 import CustomDropdown from "./CustomDropdown";
+import { PhoneInput } from "react-international-phone";
 
 const RegistrationProcess = () => {
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
@@ -44,6 +45,9 @@ const RegistrationProcess = () => {
     city: Yup.string().required(t("City is required")),
     state: Yup.string().required(t("State is required")),
     gender: Yup.string().required(t("Gender is required")),
+    phone: Yup.string().required(t("Phone Number is required")),
+
+    dob: Yup.date().required(t("Date of Birth is required")),
     terms: Yup.boolean().oneOf(
       [true],
       t("You must accept the terms and conditions")
@@ -56,12 +60,15 @@ const RegistrationProcess = () => {
     handleSubmit,
     formState: { errors },
     watch,
+    getValues,
     setValue,
   } = useForm({
     resolver: yupResolver(validationSchema),
     defaultValues: {
       artistName: "",
       artistSurname1: "",
+      phone: "",
+      dob: "",
       country: "",
       zipCode: "",
       city: "",
@@ -113,6 +120,8 @@ const RegistrationProcess = () => {
       console.error("Error in form submission: ", error);
     }
   });
+
+  console.log(errors);
 
   return (
     <div className="bg-[#F9F7F6] py-10">
@@ -166,7 +175,7 @@ const RegistrationProcess = () => {
                           htmlFor="artistName"
                           className="block mb-2 text-sm font-semibold text-gray-700 text-left"
                         >
-                          {t("Firstname")} *
+                          {t("First Name")} *
                         </label>
                         <input
                           {...register("artistName")}
@@ -243,6 +252,66 @@ const RegistrationProcess = () => {
                         {errors.gender && (
                           <p className="text-red-500 text-sm text-left">
                             {errors.gender.message}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex sm:flex-row flex-col justify-between">
+                      <div className="sm:my-3 my-1 sm:w-[49%] w-full">
+                        <label className="block mb-2 text-sm font-semibold text-gray-700 text-left">
+                          {t("Phone Number")} *
+                        </label>
+                        <div className="flex sm:flex-row flex-col w-full gap-2">
+                          <PhoneInput
+                            className="appearance-none  outline-none rounded w-full text-gray-700 leading-tight focus:outline-none"
+                            placeholder={t("Enter Phone number")}
+                            defaultCountry={"es"}
+                            // disabled={isValidatePhone}
+                            value={getValues("phone")}
+                            onChange={(val) => {
+                              setValue("phone", val);
+                            }}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="sm:my-3 my-1 sm:w-[49%] w-full">
+                        <label className="block mb-2 text-sm font-semibold text-gray-700 text-left">
+                          {t("Date Of Birth")} *
+                        </label>
+                        <input
+                          type="date"
+                          {...register("dob", {
+                            required: t("Date of birth is required"),
+                            validate: {
+                              validDate: (value) => {
+                                const selectedDate = new Date(value);
+                                const today = new Date();
+                                return (
+                                  selectedDate <= today ||
+                                  t("Date cannot be in the future")
+                                );
+                              },
+                              oldEnough: (value) => {
+                                const selectedDate = new Date(value);
+                                const minAgeDate = new Date();
+                                minAgeDate.setFullYear(
+                                  minAgeDate.getFullYear() - 13
+                                );
+                                return (
+                                  selectedDate <= minAgeDate ||
+                                  t("You must be at least 13 years old")
+                                );
+                              },
+                            },
+                          })}
+                          className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
+                          placeholder={t("Select date of birth")}
+                        />
+                        {errors.dob && (
+                          <p className="text-red-500 text-sm text-left">
+                            {errors.dob.message}
                           </p>
                         )}
                       </div>
@@ -329,7 +398,6 @@ const RegistrationProcess = () => {
                       </div>
                     </div>
                   </div>
-
                   <div className="flex text-left mt-5">
                     <Controller
                       name="terms"
@@ -365,18 +433,54 @@ const RegistrationProcess = () => {
 
                   <div className="flex sm:justify-end justify-center mt-5">
                     <Button
-                      onClick={onSubmit}
                       type="submit"
+                      onClick={onSubmit}
+                      disabled={isPending}
                       variant={{
                         fontSize: "md",
                         theme: "dark",
                         fontWeight: "500",
                         rounded: "full",
                       }}
-                      className="flex items-center"
+                      className="flex items-center justify-center min-w-[120px] px-6 py-2 transition-all duration-200 hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed group"
+                      aria-label={
+                        isPending
+                          ? t("Submitting in progress")
+                          : t("Submit form")
+                      }
                     >
-                      {isPending ? t("Loading...") : t("Submit")}
-                      <img src={arrow} alt="arrow" className="ml-2" />
+                      {isPending ? (
+                        <>
+                          <svg
+                            className="animate-spin h-5 w-5 mr-2"
+                            viewBox="0 0 24 24"
+                          >
+                            <circle
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                              opacity="0.3"
+                            />
+                            <path
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                            />
+                          </svg>
+                          {t("Loading...")}
+                        </>
+                      ) : (
+                        <>
+                          <span className="mr-2">{t("Submit")}</span>
+                          <img
+                            src={arrow}
+                            alt={t("Arrow icon")}
+                            className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1"
+                          />
+                        </>
+                      )}
                     </Button>
                   </div>
                 </form>
