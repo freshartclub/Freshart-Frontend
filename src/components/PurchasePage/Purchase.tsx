@@ -45,7 +45,6 @@ const Purchase = () => {
   };
 
   const [allHoverData, setAllHoverData] = useState(null);
-
   const [hoveredDiscipline, setHoveredDiscipline] = useState(null);
 
   const { data: hoverData, isLoading: hoverLoding } =
@@ -61,10 +60,6 @@ const Purchase = () => {
     allHoverData?.disData?.find(
       (item) => item.discipline === hoveredDiscipline?.disciplineName
     ) || null;
-
-  console.log(hoveredDiscipline);
-
-  // console.log(selectedOption);
 
   console.log("Filtered Hover Data:", filteredHoverData);
 
@@ -152,14 +147,6 @@ const Purchase = () => {
   const colors = RenderAllPicklist("Colors");
   const commOptions = RenderAllPicklist("Commercialization Options");
 
-  const filteredDisciplineData =
-    disciplineData?.data?.filter((item) => item?.isMain) || [];
-
-  const filteredTechnicData =
-    techData?.data?.filter((item) => item?.isMain) || [];
-  const filteredThemeData = theData?.data?.filter((item) => item?.isMain) || [];
-  const filteredStyleData = stData?.data?.filter((item) => item?.isMain) || [];
-
   useClickOutside(openRef, () => {
     setIsOpenSidePanel(false);
   });
@@ -192,6 +179,16 @@ const Purchase = () => {
     }
   }, [selectedOption, techData, theData, stData]);
 
+  const filteredDisciplineData =
+    disciplineData?.data?.filter((item) => item?.isMain) || [];
+
+  const filteredTechnicData =
+    technicData?.data?.filter((item) => item?.isMain) || [];
+  const filteredThemeData =
+    themeData?.data?.filter((item) => item?.isMain) || [];
+  const filteredStyleData =
+    styleData?.data?.filter((item) => item?.isMain) || [];
+
   const handleClear = async () => {
     setSelectedOption([]);
     setSelectedTechnic([]);
@@ -222,6 +219,15 @@ const Purchase = () => {
       setPrevCursor(data.prevCursor || "");
     }
   }, [data]);
+
+  useEffect(() => {
+    if (selectedOption.length == 0) {
+      setSelectedOption([]);
+      setSelectedTechnic([]);
+      setSelectedTheme([]);
+      setSelectedStyle([]);
+    }
+  }, [selectedOption.length]);
 
   const handleOptionSelect = (option: string) => {
     setSelectedOption((prev) =>
@@ -291,7 +297,7 @@ const Purchase = () => {
   };
 
   const renderTechnicOptions = () => {
-    const dataToShow = showAllTechnic ? techData?.data : filteredTechnicData;
+    const dataToShow = showAllTechnic ? technicData?.data : filteredTechnicData;
     return (
       <div
         id="dropdownDivider"
@@ -323,7 +329,7 @@ const Purchase = () => {
   };
 
   const renderThemeOptions = () => {
-    const dataToShow = showAllTheme ? theData?.data : filteredThemeData;
+    const dataToShow = showAllTheme ? themeData?.data : filteredThemeData;
     return (
       <div
         id="dropdownDivider"
@@ -355,7 +361,7 @@ const Purchase = () => {
   };
 
   const renderStyleOptions = () => {
-    const dataToShow = showAllStyle ? stData?.data : filteredStyleData;
+    const dataToShow = showAllStyle ? styleData?.data : filteredStyleData;
     return (
       <div
         id="dropdownDivider"
@@ -446,16 +452,15 @@ const Purchase = () => {
                               <ul className="space-y-2">
                                 {filteredHoverData?.style?.length > 0 ? (
                                   filteredHoverData?.style.map(
-                                    (styleItem, styleIndex) => (
+                                    (styleItem, styleIndex: number) => (
                                       <li
                                         onClick={() => {
-                                          setSelectedOption(
+                                          handleOptionSelect(
                                             hoveredDiscipline?.disciplineName
                                           );
-                                          setSelectedStyle(
+                                          handleStyleSelect(
                                             styleItem?.styleName
                                           );
-                                          setSelectedTheme("");
                                           setHoveredDiscipline(null);
                                         }}
                                         key={styleIndex}
@@ -481,18 +486,17 @@ const Purchase = () => {
                               <ul className="space-y-2">
                                 {filteredHoverData?.theme?.length > 0 ? (
                                   filteredHoverData?.theme.map(
-                                    (themeItem, themeIndex) => (
+                                    (themeItem, themeIndex: number) => (
                                       <li
                                         key={themeIndex}
                                         className="text-sm text-black hover:text-blue-500 transition-colors duration-150 cursor-pointer"
                                         onClick={() => {
-                                          setSelectedOption(
+                                          handleOptionSelect(
                                             hoveredDiscipline?.disciplineName
                                           );
-                                          setSelectedTheme(
+                                          handleThemeSelect(
                                             themeItem?.themeName
                                           );
-                                          setSelectedStyle("");
                                           setHoveredDiscipline(null);
                                         }}
                                       >
@@ -508,7 +512,6 @@ const Purchase = () => {
                               </ul>
                             </div>
 
-                            {/* Commercial Section */}
                             <div className="min-w-[120px]">
                               <h3 className="text-lg font-bold text-gray-900 mb-2">
                                 Commercial
