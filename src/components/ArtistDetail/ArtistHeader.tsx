@@ -52,7 +52,7 @@ const ArtistHeader = ({ data }) => {
           </Link>
         </li>
 
-        <img src={arrow} alt="Home icon" className="w-[4px] h-[6px]" />
+        <img src={arrow} alt="Arrow icon" className="w-[4px] h-[6px]" />
 
         <li>
           <Link
@@ -68,7 +68,7 @@ const ArtistHeader = ({ data }) => {
           </Link>
         </li>
 
-        <img src={arrow} alt="Home icon" className="w-[4px] h-[6px]" />
+        <img src={arrow} alt="Arrow icon" className="w-[4px] h-[6px]" />
 
         <li>
           <P

@@ -19,7 +19,7 @@ const ArtistDetail = () => {
           <ArtistHeader data={data?.artist} />
         </div>
         <div className="lg:w-[48%] w-full">
-          <ArtistDescription data={data?.artist} />
+          <ArtistDescription data={data} />
         </div>
       </div>
       <ArtistProtfolioArtwork data={data} />
