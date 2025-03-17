@@ -70,9 +70,9 @@ const CardSection = ({ data }) => {
                   handleRedirectToDescription(item?._id);
                 }
               }}
-              className="flex flex-col outline-none cursor-pointer px-5 relative group max-w-[600px] mx-auto bg-[#DBEAFE]  shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden"
+              className="flex flex-col outline-none cursor-pointer px-5 py-2 relative bg-[#DBEAFE] group max-w-[600px] mx-auto   shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden"
             >
-              <div className="relative w-[300px] h-[280px] overflow-hidden">
+              <div className="relative w-[300px] h-[200px] overflow-hidden ">
                 <img
                   src={`${lowImageUrl}/${item?.media}`}
                   alt="Artwork"
@@ -112,7 +112,7 @@ const CardSection = ({ data }) => {
               </div>
 
               {/* Artwork Details */}
-              <div className="p-4 flex flex-col ">
+              <div className="p-4 flex flex-col bg-white mt-3 ">
                 <p className="text-xs text-gray-600 font-medium uppercase tracking-wide">
                   {item?.discipline}
                 </p>
