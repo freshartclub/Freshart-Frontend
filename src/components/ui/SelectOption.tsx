@@ -4,16 +4,19 @@ const SelectOption = ({
   options,
   onChange,
   placeholder,
+  value,
 }: {
   options: any;
   onChange: (option: any) => void;
   placeholder?: string;
+  value?: any;
 }) => {
   return (
     <Select
       options={options}
       onChange={onChange}
       placeholder={placeholder}
+      value={value}
       styles={{
         control: (provided, state) => ({
           ...provided,

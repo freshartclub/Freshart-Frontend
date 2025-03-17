@@ -10,6 +10,8 @@ const ArtistDetail = () => {
   const id = useParams().id;
   const { data, isLoading } = useGetArtistDetails(id);
 
+  console.log(data);
+
   if (isLoading) return <Loader />;
 
   return (

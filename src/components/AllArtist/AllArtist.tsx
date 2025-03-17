@@ -58,13 +58,24 @@ const AllArtist = () => {
   }, [query, data]);
 
   const handleClear = async () => {
+    if (
+      !selectedOption &&
+      !selectedStyle &&
+      !selectedInsignia &&
+      !query &&
+      !letter
+    ) {
+      return;
+    }
+
+    setStyleData([]);
     setQuery("");
     setSelectedOption("");
     setSelectedStyle("");
     setSelectedInsignia("");
-    setCurrPage(1);
-    setSort("A-Z");
     setLetter("");
+    setSort("A-Z");
+    setCurrPage(1);
 
     await refetch();
   };
@@ -83,6 +94,11 @@ const AllArtist = () => {
           styleData={styleData}
           query={query}
           setQuery={setQuery}
+          selectedOption={selectedOption}
+          selectedStyle={selectedStyle}
+          selectedInsignia={selectedInsignia}
+          sort={sort}
+          letter={letter}
           handleClear={handleClear}
         />
         {isLoading || isFetching ? (

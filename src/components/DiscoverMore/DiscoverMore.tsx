@@ -1,20 +1,17 @@
+import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import Slider from "react-slick";
-import eye from "./assets/eye.png";
-import share from "./assets/share.png";
-import P from "../ui/P";
-import DiscoverContent from "./DiscoverContent";
-import ProductInfo from "./ProductInfo";
-import SelectedSection from "./SelectedSection";
+import { FaToggleOff, FaToggleOn } from "react-icons/fa";
 import { Link, useParams } from "react-router-dom";
+import Slider from "react-slick";
 import arrow from "../../assets/arrow_22.png";
 import home from "../../assets/home.png";
-import Button from "../ui/Button";
-import { useGetArtWorkById } from "./http/useGetArtWorkById";
 import Loader from "../ui/Loader";
+import P from "../ui/P";
 import { imageUrl, lowImageUrl } from "../utils/baseUrls";
-import { motion } from "framer-motion";
-import { FaToggleOff, FaToggleOn } from "react-icons/fa";
+import DiscoverContent from "./DiscoverContent";
+import { useGetArtWorkById } from "./http/useGetArtWorkById";
+import ProductInfo from "./ProductInfo";
+import SelectedSection from "./SelectedSection";
 
 const DiscoverMore = () => {
   const TEN_DAYS_MS = 10 * 24 * 60 * 60 * 1000;
@@ -78,7 +75,6 @@ const DiscoverMore = () => {
     const y = ((e.pageY - top) / height) * 100;
 
     setPosition({ x, y });
-    // setSize({ width, height });
   };
 
   const checkArtworkType = data?.data?.commercialization?.activeTab;
@@ -166,9 +162,9 @@ const DiscoverMore = () => {
           </P>
         </ul>
 
-        <div className="flex md:flex-row flex-col gap-5">
-          <div className="flex lg:flex-row flex-col md:w-[50%] w-full items-center">
-            <div className="flex overflow-hidden lg:justify-start justify-center lg:flex-col lg:max-h-[60vh] lg:h-[60vh] md:w-[20rem] overflow-x-auto lg:overflow-y-auto gap-2 lg:w-[15%] lg:ml-4 scrollbar">
+        <div className="flex lg:w-[77%] mx-auto md:flex-row flex-col gap-0 lg:gap-5">
+          <div className="flex lg:flex-row flex-col md:w-[60%] w-full gap-2 items-center">
+            <div className="flex overflow-hidden lg:justify-start justify-center lg:flex-col lg:max-h-[60vh] h-[5rem] lg:h-[60vh] md:w-[20rem] overflow-x-auto lg:overflow-y-auto gap-2 lg:w-[15%] lg:ml-4 scrollbar">
               {images?.map((thumb, index) => {
                 const isVideo = thumb.src && thumb.src.endsWith(".mp4");
 
@@ -181,7 +177,7 @@ const DiscoverMore = () => {
                         offensive && safeMode == "Off"
                           ? "blur-md brightness-75"
                           : ""
-                      } md:mb-0 mb-4 lg:w-20 w-24 h-24 lg:h-24 cursor-pointer object-cover`}
+                      } md:mb-0 mb-4 lg:w-20 w-16 h-16 lg:h-24 cursor-pointer object-cover`}
                       onClick={() => handleThumbnailClick(index)}
                     />
                   ) : (
@@ -193,7 +189,7 @@ const DiscoverMore = () => {
                         offensive && safeMode == "Off"
                           ? "blur-md brightness-75"
                           : ""
-                      } md:mb-0 mb-4 lg:w-20 w-24 h-24 lg:h-24 cursor-pointer object-cover`}
+                      } md:mb-0 mb-4 lg:w-20 w-16 h-16 lg:h-24 cursor-pointer object-cover`}
                       onClick={() => handleThumbnailClick(index)}
                     />
                   );
@@ -202,13 +198,13 @@ const DiscoverMore = () => {
               })}
             </div>
 
-            <div className="flex-1 md:w-[80%] w-full overflow-hidden">
+            <div className="flex-1 md:w-[80%] lg:h-[22rem] w-full overflow-hidden">
               {images.length > 1 ? (
                 <Slider {...settings} ref={sliderRef} className="discover_more">
                   {images.map(
                     (slide, index) =>
                       slide.src && (
-                        <div key={index} className="overflow-hidden">
+                        <div key={index} className="mt-2 overflow-hidden">
                           {slide.src.endsWith(".mp4") ? (
                             <video
                               src={`${imageUrl}/videos/${slide.src}`}
@@ -216,13 +212,13 @@ const DiscoverMore = () => {
                                 offensive && safeMode == "Off"
                                   ? "blur-lg brightness-75"
                                   : ""
-                              } shadow rounded mx-auto object-cover md:w-[25rem] lg:w-[25rem] h-[20rem] md:h-[60vh] lg:h-[60vh]`}
+                              } shadow rounded mx-auto object-cover md:w-[25rem] lg:w-[25rem] h-[20rem] md:h-[60vh] !lg:h-[22rem]`}
                               controls
                             />
                           ) : (
                             <div
                               ref={containerRef}
-                              className="relative w-full"
+                              className="relative bg-[#f8f8ea] p-2 w-full"
                               onMouseMove={handleMouseMove}
                               onMouseEnter={() => setVisible(true)}
                               onMouseLeave={() => setVisible(false)}
@@ -234,7 +230,7 @@ const DiscoverMore = () => {
                                   offensive && safeMode == "Off"
                                     ? "blur-lg brightness-75"
                                     : ""
-                                } shadow rounded mx-auto overflow-hidden object-contain md:w-[25rem] lg:w-full h-[20rem] md:h-[60vh] lg:h-[60vh]`}
+                                } mx-auto overflow-hidden object-contain md:w-[25rem] lg:w-full h-[20rem] md:h-[60vh] !lg:h-[22rem]`}
                               />
 
                               {offensive && safeMode == "Off" ? (
@@ -308,7 +304,7 @@ const DiscoverMore = () => {
                 ) : (
                   <div
                     ref={containerRef}
-                    className="relative w-full"
+                    className="relative bg-[#f8f8ea] p-2 w-full"
                     onMouseMove={handleMouseMove}
                     onMouseEnter={() => setVisible(true)}
                     onMouseLeave={() => setVisible(false)}
@@ -318,7 +314,7 @@ const DiscoverMore = () => {
                       alt="Single Image"
                       className={`${
                         offensive && !safeMode ? "blur-lg brightness-75" : ""
-                      } shadow rounded mx-auto object-contain md:w-[25rem] lg:w-full h-[20rem] md:h-[60vh] lg:h-[60vh]`}
+                      } mx-auto object-contain md:w-[25rem] lg:w-full h-[20rem] md:h-[60vh] lg:h-[60vh]`}
                     />
                     {visible && (
                       <motion.div
@@ -342,12 +338,12 @@ const DiscoverMore = () => {
             </div>
           </div>
 
-          <div className="md:w-[50%] w-full">
+          <div className="md:w-[40%] lg:mt-0 md:mt-[5rem] w-full">
             <DiscoverContent data={data?.data} />
           </div>
         </div>
 
-        <div className="flex justify-center md:w-[55%] w-full gap-10 mb-10">
+        {/* <div className="flex justify-center md:w-[55%] w-full gap-10 mb-10">
           <div className="flex gap-1">
             <img src={eye} alt="eye" className="w-[19px] h-[12px] mt-1" />
             <P variant={{ size: "base", theme: "dark", weight: "normal" }}>
@@ -360,7 +356,7 @@ const DiscoverMore = () => {
               Share
             </P>
           </Button>
-        </div>
+        </div> */}
 
         <ProductInfo data={data} />
       </div>

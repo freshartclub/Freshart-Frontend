@@ -1,30 +1,23 @@
 import getSymbolFromCurrency from "currency-symbol-map";
-import { AiFillLike, AiOutlineLike } from "react-icons/ai";
+import toast from "react-hot-toast";
+import { AiFillLike, AiOutlineHeart, AiOutlineLike } from "react-icons/ai";
+import { BsFillQuestionCircleFill } from "react-icons/bs";
+import { FaShareFromSquare } from "react-icons/fa6";
 import useLikeUnlikeArtworkMutation from "../HomePage/http/useLikeUnLike";
+import { useGetCartItems } from "../pages/http/useGetCartItems";
 import { useGetLikedItems } from "../pages/http/useGetLikedItems";
 import Button from "../ui/Button";
 import Header from "../ui/Header";
 import P from "../ui/P";
 import cart from "./assets/cart.png";
 import mark from "./assets/offer.png";
-import question from "./assets/question.png";
 import useAddToCartMutation from "./http/useAddToCartMutation";
-
-import toast from "react-hot-toast";
-import { AiOutlineHeart } from "react-icons/ai";
-import { useGetCartItems } from "../pages/http/useGetCartItems";
 
 const DiscoverContent = ({ data }: any) => {
   const { mutate, isPending } = useAddToCartMutation();
   const { data: cartItem } = useGetCartItems();
   const { mutate: likeMutation } = useLikeUnlikeArtworkMutation();
   const { data: likedItems } = useGetLikedItems();
-
-  const maxLength = 100;
-  const description =
-    data?.productDescription && data.productDescription.length > maxLength
-      ? `${data.productDescription.slice(0, maxLength)}...`
-      : data?.productDescription;
 
   const token = localStorage.getItem("auth_token");
 
@@ -69,7 +62,7 @@ const DiscoverContent = ({ data }: any) => {
 
   return (
     <div>
-      <div className="border-b pb-2">
+      <div className="border-b pb-0.5">
         <Header
           variant={{ size: "xl", theme: "dark", weight: "bold" }}
           className="items-center capitalize"
@@ -77,11 +70,14 @@ const DiscoverContent = ({ data }: any) => {
           {data?.artworkName}
         </Header>
         <div className="flex items-center gap-2">
-          <Header variant={{ size: "base", theme: "dark", weight: "medium" }}>
+          <Header
+            className="!text-[13px]"
+            variant={{ size: "base", theme: "dark", weight: "medium" }}
+          >
             Author :
           </Header>
           <P
-            className="text-[#999999] translate-y-[2px]"
+            className="text-[#999999] !text-[13px]"
             variant={{ size: "small", weight: "medium" }}
           >
             {name(data?.owner)}
@@ -89,43 +85,60 @@ const DiscoverContent = ({ data }: any) => {
         </div>
       </div>
 
-      <div className="flex gap-2 lg:mt-2 mt-1">
-        <P variant={{ size: "small", theme: "dark", weight: "medium" }}>
+      <div className="flex gap-2 mt-1">
+        <P
+          className="!text-[13px]"
+          variant={{ size: "small", theme: "dark", weight: "medium" }}
+        >
           Year of Creation :
         </P>
         <P
-          className="text-[#999999]"
+          className="text-[#999999] !text-[13px]"
           variant={{ size: "small", theme: "dark", weight: "medium" }}
         >
           {data?.artworkCreationYear}
         </P>
       </div>
 
-      <div className="flex gap-2 lg:mt-2 mt-1 ">
-        <P variant={{ size: "small", theme: "dark", weight: "medium" }}>
-          Artwork Series :
+      <div className="flex gap-2">
+        <P
+          className="!text-[13px]"
+          variant={{ size: "small", theme: "dark", weight: "medium" }}
+        >
+          Series :
         </P>
         <P
-          className="text-[#999999]"
+          className="text-[#999999] !text-[13px]"
           variant={{ size: "small", theme: "dark", weight: "medium" }}
         >
           {data?.artworkSeries}
         </P>
       </div>
 
-      <P
-        variant={{ size: "small", theme: "dark", weight: "medium" }}
-        className="lg:my-4 my-2 text-[#999999]"
-      >
-        {description}
-      </P>
+      <div className="flex gap-2">
+        <P
+          className="!text-[13px]"
+          variant={{ size: "small", theme: "dark", weight: "medium" }}
+        >
+          Discipline :
+        </P>
+        <P
+          className="text-[#999999] !text-[13px]"
+          variant={{ size: "small", theme: "dark", weight: "medium" }}
+        >
+          {data?.discipline}
+        </P>
+      </div>
 
-      <div className="flex gap-3 ">
-        <P variant={{ size: "small", theme: "dark", weight: "medium" }}>
+      <div className="flex gap-3">
+        <P
+          className="!text-[13px]"
+          variant={{ size: "small", theme: "dark", weight: "medium" }}
+        >
           Size :
         </P>
         <P
-          className="text-[#999999]"
+          className="text-[#999999] !text-[13px]"
           variant={{ size: "small", theme: "dark", weight: "medium" }}
         >
           {data?.additionalInfo?.length} x {data?.additionalInfo?.width} x{" "}
@@ -133,15 +146,24 @@ const DiscoverContent = ({ data }: any) => {
         </P>
       </div>
 
-      <Header
-        variant={{ size: "xl", theme: "dark", weight: "semiBold" }}
-        className="lg:my-4 my-2"
-      >
-        {`${getSymbolFromCurrency(data?.pricing?.currency?.slice(0, 3))} ${data?.pricing?.basePrice
+      {data?.pricing?.basePrice ? (
+        <Header
+          variant={{ size: "lg", theme: "dark", weight: "semiBold" }}
+          className="my-2"
+        >
+          {`${getSymbolFromCurrency(data?.pricing?.currency?.slice(0, 3))} ${
+            data?.pricing?.basePrice
           }`}
-      </Header>
+        </Header>
+      ) : null}
 
-      <div className="flex lg:flex-row flex-col gap-5">
+      <div
+        className={`${
+          data?.commingSoon == true
+            ? "pointer-events-none cursor-not-allowed opacity-50"
+            : ""
+        } ${data?.pricing?.basePrice ? "" : "mt-10"} flex flex-col gap-2`}
+      >
         <Button
           onClick={() => addToCart(data?._id)}
           variant={{
@@ -149,18 +171,17 @@ const DiscoverContent = ({ data }: any) => {
             fontWeight: "600",
             rounded: "full",
           }}
-          className={`${checkCartItem?.length
-            ? "text-base flex items-center justify-center xl:!px-12 lg:px-4 lg:!py-4 !py-2 w-full pointer-events-none opacity-50"
-            : "text-base flex items-center justify-center xl:!px-12 lg:px-4 lg:!py-4 !py-2 w-full"
-            } `}
+          className={`text-base flex items-center justify-center w-full ${
+            checkCartItem?.length ? "pointer-events-none opacity-50" : ""
+          } `}
         >
-          <img src={cart} alt="" className="md:mx-2 mx-1" />
+          <img src={cart} alt="" className="w-5 h-5 md:mx-2 mx-1" />
           <P variant={{ size: "base", theme: "light", weight: "normal" }}>
             {checkCartItem?.length
               ? "Already Added"
               : isPending
-                ? "Adding..."
-                : "Add to cart"}
+              ? "Adding..."
+              : "Add to cart"}
           </P>
         </Button>
 
@@ -169,106 +190,49 @@ const DiscoverContent = ({ data }: any) => {
             theme: "",
             rounded: "full",
           }}
-          className="text-base flex items-center justify-center border xl:!px-12 lg:px-4 lg:!py-4 !py-2 w-full"
+          className="text-base flex border-zinc-300 items-center justify-center border w-full"
         >
-          <img src={mark} alt="" className="md:mx-2 mx-1" />
+          <img src={mark} alt="" className="w-4 h-4 md:mx-2 mx-1" />
           <P variant={{ size: "base", theme: "dark", weight: "normal" }}>
             Make an offer
           </P>
         </Button>
       </div>
 
-      <div className="flex flex-wrap justify-between w-full items-center gap-2 my-4">
-        <div className="flex items-center gap-2">
-          <AiOutlineHeart size="1.5rem" color="#999999" />
-          <P
-            variant={{ size: "small", weight: "semiBold" }}
-            className="text-[#999999] uppercase"
-          >
-            Add to Wishlist
-          </P>
-        </div>
+      <div className="flex flex-wrap w-full items-center justify-between mt-5 px-1">
+        <AiOutlineHeart
+          className="cursor-pointer"
+          size="1.5rem"
+          color="#999999"
+        />
 
-        <div className="flex items-center gap-2">
-          {checkWishlist?.length ? (
-            <button
-              onClick={() =>
-                likeMutation({
-                  id: data?._id,
-                  action: "unlike",
-                })
-              }
-              className="text-[#999999] font-bold uppercase flex gap-2 items-center w-full justify-center"
-            >
-              <AiFillLike size="1.5rem" color="red" />
-              <P
-                variant={{ size: "small", weight: "semiBold" }}
-                className="text-[#999999] uppercase translate-y-[3px]"
-              >
-                Liked
-              </P>
-            </button>
-          ) : (
-            <button
-              onClick={() =>
-                likeMutation({
-                  id: data?._id,
-                  action: "like",
-                })
-              }
-              className="text-[#999999] font-bold uppercase flex gap-2 items-center w-full justify-center"
-            >
-              <AiOutlineLike size="1.5rem" />
-              <P
-                variant={{ size: "small", weight: "semiBold" }}
-                className="text-[#999999] uppercase translate-y-[3px]"
-              >
-                Like
-              </P>
-            </button>
-          )}
-        </div>
+        {checkWishlist?.length ? (
+          <AiFillLike
+            className="cursor-pointer"
+            onClick={() =>
+              likeMutation({
+                id: data?._id,
+                action: "unlike",
+              })
+            }
+            size="1.5rem"
+            color="red"
+          />
+        ) : (
+          <AiOutlineLike
+            className="cursor-pointer"
+            onClick={() =>
+              likeMutation({
+                id: data?._id,
+                action: "like",
+              })
+            }
+            size="1.5rem"
+          />
+        )}
 
-        <div className="flex items-center gap-2">
-          <img src={question} alt="question" />
-          <P
-            variant={{ size: "small", weight: "semiBold" }}
-            className="text-[#999999] uppercase"
-          >
-            Ask Questions
-          </P>
-        </div>
-      </div>
-
-      <div className="flex gap-2 flex-wrap justify-between">
-        <div className="flex gap-2">
-          <P
-            variant={{ size: "small", theme: "dark", weight: "medium" }}
-            className="uppercase"
-          >
-            Product Code :
-          </P>
-          <P
-            variant={{ size: "small", weight: "medium" }}
-            className=" text-[#999999]"
-          >
-            {data?.inventoryShipping?.pCode || "N/A"}
-          </P>
-        </div>
-        <div className="flex gap-2">
-          <P
-            variant={{ size: "small", theme: "dark", weight: "medium" }}
-            className="uppercase"
-          >
-            Discipline :
-          </P>
-          <P
-            variant={{ size: "small", weight: "medium" }}
-            className="capitalize text-[#999999]"
-          >
-            {data?.discipline}
-          </P>
-        </div>
+        <BsFillQuestionCircleFill className="cursor-pointer" size="1.5rem" />
+        <FaShareFromSquare className="cursor-pointer" size="1.5rem" />
       </div>
     </div>
   );
