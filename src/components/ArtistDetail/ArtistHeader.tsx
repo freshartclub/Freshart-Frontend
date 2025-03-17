@@ -1,7 +1,7 @@
 import Slider from "react-slick";
-
 import { useRef } from "react";
 import { Link } from "react-router-dom";
+import { FaPlay } from "react-icons/fa"; // Import the play icon from react-icons
 import home from "../../assets/home.png";
 import arrow from "../../assets/Vector.png";
 import P from "../ui/P";
@@ -9,8 +9,9 @@ import { imageUrl } from "../utils/baseUrls";
 
 const ArtistHeader = ({ data }) => {
   const sliderRef = useRef<Slider>(null);
+
   const settings = {
-    dots: false,
+    dots: true, // Enable dots to hint at multiple slides
     autoplay: true,
     infinite: true,
     arrows: false,
@@ -18,51 +19,6 @@ const ArtistHeader = ({ data }) => {
     slidesToShow: 1,
     slidesToScroll: 1,
   };
-
-  const handleThumbnailClick = (index: number) => {
-    if (sliderRef.current) {
-      sliderRef.current.slickGoTo(index);
-    }
-  };
-
-  const additionalImage = data?.artist?.profile?.additionalImage?.map(
-    (item) => item
-  );
-
-  const additionalVidoes = data?.artist?.profile?.additionalVideo?.map(
-    (item) => item
-  );
-
-  const images = data?.artist
-    ? [
-        {
-          src: data?.artist?.profile?.mainImage
-            ? data?.artist?.profile?.mainImage
-            : null,
-          alt: "Main Image",
-        },
-        {
-          src: data?.artist?.profile?.inProcessImage
-            ? data?.artist?.profile?.inProcessImage
-            : null,
-          alt: "In Process Image",
-        },
-        {
-          src: data?.artist?.profile?.mainVideo
-            ? data?.artist?.profile?.mainVideo
-            : null,
-          alt: "Main Video",
-        },
-        ...additionalImage?.map((item) => ({
-          src: item,
-          alt: "Additional Image",
-        })),
-        ...additionalVidoes?.map((item) => ({
-          src: item,
-          alt: "Additional Video",
-        })),
-      ].filter((image) => image.src !== null)
-    : [];
 
   const name = (val: {
     artistName: string;
@@ -76,6 +32,16 @@ const ArtistHeader = ({ data }) => {
 
     return fullName.trim();
   };
+
+  const mainImage = data?.artist?.profile?.mainImage || null;
+  const mainVideo = data?.artist?.profile?.mainVideo || null;
+
+  console.log(mainVideo)
+
+  const media = mainImage && mainVideo ? [
+    { type: "image", src: `${imageUrl}/users/${mainImage}`, alt: "Main Image" },
+    { type: "video", src: `${imageUrl}/videos/${mainVideo}`, alt: "Main Video" },
+  ] : [];
 
   return (
     <div className="lg:w-[80%] w-[90%] m-auto">
@@ -92,7 +58,7 @@ const ArtistHeader = ({ data }) => {
           </Link>
         </li>
 
-        <img src={arrow} alt="Home icon" className="w-[4px] h-[6px]" />
+        <img src={arrow} alt="Arrow icon" className="w-[4px] h-[6px]" />
 
         <li>
           <Link
@@ -108,7 +74,7 @@ const ArtistHeader = ({ data }) => {
           </Link>
         </li>
 
-        <img src={arrow} alt="Home icon" className="w-[4px] h-[6px]" />
+        <img src={arrow} alt="Arrow icon" className="w-[4px] h-[6px]" />
 
         <li>
           <P
@@ -121,78 +87,52 @@ const ArtistHeader = ({ data }) => {
       </ul>
 
       <div className="mt-4">
-        <div className="">
-          {images && images.length === 1 ? (
-            images.map((image, index) => {
-              const isVideo = image?.src && image?.src.endsWith(".mp4"); // Check if the source is a video
-              return (
-                <div key={index}>
-                  {isVideo ? (
+        {media.length === 2 ? (
+          <Slider {...settings} ref={sliderRef} className="discover_more">
+            {media.map((item, index) => (
+              <div key={index} className="relative">
+                {item.type === "video" ? (
+                  <>
                     <video
-                      src={`${imageUrl}/videos/${image?.src}`}
+                      src={item.src}
                       className="mx-auto w-full h-[40vh] sm:h-[50vh] md:h-[55vh] lg:h-[60vh] object-cover rounded-lg"
-                      controls
+                      autoPlay
+                      muted // Required for autoplay in most browsers
+                      loop // Optional: loops the video
+                      controls // Optional: remove if you don’t want controls
                     />
-                  ) : (
-                    <img
-                      src={`${imageUrl}/users/${image?.src}`}
-                      alt={`Slide ${index + 1}`}
-                      className="mx-auto w-full h-[40vh] sm:h-[50vh] md:h-[55vh] lg:h-[60vh] object-cover rounded-lg"
-                    />
-                  )}
-                </div>
-              );
-            })
-          ) : (
-            <Slider {...settings} ref={sliderRef} className="discover_more">
-              {images.map((slide, index) => {
-                const isVideo = slide?.src && slide?.src.endsWith(".mp4"); // Check if the source is a video
-                return (
-                  <div key={index}>
-                    {isVideo ? (
-                      <video
-                        src={`${imageUrl}/videos/${slide?.src}`}
-                        className="mx-auto w-full h-[40vh] sm:h-[50vh] md:h-[55vh] lg:h-[60vh] object-cover rounded-lg"
-                        controls
+                    {/* Play icon overlay using react-icons */}
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <FaPlay
+                        className="text-white opacity-70 hover:opacity-100 transition-opacity"
+                        size={48} // Adjust size as needed
                       />
-                    ) : (
-                      <img
-                        src={`${imageUrl}/users/${slide?.src}`}
-                        alt={`Slide ${index + 1}`}
-                        className="mx-auto w-full h-[40vh] sm:h-[50vh] md:h-[55vh] lg:h-[60vh] object-cover rounded-lg"
-                      />
-                    )}
-                  </div>
-                );
-              })}
-            </Slider>
-          )}
-        </div>
-
-        <div className="flex gap-5 justify-center my-5 overflow-x-auto">
-          {images.map((thumb, index) => {
-            const isVideo = thumb?.src && thumb?.src?.endsWith(".mp4");
-            if (isVideo) {
-              return (
-                <video
-                  key={index}
-                  src={`${imageUrl}/videos/${thumb.src}`}
-                  className="mb-4 w-12 h-16 md:w-16 md:h-20 lg:w-20 lg:h-24 object-cover"
-                  controls
-                />
-              );
-            }
-            return (
-              <img
-                key={index}
-                src={`${imageUrl}/users/${thumb?.src}`}
-                alt={thumb.alt}
-                className="mb-4 w-12 h-16 md:w-16 md:h-20 lg:w-20 lg:h-24 object-cover"
-                onClick={() => handleThumbnailClick(index)}
-              />
-            );
-          })}
-        </div>
+                    </div>
+                  </>
+                ) : (
+                  <img
+                    src={item.src}
+                    alt={item.alt}
+                    className="mx-auto w-full h-[40vh] sm:h-[50vh] md:h-[55vh] lg:h-[60vh] object-cover rounded-lg"
+                  />
+                )}
+              </div>
+            ))}
+          </Slider>
+        ) : mainImage ? (
+          <img
+            src={`${imageUrl}/users/${mainImage}`}
+            alt="Main Image"
+            className="mx-auto w-full h-[40vh] sm:h-[50vh] md:h-[55vh] lg:h-[60vh] object-cover rounded-lg"
+          />
+        ) : (
+          <P
+            variant={{ size: "base", theme: "dark", weight: "normal" }}
+            className="text-center"
+          >
+            No media available.
+          </P>
+        )}
       </div>
     </div>
   );
