@@ -51,19 +51,16 @@ const Purchase = () => {
     }
   }, [hoverData, allHoverData]);
 
-  console.log(allHoverData);
-
   const filteredHoverData =
     allHoverData?.disData?.find(
       (item) => item.discipline === hoveredDiscipline?.disciplineName
     ) || null;
 
-  // console.log(allHoverData);
+  console.log(hoveredDiscipline);
 
-  console.log(
-    "Filtered Hover Data:",
-    allHoverData?.collection[0]?.collectionFile
-  );
+  // console.log(selectedOption);
+
+  console.log("Filtered Hover Data:", filteredHoverData);
 
   const [sliderData, setSliderData] = useState({
     height: [0, defaultRanges.height.max],
@@ -243,247 +240,235 @@ const Purchase = () => {
             lg:w-auto shadow-lg lg:shadow-none p-4 lg:p-0 bg-gray-900 lg:bg-transparent`}
             >
               {disciplineData?.data?.map((item, index) => (
-                <div
-                  key={index}
-                  className="relative group"
-                  onMouseEnter={() => setHoveredDiscipline(item)}
-                  onMouseLeave={() => setHoveredDiscipline(null)}
-                >
-                  <span
-                    onClick={() => setSelectedOption(item.disciplineName)}
-                    className="text-white font-semibold px-3 py-4  cursor-pointer transition-all duration-200 ease-in-out group-hover:text-blue-400  rounded-md"
+                <div key={index}>
+                  <div
+                    className="relative group"
+                    onMouseEnter={() => setHoveredDiscipline(item)}
+                    onMouseLeave={() => setHoveredDiscipline(null)}
                   >
-                    {item.disciplineName}
-                  </span>
-
-                  <div>
-                    {hoverLoding ? (
-                      <p className="text-gray-400 text-sm animate-pulse"></p>
-                    ) : (
-                      allHoverData?.disData?.map((item, index) => (
-                        <div key={index}>
-                          {/* Centered Hover Div */}
-                          {hoveredDiscipline?.disciplineName ===
-                            item.discipline && (
-                            <div
-                              className="fixed top-[140px] w-[95vw] bg-white text-gray-800 rounded-xl shadow-2xl z-30 p-6 flex items-start justify-between gap-6 transform transition-all duration-300 ease-in-out scale-95 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
-                              style={{
-                                left: "50%",
-                                transform: "translateX(-50%)",
-                              }}
-                              onMouseEnter={(e) =>
-                                (e.currentTarget.style.transform =
-                                  "translateX(-50%)")
-                              }
-                              onMouseLeave={(e) =>
-                                (e.currentTarget.style.transform =
-                                  "translateX(-50%)")
-                              }
-                            >
-                              <div className="flex flex-wrap items-start justify-center gap-10 flex-grow">
-                                {/* Style Section */}
-                                <div className="min-w-[120px]">
-                                  <h3 className="text-lg font-bold text-gray-900 mb-2">
-                                    Style
-                                  </h3>
-                                  <ul className="space-y-2">
-                                    {filteredHoverData?.style?.length > 0 ? (
-                                      filteredHoverData?.style.map(
-                                        (styleItem, index) => (
-                                          <li
-                                            onClick={() => {
-                                              setSelectedOption(
-                                                hoveredDiscipline?.disciplineName
-                                              );
-                                              setSelectedStyle(
-                                                styleItem?.styleName
-                                              );
-                                              setSelectedTheme("");
-                                              setHoveredDiscipline(null);
-                                            }}
-                                            key={index}
-                                            className="text-sm text-black hover:text-blue-500 transition-colors duration-150 cursor-pointer"
-                                          >
-                                            {styleItem.styleName}
-                                          </li>
-                                        )
-                                      )
-                                    ) : (
-                                      <li className="text-sm text-gray-500 italic">
-                                        N/A
-                                      </li>
-                                    )}
-                                  </ul>
-                                </div>
-
-                                {/* Theme Section */}
-                                <div className="min-w-[120px]">
-                                  <h3 className="text-lg font-bold text-gray-900 mb-2">
-                                    Theme
-                                  </h3>
-                                  <ul className="space-y-2">
-                                    {filteredHoverData?.theme?.length > 0 ? (
-                                      filteredHoverData?.theme.map(
-                                        (themeItem, index) => (
-                                          <li
-                                            key={index}
-                                            className="text-sm text-black hover:text-blue-500 transition-colors duration-150 cursor-pointer"
-                                            onClick={() => {
-                                              setSelectedOption(
-                                                hoveredDiscipline?.disciplineName
-                                              );
-                                              setSelectedTheme(
-                                                themeItem?.themeName
-                                              );
-                                              setSelectedStyle("");
-                                              setHoveredDiscipline(null);
-                                            }}
-                                          >
-                                            {themeItem.themeName}
-                                          </li>
-                                        )
-                                      )
-                                    ) : (
-                                      <li className="text-sm text-gray-500 italic">
-                                        N/A
-                                      </li>
-                                    )}
-                                  </ul>
-                                </div>
-
-                                {/* Commercial Section */}
-                                <div className="min-w-[120px]">
-                                  <h3 className="text-lg font-bold text-gray-900 mb-2">
-                                    Commercial
-                                  </h3>
-                                  <ul className="space-y-2">
-                                    <li className="text-sm text-black hover:text-blue-500 transition-colors duration-150 cursor-pointer">
-                                      Exclusive
-                                    </li>
-                                    <li className="text-sm text-black hover:text-blue-500 transition-colors duration-150 cursor-pointer">
-                                      New
-                                    </li>
-                                    <li className="text-sm text-black hover:text-blue-500 transition-colors duration-150 cursor-pointer">
-                                      Coming Soon
-                                    </li>
-                                    <li className="text-sm text-black hover:text-blue-500 transition-colors duration-150 cursor-pointer">
-                                      Big Discount
-                                    </li>
-                                  </ul>
-                                </div>
-
-                                {/* Artists Section */}
-                                <div className="min-w-[120px]">
-                                  <h3 className="text-lg font-bold text-gray-900 mb-2">
-                                    Artists
-                                  </h3>
-                                  <ul className="space-y-2">
-                                    {allHoverData?.artists?.length > 0 ? (
-                                      allHoverData?.artists?.map(
-                                        (artist, index) => (
-                                          <li
-                                            key={index}
-                                            className="text-sm text-gray-700 hover:text-blue-500 transition-colors duration-150 cursor-pointer"
-                                          >
-                                            {artist.artistName}
-                                          </li>
-                                        )
-                                      )
-                                    ) : (
-                                      <li className="text-sm text-gray-500 italic">
-                                        N/A
-                                      </li>
-                                    )}
-                                  </ul>
-                                </div>
-
-                                {/* Promoted Artworks Section */}
-                                <div className="min-w-[200px]">
-                                  <h3 className="text-lg font-bold text-gray-900 mb-2">
-                                    Highlight
-                                  </h3>
-                                  <ul className="flex gap-4 flex-shrink-0">
-                                    {allHoverData?.collection ? (
-                                      <>
-                                        {/* Display one collection */}
-                                        {allHoverData?.collection ? (
-                                          <li
-                                            className="relative rounded-lg overflow-hidden w-[15vw] min-w-[120px] shadow-md hover:shadow-lg transition-all duration-200 group"
-                                            style={{
-                                              backgroundImage: `url(${
-                                                allHoverData?.collection
-                                                  ? `${imageUrl}/users/${allHoverData?.collection[0]?.collectionFile}`
-                                                  : "https://via.placeholder.com/80"
-                                              })`,
-                                              backgroundSize: "cover",
-                                              backgroundPosition: "center",
-                                              height: "40vh",
-                                            }}
-                                          >
-                                            <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-30 transition-all duration-200"></div>
-                                            <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-gray-900 to-transparent">
-                                              <div className="flex flex-col gap-2 items-center">
-                                                <p className="text-md text-white text-center truncate font-semibold">
-                                                  {allHoverData?.collection[0]
-                                                    .collectionName ||
-                                                    "Untitled"}
-                                                </p>
-                                                <button className="mt-2 w-[20vh] place-content-center bg-blue-500 text-white text-md font-semibold py-3 px-3 rounded-2xl hover:bg-blue-600 transition-colors duration-150 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-300">
-                                                  Discover
-                                                </button>
-                                              </div>
-                                            </div>
-                                          </li>
-                                        ) : (
-                                          <li className="text-sm text-gray-500 italic">
-                                            No collection available
-                                          </li>
-                                        )}
-
-                                        {/* Display one artist */}
-                                        {allHoverData?.artists?.length > 0 ? (
-                                          <li
-                                            className="relative rounded-lg overflow-hidden w-[15vw] min-w-[120px] shadow-md hover:shadow-lg transition-all duration-200 group"
-                                            style={{
-                                              backgroundImage: `url(${
-                                                allHoverData?.artists[0].profile
-                                                  ?.mainImage
-                                                  ? `${imageUrl}/users/${allHoverData?.artists[0].profile.mainImage}`
-                                                  : "https://via.placeholder.com/80"
-                                              })`,
-                                              backgroundSize: "cover",
-                                              backgroundPosition: "center",
-                                              height: "40vh",
-                                            }}
-                                          >
-                                            <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-30 transition-all duration-200"></div>
-                                            <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-gray-900 to-transparent">
-                                              <p className="text-md text-white text-center truncate font-medium">
-                                                {allHoverData?.artists[0]
-                                                  .artistName || "Untitled"}
-                                              </p>
-                                            </div>
-                                          </li>
-                                        ) : (
-                                          <li className="text-sm text-gray-500 italic">
-                                            No artist available
-                                          </li>
-                                        )}
-                                      </>
-                                    ) : (
-                                      <li className="text-sm text-gray-500 italic">
-                                        No artworks available
-                                      </li>
-                                    )}
-                                  </ul>
-                                </div>
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      ))
-                    )}
+                    <span
+                      onClick={() => setSelectedOption(item.disciplineName)}
+                      className="text-white font-semibold px-3 py-4  cursor-pointer transition-all duration-200 ease-in-out group-hover:text-blue-400 rounded-md"
+                    >
+                      {item.disciplineName}
+                    </span>
                   </div>
+
+                  {/* Render hover content directly tied to the current item */}
+                  {hoveredDiscipline?.disciplineName ===
+                    item.disciplineName && (
+                    <div>
+                      {hoverLoding ? (
+                        <p className="text-gray-400 text-sm animate-pulse"></p>
+                      ) : (
+                        <div
+                          className="fixed top-[135px] w-[100vw] bg-[#6C7680]  text-gray-800 rounded-xl shadow-2xl z-30 p-6 flex items-start justify-between gap-6 transform transition-all duration-300 ease-in-out scale-95 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
+                          style={{
+                            left: "50%",
+                            transform: "translateX(-50%)",
+                          }}
+                          onMouseEnter={() => setHoveredDiscipline(item)}
+                          onMouseLeave={() => setHoveredDiscipline(null)}
+                        >
+                          <div className="flex flex-wrap items-start justify-center gap-10 flex-grow">
+                            {/* Style Section */}
+                            <div className="min-w-[120px]">
+                              <h3 className="text-lg font-bold text-gray-900 mb-2">
+                                Style
+                              </h3>
+                              <ul className="space-y-2">
+                                {filteredHoverData?.style?.length > 0 ? (
+                                  filteredHoverData?.style.map(
+                                    (styleItem, styleIndex) => (
+                                      <li
+                                        onClick={() => {
+                                          setSelectedOption(
+                                            hoveredDiscipline?.disciplineName
+                                          );
+                                          setSelectedStyle(
+                                            styleItem?.styleName
+                                          );
+                                          setSelectedTheme("");
+                                          setHoveredDiscipline(null);
+                                        }}
+                                        key={styleIndex}
+                                        className="text-sm text-black hover:text-blue-500 transition-colors duration-150 cursor-pointer"
+                                      >
+                                        {styleItem.styleName}
+                                      </li>
+                                    )
+                                  )
+                                ) : (
+                                  <li className="text-sm text-gray-500 italic">
+                                    N/A
+                                  </li>
+                                )}
+                              </ul>
+                            </div>
+
+                            {/* Theme Section */}
+                            <div className="min-w-[120px]">
+                              <h3 className="text-lg font-bold text-gray-900 mb-2">
+                                Theme
+                              </h3>
+                              <ul className="space-y-2">
+                                {filteredHoverData?.theme?.length > 0 ? (
+                                  filteredHoverData?.theme.map(
+                                    (themeItem, themeIndex) => (
+                                      <li
+                                        key={themeIndex}
+                                        className="text-sm text-black hover:text-blue-500 transition-colors duration-150 cursor-pointer"
+                                        onClick={() => {
+                                          setSelectedOption(
+                                            hoveredDiscipline?.disciplineName
+                                          );
+                                          setSelectedTheme(
+                                            themeItem?.themeName
+                                          );
+                                          setSelectedStyle("");
+                                          setHoveredDiscipline(null);
+                                        }}
+                                      >
+                                        {themeItem.themeName}
+                                      </li>
+                                    )
+                                  )
+                                ) : (
+                                  <li className="text-sm text-gray-500 italic">
+                                    N/A
+                                  </li>
+                                )}
+                              </ul>
+                            </div>
+
+                            {/* Commercial Section */}
+                            <div className="min-w-[120px]">
+                              <h3 className="text-lg font-bold text-gray-900 mb-2">
+                                Commercial
+                              </h3>
+                              <ul className="space-y-2">
+                                <li className="text-sm text-black hover:text-blue-500 transition-colors duration-150 cursor-pointer">
+                                  Exclusive
+                                </li>
+                                <li className="text-sm text-black hover:text-blue-500 transition-colors duration-150 cursor-pointer">
+                                  New
+                                </li>
+                                <li className="text-sm text-black hover:text-blue-500 transition-colors duration-150 cursor-pointer">
+                                  Coming Soon
+                                </li>
+                                <li className="text-sm text-black hover:text-blue-500 transition-colors duration-150 cursor-pointer">
+                                  Big Discount
+                                </li>
+                              </ul>
+                            </div>
+
+                            {/* Artists Section */}
+                            <div className="min-w-[120px]">
+                              <h3 className="text-lg font-bold text-gray-900 mb-2">
+                                Artists
+                              </h3>
+                              <ul className="space-y-2">
+                                {allHoverData?.artists?.length > 0 ? (
+                                  allHoverData?.artists?.map(
+                                    (artist, artistIndex) => (
+                                      <li
+                                        key={artistIndex}
+                                        className="text-sm text-gray-700 hover:text-blue-500 transition-colors duration-150 cursor-pointer"
+                                      >
+                                        {artist.artistName}
+                                      </li>
+                                    )
+                                  )
+                                ) : (
+                                  <li className="text-sm text-gray-500 italic">
+                                    N/A
+                                  </li>
+                                )}
+                              </ul>
+                            </div>
+
+                            {/* Promoted Artworks Section */}
+                            <div className="min-w-[200px]">
+                              <h3 className="text-lg font-bold text-gray-900 mb-2">
+                                Highlight
+                              </h3>
+                              <ul className="flex gap-4 flex-shrink-0">
+                                {allHoverData?.collection ? (
+                                  <>
+                                    {allHoverData?.collection ? (
+                                      <li
+                                        className="relative rounded-lg overflow-hidden w-[15vw] min-w-[120px] shadow-md hover:shadow-lg transition-all duration-200 group"
+                                        style={{
+                                          backgroundImage: `url(${
+                                            allHoverData?.collection
+                                              ? `${imageUrl}/users/${allHoverData?.collection[0]?.collectionFile}`
+                                              : "https://via.placeholder.com/80"
+                                          })`,
+                                          backgroundSize: "cover",
+                                          backgroundPosition: "center",
+                                          height: "40vh",
+                                        }}
+                                      >
+                                        <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-30 transition-all duration-200"></div>
+                                        <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-gray-900 to-transparent">
+                                          <div className="flex flex-col gap-2 items-center">
+                                            <p className="text-md text-white text-center truncate font-semibold">
+                                              {allHoverData?.collection[0]
+                                                .collectionName || "Untitled"}
+                                            </p>
+                                            <button className="mt-2 w-[20vh] place-content-center bg-blue-500 text-white text-md font-semibold py-3 px-3 rounded-2xl hover:bg-blue-600 transition-colors duration-150 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-300">
+                                              Discover
+                                            </button>
+                                          </div>
+                                        </div>
+                                      </li>
+                                    ) : (
+                                      <li className="text-sm text-gray-500 italic">
+                                        No collection available
+                                      </li>
+                                    )}
+
+                                    {allHoverData?.artists?.length > 0 ? (
+                                      <li
+                                        className="relative rounded-lg overflow-hidden w-[15vw] min-w-[120px] shadow-md hover:shadow-lg transition-all duration-200 group"
+                                        style={{
+                                          backgroundImage: `url(${
+                                            allHoverData?.artists[0].profile
+                                              ?.mainImage
+                                              ? `${imageUrl}/users/${allHoverData?.artists[0].profile.mainImage}`
+                                              : "https://via.placeholder.com/80"
+                                          })`,
+                                          backgroundSize: "cover",
+                                          backgroundPosition: "center",
+                                          height: "40vh",
+                                        }}
+                                      >
+                                        <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-30 transition-all duration-200"></div>
+                                        <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-gray-900 to-transparent">
+                                          <p className="text-md text-white text-center truncate font-medium">
+                                            {allHoverData?.artists[0]
+                                              .artistName || "Untitled"}
+                                          </p>
+                                        </div>
+                                      </li>
+                                    ) : (
+                                      <li className="text-sm text-gray-500 italic">
+                                        No artist available
+                                      </li>
+                                    )}
+                                  </>
+                                ) : (
+                                  <li className="text-sm text-gray-500 italic">
+                                    No artworks available
+                                  </li>
+                                )}
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

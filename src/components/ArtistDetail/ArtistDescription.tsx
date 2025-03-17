@@ -12,38 +12,25 @@ import { useState } from "react";
 import { imageUrl } from "../utils/baseUrls";
 
 const credential = [
-  {
-    icon: star,
-    title: "Top Seller",
-  },
-  {
-    icon: like,
-    title: "Most Liked",
-  },
-  {
-    icon: new_icon,
-    title: "New Added",
-  },
-  {
-    icon: award,
-    title: "International Awards",
-  },
+  { icon: star, title: "Top Seller" },
+  { icon: like, title: "Most Liked" },
+  { icon: new_icon, title: "New Added" },
+  { icon: award, title: "International Awards" },
 ];
 
 const ArtistDescription = ({ data }) => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("highlight");
-  const redirectToCircle = () => {
-    navigate("/circleblog");
-  };
+
+  const redirectToCircle = () => navigate("/circleblog");
 
   const aboutText = data?.artist?.aboutArtist?.about?.replace(
-    /<\/?(h2|p|div|li|strong|blockquote)>|&nbsp;|«|»/g,
+    /<\/?(h2|p|div|li|strong|blockquote)>| |«|»/g,
     ""
   );
 
   const highlightText = data?.artist?.highlights?.addHighlights?.replace(
-    /<\/?(h2|p|div|li|strong|blockquote)>|&nbsp;|«|»/g,
+    /<\/?(h2|p|div|li|strong|blockquote)>| |«|»/g,
     ""
   );
 
@@ -77,37 +64,31 @@ const ArtistDescription = ({ data }) => {
                 ? "border-b-2 border-[#EE1D52] bg-gray-100"
                 : "hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
             }`}
-            id="highlight-tab"
             onClick={() => setActiveTab("highlight")}
           >
             Highlight
           </span>
-
           <span
             className={`cursor-pointer px-3 p-2 rounded-t-lg ${
               activeTab === "about"
                 ? "border-b-2 border-[#EE1D52] bg-gray-100"
                 : "hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
             }`}
-            id="about-tab"
             onClick={() => setActiveTab("about")}
           >
             About
           </span>
-
           <span
             className={`cursor-pointer px-3 p-2 rounded-t-lg ${
               activeTab === "curriculum"
                 ? "border-b-2 border-[#EE1D52] bg-gray-100"
                 : "hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
             }`}
-            id="curriculum-tab"
             onClick={() => setActiveTab("curriculum")}
           >
             Curriculum vitae
           </span>
         </div>
-
         <div className="flex gap-2">
           <span
             className="bg-[#102031] text-white py-1 px-2 cursor-pointer rounded-full font-medium"
@@ -120,6 +101,7 @@ const ArtistDescription = ({ data }) => {
           </span>
         </div>
       </div>
+
       <div id="default-tab-content">
         {activeTab === "highlight" && (
           <div className="my-8">
@@ -156,49 +138,59 @@ const ArtistDescription = ({ data }) => {
         )}
 
         {activeTab === "curriculum" && (
-          <div
-            className=" "
-            id="curriculum"
-            role="tabpanel"
-            aria-labelledby="curriculum-tab"
-          >
-            <div className="my-8">
-              <Header
-                variant={{ size: "lg", theme: "dark", weight: "semiBold" }}
-                className="pb-4"
-              >
-                Curriculum vitae
-              </Header>
-              <P
-                variant={{ size: "base", theme: "dark", weight: "normal" }}
-                className="leading-7 mb-7"
-              >
-                Contrary to popular belief, Lorem Ipsum is not simply random
-                text. It has roots in a piece of classNameical Latin literature
-                from 45 BC, making it over 2000 years old. Richard McClintock, a
-                Latin professor at Hampden-Sydney College in Virginia, looked up
-                one of the more obscure Latin words, consectetur, from a Lorem
-                Ipsum passage, and going through the cites of the word in
-                classNameical literature, discovered the undoubtable source.
-                Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de
-                Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by
-                Cicero, written in 45 BC. This book is a treatise on the theory
-                of ethics, very popular during the Renaissance.{" "}
-              </P>
-
-              <P
-                variant={{ size: "base", theme: "dark", weight: "normal" }}
-                className="border-b pb-7"
-              >
-                Many desktop publishing packages and web page editors now use
-                Lorem Ipsum as their default model text, and a search for 'lorem
-                ipsum' will uncover many web sites still in their infancy.
-              </P>
+          <div className="my-8">
+            <Header
+              variant={{ size: "lg", theme: "dark", weight: "semiBold" }}
+              className="pb-4"
+            >
+              Curriculum Vitae
+            </Header>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              {data?.artist?.highlights?.cv?.map((item, index) => (
+                <div
+                  key={index}
+                  className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+                >
+                  <div className="flex justify-between items-center mb-2">
+                    <P
+                      variant={{
+                        size: "base",
+                        theme: "dark",
+                        weight: "semiBold",
+                      }}
+                      className="text-gray-500 dark:text-gray-400"
+                    >
+                      {item.Description}
+                    </P>
+                    <span className="text-sm text-gray-500 dark:text-gray-400">
+                      {item.year}
+                    </span>
+                  </div>
+                  <P
+                    variant={{ size: "sm", theme: "dark", weight: "normal" }}
+                    className="text-gray-700 dark:text-gray-300"
+                  >
+                    <strong>Location:</strong> {item.Location}
+                  </P>
+                  <P
+                    variant={{ size: "sm", theme: "dark", weight: "normal" }}
+                    className="text-gray-700 dark:text-gray-300"
+                  >
+                    <strong>Type:</strong> {item.Type}
+                  </P>
+                  <P
+                    variant={{ size: "sm", theme: "dark", weight: "normal" }}
+                    className="text-gray-700 dark:text-gray-300"
+                  >
+                    <strong>Scope:</strong> {item.Scope}
+                  </P>
+                </div>
+              ))}
             </div>
           </div>
         )}
 
-        {data?.artist?.insignia.length > 0 ? (
+        {data?.artist?.insignia.length > 0 && (
           <div>
             <P
               variant={{ size: "base", theme: "dark", weight: "semiBold" }}
@@ -211,8 +203,8 @@ const ArtistDescription = ({ data }) => {
                 <div
                   key={index}
                   className={`flex flex-col gap-3 w-56 xl:px-6 px-4 justify-center items-center ${
-                    index !== credential.length - 1
-                      ? "sm:border-r-2 border-gray-300 border-r-none"
+                    index !== data.artist.insignia.length - 1
+                      ? "sm:border-r-2 border-gray-300"
                       : ""
                   }`}
                 >
@@ -231,7 +223,7 @@ const ArtistDescription = ({ data }) => {
               ))}
             </div>
           </div>
-        ) : null}
+        )}
       </div>
     </div>
   );

@@ -1,5 +1,4 @@
 import "../../App.css";
-
 import getSymbolFromCurrency from "currency-symbol-map";
 import { useEffect, useState } from "react";
 import { FaEye } from "react-icons/fa";
@@ -14,11 +13,9 @@ const CardSection = ({ data }) => {
 
   const name = (val) => {
     let fullName = val?.artistName || "";
-
     if (val?.nickName) fullName += " " + `"${val?.nickName}"`;
     if (val?.artistSurname1) fullName += " " + val?.artistSurname1;
     if (val?.artistSurname2) fullName += " " + val?.artistSurname2;
-
     return fullName.trim();
   };
 
@@ -48,22 +45,20 @@ const CardSection = ({ data }) => {
   useEffect(() => {
     const storedData = JSON.parse(localStorage.getItem("viewedImages") || "{}");
     const currentTime = Date.now();
-    const filteredData: Record<string, number> = {};
-
+    const filteredData = {};
     Object.keys(storedData).forEach((key) => {
       if (currentTime - storedData[key] < TEN_DAYS_MS) {
         filteredData[key] = storedData[key];
       }
     });
-
     localStorage.setItem("viewedImages", JSON.stringify(filteredData));
     setViewedImages(filteredData);
   }, []);
 
   return (
-    <div className="grid max-[440px]:grid-cols-1 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 min-[1450px]:grid-cols-5 gap-x-5 gap-y-10 mx-auto">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-6 mx-auto px-4 max-w-[1440px]">
       {data && data?.length > 0 ? (
-        data.map((item, index: string) => {
+        data.map((item, index) => {
           const isOffensive = item?.additionalInfo?.offensive === "Yes";
           const isViewed = viewedImages[item?._id];
 
@@ -75,32 +70,27 @@ const CardSection = ({ data }) => {
                   handleRedirectToDescription(item?._id);
                 }
               }}
-              className="flex flex-col outline-none cursor-pointer relative group"
+              className="flex flex-col outline-none cursor-pointer px-5 relative group max-w-[600px] mx-auto bg-[#DBEAFE]  shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden"
             >
-              <div className="relative overflow-hidden w-full">
+              <div className="relative w-[300px] h-[280px] overflow-hidden">
                 <img
                   src={`${lowImageUrl}/${item?.media}`}
                   alt="Artwork"
-                  className={`w-full h-[250px] md:h-[300px] lg:h-[350px] min-[1450px]:h-[400px] object-cover shadow-lg transition-all duration-300 
-                    ${
-                      isOffensive && !isViewed
-                        ? "blur-lg brightness-75 group-hover:blur-md group-hover:brightness-50"
-                        : ""
-                    }
-                  `}
+                  className={`w-full h-full object-contain transition-all duration-300 
+                    ${isOffensive && !isViewed ? "blur-lg brightness-75 group-hover:blur-md" : "hover:scale-105"}`}
                 />
 
                 {isOffensive && !isViewed ? (
-                  <div className="absolute inset-0 flex flex-col justify-center items-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="absolute inset-0 flex flex-col justify-center items-center gap-4 bg-black/30 opacity-0 group-hover:opacity-100 transition-all duration-300">
                     <button
-                      className="bg-blue-500 flex items-center gap-3 font-semibold text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                      className="bg-gradient-to-r from-blue-500 to-blue-600 flex items-center gap-3 font-semibold text-white px-5 py-2 rounded-full hover:from-blue-600 hover:to-blue-700 transform hover:scale-105 transition-all duration-200"
                       onClick={() => handleViewClick(item?._id)}
                     >
                       <FaEye /> View Image
                     </button>
                     <button
                       onClick={() => handleRedirectToDescription(item?._id)}
-                      className="bg-red-500 flex items-center gap-3 font-semibold text-white px-4 py-2 rounded-md hover:bg-red-600"
+                      className="bg-gradient-to-r from-red-500 to-red-600 flex items-center gap-3 font-semibold text-white px-5 py-2 rounded-full hover:from-red-600 hover:to-red-700 transform hover:scale-105 transition-all duration-200"
                     >
                       <MdOutlineOpenInNew /> View Details
                     </button>
@@ -113,25 +103,27 @@ const CardSection = ({ data }) => {
                       e.stopPropagation();
                       handleHideClick(item?._id);
                     }}
-                    className="absolute bg-white px-2 py-1 rounded top-2 right-2 flex items-center gap-2"
+                    className="absolute bg-white/90 px-3 py-1 rounded-lg top-3 right-3 flex items-center gap-2 hover:bg-white transition-colors duration-200"
                   >
-                    <p className="text-[12px] ">Offensive View</p>
-                    <FaToggleOn size={20} className="text-green-500" />
+                    <p className="text-xs font-medium text-gray-700">Hide</p>
+                    <FaToggleOn size={18} className="text-green-500" />
                   </div>
                 ) : null}
               </div>
 
               {/* Artwork Details */}
-              <div className="mt-4">
-                <p className="text-sm text-gray-500">{item?.discipline}</p>
-                <div className="flex justify-between items-center mt-2">
-                  <p className="text-md text-gray-800 font-bold line-clamp-2">
+              <div className="p-4 flex flex-col ">
+                <p className="text-xs text-gray-600 font-medium uppercase tracking-wide">
+                  {item?.discipline}
+                </p>
+                <div className="flex justify-between items-start mt-2">
+                  <p className="text-lg text-gray-900 font-semibold line-clamp-2 leading-tight">
                     {item?.artworkName}
                   </p>
-                  <p className="text-sm text-gray-500">{item?.size}</p>
+                  <p className="text-xs text-gray-500 mt-1">{item?.size}</p>
                 </div>
-                <p className="text-sm text-gray-500 mt-1">{name(item)}</p>
-                <p className="mt-1 text-sm text-gray-600">
+                <p className="text-sm text-gray-600 mt-1 font-medium">{name(item)}</p>
+                <p className="mt-2 text-md text-gray-800 font-bold">
                   {getSymbolFromCurrency(item?.pricing?.currency.slice(0, 3))}{" "}
                   {item?.pricing?.basePrice}
                 </p>
@@ -140,7 +132,7 @@ const CardSection = ({ data }) => {
           );
         })
       ) : (
-        <div className="h-[5rem] font-semibold rounded md:w-[90vw] w-[92vw] border-2 border-gray-300 flex items-center justify-center">
+        <div className="h-[5rem] font-semibold rounded md:w-[90vw] w-[92vw] border-2 border-gray-300 flex items-center justify-center text-gray-600 bg-gray-50">
           No Artworks Available
         </div>
       )}
