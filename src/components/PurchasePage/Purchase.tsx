@@ -25,6 +25,7 @@ import CardSection from "./CardSection";
 import { useGetPurchaseArtwork } from "./http/useGetPurchaseArtwork";
 import { useGetHoveredData } from "./http/useGetHoveredData";
 import { imageUrl } from "../utils/baseUrls";
+import { m } from "framer-motion";
 
 const Purchase = () => {
   const [showAllDiscipline, setShowAllDiscipline] = useState(false);
@@ -83,6 +84,8 @@ const Purchase = () => {
     purchase: "",
     exclusive: "",
     purchaseOption: "",
+    newIn: "",
+    bigDiscount: "",
   });
 
   const [tag, setTag] = useState("");
@@ -138,7 +141,9 @@ const Purchase = () => {
     options.cursor,
     options.direction,
     options.limit,
-    moreOptions.exclusive
+    moreOptions.exclusive,
+    moreOptions.newIn,
+    moreOptions.bigDiscount
   );
 
   const { data: techData } = useGetTechnic();
@@ -152,7 +157,7 @@ const Purchase = () => {
   });
 
   useEffect(() => {
-    if (selectedOption?.length) {
+    if (selectedOption) {
       const matchesAllSelectedOptions = (item) => {
         const disciplineNames =
           item.discipline?.map((newItem) => newItem.disciplineName) || [];
@@ -182,12 +187,26 @@ const Purchase = () => {
   const filteredDisciplineData =
     disciplineData?.data?.filter((item) => item?.isMain) || [];
 
+  const matchesSelectedDisciplines = (item) => {
+    if (!selectedOption.length) return true;
+    const disciplineNames = item.discipline?.map((d) => d.disciplineName) || [];
+    return selectedOption.every((option) => disciplineNames.includes(option));
+  };
+
   const filteredTechnicData =
-    technicData?.data?.filter((item) => item?.isMain) || [];
+    techData?.data
+      ?.filter((item) => item?.isMain && matchesSelectedDisciplines(item))
+      .map((item) => item.technicName) || [];
+
   const filteredThemeData =
-    themeData?.data?.filter((item) => item?.isMain) || [];
+    theData?.data
+      ?.filter((item) => item?.isMain && matchesSelectedDisciplines(item))
+      .map((item) => item.themeName) || [];
+
   const filteredStyleData =
-    styleData?.data?.filter((item) => item?.isMain) || [];
+    stData?.data
+      ?.filter((item) => item?.isMain && matchesSelectedDisciplines(item))
+      .map((item) => item.styleName) || [];
 
   const handleClear = async () => {
     setSelectedOption([]);
@@ -203,6 +222,9 @@ const Purchase = () => {
       discount: "",
       purchase: "",
       purchaseOption: "",
+      exclusive: "",
+      newIn: "",
+      bigDiscount: "",
     });
     setSliderData({
       depth: [0, defaultRanges.depth.max],
@@ -261,6 +283,20 @@ const Purchase = () => {
     );
   };
 
+  const commercialOptions = [
+    { key: "exclusive", label: "Exclusive", moreOptions: "Yes" },
+    { key: "newIn", label: "New In", moreOptions: "No" },
+    { key: "comingSoon", label: "Coming Soon", moreOptions: "Yes" },
+    { key: "bigDiscount", label: "Big Discount", moreOptions: "No" },
+  ];
+
+  const handleOptions = [
+    { key: "selectedOption", label: "Discipline", handler: handleOptionSelect },
+    { key: "selectedTechnic", label: "Technic", handler: handleTechnicSelect },
+    { key: "selectedTheme", label: "Theme", handler: handleThemeSelect },
+    { key: "selectedStyle", label: "Style", handler: handleStyleSelect },
+  ];
+
   const renderDisciplineOptions = () => {
     const dataToShow = showAllDiscipline
       ? disciplineData?.data
@@ -297,26 +333,27 @@ const Purchase = () => {
   };
 
   const renderTechnicOptions = () => {
-    const dataToShow = showAllTechnic ? technicData?.data : filteredTechnicData;
+    const dataToShow = showAllTechnic ? technicData : filteredTechnicData;
+
     return (
       <div
         id="dropdownDivider"
         className="z-10 border flex flex-col p-2 gap-2 bg-[#102031] text-white rounded-lg dark:bg-gray-700 dark:divide-gray-600"
       >
-        {dataToShow?.map((item, index: number) => (
+        {dataToShow?.map((item: string, index: number) => (
           <span
             className={`cursor-pointer ${
-              selectedTechnic.includes(item.technicName)
+              selectedTechnic.includes(item)
                 ? "bg-gray-300 text-black px-1 rounded"
                 : ""
             }`}
-            onClick={() => handleTechnicSelect(item.technicName)}
+            onClick={() => handleTechnicSelect(item)}
             key={index}
           >
-            {item.technicName}
+            {item}
           </span>
         ))}
-        {techData?.data?.length > filteredTechnicData.length && (
+        {technicData?.length > filteredTechnicData.length && (
           <span
             className="cursor-pointer text-sm text-blue-500"
             onClick={() => setShowAllTechnic(!showAllTechnic)}
@@ -329,26 +366,26 @@ const Purchase = () => {
   };
 
   const renderThemeOptions = () => {
-    const dataToShow = showAllTheme ? themeData?.data : filteredThemeData;
+    const dataToShow = showAllTheme ? themeData : filteredThemeData;
     return (
       <div
         id="dropdownDivider"
         className="z-10 border flex flex-col p-2 gap-2 bg-[#102031] text-white rounded-lg dark:bg-gray-700 dark:divide-gray-600"
       >
-        {dataToShow?.map((item, index: number) => (
+        {dataToShow?.map((item: string, index: number) => (
           <span
             className={`cursor-pointer ${
-              selectedTheme.includes(item.themeName)
+              selectedTheme.includes(item)
                 ? "bg-gray-300 text-black px-1 rounded"
                 : ""
             }`}
-            onClick={() => handleThemeSelect(item.themeName)}
+            onClick={() => handleThemeSelect(item)}
             key={index}
           >
-            {item.themeName}
+            {item}
           </span>
         ))}
-        {theData?.data?.length > filteredThemeData.length && (
+        {themeData?.length > filteredThemeData.length && (
           <span
             className="cursor-pointer text-sm text-blue-500"
             onClick={() => setShowAllTheme(!showAllTheme)}
@@ -361,26 +398,26 @@ const Purchase = () => {
   };
 
   const renderStyleOptions = () => {
-    const dataToShow = showAllStyle ? styleData?.data : filteredStyleData;
+    const dataToShow = showAllStyle ? styleData : filteredStyleData;
     return (
       <div
         id="dropdownDivider"
         className="z-10 border flex flex-col p-2 gap-2 bg-[#102031] text-white rounded-lg dark:bg-gray-700 dark:divide-gray-600"
       >
-        {dataToShow?.map((item, index: number) => (
+        {dataToShow?.map((item: string, index: number) => (
           <span
             className={`cursor-pointer ${
-              selectedStyle.includes(item.styleName)
+              selectedStyle.includes(item)
                 ? "bg-gray-300 text-black px-1 rounded"
                 : ""
             }`}
-            onClick={() => handleStyleSelect(item.styleName)}
+            onClick={() => handleStyleSelect(item)}
             key={index}
           >
-            {item.styleName}
+            {item}
           </span>
         ))}
-        {stData?.data?.length > filteredStyleData.length && (
+        {styleData?.length > filteredStyleData.length && (
           <span
             className="cursor-pointer text-sm text-blue-500"
             onClick={() => setShowAllStyle(!showAllStyle)}
@@ -412,7 +449,7 @@ const Purchase = () => {
            space-y-2 lg:space-y-0 lg:space-x-4 absolute lg:relative z-10 md:w-[40%] sm:w-[50%]
             lg:w-auto shadow-lg lg:shadow-none p-4 lg:p-0 bg-gray-900 lg:bg-transparent`}
             >
-              {disciplineData?.data?.map((item, index) => (
+              {disciplineData?.data?.map((item, index: number) => (
                 <div key={index}>
                   <div
                     className="relative group"
@@ -421,7 +458,7 @@ const Purchase = () => {
                   >
                     <span
                       onClick={() => setSelectedOption(item.disciplineName)}
-                      className="text-white font-semibold px-3 py-4  cursor-pointer transition-all duration-200 ease-in-out group-hover:text-blue-400 rounded-md"
+                      className="text-white font-semibold px-3 py-4  cursor-pointer transition-all duration-200 ease-in-out group-hover:text-blue-700 rounded-md"
                     >
                       {item.disciplineName}
                     </span>
@@ -462,7 +499,7 @@ const Purchase = () => {
                                           setHoveredDiscipline(null);
                                         }}
                                         key={styleIndex}
-                                        className="text-sm text-black hover:text-blue-500 transition-colors duration-150 cursor-pointer"
+                                        className="text-sm text-black hover:text-blue-700 transition-colors duration-150 cursor-pointer"
                                       >
                                         {styleItem.styleName}
                                       </li>
@@ -486,7 +523,7 @@ const Purchase = () => {
                                     (themeItem, themeIndex: number) => (
                                       <li
                                         key={themeIndex}
-                                        className="text-sm text-black hover:text-blue-500 transition-colors duration-150 cursor-pointer"
+                                        className="text-sm text-black hover:text-blue-700 transition-colors duration-150 cursor-pointer"
                                         onClick={() => {
                                           handleOptionSelect(
                                             hoveredDiscipline?.disciplineName
@@ -514,80 +551,51 @@ const Purchase = () => {
                                 Commercial
                               </h3>
                               <ul className="space-y-2">
-                                <li className="text-sm  text-black hover:text-blue-500 transition-colors duration-150 cursor-pointer">
-                                  <details>
-                                    <summary className="cursor-pointer font-normal text-sm text-white">
-                                      Exclusive
-                                    </summary>
-
-                                    <div className="flex flex-col gap-2 mt-2 pl-4">
-                                      <span
-                                        className="text-black hover:text-blue-500 transition-colors duration-150 cursor-pointer"
-                                        onClick={() => {
-                                          setMoreOptions((prev) => ({
-                                            ...prev,
-                                            exclusive: "Yes",
-                                          }));
-                                          setHoveredDiscipline(null);
-                                        }}
-                                      >
-                                        Yes
-                                      </span>
-                                      <span
-                                        className="text-black hover:text-blue-500 transition-colors duration-150 cursor-pointer"
-                                        onClick={() => {
-                                          setMoreOptions((prev) => ({
-                                            ...prev,
-                                            exclusive: "No",
-                                          }));
-                                          setHoveredDiscipline(null);
-                                        }}
-                                      >
-                                        No
-                                      </span>
-                                    </div>
-                                  </details>
-                                </li>
-                                <li className="text-sm text-black hover:text-blue-500 transition-colors duration-150 cursor-pointer">
-                                  New
-                                </li>
-                                <li className="text-sm text-black hover:text-blue-500 transition-colors duration-150 cursor-pointer">
-                                  <details>
-                                    <summary className="cursor-pointer font-normal text-sm text-white">
-                                      Comming Soon
-                                    </summary>
-
-                                    <div className="flex flex-col gap-2 mt-2 pl-4">
-                                      <span
-                                        className="text-black hover:text-blue-500 transition-colors duration-150 cursor-pointer"
-                                        onClick={() => {
-                                          setMoreOptions((prev) => ({
-                                            ...prev,
-                                            comingSoon: "Yes",
-                                          }));
-                                          setHoveredDiscipline(null);
-                                        }}
-                                      >
-                                        Yes
-                                      </span>
-                                      <span
-                                        className="text-black hover:text-blue-500 transition-colors duration-150 cursor-pointer"
-                                        onClick={() => {
-                                          setMoreOptions((prev) => ({
-                                            ...prev,
-                                            comingSoon: "No",
-                                          }));
-                                          setHoveredDiscipline(null);
-                                        }}
-                                      >
-                                        No
-                                      </span>
-                                    </div>
-                                  </details>
-                                </li>
-                                <li className="text-sm text-black hover:text-blue-500 transition-colors duration-150 cursor-pointer">
-                                  Big Discount
-                                </li>
+                                {commercialOptions.map(
+                                  ({
+                                    key,
+                                    label,
+                                    moreOptions: defaultOption,
+                                  }) => (
+                                    <li
+                                      key={key}
+                                      className="text-sm text-black hover:text-blue-700 transition-colors duration-150 cursor-pointer"
+                                    >
+                                      <details>
+                                        <summary className="cursor-pointer font-normal text-sm text-white">
+                                          {label}
+                                        </summary>
+                                        <div className="flex flex-col gap-2 mt-2 pl-4">
+                                          {["Yes", "No"]
+                                            .filter(
+                                              (value) =>
+                                                defaultOption === "Yes" ||
+                                                value === "Yes"
+                                            )
+                                            .map((value) => (
+                                              <span
+                                                key={value}
+                                                className={`${
+                                                  moreOptions[key] === value
+                                                    ? "font-bold text-blue-700"
+                                                    : ""
+                                                } text-black hover:text-blue-700 transition-colors duration-150 cursor-pointer`}
+                                                onClick={() => {
+                                                  setMoreOptions((prev) => ({
+                                                    ...prev,
+                                                    [key]: value,
+                                                  }));
+                                                  setHoveredDiscipline(null);
+                                                }}
+                                              >
+                                                {value}
+                                              </span>
+                                            ))}
+                                        </div>
+                                      </details>
+                                    </li>
+                                  )
+                                )}
                               </ul>
                             </div>
 
@@ -599,7 +607,7 @@ const Purchase = () => {
                               <ul className="space-y-2">
                                 {allHoverData?.artists?.length > 0 ? (
                                   allHoverData?.artists?.map(
-                                    (artist, artistIndex) => (
+                                    (artist, artistIndex: number) => (
                                       <li
                                         key={artistIndex}
                                         className="text-sm text-gray-700 hover:text-blue-500 transition-colors duration-150 cursor-pointer"
@@ -645,7 +653,7 @@ const Purchase = () => {
                                               {allHoverData?.collection[0]
                                                 .collectionName || "Untitled"}
                                             </p>
-                                            <button className="mt-2 w-[20vh] place-content-center bg-blue-500 text-white text-md font-semibold py-3 px-3 rounded-2xl hover:bg-blue-600 transition-colors duration-150 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-300">
+                                            <button className="mt-2 w-[20vh] place-content-center bg-blue-700 text-white text-md font-semibold py-3 px-3 rounded-2xl hover:bg-blue-800 transition-colors duration-150 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-300">
                                               Discover
                                             </button>
                                           </div>
@@ -743,93 +751,118 @@ const Purchase = () => {
 
         {selectedOption.length > 0 ? (
           <div className="flex bg-[#102031] text-white p-2 flex-col gap-2">
-            <div className="flex gap-1.5">
-              <span className="text-[13px] whitespace-nowrap font-semibold">
-                Discipline :
-              </span>
-              <div className="flex items-center gap-2 flex-wrap">
-                {selectedOption.map((item: string, i: number) => (
-                  <span
-                    key={i}
-                    className="text-[11px] text-black flex gap-1 items-center px-1 rounded-full bg-[#c3c3c3]"
-                  >
-                    {item}
-                    <MdOutlineCancel
-                      onClick={() => handleOptionSelect(item)}
-                      className="cursor-pointer"
-                    />
-                  </span>
-                ))}
-              </div>
-            </div>
+            {handleOptions.map(({ key, label, handler }) => {
+              const items = eval(key);
 
-            {selectedTechnic.length > 0 && (
-              <div className="flex gap-1.5">
-                <span className="text-[13px] whitespace-nowrap font-semibold">
-                  Technic :
-                </span>
-                <div className="flex items-center gap-2 flex-wrap">
-                  {selectedTechnic.map((item: string, i: number) => (
-                    <span
-                      key={i}
-                      className="text-[11px] text-black flex gap-1 items-center px-1 rounded-full bg-[#c3c3c3]"
-                    >
-                      {item}
-                      <MdOutlineCancel
-                        onClick={() => handleTechnicSelect(item)}
-                        className="cursor-pointer"
-                      />
+              return (
+                items.length > 0 && (
+                  <div key={key} className="flex gap-1.5">
+                    <span className="text-[13px] whitespace-nowrap font-semibold">
+                      {label} :
                     </span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {selectedTheme.length > 0 && (
-              <div className="flex gap-1.5">
-                <span className="text-[13px] whitespace-nowrap font-semibold">
-                  Theme :
-                </span>
-                <div className="flex items-center gap-2 flex-wrap">
-                  {selectedTheme.map((item: string, i: number) => (
-                    <span
-                      key={i}
-                      className="text-[11px] text-black flex gap-1 items-center px-1 rounded-full bg-[#c3c3c3]"
-                    >
-                      {item}
-                      <MdOutlineCancel
-                        onClick={() => handleThemeSelect(item)}
-                        className="cursor-pointer"
-                      />
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {selectedStyle.length > 0 && (
-              <div className="flex gap-1.5">
-                <span className="text-[13px] whitespace-nowrap font-semibold">
-                  Style :
-                </span>
-                <div className="flex items-center gap-2 flex-wrap">
-                  {selectedStyle.map((item: string, i: number) => (
-                    <span
-                      key={i}
-                      className="text-[11px] text-black flex gap-1 items-center px-1 rounded-full bg-[#c3c3c3]"
-                    >
-                      {item}
-                      <MdOutlineCancel
-                        onClick={() => handleStyleSelect(item)}
-                        className="cursor-pointer"
-                      />
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
+                    <div className="flex items-center gap-2 flex-wrap">
+                      {items.map((item: string, i: number) => (
+                        <span
+                          key={i}
+                          className="text-[11px] text-black flex gap-1 items-center px-1 rounded-full bg-[#c3c3c3]"
+                        >
+                          {item}
+                          <MdOutlineCancel
+                            onClick={() => handler(item)}
+                            className="cursor-pointer"
+                          />
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )
+              );
+            })}
           </div>
         ) : null}
+        <div className="flex bg-[#102031] text-white p-2 pt-0 flex-col gap-2">
+          {moreOptions.comingSoon && (
+            <div className="flex gap-1.5">
+              <span className="text-[13px] whitespace-nowrap font-semibold">
+                Comming Soon :
+              </span>
+
+              <span className="text-[11px] text-black flex gap-1 items-center px-1 rounded-full bg-[#c3c3c3]">
+                {moreOptions.comingSoon}
+                <MdOutlineCancel
+                  onClick={() =>
+                    setMoreOptions((prev) => ({
+                      ...prev,
+                      comingSoon: "",
+                    }))
+                  }
+                  className="cursor-pointer"
+                />
+              </span>
+            </div>
+          )}
+          {moreOptions.exclusive && (
+            <div className="flex gap-1.5">
+              <span className="text-[13px] whitespace-nowrap font-semibold">
+                Exclusive Artwork :
+              </span>
+
+              <span className="text-[11px] text-black flex gap-1 items-center px-1 rounded-full bg-[#c3c3c3]">
+                {moreOptions.exclusive}
+                <MdOutlineCancel
+                  onClick={() =>
+                    setMoreOptions((prev) => ({
+                      ...prev,
+                      exclusive: "",
+                    }))
+                  }
+                  className="cursor-pointer"
+                />
+              </span>
+            </div>
+          )}
+
+          {moreOptions.discount && (
+            <div className="flex gap-1.5">
+              <span className="text-[13px] whitespace-nowrap font-semibold">
+                Discount Available :
+              </span>
+
+              <span className="text-[11px] text-black flex gap-1 items-center px-1 rounded-full bg-[#c3c3c3]">
+                {moreOptions.discount}
+                <MdOutlineCancel
+                  onClick={() =>
+                    setMoreOptions((prev) => ({
+                      ...prev,
+                      discount: "",
+                    }))
+                  }
+                  className="cursor-pointer"
+                />
+              </span>
+            </div>
+          )}
+          {moreOptions.bigDiscount && (
+            <div className="flex gap-1.5">
+              <span className="text-[13px] whitespace-nowrap font-semibold">
+                Big Discount :
+              </span>
+
+              <span className="text-[11px] text-black flex gap-1 items-center px-1 rounded-full bg-[#c3c3c3]">
+                {moreOptions.bigDiscount}
+                <MdOutlineCancel
+                  onClick={() =>
+                    setMoreOptions((prev) => ({
+                      ...prev,
+                      bigDiscount: "",
+                    }))
+                  }
+                  className="cursor-pointer"
+                />
+              </span>
+            </div>
+          )}
+        </div>
 
         <div
           className={`flex p-4 ${

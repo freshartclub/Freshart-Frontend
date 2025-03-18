@@ -1,7 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-
-
-
 import { CIRCLE_ENDPOINTS } from "../../../http/apiEndPoints/Circle";
 import axiosInstance from "../../utils/axios";
 
