@@ -20,6 +20,7 @@ import OrdersDetail from "./Orderdetail/OrderDetails";
 import Orders from "./Orders";
 import Sidebar from "./Sidebar";
 import Circle from "../CIrcle/Circle";
+import CustomOrder from "./Orders/CustomOrder";
 
 const ArtistPanel = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -65,6 +66,8 @@ const ArtistPanel = () => {
             <Route path="artdashboard" element={<Dashboard />} />
             <Route path="artwork" element={<Artwork />} />
             <Route path="order" element={<Orders />} />
+            <Route path="order/custom" element={<CustomOrder />} />
+
             <Route path="order/orderDetail" element={<OrdersDetail />} />
             <Route path="order/approve-order" element={<OrderApprove />} />
             <Route path="artwork/add" element={<AddArtwork />} />

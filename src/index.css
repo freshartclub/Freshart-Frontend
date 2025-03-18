@@ -282,3 +282,32 @@ html {
   top: 50% !important;
   transform: translate(-50%, -50%) !important;
 }
+
+
+
+/* Custom styles for slick slider dots */
+.custom-dots li button:before {
+  font-size: 10px;
+  color: #d1d5db; /* gray-300 */
+  opacity: 0.75;
+  transition: all 0.3s ease;
+}
+
+.custom-dots li.slick-active button:before {
+  color: #374151; /* gray-700 */
+  opacity: 1;
+}
+
+.custom-dots {
+  bottom: -30px;
+}
+
+/* Ensure slider container doesn't overflow */
+.slick-slider {
+  margin: 0 -10px;
+}
+
+/* Smooth transitions for the entire component */
+.art-card-container {
+  transition: all 0.3s ease-in-out;
+}

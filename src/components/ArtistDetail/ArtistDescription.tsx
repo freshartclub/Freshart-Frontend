@@ -1,10 +1,24 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Button from "../ui/Button";
 import Header from "../ui/Header";
 import P from "../ui/P";
-import { imageUrl } from "../utils/baseUrls";
+import profile from "./assets/profile.png";
 import share from "./assets/Vector (4).png";
+import star from "./assets/Star.png";
+import like from "./assets/Insignia.png";
+import new_icon from "./assets/New.png";
+import award from "./assets/Nomination.png";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { imageUrl } from "../utils/baseUrls";
+import { FaRegHeart } from "react-icons/fa";
+
+
+const credential = [
+  { icon: star, title: "Top Seller" },
+  { icon: like, title: "Most Liked" },
+  { icon: new_icon, title: "New Added" },
+  { icon: award, title: "International Awards" },
+];
 
 const ArtistDescription = ({ data }) => {
   const navigate = useNavigate();
@@ -13,22 +27,23 @@ const ArtistDescription = ({ data }) => {
 
   const redirectToCircle = () => navigate("/circleblog");
 
-  const aboutText =
-    data?.artist?.aboutArtist?.about
-      ?.replace(/<\/?(h2|p|div|li|strong|blockquote)>/g, "")
-      .trim() || "No about text available.";
+  const aboutText = data?.artist?.aboutArtist?.about?.replace(
+    /<\/?(h2|p|div|li|strong|blockquote)>/g, 
+    ""
+  ).trim() || "No about text available.";
 
-  const shortAboutText =
-    aboutText.split(/\s+/).slice(0, 50).join(" ") +
+
+const shortAboutText = aboutText.split(/\s+/).slice(0, 50).join(" ") + 
     (aboutText.split(/\s+/).length > 50 ? "..." : "");
 
-  const highlightText =
-    data?.artist?.highlights?.addHighlights
-      ?.replace(/<\/?(h2|p|div|li|strong|blockquote)>/g, "")
-      .trim() || "No highlight text available.";
+const highlightText = data?.artist?.highlights?.addHighlights?.replace(
+    /<\/?(h2|p|div|li|strong|blockquote)>/g,
+    ""
+  ).trim() || "No highlight text available.";
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+     
       <div className="flex gap-3 sm:gap-5 justify-center sm:justify-end items-center my-4">
         <img
           src={`${imageUrl}/users/${data?.artist?.profile?.mainImage}`}
@@ -44,7 +59,7 @@ const ArtistDescription = ({ data }) => {
           }}
           className="border border-black uppercase !py-1 px-3 sm:px-4 text-xs sm:text-base hover:bg-gray-100 transition-colors"
         >
-          Follow
+          <FaRegHeart size="1.6em"/>e
         </Button>
         <img
           src={share}
@@ -53,6 +68,7 @@ const ArtistDescription = ({ data }) => {
         />
       </div>
 
+     
       <div className="flex flex-col sm:flex-row justify-between border-b border-gray-200 dark:border-gray-700 items-start sm:items-center">
         <div className="flex gap-1 text-xs sm:text-sm font-medium flex-wrap">
           <span
@@ -99,6 +115,7 @@ const ArtistDescription = ({ data }) => {
         </div>
       </div>
 
+
       <div id="default-tab-content" className="mt-4 sm:mt-6">
         {activeTab === "highlight" && (
           <div className="my-6 sm:my-8 bg-white dark:bg-gray-900 p-4 sm:p-6 rounded-lg shadow-md">
@@ -126,6 +143,7 @@ const ArtistDescription = ({ data }) => {
               About {data?.artist?.artistName} {data?.artist?.artistSurname1}
             </Header>
             <div className="space-y-4 sm:space-y-6">
+             
               <div>
                 <P
                   variant={{ size: "base", theme: "dark", weight: "normal" }}
@@ -135,11 +153,7 @@ const ArtistDescription = ({ data }) => {
                 </P>
                 {aboutText.split(" ").length > 50 && (
                   <Button
-                    variant={{
-                      fontSize: "sm",
-                      theme: "light",
-                      fontWeight: "500",
-                    }}
+                    variant={{ fontSize: "sm", theme: "light", fontWeight: "500" }}
                     className="mt-2 text-[#EE1D52] hover:underline text-xs sm:text-sm"
                     onClick={() => setShowMore(!showMore)}
                   >
@@ -148,6 +162,23 @@ const ArtistDescription = ({ data }) => {
                 )}
               </div>
 
+              <div className="flex items-center gap-3">
+              <P
+                  variant={{ size: "base", theme: "dark", weight: "semiBold" }}
+                  className=" sm:mb-3 text-sm sm:text-base text-gray-800 dark:text-gray-200"
+                >
+                  Date of birth : 
+                </P>
+
+                <P
+                  variant={{ size: "base", theme: "dark", weight: "semiBold" }}
+                  className=" sm:mb-3 text-sm sm:text-base text-gray-800 dark:text-gray-200"
+                >
+                 null
+                </P>
+              </div>
+
+           
               <div>
                 <P
                   variant={{ size: "base", theme: "dark", weight: "semiBold" }}
@@ -167,6 +198,7 @@ const ArtistDescription = ({ data }) => {
                 </div>
               </div>
 
+              
               <div>
                 <P
                   variant={{ size: "base", theme: "dark", weight: "semiBold" }}
@@ -175,65 +207,59 @@ const ArtistDescription = ({ data }) => {
                   External Tags
                 </P>
                 <div className="flex flex-wrap gap-2">
-                  {[
-                    "Illustration",
-                    "Cartoonist",
-                    "Paris",
-                    "Barcelona",
-                    "Museum",
-                  ].map((tag, index) => (
-                    <span
-                      key={index}
-                      className="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 py-1 px-2 sm:px-3 rounded-md text-xs sm:text-sm shadow-sm"
-                    >
-                      {tag}
-                    </span>
-                  ))}
+                  {["Illustration", "Cartoonist", "Paris", "Barcelona", "Museum"].map(
+                    (tag, index) => (
+                      <span
+                        key={index}
+                        className="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 py-1 px-2 sm:px-3 rounded-md text-xs sm:text-sm shadow-sm"
+                      >
+                        {tag}
+                      </span>
+                    )
+                  )}
                 </div>
+
+
               </div>
 
               {data?.artist?.insignia.length > 0 && (
-                <div className="my-6 sm:my-8 bg-white dark:bg-gray-900  sm:p-6 rounded-lg shadow-md">
+          <div className="my-6 sm:my-8 bg-white dark:bg-gray-900  sm:p-6 rounded-lg shadow-md">
+            <P
+              variant={{ size: "base", theme: "dark", weight: "semiBold" }}
+              className="py-4 sm:py-6 text-sm sm:text-base text-gray-800 dark:text-gray-200"
+            >
+              Credentials and Insignias Area
+            </P>
+            <div className="flex flex-col sm:flex-row gap-6 sm:gap-0 items-center justify-center">
+              {data?.artist?.insignia?.map((item, index) => (
+                <div
+                  key={index}
+                  className={`flex flex-col gap-3 w-full sm:w-56 px-4 justify-center items-center ${
+                    index !== data.artist.insignia.length - 1
+                      ? "sm:border-r-2 border-gray-300"
+                      : ""
+                  }`}
+                >
+                  <img
+                    src={`${imageUrl}/users/${item.insigniaImage}`}
+                    alt=""
+                    className="w-12 h-12 sm:w-16 sm:h-16 object-contain"
+                  />
                   <P
                     variant={{
                       size: "base",
                       theme: "dark",
                       weight: "semiBold",
                     }}
-                    className="py-4 sm:py-6 text-sm sm:text-base text-gray-800 dark:text-gray-200"
+                    className="text-center text-sm sm:text-base text-gray-700 dark:text-gray-300"
                   >
-                    Credentials and Insignias Area
+                    {item.credentialName}
                   </P>
-                  <div className="flex flex-col sm:flex-row gap-6 sm:gap-0 items-center justify-center">
-                    {data?.artist?.insignia?.map((item, index) => (
-                      <div
-                        key={index}
-                        className={`flex flex-col gap-3 w-full sm:w-56 px-4 justify-center items-center ${
-                          index !== data.artist.insignia.length - 1
-                            ? "sm:border-r-2 border-gray-300"
-                            : ""
-                        }`}
-                      >
-                        <img
-                          src={`${imageUrl}/users/${item.insigniaImage}`}
-                          alt=""
-                          className="w-12 h-12 sm:w-16 sm:h-16 object-contain"
-                        />
-                        <P
-                          variant={{
-                            size: "base",
-                            theme: "dark",
-                            weight: "semiBold",
-                          }}
-                          className="text-center text-sm sm:text-base text-gray-700 dark:text-gray-300"
-                        >
-                          {item.credentialName}
-                        </P>
-                      </div>
-                    ))}
-                  </div>
                 </div>
-              )}
+              ))}
+            </div>
+          </div>
+        )}
             </div>
           </div>
         )}
@@ -290,6 +316,8 @@ const ArtistDescription = ({ data }) => {
             </div>
           </div>
         )}
+
+       
       </div>
     </div>
   );

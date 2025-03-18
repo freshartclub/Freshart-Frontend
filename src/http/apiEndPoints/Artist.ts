@@ -38,7 +38,7 @@ export const ARTTIST_ENDPOINTS = {
   DeleteNotification: `${ARTIST_BASE_URl}/delete-notification`,
   ReadNotification: `${ARTIST_BASE_URl}/read-notification`,
 
-  // circle
+
 
   GetAllArtist: `${ARTIST_BASE_URl}/get-all-artists`,
   addToCart: `${ARTIST_BASE_URl}/add-to-cart`,

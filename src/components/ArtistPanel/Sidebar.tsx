@@ -49,7 +49,11 @@ const sections = [
     label: "Order",
     icon: order,
     path: "order",
-    submenu: [{ key: "current", label: "Current Orders", path: "order" }],
+    submenu: [{ key: "current", label: "Current Orders", path: "order" }, 
+      { key: "Custom", label: "Custom Orders", path: "order/custom" }
+    ],
+  
+
   },
   {
     key: "invoice",

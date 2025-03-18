@@ -315,6 +315,8 @@ const AddArtwork = () => {
       );
 
       setValue("offensive", data?.data?.additionalInfo?.offensive || "");
+      setValue("exclusive", data?.data?.additionalInfo?.exclusive || "");
+
 
       setValue(
         "purchaseCatalog",
@@ -1842,8 +1844,8 @@ const AddArtwork = () => {
                     ) : null}
                   </div>
 
-                  {getValues("hangingAvailable") === "Yes" ? (
-                    <label className="text-[#203F58] text-sm font-semibold">
+                        {getValues("hangingAvailable") === "Yes" ? (
+                                      <label className="text-[#203F58] text-sm font-semibold">
                       {t("Hanging Description")}
                       <textarea
                         id="hangingDescription"
@@ -1852,7 +1854,7 @@ const AddArtwork = () => {
                         })}
                         readOnly={query ? true : false}
                         placeholder={t("Type Hanging description here...")}
-                        className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full  p-1 sm:p-2.5 pb-10 "
+                        className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none font-normal text-gray-900 text-sm rounded-lg block w-full  p-1 sm:p-2.5 pb-10 "
                       />
                     </label>
                   ) : null}
@@ -1891,7 +1893,7 @@ const AddArtwork = () => {
                           })}
                           placeholder={t("Type Framed description here...")}
                           readOnly={query ? true : false}
-                          className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5 pb-10"
+                          className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full font-normal p-1 sm:p-2.5 pb-10"
                         />
                         {errors?.framedDescription && (
                           <div className="error text-red-500 mt-1 text-sm">
@@ -1928,6 +1930,30 @@ const AddArtwork = () => {
                       </div>
                     </>
                   ) : null}
+
+
+<div>
+                    <label className="text-[#203F58] text-sm font-semibold">
+                      {t("Exclusive")} *
+                    </label>
+                    <select
+                      id="Exclusive"
+                      {...register("exclusive", {
+                        required: t("Exclusive is required"),
+                      })}
+                      disabled={query ? true : false}
+                      className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
+                    >
+                      <option value="">{t("Select")}</option>
+                      <option value="Yes">{t("Yes")}</option>
+                      <option value="No">{t("No")}</option>
+                    </select>
+                    {errors.exclusive ? (
+                      <div className="error text-red-500 mt-1 text-sm">
+                        {t(`${errors.exclusive.message}`)}
+                      </div>
+                    ) : null}
+                  </div>
 
                   <div>
                     <label className="text-[#203F58] text-sm font-semibold">

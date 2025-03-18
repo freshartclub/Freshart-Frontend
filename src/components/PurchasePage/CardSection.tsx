@@ -1,12 +1,14 @@
 import "../../App.css";
 import getSymbolFromCurrency from "currency-symbol-map";
 import { useEffect, useState } from "react";
-import { FaEye } from "react-icons/fa";
+import { FaArrowUp, FaEye } from "react-icons/fa";
 import { FaToggleOn } from "react-icons/fa6";
 import { MdOutlineOpenInNew } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import postRecentArtworkMutation from "../HomePage/http/postRecentView";
+import useLikeUnlikeArtworkMutation from "../HomePage/http/useLikeUnLike"; // Adjust path if needed
 import { lowImageUrl } from "../utils/baseUrls";
+import { FaHeart } from "react-icons/fa6";
 
 const CardSection = ({ data }) => {
   const TEN_DAYS_MS = 10 * 24 * 60 * 60 * 1000;
@@ -20,8 +22,18 @@ const CardSection = ({ data }) => {
   };
 
   const { mutate } = postRecentArtworkMutation();
+  const { mutateAsync: LikeUnlikeMutate } = useLikeUnlikeArtworkMutation();
   const navigate = useNavigate();
   const [viewedImages, setViewedImages] = useState({});
+  const [favoriteLists, setFavoriteLists] = useState({
+    "Likes": [],
+    "Artwork for Christmas": [],
+    "Artworks for my office": [],
+    "Gift for Jordi": []
+  });
+  const [showFavoriteMenu, setShowFavoriteMenu] = useState(null);
+  const [showManageLists, setShowManageLists] = useState(false);
+  const [newListName, setNewListName] = useState("");
 
   const handleRedirectToDescription = (id: string) => {
     mutate(id);
@@ -40,6 +52,40 @@ const CardSection = ({ data }) => {
     delete newViewedImages[id];
     localStorage.setItem("viewedImages", JSON.stringify(newViewedImages));
     setViewedImages(newViewedImages);
+  };
+
+  const handleFavoriteClick = (id) => {
+    setShowFavoriteMenu(showFavoriteMenu === id ? null : id);
+    setShowManageLists(false);
+  };
+
+  const addToFavoriteList = (artworkId, listName) => {
+    const action = favoriteLists[listName].includes(artworkId) ? "unlike" : "like";
+    const data = { id: artworkId, action };
+
+    LikeUnlikeMutate(data)
+      .then(() => {
+        setFavoriteLists(prev => ({
+          ...prev,
+          [listName]: action === "like"
+            ? [...prev[listName], artworkId]
+            : prev[listName].filter(item => item !== artworkId)
+        }));
+        setShowFavoriteMenu(null);
+      })
+      .catch(error => {
+        console.error(`Error updating favorite list ${listName}:`, error);
+      });
+  };
+
+  const handleAddNewList = () => {
+    if (newListName && !favoriteLists[newListName]) {
+      setFavoriteLists(prev => ({
+        ...prev,
+        [newListName]: []
+      }));
+      setNewListName("");
+    }
   };
 
   useEffect(() => {
@@ -88,12 +134,18 @@ const CardSection = ({ data }) => {
                   <div className="absolute inset-0 flex flex-col justify-center items-center gap-4 bg-black/30 opacity-0 group-hover:opacity-100 transition-all duration-300">
                     <button
                       className="bg-gradient-to-r from-blue-500 to-blue-600 flex items-center gap-3 font-semibold text-white px-5 py-2 rounded-full hover:from-blue-600 hover:to-blue-700 transform hover:scale-105 transition-all duration-200"
-                      onClick={() => handleViewClick(item?._id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleViewClick(item?._id);
+                      }}
                     >
                       <FaEye /> View Image
                     </button>
                     <button
-                      onClick={() => handleRedirectToDescription(item?._id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRedirectToDescription(item?._id);
+                      }}
                       className="bg-gradient-to-r from-red-500 to-red-600 flex items-center gap-3 font-semibold text-white px-5 py-2 rounded-full hover:from-red-600 hover:to-red-700 transform hover:scale-105 transition-all duration-200"
                     >
                       <MdOutlineOpenInNew /> View Details
@@ -115,7 +167,7 @@ const CardSection = ({ data }) => {
                 ) : null}
               </div>
 
-              <div className="flex flex-col bg-white pt-4">
+              <div className="flex flex-col bg-white pt-4 relative pb-8"> {/* Added pb-8 for space */}
                 <p className="text-xs text-gray-600 font-medium uppercase tracking-wide">
                   {item?.discipline}
                 </p>
@@ -134,6 +186,77 @@ const CardSection = ({ data }) => {
                   {getSymbolFromCurrency(item?.pricing?.currency.slice(0, 3))}{" "}
                   {item?.pricing?.basePrice}
                 </p>
+
+                {/* Favorite Arrow and Menu */}
+                <div className="absolute bottom-2 right-2">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleFavoriteClick(item._id);
+                    }}
+                    className="p-2 rounded-full hover:bg-gray-100"
+                  >
+                    <FaArrowUp 
+                      size="1.2rem" 
+                      className={favoriteLists["Likes"].includes(item?._id) ? "text-red-500" : "text-gray-500"}
+                    />
+                  </button>
+
+                  {showFavoriteMenu === item._id && (
+                    <div className="absolute bottom-10 right-0 bg-white shadow-lg rounded-md p-3 w-56 z-10">
+                      {Object.keys(favoriteLists).map(listName => (
+                        <div
+                          key={listName}
+                          className="flex items-center justify-between px-2 py-1 hover:bg-gray-100 cursor-pointer text-sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            addToFavoriteList(item._id, listName);
+                          }}
+                        >
+                          <span>{listName}</span>
+                          <input
+                            type="checkbox"
+                            checked={favoriteLists[listName].includes(item._id)}
+                            readOnly
+                          />
+                        </div>
+                      ))}
+                      <div className="border-t mt-2 pt-2">
+                        <button 
+                          className="text-sm text-blue-500 hover:underline w-full text-left"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setShowManageLists(true);
+                          }}
+                        >
+                          Manage Favorite Lists
+                        </button>
+                      </div>
+
+                      {showManageLists && (
+                        <div className="mt-2 border-t pt-2">
+                          <input
+                            type="text"
+                            value={newListName}
+                            onChange={(e) => setNewListName(e.target.value)}
+                            onClick={(e) => e.stopPropagation()}
+                            placeholder="New list name"
+                            className="w-full text-sm p-1 border rounded mb-2"
+                          />
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleAddNewList();
+                            }}
+                            className="w-full bg-blue-500 text-white text-sm py-1 rounded hover:bg-blue-600"
+                          >
+                            Add List
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           );
