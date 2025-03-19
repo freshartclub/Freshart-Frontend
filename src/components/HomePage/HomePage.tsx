@@ -18,10 +18,7 @@ const HomePage = () => {
   const { data: artistData } = useGetArtistDetails();
 
   const token = localStorage.getItem("auth_token");
-
   if (profile === "artist") return navigate("/artist-panel");
-
-  if (isLoading) return <Loader />;
 
   return (
     <div className="overflow-x-hidden">
@@ -32,24 +29,28 @@ const HomePage = () => {
         tittle={"New Artwork"}
         artistData={artistData?.data.artist}
         viewType="new"
+        loading={isLoading}
       />
       <ArtCard
         data={data?.trending}
         tittle={"Trending Artwork"}
         artistData={artistData?.data.artist}
         viewType="new"
+        loading={isLoading}
       />
       <ArtCard
         data={data?.commingSoon}
         tittle={"Coming Soon"}
         artistData={artistData?.data.artist}
         viewType="new"
+        loading={isLoading}
       />
       <ArtCard
         data={data?.highlighted}
         tittle={"Highlighted Artwork"}
         artistData={artistData?.data.artist}
         viewType="new"
+        loading={isLoading}
       />
 
       <HelpSection />

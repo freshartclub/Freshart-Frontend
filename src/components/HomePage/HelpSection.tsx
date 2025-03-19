@@ -5,7 +5,7 @@ import Button from "../ui/Button";
 const HelpSection = () => {
   return (
     <div
-      className="mt-28 bg-cover bg-no-repeat bg-fixed flex items-center justify-center"
+      className="mt-12 bg-cover bg-no-repeat bg-fixed flex items-center justify-center"
       style={{ backgroundImage: `url(${bg_banner})` }}
     >
       <div className="container mx-auto md:px-6 px-3">

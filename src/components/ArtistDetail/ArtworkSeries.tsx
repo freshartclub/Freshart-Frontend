@@ -12,7 +12,7 @@ const ArtworkSeries = () => {
   if (isLoading) return <Loader />;
 
   return (
-    <div className="mt-8 series_artwork">
+    <div className="mx-auto px-4 mt-8 series_artwork">
       <Header variant={{ size: "xl", theme: "dark", weight: "semiBold" }}>
         Series of Artwork
       </Header>

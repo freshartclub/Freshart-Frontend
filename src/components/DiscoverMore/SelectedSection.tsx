@@ -3,6 +3,7 @@ import { useGetOtherArtworks } from "./http/useGetOtherArtworks";
 
 const SelectedSection = ({ data }) => {
   const subscription = "Yes";
+
   const { data: highlightData, isLoading } = useGetOtherArtworks({
     discipline: data?.data?.discipline,
     style: data?.data?.additionalInfo?.artworkStyle,
@@ -12,7 +13,7 @@ const SelectedSection = ({ data }) => {
   });
 
   return (
-    <div className="container mx-auto sm:px-6 px-3">
+    <div className="mx-auto">
       <CommonCardData
         heading="From this artist"
         highlightData={data.artworks}
@@ -21,6 +22,7 @@ const SelectedSection = ({ data }) => {
       <CommonCardData
         heading="Other artworks you may like"
         highlightData={highlightData}
+        isLoading={isLoading}
       />
     </div>
   );

@@ -90,7 +90,7 @@ const ArtistHeader = ({ data }) => {
           </button>
         )}
 
-        <div className="flex justify-center">
+        <div className="flex lg:pb-10 justify-center">
           {mediaItems[currentIndex].type === "video" ? (
             <video
               src={`${imageUrl}/videos/${mediaItems[currentIndex].src}`}

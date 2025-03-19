@@ -30,7 +30,7 @@ async function fetchData(
   bigDiscount: string
 ) {
   const { data } = await axiosInstance.get(
-    `${ARTTIST_ENDPOINTS.GetAllArtwork}?type=${type}&s=${query}&theme=${selectedTheme}&discipline=${selectedOption}&technic=${selectedTechnic}&style=${selectedStyle}&color=${color}&comingsoon=${comingSoon}&orientation=${orientation}&depth=${depth}&&height=${height}&width=${width}&price=${price}&tag=${tag}&discount=${discount}&purchase=${purchase}&purchaseOption=${purchaseOption}&currPage=${currPage}&cursor=${cursor}&direction=${direction}&limit=${limit}&exclusive=${exclusive}?newIn=${newIn}&bigDiscount=${bigDiscount}`
+    `${ARTTIST_ENDPOINTS.GetAllArtwork}?type=${type}&s=${query}&theme=${selectedTheme}&discipline=${selectedOption}&technic=${selectedTechnic}&style=${selectedStyle}&color=${color}&comingsoon=${comingSoon}&orientation=${orientation}&depth=${depth}&&height=${height}&width=${width}&price=${price}&tag=${tag}&discount=${discount}&purchase=${purchase}&purchaseOption=${purchaseOption}&currPage=${currPage}&cursor=${cursor}&direction=${direction}&limit=${limit}&exclusive=${exclusive}&newIn=${newIn}&bigDiscount=${bigDiscount}`
   );
 
   return data;

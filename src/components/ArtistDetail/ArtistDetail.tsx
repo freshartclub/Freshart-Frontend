@@ -7,18 +7,18 @@ import ArtworkSeries from "./ArtworkSeries";
 import { useGetArtistDetails } from "./http/useGetArtistDetails";
 
 const ArtistDetail = () => {
-  const id = useParams().id;
+  const id = useParams().id as string;
   const { data, isLoading } = useGetArtistDetails(id);
 
   if (isLoading) return <Loader />;
 
   return (
     <div className="container mx-auto md:px-6 px-3">
-      <div className="flex lg:flex-row flex-col xl:gap-10 gap-6 mb-10">
-        <div className="bg-gray-100 lg:w-[48%] w-full mx-auto h-fit">
+      <div className="flex lg:flex-row flex-col 2xl:gap-10 gap-6 mb-10">
+        <div className="bg-gray-100 lg:w-[50%] w-full mx-auto h-fit">
           <ArtistHeader data={data?.artist} />
         </div>
-        <div className="lg:w-[48%] w-full">
+        <div className="lg:w-[50%] w-full">
           <ArtistDescription data={data} />
         </div>
       </div>
