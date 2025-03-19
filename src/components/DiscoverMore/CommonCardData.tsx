@@ -24,6 +24,7 @@ const CommonCardData = ({
   highlightData: HighlightItem[];
   isLoading?: boolean;
 }) => {
+  const TEN_DAYS_MS = 10 * 24 * 60 * 60 * 1000;
   const [viewedImages, setViewedImages] = useState({});
   const scrollContainerRef = useRef(null);
   const [isStart, setIsStart] = useState(true);
