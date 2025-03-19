@@ -12,6 +12,7 @@ import Header from "../ui/Header";
 import { lowImageUrl } from "../utils/baseUrls";
 
 const ArtistProtfolioArtwork = ({ data }) => {
+  const TEN_DAYS_MS = 10 * 24 * 60 * 60 * 1000;
   const [viewedImages, setViewedImages] = useState({});
   const navigate = useNavigate();
   const scrollContainerRef = useRef(null);

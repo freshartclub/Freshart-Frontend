@@ -19,7 +19,7 @@ const ArtworkSeries = () => {
 
       <div className="flex flex-row flex-wrap items-center gap-3 py-5 w-full px-3">
         {data?.data && data?.data.length > 0 ? (
-          data?.data?.map((group, i) => (
+          data?.data?.map((group, i: number) => (
             <div
               key={i}
               className="group-container flex-1 max-w-[100%] sm:max-w-[48%] lg:max-w-[30%] h-full border border-zinc-300"
