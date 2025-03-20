@@ -1,5 +1,5 @@
 import getSymbolFromCurrency from "currency-symbol-map";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
@@ -29,7 +29,7 @@ declare global {
 const PaymentPage = () => {
   const [hash, setHash] = useState("");
   const [time, setTime] = useState("");
-  const iframeRef = useRef(null);
+  const [active, setActive] = useState(false);
   const { data, isLoading } = useGetCartItems();
 
   const generateTimestamp = () => {
@@ -44,8 +44,8 @@ const PaymentPage = () => {
     return `${year}${month}${day}${hours}${minutes}${seconds}`;
   };
 
-  const merchantId = "367155777";
-  const orderId = "Nyre567uy2et78i4tvt6879ygjhtrTXWYS6g";
+  const merchantId = import.meta.env.VITE_MERCHANT_ID;
+  const orderId = "Nyre567uydtfgh78i4tvt6879ygjhtrTXWYS6g";
   const amount = "1501";
   const currency = "EUR";
 
@@ -136,42 +136,6 @@ const PaymentPage = () => {
       if (hashData) setHash(hashData);
     }
   }, [time, hashData]);
-
-  useEffect(() => {
-    if (hash && time) {
-      const form = document.createElement("form");
-      form.method = "POST";
-      form.action = "https://hpp.sandbox.addonpayments.com/pay";
-      form.target = "hppFrame";
-
-      const fields = {
-        TIMESTAMP: time,
-        MERCHANT_ID: merchantId,
-        ORDER_ID: orderId,
-        AMOUNT: amount,
-        CURRENCY: currency,
-        SHA1HASH: `${hash}`,
-        HPP_BILLING_CITY: "Indore",
-        HPP_BILLING_COUNTRY: "356",
-        HPP_BILLING_STREET1: "Adhartal",
-        HPP_BILLING_POSTALCODE: "482004",
-        HPP_CUSTOMER_EMAIL: "rachit@gmail.com",
-        AUTO_SETTLE_FLAG: "1",
-        MERCHANT_RESPONSE_URL: "http://localhost:5173/payment-success",
-      };
-
-      for (const key in fields) {
-        const input = document.createElement("input");
-        input.type = "hidden";
-        input.name = key;
-        input.value = fields[key];
-        form.appendChild(input);
-      }
-
-      document.body.appendChild(form);
-      form.submit();
-    }
-  }, [hash]);
 
   const onSubmit = (data: any) => {
     try {
@@ -678,23 +642,68 @@ const PaymentPage = () => {
                 </div>
               </div>
 
-              {/* <button
-                type="submit"
-                className="  md:w-full bg-black text-white p-2 md:py-3 rounded-full text-sm flex  items-center  justify-center space-x-2 hover:bg-gray-800 transition mt-4"
-              >
-                <span className="font-semibold">
-                  {checkOutPending ? "LOADING..." : "PLACE ORDER"}
-                </span>
-              </button> */}
+              {active ? (
+                <iframe
+                  name="hppFrame"
+                  title="Hosted Payment Page"
+                  width="100%"
+                  height="600px"
+                  style={{ border: "none" }}
+                  sandbox="allow-forms allow-scripts allow-same-origin allow-top-navigation"
+                  // src={hppUrl}
+                ></iframe>
+              ) : null}
 
-              <iframe
-                name="hppFrame"
-                ref={iframeRef}
-                title="Hosted Payment Page"
-                width="100%"
-                height="600px"
-                style={{ border: "none" }}
-              ></iframe>
+              <form
+                method="POST"
+                action="https://hpp.sandbox.addonpayments.com/pay"
+                target="hppFrame"
+              >
+                <input type="hidden" name="TIMESTAMP" value={time} />
+                <input type="hidden" name="MERCHANT_ID" value={merchantId} />
+                <input type="hidden" name="ORDER_ID" value={orderId} />
+                <input type="hidden" name="AMOUNT" value={amount} />
+                <input type="hidden" name="CURRENCY" value={currency} />
+                <input type="hidden" name="SHA1HASH" value={hash} />
+                <input type="hidden" name="AUTO_SETTLE_FLAG" value="1" />
+                <input type="hidden" name="HPP_BILLING_CITY" value="Indore" />
+                <input type="hidden" name="HPP_BILLING_COUNTRY" value="356" />
+                <input
+                  type="hidden"
+                  name="HPP_BILLING_STREET1"
+                  value="Adhartal"
+                />
+                <input
+                  type="hidden"
+                  name="HPP_BILLING_POSTALCODE"
+                  value="482004"
+                />
+                <input
+                  type="hidden"
+                  name="HPP_CUSTOMER_EMAIL"
+                  value="rachit@gmail.com"
+                />
+                <input
+                  type="hidden"
+                  name="MERCHANT_RESPONSE_URL"
+                  value="http://localhost:5173/payment-success"
+                />
+
+                {hashLoading ? (
+                  <span>Wait....</span>
+                ) : (
+                  <input
+                    className={`${
+                      active
+                        ? "hidden"
+                        : "p-2 w-full bg-black rounded-md text-center text-white cursor-pointer hover:bg-[#131313df]"
+                    }`}
+                    onClick={() => setActive(true)}
+                    type="submit"
+                    value="Proced to payment"
+                  />
+                )}
+              </form>
             </div>
           </div>
         </form>

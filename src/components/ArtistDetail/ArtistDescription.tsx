@@ -21,17 +21,9 @@ const ArtistDescription = ({ data }) => {
           alt="profile image"
           className="cursor-pointer w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover"
         />
-        <Button
-          variant={{
-            fontSize: "sm",
-            theme: "light",
-            fontWeight: "500",
-            rounded: "full",
-          }}
-          className="border border-black uppercase !py-1 px-3 sm:px-4 text-xs sm:text-base hover:bg-gray-100 transition-colors"
-        >
-          <FaRegHeart size="1.6em"/>e
-        </Button>
+
+        <FaRegHeart size="1.5em" />
+
         <img
           src={share}
           alt="share icon"

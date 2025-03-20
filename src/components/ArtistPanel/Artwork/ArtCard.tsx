@@ -62,7 +62,9 @@ const ArtCard = ({ record }: any) => {
             {t(record?.discipline?.artworkDiscipline)}
           </p>
           <p className="text-black text-[16px] font-bold">
-            {record?.artworkName}
+            {record?.artworkName.length > 20
+              ? `${record?.artworkName.slice(0, 20)}...`
+              : record?.artworkName}
           </p>
           <p className="text-black text-[13px] font-meedium">
             {record.owner?.artistName}

@@ -193,7 +193,9 @@ const Artwork = () => {
                           {t(art?.discipline?.artworkDiscipline)}
                         </p>
                         <h1 className="font-semibold text-center text-lg sm:text-xl text-black mt-1">
-                          {art?.artworkName}
+                          {art?.artworkName.length > 17
+                            ? `${art?.artworkName?.slice(0, 17)}...`
+                            : art?.artworkName}
                         </h1>
                         <p className="text-sm text-center text-zinc-800 mt-1">
                           {t(art?.artworkTechnic)}

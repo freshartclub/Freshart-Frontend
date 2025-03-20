@@ -73,7 +73,7 @@ const PriceAndPlan = () => {
   return (
     <div className="bg-[#F5F2EB] pt-10 pb-10">
       <div className="container mx-auto md:px-6 px-3">
-        <div className="md:w-[60%] w-full m-auto text-center">
+        <div className="md:w-[65%] w-full m-auto text-center">
           <Header
             variant={{ size: "3xl", theme: "dark", weight: "bold" }}
             className="md:text-3xl sm:text-2xl text-xl"
@@ -91,8 +91,22 @@ const PriceAndPlan = () => {
         </div>
 
         <div className="my-8">
-          <div className="flex justify-between">
+          <div className="flex justify-between items-center">
             <DiscountCode />
+
+            <Button
+              variant={{
+                fontSize: "md",
+                theme: "dark",
+                fontWeight: "bold",
+                rounded: "full",
+              }}
+              onClick={handleCompleteForm}
+            >
+              {t(
+                "I am not sure yet. Let me take a look, I will choose later on!"
+              )}
+            </Button>
 
             <div className="flex items-center gap-2">
               <img
@@ -194,22 +208,6 @@ const PriceAndPlan = () => {
               );
             })}
           </div>
-        </div>
-
-        <div className="flex flex-col items-center">
-          <Button
-            variant={{
-              fontSize: "md",
-              theme: "dark",
-              fontWeight: "bold",
-              rounded: "full",
-            }}
-            onClick={handleCompleteForm}
-          >
-            {t(
-              "I am not sure yet. Let me take a look, I will choose later on!"
-            )}
-          </Button>
         </div>
       </div>
     </div>

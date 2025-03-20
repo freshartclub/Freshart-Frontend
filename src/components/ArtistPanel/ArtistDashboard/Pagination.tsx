@@ -143,20 +143,21 @@ const Pagination = () => {
             </table>
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center bg-white h-[300px] border border-zinc-300">
-            <p className="text-lg text-center font-medium mb-4">
+          <div className="flex flex-col mb-4 items-center justify-center bg-white h-[50px] border border-zinc-300">
+            <p className="text-center font-medium">
               {t("You don't have any Order yet.")}
             </p>
           </div>
         )}
       </div>
-
-      <PaginationTabs
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
-        numbers={numbers}
-        nPages={nPages}
-      />
+      {data && data.length > 0 ? (
+        <PaginationTabs
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          numbers={numbers}
+          nPages={nPages}
+        />
+      ) : null}
     </>
   );
 };
