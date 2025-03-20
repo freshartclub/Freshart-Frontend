@@ -34,6 +34,10 @@ const GeneralForm = ({ isActiveStatus }) => {
   const { mutate: revalidationMutation, isPending: revalidationPending } =
     useRevalidationMutation();
 
+
+
+    console.log(data)
+
   const [isEditInfo, setIsEditInfo] = useState(false);
   const [isManagerDetails, setManagerDetails] = useState(null);
   const [tags, setTags] = useState([]);
@@ -62,225 +66,125 @@ const GeneralForm = ({ isActiveStatus }) => {
 
   useEffect(() => {
     if (!data) return;
-    setValue("gender", data?.data?.artist?.gender || "");
-    setValue("insignia", data?.data?.artist?.insignia || "");
-    setValue("taxAddress", data?.data?.artist?.invoice?.taxAddress || "");
-    setValue("taxAddress", data?.data?.artist?.invoice?.taxAddress || "");
-
-    setValue("taxBankIBAN", data?.data?.artist?.invoice?.taxBankIBAN || "");
-
-    setValue("taxBankName", data?.data?.artist?.invoice?.taxBankName || "");
-
-    setValue("taxCity", data?.data?.artist?.invoice?.taxCity || "");
-
-    setValue("taxCountry", data?.data?.artist?.invoice?.taxCountry || "");
-
-    setValue("taxEmail", data?.data?.artist?.invoice?.taxEmail || "");
-    setValue("taxLegalName", data?.data?.artist?.invoice?.taxLegalName || "");
-
-    setValue("taxNumber", data?.data?.artist?.invoice?.taxNumber || "");
-
-    setValue("taxPhone", data?.data?.artist?.invoice?.taxPhone || "");
-
-    setValue("taxProvince", data?.data?.artist?.invoice?.taxProvince || "");
-
-    setValue("taxZipCode", data?.data?.artist?.invoice?.taxZipCode || "");
-
-    setValue("logAddress", data?.data?.artist?.logistics?.logAddress || "");
-
-    setValue("logCity", data?.data?.artist?.logistics?.logCity || "");
-    setValue("logCountry", data?.data?.artist?.logistics?.logCountry || "");
-    setValue("logEmail", data?.data?.artist?.logistics?.logEmail || "");
-    setValue("logName", data?.data?.artist?.logistics?.logName || "");
-    setValue("logNotes", data?.data?.artist?.logistics?.logNotes || "");
-    setValue("logPhone", data?.data?.artist?.logistics?.logPhone || "");
-
-    setValue("logProvince", data?.data?.artist?.logistics?.logProvince || "");
-
-    setValue("logZipCode", data?.data?.artist?.logistics?.logZipCode || "");
-
-    setValue("language", data?.data?.artist?.language || "");
-    setValue("artistSurname1", data?.data?.artist?.artistSurname1 || "");
-    setValue("artistSurname2", data?.data?.artist?.artistSurname2 || "");
-    setValue("nickName", data?.data?.artist?.nickName || "");
-
-    setValue("artistName", data?.data?.artist?.artistName || "");
-    setValue("country", data?.data?.artist?.address?.country || "");
-    setValue("zip", data?.data?.artist?.zipCode || "");
-    setValue("city", data?.data?.artist?.address?.city || "");
-    setValue("stateRegion", data?.data?.artist?.address?.state || "");
-    setValue("zip", data?.data?.artist?.address?.zipCode || "");
-    setValue("phoneNumber", data?.data?.artist?.phone || "");
-    // setValue("address", data?.data?.artist?.address?.residentialAddress || "");
-    setValue("email", data?.data?.artist?.email || "");
-    setValue("about", data?.data?.artist?.aboutArtist?.about || "");
-    setValue("language", data?.data?.artist?.language || []);
-    setValue("gender", data?.data?.artist?.gender || "");
-    setValue("accounts", data?.data?.artist?.links || "");
-    setValue("highlights", data?.data?.artist?.highlights?.addHighlights || "");
-    setValue("vatAmount", data?.data?.artist?.invoice?.vatAmount || "");
-    setValue("discipline", data?.data?.artist?.aboutArtist?.discipline || "");
-
-    setValue("cvEntries", data?.data?.artist?.highlights?.cv || "");
-
-    setValue("documentName", data?.data?.artist?.documents?.documentName || []);
-    setValue(
-      "externalTags",
-      `#${data?.data?.artist?.otherTags?.extTags} ` || []
-    );
-    setValue(
-      "lastRevalidationDate",
-      dayjs(data?.data?.artist?.lastRevalidationDate).format("YYYY-MM-DD") || ""
-    );
-
-    setValue(
-      "nextRevalidationDate",
-      dayjs(data?.data?.artist?.nextRevalidationDate).format("YYYY-MM-DD") || ""
-    );
-
-    setValue(
-      "managerName",
-      data?.data?.artist?.managerDetails?.managerName || ""
-    );
-
-    setValue(
-      "managerLanguage",
-      data?.data?.artist?.managerDetails?.language || []
-    );
-
-    setValue(
-      "managerAddress",
-      data?.data?.artist?.managerDetails?.address?.address || ""
-    );
-    setValue(
-      "managerCity",
-      data?.data?.artist?.managerDetails?.address?.city || ""
-    );
-    setValue(
-      "managerCountry",
-      data?.data?.artist?.managerDetails?.address?.country || ""
-    );
-    setValue(
-      "managerState",
-      data?.data?.artist?.managerDetails?.address?.state || ""
-    );
-    setValue(
-      "managerZipCode",
-      data?.data?.artist?.managerDetails?.address?.zipCode || ""
-    );
-
-    setValue(
-      "managerEmail",
-      data?.data?.artist?.managerDetails?.managerEmail || ""
-    );
-    setValue(
-      "managerGender",
-      data?.data?.artist?.managerDetails?.managerGender || ""
-    );
-    setValue(
-      "managerPhone",
-      data?.data?.artist?.managerDetails?.managerPhone || ""
-    );
-
-    setValue(
-      "emergencyContactAddress",
-      data?.data?.artist?.emergencyInfo?.emergencyContactAddress || ""
-    );
-
-    setValue(
-      "emergencyContactEmail",
-      data?.data?.artist?.emergencyInfo?.emergencyContactEmail || ""
-    );
-
-    setValue(
-      "emergencyContactName",
-      data?.data?.artist?.emergencyInfo?.emergencyContactName || ""
-    );
-
-    setValue(
-      "emergencyContactPhone",
-      data?.data?.artist?.emergencyInfo?.emergencyContactPhone || ""
-    );
-
-    setValue(
-      "emergencyContactRelation",
-      data?.data?.artist?.emergencyInfo?.emergencyContactRelation || ""
-    );
+  
+    const artist = data?.data?.artist || {};
+    const invoice = artist.invoice || {};
+    const logistics = artist.logistics || {};
+    const address = artist.address || {};
+    const aboutArtist = artist.aboutArtist || {};
+    const reviewDetails = artist.reviewDetails || {};
+    const highlights = artist.highlights || {};
+    const documents = artist.documents || {};
+    const otherTags = artist.otherTags || {};
+    const managerDetails = artist.managerDetails || {};
+    const managerAddress = managerDetails.address || {};
+    const emergencyInfo = artist.emergencyInfo || {};
+    const profile = artist.profile || {};
+    const commercialization = artist.commercilization || {};
+  
+    // Basic artist info with reviewDetails priority
+    setValue("gender", reviewDetails.gender || artist.gender || "");
+    setValue("insignia", reviewDetails.insignia || artist.insignia || "");
+    setValue("language", reviewDetails.language || artist.language || "");
+    setValue("artistSurname1", reviewDetails.artistSurname1 || artist.artistSurname1 || "");
+    setValue("artistSurname2", reviewDetails.artistSurname2 || artist.artistSurname2 || "");
+    setValue("nickName", reviewDetails.nickName || artist.nickName || "");
+    setValue("artistName", reviewDetails.artistName || artist.artistName || "");
+    setValue("phoneNumber", reviewDetails.phone || artist.phone || "");
+    setValue("email", reviewDetails.email || artist.email || "");
+    setValue("about", reviewDetails.aboutArtist?.about || aboutArtist.about || "");
+    setValue("discipline", reviewDetails.aboutArtist?.discipline || aboutArtist.discipline || "");
+  
+    // Address (using address object primarily)
+    setValue("country", reviewDetails.address?.country || address.country || "");
+    setValue("zip", reviewDetails.address?.zipCode || address.zipCode || artist.zipCode || "");
+    setValue("city", reviewDetails.address?.city || address.city || "");
+    setValue("stateRegion", reviewDetails.address?.state || address.state || "");
+    setSearchResult(reviewDetails.address?.residentialAddress || address.residentialAddress || "");
+  
+    // Tax/Invoice info
+    setValue("taxAddress", reviewDetails.invoice?.taxAddress || invoice.taxAddress || "");
+    setValue("taxBankIBAN", reviewDetails.invoice?.taxBankIBAN || invoice.taxBankIBAN || "");
+    setValue("taxBankName", reviewDetails.invoice?.taxBankName || invoice.taxBankName || "");
+    setValue("taxCity", reviewDetails.invoice?.taxCity || invoice.taxCity || "");
+    setValue("taxCountry", reviewDetails.invoice?.taxCountry || invoice.taxCountry || "");
+    setValue("taxEmail", reviewDetails.invoice?.taxEmail || invoice.taxEmail || "");
+    setValue("taxLegalName", reviewDetails.invoice?.taxLegalName || invoice.taxLegalName || "");
+    setValue("taxNumber", reviewDetails.invoice?.taxNumber || invoice.taxNumber || "");
+    setValue("taxPhone", reviewDetails.invoice?.taxPhone || invoice.taxPhone || "");
+    setValue("taxProvince", reviewDetails.invoice?.taxProvince || invoice.taxProvince || "");
+    setValue("taxZipCode", reviewDetails.invoice?.taxZipCode || invoice.taxZipCode || "");
+    setValue("vatAmount", reviewDetails.invoice?.vatAmount || invoice.vatAmount || "");
+  
+    // Logistics
+    setValue("logAddress", reviewDetails.logistics?.logAddress || logistics.logAddress || "");
+    setValue("logCity", reviewDetails.logistics?.logCity || logistics.logCity || "");
+    setValue("logCountry", reviewDetails.logistics?.logCountry || logistics.logCountry || "");
+    setValue("logEmail", reviewDetails.logistics?.logEmail || logistics.logEmail || "");
+    setValue("logName", reviewDetails.logistics?.logName || logistics.logName || "");
+    setValue("logNotes", reviewDetails.logistics?.logNotes || logistics.logNotes || "");
+    setValue("logPhone", reviewDetails.logistics?.logPhone || logistics.logPhone || "");
+    setValue("logProvince", reviewDetails.logistics?.logProvince || logistics.logProvince || "");
+    setValue("logZipCode", reviewDetails.logistics?.logZipCode || logistics.logZipCode || "");
+  
+    // Additional fields
+    setValue("accounts", reviewDetails.links || artist.links || []);
+    setValue("highlights", reviewDetails.highlights?.addHighlights || highlights.addHighlights || []);
+    setValue("cvEntries", reviewDetails.highlights?.cv || highlights.cv || "");
+    setValue("documentName", reviewDetails.documents?.documentName || documents.documentName || []);
+    setValue("externalTags", reviewDetails.otherTags?.extTags ? `#${reviewDetails.otherTags.extTags}` : otherTags.extTags ? `#${otherTags.extTags}` : []);
+  
+    // Dates
+    setValue("lastRevalidationDate", reviewDetails.lastRevalidationDate ? dayjs(reviewDetails.lastRevalidationDate).format("YYYY-MM-DD") : artist.lastRevalidationDate ? dayjs(artist.lastRevalidationDate).format("YYYY-MM-DD") : "");
+    setValue("nextRevalidationDate", reviewDetails.nextRevalidationDate ? dayjs(reviewDetails.nextRevalidationDate).format("YYYY-MM-DD") : artist.nextRevalidationDate ? dayjs(artist.nextRevalidationDate).format("YYYY-MM-DD") : "");
+  
+    // Manager
+    setValue("managerName", reviewDetails.managerDetails?.managerName || managerDetails.managerName || "");
+    setValue("managerLanguage", reviewDetails.managerDetails?.language || managerDetails.language || []);
+    setValue("managerAddress", reviewDetails.managerDetails?.address?.address || managerAddress.address || "");
+    setValue("managerCity", reviewDetails.managerDetails?.address?.city || managerAddress.city || "");
+    setValue("managerCountry", reviewDetails.managerDetails?.address?.country || managerAddress.country || "");
+    setValue("managerState", reviewDetails.managerDetails?.address?.state || managerAddress.state || "");
+    setValue("managerZipCode", reviewDetails.managerDetails?.address?.zipCode || managerAddress.zipCode || "");
+    setValue("managerEmail", reviewDetails.managerDetails?.managerEmail || managerDetails.managerEmail || "");
+    setValue("managerGender", reviewDetails.managerDetails?.managerGender || managerDetails.managerGender || "");
+    setValue("managerPhone", reviewDetails.managerDetails?.managerPhone || managerDetails.managerPhone || "");
+    setManagerDetails(reviewDetails.isManagerDetails || artist.isManagerDetails || false);
+  
+    // Emergency Contact
+    setValue("emergencyContactAddress", reviewDetails.emergencyInfo?.emergencyContactAddress || emergencyInfo.emergencyContactAddress || "");
+    setValue("emergencyContactEmail", reviewDetails.emergencyInfo?.emergencyContactEmail || emergencyInfo.emergencyContactEmail || "");
+    setValue("emergencyContactName", reviewDetails.emergencyInfo?.emergencyContactName || emergencyInfo.emergencyContactName || "");
+    setValue("emergencyContactPhone", reviewDetails.emergencyInfo?.emergencyContactPhone || emergencyInfo.emergencyContactPhone || "");
+    setValue("emergencyContactRelation", reviewDetails.emergencyInfo?.emergencyContactRelation || emergencyInfo.emergencyContactRelation || "");
+  
+    // Media
     setValue("additionalImage", []);
-    setValue(
-      "existingAdditionalImage",
-      data?.data?.artist?.profile?.additionalImage || []
-    );
-
-    setValue("mainImage", data?.data?.artist?.profile?.mainImage);
-    setValue("backImage", data?.data?.artist?.profile?.backImage);
-
-    setValue("inProcessImage", data?.data?.artist?.profile?.inProcessImage);
-    setValue("mainVideo", data?.data?.artist?.profile?.mainVideo);
-
+    setValue("existingAdditionalImage", reviewDetails.profile?.additionalImage || profile.additionalImage || []);
+    setValue("mainImage", reviewDetails.profile?.mainImage || profile.mainImage || "");
+    setValue("backImage", reviewDetails.profile?.backImage || profile.backImage || "");
+    setValue("inProcessImage", reviewDetails.profile?.inProcessImage || profile.inProcessImage || "");
+    setValue("mainVideo", reviewDetails.profile?.mainVideo || profile.mainVideo || "");
     setValue("additionalVideo", []);
-    setValue(
-      "existingAdditionalVideo",
-      data?.data?.artist?.profile?.additionalVideo
-    );
-    setValue(
-      "isArtistEditInfoRequest",
-      setIsEditInfo(data?.data?.artist?.isArtistEditInfoRequest)
-    );
-    setManagerDetails(data?.data?.artist?.isManagerDetails);
-    setValue(
-      "style",
-      data?.data?.artist?.aboutArtist?.discipline?.map((item) =>
-        item?.style?.map((opt) => {
-          return { value: opt, label: opt };
-        })
-      ) || []
-    );
-
-    setValue(
-      "publishingCatalog",
-      data?.data?.artist?.commercilization?.publishingCatalog || []
-    );
-    setValue(
-      "artProvider",
-      data?.data?.artist?.commercilization?.artProvider || ""
-    );
-    setValue(
-      "artistLevel",
-      data?.data?.artist?.commercilization?.artistLevel || ""
-    );
-
-    setValue(
-      "artistPlus",
-      data?.data?.artist?.commercilization?.artistPlus || ""
-    );
-
-    setValue(
-      "customOrder",
-      data?.data?.artist?.commercilization?.customOrder || ""
-    );
-
-    setValue(
-      "maxNumberOfArtwork",
-      data?.data?.artist?.commercilization?.maxNumberOfArtwork || ""
-    );
-
-    setValue(
-      "minNumberOfArtwork",
-      data?.data?.artist?.commercilization?.minNumberOfArtwork || ""
-    );
-
-    setValue(
-      "scorePlatform",
-      data?.data?.artist?.commercilization?.scorePlatform || ""
-    );
-
-    setValue(
-      "scoreProfessional",
-      data?.data?.artist?.commercilization?.scoreProfessional || ""
-    );
-
-    setSearchResult(data?.data?.artist?.address?.residentialAddress || "");
+    setValue("existingAdditionalVideo", reviewDetails.profile?.additionalVideo || profile.additionalVideo || []);
+  
+    // Commercialization
+    setValue("publishingCatalog", reviewDetails.commercilization?.publishingCatalog || commercialization.publishingCatalog || []);
+    setValue("artProvider", reviewDetails.commercilization?.artProvider || commercialization.artProvider || "");
+    setValue("artistLevel", reviewDetails.commercilization?.artistLevel || commercialization.artistLevel || "");
+    setValue("artistPlus", reviewDetails.commercilization?.artistPlus || commercialization.artistPlus || "");
+    setValue("customOrder", reviewDetails.commercilization?.customOrder || commercialization.customOrder || "");
+    setValue("maxNumberOfArtwork", reviewDetails.commercilization?.maxNumberOfArtwork || commercialization.maxNumberOfArtwork || "");
+    setValue("minNumberOfArtwork", reviewDetails.commercilization?.minNumberOfArtwork || commercialization.minNumberOfArtwork || "");
+    setValue("scorePlatform", reviewDetails.commercilization?.scorePlatform || commercialization.scorePlatform || "");
+    setValue("scoreProfessional", reviewDetails.commercilization?.scoreProfessional || commercialization.scoreProfessional || "");
+  
+    setValue("isArtistEditInfoRequest", reviewDetails.isArtistEditInfoRequest ? setIsEditInfo(reviewDetails.isArtistEditInfoRequest) : artist.isArtistEditInfoRequest ? setIsEditInfo(artist.isArtistEditInfoRequest) : false);
+    setValue("style", reviewDetails.aboutArtist?.discipline?.map(item => 
+      item?.style?.map(opt => ({ value: opt, label: opt })) || []
+    ) || aboutArtist.discipline?.map(item => 
+      item?.style?.map(opt => ({ value: opt, label: opt })) || []
+    ) || []);
   }, [data]);
 
   const handlePDF = (file) => {
@@ -531,7 +435,7 @@ const GeneralForm = ({ isActiveStatus }) => {
                 htmlFor="nickName"
                 className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
               >
-                {t("Nickname")}
+                {t("Artist Display Name")}
               </label>
             </div>
           </div>

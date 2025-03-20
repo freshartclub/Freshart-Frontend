@@ -137,7 +137,7 @@ const AddArtwork = () => {
   const [isArtProviderField, setIsArtProviderField] = useState("");
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-
+  const [ispreviewed , setIsPreviewed] = useState(false);
   const closePopup = () => {
     setIsPopupOpen(false);
   };
@@ -233,161 +233,459 @@ const AddArtwork = () => {
     return fullName.trim();
   };
 
+
+  console.log(data?.data)
+
   useEffect(() => {
     if (id) {
-      setIsArtProviderField(data?.data?.isArtProvider || "");
-      setArtDicipline(data?.data?.discipline?.artworkDiscipline || "");
-      setActiveTab(data?.data?.commercialization?.activeTab || "");
-      setInternalTags(data?.data?.tags?.intTags || []);
-      setExternalTags(data?.data?.tags?.extTags || []);
-      setCatalogPrice(data?.data?.pricing?.artistFees || 0);
-      setValue("currency", "EUR");
+      setIsArtProviderField(
+        ispreviewed 
+          ? data?.data?.reviewDetails?.isArtProvider 
+          : data?.data?.isArtProvider || ""
+      );
+      
+      setArtDicipline(
+        ispreviewed 
+          ? data?.data?.reviewDetails?.discipline?.artworkDiscipline 
+          : data?.data?.discipline?.artworkDiscipline || ""
+      );
+      
+      setActiveTab(
+        ispreviewed 
+          ? data?.data?.reviewDetails?.commercialization?.activeTab 
+          : data?.data?.commercialization?.activeTab || ""
+      );
+      
+      setInternalTags(
+        ispreviewed 
+          ? data?.data?.reviewDetails?.tags?.intTags 
+          : data?.data?.tags?.intTags || []
+      );
+      
+      setExternalTags(
+        ispreviewed 
+          ? data?.data?.reviewDetails?.tags?.extTags 
+          : data?.data?.tags?.extTags || []
+      );
+      
+      setCatalogPrice(
+        ispreviewed 
+          ? data?.data?.reviewDetails?.pricing?.artistFees 
+          : data?.data?.pricing?.artistFees || 0
+      );
+      
+      setValue(
+        "currency",
+        ispreviewed 
+          ? data?.data?.reviewDetails?.pricing?.currency 
+          : data?.data?.pricing?.currency || "EUR"
+      );
+      
       setValue(
         "purchaseCatalog",
-        data?.data?.commercialization?.purchaseCatalog || ""
+        ispreviewed 
+          ? data?.data?.reviewDetails?.commercialization?.purchaseCatalog 
+          : data?.data?.commercialization?.purchaseCatalog || ""
       );
-
-      setValue("availableTo", data?.data?.restriction?.availableTo);
-      setValue("collectionList", data?.data?.collectionList || "");
+      
+      setValue(
+        "availableTo",
+        ispreviewed 
+          ? data?.data?.reviewDetails?.restriction?.availableTo 
+          : data?.data?.restriction?.availableTo || ""
+      );
+      
+      setValue(
+        "collectionList",
+        ispreviewed 
+          ? data?.data?.reviewDetails?.collectionList 
+          : data?.data?.collectionList || ""
+      );
+      
       setValue(
         "discountAcceptation",
-        data?.data?.restriction?.discountAcceptation
+        ispreviewed 
+          ? data?.data?.reviewDetails?.restriction?.discountAcceptation 
+          : data?.data?.restriction?.discountAcceptation || ""
       );
-      setValue("provideArtistName", data?.data?.provideArtistName);
-      setValue("artworkSeries", data?.data?.artworkSeries);
-      setValue("artworkCreationYear", data?.data?.artworkCreationYear || "");
-      setValue("artworkName", data?.data?.artworkName || "");
-      setValue("productDescription", data?.data?.productDescription || "");
-
+      
+      setValue(
+        "provideArtistName",
+        ispreviewed 
+          ? data?.data?.reviewDetails?.provideArtistName 
+          : data?.data?.provideArtistName || ""
+      );
+      
+      setValue(
+        "artworkSeries",
+        ispreviewed 
+          ? data?.data?.reviewDetails?.artworkSeries 
+          : data?.data?.artworkSeries || ""
+      );
+      
+      setValue(
+        "artworkCreationYear",
+        ispreviewed 
+          ? data?.data?.reviewDetails?.artworkCreationYear 
+          : data?.data?.artworkCreationYear || ""
+      );
+      
+      setValue(
+        "artworkName",
+        ispreviewed 
+          ? data?.data?.reviewDetails?.artworkName 
+          : data?.data?.artworkName || ""
+      );
+      
+      setValue(
+        "productDescription",
+        ispreviewed 
+          ? data?.data?.reviewDetails?.productDescription 
+          : data?.data?.productDescription || ""
+      );
+      
       setValue(
         "artworkTechnic",
-        data?.data?.additionalInfo?.artworkTechnic || ""
+        ispreviewed 
+          ? data?.data?.reviewDetails?.additionalInfo?.artworkTechnic 
+          : data?.data?.additionalInfo?.artworkTechnic || ""
       );
-      setValue("artworkTheme", data?.data?.additionalInfo?.artworkTheme || "");
+      
+      setValue(
+        "artworkTheme",
+        ispreviewed 
+          ? data?.data?.reviewDetails?.additionalInfo?.artworkTheme 
+          : data?.data?.additionalInfo?.artworkTheme || ""
+      );
+      
       setValue(
         "artworkOrientation",
-        data?.data?.additionalInfo?.artworkOrientation || ""
+        ispreviewed 
+          ? data?.data?.reviewDetails?.additionalInfo?.artworkOrientation 
+          : data?.data?.additionalInfo?.artworkOrientation || ""
       );
-
-      setValue("material", data?.data?.additionalInfo?.material || "");
-      setValue("weight", String(data?.data?.additionalInfo?.weight) || "");
-      setValue("length", String(data?.data?.additionalInfo?.length) || "");
-      setValue("height", String(data?.data?.additionalInfo?.height) || "");
-      setValue("width", String(data?.data?.additionalInfo?.width) || "");
+      
+      setValue(
+        "material",
+        ispreviewed 
+          ? data?.data?.reviewDetails?.additionalInfo?.material 
+          : data?.data?.additionalInfo?.material || ""
+      );
+      
+      setValue(
+        "weight",
+        ispreviewed 
+          ? String(data?.data?.reviewDetails?.additionalInfo?.weight) 
+          : String(data?.data?.additionalInfo?.weight) || ""
+      );
+      
+      setValue(
+        "length",
+        ispreviewed 
+          ? String(data?.data?.reviewDetails?.additionalInfo?.length) 
+          : String(data?.data?.additionalInfo?.length) || ""
+      );
+      
+      setValue(
+        "height",
+        ispreviewed 
+          ? String(data?.data?.reviewDetails?.additionalInfo?.height) 
+          : String(data?.data?.additionalInfo?.height) || ""
+      );
+      
+      setValue(
+        "width",
+        ispreviewed 
+          ? String(data?.data?.reviewDetails?.additionalInfo?.width) 
+          : String(data?.data?.additionalInfo?.width) || ""
+      );
+      
       setValue(
         "hangingAvailable",
-        data?.data?.additionalInfo?.hangingAvailable || ""
+        ispreviewed 
+          ? data?.data?.reviewDetails?.additionalInfo?.hangingAvailable 
+          : data?.data?.additionalInfo?.hangingAvailable || ""
       );
+      
       setValue(
         "hangingDescription",
-        data?.data?.additionalInfo?.hangingDescription || ""
+        ispreviewed 
+          ? data?.data?.reviewDetails?.additionalInfo?.hangingDescription 
+          : data?.data?.additionalInfo?.hangingDescription || ""
       );
-      setValue("framed", data?.data?.additionalInfo?.framed || "");
-
+      
+      setValue(
+        "framed",
+        ispreviewed 
+          ? data?.data?.reviewDetails?.additionalInfo?.framed 
+          : data?.data?.additionalInfo?.framed || ""
+      );
+      
       setValue(
         "framedDescription",
-        data?.data?.additionalInfo?.framedDescription || ""
+        ispreviewed 
+          ? data?.data?.reviewDetails?.additionalInfo?.framedDescription 
+          : data?.data?.additionalInfo?.framedDescription || ""
       );
-      setValue("frameHeight", data?.data?.additionalInfo?.frameHeight || "");
-      setValue("frameLength", data?.data?.additionalInfo?.frameLength || "");
-      setValue("frameWidth", data?.data?.additionalInfo?.frameWidth || "");
-
+      
+      setValue(
+        "frameHeight",
+        ispreviewed 
+          ? data?.data?.reviewDetails?.additionalInfo?.frameHeight 
+          : data?.data?.additionalInfo?.frameHeight || ""
+      );
+      
+      setValue(
+        "frameLength",
+        ispreviewed 
+          ? data?.data?.reviewDetails?.additionalInfo?.frameLength 
+          : data?.data?.additionalInfo?.frameLength || ""
+      );
+      
+      setValue(
+        "frameWidth",
+        ispreviewed 
+          ? data?.data?.reviewDetails?.additionalInfo?.frameWidth 
+          : data?.data?.additionalInfo?.frameWidth || ""
+      );
+      
       setValue(
         "artworkStyleType",
-        data?.data?.additionalInfo?.artworkStyle?.map((opt) => ({
-          value: opt,
-          label: t(opt),
-        })) || ""
+        ispreviewed 
+          ? data?.data?.reviewDetails?.additionalInfo?.artworkStyle?.map((opt) => ({
+              value: opt,
+              label: t(opt),
+            })) 
+          : data?.data?.additionalInfo?.artworkStyle?.map((opt) => ({
+              value: opt,
+              label: t(opt),
+            })) || ""
       );
+      
       setValue(
         "emotions",
-        data?.data?.additionalInfo?.emotions?.map((opt) => ({
-          value: opt,
-          label: t(opt),
-        })) || ""
+        ispreviewed 
+          ? data?.data?.reviewDetails?.additionalInfo?.emotions?.map((opt) => ({
+              value: opt,
+              label: t(opt),
+            })) 
+          : data?.data?.additionalInfo?.emotions?.map((opt) => ({
+              value: opt,
+              label: t(opt),
+            })) || ""
       );
+      
       setValue(
         "colors",
-        data?.data?.additionalInfo?.colors?.map((opt) => ({
-          value: opt,
-          label: t(opt),
-        })) || ""
+        ispreviewed 
+          ? data?.data?.reviewDetails?.additionalInfo?.colors?.map((opt) => ({
+              value: opt,
+              label: t(opt),
+            })) 
+          : data?.data?.additionalInfo?.colors?.map((opt) => ({
+              value: opt,
+              label: t(opt),
+            })) || ""
       );
-
-      setValue("offensive", data?.data?.additionalInfo?.offensive || "");
-      setValue("exclusive", data?.data?.additionalInfo?.exclusive || "");
-
-
+      
       setValue(
-        "purchaseCatalog",
-        data?.data?.commercialization?.purchaseCatalog || ""
+        "offensive",
+        ispreviewed 
+          ? data?.data?.reviewDetails?.additionalInfo?.offensive 
+          : data?.data?.additionalInfo?.offensive || ""
       );
-      setValue("purchaseType", data?.data?.commercialization?.purchaseType);
-
+      
+      setValue(
+        "exclusive",
+        ispreviewed 
+          ? (data?.data?.reviewDetails?.exclusive === true ? "Yes" : data?.data?.reviewDetails?.exclusive === false ? "No" : "") 
+          : (data?.data?.exclusive === true ? "Yes" : data?.data?.exclusive === false ? "No" : "")
+      );
+      
+      setValue(
+        "purchaseType",
+        ispreviewed 
+          ? data?.data?.reviewDetails?.commercialization?.purchaseType 
+          : data?.data?.commercialization?.purchaseType || ""
+      );
+      
       setValue(
         "downwardOffer",
-        data?.data?.commercialization?.downwardOffer || ""
+        ispreviewed 
+          ? data?.data?.reviewDetails?.commercialization?.downwardOffer 
+          : data?.data?.commercialization?.downwardOffer || ""
       );
-      setValue("upworkOffer", data?.data?.commercialization?.upworkOffer || "");
-      setValue("acceptOfferPrice", data?.data?.pricing?.acceptOfferPrice || "");
+      
+      setValue(
+        "upworkOffer",
+        ispreviewed 
+          ? data?.data?.reviewDetails?.commercialization?.upworkOffer 
+          : data?.data?.commercialization?.upworkOffer || ""
+      );
+      
+      setValue(
+        "acceptOfferPrice",
+        ispreviewed 
+          ? data?.data?.reviewDetails?.pricing?.acceptOfferPrice 
+          : data?.data?.pricing?.acceptOfferPrice || ""
+      );
+      
       setValue(
         "priceRequest",
-        data?.data?.commercialization?.priceRequest || ""
+        ispreviewed 
+          ? data?.data?.reviewDetails?.commercialization?.priceRequest 
+          : data?.data?.commercialization?.priceRequest || ""
       );
+      
       setValue(
         "artistbaseFees",
-        data?.data?.commercialization?.artistbaseFees || ""
+        ispreviewed 
+          ? data?.data?.reviewDetails?.commercialization?.artistbaseFees 
+          : data?.data?.commercialization?.artistbaseFees || ""
       );
-      setValue("basePrice", String(data?.data?.pricing?.basePrice) || "");
-      setValue("dpersentage", data?.data?.pricing?.dpersentage || 0);
-
-      setValue("pCode", data?.data?.inventoryShipping?.pCode || "");
-      setValue("location", data?.data?.inventoryShipping?.location || "");
-
-      setValue("artworkTags", data?.data?.discipline?.artworkTags || []);
-      setValue("existingVideo", data?.data?.media?.otherVideo || []);
-      setValue("existingImage", data?.data?.media?.images || []);
-      setValue("promotion", data?.data?.promotions?.promotion || "");
-      setValue("promotionScore", data?.data?.promotions?.promotionScore || "");
-      setValue("isArtProvider", data?.data?.isArtProvider || "");
+      
+      setValue(
+        "basePrice",
+        ispreviewed 
+          ? String(data?.data?.reviewDetails?.pricing?.basePrice) 
+          : String(data?.data?.pricing?.basePrice) || ""
+      );
+      
+      setValue(
+        "dpersentage",
+        ispreviewed 
+          ? data?.data?.reviewDetails?.pricing?.dpersentage 
+          : data?.data?.pricing?.dpersentage || 0
+      );
+      
+      setValue(
+        "pCode",
+        ispreviewed 
+          ? data?.data?.reviewDetails?.inventoryShipping?.pCode 
+          : data?.data?.inventoryShipping?.pCode || ""
+      );
+      
+      setValue(
+        "location",
+        ispreviewed 
+          ? data?.data?.reviewDetails?.inventoryShipping?.location 
+          : data?.data?.inventoryShipping?.location || ""
+      );
+      
+      setValue(
+        "artworkTags",
+        ispreviewed 
+          ? data?.data?.reviewDetails?.discipline?.artworkTags 
+          : data?.data?.discipline?.artworkTags || []
+      );
+      
+      setValue(
+        "existingVideo",
+        ispreviewed 
+          ? data?.data?.reviewDetails?.media?.otherVideo 
+          : data?.data?.media?.otherVideo || []
+      );
+      
+      setValue(
+        "existingImage",
+        ispreviewed 
+          ? data?.data?.reviewDetails?.media?.images 
+          : data?.data?.media?.images || []
+      );
+      
+      setValue(
+        "promotion",
+        ispreviewed 
+          ? data?.data?.reviewDetails?.promotions?.promotion 
+          : data?.data?.promotions?.promotion || ""
+      );
+      
+      setValue(
+        "promotionScore",
+        ispreviewed 
+          ? data?.data?.reviewDetails?.promotions?.promotionScore 
+          : data?.data?.promotions?.promotionScore || ""
+      );
+      
+      setValue(
+        "isArtProvider",
+        ispreviewed 
+          ? data?.data?.reviewDetails?.isArtProvider 
+          : data?.data?.isArtProvider || ""
+      );
+      
       setValue(
         "subscriptionCatalog",
-        data?.data?.commercialization?.subscriptionCatalog || ""
+        ispreviewed 
+          ? data?.data?.reviewDetails?.commercialization?.subscriptionCatalog 
+          : data?.data?.commercialization?.subscriptionCatalog || ""
       );
+      
       setValue(
         "purchaseOption",
-        data?.data?.commercialization?.purchaseOption || ""
+        ispreviewed 
+          ? data?.data?.reviewDetails?.commercialization?.purchaseOption 
+          : data?.data?.commercialization?.purchaseOption || ""
       );
-
-      setValue("intTags", data?.data?.intTags || []);
-      setValue("extTags", data?.data?.extTags || []);
-      setValue("currency", data?.data?.pricing?.currency || "EUR");
+      
+      setValue(
+        "intTags",
+        ispreviewed 
+          ? data?.data?.reviewDetails?.intTags 
+          : data?.data?.intTags || []
+      );
+      
+      setValue(
+        "extTags",
+        ispreviewed 
+          ? data?.data?.reviewDetails?.extTags 
+          : data?.data?.extTags || []
+      );
+      
       setValue(
         "packageMaterial",
-        data?.data?.inventoryShipping?.packageMaterial || ""
+        ispreviewed 
+          ? data?.data?.reviewDetails?.inventoryShipping?.packageMaterial 
+          : data?.data?.inventoryShipping?.packageMaterial || ""
       );
+      
       setValue(
         "packageWeight",
-        data?.data?.inventoryShipping?.packageWeight || ""
+        ispreviewed 
+          ? data?.data?.reviewDetails?.inventoryShipping?.packageWeight 
+          : data?.data?.inventoryShipping?.packageWeight || ""
       );
+      
       setValue(
         "packageHeight",
-        data?.data?.inventoryShipping?.packageHeight || ""
+        ispreviewed 
+          ? data?.data?.reviewDetails?.inventoryShipping?.packageHeight 
+          : data?.data?.inventoryShipping?.packageHeight || ""
       );
+      
       setValue(
         "packageLength",
-        data?.data?.inventoryShipping?.packageLength || ""
+        ispreviewed 
+          ? data?.data?.reviewDetails?.inventoryShipping?.packageLength 
+          : data?.data?.inventoryShipping?.packageLength || ""
       );
+      
       setValue(
         "packageWidth",
-        data?.data?.inventoryShipping?.packageWidth || ""
+        ispreviewed 
+          ? data?.data?.reviewDetails?.inventoryShipping?.packageWidth 
+          : data?.data?.inventoryShipping?.packageWidth || ""
       );
-
-      setIsComingSoon(data?.data?.inventoryShipping?.comingSoon || Boolean);
+      
+      setIsComingSoon(
+        ispreviewed 
+          ? data?.data?.reviewDetails?.inventoryShipping?.comingSoon 
+          : data?.data?.inventoryShipping?.comingSoon || Boolean
+      );
     } else {
       setValue("provideArtistName", name(user));
     }
-  }, [id, data, inProcessImage, seriesData]);
+  }, [id, data, inProcessImage, seriesData, ispreviewed]);
 
   const status = data?.data?.status;
 
@@ -631,7 +929,7 @@ const AddArtwork = () => {
         data: formData,
       };
 
-      if (status === "published") {
+      if (status === "published" || status === "modified") {
         modifyMuatate(newData);
       } else {
         mutate(newData);
@@ -815,6 +1113,32 @@ const AddArtwork = () => {
             <h1 className="cursor-pointer gap-2 bg-black text-white text-[12px] md:text-[16px] px-2 py-2 rounded hover:bg-gray-800">
               {t("Generate Certificate Of Authenticity")}
             </h1>
+
+    
+       {status === "modified" ? <>
+        <span
+  onClick={() => setIsPreviewed(false)}
+  className={`inline-block px-4 py-2 rounded-md cursor-pointer transition duration-300 font-semibold ${
+    !ispreviewed
+      ? "bg-black border border-zinc-500 text-white"
+      : " text-black border border-zinc-500 "
+  }`}
+>
+  Old Version
+</span>
+<span
+  onClick={() => setIsPreviewed(true)}
+  className={`inline-block px-4 py-2 rounded-md cursor-pointer transition duration-300 font-semibold ${
+    ispreviewed
+      ? "bg-black border border-zinc-500 text-white"
+      : " text-black  border border-zinc-500"
+  }`}
+>
+  Modified Version
+</span>
+       </>   : null }
+            
+
           </div>
           {/* </div> */}
 
@@ -2528,7 +2852,7 @@ const AddArtwork = () => {
             />
           </div>
 
-          <div className="my-5 px-2 gap-2 flex flex-col sm:flex-row items-center justify-end w-full">
+          <div className="my-5 px-2 gap-2 flex flex-col sm:flex-row items-center lg:fixed md:-bottom-3 right-5 justify-end w-full">
             {!query ? (
               <>
                 <span
@@ -2562,10 +2886,12 @@ const AddArtwork = () => {
                       fontWeight: "600",
                       theme: "dark",
                     }}
-                    className={`text-white sm:w-fit w-full text-center hover:bg-white hover:border hover:border-[#102031] hover:text-[#102031] px-4 py-3 rounded ${
+                    className={`text-white sm:w-fit w-full text-center ${status === "modified" && ispreviewed === false ? "opacity-70 pointer-events-none" : "" } hover:bg-white hover:border hover:border-[#102031] hover:text-[#102031] px-4 py-3 rounded ${
                       isPending ? "opacity-70 pointer-events-none" : ""
                     }`}
                   >
+
+                     
                     {isPending ? t("Previewing...") : t("Save & Preview")}
                   </Button>
                 )}
