@@ -59,7 +59,7 @@ const highlightText = data?.artist?.highlights?.addHighlights?.replace(
           }}
           className="border border-black uppercase !py-1 px-3 sm:px-4 text-xs sm:text-base hover:bg-gray-100 transition-colors"
         >
-          <FaRegHeart size="1.6em"/>e
+          <FaRegHeart size="1.6em"/>
         </Button>
         <img
           src={share}

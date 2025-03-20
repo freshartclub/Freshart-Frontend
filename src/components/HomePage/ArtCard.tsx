@@ -152,16 +152,16 @@ const ArtCard = ({ data, tittle, artistData, viewType }) => {
     return (
       <div
         key={item._id}
-        className="relative cursor-pointer px-3 py-3 mx-2 flex-shrink-0 bg-white shadow-md hover:shadow-xl transition-shadow duration-300 w-[280px] h-[350px]" 
+        className="relative cursor-pointer px-3 py-3 mx-2 flex-shrink-0 bg-white shadow-md hover:shadow-xl transition-shadow duration-300 w-[280px] h-[350px] group"
       >
-        <div className="relative overflow-hidden rounded-md h-[200px] w-full"> 
+        <div className="relative overflow-hidden rounded-md h-[200px] w-full">
           <img
             onClick={() => handleRedirectToDescription(item?._id)}
             src={`${lowImageUrl}/${item?.media}`}
             alt="Artwork"
             className={`w-full h-full object-contain transition-all duration-300 
-              ${isOffensive && !isViewed ? "blur-lg brightness-75 group-hover:blur-md" : ""}
-              group-hover:scale-105`}
+              ${isOffensive && !isViewed ? "blur-lg brightness-75" : ""}
+              hover:scale-105`}
           />
 
           {isOffensive && !isViewed ? (
@@ -190,7 +190,7 @@ const ArtCard = ({ data, tittle, artistData, viewType }) => {
               className="absolute bg-white/90 px-2 py-1 rounded-full top-2 right-2 flex items-center gap-1 text-xs"
             >
               <p>Offensive</p>
-              <FaToggleOn className="text-gray-600" />
+              <FaToggleOn class="text-gray-600" />
             </div>
           ) : null}
         </div>
@@ -293,14 +293,12 @@ const ArtCard = ({ data, tittle, artistData, viewType }) => {
       </h1>
       {data && data.length > 0 && (
         <>
-          
           <div className="md:hidden">
             <Slider {...sliderSettings}>
               {data.map((item) => renderCard(item))}
             </Slider>
           </div>
 
-       
           <div className="hidden md:block">
             {data.length >= 5 ? (
               <Slider {...sliderSettings}>
