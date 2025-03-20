@@ -1,57 +1,21 @@
+import { useEffect, useRef, useState } from "react";
+import { FaEye, FaToggleOn } from "react-icons/fa";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
+import { MdOutlineOpenInNew } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-import Slider from "react-slick";
 import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
 import Loader from "../ui/Loader";
 import { lowImageUrl } from "../utils/baseUrls";
 import { useGetRecentArtwork } from "./http/getRecentArtwork";
-import { useEffect, useState } from "react";
-import { FaEye, FaToggleOn } from "react-icons/fa";
-import { MdOutlineOpenInNew } from "react-icons/md";
 
 const RecentSection = () => {
   const { data, isLoading } = useGetRecentArtwork();
   const [viewedImages, setViewedImages] = useState({});
+  const scrollContainerRef = useRef(null);
+  const [isStart, setIsStart] = useState(true);
+  const [isEnd, setIsEnd] = useState(false);
   const TEN_DAYS_MS = 10 * 24 * 60 * 60 * 1000;
-
-  const settings = {
-    dots: true,
-    infinite: data && data.length > 1 ? true : false,
-    speed: 500,
-    slidesToShow: 4,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 2000,
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 3,
-          slidesToScroll: 1,
-          infinite: data && data.length > 1 ? true : false,
-          dots: true,
-        },
-      },
-      {
-        breakpoint: 768,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 1,
-          infinite: data && data.length > 1 ? true : false,
-          dots: true,
-        },
-      },
-      {
-        breakpoint: 440,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-          infinite: data && data.length > 1 ? true : false,
-          dots: true,
-        },
-      },
-    ],
-  };
 
   const navigate = useNavigate();
   const handleRedirectToDescription = (id: string) => {
@@ -87,6 +51,127 @@ const RecentSection = () => {
     setViewedImages(filteredData);
   }, []);
 
+  useEffect(() => {
+    const handleScrollCheck = () => {
+      const container = scrollContainerRef.current;
+      if (!container) return;
+      setIsStart(container.scrollLeft === 0);
+      setIsEnd(
+        container.scrollLeft + container.clientWidth >= container.scrollWidth
+      );
+    };
+
+    const container = scrollContainerRef.current;
+    if (container) {
+      container.addEventListener("scroll", handleScrollCheck);
+      handleScrollCheck();
+    }
+
+    return () => container?.removeEventListener("scroll", handleScrollCheck);
+  }, [data]);
+
+  const handleScroll = (direction) => {
+    const container = scrollContainerRef.current;
+    if (container) {
+      const scrollAmount = 300;
+      container.scrollBy({
+        left: direction === "left" ? -scrollAmount : scrollAmount,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  const renderCard = (item) => {
+    const isOffensive = item?.additionalInfo?.offensive === "Yes";
+    const isViewed = viewedImages[item?._id];
+    const hasDiscount = item?.additionalInfo?.discount > 0;
+
+    return (
+      <div
+        key={item._id}
+        onClick={() => {
+          if (isOffensive && !isViewed) {
+            return;
+          }
+          handleRedirectToDescription(item?._id);
+        }}
+        className="relative cursor-pointer p-3 border flex-shrink-0 bg-white hover:shadow-[5px_5px_5px_rgba(0,0,0,0.05)] transition-shadow duration-300 min-w-[230px] max-w-[300px] h-[300px] group"
+      >
+        <div className="relative overflow-hidden rounded-md h-[200px] w-full">
+          <img
+            src={`${lowImageUrl}/${item?.media}`}
+            alt="Artwork"
+            className={`w-full h-full object-contain transition-all duration-300
+                ${isOffensive && !isViewed ? "blur-lg brightness-75" : ""}
+                hover:scale-105`}
+          />
+
+          {isOffensive && !isViewed ? (
+            <div className="absolute inset-0 flex flex-col justify-center items-center gap-3 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <button
+                className="bg-white text-gray-800 px-3 py-1 rounded-full text-xs font-medium hover:bg-gray-100 transition-colors flex items-center gap-2"
+                onClick={() => handleViewClick(item?._id)}
+              >
+                <FaEye /> View Image
+              </button>
+              <button
+                onClick={() => handleRedirectToDescription(item?._id)}
+                className="bg-white text-gray-800 px-3 py-1 rounded-full text-xs font-medium hover:bg-gray-100 transition-colors flex items-center gap-2"
+              >
+                <MdOutlineOpenInNew /> Details
+              </button>
+            </div>
+          ) : null}
+
+          {isOffensive && isViewed ? (
+            <div
+              onClick={(e) => {
+                e.stopPropagation();
+                handleHideClick(item?._id);
+              }}
+              className="absolute bg-white/90 px-2 py-1 rounded-full top-2 right-2 flex items-center gap-1 text-xs"
+            >
+              <p>Offensive</p>
+              <FaToggleOn className="text-gray-600" />
+            </div>
+          ) : null}
+        </div>
+
+        <div className="mt-3">
+          <h1 className="font-semibold text-md text-gray-900 truncate">
+            {item?.artworkName?.length > 17
+              ? `${item?.artworkName?.slice(0, 17)}...`
+              : item?.artworkName}
+          </h1>
+          <p className="text-xs text-gray-600 mt-1 font-light italic">
+            by {item?.owner?.artistName}
+          </p>
+          <p className="text-xs text-gray-500 mt-1">
+            {item?.discipline?.artworkDiscipline} •{" "}
+            {item?.additionalInfo?.artworkTechnic}
+          </p>
+          {hasDiscount ? (
+            <div className="mt-2 flex items-center gap-1">
+              <span className="text-red-600 font-medium text-sm">
+                ${item?.additionalInfo?.finalPrice}
+              </span>
+              <span className="text-gray-500 line-through text-xs">
+                ${item?.additionalInfo?.originalPrice}
+              </span>
+              <span className="text-red-600 text-xs">
+                ({item?.additionalInfo?.discount}% off)
+              </span>
+            </div>
+          ) : (
+            <p className="text-gray-700 mt-2 font-medium text-sm">
+              {item?.size}
+            </p>
+          )}
+        </div>
+      </div>
+    );
+  };
+
   return isLoading ? (
     <Loader />
   ) : (
@@ -95,81 +180,36 @@ const RecentSection = () => {
         Recent Viewed
       </h1>
 
-      <Slider {...settings}>
-        {data?.data && data?.data?.length > 0
-          ? data?.data.map((item, index: string) => {
-              const isOffensive = item?.additionalInfo?.offensive === "Yes";
-              const isViewed = viewedImages[item?._id];
+      {data?.data && data?.data?.length > 0 ? (
+        <div className="relative">
+          <button
+            className={`absolute left-0 top-1/2 transform -translate-y-1/2 p-2 rounded-full shadow-lg z-10 ${
+              isStart ? "hidden" : "bg-gray-800 hover:bg-gray-900 text-white"
+            }`}
+            onClick={() => handleScroll("left")}
+            disabled={isStart}
+          >
+            <FaChevronLeft size={20} />
+          </button>
 
-              return (
-                <div key={index} className="relative cursor-pointer px-3 group">
-                  <div className="relative overflow-hidden w-full">
-                    <img
-                      onClick={() => handleRedirectToDescription(item?._id)}
-                      src={`${lowImageUrl}/${item?.media}`}
-                      alt="Artwork"
-                      className={`w-full h-[250px] md:h-[300px] lg:h-[350px] min-[1450px]:h-[400px] object-cover shadow-lg transition-all duration-300 
-                                                   ${
-                                                     isOffensive && !isViewed
-                                                       ? "blur-lg brightness-75 group-hover:blur-md group-hover:brightness-50"
-                                                       : ""
-                                                   }
-                                                 `}
-                    />
+          <div
+            ref={scrollContainerRef}
+            className="flex overflow-x-scroll no-scrollbar space-x-4 pb-2 scrollbar"
+          >
+            {data?.data.map((item) => renderCard(item))}
+          </div>
 
-                    {isOffensive && !isViewed ? (
-                      <div className="absolute inset-0 flex flex-col justify-center items-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <button
-                          className="bg-blue-500 flex items-center gap-3 font-semibold text-white px-4 py-2 rounded-md hover:bg-blue-600"
-                          onClick={() => handleViewClick(item?._id)}
-                        >
-                          <FaEye /> View Image
-                        </button>
-                        <button
-                          onClick={() => handleRedirectToDescription(item?._id)}
-                          className="bg-red-500 flex items-center gap-3 font-semibold text-white px-4 py-2 rounded-md hover:bg-red-600"
-                        >
-                          <MdOutlineOpenInNew /> View Details
-                        </button>
-                      </div>
-                    ) : null}
-
-                    {isOffensive && isViewed ? (
-                      <div
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleHideClick(item?._id);
-                        }}
-                        className="absolute bg-white px-2 py-1 rounded top-2 right-2 flex items-center gap-2"
-                      >
-                        <p className="text-[12px] ">Offensive View</p>
-                        <FaToggleOn size={20} className="text-green-500" />
-                      </div>
-                    ) : null}
-                  </div>
-
-                  <div className="mt-3">
-                    <h1 className="font-bold text-lg text-gray-800 line-clamp-2">
-                      <span>{item?.artworkName}</span>
-                    </h1>
-
-                    <div>
-                      <p className="text-sm flex items-center justify-between text-gray-500">
-                        <span>{item?.discipline?.artworkDiscipline}</span>
-                        <span> {item?.additionalInfo?.artworkTechnic}</span>
-                      </p>
-                    </div>
-
-                    <p className="text-sm text-gray-500">{item?.size}</p>
-                    <p className="text-sm text-gray-500">
-                      {`${item?.additionalInfo?.length} x ${item?.additionalInfo?.width} cm`}
-                    </p>
-                  </div>
-                </div>
-              );
-            })
-          : null}
-      </Slider>
+          <button
+            className={`absolute right-0 top-1/2 transform -translate-y-1/2 p-2 rounded-full shadow-lg z-10 ${
+              isEnd ? "hidden" : "bg-gray-800 hover:bg-gray-900 text-white"
+            }`}
+            onClick={() => handleScroll("right")}
+            disabled={isEnd}
+          >
+            <FaChevronRight size={20} />
+          </button>
+        </div>
+      ) : null}
     </div>
   );
 };

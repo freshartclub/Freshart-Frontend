@@ -1,28 +1,175 @@
+import { useEffect, useRef, useState } from "react";
+import {
+  FaChevronLeft,
+  FaChevronRight,
+  FaEye,
+  FaToggleOn,
+} from "react-icons/fa6";
+import { MdOutlineOpenInNew } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import "../../App.css";
 import Header from "../ui/Header";
-import { imageUrl } from "../utils/baseUrls";
+import { lowImageUrl } from "../utils/baseUrls";
 
 const ArtistProtfolioArtwork = ({ data }) => {
+  const TEN_DAYS_MS = 10 * 24 * 60 * 60 * 1000;
+  const [viewedImages, setViewedImages] = useState({});
   const navigate = useNavigate();
-  const handleRedirectToDescription = (id) => {
+  const scrollContainerRef = useRef(null);
+  const [isStart, setIsStart] = useState(true);
+  const [isEnd, setIsEnd] = useState(false);
+
+  const handleRedirectToDescription = (id: string) => {
     navigate(`/discover_more/${id}`);
     window.scroll(0, 0);
   };
 
-  const name = (val: {
-    artistName: string;
-    artistSurname1: string;
-    artistSurname2: string;
-  }) => {
-    let fullName = val?.artistName || "";
-    if (val?.artistSurname1) fullName += " " + val?.artistSurname1;
-    if (val?.artistSurname2) fullName += " " + val?.artistSurname2;
-    return fullName.trim();
+  const handleViewClick = (id: string) => {
+    const newViewedImages = { ...viewedImages, [id]: Date.now() };
+    localStorage.setItem("viewedImages", JSON.stringify(newViewedImages));
+    setViewedImages(newViewedImages);
+  };
+
+  const handleHideClick = (id: string) => {
+    const newViewedImages = { ...viewedImages };
+    delete newViewedImages[id];
+    localStorage.setItem("viewedImages", JSON.stringify(newViewedImages));
+    setViewedImages(newViewedImages);
+  };
+
+  useEffect(() => {
+    const storedData = JSON.parse(localStorage.getItem("viewedImages") || "{}");
+    const currentTime = Date.now();
+    const filteredData = {};
+    Object.keys(storedData).forEach((key) => {
+      if (currentTime - storedData[key] < TEN_DAYS_MS) {
+        filteredData[key] = storedData[key];
+      }
+    });
+    localStorage.setItem("viewedImages", JSON.stringify(filteredData));
+    setViewedImages(filteredData);
+  }, []);
+
+  useEffect(() => {
+    const handleScrollCheck = () => {
+      const container = scrollContainerRef.current;
+      if (!container) return;
+      setIsStart(container.scrollLeft === 0);
+      setIsEnd(
+        container.scrollLeft + container.clientWidth >= container.scrollWidth
+      );
+    };
+
+    const container = scrollContainerRef.current;
+    if (container) {
+      container.addEventListener("scroll", handleScrollCheck);
+      handleScrollCheck();
+    }
+
+    return () => container?.removeEventListener("scroll", handleScrollCheck);
+  }, [data]);
+
+  const handleScroll = (direction) => {
+    const container = scrollContainerRef.current;
+    if (container) {
+      const scrollAmount = 300;
+      container.scrollBy({
+        left: direction === "left" ? -scrollAmount : scrollAmount,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  const renderCard = (item) => {
+    const isOffensive = item?.additionalInfo?.offensive === "Yes";
+    const isViewed = viewedImages[item?._id];
+    const hasDiscount = item?.additionalInfo?.discount > 0;
+
+    return (
+      <div
+        key={item._id}
+        onClick={() => {
+          if (isOffensive && !isViewed) {
+            return;
+          }
+          handleRedirectToDescription(item?._id);
+        }}
+        className="relative cursor-pointer p-3 border flex-shrink-0 bg-white hover:shadow-[5px_5px_5px_rgba(0,0,0,0.05)] transition-shadow duration-300 min-w-[230px] max-w-[300px] h-[280px] group"
+      >
+        <div className="relative overflow-hidden rounded-md h-[200px] w-full">
+          <img
+            src={`${lowImageUrl}/${item?.media}`}
+            alt="Artwork"
+            className={`w-full h-full object-contain transition-all duration-300
+                ${isOffensive && !isViewed ? "blur-lg brightness-75" : ""}
+                hover:scale-105`}
+          />
+
+          {isOffensive && !isViewed ? (
+            <div className="absolute inset-0 flex flex-col justify-center items-center gap-3 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <button
+                className="bg-white text-gray-800 px-3 py-1 rounded-full text-xs font-medium hover:bg-gray-100 transition-colors flex items-center gap-2"
+                onClick={() => handleViewClick(item?._id)}
+              >
+                <FaEye /> View Image
+              </button>
+              <button
+                onClick={() => handleRedirectToDescription(item?._id)}
+                className="bg-white text-gray-800 px-3 py-1 rounded-full text-xs font-medium hover:bg-gray-100 transition-colors flex items-center gap-2"
+              >
+                <MdOutlineOpenInNew /> Details
+              </button>
+            </div>
+          ) : null}
+
+          {isOffensive && isViewed ? (
+            <div
+              onClick={(e) => {
+                e.stopPropagation();
+                handleHideClick(item?._id);
+              }}
+              className="absolute bg-white/90 px-2 py-1 rounded-full top-2 right-2 flex items-center gap-1 text-xs"
+            >
+              <p>Offensive</p>
+              <FaToggleOn className="text-gray-600" />
+            </div>
+          ) : null}
+        </div>
+
+        <div className="mt-3">
+          <h1 className="font-semibold text-md text-gray-900 truncate">
+            {item?.artworkName?.length > 17
+              ? `${item?.artworkName?.slice(0, 17)}...`
+              : item?.artworkName}
+          </h1>
+          <p className="text-xs text-gray-500 mt-1">
+            {item?.discipline?.artworkDiscipline} •{" "}
+            {item?.additionalInfo?.artworkTechnic}
+          </p>
+          {hasDiscount ? (
+            <div className="mt-2 flex items-center gap-1">
+              <span className="text-red-600 font-medium text-sm">
+                ${item?.additionalInfo?.finalPrice}
+              </span>
+              <span className="text-gray-500 line-through text-xs">
+                ${item?.additionalInfo?.originalPrice}
+              </span>
+              <span className="text-red-600 text-xs">
+                ({item?.additionalInfo?.discount}% off)
+              </span>
+            </div>
+          ) : (
+            <p className="text-gray-700 mt-2 font-medium text-sm">
+              {item?.size}
+            </p>
+          )}
+        </div>
+      </div>
+    );
   };
 
   return (
-    <div className="container mx-auto px-4">
+    <div className="mx-auto px-4">
       <Header
         variant={{ size: "xl", theme: "dark", weight: "semiBold" }}
         className="mb-6"
@@ -30,52 +177,40 @@ const ArtistProtfolioArtwork = ({ data }) => {
         Artworks
       </Header>
 
-      <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-6">
-        {data?.artworks && data?.artworks?.length > 0 ? (
-          data.artworks.map((item: any, index: any) => (
-            <div
-              key={index}
-              className="group border py-2 shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden bg-[#DBEAFE]"
-            >
-              <div className="relative overflow-hidden">
-                <img
-                  src={`${imageUrl}/users/${item.media.mainImage}`}
-                  alt={item.artworkName}
-                  className="w-full h-auto max-h-[200px] object-contain cursor-pointer transform transition-transform duration-300 group-hover:scale-105"
-                  onClick={() => handleRedirectToDescription(item._id)}
-                  loading="lazy"
-                />
-                {/* <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300" /> */}
-              </div>
+      {data?.artworks && data?.artworks?.length > 0 ? (
+        <div className="relative">
+          <button
+            className={`absolute left-0 top-1/2 transform -translate-y-1/2 p-2 rounded-full shadow-lg z-10 ${
+              isStart ? "hidden" : "bg-gray-800 hover:bg-gray-900 text-white"
+            }`}
+            onClick={() => handleScroll("left")}
+            disabled={isStart}
+          >
+            <FaChevronLeft size={20} />
+          </button>
 
-              <div className="p-4">
-                <p className="text-sm text-gray-600 mb-1">
-                  {item.discipline?.artworkDiscipline}
-                </p>
-                <div className="flex justify-between items-start mb-2">
-                  <h1 className="font-bold text-xl text-gray-800 w-3/4 line-clamp-2 leading-tight">
-                    {item.artworkName}
-                  </h1>
-                  <div className="text-right">
-                    <p className="text-sm text-gray-600 whitespace-nowrap">
-                      {item?.additionalInfo?.height} ×{" "}
-                      {item?.additionalInfo?.width} ×{" "}
-                      {item?.additionalInfo?.depth} cm
-                    </p>
-                  </div>
-                </div>
-                <p className="text-sm text-gray-600 font-medium">
-                  {name(data?.artist)}
-                </p>
-              </div>
-            </div>
-          ))
-        ) : (
-          <div className="col-span-full text-center bg-white p-6 rounded-lg shadow border">
-            <p className="text-gray-700 font-semibold">No Artworks Found</p>
+          <div
+            ref={scrollContainerRef}
+            className="flex overflow-x-scroll no-scrollbar space-x-4 pb-2 scrollbar"
+          >
+            {data?.artworks.map((item) => renderCard(item))}
           </div>
-        )}
-      </div>
+
+          <button
+            className={`absolute right-0 top-1/2 transform -translate-y-1/2 p-2 rounded-full shadow-lg z-10 ${
+              isEnd ? "hidden" : "bg-gray-800 hover:bg-gray-900 text-white"
+            }`}
+            onClick={() => handleScroll("right")}
+            disabled={isEnd}
+          >
+            <FaChevronRight size={20} />
+          </button>
+        </div>
+      ) : (
+        <div className="col-span-full text-center bg-white p-6 rounded-lg shadow border">
+          <p className="text-gray-700 font-semibold">No Artworks Found</p>
+        </div>
+      )}
     </div>
   );
 };

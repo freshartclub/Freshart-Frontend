@@ -176,7 +176,7 @@ const Login: React.FC = () => {
             to="/become_artist"
             className="hover:underline decoration-red-700  cursor-pointer"
           >
-            {t("Become an Artist")}{" "}
+            {t("Artist? Become FrAC Artist")}{" "}
           </Link>
         </div>
         <div className="my-auto">

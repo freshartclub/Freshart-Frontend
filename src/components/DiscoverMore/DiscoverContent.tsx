@@ -65,7 +65,7 @@ const DiscoverContent = ({ data }: any) => {
       <div className="border-b pb-0.5">
         <Header
           variant={{ size: "xl", theme: "dark", weight: "bold" }}
-          className="items-center capitalize"
+          className="items-center flex scrollbar whitespace-nowrap capitalize !w-full !max-w-full overflow-x-auto"
         >
           {data?.artworkName}
         </Header>

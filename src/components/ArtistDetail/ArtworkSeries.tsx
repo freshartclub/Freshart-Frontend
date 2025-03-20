@@ -12,14 +12,14 @@ const ArtworkSeries = () => {
   if (isLoading) return <Loader />;
 
   return (
-    <div className="mt-8 series_artwork">
+    <div className="mx-auto px-4 mt-8 series_artwork">
       <Header variant={{ size: "xl", theme: "dark", weight: "semiBold" }}>
         Series of Artwork
       </Header>
 
       <div className="flex flex-row flex-wrap items-center gap-3 py-5 w-full px-3">
         {data?.data && data?.data.length > 0 ? (
-          data?.data?.map((group, i) => (
+          data?.data?.map((group, i: number) => (
             <div
               key={i}
               className="group-container flex-1 max-w-[100%] sm:max-w-[48%] lg:max-w-[30%] h-full border border-zinc-300"

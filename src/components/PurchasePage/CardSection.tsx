@@ -1,16 +1,16 @@
-import "../../App.css";
 import getSymbolFromCurrency from "currency-symbol-map";
 import { useEffect, useState } from "react";
-import { FaArrowUp, FaEye } from "react-icons/fa";
+import { FaEye } from "react-icons/fa";
 import { FaToggleOn } from "react-icons/fa6";
+import { IoHeartOutline } from "react-icons/io5";
 import { MdOutlineOpenInNew } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import "../../App.css";
 import postRecentArtworkMutation from "../HomePage/http/postRecentView";
 import useLikeUnlikeArtworkMutation from "../HomePage/http/useLikeUnLike"; // Adjust path if needed
 import { lowImageUrl } from "../utils/baseUrls";
-import { FaHeart } from "react-icons/fa6";
 
-const CardSection = ({ data }) => {
+const CardSection = ({ data, type }) => {
   const TEN_DAYS_MS = 10 * 24 * 60 * 60 * 1000;
 
   const name = (val) => {
@@ -26,10 +26,10 @@ const CardSection = ({ data }) => {
   const navigate = useNavigate();
   const [viewedImages, setViewedImages] = useState({});
   const [favoriteLists, setFavoriteLists] = useState({
-    "Likes": [],
+    Likes: [],
     "Artwork for Christmas": [],
     "Artworks for my office": [],
-    "Gift for Jordi": []
+    "Gift for Jordi": [],
   });
   const [showFavoriteMenu, setShowFavoriteMenu] = useState(null);
   const [showManageLists, setShowManageLists] = useState(false);
@@ -60,29 +60,32 @@ const CardSection = ({ data }) => {
   };
 
   const addToFavoriteList = (artworkId, listName) => {
-    const action = favoriteLists[listName].includes(artworkId) ? "unlike" : "like";
+    const action = favoriteLists[listName].includes(artworkId)
+      ? "unlike"
+      : "like";
     const data = { id: artworkId, action };
 
     LikeUnlikeMutate(data)
       .then(() => {
-        setFavoriteLists(prev => ({
+        setFavoriteLists((prev) => ({
           ...prev,
-          [listName]: action === "like"
-            ? [...prev[listName], artworkId]
-            : prev[listName].filter(item => item !== artworkId)
+          [listName]:
+            action === "like"
+              ? [...prev[listName], artworkId]
+              : prev[listName].filter((item) => item !== artworkId),
         }));
         setShowFavoriteMenu(null);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error(`Error updating favorite list ${listName}:`, error);
       });
   };
 
   const handleAddNewList = () => {
     if (newListName && !favoriteLists[newListName]) {
-      setFavoriteLists(prev => ({
+      setFavoriteLists((prev) => ({
         ...prev,
-        [newListName]: []
+        [newListName]: [],
       }));
       setNewListName("");
     }
@@ -102,9 +105,9 @@ const CardSection = ({ data }) => {
   }, []);
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-6 mx-auto px-4 max-w-[1440px]">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4 mx-auto">
       {data && data?.length > 0 ? (
-        data.map((item, index) => {
+        data.map((item, index: number) => {
           const isOffensive = item?.additionalInfo?.offensive === "Yes";
           const isViewed = viewedImages[item?._id];
 
@@ -116,24 +119,23 @@ const CardSection = ({ data }) => {
                   handleRedirectToDescription(item?._id);
                 }
               }}
-              className="flex flex-col outline-none cursor-pointer relative group max-w-[600px] mx-auto transition-all duration-300 overflow-hidden"
+              className={`relative cursor-pointer p-3 border flex-shrink-0 bg-white hover:shadow-[5px_5px_5px_rgba(0,0,0,0.05)] transition-shadow duration-300 min-w-[250px] max-w-[300px] ${
+                type === "purchase" ? "h-[317px]" : "h-[295px]"
+              } group`}
             >
-              <div className="relative overflow-hidden p-3 h-[40vh] flex items-center justify-center bg-blue-100">
+              <div className="relative overflow-hidden rounded-md h-[200px] w-full">
                 <img
                   src={`${lowImageUrl}/${item?.media}`}
                   alt="Artwork"
-                  className={`w-full transition-all duration-300 lg:w-[35vw] md:w-[35vw] object-contain h-[40vh]
-                    ${
-                      isOffensive && !isViewed
-                        ? "blur-lg brightness-75 group-hover:blur-md"
-                        : "hover:scale-105"
-                    }`}
+                  className={`w-full h-full object-contain transition-all duration-300
+                   ${isOffensive && !isViewed ? "blur-lg brightness-75" : ""}
+                   hover:scale-105`}
                 />
 
                 {isOffensive && !isViewed ? (
-                  <div className="absolute inset-0 flex flex-col justify-center items-center gap-4 bg-black/30 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                  <div className="absolute inset-0 flex flex-col justify-center items-center gap-3 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <button
-                      className="bg-gradient-to-r from-blue-500 to-blue-600 flex items-center gap-3 font-semibold text-white px-5 py-2 rounded-full hover:from-blue-600 hover:to-blue-700 transform hover:scale-105 transition-all duration-200"
+                      className="bg-white text-gray-800 px-3 py-1 rounded-full text-xs font-medium hover:bg-gray-100 transition-colors flex items-center gap-2"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleViewClick(item?._id);
@@ -146,7 +148,7 @@ const CardSection = ({ data }) => {
                         e.stopPropagation();
                         handleRedirectToDescription(item?._id);
                       }}
-                      className="bg-gradient-to-r from-red-500 to-red-600 flex items-center gap-3 font-semibold text-white px-5 py-2 rounded-full hover:from-red-600 hover:to-red-700 transform hover:scale-105 transition-all duration-200"
+                      className="bg-white text-gray-800 px-3 py-1 rounded-full text-xs font-medium hover:bg-gray-100 transition-colors flex items-center gap-2"
                     >
                       <MdOutlineOpenInNew /> View Details
                     </button>
@@ -159,35 +161,33 @@ const CardSection = ({ data }) => {
                       e.stopPropagation();
                       handleHideClick(item?._id);
                     }}
-                    className="absolute bg-white/90 px-3 py-1 rounded-lg top-3 right-3 flex items-center gap-2 hover:bg-white transition-colors duration-200"
+                    className="absolute bg-white/90 px-2 py-1 rounded-full top-2 right-2 flex items-center gap-1 text-xs"
                   >
                     <p className="text-xs font-medium text-gray-700">Hide</p>
-                    <FaToggleOn size={18} className="text-green-500" />
+                    <FaToggleOn size={18} className="text-gray-600" />
                   </div>
                 ) : null}
               </div>
 
-              <div className="flex flex-col bg-white pt-4 relative pb-8"> {/* Added pb-8 for space */}
-                <p className="text-xs text-gray-600 font-medium uppercase tracking-wide">
-                  {item?.discipline}
-                </p>
-                <div className="flex justify-between items-start mt-2">
-                  <p className="text-lg text-gray-900 font-semibold line-clamp-2 leading-tight">
-                    {item?.artworkName?.length > 20
-                      ? `${item?.artworkName?.slice(0, 20)}...`
-                      : item?.artworkName}
-                  </p>
-                  <p className="text-xs text-gray-500 mt-1">{item?.size}</p>
-                </div>
-                <p className="text-sm text-gray-600 mt-1 font-medium">
-                  {name(item)}
-                </p>
-                <p className="mt-2 text-md text-gray-800 font-bold">
-                  {getSymbolFromCurrency(item?.pricing?.currency.slice(0, 3))}{" "}
-                  {item?.pricing?.basePrice}
+              <div className="flex flex-col bg-white mt-3 relative">
+                <p className="text-xs text-gray-500">{item?.discipline}</p>
+
+                <p className="text-lg text-gray-900 font-semibold line-clamp-2 leading-tight">
+                  {item?.artworkName?.length > 17
+                    ? `${item?.artworkName?.slice(0, 17)}...`
+                    : item?.artworkName}
                 </p>
 
-                {/* Favorite Arrow and Menu */}
+                <p className="text-xs text-gray-600 font-light italic">
+                  by {name(item)}
+                </p>
+                {type === "purchase" ? (
+                  <p className="mt-1 text-gray-800 font-bold">
+                    {getSymbolFromCurrency(item?.pricing?.currency.slice(0, 3))}{" "}
+                    {item?.pricing?.basePrice}
+                  </p>
+                ) : null}
+
                 <div className="absolute bottom-2 right-2">
                   <button
                     onClick={(e) => {
@@ -196,15 +196,19 @@ const CardSection = ({ data }) => {
                     }}
                     className="p-2 rounded-full hover:bg-gray-100"
                   >
-                    <FaArrowUp 
-                      size="1.2rem" 
-                      className={favoriteLists["Likes"].includes(item?._id) ? "text-red-500" : "text-gray-500"}
+                    <IoHeartOutline
+                      size="1.2rem"
+                      className={
+                        favoriteLists["Likes"].includes(item?._id)
+                          ? "text-red-500"
+                          : "text-gray-500"
+                      }
                     />
                   </button>
 
                   {showFavoriteMenu === item._id && (
                     <div className="absolute bottom-10 right-0 bg-white shadow-lg rounded-md p-3 w-56 z-10">
-                      {Object.keys(favoriteLists).map(listName => (
+                      {Object.keys(favoriteLists).map((listName) => (
                         <div
                           key={listName}
                           className="flex items-center justify-between px-2 py-1 hover:bg-gray-100 cursor-pointer text-sm"
@@ -222,7 +226,7 @@ const CardSection = ({ data }) => {
                         </div>
                       ))}
                       <div className="border-t mt-2 pt-2">
-                        <button 
+                        <button
                           className="text-sm text-blue-500 hover:underline w-full text-left"
                           onClick={(e) => {
                             e.stopPropagation();
@@ -262,7 +266,7 @@ const CardSection = ({ data }) => {
           );
         })
       ) : (
-        <div className="h-[5rem] font-semibold rounded md:w-[90vw] w-[92vw] border-2 border-gray-300 flex items-center justify-center text-gray-600 bg-gray-50">
+        <div className="h-[5rem] font-semibold col-span-4 rounded w-full border-2 border-gray-300 flex items-center justify-center text-gray-600 bg-gray-50">
           No Artworks Available
         </div>
       )}

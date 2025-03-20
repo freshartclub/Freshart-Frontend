@@ -7,8 +7,8 @@ import {
   MdArrowBackIosNew,
   MdArrowForwardIos,
   MdKeyboardArrowDown,
-  MdOutlineFilterList,
   MdOutlineCancel,
+  MdOutlineFilterList,
 } from "react-icons/md";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useGetTechnic } from "../ArtistPanel/AddArtwork/http/useGetTechnic";
@@ -18,14 +18,13 @@ import { useGetStyle } from "../pages/http/useGetStyle";
 import Button from "../ui/Button";
 import Loader from "../ui/Loader";
 import P from "../ui/P";
+import { imageUrl } from "../utils/baseUrls";
 import { RenderAllPicklist } from "../utils/RenderAllPicklist";
 import useClickOutside from "../utils/useClickOutside";
 import { useDebounce } from "../utils/useDebounce";
 import CardSection from "./CardSection";
-import { useGetPurchaseArtwork } from "./http/useGetPurchaseArtwork";
 import { useGetHoveredData } from "./http/useGetHoveredData";
-import { imageUrl } from "../utils/baseUrls";
-import { m } from "framer-motion";
+import { useGetPurchaseArtwork } from "./http/useGetPurchaseArtwork";
 
 const Purchase = () => {
   const [showAllDiscipline, setShowAllDiscipline] = useState(false);
@@ -454,28 +453,21 @@ const Purchase = () => {
                   <div
                     className="relative group"
                     onMouseEnter={() => setHoveredDiscipline(item)}
-                    onMouseLeave={() => setHoveredDiscipline(null)}
+                    // onMouseLeave={() => setHoveredDiscipline(null)}
                   >
-                    <span
-                      onClick={() => setSelectedOption(item.disciplineName)}
-                      className="text-white font-semibold px-3 py-4  cursor-pointer transition-all duration-200 ease-in-out group-hover:text-blue-700 rounded-md"
-                    >
+                    <span className="text-white font-semibold px-3 cursor-pointer transition-all duration-200 ease-in-out group-hover:text-blue-700 rounded-md">
                       {item.disciplineName}
                     </span>
                   </div>
 
                   {hoveredDiscipline?.disciplineName ===
                     item.disciplineName && (
-                    <div>
+                    <>
                       {hoverLoding ? (
                         <p className="text-gray-400 text-sm animate-pulse"></p>
                       ) : (
                         <div
-                          className="fixed top-[135px] w-[100vw] bg-[#6C7680]  text-gray-800 rounded-xl shadow-2xl z-30 p-6 flex items-start justify-between gap-6 transform transition-all duration-300 ease-in-out scale-95 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
-                          style={{
-                            left: "50%",
-                            transform: "translateX(-50%)",
-                          }}
+                          className="absolute border-t -left-[60px] top-[42px] w-[99.1vw] bg-[#6C7680] text-gray-800 z-30 pt-3 pb-6 flex items-start justify-between gap-6 transform transition-all duration-300 ease-in-out overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
                           onMouseEnter={() => setHoveredDiscipline(item)}
                           onMouseLeave={() => setHoveredDiscipline(null)}
                         >
@@ -704,7 +696,7 @@ const Purchase = () => {
                           </div>
                         </div>
                       )}
-                    </div>
+                    </>
                   )}
                 </div>
               ))}
@@ -1372,7 +1364,7 @@ const Purchase = () => {
             </div>
           </div>
 
-          <CardSection data={data?.data} />
+          <CardSection data={data?.data} type={type} />
 
           <div className="flex max-[410px]:flex-col max-[440px]:gap-5 items-center my-10 justify-between">
             <div className="bg-[#102031] text-white rounded-full flex items-center gap-2 px-4 py-2">

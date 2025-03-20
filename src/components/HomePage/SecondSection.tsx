@@ -18,60 +18,57 @@ const SecondSection = () => {
   };
 
   return (
-    <>
-      <div className="container mx-auto md:px-6 px-3">
-        <div className="flex flex-col sm:flex-row justify-between mt-10">
-          <div className="w-full relative md:mr-4 ">
-            <img src={card1} alt="" className="w-full" />
-            <div className="absolute xl:top-24 lg:top-8 md:top-8 top-4 lg:left-14 left-5 xl:w-[40%] lg:w-[50%] md:w-full w-[85%] text-white">
-              <p className="uppercase text-[14px] xl:mb-2 mb-0  animate-fadeIn">
-                Lending ARTWORKS
-              </p>
+    <div className="container mx-auto md:px-6 px-3">
+      <div className="flex flex-col sm:flex-row justify-between mt-10">
+        <div className="w-full relative md:mr-4 ">
+          <img src={card1} alt="" className="w-full" />
+          <div className="absolute xl:top-24 lg:top-8 md:top-8 top-4 lg:left-14 left-5 xl:w-[40%] lg:w-[50%] md:w-full w-[85%] text-white">
+            <p className="uppercase text-[14px] xl:mb-2 mb-0  animate-fadeIn">
+              Lending ARTWORKS
+            </p>
 
-              <h1 className="lg:text-[36px] md:text-[30px] text-[25px] font-semibold">
-                Subscribe artwork.
-              </h1>
+            <h1 className="lg:text-[36px] md:text-[30px] text-[25px] font-semibold">
+              Subscribe artwork.
+            </h1>
 
-              <Button
-                variant={{
-                  rounded: "full",
-                  fontWeight: "500",
-                  thickness: "thick",
-                  fontSize: "base",
-                }}
-                className={`mt-3 uppercase !bg-[#F16E5B]`}
-                onClick={redirectToSubscriptionPage}
-              >
-                Subscribe now
-              </Button>
-            </div>
+            <Button
+              variant={{
+                rounded: "full",
+                fontWeight: "500",
+                thickness: "thick",
+                fontSize: "base",
+              }}
+              className={`mt-3 uppercase !bg-[#F16E5B]`}
+              onClick={redirectToSubscriptionPage}
+            >
+              Subscribe now
+            </Button>
           </div>
+        </div>
 
-          <div className="w-full relative sm:ml-2 md:ml-4 mt-6 sm:mt-0">
-            <img src={card2} alt="" className="w-full" />
-            <div className="absolute xl:top-24 lg:top-8 md:top-8 top-4 lg:left-14 left-5 xl:w-[40%] lg:w-[50%] md:w-full w-[85%] text-white">
-              <p className="uppercase text-[14px] xl:mb-2 mb-0">BECOME OWNER</p>
-              <h1 className="lg:text-[36px] md:text-[30px] text-[25px] font-semibold">
-                Purchase Artwork.
-              </h1>
-              <Button
-                variant={{
-                  rounded: "full",
-                  fontWeight: "500",
-                  thickness: "thick",
-                  fontSize: "base",
-                }}
-                className={`mt-3 uppercase !bg-[#35637C]`}
-                onClick={redirectToPurchasePage}
-              >
-                Get It Now
-              </Button>
-            </div>
+        <div className="w-full relative sm:ml-2 md:ml-4 mt-6 sm:mt-0">
+          <img src={card2} alt="" className="w-full" />
+          <div className="absolute xl:top-24 lg:top-8 md:top-8 top-4 lg:left-14 left-5 xl:w-[40%] lg:w-[50%] md:w-full w-[85%] text-white">
+            <p className="uppercase text-[14px] xl:mb-2 mb-0">BECOME OWNER</p>
+            <h1 className="lg:text-[36px] md:text-[30px] text-[25px] font-semibold">
+              Purchase Artwork.
+            </h1>
+            <Button
+              variant={{
+                rounded: "full",
+                fontWeight: "500",
+                thickness: "thick",
+                fontSize: "base",
+              }}
+              className={`mt-3 uppercase !bg-[#35637C]`}
+              onClick={redirectToPurchasePage}
+            >
+              Get It Now
+            </Button>
           </div>
         </div>
       </div>
-      <img src={subscribe} alt="" className="ml-[100px] mt-[-100px]" />
-    </>
+    </div>
   );
 };
 

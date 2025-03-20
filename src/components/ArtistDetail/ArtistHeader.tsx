@@ -70,7 +70,7 @@ const ArtistHeader = ({ data }) => {
 
         <img src={arrow} alt="Arrow icon" className="w-[4px] h-[6px]" />
 
-        <li>
+        <li className="whitespace-nowrap w-full max-w-full overflow-x-auto scrollbar">
           <P
             variant={{ size: "small", theme: "dark", weight: "semiBold" }}
             className="text-[#203F58]"
@@ -90,7 +90,7 @@ const ArtistHeader = ({ data }) => {
           </button>
         )}
 
-        <div className="flex justify-center">
+        <div className="flex lg:pb-10 justify-center">
           {mediaItems[currentIndex].type === "video" ? (
             <video
               src={`${imageUrl}/videos/${mediaItems[currentIndex].src}`}
