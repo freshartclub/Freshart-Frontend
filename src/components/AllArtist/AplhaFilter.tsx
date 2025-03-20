@@ -139,7 +139,11 @@ const AplhaFilter = ({
                   alt="profile"
                   className="-mt-10 w-[10vh] h-[10vh] rounded-full object-cover"
                 />
-                <h1 className="text-xl my-1">{item?.artistName}</h1>
+                <h1 className="text-xl my-1">
+                  {item?.artistName.length > 20
+                    ? `${item?.artistName.slice(0, 20)}...`
+                    : item?.artistName}
+                </h1>
                 <p className="text-sm mb-2">
                   {item?.aboutArtist?.discipline &&
                     mapData(

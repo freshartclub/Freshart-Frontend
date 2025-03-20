@@ -10,13 +10,12 @@ import share from "./assets/Vector (4).png";
 const ArtistDescription = ({ data }) => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("about");
-  const [showMore, setShowMore] = useState(false);
 
   const redirectToCircle = () => navigate("/circleblog");
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-      <div className="flex gap-3 sm:gap-5 justify-center sm:justify-end items-center my-4">
+      <div className="lg:flex hidden gap-3 sm:gap-5 justify-center sm:justify-end items-center my-4">
         <img
           src={`${imageUrl}/users/${data?.artist?.profile?.mainImage}`}
           alt="profile image"
@@ -65,7 +64,7 @@ const ArtistDescription = ({ data }) => {
             Curriculum vitae
           </span>
         </div>
-        <div className="flex gap-2 mt-2 sm:mt-0">
+        <div className="flex gap-2 items-center mt-2 mb-2 sm:mt-0">
           <span
             className="bg-[#102031] text-white py-1 px-2 sm:px-3 text-xs sm:text-sm cursor-pointer rounded-full font-medium"
             onClick={redirectToCircle}
@@ -75,6 +74,21 @@ const ArtistDescription = ({ data }) => {
           <span className="bg-[#102031] text-white py-1 px-2 sm:px-3 text-xs sm:text-sm cursor-pointer rounded-full font-medium">
             Custom order
           </span>
+          <div className="lg:hidden flex gap-3 sm:gap-5 justify-center sm:justify-end items-center">
+            <img
+              src={`${imageUrl}/users/${data?.artist?.profile?.mainImage}`}
+              alt="profile image"
+              className="cursor-pointer w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover"
+            />
+
+            <FaRegHeart size="1.6em" />
+
+            <img
+              src={share}
+              alt="share icon"
+              className="cursor-pointer w-5 h-5 sm:w-6 sm:h-6"
+            />
+          </div>
         </div>
       </div>
 
@@ -88,14 +102,7 @@ const ArtistDescription = ({ data }) => {
               Highlight
             </Header>
 
-            <div
-              className="ttext-gray-800 dark:text-gray-200 text-sm"
-              dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(
-                  data?.artist?.highlights?.addHighlights
-                ),
-              }}
-            />
+            <HighlightText text={data?.artist?.highlights?.addHighlights} />
           </div>
         )}
 
@@ -108,34 +115,7 @@ const ArtistDescription = ({ data }) => {
               About
             </Header>
             <div className="space-y-4 sm:space-y-6">
-              {/* <div>
-                <P
-                  variant={{ size: "base", theme: "dark", weight: "normal" }}
-                  className="leading-6 sm:leading-7 text-sm sm:text-base text-gray-700 dark:text-gray-300 break-words whitespace-pre-wrap"
-                >
-                  {showMore ? aboutText : shortAboutText}
-                </P>
-                {aboutText.split(" ").length > 50 && (
-                  <Button
-                    variant={{
-                      fontSize: "sm",
-                      theme: "light",
-                      fontWeight: "500",
-                    }}
-                    className="mt-2 text-[#EE1D52] hover:underline text-xs sm:text-sm"
-                    onClick={() => setShowMore(!showMore)}
-                  >
-                    {showMore ? "Less" : "More"}
-                  </Button>
-                )}
-              </div> */}
-
-              <div
-                className="ttext-gray-800 dark:text-gray-200 text-sm"
-                dangerouslySetInnerHTML={{
-                  __html: DOMPurify.sanitize(data?.artist?.aboutArtist?.about),
-                }}
-              />
+              <HighlightText text={data?.artist?.aboutArtist?.about} />
 
               <div className="flex items-center gap-3">
                 <P
@@ -240,7 +220,7 @@ const ArtistDescription = ({ data }) => {
         )}
 
         {activeTab === "curriculum" && (
-          <div className="my-6 bg-white dark:bg-gray-900 p-4 rounded-lg shadow-md">
+          <div className="my-6 bg-white dark:bg-gray-900 p-4 rounded-lg shadow-md lg:h-[64vh] lg:max-h-[64vh] lg:overflow-y-auto">
             <Header
               variant={{ size: "lg", theme: "dark", weight: "semiBold" }}
               className="pb-2 text-xl text-gray-800 dark:text-gray-200"
@@ -292,6 +272,34 @@ const ArtistDescription = ({ data }) => {
           </div>
         )}
       </div>
+    </div>
+  );
+};
+
+const HighlightText = ({ text }: { text: string }) => {
+  const [expanded, setExpanded] = useState(false);
+
+  const sanitizedText = DOMPurify.sanitize(text || "");
+
+  const words = sanitizedText.split(/\s+/);
+  const limitedText = words.slice(0, 30).join(" ");
+  const isLongText = words.length > 30;
+
+  return (
+    <div className="text-gray-800 dark:text-gray-200 text-sm">
+      <div
+        dangerouslySetInnerHTML={{
+          __html: expanded ? sanitizedText : `${limitedText}...`,
+        }}
+      />
+      {isLongText && (
+        <button
+          onClick={() => setExpanded(!expanded)}
+          className="text-blue-500 text-xs font-semibold mt-1"
+        >
+          {expanded ? "Show less" : "Show more"}
+        </button>
+      )}
     </div>
   );
 };

@@ -432,14 +432,7 @@ const App: React.FC = () => {
                 </AuthGuard>
               }
             />
-            <Route
-              path="/all_artist"
-              element={
-                <AuthGuard>
-                  <AllArtist />
-                </AuthGuard>
-              }
-            />
+            <Route path="/all_artist" element={<AllArtist />} />
             <Route
               path="/artwork_group"
               element={

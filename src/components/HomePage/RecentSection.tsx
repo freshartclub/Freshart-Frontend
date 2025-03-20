@@ -1,14 +1,13 @@
+import { useEffect, useRef, useState } from "react";
+import { FaEye, FaToggleOn } from "react-icons/fa";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
+import { MdOutlineOpenInNew } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-import Slider from "react-slick";
 import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
 import Loader from "../ui/Loader";
 import { lowImageUrl } from "../utils/baseUrls";
 import { useGetRecentArtwork } from "./http/getRecentArtwork";
-import { useEffect, useRef, useState } from "react";
-import { FaEye, FaToggleOn } from "react-icons/fa";
-import { MdOutlineOpenInNew } from "react-icons/md";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 
 const RecentSection = () => {
   const { data, isLoading } = useGetRecentArtwork();

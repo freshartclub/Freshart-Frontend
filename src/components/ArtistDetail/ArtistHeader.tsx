@@ -70,7 +70,7 @@ const ArtistHeader = ({ data }) => {
 
         <img src={arrow} alt="Arrow icon" className="w-[4px] h-[6px]" />
 
-        <li>
+        <li className="whitespace-nowrap w-full max-w-full overflow-x-auto scrollbar">
           <P
             variant={{ size: "small", theme: "dark", weight: "semiBold" }}
             className="text-[#203F58]"

@@ -177,7 +177,7 @@ const ArtCard = ({ data, tittle, artistData, viewType, loading }) => {
                 onClick={() => handleRedirectToDescription(item?._id)}
                 className="bg-white text-gray-800 px-3 py-1 rounded-full text-xs font-medium hover:bg-gray-100 transition-colors flex items-center gap-2"
               >
-                <MdOutlineOpenInNew /> Details
+                <MdOutlineOpenInNew /> View Details
               </button>
             </div>
           ) : null}
@@ -247,7 +247,10 @@ const ArtCard = ({ data, tittle, artistData, viewType, loading }) => {
             </button>
 
             {showFavoriteMenu === item._id && (
-              <div className="absolute bottom-10 right-0 bg-white shadow-lg rounded-md p-3 w-56 z-10 border border-gray-100">
+              <div
+                onClick={(e) => e.stopPropagation()}
+                className="absolute bottom-10 right-0 bg-white shadow-lg rounded-md p-3 w-56 z-10 border border-gray-100"
+              >
                 {Object.keys(favoriteLists).map((listName) => (
                   <div
                     key={listName}
