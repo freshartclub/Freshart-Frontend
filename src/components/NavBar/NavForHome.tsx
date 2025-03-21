@@ -261,9 +261,9 @@ const NavForHome = () => {
                   ref={closePopup}
                   className="focus:outline-none relative"
                 >
-                  {user?.profile?.mainImage ? (
+                  {user?.mainImage ? (
                     <img
-                      src={`${imageUrl}/users/${user?.profile?.mainImage}`}
+                      src={`${imageUrl}/users/${user?.mainImage}`}
                       alt="Profile"
                       onClick={() => setIsProfileDropdown((prev) => !prev)}
                       className=" text-white mx-2 rounded-full object-cover w-8 h-8"

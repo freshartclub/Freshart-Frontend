@@ -1,17 +1,22 @@
-import getSymbolFromCurrency from "currency-symbol-map";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import arrow_bread from "../../assets/arrow_bread.png";
 import home from "../../assets/home.png";
-import wishlist_like from "../../assets/whishlist_like.png";
 import Header from "../ui/Header";
 import Loader from "../ui/Loader";
 import P from "../ui/P";
-import { imageUrl } from "../utils/baseUrls";
-import { useGetLikedItems } from "./http/useGetLikedItems";
+import { lowImageUrl } from "../utils/baseUrls";
+import { useGetFullList } from "./http/useGetFavoruteList";
+import { IoHeartOutline } from "react-icons/io5";
 
 const Wishlist = () => {
-  const { data, isLoading } = useGetLikedItems();
-  if (isLoading) return <Loader />;
+  const { data, isLoading } = useGetFullList();
+  const navigate = useNavigate();
+
+  const handleRedirectToDescription = (id: string) => {
+    // if (isToken) mutate(id);
+    navigate(`/discover_more/${id}`);
+    window.scroll(0, 0);
+  };
 
   return (
     <div className="container mx-auto md:px-6 px-3 my-10 ">
@@ -42,7 +47,7 @@ const Wishlist = () => {
             className="cursor-pointer hover:bg-[#E8DAEF] rounded-md transition-all duration-300"
           >
             <P variant={{ size: "small", theme: "dark", weight: "normal" }}>
-              Liked Artworks
+              Favorite List
             </P>
           </Link>
         </li>
@@ -50,77 +55,88 @@ const Wishlist = () => {
 
       <Header
         variant={{ size: "xl", theme: "dark", weight: "semiBold" }}
-        className="my-4"
+        className="my-4 mx-auto w-full text-center"
       >
-        My Liked Artworks
+        My Favorite List
       </Header>
 
-      <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 justify-between gap-8 mt-4 ">
-        {data?.likedArtworks && data?.likedArtworks?.length > 0 ? (
-          data?.likedArtworks?.map((item: Artwork, index: number) => (
-            <div
-              key={index}
-              className="sm:px-3 px-0 border-none outline-none mb-10 w-[20vw] h-[50vh] relative"
-            >
-              <img
-                src={`${imageUrl}/users/${item?.media}`}
-                alt="image"
-                className="w-full h-full shadow-md object-cover"
-              />
-              <button className="absolute top-2 right-[28px]  cursor-pointer">
-                <img src={wishlist_like} alt="like" className="" />
-              </button>
-              <div className="mt-3">
-                <P
-                  variant={{ size: "base", weight: "normal" }}
-                  className="text-[#696868]"
-                >
-                  {item.title}
-                </P>
-                <div className="flex justify-between items-center">
-                  <Header
-                    variant={{ size: "xl", theme: "dark", weight: "semiBold" }}
-                    className="text-[#333333] xl:w-[80%] lg:w-[70%] w-[80%] line-clamp-2"
-                  >
-                    {item?.artworkName}
-                  </Header>
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <div className="flex flex-col gap-6">
+          {data && data?.length > 0 ? (
+            data.map((item, index: number) => (
+              <div key={index} className="">
+                <span className="font-semibold p-2 text-center text-[#102030] border border-[#102030] rounded">
+                  {item?.title}
+                </span>
 
-                  <P
-                    variant={{ size: "base", weight: "normal" }}
-                    className="text-[#696868]"
-                  >
-                    {item.size
-                      ? `${item.size.width} x ${item.size.height} x ${item.size.length}`
-                      : "Size not available"}
-                  </P>
-                </div>
-                <P
-                  variant={{ size: "base", weight: "normal" }}
-                  className="text-[#696868]"
-                >
-                  {item.para}
-                </P>
+                {item?.items?.length == 1 && item?.items[0]?.item == null ? (
+                  <div className="text-[14px] mt-4 border w-full h-[40px] flex items-center justify-center">
+                    No Items Found
+                  </div>
+                ) : (
+                  <div className="flex mt-4 gap-2">
+                    {item?.items?.map((i, idx: number) => {
+                      const type = i?.type;
 
-                <P variant={{ size: "base", weight: "medium" }}>
-                  {getSymbolFromCurrency(item?.pricing?.currency?.slice(0, 3))}{" "}
-                  {item?.pricing?.basePrice}
-                </P>
+                      return (
+                        type == "artwork" && (
+                          <div
+                            key={idx}
+                            onClick={() =>
+                              handleRedirectToDescription(i?.item?._id)
+                            }
+                            className="flex relative flex-col max-w-[250px] min-w-[180px] h-[200px] cursor-pointer p-2 border flex-shrink-0 bg-white hover:shadow-[5px_5px_5px_rgba(0,0,0,0.05)] transition-shadow duration-300"
+                          >
+                            <div className="relative overflow-hidden rounded-md h-[180px] border bg-blue-50 w-full">
+                              <img
+                                className={`w-full h-full object-contain transition-all duration-300 hover:scale-105`}
+                                src={`${lowImageUrl}/${i?.item?.media}`}
+                              />
+                            </div>
+                            <span className="font-medium mt-2 text-sm">
+                              {i?.item?.artworkName.length > 20
+                                ? i?.item?.artworkName.slice(0, 20) + "..."
+                                : i?.item?.artworkName}
+                            </span>
+                            <div className="absolute bottom-0 right-3">
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  // handleFavoriteClick(i?.item?._id, i?.type);
+                                }}
+                                className="p-1 rounded-full hover:bg-gray-100 transition-colors"
+                                aria-label="Add to favorites"
+                              >
+                                <IoHeartOutline
+                                  size="1.1rem"
+                                  className="text-rose-600"
+                                />
+                              </button>
+                            </div>
+                          </div>
+                        )
+                      );
+                    })}
+                  </div>
+                )}
               </div>
+            ))
+          ) : (
+            <div className="px-6 rounded py-4 text-center col-span-4 border border-[#c6c6c9]">
+              <p className="text-lg text-center font-medium mb-4">
+                You haven't liked any artworks.
+              </p>
+              <NavLink to="/all-artworks?type=subscription">
+                <button className="px-6 py-2 bg-zinc-800 text-white rounded-lg">
+                  Explore Artworks
+                </button>
+              </NavLink>
             </div>
-          ))
-        ) : (
-          <div className="px-6 rounded py-4 text-center col-span-4 border border-[#c6c6c9]">
-            <p className="text-lg text-center font-medium mb-4">
-              You haven't liked any artworks.
-            </p>
-            <NavLink to="/all-artworks?type=subscription">
-              <button className="px-6 py-2 bg-zinc-800 text-white rounded-lg">
-                Explore Artworks
-              </button>
-            </NavLink>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
