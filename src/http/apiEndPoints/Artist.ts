@@ -38,14 +38,14 @@ export const ARTTIST_ENDPOINTS = {
   DeleteNotification: `${ARTIST_BASE_URl}/delete-notification`,
   ReadNotification: `${ARTIST_BASE_URl}/read-notification`,
 
-
-
   GetAllArtist: `${ARTIST_BASE_URl}/get-all-artists`,
   addToCart: `${ARTIST_BASE_URl}/add-to-cart`,
   cartItems: `${ARTIST_BASE_URl}/get-cart`,
   unauthorisedCartItem: `${ARTIST_BASE_URl}/get-unauthorized-cart`,
   removeItems: `${ARTIST_BASE_URl}/remove-from-cart`,
 
+  addToFavorite: `${ARTIST_BASE_URl}/add-to-favorite`,
+  getFavoriteList: `${ARTIST_BASE_URl}/get-favorite-list`,
   editProfile: `${ARTIST_BASE_URl}/edit-user-profile`,
 
   // removeItems: `${ARTIST_BASE_URl}/remove-from-cart`,

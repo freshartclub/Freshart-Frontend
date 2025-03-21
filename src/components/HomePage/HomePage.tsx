@@ -1,6 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import Loader from "../ui/Loader";
-import { useGetArtistDetails } from "../UserProfile/http/useGetDetails";
 import ArtCard from "./ArtCard";
 import ArtistPortfolio from "./ArtistPortfolio";
 import BannerSection from "./BannerSection";
@@ -15,7 +13,6 @@ const HomePage = () => {
 
   const profile = localStorage.getItem("profile");
   const { data, isLoading } = useGetHomeData();
-  const { data: artistData } = useGetArtistDetails();
 
   const token = localStorage.getItem("auth_token");
   if (profile === "artist") return navigate("/artist-panel");
@@ -26,29 +23,25 @@ const HomePage = () => {
       <SecondSection />
       <ArtCard
         data={data?.newAdded}
-        tittle={"New Artwork"}
-        artistData={artistData?.data.artist}
+        title={"New Artwork"}
         viewType="new"
         loading={isLoading}
       />
       <ArtCard
         data={data?.trending}
-        tittle={"Trending Artwork"}
-        artistData={artistData?.data.artist}
+        title={"Trending Artwork"}
         viewType="new"
         loading={isLoading}
       />
       <ArtCard
         data={data?.commingSoon}
-        tittle={"Coming Soon"}
-        artistData={artistData?.data.artist}
+        title={"Coming Soon"}
         viewType="new"
         loading={isLoading}
       />
       <ArtCard
         data={data?.highlighted}
-        tittle={"Highlighted Artwork"}
-        artistData={artistData?.data.artist}
+        title={"Highlighted Artwork"}
         viewType="new"
         loading={isLoading}
       />

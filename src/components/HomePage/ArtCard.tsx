@@ -9,28 +9,42 @@ import "slick-carousel/slick/slick.css";
 import Loader from "../ui/Loader";
 import { lowImageUrl } from "../utils/baseUrls";
 import postRecentArtworkMutation from "./http/postRecentView";
-import useLikeUnlikeArtworkMutation from "./http/useLikeUnLike";
+import useAddToFavorite from "./http/useAddToFavorite";
+import { IoIosAdd } from "react-icons/io";
+import { useGetFavoriteList } from "./http/useGetFavoriteList";
 
-const ArtCard = ({ data, tittle, artistData, viewType, loading }) => {
+const ArtCard = ({ data, title, viewType, loading }) => {
   const [viewedImages, setViewedImages] = useState({});
-  const [favoriteLists, setFavoriteLists] = useState({
-    Likes: [],
-    "Artwork for Christmas": [],
-    "Artworks for my office": [],
-    "Gift for Jordi": [],
-  });
-  const [showFavoriteMenu, setShowFavoriteMenu] = useState(null);
+  const [favoriteLists, setFavoriteLists] = useState({});
+
   const [showManageLists, setShowManageLists] = useState(false);
   const [newListName, setNewListName] = useState("");
   const TEN_DAYS_MS = 10 * 24 * 60 * 60 * 1000;
   const scrollContainerRef = useRef(null);
   const [isStart, setIsStart] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
+  const [newLoading, setNewLoading] = useState(false);
+
+  const [isFavorite, setIsFavorite] = useState("");
 
   const { mutate } = postRecentArtworkMutation();
-  const { mutateAsync: LikeUnlikeMutate } = useLikeUnlikeArtworkMutation();
+  const { mutate: favoriteMutation } = useAddToFavorite();
   const isToken = localStorage.getItem("auth_token");
   const navigate = useNavigate();
+
+  const type = "artwork";
+  const { data: favoriteData } = useGetFavoriteList(type);
+
+  useEffect(() => {
+    if (favoriteData && Array.isArray(favoriteData)) {
+      const favoriteObject = favoriteData.reduce((acc, curr) => {
+        acc[curr.title] = Array.isArray(curr.items) ? curr.items : [];
+        return acc;
+      }, {});
+
+      setFavoriteLists(favoriteObject);
+    }
+  }, [favoriteData]);
 
   const handleRedirectToDescription = (id: string) => {
     if (isToken) mutate(id);
@@ -38,40 +52,64 @@ const ArtCard = ({ data, tittle, artistData, viewType, loading }) => {
     window.scroll(0, 0);
   };
 
-  useEffect(() => {
-    if (artistData) {
-      setFavoriteLists((prev) => ({
-        ...prev,
-        Likes: artistData?.likedArtworks || [],
-      }));
-    }
-  }, [artistData]);
-
-  const handleFavoriteClick = (id) => {
-    setShowFavoriteMenu(showFavoriteMenu === id ? null : id);
-    setShowManageLists(false);
+  const handleFavoriteClick = (id: string) => {
+    setIsFavorite((prev) => (prev === id ? "" : id));
   };
 
-  const addToFavoriteList = (artworkId, listName) => {
-    const action = favoriteLists[listName].includes(artworkId)
-      ? "unlike"
-      : "like";
-    const data = { id: artworkId, action };
+  const addToFavoriteList = async (id: string, listName: string) => {
+    try {
+      const isAlreadyFavorite = favoriteLists[listName]?.includes(id);
 
-    LikeUnlikeMutate(data)
-      .then(() => {
-        setFavoriteLists((prev) => ({
-          ...prev,
-          [listName]:
-            action === "like"
-              ? [...prev[listName], artworkId]
-              : prev[listName].filter((item) => item !== artworkId),
-        }));
-        setShowFavoriteMenu(null);
-      })
-      .catch((error) => {
-        console.error(`Error updating favorite list ${listName}:`, error);
+      const newData = {
+        id: id,
+        name: listName,
+        type: "artwork",
+      };
+
+      favoriteMutation(newData);
+
+      setFavoriteLists((prev) => {
+        const updatedList = { ...prev };
+
+        if (isAlreadyFavorite) {
+          updatedList[listName] = updatedList[listName].filter(
+            (favId) => favId !== id
+          );
+        } else {
+          updatedList[listName] = [...(updatedList[listName] || []), id];
+        }
+
+        return updatedList;
       });
+    } catch (error) {
+      console.error("Error updating favorites:", error);
+    }
+  };
+
+  const handleAddNewList = async (id: string) => {
+    if (!newListName.trim()) return;
+
+    try {
+      const newData = {
+        id: id,
+        name: newListName.trim(),
+        type: "artwork",
+      };
+
+      setNewLoading(true);
+      favoriteMutation(newData);
+      setNewLoading(false);
+
+      setFavoriteLists((prev) => ({
+        ...prev,
+        [newListName]: [],
+      }));
+
+      setNewListName("");
+      setShowManageLists(false);
+    } catch (error) {
+      console.error("Error creating collection:", error);
+    }
   };
 
   const handleViewClick = (id: string) => {
@@ -85,16 +123,6 @@ const ArtCard = ({ data, tittle, artistData, viewType, loading }) => {
     delete newViewedImages[id];
     localStorage.setItem("viewedImages", JSON.stringify(newViewedImages));
     setViewedImages(newViewedImages);
-  };
-
-  const handleAddNewList = () => {
-    if (newListName && !favoriteLists[newListName]) {
-      setFavoriteLists((prev) => ({
-        ...prev,
-        [newListName]: [],
-      }));
-      setNewListName("");
-    }
   };
 
   useEffect(() => {
@@ -191,7 +219,7 @@ const ArtCard = ({ data, tittle, artistData, viewType, loading }) => {
               className="absolute bg-white/90 px-2 py-1 rounded-full top-2 right-2 flex items-center gap-1 text-xs"
             >
               <p>Offensive</p>
-              <FaToggleOn class="text-gray-600" />
+              <FaToggleOn className="text-gray-600" />
             </div>
           ) : null}
         </div>
@@ -239,17 +267,17 @@ const ArtCard = ({ data, tittle, artistData, viewType, loading }) => {
               <IoHeartOutline
                 size="1.1rem"
                 className={
-                  favoriteLists["Likes"].includes(item?._id)
+                  Object.values(favoriteLists).flat().includes(item?._id)
                     ? "text-rose-600"
                     : "text-gray-400"
                 }
               />
             </button>
 
-            {showFavoriteMenu === item._id && (
+            {isFavorite == item._id && (
               <div
                 onClick={(e) => e.stopPropagation()}
-                className="absolute bottom-10 right-0 bg-white shadow-lg rounded-md p-3 w-56 z-10 border border-gray-100"
+                className="absolute bottom-10 right-0 bg-white shadow-lg rounded-md p-3 w-56 z-10 border border-zinc-300"
               >
                 {Object.keys(favoriteLists).map((listName) => (
                   <div
@@ -268,10 +296,10 @@ const ArtCard = ({ data, tittle, artistData, viewType, loading }) => {
                 ))}
                 <div className="border-t mt-2 pt-2">
                   <button
-                    className="text-xs text-gray-600 hover:text-gray-900 w-full text-left font-medium"
-                    onClick={() => setShowManageLists(true)}
+                    className="text-xs flex items-center gap-1 rounded text-white py-1 justify-center bg-gray-900 w-full font-medium hover:bg-gray-700 transition-colors"
+                    onClick={() => setShowManageLists((prev) => !prev)}
                   >
-                    Manage Collections
+                    <IoIosAdd size={17} /> New List
                   </button>
                 </div>
 
@@ -281,14 +309,14 @@ const ArtCard = ({ data, tittle, artistData, viewType, loading }) => {
                       type="text"
                       value={newListName}
                       onChange={(e) => setNewListName(e.target.value)}
-                      placeholder="New collection name"
+                      placeholder="New List Name"
                       className="w-full text-xs p-2 border rounded-md mb-2 focus:outline-none focus:ring-1 focus:ring-gray-300"
                     />
                     <button
-                      onClick={handleAddNewList}
+                      onClick={() => handleAddNewList(item._id)}
                       className="w-full bg-gray-800 text-white text-xs py-1 rounded-md hover:bg-gray-900 transition-colors"
                     >
-                      Create Collection
+                      {newLoading ? "Adding..." : "Add List"}
                     </button>
                   </div>
                 )}
@@ -303,7 +331,7 @@ const ArtCard = ({ data, tittle, artistData, viewType, loading }) => {
   return (
     <div className="mx-auto px-4 md:px-8 lg:px-12 mt-12">
       <h1 className="text-xl font-semibold text-gray-900 mb-6 tracking-tight">
-        {tittle}
+        {title}
       </h1>
       {loading ? (
         <Loader />

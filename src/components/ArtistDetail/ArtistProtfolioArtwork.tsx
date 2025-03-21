@@ -172,7 +172,7 @@ const ArtistProtfolioArtwork = ({ data }) => {
     <div className="mx-auto px-4">
       <Header
         variant={{ size: "xl", theme: "dark", weight: "semiBold" }}
-        className="mb-6"
+        className="mb-3"
       >
         Artworks
       </Header>

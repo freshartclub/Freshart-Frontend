@@ -94,7 +94,7 @@ const ArtistDescription = ({ data }) => {
 
       <div id="default-tab-content">
         {activeTab === "highlight" && (
-          <div className="my-6 bg-white dark:bg-gray-900 p-4 sm:p-6 rounded-lg shadow-md lg:h-[64vh] lg:max-h-[64vh] lg:overflow-y-auto">
+          <div className="my-6 bg-white dark:bg-gray-900 p-4 sm:p-6 rounded-lg shadow-md h-[64vh] max-h-[64vh] overflow-y-auto">
             <Header
               variant={{ size: "md", theme: "dark", weight: "semiBold" }}
               className="pb-2 text-xl text-gray-800 dark:text-gray-200"
@@ -107,7 +107,7 @@ const ArtistDescription = ({ data }) => {
         )}
 
         {activeTab === "about" && (
-          <div className="my-6 bg-white dark:bg-gray-900 p-4 rounded-lg lg:h-[64vh] lg:max-h-[64vh] lg:overflow-y-auto shadow-md">
+          <div className="my-6 bg-white dark:bg-gray-900 p-4 rounded-lg h-[64vh] max-h-[64vh] overflow-y-auto scrollbar shadow-md">
             <Header
               variant={{ size: "lg", theme: "dark", weight: "semiBold" }}
               className="pb-2 text-xl text-gray-800 dark:text-gray-200"
@@ -220,7 +220,7 @@ const ArtistDescription = ({ data }) => {
         )}
 
         {activeTab === "curriculum" && (
-          <div className="my-6 bg-white dark:bg-gray-900 p-4 rounded-lg shadow-md lg:h-[64vh] lg:max-h-[64vh] lg:overflow-y-auto">
+          <div className="my-6 bg-white dark:bg-gray-900 p-4 rounded-lg shadow-md h-[64vh] max-h-[64vh] overflow-y-auto scrollbar">
             <Header
               variant={{ size: "lg", theme: "dark", weight: "semiBold" }}
               className="pb-2 text-xl text-gray-800 dark:text-gray-200"
@@ -231,9 +231,9 @@ const ArtistDescription = ({ data }) => {
               {data?.artist?.highlights?.cv?.map((item, index) => (
                 <div
                   key={index}
-                  className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300"
+                  className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300"
                 >
-                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2">
+                  <div className="flex flex-col mb-2">
                     <P
                       variant={{
                         size: "base",
@@ -244,28 +244,21 @@ const ArtistDescription = ({ data }) => {
                     >
                       {item.Description}
                     </P>
-                    <span className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1 sm:mt-0">
-                      {item.year}
+                    <span className="text-gray-700 dark:text-gray-300 text-xs">
+                      <strong>Year :</strong> {item.year}
                     </span>
                   </div>
-                  <P
-                    variant={{ size: "sm", theme: "dark", weight: "normal" }}
-                    className="text-gray-700 dark:text-gray-300 text-xs sm:text-sm"
-                  >
-                    <strong>Location:</strong> {item.Location}
-                  </P>
-                  <P
-                    variant={{ size: "sm", theme: "dark", weight: "normal" }}
-                    className="text-gray-700 dark:text-gray-300 text-xs sm:text-sm"
-                  >
-                    <strong>Type:</strong> {item.Type}
-                  </P>
-                  <P
-                    variant={{ size: "sm", theme: "dark", weight: "normal" }}
-                    className="text-gray-700 dark:text-gray-300 text-xs sm:text-sm"
-                  >
-                    <strong>Scope:</strong> {item.Scope}
-                  </P>
+                  <div className="flex flex-col">
+                    <span className="text-gray-700 dark:text-gray-300 text-xs">
+                      <strong>Location :</strong> {item.Location}
+                    </span>
+                    <span className="text-gray-700 dark:text-gray-300 text-xs">
+                      <strong>Type :</strong> {item.Type}
+                    </span>
+                    <span className="text-gray-700 dark:text-gray-300 text-xs">
+                      <strong>Scope :</strong> {item.Scope}
+                    </span>
+                  </div>
                 </div>
               ))}
             </div>

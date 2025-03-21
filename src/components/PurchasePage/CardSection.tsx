@@ -2,16 +2,19 @@ import getSymbolFromCurrency from "currency-symbol-map";
 import { useEffect, useState } from "react";
 import { FaEye } from "react-icons/fa";
 import { FaToggleOn } from "react-icons/fa6";
+import { IoIosAdd } from "react-icons/io";
 import { IoHeartOutline } from "react-icons/io5";
 import { MdOutlineOpenInNew } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import "../../App.css";
 import postRecentArtworkMutation from "../HomePage/http/postRecentView";
-import useLikeUnlikeArtworkMutation from "../HomePage/http/useLikeUnLike"; // Adjust path if needed
+import useAddToFavorite from "../HomePage/http/useAddToFavorite";
+import { useGetFavoriteList } from "../HomePage/http/useGetFavoriteList";
 import { lowImageUrl } from "../utils/baseUrls";
 
 const CardSection = ({ data, type }) => {
   const TEN_DAYS_MS = 10 * 24 * 60 * 60 * 1000;
+  const [favoriteLists, setFavoriteLists] = useState({});
 
   const name = (val) => {
     let fullName = val?.artistName || "";
@@ -22,18 +25,17 @@ const CardSection = ({ data, type }) => {
   };
 
   const { mutate } = postRecentArtworkMutation();
-  const { mutateAsync: LikeUnlikeMutate } = useLikeUnlikeArtworkMutation();
+  const { mutate: favoriteMutation } = useAddToFavorite();
   const navigate = useNavigate();
   const [viewedImages, setViewedImages] = useState({});
-  const [favoriteLists, setFavoriteLists] = useState({
-    Likes: [],
-    "Artwork for Christmas": [],
-    "Artworks for my office": [],
-    "Gift for Jordi": [],
-  });
-  const [showFavoriteMenu, setShowFavoriteMenu] = useState(null);
+  const [isFavorite, setIsFavorite] = useState("");
+
+  const [newLoading, setNewLoading] = useState(false);
   const [showManageLists, setShowManageLists] = useState(false);
   const [newListName, setNewListName] = useState("");
+
+  const listType = "artwork";
+  const { data: favoriteData } = useGetFavoriteList(listType);
 
   const handleRedirectToDescription = (id: string) => {
     mutate(id);
@@ -54,42 +56,76 @@ const CardSection = ({ data, type }) => {
     setViewedImages(newViewedImages);
   };
 
-  const handleFavoriteClick = (id) => {
-    setShowFavoriteMenu(showFavoriteMenu === id ? null : id);
-    setShowManageLists(false);
+  const handleFavoriteClick = (id: string) => {
+    setIsFavorite((prev) => (prev === id ? "" : id));
   };
 
-  const addToFavoriteList = (artworkId, listName) => {
-    const action = favoriteLists[listName].includes(artworkId)
-      ? "unlike"
-      : "like";
-    const data = { id: artworkId, action };
+  const addToFavoriteList = async (id: string, listName: string) => {
+    try {
+      const isAlreadyFavorite = favoriteLists[listName]?.includes(id);
 
-    LikeUnlikeMutate(data)
-      .then(() => {
-        setFavoriteLists((prev) => ({
-          ...prev,
-          [listName]:
-            action === "like"
-              ? [...prev[listName], artworkId]
-              : prev[listName].filter((item) => item !== artworkId),
-        }));
-        setShowFavoriteMenu(null);
-      })
-      .catch((error) => {
-        console.error(`Error updating favorite list ${listName}:`, error);
+      const newData = {
+        id: id,
+        name: listName,
+        type: "artwork",
+      };
+
+      favoriteMutation(newData);
+
+      setFavoriteLists((prev) => {
+        const updatedList = { ...prev };
+
+        if (isAlreadyFavorite) {
+          updatedList[listName] = updatedList[listName].filter(
+            (favId) => favId !== id
+          );
+        } else {
+          updatedList[listName] = [...(updatedList[listName] || []), id];
+        }
+
+        return updatedList;
       });
+    } catch (error) {
+      console.error("Error updating favorites:", error);
+    }
   };
 
-  const handleAddNewList = () => {
-    if (newListName && !favoriteLists[newListName]) {
+  const handleAddNewList = async (id: string) => {
+    if (!newListName.trim()) return;
+
+    try {
+      const newData = {
+        id: id,
+        name: newListName.trim(),
+        type: "artwork",
+      };
+
+      setNewLoading(true);
+      favoriteMutation(newData);
+      setNewLoading(false);
+
       setFavoriteLists((prev) => ({
         ...prev,
         [newListName]: [],
       }));
+
       setNewListName("");
+      setShowManageLists(false);
+    } catch (error) {
+      console.error("Error creating collection:", error);
     }
   };
+
+  useEffect(() => {
+    if (favoriteData && Array.isArray(favoriteData)) {
+      const favoriteObject = favoriteData.reduce((acc, curr) => {
+        acc[curr.title] = Array.isArray(curr.items) ? curr.items : [];
+        return acc;
+      }, {});
+
+      setFavoriteLists(favoriteObject);
+    }
+  }, [favoriteData]);
 
   useEffect(() => {
     const storedData = JSON.parse(localStorage.getItem("viewedImages") || "{}");
@@ -199,14 +235,14 @@ const CardSection = ({ data, type }) => {
                     <IoHeartOutline
                       size="1.2rem"
                       className={
-                        favoriteLists["Likes"].includes(item?._id)
+                        Object.values(favoriteLists).flat().includes(item?._id)
                           ? "text-red-500"
                           : "text-gray-500"
                       }
                     />
                   </button>
 
-                  {showFavoriteMenu === item._id && (
+                  {isFavorite === item._id && (
                     <div className="absolute bottom-10 right-0 bg-white shadow-lg rounded-md p-3 w-56 z-10">
                       {Object.keys(favoriteLists).map((listName) => (
                         <div
@@ -227,13 +263,13 @@ const CardSection = ({ data, type }) => {
                       ))}
                       <div className="border-t mt-2 pt-2">
                         <button
-                          className="text-sm text-blue-500 hover:underline w-full text-left"
+                          className="text-xs flex items-center gap-1 rounded text-white py-1 justify-center bg-gray-900 w-full font-medium hover:bg-gray-700 transition-colors"
                           onClick={(e) => {
                             e.stopPropagation();
-                            setShowManageLists(true);
+                            setShowManageLists((prev) => !prev);
                           }}
                         >
-                          Manage Favorite Lists
+                          <IoIosAdd size={17} /> New List
                         </button>
                       </div>
 
@@ -244,17 +280,17 @@ const CardSection = ({ data, type }) => {
                             value={newListName}
                             onChange={(e) => setNewListName(e.target.value)}
                             onClick={(e) => e.stopPropagation()}
-                            placeholder="New list name"
+                            placeholder="New List Name"
                             className="w-full text-sm p-1 border rounded mb-2"
                           />
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              handleAddNewList();
+                              handleAddNewList(item._id);
                             }}
-                            className="w-full bg-blue-500 text-white text-sm py-1 rounded hover:bg-blue-600"
+                            className="w-full bg-gray-800 text-white text-xs py-1 rounded-md hover:bg-gray-900 transition-colors"
                           >
-                            Add List
+                            {newLoading ? "Adding..." : "Add List"}
                           </button>
                         </div>
                       )}
