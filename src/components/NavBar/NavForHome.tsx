@@ -123,9 +123,11 @@ const NavForHome = () => {
     if (isArtist) {
       navigate("/artist-panel", { replace: true });
       localStorage.setItem("profile", "artist");
+      window.location.reload();
     } else {
       navigate("/home", { replace: true });
       localStorage.setItem("profile", "user");
+      window.location.reload();
     }
   };
 
