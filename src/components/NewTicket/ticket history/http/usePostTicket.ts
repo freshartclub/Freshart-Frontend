@@ -23,15 +23,18 @@ const useGetPostArtistTicketMutation = () => {
     mutationFn: usePostTicket,
 
     onSuccess: async (res) => {
+      if (res.data?.isArtDetail == "true") {
+        return toast.success(t(res.data.message), {
+          duration: 3000,
+        });
+      }
+
       if (user?.isActivated) {
         navigate("/artist-panel/ticket/tickets");
         localStorage.setItem("profile", "artist");
       } else {
         navigate("/tickets");
       }
-      toast.success(t(res.data.message), {
-        duration: 3000,
-      });
     },
     onError: (error) => {
       toast.error(t(error.response?.data?.message));
