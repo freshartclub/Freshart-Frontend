@@ -1,5 +1,5 @@
 import getSymbolFromCurrency from "currency-symbol-map";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaEye } from "react-icons/fa";
 import { FaToggleOn } from "react-icons/fa6";
 import { IoIosAdd } from "react-icons/io";
@@ -11,10 +11,13 @@ import postRecentArtworkMutation from "../HomePage/http/postRecentView";
 import useAddToFavorite from "../HomePage/http/useAddToFavorite";
 import { useGetFavoriteList } from "../HomePage/http/useGetFavoriteList";
 import { lowImageUrl } from "../utils/baseUrls";
+import useClickOutside from "../utils/useClickOutside";
 
 const CardSection = ({ data, type }) => {
   const TEN_DAYS_MS = 10 * 24 * 60 * 60 * 1000;
   const [favoriteLists, setFavoriteLists] = useState({});
+  const [isFavorite, setIsFavorite] = useState("");
+  const favoriteListRef = useRef(null);
 
   const name = (val) => {
     let fullName = val?.artistName || "";
@@ -24,11 +27,14 @@ const CardSection = ({ data, type }) => {
     return fullName.trim();
   };
 
+  useClickOutside(favoriteListRef, () => {
+    setIsFavorite("");
+  });
+
   const { mutate } = postRecentArtworkMutation();
   const { mutate: favoriteMutation } = useAddToFavorite();
   const navigate = useNavigate();
   const [viewedImages, setViewedImages] = useState({});
-  const [isFavorite, setIsFavorite] = useState("");
 
   const [newLoading, setNewLoading] = useState(false);
   const [showManageLists, setShowManageLists] = useState(false);
@@ -243,7 +249,10 @@ const CardSection = ({ data, type }) => {
                   </button>
 
                   {isFavorite === item._id && (
-                    <div className="absolute bottom-10 right-0 bg-white shadow-lg rounded-md p-3 w-56 z-10">
+                    <div
+                      ref={favoriteListRef}
+                      className="absolute bottom-10 right-0 bg-white shadow-lg rounded-md p-3 w-56 z-10"
+                    >
                       {Object.keys(favoriteLists).map((listName) => (
                         <div
                           key={listName}

@@ -12,10 +12,12 @@ import postRecentArtworkMutation from "./http/postRecentView";
 import useAddToFavorite from "./http/useAddToFavorite";
 import { IoIosAdd } from "react-icons/io";
 import { useGetFavoriteList } from "./http/useGetFavoriteList";
+import useClickOutside from "../utils/useClickOutside";
 
 const ArtCard = ({ data, title, viewType, loading }) => {
   const [viewedImages, setViewedImages] = useState({});
   const [favoriteLists, setFavoriteLists] = useState({});
+  const favoriteListRef = useRef(null);
 
   const [showManageLists, setShowManageLists] = useState(false);
   const [newListName, setNewListName] = useState("");
@@ -55,6 +57,10 @@ const ArtCard = ({ data, title, viewType, loading }) => {
   const handleFavoriteClick = (id: string) => {
     setIsFavorite((prev) => (prev === id ? "" : id));
   };
+
+  useClickOutside(favoriteListRef, () => {
+    setIsFavorite("");
+  });
 
   const addToFavoriteList = async (id: string, listName: string) => {
     try {
@@ -276,8 +282,9 @@ const ArtCard = ({ data, title, viewType, loading }) => {
 
             {isFavorite == item._id && (
               <div
+                ref={favoriteListRef}
                 onClick={(e) => e.stopPropagation()}
-                className="absolute bottom-10 right-0 bg-white shadow-lg rounded-md p-3 w-56 z-10 border border-zinc-300"
+                className="absolute bottom-0 right-0 bg-white shadow-lg rounded-md p-3 w-56 z-10 border border-zinc-300"
               >
                 {Object.keys(favoriteLists).map((listName) => (
                   <div

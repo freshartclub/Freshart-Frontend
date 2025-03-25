@@ -1,22 +1,18 @@
 import { useMutation } from "@tanstack/react-query";
-
 import axiosInstance from "../../utils/axios";
 import { ORDERS_ENDPOINTS } from "../../../http/apiEndPoints/Orders";
-import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 async function postCheckOut(input: any) {
-  return axiosInstance.post(
-    `${ORDERS_ENDPOINTS.PostOrders}?type=${input?.type}`,
-    input
-  );
+  return axiosInstance.post(`${ORDERS_ENDPOINTS.PostOrders}`, input);
 }
+
 const usePostCheckOutMutation = () => {
-  const navigate = useNavigate();
   return useMutation({
     mutationFn: postCheckOut,
 
     onSuccess: async (res, input) => {
-      navigate("/cart_success_page");
+      console.log("success");
     },
     onError: (res) => {
       toast.error(res.response.data.message);
