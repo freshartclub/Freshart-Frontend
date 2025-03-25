@@ -6,12 +6,17 @@ import Header from "../ui/Header";
 import P from "../ui/P";
 import { imageUrl } from "../utils/baseUrls";
 import share from "./assets/Vector (4).png";
+import CustomOrderForm from "./CustomOrderForm";
 
 const ArtistDescription = ({ data }) => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("about");
 
+
   const redirectToCircle = () => navigate("/circleblog");
+
+
+
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
@@ -71,7 +76,7 @@ const ArtistDescription = ({ data }) => {
           >
             Circle
           </span>
-          <span className="bg-[#102031] text-white py-1 px-2 sm:px-3 text-xs sm:text-sm cursor-pointer rounded-full font-medium">
+          <span  onClick={() => setActiveTab("Customorder")} className="bg-[#102031] text-white py-1 px-2 sm:px-3 text-xs sm:text-sm cursor-pointer rounded-full font-medium">
             Custom order
           </span>
           <div className="lg:hidden flex gap-3 sm:gap-5 justify-center sm:justify-end items-center">
@@ -91,6 +96,9 @@ const ArtistDescription = ({ data }) => {
           </div>
         </div>
       </div>
+
+
+      {/* {isCustomOrder ? <CustomOrderForm/> : null} */}
 
       <div id="default-tab-content">
         {activeTab === "highlight" && (
@@ -264,6 +272,9 @@ const ArtistDescription = ({ data }) => {
             </div>
           </div>
         )}
+
+
+        {activeTab === "Customorder" && <CustomOrderForm   id={data?.artist?._id}/>}
       </div>
     </div>
   );

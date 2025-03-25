@@ -48,6 +48,8 @@ export const ARTTIST_ENDPOINTS = {
   getFavoriteList: `${ARTIST_BASE_URl}/get-favorite-list`,
   getFullList: `${ARTIST_BASE_URl}/get-full-list`,
   editProfile: `${ARTIST_BASE_URl}/edit-user-profile`,
+  CustomOrder: `${ARTIST_BASE_URl}/create-custom-order`,
+
 
   // removeItems: `${ARTIST_BASE_URl}/remove-from-cart`,
 
