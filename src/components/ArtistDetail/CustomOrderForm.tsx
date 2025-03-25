@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
 import useCustomOrderMutation from './http/useCustomOrderMutation';
+import { useGetSeries } from '../ArtistPanel/AddArtwork/http/useGetSeries';
+import { useGetDiscipline } from '../pages/http/useGetDiscipline';
+import { useGetStyle } from '../pages/http/useGetStyle';
 
 const CustomOrderForm = ({id}) => {
+
+console.log(id)
+
   const [formData, setFormData] = useState({
     projectDetails: '',
     numberOfArtworks: 1,
@@ -9,16 +15,34 @@ const CustomOrderForm = ({id}) => {
     discipline: '',
     style: '',
     expectedDeliveryDate: null,
+    artistId : "679ce168396b59b6304fb148",
+   
   });
 
-  const disciplineOptions = [
-    'Painting',
-    'Sculpture',
-    'Photography',
-    'Digital Art',
-    'Mixed Media'
-  ];
 
+  const {data , isLoading} = useGetDiscipline()
+  const { data: styleData } = useGetStyle();
+
+
+  const diciplineOption = data?.data.map((item) => {
+    return item.disciplineName;
+  });
+
+  console.log(data)
+
+  const newStyle = styleData?.data?.filter(
+    (item) =>
+      item.discipline &&
+      item.discipline.some((newItem) =>
+        newItem.disciplineName.includes(formData.discipline
+
+        )
+      )
+  );
+
+
+
+  console.log(formData.discipline)
   const styleOptions = [
     'Abstract',
     'Realism',
@@ -163,7 +187,7 @@ const CustomOrderForm = ({id}) => {
             className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#111827] focus:border-[#111827] text-gray-700"
           >
             <option value="">Select Discipline</option>
-            {disciplineOptions.map(option => (
+            {diciplineOption.map(option => (
               <option key={option} value={option}>{option}</option>
             ))}
           </select>
