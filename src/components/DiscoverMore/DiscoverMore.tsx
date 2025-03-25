@@ -11,11 +11,14 @@ import DiscoverContent from "./DiscoverContent";
 import { useGetArtWorkById } from "./http/useGetArtWorkById";
 import ProductInfo from "./ProductInfo";
 import SelectedSection from "./SelectedSection";
+import useCustomOrderForm from "../ArtistDetail/CustomOrderForm";
 
 // New MagnifierImage Component
 const MagnifierImage = ({ src, alt, isOffensive, safeMode }) => {
   const containerRef = useRef(null);
   const magnifierRef = useRef(null);
+
+ 
 
   const handleMouseMove = (e) => {
     const container = containerRef.current;
