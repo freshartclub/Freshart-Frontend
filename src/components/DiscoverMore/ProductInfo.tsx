@@ -10,13 +10,10 @@ import useGetPostArtistTicketMutation from "../NewTicket/ticket history/http/use
 import Header from "../ui/Header";
 import P from "../ui/P";
 import { imageUrl } from "../utils/baseUrls";
-import product from "./assets/single-product.jpg.png";
 
 const ProductInfo = ({ data }: any) => {
   const [ticData, setTicData] = useState({
     message: "",
-    ticketType: "",
-    subject: "",
   });
 
   const isAuthorized = useAppSelector((state) => state.user.isAuthorized);
@@ -93,9 +90,9 @@ const ProductInfo = ({ data }: any) => {
     {
       head: "Ship from :",
       name:
-        data?.data?.owner?.address.city +
+        data?.data?.owner?.address?.city +
           ", " +
-          data?.data?.owner?.address.country || "N/A",
+          data?.data?.owner?.address?.country || "N/A",
     },
     {
       head: "Delivery Time :",
@@ -118,12 +115,17 @@ const ProductInfo = ({ data }: any) => {
     const formData = new FormData();
 
     if (!ticData.message) return toast.error("Message is required!");
-    if (ticData.message.split(" ").length < 10) {
-      return toast.error("Message must be at least 10 words!");
+    if (ticData.message.split(" ").length < 5) {
+      return toast.error("Message must be at least 5 words!");
     }
+
     formData.append("message", ticData.message);
-    formData.append("subject", ticData.subject);
-    formData.append("ticketType", ticData.ticketType);
+    formData.append(
+      "subject",
+      `Additional Information about ${data?.data?.artworkId}`
+    );
+    formData.append("ticketType", "Artwork Additional Information");
+    formData.append("isArtDetail", "true");
 
     mutate(formData);
   };
@@ -279,7 +281,9 @@ const ProductInfo = ({ data }: any) => {
                   className="text-[#999999]"
                 >
                   {data?.data?.tags?.extTags?.length
-                    ? data.data.tags.extTags.map((tag) => `#${tag}`).join(", ")
+                    ? data.data.tags.extTags
+                        .map((tag: string) => `#${tag}`)
+                        .join(", ")
                     : "N/A"}
                 </P>
               </div>
@@ -323,66 +327,35 @@ const ProductInfo = ({ data }: any) => {
               >
                 Create a ticket to know additional details
               </Header>
-              {isAuthorized ? (
-                <form className="flex md:w-[50%] flex-col gap-4">
-                  <div className="flex flex-col gap-1">
-                    <span className="text-[13px] text-[#999999]">
-                      Ticket Type
-                    </span>
-                    <input
-                      className="p-2 border opacity-60 outline-none rounded"
-                      type="text"
-                      readOnly
-                      placeholder="Ticket Type"
-                      value="Artwork Additional Information"
-                    />
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <span className="text-[13px] text-[#999999]">Subject</span>
-                    <input
-                      className="p-2 opacity-60 border outline-none rounded"
-                      type="text"
-                      readOnly
-                      placeholder="Ticket Type"
-                      value={`Additional Information about ${data?.data?.artworkId}`}
-                    />
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <span className="text-[13px] text-[#999999]">
-                      Request Details
-                    </span>
-                    <textarea
-                      value={ticData.message}
-                      onChange={(e) =>
-                        setTicData((prev) => ({
-                          ...prev,
-                          message: e.target.value,
-                        }))
-                      }
-                      className="p-2 border outline-none rounded"
-                      placeholder="Request Details"
-                      rows={4}
-                    />
-                  </div>
 
-                  <span
-                    onClick={handleSubmit}
-                    className="p-2 cursor-pointer bg-black text-white text-center hover:bg-[#313131] rounded"
-                  >
-                    {isPending ? "Loading..." : "Submit"}
-                  </span>
-                </form>
-              ) : (
-                <div className="flex flex-col gap-1">
-                  You need to be login to create a ticket
-                </div>
-              )}
+              <form className="flex md:w-[50%] flex-col gap-4">
+                <textarea
+                  value={ticData.message}
+                  required
+                  onChange={(e) =>
+                    setTicData((prev) => ({
+                      ...prev,
+                      message: e.target.value,
+                    }))
+                  }
+                  className="p-2 border outline-none rounded"
+                  placeholder="Request Details"
+                  rows={4}
+                />
+
+                <span
+                  onClick={handleSubmit}
+                  className="p-2 cursor-pointer bg-black text-white text-center hover:bg-[#313131] rounded"
+                >
+                  {isPending ? "Loading..." : "Submit"}
+                </span>
+              </form>
             </div>
           ) : (
             <div>
               <Header
                 variant={{ size: "md", theme: "dark", weight: "semiBold" }}
-                className="mb-4"
+                className="my-4"
               >
                 Login to create a support ticket
               </Header>
@@ -410,7 +383,7 @@ const ProductInfo = ({ data }: any) => {
 
               <div className="flex border-t border-zinc-300 pt-4 items-center gap-4 mt-2 max-w-full w-full overflow-x-auto">
                 {data?.data?.owner?.insignia &&
-                  data?.data?.owner?.insignia.map((item, index) => (
+                  data?.data?.owner?.insignia.map((item, index: number) => (
                     <div
                       className="flex flex-shrink-0 items-center gap-1 flex-col"
                       key={index}
@@ -426,40 +399,6 @@ const ProductInfo = ({ data }: any) => {
                     </div>
                   ))}
               </div>
-
-              {/* <div className="flex justify-between items-center mt-2">
-                  <div className="flex">
-                    <div className="relative w-12 h-12 border-4 border-white rounded-full overflow-hidden">
-                      <img
-                        src={circle1}
-                        alt="Follower 1"
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="relative w-12 h-12 border-4 border-white rounded-full overflow-hidden -ml-5">
-                      <img
-                        src={circle2}
-                        alt="Follower 2"
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-
-                  
-                    <div className="relative w-12 h-12 border-4 border-white rounded-full bg-gray-100 flex items-center justify-center -ml-5">
-                      <span className="font-bold text-black">+256</span>
-                    </div>
-                  </div>
-
-                  <div className="flex justify-between gap-3">
-                    <img
-                      src={account_plus}
-                      alt="icons"
-                      className="w-[20px] h-[20px]"
-                    />
-                    <img src={chat} alt="icons" className="w-[20px] h-[20px]" />
-                    <img src={dots} alt="icons" className="w-[20px] h-[20px]" />
-                  </div>
-                </div> */}
             </div>
 
             <div className="w-full md:w-[73%] border p-4">
@@ -498,10 +437,6 @@ const ProductInfo = ({ data }: any) => {
           </div>
         </TabPanel>
       </Tabs>
-
-      {/* <div>
-        <img src={product} alt="only image" className="w-full" />
-      </div> */}
     </div>
   );
 };

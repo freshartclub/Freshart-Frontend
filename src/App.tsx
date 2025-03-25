@@ -124,8 +124,6 @@ const App: React.FC = () => {
     }
   }, [lng]);
 
-  const profile = localStorage.getItem("profile");
-
   if (isLoading) return <Loader />;
 
   return (
@@ -499,7 +497,9 @@ const App: React.FC = () => {
               }
             />
           </Routes>
-          {profile === "user" ? <FooterSection /> : null}
+          {window.location.pathname.includes("/artist-panel") ? null : (
+            <FooterSection />
+          )}
         </Suspense>
       </Layout>
     </AuthProvider>

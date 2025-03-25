@@ -26,7 +26,6 @@ const PriceAndPlan = () => {
     window.scrollTo(0, 0);
   };
 
-  // Function to group plans by planGrp
   const groupPlans = (plans) => {
     const grouped = plans.reduce((acc, plan) => {
       const { planGrp } = plan;
@@ -70,6 +69,10 @@ const PriceAndPlan = () => {
     return listItems;
   };
 
+  const getPlan = (id: string) => {
+    console.log(id);
+  };
+
   return (
     <div className="bg-[#F5F2EB] pt-10 pb-10">
       <div className="container mx-auto md:px-6 px-3">
@@ -91,7 +94,7 @@ const PriceAndPlan = () => {
         </div>
 
         <div className="my-8">
-          <div className="flex justify-between items-center">
+          <div className="flex lg:flex-row flex-col lg:gap-0 gap-2 lg:justify-between lg:items-center">
             <DiscountCode />
 
             <Button
@@ -108,25 +111,26 @@ const PriceAndPlan = () => {
               )}
             </Button>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center lg:w-max w-full justify-center gap-2">
               <img
                 src={exclamation}
                 alt="exclamation sign"
-                className="w-[26px] h-[26px]"
+                className="w-[20px] h-[20px]"
               />
-              <P variant={{ size: "md", theme: "dark", weight: "normal" }}>
+              <P variant={{ size: "small", theme: "dark", weight: "normal" }}>
                 {t("Compare plans")}
               </P>
             </div>
           </div>
 
-          <div className="flex gap-5 items-center justify-center w-full">
+          <div className="grid mt-6 lg:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-5 items-center justify-center w-full">
             {Object.entries(groupedPlans).map(([groupName, plans]) => {
               const defaultPlan = activePlans[groupName] || plans[0];
+
               return (
                 <div
                   key={groupName}
-                  className="border rounded-lg shadow-md p-6 bg-white w-full flex-wrap md:wrap-no my-6"
+                  className="border rounded-lg shadow-md p-6 bg-white w-full flex-wrap md:wrap-no"
                 >
                   <img
                     src={`${imageUrl}/users/${defaultPlan?.planImg}`}
@@ -200,7 +204,7 @@ const PriceAndPlan = () => {
                       rounded: "full",
                     }}
                     className="flex items-center mt-6 w-full justify-center hover:bg-transparent border-2 hover:border-[#102031] hover:text-[#102031]"
-                    onClick={redirectToPaymentPage}
+                    onClick={() => getPlan(defaultPlan?._id)}
                   >
                     {t("Get Started")}
                   </Button>

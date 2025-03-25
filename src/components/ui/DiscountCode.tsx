@@ -4,7 +4,7 @@ import Button from "./Button";
 const DiscountCode = () => {
   const { t } = useTranslation();
   return (
-    <div className="bg-white border-4 border-[#EDE8FF] rounded-md px-3 py-2 flex justify-between">
+    <div className="bg-white border-4 border-[#EDE8FF] rounded-md px-3 flex justify-between">
       <input
         type="text"
         placeholder={t("Discount Code")}
