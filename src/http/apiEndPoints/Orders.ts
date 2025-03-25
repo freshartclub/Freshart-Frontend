@@ -11,4 +11,5 @@ export const ORDERS_ENDPOINTS = {
   GetOrderDetails: `${ARTIST_ORDER_URl}/get-user-single-order`,
   ReviewArtwork: `${ARTIST_ORDER_URl}/give-review`,
   getHash: `${ARTIST_ORDER_URl}/hash`,
+  getStatus: `${ARTIST_ORDER_URl}/status`,
 };

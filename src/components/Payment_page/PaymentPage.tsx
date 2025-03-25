@@ -1,5 +1,5 @@
 import getSymbolFromCurrency from "currency-symbol-map";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { PhoneInput } from "react-international-phone";
@@ -15,6 +15,8 @@ import Header from "../ui/Header";
 import Loader from "../ui/Loader";
 import { lowImageUrl } from "../utils/baseUrls";
 import ArtBreadcrumbs1 from "./ArtBreadcrumbs1";
+import axiosInstance from "../utils/axios";
+import { ORDERS_ENDPOINTS } from "../../http/apiEndPoints/Orders";
 
 declare global {
   interface Window {
@@ -28,6 +30,8 @@ const PaymentPage = () => {
   const [time, setTime] = useState("");
   const [active, setActive] = useState(false);
   const { data, isLoading } = useGetCartItems();
+  const [success, setSuccess] = useState(false);
+  const pollingRef = useRef(null);
   const [orderData, setOrderData] = useState({
     hash: "",
     amount: "",
@@ -181,33 +185,32 @@ const PaymentPage = () => {
   };
 
   useEffect(() => {
-    const handlePopState = () => {
-      const confirmLeave = window.confirm(
-        "Are you sure you want to go back? Your payment progress will be lost."
-      );
-      if (confirmLeave) {
-        window.location.reload();
-      } else {
-        window.history.pushState(null, "", window.location.href);
+    if (!orderData.orderId || success) return;
+
+    const checkPaymentStatus = async () => {
+      try {
+        const { data } = await axiosInstance.get(
+          `${ORDERS_ENDPOINTS.getStatus}?orderId=${orderData.orderId}`
+        );
+
+        if (data.status === "success") {
+          setSuccess(true);
+          clearInterval(pollingRef.current);
+          window.location.href = `/payment-success?orderId=${orderData.orderId}`;
+        } else if (data.status === "failed") {
+          setSuccess(true);
+          clearInterval(pollingRef.current);
+          window.location.href = "/payment-fail";
+        }
+      } catch (error) {
+        console.error("Error checking payment status:", error);
       }
     };
 
-    const handleBeforeUnload = (event) => {
-      event.preventDefault();
-      event.returnValue =
-        "Are you sure you want to leave? Your payment progress will be lost.";
-    };
+    pollingRef.current = setInterval(checkPaymentStatus, 5000);
 
-    window.history.pushState(null, "", window.location.href);
-
-    window.addEventListener("popstate", handlePopState);
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener("popstate", handlePopState);
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, [orderData.hash]);
+    return () => clearInterval(pollingRef.current);
+  }, [orderData.orderId, success]);
 
   if (billingLoading || isLoading) return <Loader />;
 
@@ -630,7 +633,7 @@ const PaymentPage = () => {
                   <input
                     type="hidden"
                     name="MERCHANT_RESPONSE_URL"
-                    value={`https://323b-2409-40c4-5d-5bec-522-6a64-14cb-a7d9.ngrok-free.app/api/artist/get-response-data`}
+                    value={`https://4b67-2409-40c4-5d-5bec-522-6a64-14cb-a7d9.ngrok-free.app/api/artist/get-response-data`}
                   />
                 </>
 
