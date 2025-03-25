@@ -18,11 +18,13 @@ const useCustomOrderMutation = () => {
     mutationFn: customOder,
 
     onSuccess: async (res) => {
+      toast.success( res.message),
       queryClient.invalidateQueries({
         queryKey: [ARTTIST_ENDPOINTS.customOder],
         refetchType: "all",
       });
     },
+    
     onError: (error) => {
       toast.error(error.response?.data?.message);
     },

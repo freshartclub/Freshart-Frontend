@@ -41,16 +41,6 @@ console.log(id)
   );
 
 
-
-  console.log(formData.discipline)
-  const styleOptions = [
-    'Abstract',
-    'Realism',
-    'Impressionism',
-    'Modern',
-    'Traditional'
-  ];
-
   const handleTextChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -205,8 +195,8 @@ console.log(id)
             className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#111827] focus:border-[#111827] text-gray-700"
           >
             <option value="">Select Style</option>
-            {styleOptions.map(option => (
-              <option key={option} value={option}>{option}</option>
+            {newStyle?.map(option => (
+              <option key={option?.styleName} value={option?.styleName}>{option?.styleName}</option>
             ))}
           </select>
         </div>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import exclamation from "../../assets/exclamation-thick.png";
 import Button from "../ui/Button";
@@ -10,16 +10,43 @@ import { imageUrl } from "../utils/baseUrls";
 import checkmark from "./assets/checkmark.png";
 import { useGetAllPlans } from "./http/useGetAllPlans";
 import { useTranslation } from "react-i18next";
+import useSubscriptionMutation from "./http/useSubscriptionMutation";
 
 const PriceAndPlan = () => {
   const [activePlans, setActivePlans] = useState({});
   const navigate = useNavigate();
   const { data, isLoading } = useGetAllPlans();
   const { t } = useTranslation();
+  const [hash, setHash] = useState("")
 
-  const redirectToPaymentPage = () => {
-    navigate("/premium_payment");
+  const [orderData, setOrderData] = useState({
+    hash: "",
+    amount: "",
+    currency: "",
+    orderId: "",
+    iso: "",
+  });
+
+  const generateTimestamp = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    const hours = String(now.getHours()).padStart(2, "0");
+    const minutes = String(now.getMinutes()).padStart(2, "0");
+    const seconds = String(now.getSeconds()).padStart(2, "0");
+
+
+    return `${year}${month}${day}${hours}${minutes}${seconds}`;
   };
+
+  const { mutateAsync, isPending } = useSubscriptionMutation()
+
+  useEffect(() => {
+    if (orderData?.hash) {
+      document.getElementById("hppFrame").submit();
+    }
+  }, [orderData.hash]);
 
   const handleCompleteForm = () => {
     navigate("/registration_process");
@@ -36,6 +63,8 @@ const PriceAndPlan = () => {
     return grouped;
   };
 
+
+  console.log(activePlans)
   // Handle select change
   const handlePlanChange = (planGrp, selectedPlanName) => {
     const selectedPlan = groupPlans(data)[planGrp].find(
@@ -69,10 +98,46 @@ const PriceAndPlan = () => {
     return listItems;
   };
 
-  const getPlan = (id: string) => {
+
+
+  const getPlan = async (id: string) => {
+
     console.log(id);
+
+    const genTime = await generateTimestamp()
+    setHash(genTime)
+
+    const newData = {
+      planId: id,
+      currency: "EUR",
+      country: "Spain",
+      time: genTime,
+      type: "monthly"
+    }
+
+    mutateAsync(newData).then((res) => {
+    
+      setOrderData(
+        {
+
+          hash: res.data.data,
+          orderId: res.data.orderId,
+          amount: res.data.amount,
+          currency: res.data.currency,
+          iso: res.data.iso,
+        }
+      )
+      // navigate('/payment_success')
+
+    })
+
+
+
   };
 
+
+
+  console.log(hash)
   return (
     <div className="bg-[#F5F2EB] pt-10 pb-10">
       <div className="container mx-auto md:px-6 px-3">
@@ -122,6 +187,70 @@ const PriceAndPlan = () => {
               </P>
             </div>
           </div>
+
+          <form
+            id="hppFrame"
+            method="POST"
+            action="https://hpp.sandbox.addonpayments.com/pay"
+            target="hppFrame"
+          >
+            <>
+              <input type="hidden" name="TIMESTAMP" value={hash} />
+              <input
+                type="hidden"
+                name="MERCHANT_ID"
+                value={import.meta.env.VITE_MERCHANT_ID}
+              />
+              <input
+                type="hidden"
+                name="ORDER_ID"
+                value={orderData?.orderId}
+              />
+              <input type="hidden" name="AMOUNT" value={orderData.amount} />
+              <input
+                type="hidden"
+                name="CURRENCY"
+                value={orderData?.currency}
+              />
+              <input type="hidden" name="SHA1HASH" value={orderData?.hash} />
+              <input type="hidden" name="AUTO_SETTLE_FLAG" value="1" />
+              <input
+                type="hidden"
+                name="HPP_BILLING_CITY"
+                value={"Jablpur"}
+              />
+              <input
+                type="hidden"
+                name="HPP_BILLING_COUNTRY"
+                value={orderData?.iso}
+              />
+              <input
+                type="hidden"
+                name="HPP_BILLING_STREET1"
+                value={"ghar"}
+              />
+              <input
+                type="hidden"
+                name="HPP_BILLING_POSTALCODE"
+                value={"46415616"}
+              />
+              <input
+                type="hidden"
+                name="HPP_CUSTOMER_EMAIL"
+                value={"sknjdnj@gmail.com"}
+              />
+              <input
+                type="hidden"
+                name="MERCHANT_RESPONSE_URL"
+                value={`https://4b67-2409-40c4-5d-5bec-522-6a64-14cb-a7d9.ngrok-free.app/api/artist/get-response-data`}
+              />
+            </>
+
+            <p className="text-[#9999] text-xs mb-1">
+              If you have different shipping address then make sure fill
+              that
+            </p>
+          </form>
 
           <div className="grid mt-6 lg:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-5 items-center justify-center w-full">
             {Object.entries(groupedPlans).map(([groupName, plans]) => {
@@ -196,24 +325,39 @@ const PriceAndPlan = () => {
                       </li>
                     )}
                   </ul>
-                  <Button
-                    variant={{
-                      fontSize: "md",
-                      theme: "dark",
-                      fontWeight: "500",
-                      rounded: "full",
-                    }}
-                    className="flex items-center mt-6 w-full justify-center hover:bg-transparent border-2 hover:border-[#102031] hover:text-[#102031]"
-                    onClick={() => getPlan(defaultPlan?._id)}
-                  >
-                    {t("Get Started")}
-                  </Button>
+               
+
+
+
+                  {isPending ? (
+                    <span>Wait....</span>
+                  ) : (
+                    <input
+                      disabled={isPending}
+                      className={` p-2 mt-5  w-full bg-black rounded-md text-center text-white cursor-pointer hover:bg-[#131313df]}`}
+                      onClick={() => getPlan(defaultPlan?._id)}
+                      type="button"
+                      value={t("Get Started")}
+                    />
+                  )}
                 </div>
               );
             })}
           </div>
         </div>
+        {orderData?.hash ? (
+          <div className="fixed inset-0 z-[99] flex justify-center items-center bg-black/50 backdrop-blur-sm">
+            <iframe
+              name="hppFrame"
+              title="Hosted Payment Page"
+              className="md:w-[40%] h-[500px] shadow-lg"
+              style={{ border: "none" }}
+            // src={hppUrl}
+            ></iframe>
+          </div>
+        ) : null}
       </div>
+
     </div>
   );
 };

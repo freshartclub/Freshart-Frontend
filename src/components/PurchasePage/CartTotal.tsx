@@ -15,6 +15,8 @@ const CartTotal = ({ data, state }) => {
 
   const navigate = useNavigate();
 
+ 
+
   const totalDiscountAmount = discountAmounts
     ?.reduce((totalDiscount, item) => {
       return totalDiscount + item;
@@ -100,7 +102,7 @@ const CartTotal = ({ data, state }) => {
           onClick={() => handleCheckOut()}
           variant={{ theme: "dark", rounded: "full" }}
           className={`${
-            data?.cart?.length === 0 && "pointer-events-none opacity-50"
+            data?.length === 0 && "pointer-events-none opacity-50"
           } flex gap-2 items-center w-full justify-center xl:!py-5 lg:py-3`}
         >
           <P variant={{ size: "base", theme: "light", weight: "medium" }}>

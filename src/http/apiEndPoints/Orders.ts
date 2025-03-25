@@ -12,4 +12,5 @@ export const ORDERS_ENDPOINTS = {
   ReviewArtwork: `${ARTIST_ORDER_URl}/give-review`,
   getHash: `${ARTIST_ORDER_URl}/hash`,
   getStatus: `${ARTIST_ORDER_URl}/status`,
+  SubscriptionPlans: `${ARTIST_ORDER_URl}//subscribe-plan`,
 };
