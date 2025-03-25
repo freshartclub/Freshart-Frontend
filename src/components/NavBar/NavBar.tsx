@@ -275,29 +275,40 @@ const NavBar = () => {
                   color="white"
                 />
 
-                <ShoppingCard isOpen={isSidebarOpen} onClose={toggleSidebar} />
-
-                <button
-                  onClick={toggleSidebar}
-                  className="relative focus:outline-none"
-                >
-                  <img src={bag} alt="bag" className="w-8 h-8 text-white" />
-                  <span className="absolute bg-red-300 w-4 h-4 right-0 top-0  rounded-full flex items-center justify-center">
-                    {cartItem ? (
-                      <h1 className="text-sm font-semibold">
-                        {cartItem?.data?.cart?.length}
-                      </h1>
-                    ) : null}
-                  </span>
-                </button>
+                {window.location.pathname !== "/payment_page" &&
+                  window.location.pathname !== "/purchase_cart" && (
+                    <>
+                      <ShoppingCard
+                        isOpen={isSidebarOpen}
+                        onClose={toggleSidebar}
+                      />
+                      <button
+                        onClick={toggleSidebar}
+                        className="relative focus:outline-none"
+                      >
+                        <img
+                          src={bag}
+                          alt="bag"
+                          className="w-8 h-8 text-white"
+                        />
+                        <span className="absolute bg-red-300 w-4 h-4 right-0 top-0  rounded-full flex items-center justify-center">
+                          {cartItem ? (
+                            <h1 className="text-sm font-semibold">
+                              {cartItem?.data?.cart?.length}
+                            </h1>
+                          ) : null}
+                        </span>
+                      </button>
+                    </>
+                  )}
 
                 <button
                   ref={closePopup}
                   className="focus:outline-none relative"
                 >
-                  {user?.profile?.mainImage ? (
+                  {user?.mainImage ? (
                     <img
-                      src={`${imageUrl}/users/${user?.profile?.mainImage}`}
+                      src={`${imageUrl}/users/${user?.mainImage}`}
                       alt="Profile"
                       onClick={() => setIsProfileDropdown((prev) => !prev)}
                       className=" text-white mx-2 rounded-full object-cover w-8 h-8"
