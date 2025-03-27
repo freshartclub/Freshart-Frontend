@@ -1,13 +1,13 @@
 import { useState } from "react";
 import Header from "../ui/Header";
 import P from "../ui/P";
-import { imageUrl } from "../utils/baseUrls";
 import ArtWork from "./ArtWork";
 import plus from "./assets/Plus.png";
 import BillingSection from "./BillingSection";
 import OrderHistory from "./OrderHistory";
 import Progressbar from "./Progressbar";
 import ReviewPopup from "./ReviewPopup";
+import { FcRating } from "react-icons/fc";
 
 const OrderDescription = ({ data }) => {
   const [isReviewOpen, setIsReviewOpen] = useState(false);
@@ -15,7 +15,6 @@ const OrderDescription = ({ data }) => {
   const openReviewPopup = () => setIsReviewOpen(true);
   const closeReviewPopup = () => setIsReviewOpen(false);
 
-  console.log("this is from orderDes", data?.foundArt?.items?.rating);
   const rating = data?.foundArt?.items?.rating;
 
   return (
@@ -29,8 +28,7 @@ const OrderDescription = ({ data }) => {
         </P>
 
         <div className="flex justify-end">
-          {" "}
-          {data?.foundArt?.items?.rating ? (
+          {data?.foundArt?.items?.other?.rating ? (
             Array.from({ length: 5 }, (_, index) => (
               <svg
                 key={index}
@@ -49,21 +47,19 @@ const OrderDescription = ({ data }) => {
               </svg>
             ))
           ) : (
-            <div className="flex gap-2 items-center">
+            <div
+              onClick={openReviewPopup}
+              className="flex cursor-pointer gap-2 items-center"
+            >
               <P
                 variant={{ size: "small", theme: "dark", weight: "medium" }}
-                className="text-[#FF536B] "
+                className="text-[#FF536B]"
               >
                 Leave a Rating
               </P>
-              <img
-                src={plus}
-                alt="plus sign "
-                className="cursor-pointer"
-                onClick={openReviewPopup}
-              />
+              <FcRating />
             </div>
-          )}{" "}
+          )}
         </div>
       </div>
 
@@ -80,21 +76,21 @@ const OrderDescription = ({ data }) => {
               <Header
                 variant={{ size: "lg", theme: "dark", weight: "semiBold" }}
               >
-                #{data?.foundArt?.orderID}
+                #{data?.foundArt?.orderId}
               </Header>
-              <div className="flex sm:flex-row flex-col md:gap-4 gap-2 mt-2">
+              <div className="flex sm:flex-row flex-col gap-2 mt-2">
                 <P
-                  variant={{ size: "base", weight: "medium" }}
+                  variant={{ size: "small", weight: "medium" }}
                   className="text-[#475156]"
                 >
                   {data?.otherArt?.length + 1}{" "}
                   {data?.otherArt?.length + 1 > 1 ? "Artworks" : "Artwork"}
                 </P>
                 <P
-                  variant={{ size: "base", weight: "normal" }}
+                  variant={{ size: "small", weight: "normal" }}
                   className="text-[#475156]"
                 >
-                  Order Placed in{" "}
+                  Order Placed on{" "}
                   {new Date(data?.foundArt?.createdAt).toLocaleString()}
                 </P>
               </div>
@@ -104,7 +100,7 @@ const OrderDescription = ({ data }) => {
                 variant={{ size: "xl", weight: "bold" }}
                 className="text-[#FF536B]"
               >
-                €{data?.foundArt?.subTotal}
+                € {data?.foundArt?.total}
               </Header>
             </div>
           </div>
@@ -120,11 +116,7 @@ const OrderDescription = ({ data }) => {
         <Progressbar />
         <OrderHistory />
 
-        <ArtWork
-          data={data?.foundArt}
-          url={imageUrl}
-          otherArt={data?.otherArt}
-        />
+        <ArtWork data={data?.foundArt} otherArt={data?.otherArt} />
         <BillingSection data={data} />
       </div>
     </div>

@@ -10,11 +10,12 @@ import { useTranslation } from "react-i18next";
 
 const OrderApprove = () => {
   const [searchParams] = useSearchParams();
-  const id = searchParams.get("id");
+  const id = searchParams.get("id") as string;
   const naviagte = useNavigate();
   const { t } = useTranslation();
 
   const { data, isLoading } = useGetOrderDetails(id);
+  console.log(data);
   const { mutate, isPending } = usePostAcceptMutation();
 
   const handleAccept = () => {
@@ -44,11 +45,11 @@ const OrderApprove = () => {
           </div>
           <div className="">
             <div className="font-bold text-[#1C252E] text-lg mb-2">
-              {t("Order ID")} : {data?.data?.orderID}
+              {t("Order ID")} : #{data?.orderId}
             </div>
 
             <p className="text-[#919EAB] text-xs">
-              {dayjs(data?.data?.createdAt).format("MMMM D, YYYY , HH:mm:ss")}
+              {dayjs(data?.createdAt).format("MMMM D, YYYY , HH:mm:ss")}
             </p>
           </div>
         </div>
@@ -59,8 +60,8 @@ const OrderApprove = () => {
               src={print}
             />
           </div>
-          {data?.data?.status === "accepted" ? null : (
-            <div className="flex gap-2">
+          {data?.status === "accepted" ? null : (
+            <div className="flex items-start gap-2">
               <button
                 onClick={() => handleAccept()}
                 className="bg-[#22C55E]
@@ -82,7 +83,7 @@ const OrderApprove = () => {
         </div>
       </div>
 
-      <OrderApproveDetails />
+      <OrderApproveDetails data={data} />
     </div>
   );
 };

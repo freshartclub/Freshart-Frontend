@@ -4,39 +4,41 @@ import P from "../ui/P";
 const BillingSection = ({ data }) => {
   const address_data = [
     {
-      heading: "Billing Address",
-      name: data?.foundArt?.billingAddress?.firstName
-        ? data?.foundArt?.billingAddress?.firstName +
+      heading: "Billing Details",
+      name: data?.foundArt?.billingAddress?.billingFirstName
+        ? data?.foundArt?.billingAddress?.billingFirstName +
           " " +
-          data?.foundArt?.billingAddress?.lastName
+          data?.foundArt?.billingAddress?.billingLastName
         : "N/A",
-      address: data?.foundArt?.billingAddress?.address,
+      addHead: "Address:",
+      address: data?.foundArt?.billingAddress?.billingAddress,
       phone: "Phone Number:",
-      number: data?.foundArt?.billingAddress?.phone,
+      number: data?.foundArt?.billingAddress?.billingPhone,
       email: "Email:",
-      email_address: data?.foundArt?.billingAddress?.email,
+      email_address: data?.foundArt?.billingAddress?.billingEmail,
     },
     {
-      heading: "Shipping Address",
-      name: data?.foundArt?.billingAddress?.firstName
-        ? data?.foundArt?.billingAddress?.firstName +
-          " " +
-          data?.foundArt?.billingAddress?.lastName
-        : "N/A",
+      heading: "Shipping Details",
+      // name: data?.foundArt?.billingAddress?.firstName
+      //   ? data?.foundArt?.billingAddress?.firstName +
+      //     " " +
+      //     data?.foundArt?.billingAddress?.lastName
+      //   : "N/A",
+      addHead: "Address :",
       address:
         data?.foundArt?.shippingAddress?.address ||
-        data?.foundArt?.billingAddress?.address,
-      phone: "Phone Number:",
+        data?.foundArt?.billingAddress?.billingAddress,
+      phone: "Phone Number :",
       number:
         data?.foundArt?.shippingAddress?.phone ||
-        data?.foundArt?.billingAddress?.phone,
-      email: "Email:",
+        data?.foundArt?.billingAddress?.billingPhone,
+      email: "Email :",
       email_address:
         data?.foundArt?.shippingAddress?.email ||
-        data?.foundArt?.billingAddress?.email,
+        data?.foundArt?.billingAddress?.billingEmail,
     },
     {
-      heading: "Order Notes",
+      heading: "Order Notes:",
       address: data?.foundArt?.note ? data?.foundArt?.note : "N/A",
     },
   ];
@@ -57,12 +59,17 @@ const BillingSection = ({ data }) => {
           >
             {item.name}
           </P>
-          <P
-            variant={{ size: "small", theme: "dark", weight: "medium" }}
-            className="text-[#203F58]"
-          >
-            {item.address}
-          </P>
+          <div className="flex gap-1 my-2">
+            <P variant={{ size: "small", theme: "dark", weight: "semiBold" }}>
+              {item.addHead}
+            </P>
+            <P
+              variant={{ size: "small", theme: "dark", weight: "medium" }}
+              className="text-[#203F58]"
+            >
+              {item.address}
+            </P>
+          </div>
           <div className="flex gap-1 my-2">
             <P variant={{ size: "small", theme: "dark", weight: "semiBold" }}>
               {item.phone}

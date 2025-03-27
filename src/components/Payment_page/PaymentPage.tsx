@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
-import { useSearchParams } from "react-router-dom";
+import { Navigate, useSearchParams } from "react-router-dom";
 import countryList from "react-select-country-list";
 import { useAppSelector } from "../../store/typedReduxHooks";
 import { useGetBillingAddress } from "../ArtistPanel/ArtistEditProfile/http/useGetBillingAddress";
@@ -166,6 +166,10 @@ const PaymentPage = () => {
         payload["isDifferentShipping"] = false;
       }
 
+      if (getValues("additionalInfo")) {
+        payload["note"] = getValues("additionalInfo");
+      }
+
       const res = await checkOutMutation(payload);
       setOrderData({
         hash: res.data.data,
@@ -200,7 +204,7 @@ const PaymentPage = () => {
         } else if (data.status === "failed") {
           setSuccess(true);
           clearInterval(pollingRef.current);
-          window.location.href = "/payment-fail";
+          window.location.href = `/payment-fail?orderId=${orderData.orderId}`;
         }
       } catch (error) {
         console.error("Error checking payment status:", error);
@@ -211,6 +215,10 @@ const PaymentPage = () => {
 
     return () => clearInterval(pollingRef.current);
   }, [orderData.orderId, success]);
+
+  if (renderData?.length == 0) {
+    return <Navigate to="/home" />;
+  }
 
   if (billingLoading || isLoading) return <Loader />;
 
@@ -633,7 +641,9 @@ const PaymentPage = () => {
                   <input
                     type="hidden"
                     name="MERCHANT_RESPONSE_URL"
-                    value={`https://4b67-2409-40c4-5d-5bec-522-6a64-14cb-a7d9.ngrok-free.app/api/artist/get-response-data`}
+                    value={`${
+                      import.meta.env.VITE_SERVER_BASE_URL
+                    }/api/artist/get-response-data`}
                   />
                 </>
 

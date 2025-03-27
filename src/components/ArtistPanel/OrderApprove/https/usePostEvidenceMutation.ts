@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { ORDERS_ENDPOINTS } from "../../../../http/apiEndPoints/Orders";
 import axiosInstance from "../../../utils/axios";
 
-async function usePostEvidence(input) {
+async function postEvidence(input) {
   const formData = new FormData();
   Object.entries(input.value).forEach(([key, val]) => {
     if (Array.isArray(val)) {
@@ -34,14 +34,14 @@ const usePostEvidenceMutation = () => {
   const { t } = useTranslation();
 
   return useMutation({
-    mutationFn: (input) => usePostEvidence(input),
+    mutationFn: (input) => postEvidence(input),
 
     onSuccess: async (res) => {
       queryClient.invalidateQueries({
-        queryKey: ["acceptOrder"],
+        queryKey: [ORDERS_ENDPOINTS.GetArtistOrderDetails],
         refetchType: "all",
       });
-      
+
       toast.success(t(res.data.message), {
         duration: 3000,
       });

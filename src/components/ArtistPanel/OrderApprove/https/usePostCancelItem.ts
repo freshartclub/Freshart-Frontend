@@ -5,7 +5,7 @@ import { ORDERS_ENDPOINTS } from "../../../../http/apiEndPoints/Orders";
 import axiosInstance from "../../../utils/axios";
 import { useTranslation } from "react-i18next";
 
-async function usePostCancel(input, id) {
+async function postCancel(input, id) {
   return axiosInstance.patch(`${ORDERS_ENDPOINTS.CancelItem}/${id}`, input);
 }
 
@@ -17,14 +17,14 @@ const usePostCancelItem = () => {
   const id = searchParams.get("id");
 
   return useMutation({
-    mutationFn: (input) => usePostCancel(input, id),
+    mutationFn: (input) => postCancel(input, id),
 
     onSuccess: async (res) => {
       queryClient.invalidateQueries({
-        queryKey: ["acceptOrder"],
+        queryKey: [ORDERS_ENDPOINTS.GetArtistOrderDetails],
         refetchType: "all",
       });
-      
+
       toast.success(t(res.data.message), {
         duration: 3000,
       });

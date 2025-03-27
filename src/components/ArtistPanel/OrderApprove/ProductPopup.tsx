@@ -20,10 +20,10 @@ const ProductPopup = ({ product, imageUrl, setIsPopupOpen, isPopupOpen }) => {
 
             <div className="p-2">
               <h2 className="text-md font-medium mb-4">
-                {t("Artwork Name")} : {product?.artWork?.artworkName}
+                {t("Artwork Name")} : {product?.artwork?.artworkName}
               </h2>
               <div className="flex flex-wrap gap-2">
-                {product?.evidenceImg?.map((img, i) => (
+                {product?.other?.evidenceImg?.map((img, i: number) => (
                   <img
                     key={i}
                     src={`${imageUrl}/users/${img}`}

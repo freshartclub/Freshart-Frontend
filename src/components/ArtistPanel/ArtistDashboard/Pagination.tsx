@@ -5,7 +5,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import Loader from "../../ui/Loader";
 import { formateCurrency } from "../../utils/FormatCurrency";
-import { imageUrl } from "../../utils/baseUrls";
+import { imageUrl, lowImageUrl } from "../../utils/baseUrls";
 import { useGetArtistOrder } from "../Orders/http/useGetArtistOrder";
 import PaginationTabs from "./PaginationTabs";
 import { useTranslation } from "react-i18next";
@@ -17,12 +17,13 @@ const Pagination = () => {
   const navigate = useNavigate();
   const { data, isLoading } = useGetArtistOrder();
 
+  console.log(data);
+
   const headerData = [
     { title: "Artwork" },
     { title: "Customer" },
     { title: "Type" },
     { title: "Total" },
-    { title: "Payment" },
     { title: "Date" },
     { title: "Status" },
     { title: "Action" },
@@ -59,7 +60,7 @@ const Pagination = () => {
               </thead>
 
               <tbody>
-                {data.map((value, index) => (
+                {data.map((value, index: number) => (
                   <tr
                     key={index}
                     className="[&>*:nth-child(1)]:pl-4 border-b hover:bg-gray-100 bg-slate-50"
@@ -69,7 +70,7 @@ const Pagination = () => {
                       onClick={() => handelClickData(value)}
                     >
                       <img
-                        src={`${imageUrl}/users/${value?.image}`}
+                        src={`${lowImageUrl}/${value?.image}`}
                         alt="product image"
                         className="w-10 h-9 rounded object-cover"
                       />
@@ -94,22 +95,14 @@ const Pagination = () => {
                       </p>
                     </td>
 
-                    {/* Order Type */}
                     <td className="py-3 text-[12px] lg:text-[14px] font-bold capitalize whitespace-nowrap">
-                      {value?.items[0]?.type || "N/A"}
+                      {value?.type || "N/A"}
                     </td>
 
-                    {/* Total */}
                     <td className="py-3 text-[12px] lg:text-[14px] font-bold whitespace-nowrap">
-                      {formateCurrency(value?.subTotal, "$")}
+                      {formateCurrency(value?.total, "$")}
                     </td>
 
-                    {/* Payment Type */}
-                    <td className="py-3 text-[12px] lg:text-[14px] font-bold whitespace-nowrap">
-                      {value?.paymenttype || "N/A"}
-                    </td>
-
-                    {/* Date */}
                     <td className="py-3 text-[12px] lg:text-[14px] font-bold whitespace-nowrap">
                       {dayjs(value?.createdAt).format("MMM D, YYYY")}
                     </td>
