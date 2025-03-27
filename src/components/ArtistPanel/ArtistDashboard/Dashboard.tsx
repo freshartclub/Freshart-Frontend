@@ -8,7 +8,7 @@ const Dashboard = () => {
   return (
     <div className="w-full p-2">
       <FilterProductItem />
-      <RecentOrders />
+      {/* <RecentOrders /> */}
       <ArtCardPagination />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 my-10">

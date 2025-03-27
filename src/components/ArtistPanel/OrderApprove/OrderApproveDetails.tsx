@@ -1,20 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { BiSolidImageAdd } from "react-icons/bi";
 import { MdDelete } from "react-icons/md";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import Loader from "../../ui/Loader";
-import { imageUrl } from "../../utils/baseUrls";
+import { useNavigate } from "react-router-dom";
+import { imageUrl, lowImageUrl } from "../../utils/baseUrls";
 import { formateCurrency } from "../../utils/FormatCurrency";
 import edit from "../assets/icon.png";
 import select_file from "../assets/select_file.png";
-import { useGetOrderDetails } from "./https/useGetOrderDetails";
 import usePostCancelItem from "./https/usePostCancelItem";
 import usePostEvidenceMutation from "./https/usePostEvidenceMutation";
 import ProductPopup from "./ProductPopup";
 
-const OrderApproveDetails = () => {
+const OrderApproveDetails = ({ data }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [orderModal, setOrderModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -22,17 +20,16 @@ const OrderApproveDetails = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [selectedProductPop, setSelectedProductPop] = useState(null);
 
+  const [total, setTotal] = useState(0);
+  const [subTotal, setSubTotal] = useState(0);
+  const [discount, setDiscount] = useState(0);
+
   const { t } = useTranslation();
 
   const [id, setId] = useState("");
   const [orderType, setOrderType] = useState("");
   const [artworkId, setArtworkId] = useState("");
   const navigate = useNavigate();
-
-  const [searchParams] = useSearchParams();
-  const apiId = searchParams.get("id") || "";
-
-  const { data, isRefetching } = useGetOrderDetails(apiId);
 
   const {
     register,
@@ -53,7 +50,7 @@ const OrderApproveDetails = () => {
   };
 
   const openModal = (product: React.SetStateAction<null>) => {
-    setArtworkId(product?.artWork?._id);
+    setArtworkId(product?.artwork?._id);
 
     setSelectedProduct(product);
     setIsModalOpen(true);
@@ -110,17 +107,34 @@ const OrderApproveDetails = () => {
     });
   };
 
-  const reviewArtWork = (id: string) => {
-    navigate(
-      `/artist-panel/artwork/preview?id=${id}&preview=true&type=orderReview=true`
-    );
-  };
+  useEffect(() => {
+    if (data?.items && data.items.length > 0) {
+      let calculatedSubTotal = 0;
+      let calculatedDiscount = 0;
+      let calculatedTotal = 0;
 
-  if (isRefetching) return <Loader />;
+      data.items.forEach((item) => {
+        if (item.other) {
+          calculatedSubTotal += item.other.subTotal || 0;
+          calculatedDiscount += item.other.totalDiscount || 0;
+          calculatedTotal +=
+            item.other.subTotal - item.other.totalDiscount || 0;
+        }
+      });
+
+      setSubTotal(calculatedSubTotal);
+      setDiscount(calculatedDiscount);
+      setTotal(calculatedTotal);
+    }
+  }, [data?.items]);
+
+  const reviewArtWork = (id: string) => {
+    navigate(`/artist-panel/artwork/preview?id=${id}&preview=true&type=order`);
+  };
 
   return (
     <>
-      <div className="flex flex-col  justify-between w-full gap-5">
+      <div className="flex flex-col justify-between w-full gap-5">
         <div className="left flex flex-col w-full ">
           <div className="bg-white p-4 md:p-6 shadow-md border rounded-lg mt-4">
             <h2 className="text-base md:text-lg font-bold mb-4">
@@ -133,173 +147,174 @@ const OrderApproveDetails = () => {
                   <tr>
                     <th
                       scope="col"
-                      className="px-3 md:px-6 py-2 md:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
                       {t("Artwork Name")}
                     </th>
                     <th
                       scope="col"
-                      className="px-3 md:px-6 py-2 md:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
                       {t("Type")}
                     </th>
                     <th
                       scope="col"
-                      className="px-3 md:px-6 py-2 md:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
                       {t("Price")}
                     </th>
                     <th
                       scope="col"
-                      className="px-3 md:px-6 py-2 md:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
-                      {t("Quantity")}
+                      {t("Total")}
                     </th>
                     <th
                       scope="col"
-                      className="px-3 md:px-6 py-2 md:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
                       {t("Discount")}
                     </th>
                     <th
                       scope="col"
-                      className="px-3 md:px-6 py-2 md:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
                       {t("Evidence")}
                     </th>
                     <th
                       scope="col"
-                      className="px-3 md:px-6 py-2 md:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
                       {t("Actions")}
                     </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {data?.data?.items &&
-                    data?.data?.items?.length > 0 &&
-                    data?.data?.items?.map((product, index) => (
+                  {data?.items &&
+                    data?.items?.length > 0 &&
+                    data?.items?.map((product, index: number) => (
                       <tr key={index} className="hover:bg-gray-50">
                         <td
-                          onClick={() => reviewArtWork(product?.artWork?._id)}
-                          className="px-3 md:px-6 py-2 md:py-4 cursor-pointer"
+                          onClick={() => reviewArtWork(product?.artwork?._id)}
+                          className="px-4 py-2 cursor-pointer"
                         >
-                          <div className="flex min-w-[20vw] flex-col md:flex-row items-start md:items-center space-y-2 md:space-y-0 space-x-6 md:space-x-4">
-                            <div className="bg-gray-300 rounded-lg flex items-center justify-center">
-                              <img
-                                src={`${imageUrl}/users/${product?.artWork?.media}`}
-                                alt="product"
-                                className="rounded-md min-w-16 md:w-20 h-16 md:h-20 object-cover"
-                              />
-                            </div>
+                          <div className="flex min-w-[18vw] flex-col md:flex-row items-start md:items-center gap-2">
+                            <img
+                              src={`${lowImageUrl}/${product?.artwork?.media}`}
+                              alt="product"
+                              className="rounded-full border-2 w-11 h-11 object-cover"
+                            />
+
                             <div>
                               <h3 className="font-semibold text-sm md:text-base text-gray-800">
-                                {product?.artWork?.artworkName}
+                                {product?.artwork?.artworkName}
                               </h3>
-                              <p className="text-xs md:text-sm text-gray-500">
+                              <p className="text-xs text-gray-500">
                                 {t("Product Code")}:{" "}
-                                {product?.artWork?.inventoryShipping?.pCode}
+                                {product?.artwork?.inventoryShipping?.pCode ||
+                                  "N/A"}
                               </p>
                             </div>
                           </div>
                         </td>
-                        <td className="px-3 md:px-6 py-2 md:py-4">
+                        <td className="px-4 py-2">
                           <p className="text-sm md:text-base text-gray-600 capitalize font-semibold">
-                            {product?.artWork?.commercialization?.activeTab}
+                            {data?.type}
                           </p>
                         </td>
-                        <td className="px-3 md:px-6 py-2 md:py-4">
+                        <td className="px-4 py-2">
+                          <p className="text-sm md:text-base text-gray-600 capitalize font-semibold">
+                            {formateCurrency(product?.other?.subTotal, "$")}
+                          </p>
+                        </td>
+                        <td className="px-4 py-2">
                           <p className="text-sm md:text-base text-gray-600 font-semibold">
                             {formateCurrency(
-                              product?.artWork?.pricing?.basePrice,
+                              product?.other?.subTotal -
+                                product?.other?.totalDiscount,
                               "$"
                             )}
                           </p>
                         </td>
-                        {/* CHnage */}
-                        <td className="px-3 md:px-6 py-2 md:py-4">
-                          <p className="text-sm md:text-base text-gray-600 font-semibold">
-                            x {product?.quantity}
-                          </p>
-                        </td>
-                        <td className="px-3 md:px-6 py-2 md:py-4">
+                        <td className="px-4 py-2">
                           <p className="text-sm md:text-base font-semibold">
-                            {(product?.artWork?.pricing?.dpersentage || "0") +
+                            {(product?.artwork?.pricing?.dpersentage || "0") +
                               "%"}
                           </p>
                         </td>
 
-                        <td className="px-3  md:px-6 py-2 md:py-4">
-                          {product?.evidenceImg &&
-                          product?.evidenceImg?.length > 0 ? (
-                            <div className="flex  gap-2 mb-2 ">
-                              {product?.evidenceImg &&
-                                product?.evidenceImg.length > 0 && (
-                                  <div className="flex flex-wrap gap-2 mb-2">
-                                    {product.evidenceImg
-                                      .slice(0, 1)
-                                      .map((img, i) => (
-                                        <img
-                                          key={i}
-                                          src={`${imageUrl}/users/${img}`}
-                                          alt={`Evidence ${i + 1}`}
-                                          className="w-12 h-12 rounded-md object-cover"
-                                        />
-                                      ))}
-                                  </div>
-                                )}
+                        {product?.other?.isCancelled ? (
+                          <td className="px-4 py-2">
+                            <p className="text-xs text-gray-600 font-semibold">
+                              {t("Not Available")}
+                            </p>
+                          </td>
+                        ) : (
+                          <td className="px-4 py-2">
+                            {product?.other?.evidenceImg &&
+                            product?.other?.evidenceImg?.length > 0 ? (
+                              <div className="flex flex-col gap-2">
+                                <div className="flex gap-2 mb-2">
+                                  {product.other.evidenceImg
+                                    .slice(0, 1)
+                                    .map((img, i: number) => (
+                                      <img
+                                        key={i}
+                                        src={`${imageUrl}/users/${img}`}
+                                        alt={`Evidence ${i + 1}`}
+                                        className="w-12 h-12 rounded-md object-cover"
+                                      />
+                                    ))}
 
-                              <ProductPopup
-                                product={selectedProductPop}
-                                imageUrl={imageUrl}
-                                setIsPopupOpen={setIsPopupOpen}
-                                isPopupOpen={isPopupOpen}
-                              />
+                                  <ProductPopup
+                                    product={selectedProductPop}
+                                    imageUrl={imageUrl}
+                                    setIsPopupOpen={setIsPopupOpen}
+                                    isPopupOpen={isPopupOpen}
+                                  />
 
-                              <BiSolidImageAdd
+                                  <BiSolidImageAdd
+                                    onClick={() => {
+                                      setOrderType(data?.type);
+                                      setId(data?._id);
+                                      openModal(product);
+                                    }}
+                                    size="2.5em"
+                                    className="cursor-pointer"
+                                  />
+                                </div>
+                                <button
+                                  className="px-3 py-1 border text-xs font-semibold rounded-md border-zinc-400"
+                                  onClick={() => {
+                                    setIsPopupOpen(!isPopupOpen);
+                                    setSelectedProductPop(product);
+                                  }}
+                                >
+                                  {t("View All")}
+                                </button>
+                              </div>
+                            ) : (
+                              <span
+                                className="cursor-pointer w-full sm:w-[8rem] font-medium text-xs sm:text-sm p-1.5 sm:p-2 rounded-md inline-block text-center mb-2"
                                 onClick={() => {
-                                  setOrderType(data?.data?.orderType);
-                                  setId(data?.data?._id);
+                                  setOrderType(data?.type);
+                                  setId(data?._id);
                                   openModal(product);
                                 }}
-                                size="2.5em"
-                                className="cursor-pointer"
-                              />
-                            </div>
-                          ) : (
-                            <span
-                              className="cursor-pointer w-full sm:w-[8rem]  font-medium text-xs sm:text-sm p-1.5 sm:p-2 rounded-md inline-block text-center mb-2"
-                              onClick={() => {
-                                setOrderType(data?.data?.orderType);
-                                setId(data?.data?._id);
-                                openModal(product);
-                              }}
-                            >
-                              <BiSolidImageAdd size="2.5em" />
-                            </span>
-                          )}
-
-                          {product?.evidenceImg &&
-                          product?.evidenceImg.length > 0 ? (
-                            <button
-                              className="px-3 py-1 border text-xs font-semibold rounded-md border-zinc-400"
-                              onClick={() => {
-                                setIsPopupOpen(!isPopupOpen);
-                                setSelectedProductPop(product);
-                              }}
-                            >
-                              {t("View All")}
-                            </button>
-                          ) : null}
-                        </td>
+                              >
+                                <BiSolidImageAdd size="2.5em" />
+                              </span>
+                            )}
+                          </td>
+                        )}
 
                         <td className="px-3 md:px-6 py-2 md:py-4">
                           <div className="flex justify-end   pr-2 md:pr-5">
-                            {!product?.isCancelled ? (
+                            {!product?.other?.isCancelled ? (
                               <span
                                 className="cursor-pointer w-full sm:w-[5rem]  font-medium text-xs sm:text-sm p-1.5 sm:p-2 rounded-md inline-block text-center"
                                 onClick={() => {
-                                  setId(product?.artWork?._id);
+                                  setId(product?.artwork?._id);
                                   setSelectedProduct(product);
                                   setOrderModal(true);
                                 }}
@@ -307,8 +322,8 @@ const OrderApproveDetails = () => {
                                 <MdDelete size="2em" />
                               </span>
                             ) : (
-                              <span className="cursor-pointer w-full sm:w-[5.5rem] bg-red-300 text-black pointer-events-none font-medium text-xs sm:text-sm p-1.5 sm:p-2 rounded-md inline-block text-center">
-                                {t("Cancelled")}
+                              <span className="cursor-pointer w-full bg-red-300 text-black pointer-events-none font-medium text-xs py-1 px-2 rounded-md inline-block text-center">
+                                {t("Cancelled By You")}
                               </span>
                             )}
                           </div>
@@ -324,31 +339,31 @@ const OrderApproveDetails = () => {
               <div className="flex justify-between text-sm md:text-base text-gray-400 mb-1 font-semibold">
                 <span>{t("Subtotal")} :</span>
                 <span className="font-semibold text-black">
-                  {formateCurrency(data?.data?.subTotal, "$")}
-                </span>
-              </div>
-              <div className="flex justify-between text-sm md:text-base text-gray-400 mb-1 font-semibold">
-                <span>{t("Shipping")} :</span>
-                <span className="text-red-400">
-                  {formateCurrency(data?.data?.shipping, "$")}
+                  {formateCurrency(subTotal, "$")}
                 </span>
               </div>
               <div className="flex justify-between text-sm md:text-base text-gray-400 mb-1 font-semibold">
                 <span>{t("Discount")} :</span>
                 <span className="text-red-400">
-                  {formateCurrency(data?.data?.discount, "$")}
-                </span>
-              </div>
-              <div className="flex justify-between text-sm md:text-base text-gray-400 mb-1 font-semibold">
-                <span>{t("Taxes")}:</span>
-                <span className="text-black font-semibold">
-                  {formateCurrency(data?.data?.taxAmount, "$")}
+                  {formateCurrency(discount, "$")}
                 </span>
               </div>
               <div className="flex justify-between text-gray-800 font-semibold text-sm md:text-md mt-4">
                 <span>{"Total"}</span>
-                {formateCurrency(data?.data?.total, "$")}
+                {formateCurrency(total, "$")}
               </div>
+              {/* <div className="flex justify-between text-sm md:text-base text-gray-400 mb-1 font-semibold">
+                <span>{t("Shipping")} :</span>
+                <span className="text-red-400">
+                  {formateCurrency(data?.shipping, "$")}
+                </span>
+              </div> */}
+              {/* <div className="flex justify-between text-sm md:text-base text-gray-400 mb-1 font-semibold">
+                <span>{t("Taxes")}:</span>
+                <span className="text-black font-semibold">
+                  {formateCurrency(data?.taxAmount, "$")}
+                </span>
+              </div> */}
             </div>
           </div>
         </div>
@@ -363,17 +378,17 @@ const OrderApproveDetails = () => {
           <div className="flex flex-row items-center gap-4 border-b-2 border-dashed py-4">
             <img
               className="rounded-full w-14 h-14 object-cover"
-              src={`${imageUrl}/users/${data?.data?.user?.mainImage}`}
+              src={`${imageUrl}/users/${data?.user?.mainImage}`}
               alt="Image"
             />
 
             <div>
               <p className="font-bold text-sm md:text-base text-gray-600">
-                {`${data?.data?.user?.artistName} 
-                ${data?.data?.user?.artistSurname1} ${data?.data?.user?.artistSurname2}`}
+                {`${data?.user?.artistName} 
+                ${data?.user?.artistSurname1} ${data?.user?.artistSurname2}`}
               </p>
               <p className="text-gray-400 text-xs md:text-sm">
-                {data?.data?.user?.email}
+                {data?.user?.email}
               </p>
             </div>
           </div>
@@ -423,7 +438,7 @@ const OrderApproveDetails = () => {
               <input
                 type="text"
                 placeholder="Ex: Adventure Seekers Expedition..."
-                defaultValue={selectedProduct?.artWork?.artworkName}
+                defaultValue={selectedProduct?.artwork?.artworkName}
                 readOnly
                 className="h-12 w-full border rounded-lg p-2 mb-3 outline-none"
                 {...register("title")}
@@ -526,7 +541,7 @@ const OrderApproveDetails = () => {
               <div className="flex flex-col sm:flex-row mt-6">
                 {selectedImage && selectedImage.length > 0 ? (
                   <div className="flex flex-wrap gap-4">
-                    {selectedImage.map((image, index) => (
+                    {selectedImage.map((image, index: number) => (
                       <div
                         key={index}
                         className="p-2 border border-gray-300 rounded-md"

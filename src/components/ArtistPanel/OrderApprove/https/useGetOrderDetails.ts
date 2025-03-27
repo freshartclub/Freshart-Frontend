@@ -7,12 +7,13 @@ async function fetchData(id: string) {
   const { data } = await axiosInstance.get(
     `${ORDERS_ENDPOINTS.GetArtistOrderDetails}/${id}`
   );
-  return data;
+  return data.data;
 }
 
 export const useGetOrderDetails = (id: string) => {
   return useQuery({
     queryKey: [ORDERS_ENDPOINTS.GetArtistOrderDetails],
     queryFn: () => fetchData(id),
+    refetchOnWindowFocus: false,
   });
 };
