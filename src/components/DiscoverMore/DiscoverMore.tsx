@@ -11,53 +11,83 @@ import DiscoverContent from "./DiscoverContent";
 import { useGetArtWorkById } from "./http/useGetArtWorkById";
 import ProductInfo from "./ProductInfo";
 import SelectedSection from "./SelectedSection";
-import useCustomOrderForm from "../ArtistDetail/CustomOrderForm";
 
 // New MagnifierImage Component
 const MagnifierImage = ({ src, alt, isOffensive, safeMode }) => {
   const containerRef = useRef(null);
   const magnifierRef = useRef(null);
+  const imgRef = useRef(null);
+  const [isHovered, setIsHovered] = useState(false);
+  const [imgDimensions, setImgDimensions] = useState({ width: 0, height: 0 });
 
- 
+  // Calculate image dimensions when it loads
+  const handleImageLoad = () => {
+    if (imgRef.current) {
+      setImgDimensions({
+        width: imgRef.current.offsetWidth,
+        height: imgRef.current.offsetHeight
+      });
+    }
+  };
 
   const handleMouseMove = (e) => {
+    if (!containerRef.current || !magnifierRef.current || !imgRef.current) return;
+
     const container = containerRef.current;
     const magnifier = magnifierRef.current;
-    if (!container || !magnifier) {
-      // console.error("Refs missing", { container, magnifier });
-      return;
-    }
+    const img = imgRef.current;
 
-    const rect = container.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    // Get container and image dimensions
+    const containerRect = container.getBoundingClientRect();
+    const imgRect = img.getBoundingClientRect();
 
-    const clampedX = Math.max(0, Math.min(x, rect.width));
-    const clampedY = Math.max(0, Math.min(y, rect.height));
+    // Calculate mouse position relative to the image
+    const posX = e.clientX - imgRect.left;
+    const posY = e.clientY - imgRect.top;
 
-    const bgX = (clampedX / rect.width) * 100;
-    const bgY = (clampedY / rect.height) * 100;
+    // Calculate position in percentages
+    const percX = (posX / imgRect.width) * 100;
+    const percY = (posY / imgRect.height) * 100;
+    const backgroundPos = `${percX}% ${percY}%`;
 
-    magnifier.style.left = `${clampedX}px`;
-    magnifier.style.top = `${clampedY}px`;
-    magnifier.style.backgroundPosition = `${bgX}% ${bgY}%`;
+    // Calculate magnifier size relative to image size (15% of image width)
+    const magnifierSize = Math.min(
+      Math.max(imgRect.width * 0.15, 100), // Minimum 100px, 15% of image width
+      200 // Maximum 200px
+    );
+    const magnifierOffset = magnifierSize / 2;
 
-    // console.log("Mouse Move:", { x, y, clampedX, clampedY, bgX, bgY, rect });
+    // Position the magnifier (centered on cursor)
+    let magnifierX = e.clientX - containerRect.left - magnifierOffset;
+    let magnifierY = e.clientY - containerRect.top - magnifierOffset;
+
+    // Boundary checks
+    magnifierX = Math.max(0, Math.min(magnifierX, containerRect.width - magnifierSize));
+    magnifierY = Math.max(0, Math.min(magnifierY, containerRect.height - magnifierSize));
+
+    // Calculate zoom level (2x by default, adjust based on image size)
+    const zoomLevel = imgRect.width < 400 ? 3 : 2;
+
+    // Apply styles
+    magnifier.style.width = `${magnifierSize}px`;
+    magnifier.style.height = `${magnifierSize}px`;
+    magnifier.style.left = `${magnifierX}px`;
+    magnifier.style.top = `${magnifierY}px`;
+    magnifier.style.backgroundPosition = backgroundPos;
+    magnifier.style.backgroundSize = `${imgRect.width * zoomLevel}px ${imgRect.height * zoomLevel}px`;
   };
 
   const handleMouseEnter = () => {
-    const magnifier = magnifierRef.current;
-    if (magnifier) {
-      magnifier.style.display = "block";
-      // console.log("Magnifier Enter: Shown");
+    setIsHovered(true);
+    if (magnifierRef.current) {
+      magnifierRef.current.style.display = "block";
     }
   };
 
   const handleMouseLeave = () => {
-    const magnifier = magnifierRef.current;
-    if (magnifier) {
-      magnifier.style.display = "none";
-      // console.log("Magnifier Leave: Hidden");
+    setIsHovered(false);
+    if (magnifierRef.current) {
+      magnifierRef.current.style.display = "none";
     }
   };
 
@@ -65,36 +95,34 @@ const MagnifierImage = ({ src, alt, isOffensive, safeMode }) => {
     <div
       ref={containerRef}
       className="relative bg-[#f8f8ea] p-2 w-full h-full"
-      style={{ position: "relative", overflow: "hidden" }}
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
       <img
+        ref={imgRef}
         src={src}
         alt={alt}
+        onLoad={handleImageLoad}
         className={`${
           isOffensive && safeMode === "Off" ? "blur-lg brightness-75" : ""
         } mx-auto overflow-hidden object-contain md:w-[25rem] lg:w-full h-[20rem] md:h-[60vh] !lg:h-[22rem]`}
       />
       <div
         ref={magnifierRef}
+        className="magnifier"
         style={{
-          display: "block",
+          display: "none",
           position: "absolute",
-          width: "128px",
-          height: "128px",
           borderRadius: "50%",
-          border: "2px solid #666",
+          border: "3px solid #fff",
+          boxShadow: "0 0 10px rgba(0,0,0,0.3)",
           backgroundColor: "white",
-          backgroundImage: `url(${imageUrl}/users/${src.split("/").pop()})`,
+          backgroundImage: `url(${src})`,
           backgroundRepeat: "no-repeat",
-          backgroundSize: "300%",
-          transform: "translate(-50%, -50%)",
           pointerEvents: "none",
           zIndex: 100,
-          top: "50%",
-          left: "50%",
+          transition: "all 0.1s ease",
         }}
       />
     </div>

@@ -5,7 +5,7 @@ import { store } from '../../store/store';
 import { setIsAuthorized } from '../../store/userSlice/userSlice';
 import { getToken } from './tokenHelper';
 
-// ----------------------------------------------------------------------
+
 
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_SERVER_BASE_URL,

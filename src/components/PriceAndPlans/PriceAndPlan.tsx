@@ -25,6 +25,8 @@ const PriceAndPlan = () => {
     currency: "",
     orderId: "",
     iso: "",
+    payerRef: "",
+    paymentMethod: "",
   });
 
   const generateTimestamp = () => {
@@ -116,7 +118,7 @@ const PriceAndPlan = () => {
     }
 
     mutateAsync(newData).then((res) => {
-    
+
       setOrderData(
         {
 
@@ -125,7 +127,8 @@ const PriceAndPlan = () => {
           amount: res.data.amount,
           currency: res.data.currency,
           iso: res.data.iso,
-        }
+          payerRef: res.data.pay_ref,
+          paymentMethod: res.data.pmt_ref        }
       )
       // navigate('/payment_success')
 
@@ -239,111 +242,129 @@ const PriceAndPlan = () => {
                 name="HPP_CUSTOMER_EMAIL"
                 value={"sknjdnj@gmail.com"}
               />
-              <input
-                type="hidden"
-                name="MERCHANT_RESPONSE_URL"
-                value={`https://4b67-2409-40c4-5d-5bec-522-6a64-14cb-a7d9.ngrok-free.app/api/artist/get-response-data`}
-              />
-            </>
 
-            <p className="text-[#9999] text-xs mb-1">
-              If you have different shipping address then make sure fill
-              that
-            </p>
-          </form>
 
-          <div className="grid mt-6 lg:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-5 items-center justify-center w-full">
-            {Object.entries(groupedPlans).map(([groupName, plans]) => {
-              const defaultPlan = activePlans[groupName] || plans[0];
+              <input type="hidden" name="CARD_STORAGE_ENABLE" value="1" />
+              <input type="hidden" name="OFFER_SAVE_CARD" value="1" />
+              <input type="hidden" name="PAYER_EXIST" value="0" />
 
-              return (
-                <div
-                  key={groupName}
-                  className="border rounded-lg shadow-md p-6 bg-white w-full flex-wrap md:wrap-no"
-                >
-                  <img
-                    src={`${imageUrl}/users/${defaultPlan?.planImg}`}
-                    alt="Plan Image"
-                    className="object-cover mb-4 w-[90px] h-[90px]"
-                  />
-                  <Header
-                    variant={{ size: "xl", theme: "dark", weight: "bold" }}
-                    className="text-left my-4"
+
+
+              <input type="hidden" name="RECURRING_TYPE" value="fixed" />
+              
+              <input type="hidden" name="RECURRING_SEQUENCE" value="first" />
+
+               <input type="hidden" name="PAYER_REF" value={orderData.payerRef}/>
+
+                <input type="hidden" name="PMT_REF" value={orderData.paymentMethod} />
+
+
+
+                <input
+                  type="hidden"
+                  name="MERCHANT_RESPONSE_URL"
+                  value={`https://4b67-2409-40c4-5d-5bec-522-6a64-14cb-a7d9.ngrok-free.app/api/artist/get-response-data`}
+                />
+              </>
+
+              <p className="text-[#9999] text-xs mb-1">
+                If you have different shipping address then make sure fill
+                that
+              </p>
+            </form>
+
+            <div className="grid mt-6 lg:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-5 items-center justify-center w-full">
+              {Object.entries(groupedPlans).map(([groupName, plans]) => {
+                const defaultPlan = activePlans[groupName] || plans[0];
+
+                return (
+                  <div
+                    key={groupName}
+                    className="border rounded-lg shadow-md p-6 bg-white w-full flex-wrap md:wrap-no"
                   >
-                    Plan {groupName}
-                  </Header>
-                  <div className="text-center mb-4 flex">
+                    <img
+                      src={`${imageUrl}/users/${defaultPlan?.planImg}`}
+                      alt="Plan Image"
+                      className="object-cover mb-4 w-[90px] h-[90px]"
+                    />
                     <Header
-                      variant={{ size: "2xl", theme: "dark", weight: "bold" }}
+                      variant={{ size: "xl", theme: "dark", weight: "bold" }}
+                      className="text-left my-4"
                     >
-                      ${defaultPlan?.standardPrice}
+                      Plan {groupName}
                     </Header>
-                    <P
-                      variant={{
-                        size: "small",
-                        theme: "dark",
-                        weight: "medium",
-                      }}
-                      className="mt-3 ml-1"
+                    <div className="text-center mb-4 flex">
+                      <Header
+                        variant={{ size: "2xl", theme: "dark", weight: "bold" }}
+                      >
+                        ${defaultPlan?.standardPrice}
+                      </Header>
+                      <P
+                        variant={{
+                          size: "small",
+                          theme: "dark",
+                          weight: "medium",
+                        }}
+                        className="mt-3 ml-1"
+                      >
+                        {t("/month")}
+                      </P>
+                    </div>
+                    <select
+                      className="border border-gray-300 rounded-md p-2 w-full mb-4"
+                      value={defaultPlan?.planName}
+                      onChange={(e) =>
+                        handlePlanChange(groupName, e.target.value)
+                      }
                     >
-                      {t("/month")}
-                    </P>
-                  </div>
-                  <select
-                    className="border border-gray-300 rounded-md p-2 w-full mb-4"
-                    value={defaultPlan?.planName}
-                    onChange={(e) =>
-                      handlePlanChange(groupName, e.target.value)
-                    }
-                  >
-                    {plans.map((plan) => (
-                      <option key={plan.planName} value={plan.planName}>
-                        {plan.planName}
-                      </option>
-                    ))}
-                  </select>
-                  <ul className="space-y-2 md:min-h-auto min-h-[150px]">
-                    {returnList(defaultPlan.planDesc) ? (
-                      returnList(defaultPlan.planDesc).map((feature, i) => (
-                        <li key={i} className="flex items-center">
+                      {plans.map((plan) => (
+                        <option key={plan.planName} value={plan.planName}>
+                          {plan.planName}
+                        </option>
+                      ))}
+                    </select>
+                    <ul className="space-y-2 md:min-h-auto min-h-[150px]">
+                      {returnList(defaultPlan.planDesc) ? (
+                        returnList(defaultPlan.planDesc).map((feature, i) => (
+                          <li key={i} className="flex items-center">
+                            <img
+                              src={checkmark}
+                              alt="tick"
+                              className="w-5 h-5 mr-2"
+                            />
+                            <span className="text-left">{feature}</span>
+                          </li>
+                        ))
+                      ) : (
+                        <li className="flex items-center">
                           <img
                             src={checkmark}
                             alt="tick"
                             className="w-5 h-5 mr-2"
                           />
-                          <span className="text-left">{feature}</span>
+                          <span className="text-left">No Features</span>
                         </li>
-                      ))
+                      )}
+                    </ul>
+
+
+
+
+                    {isPending ? (
+                      <span>Wait....</span>
                     ) : (
-                      <li className="flex items-center">
-                        <img
-                          src={checkmark}
-                          alt="tick"
-                          className="w-5 h-5 mr-2"
-                        />
-                        <span className="text-left">No Features</span>
-                      </li>
+                      <input
+                        disabled={isPending}
+                        className={` p-2 mt-5  w-full bg-black rounded-md text-center text-white cursor-pointer hover:bg-[#131313df]}`}
+                        onClick={() => getPlan(defaultPlan?._id)}
+                        type="button"
+                        value={t("Get Started")}
+                      />
                     )}
-                  </ul>
-               
-
-
-
-                  {isPending ? (
-                    <span>Wait....</span>
-                  ) : (
-                    <input
-                      disabled={isPending}
-                      className={` p-2 mt-5  w-full bg-black rounded-md text-center text-white cursor-pointer hover:bg-[#131313df]}`}
-                      onClick={() => getPlan(defaultPlan?._id)}
-                      type="button"
-                      value={t("Get Started")}
-                    />
-                  )}
-                </div>
-              );
-            })}
-          </div>
+                  </div>
+                );
+              })}
+            </div>
         </div>
         {orderData?.hash ? (
           <div className="fixed inset-0 z-[99] flex justify-center items-center bg-black/50 backdrop-blur-sm">

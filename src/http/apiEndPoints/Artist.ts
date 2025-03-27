@@ -49,6 +49,8 @@ export const ARTTIST_ENDPOINTS = {
   getFullList: `${ARTIST_BASE_URl}/get-full-list`,
   editProfile: `${ARTIST_BASE_URl}/edit-user-profile`,
   CustomOrder: `${ARTIST_BASE_URl}/create-custom-order`,
+  CreateInvite: `${ARTIST_BASE_URl}/create-invite`,
+  GetInviteCode: `${ARTIST_BASE_URl}/invite-code`,
 
 
   // removeItems: `${ARTIST_BASE_URl}/remove-from-cart`,

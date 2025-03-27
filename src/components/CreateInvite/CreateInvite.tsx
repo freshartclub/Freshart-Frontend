@@ -1,36 +1,128 @@
-import { useFormik } from "formik";
+import { useEffect, useMemo, useState } from "react";
+import { useForm, Controller } from "react-hook-form";
 import Header from "../ui/Header";
 import P from "../ui/P";
 import Button from "../ui/Button";
-import { useState } from "react";
 import DatePicker from "react-datepicker";
-import { CommonValidation } from "../ui/CommonValidation";
+import "react-datepicker/dist/react-datepicker.css";
+import CustomDropdown from "../pages/CustomDropdown";
+import countryList from "react-select-country-list";
+import { getCityStateFromZipCountry } from "../utils/MapWithAutocomplete";
+import { PhoneInput } from "react-international-phone";
+import { RenderAllPicklists } from "../utils/RenderAllPicklist";
+import useCreateInviteMutation from "./https/useCreateInviteMutation";
+import { useGetInviteCode } from "./https/useGetInviteCode";
+import { useAppSelector } from "../../store/typedReduxHooks";
+
+const generateInviteCode = () => {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let result = '';
+  for (let i = 0; i < 4; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  result += '-';
+  for (let i = 0; i < 5; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  result += '-';
+  for (let i = 0; i < 4; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+};
 
 const CreateInvite = () => {
   const [startDate, setStartDate] = useState(new Date());
-  const formik = useFormik({
-    initialValues: {
+  const [isValidatePhone, setIsValidatePhone] = useState(false);
+
+  const [isGnerated, setIsGnerated] = useState(false)
+
+  const [inviteCode, setInviteCode] = useState(null)
+
+  const {mutate , isPending} = useCreateInviteMutation()
+
+  const language = useAppSelector((state)=> state.user.language)
+
+  console.log(language)
+
+  const options = useMemo(() => countryList(), []);
+
+  const {
+    register,
+    handleSubmit,
+    control,
+    getValues,
+    watch,
+    formState: { errors },
+    setValue,
+  } = useForm({
+    defaultValues: {
       email: "",
       phone: "",
-      name: "",
+      firstName: "",
       surname1: "",
       surname2: "",
       country: "",
       zipcode: "",
       city: "",
-      province: "",
-      selectGender: "",
-      dob: "",
+      region: "",
+      gender: "",
+      dob: startDate,
       discountCode: "",
       inviteCode: "",
+      
     },
-
-    validationSchema: CommonValidation,
-
-    onSubmit: (values) => {
-      console.log(values);
-    },
+    mode: "onBlur",
   });
+
+
+const {data , isLoading} = useGetInviteCode(isGnerated)
+
+useEffect(()=>{
+  setInviteCode(data)
+  setValue("inviteCode" , data)
+},[data])
+
+  const handleGenerateInviteCode = () => {
+    setIsGnerated(true)
+  };
+
+  useEffect(() => {
+    setValue("country", "Spain");
+  }, []);
+
+  const picklist = RenderAllPicklists(["Gender"]);
+  
+  const picklistMap = picklist.reduce((acc, item: any) => {
+    acc[item?.fieldName] = item?.picklist;
+    return acc;
+  }, {});
+  
+
+
+  const gender = picklistMap["Gender"];
+
+  const zipCode = watch("zipcode");
+  const country = watch("country");
+  const apiKey = import.meta.env.VITE_APP_GOOGLE_MAPS_API_KEY;
+
+  useEffect(() => {
+    if (country && zipCode && zipCode.length > 4) {
+      getCityStateFromZipCountry(country, zipCode, apiKey).then(
+        ({ state, city }) => {
+          setValue("city", city);
+          setValue("region", state);
+        }
+      );
+    }
+  }, [country, zipCode]);
+
+  const countryValue = getValues("country");
+
+  const onSubmit = (data) => {
+    const updatedData = { ...data, langCode: "GB" };  
+    mutate(updatedData); 
+  };
 
   return (
     <div>
@@ -38,7 +130,7 @@ const CreateInvite = () => {
         <div className="container mx-auto sm:px-6 px-3">
           <div className="xl:w-[70%] lg:w-[90%] w-full mx-auto py-10">
             <form
-              onSubmit={formik.handleSubmit}
+              onSubmit={handleSubmit(onSubmit)}
               className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
             >
               <Header
@@ -51,7 +143,7 @@ const CreateInvite = () => {
                 variant={{ size: "md", theme: "dark", weight: "normal" }}
                 className="text-sm text-gray-600 mb-8 text-center"
               >
-                Please fill the form below to Create a invite link. Feel free to
+                Please fill the form below to create an invite link. Feel free to
                 add as much detail as needed.
               </P>
 
@@ -61,16 +153,19 @@ const CreateInvite = () => {
                     Email Address
                   </label>
                   <input
-                    name="email"
-                    value={formik.values.email}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    className="appearance-none border  rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:-outline"
-                    placeholder="admin@gmal.com"
+                    {...register("email", {
+                      required: "Email is required",
+                      pattern: {
+                        value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                        message: "Invalid email address",
+                      },
+                    })}
+                    className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    placeholder="admin@gmail.com"
                   />
-                  {formik.touched.email && formik.errors.email && (
-                    <span className="text-red-500 text-xs  ">
-                      {formik.errors.email}
+                  {errors.email && (
+                    <span className="text-red-500 text-xs">
+                      {errors.email.message}
                     </span>
                   )}
                 </div>
@@ -79,82 +174,68 @@ const CreateInvite = () => {
                   <label className="block text-gray-700 text-sm font-bold mb-2">
                     Phone Number
                   </label>
-
-                  <input
-                    name="phone"
-                    value={formik.values.phone}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    className="  appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus: -outline"
-                    placeholder="+91 9546213252"
+                  <PhoneInput
+                    className="appearance-none  outline-none rounded w-full text-gray-700 leading-tight focus:outline-none"
+                    placeholder="Enter Phone number"
+                    defaultCountry={"es"}
+                    disabled={isValidatePhone}
+                    value={getValues("phone")}
+                    onChange={(val) => {
+                      setValue("phone", val);
+                    }}
                   />
-                  {formik.touched.phone && formik.errors.phone && (
-                    <span className="text-red-500 text-xs  ">
-                      {formik.errors.phone}
+                  {errors.phone && (
+                    <span className="text-red-500 text-xs">
+                      {errors.phone.message}
                     </span>
                   )}
                 </div>
               </div>
 
               <div className="grid sm:grid-cols-3 grid-cols-1 gap-3 sm:mb-4 mb-2">
-                <div className="">
+                <div>
                   <label className="block text-gray-700 text-sm font-bold mb-2">
-                    Name
+                    Fisrt Name
                   </label>
-
                   <input
-                    name="name"
-                    value={formik.values.name}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    className="  appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus: -outline"
-                    placeholder="Name"
+                    {...register("firstName", { required: "Name is required" })}
+                    className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    placeholder="Fisrt Name"
                   />
-                  {formik.touched.name && formik.errors.name && (
-                    <span className="text-red-500 text-xs  ">
-                      {formik.errors.name}
+                  {errors.firstName && (
+                    <span className="text-red-500 text-xs">
+                      {errors.firstName.message}
                     </span>
                   )}
                 </div>
 
-                <div className="">
+                <div>
                   <label className="block text-gray-700 text-sm font-bold mb-2">
                     Surname1
                   </label>
-
                   <input
-                    name="surname1"
-                    value={formik.values.surname1}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    className="  appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus: -outline"
+                    {...register("surname1", {
+                      required: "Surname1 is required",
+                    })}
+                    className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     placeholder="Surname1"
                   />
-                  {formik.touched.surname1 && formik.errors.surname1 && (
-                    <span className="text-red-500 text-xs  ">
-                      {formik.errors.surname1}
+                  {errors.surname1 && (
+                    <span className="text-red-500 text-xs">
+                      {errors.surname1.message}
                     </span>
                   )}
                 </div>
 
-                <div className="">
+                <div>
                   <label className="block text-gray-700 text-sm font-bold mb-2">
                     Surname2
                   </label>
-
                   <input
-                    name="surname2"
-                    value={formik.values.surname2}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    className="  appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus: -outline"
+                    {...register("surname2")}
+                    className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     placeholder="Surname2"
                   />
-                  {formik.touched.surname2 && formik.errors.surname2 && (
-                    <span className="text-red-500 text-xs  ">
-                      {formik.errors.surname2}
-                    </span>
-                  )}
                 </div>
               </div>
 
@@ -163,23 +244,13 @@ const CreateInvite = () => {
                   <label className="block text-gray-700 text-sm font-bold mb-2">
                     Country
                   </label>
-
-                  <select
+                  <CustomDropdown
+                    control={control}
+                    countryValue={countryValue}
+                    options={options}
                     name="country"
-                    value={formik.values.country}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    className="block appearance-none w-full bg-white border px-4 py-3 pr-8 rounded leading-tight focus:outline-none focus: -outline"
-                  >
-                    <option value="">Select Country</option>
-                    <option value="category1">Country 1</option>
-                    <option value="category2">Country 2</option>
-                  </select>
-                  {formik.touched.country && formik.errors.country && (
-                    <span className="text-red-500 text-xs  ">
-                      {formik.errors.country}
-                    </span>
-                  )}
+                    isActiveStatus="active"
+                  />
                 </div>
 
                 <div className="sm:mb-4 mb-2 sm:w-[49%] w-full">
@@ -187,16 +258,15 @@ const CreateInvite = () => {
                     Zipcode
                   </label>
                   <input
-                    name="zipcode"
-                    value={formik.values.zipcode}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    className="  appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus: -outline"
+                    {...register("zipcode", {
+                      required: "Zipcode is required",
+                    })}
+                    className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     placeholder="452010"
                   />
-                  {formik.touched.zipcode && formik.errors.zipcode && (
-                    <span className="text-red-500 text-xs  ">
-                      {formik.errors.zipcode}
+                  {errors.zipcode && (
+                    <span className="text-red-500 text-xs">
+                      {errors.zipcode.message}
                     </span>
                   )}
                 </div>
@@ -208,36 +278,31 @@ const CreateInvite = () => {
                     City
                   </label>
                   <input
-                    name="city"
-                    value={formik.values.city}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    className="  appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus: -outline"
+                    {...register("city", { required: "City is required" })}
+                    className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     placeholder="Enter City"
                   />
-                  {formik.touched.city && formik.errors.city && (
-                    <span className="text-red-500 text-xs  ">
-                      {formik.errors.city}
+                  {errors.city && (
+                    <span className="text-red-500 text-xs">
+                      {errors.city.message}
                     </span>
                   )}
                 </div>
 
                 <div className="sm:mb-4 mb-2 sm:w-[49%] w-full">
                   <label className="block text-gray-700 text-sm font-bold mb-2">
-                    Province
+                    Region 
                   </label>
-
                   <input
-                    name="province"
-                    value={formik.values.province}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    className="  appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus: -outline"
-                    placeholder="Enter Province"
+                    {...register("region", {
+                      required: "Region is required",
+                    })}
+                    className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    placeholder="Enter Region"
                   />
-                  {formik.touched.province && formik.errors.province && (
-                    <span className="text-red-500 text-xs  ">
-                      {formik.errors.province}
+                  {errors.region && (
+                    <span className="text-red-500 text-xs">
+                      {errors.region.message}
                     </span>
                   )}
                 </div>
@@ -249,41 +314,50 @@ const CreateInvite = () => {
                     Select Gender
                   </label>
                   <select
-                    name="selectGender"
-                    value={formik.values.selectGender}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    className="block appearance-none w-full bg-white border px-4 py-3 pr-8 rounded leading-tight focus:outline-none focus: -outline"
+                    {...register("gender", {
+                      required: "Gender is required",
+                    })}
+                    className="block appearance-none w-full bg-white border px-4 py-3 pr-8 rounded leading-tight focus:outline-none focus:shadow-outline"
                   >
                     <option value="">Select Gender</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
+                    {gender &&
+                      gender?.map((item, i) => (
+                        <option key={i} value={item?.value}>
+                          {item?.value}
+                        </option>
+                      ))}
                   </select>
-                  {formik.touched.selectGender &&
-                    formik.errors.selectGender && (
-                      <span className="text-red-500 text-xs  ">
-                        {formik.errors.selectGender}
-                      </span>
-                    )}
+                  {errors.gender && (
+                    <span className="text-red-500 text-xs">
+                      {errors.gender.message}
+                    </span>
+                  )}
                 </div>
 
                 <div className="sm:mb-4 mb-2 sm:w-[49%] w-full">
                   <label className="block text-gray-700 text-sm font-bold mb-2">
                     Date of Birth
                   </label>
-
-                  <DatePicker
-                    selected={startDate}
-                    onChange={(date: any) => setStartDate(date)}
-                    onBlur={formik.handleBlur}
-                    className="  appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus: -outline"
+                  <Controller
+                    control={control}
+                    name="dob"
+                    rules={{ required: "Date of Birth is required" }}
+                    render={({ field }) => (
+                      <DatePicker
+                        selected={field.value}
+                        onChange={(date) => {
+                          field.onChange(date);
+                          setStartDate(date);
+                        }}
+                        className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                      />
+                    )}
                   />
-
-                  {/* {formik.touched.dob && formik.errors.dob && (
-                    <span className="text-red-500 text-xs  ">
-                      {formik.errors.dob}
+                  {errors.dob && (
+                    <span className="text-red-500 text-xs">
+                      {errors.dob.message}
                     </span>
-                  )} */}
+                  )}
                 </div>
               </div>
 
@@ -293,37 +367,32 @@ const CreateInvite = () => {
                     Add Discount Code
                   </label>
                   <input
-                    name="discountCode"
-                    value={formik.values.discountCode}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    className=" appearance-none border rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    {...register("discountCode")}
+                    className="appearance-none border rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     placeholder="XXXXX - XXXXX - XXXXX"
                   />
-                  {formik.touched.discountCode && (
-                    <span className="text-red-500 text-xs  ">
-                      {formik.errors.discountCode}
-                    </span>
-                  )}
                 </div>
 
                 <div className="sm:mb-4 mb-2 sm:w-[49%] w-full">
-                  <label className="block text-gray-700 text-sm font-bold mb-2">
-                    Invite Code
-                  </label>
+                  <div className="flex justify-between items-center mb-2">
+                    <label className="block text-gray-700 text-sm font-bold">
+                      Invite Code
+                    </label>
+                    <button
+                      type="button"
+                      onClick={handleGenerateInviteCode}
+                      
+                      className={`text-xs bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-1 px-2 rounded ${inviteCode ? "cursor-not-allowed  pointer-events-none opacity-60" : ""}`}>
+                      {isLoading ? "Genrating...." :  "Generate Code"}
+                    </button>
+                  </div>
                   <input
-                    name="inviteCode"
-                    value={formik.values.inviteCode}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    className=" appearance-none border rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    {...register("inviteCode", { readOnly: true })}
+                    value={inviteCode || ""}
+                    readOnly
+                    className="appearance-none border rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     placeholder="ABCD-EFCFD-DHDF"
                   />
-                  {formik.touched.inviteCode && formik.errors.inviteCode && (
-                    <span className="text-red-500 text-xs  ">
-                      {formik.errors.inviteCode}
-                    </span>
-                  )}
                 </div>
               </div>
 
@@ -337,7 +406,7 @@ const CreateInvite = () => {
                     fontWeight: "500",
                     thickness: "",
                   }}
-                  className="text-white text-sm sm:text-base  py-2 sm:px-6 px-4 flex uppercase"
+                  className="text-white text-sm sm:text-base py-2 sm:px-6 px-4 flex uppercase"
                 >
                   <span>COPY CODE</span>
                 </Button>
@@ -352,7 +421,7 @@ const CreateInvite = () => {
                   }}
                   className="text-white bg-[#203F58] text-sm sm:text-base py-2 sm:px-6 px-4 flex uppercase"
                 >
-                  <span>SEND LINK</span>
+                  <span>{isPending ? "Sending..." : "SEND LINK"}</span>
                 </Button>
               </div>
             </form>
