@@ -51,7 +51,7 @@ export const ARTTIST_ENDPOINTS = {
   CustomOrder: `${ARTIST_BASE_URl}/create-custom-order`,
   CreateInvite: `${ARTIST_BASE_URl}/create-invite`,
   GetInviteCode: `${ARTIST_BASE_URl}/invite-code`,
-
+  GetInviteData: `${ARTIST_BASE_URl}/get-invite`,
 
   // removeItems: `${ARTIST_BASE_URl}/remove-from-cart`,
 

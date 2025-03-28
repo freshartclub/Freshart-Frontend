@@ -34,8 +34,6 @@ const GetStarted = () => {
     }
   }, [isAuthorized, currentPath, navigate]);
 
-  console.log(data);
-
   if (isLoading) {
     return <Loader />;
   }

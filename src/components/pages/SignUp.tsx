@@ -1,6 +1,8 @@
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { Link, useSearchParams } from "react-router-dom";
 import * as Yup from "yup";
 import arrow from "../../assets/arrow.png";
 import loginimage from "../../assets/login.png";
@@ -8,9 +10,12 @@ import useSignUpMutation from "../../http/auth/useSignUpMutation";
 import Button from "../ui/Button";
 import Header from "../ui/Header";
 import P from "../ui/P";
-import { useTranslation } from "react-i18next";
+import { useGetInvite } from "./http/useGetInvite";
 
 const SignUp = () => {
+  const [searchParams] = useSearchParams();
+  const invite = searchParams.get("invite") as string;
+
   const validationSchema = Yup.object().shape({
     email: Yup.string()
       .email("Invalid email address")
@@ -32,21 +37,29 @@ const SignUp = () => {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: yupResolver(validationSchema),
   });
 
   const { mutateAsync, isPending } = useSignUpMutation();
+  const { data: inviteData } = useGetInvite(invite);
 
   const onSubmit = handleSubmit(async (data) => {
     try {
       data.langCode = langCode?.toUpperCase();
-      await mutateAsync(data);
+      if (inviteData) data.invite = inviteData.inviteCode;
+
+      if (data) await mutateAsync(data);
     } catch (error) {
       console.error(error.message);
     }
   });
+
+  useEffect(() => {
+    setValue("email", inviteData?.email);
+  }, [inviteData]);
 
   const handleTerms = () => {
     window.open("/terms", "_blank");
@@ -69,13 +82,31 @@ const SignUp = () => {
           </P>
 
           <form onSubmit={handleSubmit(onSubmit)}>
+            {inviteData && (
+              <div className="flex flex-col justify-start gap-2 my-5">
+                <span className="text-xs font-semibold w-max rounded-full px-2 py-0.5 bg-[#D3D3D3]">
+                  Invite Code Used
+                </span>
+                <input
+                  type="text"
+                  disabled
+                  readOnly
+                  value={inviteData.inviteCode}
+                  placeholder={t("Invite Code")}
+                  className={`border border-[#D3D3D3] opacity-60 p-2 w-full rounded-md focus:outline-none`}
+                />
+              </div>
+            )}
             <div className="my-5">
               <input
                 type="email"
+                readOnly={inviteData ? true : false}
                 placeholder={t("Enter Email")}
                 {...register("email")}
                 className={`border ${
                   errors.email ? "border-red-500" : "border-[#D3D3D3]"
+                } ${
+                  inviteData ? "opacity-60" : ""
                 } p-2 w-full rounded-md focus:outline-none`}
               />
               {errors.email && (

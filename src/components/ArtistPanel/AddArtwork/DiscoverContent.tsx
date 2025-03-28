@@ -10,15 +10,13 @@ import { useTranslation } from "react-i18next";
 
 const DiscoverContent = ({ data }) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
 
+  const navigate = useNavigate();
   const { mutate, isPending } = useGetPublishedArtwork();
 
   const handlePublishedArtwork = (id: string) => {
     mutate(id);
   };
-
-  const currency = data?.pricing?.currency;
 
   const editArtwork = (id: string) => {
     navigate(`/artist-panel/artwork/add?id=${id}`);
@@ -26,11 +24,6 @@ const DiscoverContent = ({ data }) => {
 
   const [searchParams] = useSearchParams();
   const preview = searchParams.get("preview") === "true";
-
-  const description =
-    data?.productDescription && data.productDescription.length > 100
-      ? `${data.productDescription.slice(0, 100)}...`
-      : data?.productDescription;
 
   const name = (val: {
     artistName: string;
@@ -51,16 +44,19 @@ const DiscoverContent = ({ data }) => {
         <div className="w-full">
           <Header
             variant={{ size: "xl", theme: "dark", weight: "bold" }}
-            className="items-center capitalize w-full"
+            className="items-center flex scrollbar whitespace-nowrap capitalize !w-full !max-w-full overflow-x-auto"
           >
             {data?.artworkName}
           </Header>
           <div className="flex items-center gap-1">
-            <Header variant={{ size: "base", theme: "dark", weight: "medium" }}>
+            <Header
+              className="!text-[13px]"
+              variant={{ size: "base", theme: "dark", weight: "medium" }}
+            >
               {t("Author")} :
             </Header>
             <P
-              className="text-[#999999]"
+              className="text-[#999999] !text-[13px]"
               variant={{ size: "small", weight: "medium" }}
             >
               {name(data?.owner)}
@@ -98,42 +94,43 @@ const DiscoverContent = ({ data }) => {
       </section>
 
       <div className="flex gap-2 lg:mt-2 mt-1">
-        <P variant={{ size: "small", theme: "dark", weight: "medium" }}>
+        <P
+          className="!text-[13px]"
+          variant={{ size: "small", theme: "dark", weight: "medium" }}
+        >
           {t("Year of Creation")} :
         </P>
         <P
-          className="text-[#999999]"
+          className="text-[#999999] !text-[13px]"
           variant={{ size: "small", theme: "dark", weight: "medium" }}
         >
           {data?.artworkCreationYear}
         </P>
       </div>
 
-      <div className="flex gap-2 mt-1 ">
-        <P variant={{ size: "small", theme: "dark", weight: "medium" }}>
-          {t("Artwork Series")} :
+      <div className="flex gap-2">
+        <P
+          className="!text-[13px]"
+          variant={{ size: "small", theme: "dark", weight: "medium" }}
+        >
+          {t("Series")} :
         </P>
         <P
-          className="text-[#999999]"
+          className="text-[#999999] !text-[13px]"
           variant={{ size: "small", theme: "dark", weight: "medium" }}
         >
           {data?.artworkSeries}
         </P>
       </div>
-
-      <P
-        variant={{ size: "small", theme: "dark", weight: "medium" }}
-        className="my-2 text-[#999999]"
-      >
-        {description}
-      </P>
-
-      <div className="flex gap-3 ">
-        <P variant={{ size: "small", theme: "dark", weight: "medium" }}>
+      <div className="flex gap-3">
+        <P
+          className="!text-[13px]"
+          variant={{ size: "small", theme: "dark", weight: "medium" }}
+        >
           {t("Size")} :
         </P>
         <P
-          className="text-[#999999]"
+          className="text-[#999999] !text-[13px]"
           variant={{ size: "small", theme: "dark", weight: "medium" }}
         >
           {data?.additionalInfo?.length} x {data?.additionalInfo?.width} x{" "}
@@ -141,19 +138,21 @@ const DiscoverContent = ({ data }) => {
         </P>
       </div>
 
-      <Header
-        variant={{ size: "xl", theme: "dark", weight: "semiBold" }}
-        className="lg:my-4 my-2"
-      >
-        {`${getSymbolFromCurrency(currency?.slice(0, 3))} ${
-          data?.pricing?.basePrice
-        }`}
-      </Header>
+      {data?.pricing?.basePrice ? (
+        <Header
+          variant={{ size: "lg", theme: "dark", weight: "semiBold" }}
+          className="my-2"
+        >
+          {`${getSymbolFromCurrency(data?.pricing?.currency?.slice(0, 3))} ${
+            data?.pricing?.basePrice
+          }`}
+        </Header>
+      ) : null}
 
       <div
         className={`${
           preview && "pointer-events-none opacity-50"
-        } flex md:flex-row flex-col gap-5 `}
+        } flex flex-col gap-2 mt-5`}
       >
         <Button
           variant={{
@@ -178,37 +177,6 @@ const DiscoverContent = ({ data }) => {
             {t("Make an Offer")}
           </P>
         </Button>
-      </div>
-
-      <div className="mt-4 flex flex-wrap justify-between">
-        <div className="flex gap-2 my-2">
-          <P
-            variant={{ size: "small", theme: "dark", weight: "medium" }}
-            className="uppercase"
-          >
-            {t("Product Code")} :
-          </P>
-          <P
-            variant={{ size: "small", weight: "medium" }}
-            className=" text-[#999999]"
-          >
-            {data?.inventoryShipping?.pCode || "N/A"}
-          </P>
-        </div>
-        <div className="flex gap-2 my-2 mb-0">
-          <P
-            variant={{ size: "small", theme: "dark", weight: "medium" }}
-            className="uppercase"
-          >
-            {t("Discipline")} :
-          </P>
-          <P
-            variant={{ size: "small", weight: "medium" }}
-            className="capitalize text-[#999999]"
-          >
-            {t(data?.discipline?.artworkDiscipline)}
-          </P>
-        </div>
       </div>
     </>
   );

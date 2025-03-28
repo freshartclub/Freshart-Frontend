@@ -137,7 +137,7 @@ const AddArtwork = () => {
   const [isArtProviderField, setIsArtProviderField] = useState("");
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [ispreviewed , setIsPreviewed] = useState(false);
+  const [ispreviewed, setIsPreviewed] = useState(false);
   const closePopup = () => {
     setIsPopupOpen(false);
   };
@@ -233,453 +233,460 @@ const AddArtwork = () => {
     return fullName.trim();
   };
 
-
-  console.log(data?.data)
-
   useEffect(() => {
     if (id) {
       setIsArtProviderField(
-        ispreviewed 
-          ? data?.data?.reviewDetails?.isArtProvider 
+        ispreviewed
+          ? data?.data?.reviewDetails?.isArtProvider
           : data?.data?.isArtProvider || ""
       );
-      
+
       setArtDicipline(
-        ispreviewed 
-          ? data?.data?.reviewDetails?.discipline?.artworkDiscipline 
+        ispreviewed
+          ? data?.data?.reviewDetails?.discipline?.artworkDiscipline
           : data?.data?.discipline?.artworkDiscipline || ""
       );
-      
+
       setActiveTab(
-        ispreviewed 
-          ? data?.data?.reviewDetails?.commercialization?.activeTab 
+        ispreviewed
+          ? data?.data?.reviewDetails?.commercialization?.activeTab
           : data?.data?.commercialization?.activeTab || ""
       );
-      
+
       setInternalTags(
-        ispreviewed 
-          ? data?.data?.reviewDetails?.tags?.intTags 
+        ispreviewed
+          ? data?.data?.reviewDetails?.tags?.intTags
           : data?.data?.tags?.intTags || []
       );
-      
+
       setExternalTags(
-        ispreviewed 
-          ? data?.data?.reviewDetails?.tags?.extTags 
+        ispreviewed
+          ? data?.data?.reviewDetails?.tags?.extTags
           : data?.data?.tags?.extTags || []
       );
-      
+
       setCatalogPrice(
-        ispreviewed 
-          ? data?.data?.reviewDetails?.pricing?.artistFees 
+        ispreviewed
+          ? data?.data?.reviewDetails?.pricing?.artistFees
           : data?.data?.pricing?.artistFees || 0
       );
-      
+
       setValue(
         "currency",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.pricing?.currency 
+        ispreviewed
+          ? data?.data?.reviewDetails?.pricing?.currency
           : data?.data?.pricing?.currency || "EUR"
       );
-      
+
       setValue(
         "purchaseCatalog",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.commercialization?.purchaseCatalog 
+        ispreviewed
+          ? data?.data?.reviewDetails?.commercialization?.purchaseCatalog
           : data?.data?.commercialization?.purchaseCatalog || ""
       );
-      
+
       setValue(
         "availableTo",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.restriction?.availableTo 
+        ispreviewed
+          ? data?.data?.reviewDetails?.restriction?.availableTo
           : data?.data?.restriction?.availableTo || ""
       );
-      
+
       setValue(
         "collectionList",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.collectionList 
+        ispreviewed
+          ? data?.data?.reviewDetails?.collectionList
           : data?.data?.collectionList || ""
       );
-      
+
       setValue(
         "discountAcceptation",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.restriction?.discountAcceptation 
+        ispreviewed
+          ? data?.data?.reviewDetails?.restriction?.discountAcceptation
           : data?.data?.restriction?.discountAcceptation || ""
       );
-      
+
       setValue(
         "provideArtistName",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.provideArtistName 
+        ispreviewed
+          ? data?.data?.reviewDetails?.provideArtistName
           : data?.data?.provideArtistName || ""
       );
-      
+
       setValue(
         "artworkSeries",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.artworkSeries 
+        ispreviewed
+          ? data?.data?.reviewDetails?.artworkSeries
           : data?.data?.artworkSeries || ""
       );
-      
+
       setValue(
         "artworkCreationYear",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.artworkCreationYear 
+        ispreviewed
+          ? data?.data?.reviewDetails?.artworkCreationYear
           : data?.data?.artworkCreationYear || ""
       );
-      
+
       setValue(
         "artworkName",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.artworkName 
+        ispreviewed
+          ? data?.data?.reviewDetails?.artworkName
           : data?.data?.artworkName || ""
       );
-      
+
       setValue(
         "productDescription",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.productDescription 
+        ispreviewed
+          ? data?.data?.reviewDetails?.productDescription
           : data?.data?.productDescription || ""
       );
-      
+
       setValue(
         "artworkTechnic",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.additionalInfo?.artworkTechnic 
+        ispreviewed
+          ? data?.data?.reviewDetails?.additionalInfo?.artworkTechnic
           : data?.data?.additionalInfo?.artworkTechnic || ""
       );
-      
+
       setValue(
         "artworkTheme",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.additionalInfo?.artworkTheme 
+        ispreviewed
+          ? data?.data?.reviewDetails?.additionalInfo?.artworkTheme
           : data?.data?.additionalInfo?.artworkTheme || ""
       );
-      
+
       setValue(
         "artworkOrientation",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.additionalInfo?.artworkOrientation 
+        ispreviewed
+          ? data?.data?.reviewDetails?.additionalInfo?.artworkOrientation
           : data?.data?.additionalInfo?.artworkOrientation || ""
       );
-      
+
       setValue(
         "material",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.additionalInfo?.material 
+        ispreviewed
+          ? data?.data?.reviewDetails?.additionalInfo?.material
           : data?.data?.additionalInfo?.material || ""
       );
-      
+
       setValue(
         "weight",
-        ispreviewed 
-          ? String(data?.data?.reviewDetails?.additionalInfo?.weight) 
+        ispreviewed
+          ? String(data?.data?.reviewDetails?.additionalInfo?.weight)
           : String(data?.data?.additionalInfo?.weight) || ""
       );
-      
+
       setValue(
         "length",
-        ispreviewed 
-          ? String(data?.data?.reviewDetails?.additionalInfo?.length) 
+        ispreviewed
+          ? String(data?.data?.reviewDetails?.additionalInfo?.length)
           : String(data?.data?.additionalInfo?.length) || ""
       );
-      
+
       setValue(
         "height",
-        ispreviewed 
-          ? String(data?.data?.reviewDetails?.additionalInfo?.height) 
+        ispreviewed
+          ? String(data?.data?.reviewDetails?.additionalInfo?.height)
           : String(data?.data?.additionalInfo?.height) || ""
       );
-      
+
       setValue(
         "width",
-        ispreviewed 
-          ? String(data?.data?.reviewDetails?.additionalInfo?.width) 
+        ispreviewed
+          ? String(data?.data?.reviewDetails?.additionalInfo?.width)
           : String(data?.data?.additionalInfo?.width) || ""
       );
-      
+
       setValue(
         "hangingAvailable",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.additionalInfo?.hangingAvailable 
+        ispreviewed
+          ? data?.data?.reviewDetails?.additionalInfo?.hangingAvailable
           : data?.data?.additionalInfo?.hangingAvailable || ""
       );
-      
+
       setValue(
         "hangingDescription",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.additionalInfo?.hangingDescription 
+        ispreviewed
+          ? data?.data?.reviewDetails?.additionalInfo?.hangingDescription
           : data?.data?.additionalInfo?.hangingDescription || ""
       );
-      
+
       setValue(
         "framed",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.additionalInfo?.framed 
+        ispreviewed
+          ? data?.data?.reviewDetails?.additionalInfo?.framed
           : data?.data?.additionalInfo?.framed || ""
       );
-      
+
       setValue(
         "framedDescription",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.additionalInfo?.framedDescription 
+        ispreviewed
+          ? data?.data?.reviewDetails?.additionalInfo?.framedDescription
           : data?.data?.additionalInfo?.framedDescription || ""
       );
-      
+
       setValue(
         "frameHeight",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.additionalInfo?.frameHeight 
+        ispreviewed
+          ? data?.data?.reviewDetails?.additionalInfo?.frameHeight
           : data?.data?.additionalInfo?.frameHeight || ""
       );
-      
+
       setValue(
         "frameLength",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.additionalInfo?.frameLength 
+        ispreviewed
+          ? data?.data?.reviewDetails?.additionalInfo?.frameLength
           : data?.data?.additionalInfo?.frameLength || ""
       );
-      
+
       setValue(
         "frameWidth",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.additionalInfo?.frameWidth 
+        ispreviewed
+          ? data?.data?.reviewDetails?.additionalInfo?.frameWidth
           : data?.data?.additionalInfo?.frameWidth || ""
       );
-      
+
       setValue(
         "artworkStyleType",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.additionalInfo?.artworkStyle?.map((opt) => ({
-              value: opt,
-              label: t(opt),
-            })) 
+        ispreviewed
+          ? data?.data?.reviewDetails?.additionalInfo?.artworkStyle?.map(
+              (opt) => ({
+                value: opt,
+                label: t(opt),
+              })
+            )
           : data?.data?.additionalInfo?.artworkStyle?.map((opt) => ({
               value: opt,
               label: t(opt),
             })) || ""
       );
-      
+
       setValue(
         "emotions",
-        ispreviewed 
+        ispreviewed
           ? data?.data?.reviewDetails?.additionalInfo?.emotions?.map((opt) => ({
               value: opt,
               label: t(opt),
-            })) 
+            }))
           : data?.data?.additionalInfo?.emotions?.map((opt) => ({
               value: opt,
               label: t(opt),
             })) || ""
       );
-      
+
       setValue(
         "colors",
-        ispreviewed 
+        ispreviewed
           ? data?.data?.reviewDetails?.additionalInfo?.colors?.map((opt) => ({
               value: opt,
               label: t(opt),
-            })) 
+            }))
           : data?.data?.additionalInfo?.colors?.map((opt) => ({
               value: opt,
               label: t(opt),
             })) || ""
       );
-      
+
       setValue(
         "offensive",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.additionalInfo?.offensive 
+        ispreviewed
+          ? data?.data?.reviewDetails?.additionalInfo?.offensive
           : data?.data?.additionalInfo?.offensive || ""
       );
-      
+
       setValue(
         "exclusive",
-        ispreviewed 
-          ? (data?.data?.reviewDetails?.exclusive === true ? "Yes" : data?.data?.reviewDetails?.exclusive === false ? "No" : "") 
-          : (data?.data?.exclusive === true ? "Yes" : data?.data?.exclusive === false ? "No" : "")
+        ispreviewed
+          ? data?.data?.reviewDetails?.exclusive === true
+            ? "Yes"
+            : data?.data?.reviewDetails?.exclusive === false
+            ? "No"
+            : ""
+          : data?.data?.exclusive === true
+          ? "Yes"
+          : data?.data?.exclusive === false
+          ? "No"
+          : ""
       );
-      
+
       setValue(
         "purchaseType",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.commercialization?.purchaseType 
+        ispreviewed
+          ? data?.data?.reviewDetails?.commercialization?.purchaseType
           : data?.data?.commercialization?.purchaseType || ""
       );
-      
+
       setValue(
         "downwardOffer",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.commercialization?.downwardOffer 
+        ispreviewed
+          ? data?.data?.reviewDetails?.commercialization?.downwardOffer
           : data?.data?.commercialization?.downwardOffer || ""
       );
-      
+
       setValue(
         "upworkOffer",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.commercialization?.upworkOffer 
+        ispreviewed
+          ? data?.data?.reviewDetails?.commercialization?.upworkOffer
           : data?.data?.commercialization?.upworkOffer || ""
       );
-      
+
       setValue(
         "acceptOfferPrice",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.pricing?.acceptOfferPrice 
+        ispreviewed
+          ? data?.data?.reviewDetails?.pricing?.acceptOfferPrice
           : data?.data?.pricing?.acceptOfferPrice || ""
       );
-      
+
       setValue(
         "priceRequest",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.commercialization?.priceRequest 
+        ispreviewed
+          ? data?.data?.reviewDetails?.commercialization?.priceRequest
           : data?.data?.commercialization?.priceRequest || ""
       );
-      
+
       setValue(
         "artistbaseFees",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.commercialization?.artistbaseFees 
+        ispreviewed
+          ? data?.data?.reviewDetails?.commercialization?.artistbaseFees
           : data?.data?.commercialization?.artistbaseFees || ""
       );
-      
+
       setValue(
         "basePrice",
-        ispreviewed 
-          ? String(data?.data?.reviewDetails?.pricing?.basePrice) 
+        ispreviewed
+          ? String(data?.data?.reviewDetails?.pricing?.basePrice)
           : String(data?.data?.pricing?.basePrice) || ""
       );
-      
+
       setValue(
         "dpersentage",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.pricing?.dpersentage 
+        ispreviewed
+          ? data?.data?.reviewDetails?.pricing?.dpersentage
           : data?.data?.pricing?.dpersentage || 0
       );
-      
+
       setValue(
         "pCode",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.inventoryShipping?.pCode 
+        ispreviewed
+          ? data?.data?.reviewDetails?.inventoryShipping?.pCode
           : data?.data?.inventoryShipping?.pCode || ""
       );
-      
+
       setValue(
         "location",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.inventoryShipping?.location 
+        ispreviewed
+          ? data?.data?.reviewDetails?.inventoryShipping?.location
           : data?.data?.inventoryShipping?.location || ""
       );
-      
+
       setValue(
         "artworkTags",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.discipline?.artworkTags 
+        ispreviewed
+          ? data?.data?.reviewDetails?.discipline?.artworkTags
           : data?.data?.discipline?.artworkTags || []
       );
-      
+
       setValue(
         "existingVideo",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.media?.otherVideo 
+        ispreviewed
+          ? data?.data?.reviewDetails?.media?.otherVideo
           : data?.data?.media?.otherVideo || []
       );
-      
+
       setValue(
         "existingImage",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.media?.images 
+        ispreviewed
+          ? data?.data?.reviewDetails?.media?.images
           : data?.data?.media?.images || []
       );
-      
+
       setValue(
         "promotion",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.promotions?.promotion 
+        ispreviewed
+          ? data?.data?.reviewDetails?.promotions?.promotion
           : data?.data?.promotions?.promotion || ""
       );
-      
+
       setValue(
         "promotionScore",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.promotions?.promotionScore 
+        ispreviewed
+          ? data?.data?.reviewDetails?.promotions?.promotionScore
           : data?.data?.promotions?.promotionScore || ""
       );
-      
+
       setValue(
         "isArtProvider",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.isArtProvider 
+        ispreviewed
+          ? data?.data?.reviewDetails?.isArtProvider
           : data?.data?.isArtProvider || ""
       );
-      
+
       setValue(
         "subscriptionCatalog",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.commercialization?.subscriptionCatalog 
+        ispreviewed
+          ? data?.data?.reviewDetails?.commercialization?.subscriptionCatalog
           : data?.data?.commercialization?.subscriptionCatalog || ""
       );
-      
+
       setValue(
         "purchaseOption",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.commercialization?.purchaseOption 
+        ispreviewed
+          ? data?.data?.reviewDetails?.commercialization?.purchaseOption
           : data?.data?.commercialization?.purchaseOption || ""
       );
-      
+
       setValue(
         "intTags",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.intTags 
+        ispreviewed
+          ? data?.data?.reviewDetails?.intTags
           : data?.data?.intTags || []
       );
-      
+
       setValue(
         "extTags",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.extTags 
+        ispreviewed
+          ? data?.data?.reviewDetails?.extTags
           : data?.data?.extTags || []
       );
-      
+
       setValue(
         "packageMaterial",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.inventoryShipping?.packageMaterial 
+        ispreviewed
+          ? data?.data?.reviewDetails?.inventoryShipping?.packageMaterial
           : data?.data?.inventoryShipping?.packageMaterial || ""
       );
-      
+
       setValue(
         "packageWeight",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.inventoryShipping?.packageWeight 
+        ispreviewed
+          ? data?.data?.reviewDetails?.inventoryShipping?.packageWeight
           : data?.data?.inventoryShipping?.packageWeight || ""
       );
-      
+
       setValue(
         "packageHeight",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.inventoryShipping?.packageHeight 
+        ispreviewed
+          ? data?.data?.reviewDetails?.inventoryShipping?.packageHeight
           : data?.data?.inventoryShipping?.packageHeight || ""
       );
-      
+
       setValue(
         "packageLength",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.inventoryShipping?.packageLength 
+        ispreviewed
+          ? data?.data?.reviewDetails?.inventoryShipping?.packageLength
           : data?.data?.inventoryShipping?.packageLength || ""
       );
-      
+
       setValue(
         "packageWidth",
-        ispreviewed 
-          ? data?.data?.reviewDetails?.inventoryShipping?.packageWidth 
+        ispreviewed
+          ? data?.data?.reviewDetails?.inventoryShipping?.packageWidth
           : data?.data?.inventoryShipping?.packageWidth || ""
       );
-      
+
       setIsComingSoon(
-        ispreviewed 
-          ? data?.data?.reviewDetails?.inventoryShipping?.comingSoon 
+        ispreviewed
+          ? data?.data?.reviewDetails?.inventoryShipping?.comingSoon
           : data?.data?.inventoryShipping?.comingSoon || Boolean
       );
     } else {
@@ -1114,31 +1121,30 @@ const AddArtwork = () => {
               {t("Generate Certificate Of Authenticity")}
             </h1>
 
-    
-       {status === "modified" ? <>
-        <span
-  onClick={() => setIsPreviewed(false)}
-  className={`inline-block px-4 py-2 rounded-md cursor-pointer transition duration-300 font-semibold ${
-    !ispreviewed
-      ? "bg-black border border-zinc-500 text-white"
-      : " text-black border border-zinc-500 "
-  }`}
->
-  Old Version
-</span>
-<span
-  onClick={() => setIsPreviewed(true)}
-  className={`inline-block px-4 py-2 rounded-md cursor-pointer transition duration-300 font-semibold ${
-    ispreviewed
-      ? "bg-black border border-zinc-500 text-white"
-      : " text-black  border border-zinc-500"
-  }`}
->
-  Modified Version
-</span>
-       </>   : null }
-            
-
+            {status === "modified" ? (
+              <>
+                <span
+                  onClick={() => setIsPreviewed(false)}
+                  className={`inline-block px-4 py-2 rounded-md cursor-pointer transition duration-300 font-semibold ${
+                    !ispreviewed
+                      ? "bg-black border border-zinc-500 text-white"
+                      : " text-black border border-zinc-500 "
+                  }`}
+                >
+                  Old Version
+                </span>
+                <span
+                  onClick={() => setIsPreviewed(true)}
+                  className={`inline-block px-4 py-2 rounded-md cursor-pointer transition duration-300 font-semibold ${
+                    ispreviewed
+                      ? "bg-black border border-zinc-500 text-white"
+                      : " text-black  border border-zinc-500"
+                  }`}
+                >
+                  Modified Version
+                </span>
+              </>
+            ) : null}
           </div>
           {/* </div> */}
 
@@ -2168,8 +2174,8 @@ const AddArtwork = () => {
                     ) : null}
                   </div>
 
-                        {getValues("hangingAvailable") === "Yes" ? (
-                                      <label className="text-[#203F58] text-sm font-semibold">
+                  {getValues("hangingAvailable") === "Yes" ? (
+                    <label className="text-[#203F58] text-sm font-semibold">
                       {t("Hanging Description")}
                       <textarea
                         id="hangingDescription"
@@ -2255,8 +2261,7 @@ const AddArtwork = () => {
                     </>
                   ) : null}
 
-
-<div>
+                  <div>
                     <label className="text-[#203F58] text-sm font-semibold">
                       {t("Exclusive")} *
                     </label>
@@ -2886,12 +2891,14 @@ const AddArtwork = () => {
                       fontWeight: "600",
                       theme: "dark",
                     }}
-                    className={`text-white sm:w-fit w-full text-center ${status === "modified" && ispreviewed === false ? "opacity-70 pointer-events-none" : "" } hover:bg-white hover:border hover:border-[#102031] hover:text-[#102031] px-4 py-3 rounded ${
+                    className={`text-white sm:w-fit w-full text-center ${
+                      status === "modified" && ispreviewed === false
+                        ? "opacity-70 pointer-events-none"
+                        : ""
+                    } hover:bg-white hover:border hover:border-[#102031] hover:text-[#102031] px-4 py-3 rounded ${
                       isPending ? "opacity-70 pointer-events-none" : ""
                     }`}
                   >
-
-                     
                     {isPending ? t("Previewing...") : t("Save & Preview")}
                   </Button>
                 )}

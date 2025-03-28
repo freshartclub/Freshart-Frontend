@@ -116,13 +116,21 @@ const ArtistPortfolio = ({ data }) => {
                     )}
                 </p>
 
-                <img
-                  src={`${imageUrl}/users/${
-                    item?.profile?.inProcessImage || item?.profile?.mainImage
-                  }`}
-                  alt="Artwork"
-                  className="p-2 rounded w-full h-[40vh] sm:w-[30vw] sm:h-[30vh] object-cover"
-                />
+                {item?.profile?.inProcessImage || item?.profile?.mainImage ? (
+                  <img
+                    src={`${imageUrl}/users/${
+                      item?.profile?.inProcessImage || item?.profile?.mainImage
+                    }`}
+                    alt="Artwork"
+                    className="p-2 rounded w-full h-[40vh] sm:w-[30vw] sm:h-[30vh] object-cover"
+                  />
+                ) : (
+                  <img
+                    src="https://www.shutterstock.com/image-vector/user-profile-icon-vector-avatar-600nw-2247726673.jpg"
+                    alt="Artwork"
+                    className="p-2 rounded w-full h-[40vh] sm:w-[30vw] sm:h-[30vh] object-cover"
+                  />
+                )}
               </div>
             </div>
           ))}

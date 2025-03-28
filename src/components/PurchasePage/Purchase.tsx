@@ -25,6 +25,7 @@ import { useDebounce } from "../utils/useDebounce";
 import CardSection from "./CardSection";
 import { useGetHoveredData } from "./http/useGetHoveredData";
 import { useGetPurchaseArtwork } from "./http/useGetPurchaseArtwork";
+import SelectOption from "../ui/SelectOption";
 
 const Purchase = () => {
   const [showAllDiscipline, setShowAllDiscipline] = useState(false);
@@ -286,8 +287,15 @@ const Purchase = () => {
     { key: "exclusive", label: "Exclusive", moreOptions: "Yes" },
     { key: "newIn", label: "New In", moreOptions: "No" },
     { key: "comingSoon", label: "Coming Soon", moreOptions: "Yes" },
-    { key: "bigDiscount", label: "Big Discount", moreOptions: "No" },
   ];
+
+  if (type == "purchase") {
+    commercialOptions.push({
+      key: "bigDiscount",
+      label: "Big Discount",
+      moreOptions: "No",
+    });
+  }
 
   const handleOptions = [
     { key: "selectedOption", label: "Discipline", handler: handleOptionSelect },
@@ -1331,8 +1339,8 @@ const Purchase = () => {
         <Loader />
       ) : (
         <div className="px-4 sm:px-6 md:px-10 lg:px-14">
-          <div className="flex items-center justify-between w-full gap-3 mt-10 mb-6">
-            <div className="flex w-max gap-2 items-center">
+          <div className="flex sm:flex-row flex-col items-center justify-between w-full gap-3 mt-10 mb-6">
+            <div className="flex w-full whitespace-nowrap gap-2 items-center">
               <span
                 className="flex gap-2 bg-[#102031] text-white rounded-full cursor-pointer px-4 py-2"
                 onClick={() => setIsOpenSidePanel((prev) => !prev)}
@@ -1351,24 +1359,44 @@ const Purchase = () => {
                 results
               </P>
             </div>
-            <div className="relative w-[40%] flex items-center justify-end rounded-full border border-gray-300">
-              <input
-                type="text"
-                placeholder="Search by Artwork/Artist Name..."
-                className="w-full py-2 pl-10 rounded-full outline-none"
-                onChange={(e) => setQuery(e.target.value)}
-                value={query}
-              />
+            <div className="flex w-full sm:justify-end justify-between items-center gap-2">
+              <div className="relative flex items-center rounded-full border border-gray-300">
+                <input
+                  type="text"
+                  placeholder="Search by Artwork/Artist Name..."
+                  className="w-full py-2 pl-10 rounded-full outline-none"
+                  onChange={(e) => setQuery(e.target.value)}
+                  value={query}
+                />
 
-              <FaSearch className="w-5 h-5 left-3 absolute" />
+                <FaSearch className="w-5 h-5 left-3 absolute" />
+              </div>
+              <SelectOption
+                value={
+                  moreOptions.comingSoon === "Yes"
+                    ? { value: "Coming Soon", label: "Coming Soon" }
+                    : { value: "All", label: "Show" }
+                }
+                options={["All", "Coming Soon"].map((item) => ({
+                  value: item,
+                  label: item,
+                }))}
+                onChange={(e) => {
+                  setMoreOptions((prev) => ({
+                    ...prev,
+                    comingSoon: e?.value === "Coming Soon" ? "Yes" : "",
+                  }));
+                }}
+                placeholder="Show"
+              />
             </div>
           </div>
 
           <CardSection data={data?.data} type={type} />
 
           <div className="flex max-[410px]:flex-col max-[440px]:gap-5 items-center my-10 justify-between">
-            <div className="bg-[#102031] text-white rounded-full flex items-center gap-2 px-4 py-2">
-              <span className="text-[14px] font-medium">Rows per page:</span>
+            <div className="bg-[#102031] text-white rounded-full flex items-center gap-0.5 px-4 py-2">
+              <span className="text-[14px] font-medium">Rows per page :</span>
               <select
                 className="outline-none bg-transparent"
                 onChange={(e) =>

@@ -50,7 +50,7 @@ const ArtCard = ({ data, title, viewType, loading }) => {
 
   const handleRedirectToDescription = (id: string) => {
     if (isToken) mutate(id);
-    navigate(`/discover_more/${id}`);
+    navigate(`/discover_more/${id}?comingFrom=${viewType}`);
     window.scroll(0, 0);
   };
 

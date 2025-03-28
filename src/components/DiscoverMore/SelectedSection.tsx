@@ -20,7 +20,7 @@ const SelectedSection = ({ data }) => {
       />
       {/* {/* <CommonCardData heading="Selected for you" highlightData={data} /> */}
       <CommonCardData
-        heading="Other artworks you may like"
+        heading="Other Artworks you may like"
         highlightData={highlightData}
         isLoading={isLoading}
       />

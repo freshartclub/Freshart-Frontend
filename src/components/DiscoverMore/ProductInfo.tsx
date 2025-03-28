@@ -10,6 +10,7 @@ import useGetPostArtistTicketMutation from "../NewTicket/ticket history/http/use
 import Header from "../ui/Header";
 import P from "../ui/P";
 import { imageUrl } from "../utils/baseUrls";
+import { FaUserCircle } from "react-icons/fa";
 
 const ProductInfo = ({ data }: any) => {
   const [ticData, setTicData] = useState({
@@ -142,20 +143,12 @@ const ProductInfo = ({ data }: any) => {
         </TabList>
 
         <TabPanel>
-          <div className="flex flex-col justify-between my-5">
-            <Header
-              variant={{ size: "md", theme: "dark", weight: "semiBold" }}
-              className="mb-4"
-            >
-              Artwork Description
-            </Header>
-            <P
-              variant={{ size: "small", theme: "dark", weight: "normal" }}
-              className="text-[#999999]"
-            >
-              {data?.data?.productDescription}
-            </P>
-          </div>
+          <P
+            variant={{ size: "small", theme: "dark", weight: "normal" }}
+            className="text-[#999999] my-5 italic"
+          >
+            {data?.data?.productDescription}
+          </P>
         </TabPanel>
 
         <TabPanel>
@@ -293,12 +286,6 @@ const ProductInfo = ({ data }: any) => {
 
         <TabPanel>
           <div className="w-full my-5">
-            <Header
-              variant={{ size: "md", theme: "dark", weight: "semiBold" }}
-              className="mb-4"
-            >
-              Shipping Infromation
-            </Header>
             {shipping_data.map((item, index) => (
               <div key={index} className="flex items-center">
                 <P
@@ -367,11 +354,15 @@ const ProductInfo = ({ data }: any) => {
           <div className="flex flex-col gap-5 md:flex-row my-5">
             <div className="bg-white w-full md:w-[27%] border sm:w-[90%] p-5">
               <div className="flex items-center flex-col">
-                <img
-                  src={`${imageUrl}/users/${data?.data?.owner?.profile}`}
-                  alt="Profile"
-                  className="object-cover rounded-full w-[8rem] h-[8rem]"
-                />
+                {data?.data?.owner?.profile ? (
+                  <img
+                    src={`${imageUrl}/users/${data?.data?.owner?.profile}`}
+                    alt="Profile"
+                    className="object-cover rounded-full w-[8rem] h-[8rem]"
+                  />
+                ) : (
+                  <FaUserCircle className="rounded-full w-[8rem] h-[8rem]" />
+                )}
 
                 <Header
                   className="mt-2"

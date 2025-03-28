@@ -144,7 +144,6 @@ const ProductInfo = ({ data }) => {
       heading: "Base Price",
       description: data?.data?.pricing?.basePrice,
     },
-
     {
       heading: "Artist Fee",
       description:
@@ -152,16 +151,6 @@ const ProductInfo = ({ data }) => {
           data?.data?.pricing?.artistFees
         }` || "N/A",
     },
-
-    {
-      heading: "Accept Offer Minimum Price",
-      description: data?.data?.pricing?.acceptOfferPrice
-        ? `${getSymbolFromCurrency(currency)} ${
-            data?.data?.pricing?.acceptOfferPrice
-          }`
-        : "N/A",
-    },
-
     {
       heading: "Discount Percentage",
       description: `${data?.data?.pricing?.dpersentage}%` || "N/A",
@@ -255,90 +244,16 @@ const ProductInfo = ({ data }) => {
         </TabList>
 
         <TabPanel>
-          <div className="flex border bg-white rounded flex-col lg:flex-row gap-8 justify-between mb-10 p-2 mt-3">
-            <div className="lg:w-[65%] w-full">
-              <Header
-                variant={{ size: "md", theme: "dark", weight: "semiBold" }}
-              >
-                {t("Product Information")}
-              </Header>
-              <P
-                variant={{ size: "base", theme: "dark", weight: "medium" }}
-                className="my-5 text-[#999999]"
-              >
-                {data?.data?.productDescription}
-              </P>
-            </div>
-
-            <div className="lg:w-[25%] w-full">
-              <div className="flex items-start gap-5 my-5">
-                <img src={delivery} alt="" className="w-8 h-8" />
-                <div>
-                  <P
-                    variant={{ size: "base", weight: "medium", theme: "dark" }}
-                  >
-                    {t("Delivery 2-5 days")}
-                  </P>
-                  <P
-                    variant={{ size: "base", weight: "medium" }}
-                    className="text-[#999999]"
-                  >
-                    {t("Get free shipping over $65.")}
-                  </P>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-5 my-5">
-                <img src={secure} alt="" className="w-8 h-8" />
-                <div>
-                  <P
-                    variant={{ size: "base", weight: "medium", theme: "dark" }}
-                  >
-                    {t("100% secure payment")}
-                  </P>
-                  <P
-                    variant={{ size: "base", weight: "medium" }}
-                    className="text-[#999999]"
-                  >
-                    {t("Your payment information is safe.")}
-                  </P>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-5 my-5">
-                <img src={print} alt="" className="w-8 h-8" />
-                <div>
-                  <P
-                    variant={{ size: "base", weight: "medium", theme: "dark" }}
-                  >
-                    {t("Premium paper printed")}
-                  </P>
-                  <P
-                    variant={{ size: "base", weight: "medium" }}
-                    className="text-[#999999]"
-                  >
-                    {t("Printed on premium paper (250 g/m²).")}
-                  </P>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-5 my-5">
-                <img src={return1} alt="" className="w-8 h-8" />
-                <div>
-                  <P
-                    variant={{ size: "base", weight: "medium", theme: "dark" }}
-                  >
-                    {t("Easy Returns")}
-                  </P>
-                  <P
-                    variant={{ size: "base", weight: "medium" }}
-                    className="text-[#999999]"
-                  >
-                    {t("Risk-free 30-day returns.")}
-                  </P>
-                </div>
-              </div>
-            </div>
+          <div className="flex flex-col border bg-white rounded gap-2 justify-between mb-10 p-2 mt-3">
+            <Header variant={{ size: "md", theme: "dark", weight: "semiBold" }}>
+              {t("Product Information")}
+            </Header>
+            <P
+              variant={{ size: "base", theme: "dark", weight: "medium" }}
+              className="mb-5 text-[#999999]"
+            >
+              {data?.data?.productDescription}
+            </P>
           </div>
         </TabPanel>
 
@@ -380,9 +295,6 @@ const ProductInfo = ({ data }) => {
                   </P>
                 </div>
               ))}
-            </div>
-
-            <div className="w-full">
               {highlight_data.map((item, index) => (
                 <div key={index} className="flex  items-center">
                   <P

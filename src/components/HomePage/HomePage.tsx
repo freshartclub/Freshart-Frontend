@@ -30,19 +30,19 @@ const HomePage = () => {
       <ArtCard
         data={data?.trending}
         title={"Trending Artwork"}
-        viewType="new"
+        viewType="trending"
         loading={isLoading}
       />
       <ArtCard
         data={data?.commingSoon}
         title={"Coming Soon"}
-        viewType="new"
+        viewType="comingSoon"
         loading={isLoading}
       />
       <ArtCard
         data={data?.highlighted}
         title={"Highlighted Artwork"}
-        viewType="new"
+        viewType="highlight"
         loading={isLoading}
       />
 

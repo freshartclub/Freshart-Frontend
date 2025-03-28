@@ -97,12 +97,9 @@ const BannerSection = () => {
                     {item.header}
                   </Header>
 
-                  <P
-                    variant={{ weight: "light", theme: "light" }}
-                    className="md:text-[18px] sm:text-[14px] hidden sm:block mb-6 md:w-[88%] w-full mt-4  animate-fadeIn"
-                  >
+                  <span className="md:text-[18px] sm:text-[14px] hidden sm:block mb-6 md:w-[88%] w-full mt-4">
                     {item.para}
-                  </P>
+                  </span>
                   <button
                     onClick={handleCollection}
                     className="!border-b !bg-transparent"

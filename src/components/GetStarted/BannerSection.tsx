@@ -52,7 +52,7 @@ const BannerSection = ({ data }) => {
               type="text"
               placeholder="email,phone or invite code"
               className="ml-2 text-black w-full"
-            ></input>
+            />
             <Button
               onClick={handleProceed}
               className="px-6 py-2 rounded-full bg-[#FF536B] text-white"

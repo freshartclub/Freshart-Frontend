@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { FaToggleOff, FaToggleOn } from "react-icons/fa";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import Slider from "react-slick";
 import arrow from "../../assets/arrow_22.png";
 import home from "../../assets/home.png";
@@ -25,13 +25,14 @@ const MagnifierImage = ({ src, alt, isOffensive, safeMode }) => {
     if (imgRef.current) {
       setImgDimensions({
         width: imgRef.current.offsetWidth,
-        height: imgRef.current.offsetHeight
+        height: imgRef.current.offsetHeight,
       });
     }
   };
 
   const handleMouseMove = (e) => {
-    if (!containerRef.current || !magnifierRef.current || !imgRef.current) return;
+    if (!containerRef.current || !magnifierRef.current || !imgRef.current)
+      return;
 
     const container = containerRef.current;
     const magnifier = magnifierRef.current;
@@ -62,8 +63,14 @@ const MagnifierImage = ({ src, alt, isOffensive, safeMode }) => {
     let magnifierY = e.clientY - containerRect.top - magnifierOffset;
 
     // Boundary checks
-    magnifierX = Math.max(0, Math.min(magnifierX, containerRect.width - magnifierSize));
-    magnifierY = Math.max(0, Math.min(magnifierY, containerRect.height - magnifierSize));
+    magnifierX = Math.max(
+      0,
+      Math.min(magnifierX, containerRect.width - magnifierSize)
+    );
+    magnifierY = Math.max(
+      0,
+      Math.min(magnifierY, containerRect.height - magnifierSize)
+    );
 
     // Calculate zoom level (2x by default, adjust based on image size)
     const zoomLevel = imgRect.width < 400 ? 3 : 2;
@@ -74,7 +81,9 @@ const MagnifierImage = ({ src, alt, isOffensive, safeMode }) => {
     magnifier.style.left = `${magnifierX}px`;
     magnifier.style.top = `${magnifierY}px`;
     magnifier.style.backgroundPosition = backgroundPos;
-    magnifier.style.backgroundSize = `${imgRect.width * zoomLevel}px ${imgRect.height * zoomLevel}px`;
+    magnifier.style.backgroundSize = `${imgRect.width * zoomLevel}px ${
+      imgRect.height * zoomLevel
+    }px`;
   };
 
   const handleMouseEnter = () => {
@@ -135,7 +144,10 @@ const DiscoverMore = () => {
   const { id } = useParams();
   const preview = false;
 
-  const { data, isLoading } = useGetArtWorkById(id, preview);
+  const [searchParams] = useSearchParams();
+  const comingFrom = searchParams.get("comingFrom");
+
+  const { data, isLoading } = useGetArtWorkById(id, preview, comingFrom);
   const [safeMode, setSafeMode] = useState("Off");
   const [viewedImages, setViewedImages] = useState({});
 
@@ -144,10 +156,14 @@ const DiscoverMore = () => {
         { src: data?.data.media?.mainImage, alt: "Main Image" },
         { src: data?.data.media?.backImage, alt: "Back Image" },
         { src: data?.data.media?.mainVideo, alt: "Main Video" },
-        { src: data?.data.media?.inProcessImage, alt: "In Process Image" },
         ...data?.data.media?.images?.map((item) => ({
           src: item,
           alt: "Additional Image",
+        })),
+        { src: data?.data.media?.inProcessImage, alt: "In Process Image" },
+        ...data?.data.media?.otherVideo?.map((item) => ({
+          src: item,
+          alt: "Additional Video",
         })),
       ].filter((image) => image.src)
     : [];
@@ -201,7 +217,6 @@ const DiscoverMore = () => {
 
   return (
     <div className="lg:mx-6 mx-3 lg:px-6 px-3">
-      {/* Breadcrumbs */}
       <ul className="flex md:p-2 gap-4 text-xl text-[#2E4053] overflow-x-auto w-full items-center mt-10 mb-5">
         <li>
           <Link to="/" className="rounded-md transition-all flex">
@@ -249,7 +264,6 @@ const DiscoverMore = () => {
 
       <div className="flex lg:w-[77%] mx-auto md:flex-row flex-col gap-0 lg:gap-5">
         <div className="flex lg:flex-row flex-col md:w-[60%] w-full gap-2 items-center">
-          {/* Thumbnails */}
           <div className="flex overflow-hidden lg:justify-start justify-center lg:flex-col lg:max-h-[60vh] h-[5rem] lg:h-[60vh] md:w-[20rem] overflow-x-auto lg:overflow-y-auto gap-2 lg:w-[15%] lg:ml-4 scrollbar">
             {images?.map((thumb, index) => {
               const isVideo = thumb.src?.endsWith(".mp4");
@@ -282,7 +296,6 @@ const DiscoverMore = () => {
             })}
           </div>
 
-          {/* Main Image/Video Slider */}
           <div className="flex-1 md:w-[80%] lg:h-[22rem] w-full overflow-hidden">
             {images.length > 1 ? (
               <Slider {...settings} ref={sliderRef} className="discover_more">

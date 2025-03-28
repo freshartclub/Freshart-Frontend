@@ -45,7 +45,7 @@ const CardSection = ({ data, type }) => {
 
   const handleRedirectToDescription = (id: string) => {
     mutate(id);
-    navigate(`/discover_more/${id}`);
+    navigate(`/discover_more/${id}?a=search`);
     window.scroll(0, 0);
   };
 
@@ -147,7 +147,7 @@ const CardSection = ({ data, type }) => {
   }, []);
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4 mx-auto">
+    <div className="grid place-items-center grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mx-auto">
       {data && data?.length > 0 ? (
         data.map((item, index: number) => {
           const isOffensive = item?.additionalInfo?.offensive === "Yes";
