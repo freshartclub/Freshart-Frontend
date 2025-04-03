@@ -1,16 +1,14 @@
 import { useMutation } from "@tanstack/react-query";
-import axiosInstance from "../../components/utils/axios";
 import toast from "react-hot-toast";
-import { AUTH_ENDPOINTS } from "../apiEndPoints/Auth";
-import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useTranslation } from "react-i18next";
+import axiosInstance from "../../components/utils/axios";
+import { setToken } from "../../components/utils/tokenHelper";
+import { useAppDispatch } from "../../store/typedReduxHooks";
 import {
   forgotPasswordUserId,
   setIsAuthorized,
 } from "../../store/userSlice/userSlice";
-import { useAppDispatch } from "../../store/typedReduxHooks";
-import { setToken } from "../../components/utils/tokenHelper";
-import { useTranslation } from "react-i18next";
+import { AUTH_ENDPOINTS } from "../apiEndPoints/Auth";
 
 async function verifyOtp(input: any) {
   return axiosInstance.post(AUTH_ENDPOINTS.ValidateSignUpOTP, input);

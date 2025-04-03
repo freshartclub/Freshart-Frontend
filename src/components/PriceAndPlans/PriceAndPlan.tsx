@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import exclamation from "../../assets/exclamation-thick.png";
 import Button from "../ui/Button";
@@ -8,50 +9,28 @@ import Loader from "../ui/Loader";
 import P from "../ui/P";
 import { imageUrl } from "../utils/baseUrls";
 import checkmark from "./assets/checkmark.png";
+import CreditCardForm from "./CreditCardForm";
 import { useGetAllPlans } from "./http/useGetAllPlans";
-import { useTranslation } from "react-i18next";
 import useSubscriptionMutation from "./http/useSubscriptionMutation";
+import { useCheckUserRef } from "./http/useCheckUserRef";
+import AddAddress from "./AddAddress";
+import { TiTickOutline } from "react-icons/ti";
 
 const PriceAndPlan = () => {
   const [activePlans, setActivePlans] = useState({});
+  const [selectedPlan, setSelectedPlan] = useState(null);
+  const [showCreditCardForm, setShowCreditCardForm] = useState(false);
+  const [showAddress, setShowAddress] = useState(false);
+  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const navigate = useNavigate();
   const { data, isLoading } = useGetAllPlans();
   const { t } = useTranslation();
-  const [hash, setHash] = useState("")
 
-  const [orderData, setOrderData] = useState({
-    hash: "",
-    amount: "",
-    currency: "",
-    orderId: "",
-    iso: "",
-    payerRef: "",
-    paymentMethod: "",
-  });
+  const { mutateAsync, isPending } = useSubscriptionMutation();
+  const { data: checkRef } = useCheckUserRef();
 
-  const generateTimestamp = () => {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, "0");
-    const day = String(now.getDate()).padStart(2, "0");
-    const hours = String(now.getHours()).padStart(2, "0");
-    const minutes = String(now.getMinutes()).padStart(2, "0");
-    const seconds = String(now.getSeconds()).padStart(2, "0");
-
-
-    return `${year}${month}${day}${hours}${minutes}${seconds}`;
-  };
-
-  const { mutateAsync, isPending } = useSubscriptionMutation()
-
-  useEffect(() => {
-    if (orderData?.hash) {
-      document.getElementById("hppFrame").submit();
-    }
-  }, [orderData.hash]);
-
-  const handleCompleteForm = () => {
-    navigate("/registration_process");
+  const handleNavigate = () => {
+    navigate("/home");
     window.scrollTo(0, 0);
   };
 
@@ -65,9 +44,6 @@ const PriceAndPlan = () => {
     return grouped;
   };
 
-
-  console.log(activePlans)
-  // Handle select change
   const handlePlanChange = (planGrp, selectedPlanName) => {
     const selectedPlan = groupPlans(data)[planGrp].find(
       (plan) => plan.planName === selectedPlanName
@@ -100,49 +76,17 @@ const PriceAndPlan = () => {
     return listItems;
   };
 
-
-
-  const getPlan = async (id: string) => {
-
-    console.log(id);
-
-    const genTime = await generateTimestamp()
-    setHash(genTime)
-
-    const newData = {
-      planId: id,
-      currency: "EUR",
-      country: "Spain",
-      time: genTime,
-      type: "monthly"
-    }
-
-    mutateAsync(newData).then((res) => {
-
-      setOrderData(
-        {
-
-          hash: res.data.data,
-          orderId: res.data.orderId,
-          amount: res.data.amount,
-          currency: res.data.currency,
-          iso: res.data.iso,
-          payerRef: res.data.pay_ref,
-          paymentMethod: res.data.pmt_ref        }
-      )
-      // navigate('/payment_success')
-
-    })
-
-
-
+  const openConfirmation = (plan) => {
+    setSelectedPlan(plan);
+    setIsConfirmationOpen(true);
   };
 
+  const closeConfirmation = () => {
+    setIsConfirmationOpen(false);
+  };
 
-
-  console.log(hash)
   return (
-    <div className="bg-[#F5F2EB] pt-10 pb-10">
+    <div className="bg-[#F5F2EB] pt-10 pb-10 relative">
       <div className="container mx-auto md:px-6 px-3">
         <div className="md:w-[65%] w-full m-auto text-center">
           <Header
@@ -161,8 +105,8 @@ const PriceAndPlan = () => {
           </P>
         </div>
 
-        <div className="my-8">
-          <div className="flex lg:flex-row flex-col lg:gap-0 gap-2 lg:justify-between lg:items-center">
+        <div className="mt-8">
+          <div className="flex lg:flex-row flex-col gap-4 lg:items-center">
             <DiscountCode />
 
             <Button
@@ -172,14 +116,15 @@ const PriceAndPlan = () => {
                 fontWeight: "bold",
                 rounded: "full",
               }}
-              onClick={handleCompleteForm}
+              className="w-full"
+              onClick={handleNavigate}
             >
               {t(
                 "I am not sure yet. Let me take a look, I will choose later on!"
               )}
             </Button>
 
-            <div className="flex items-center lg:w-max w-full justify-center gap-2">
+            <div className="flex whitespace-nowrap items-center lg:w-max w-full justify-center gap-2">
               <img
                 src={exclamation}
                 alt="exclamation sign"
@@ -191,194 +136,333 @@ const PriceAndPlan = () => {
             </div>
           </div>
 
-          <form
-            id="hppFrame"
-            method="POST"
-            action="https://hpp.sandbox.addonpayments.com/pay"
-            target="hppFrame"
-          >
-            <>
-              <input type="hidden" name="TIMESTAMP" value={hash} />
-              <input
-                type="hidden"
-                name="MERCHANT_ID"
-                value={import.meta.env.VITE_MERCHANT_ID}
-              />
-              <input
-                type="hidden"
-                name="ORDER_ID"
-                value={orderData?.orderId}
-              />
-              <input type="hidden" name="AMOUNT" value={orderData.amount} />
-              <input
-                type="hidden"
-                name="CURRENCY"
-                value={orderData?.currency}
-              />
-              <input type="hidden" name="SHA1HASH" value={orderData?.hash} />
-              <input type="hidden" name="AUTO_SETTLE_FLAG" value="1" />
-              <input
-                type="hidden"
-                name="HPP_BILLING_CITY"
-                value={"Jablpur"}
-              />
-              <input
-                type="hidden"
-                name="HPP_BILLING_COUNTRY"
-                value={orderData?.iso}
-              />
-              <input
-                type="hidden"
-                name="HPP_BILLING_STREET1"
-                value={"ghar"}
-              />
-              <input
-                type="hidden"
-                name="HPP_BILLING_POSTALCODE"
-                value={"46415616"}
-              />
-              <input
-                type="hidden"
-                name="HPP_CUSTOMER_EMAIL"
-                value={"sknjdnj@gmail.com"}
-              />
+          <div className="grid mt-6 lg:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-5 items-center justify-center w-full">
+            {Object.entries(groupedPlans).map(([groupName, plans]) => {
+              const defaultPlan = activePlans[groupName] || plans[0];
 
-
-              <input type="hidden" name="CARD_STORAGE_ENABLE" value="1" />
-              <input type="hidden" name="OFFER_SAVE_CARD" value="1" />
-              <input type="hidden" name="PAYER_EXIST" value="0" />
-
-
-
-              <input type="hidden" name="RECURRING_TYPE" value="fixed" />
-              
-              <input type="hidden" name="RECURRING_SEQUENCE" value="first" />
-
-               <input type="hidden" name="PAYER_REF" value={orderData.payerRef}/>
-
-                <input type="hidden" name="PMT_REF" value={orderData.paymentMethod} />
-
-
-
-                <input
-                  type="hidden"
-                  name="MERCHANT_RESPONSE_URL"
-                  value={`https://4b67-2409-40c4-5d-5bec-522-6a64-14cb-a7d9.ngrok-free.app/api/artist/get-response-data`}
-                />
-              </>
-
-              <p className="text-[#9999] text-xs mb-1">
-                If you have different shipping address then make sure fill
-                that
-              </p>
-            </form>
-
-            <div className="grid mt-6 lg:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-5 items-center justify-center w-full">
-              {Object.entries(groupedPlans).map(([groupName, plans]) => {
-                const defaultPlan = activePlans[groupName] || plans[0];
-
-                return (
-                  <div
-                    key={groupName}
-                    className="border rounded-lg shadow-md p-6 bg-white w-full flex-wrap md:wrap-no"
+              return (
+                <div
+                  key={groupName}
+                  className="border rounded-lg shadow-md p-6 bg-white w-full flex-wrap md:wrap-no"
+                >
+                  <img
+                    src={`${imageUrl}/users/${defaultPlan?.planImg}`}
+                    alt="Plan Image"
+                    className="object-cover mb-4 w-[90px] h-[90px]"
+                  />
+                  <Header
+                    variant={{ size: "xl", theme: "dark", weight: "bold" }}
+                    className="text-left my-4"
                   >
-                    <img
-                      src={`${imageUrl}/users/${defaultPlan?.planImg}`}
-                      alt="Plan Image"
-                      className="object-cover mb-4 w-[90px] h-[90px]"
-                    />
+                    Plan {groupName}
+                  </Header>
+                  <div className="text-center mb-4 flex">
                     <Header
-                      variant={{ size: "xl", theme: "dark", weight: "bold" }}
-                      className="text-left my-4"
+                      variant={{ size: "2xl", theme: "dark", weight: "bold" }}
                     >
-                      Plan {groupName}
+                      ${defaultPlan?.standardPrice}
                     </Header>
-                    <div className="text-center mb-4 flex">
-                      <Header
-                        variant={{ size: "2xl", theme: "dark", weight: "bold" }}
-                      >
-                        ${defaultPlan?.standardPrice}
-                      </Header>
-                      <P
-                        variant={{
-                          size: "small",
-                          theme: "dark",
-                          weight: "medium",
-                        }}
-                        className="mt-3 ml-1"
-                      >
-                        {t("/month")}
-                      </P>
-                    </div>
-                    <select
-                      className="border border-gray-300 rounded-md p-2 w-full mb-4"
-                      value={defaultPlan?.planName}
-                      onChange={(e) =>
-                        handlePlanChange(groupName, e.target.value)
-                      }
+                    <P
+                      variant={{
+                        size: "small",
+                        theme: "dark",
+                        weight: "medium",
+                      }}
+                      className="mt-3 ml-1"
                     >
-                      {plans.map((plan) => (
-                        <option key={plan.planName} value={plan.planName}>
-                          {plan.planName}
-                        </option>
-                      ))}
-                    </select>
-                    <ul className="space-y-2 md:min-h-auto min-h-[150px]">
-                      {returnList(defaultPlan.planDesc) ? (
-                        returnList(defaultPlan.planDesc).map((feature, i) => (
-                          <li key={i} className="flex items-center">
-                            <img
-                              src={checkmark}
-                              alt="tick"
-                              className="w-5 h-5 mr-2"
-                            />
-                            <span className="text-left">{feature}</span>
-                          </li>
-                        ))
-                      ) : (
-                        <li className="flex items-center">
+                      {t("/month")}
+                    </P>
+                  </div>
+                  <select
+                    className="border border-gray-300 rounded-md p-2 w-full mb-4"
+                    value={defaultPlan?.planName}
+                    onChange={(e) =>
+                      handlePlanChange(groupName, e.target.value)
+                    }
+                  >
+                    {plans.map((plan) => (
+                      <option key={plan.planName} value={plan.planName}>
+                        {plan.planName}
+                      </option>
+                    ))}
+                  </select>
+                  <ul className="space-y-2 md:min-h-auto min-h-[150px]">
+                    {returnList(defaultPlan.planDesc) ? (
+                      returnList(defaultPlan.planDesc).map((feature, i) => (
+                        <li key={i} className="flex items-center">
                           <img
                             src={checkmark}
                             alt="tick"
                             className="w-5 h-5 mr-2"
                           />
-                          <span className="text-left">No Features</span>
+                          <span className="text-left">{feature}</span>
                         </li>
-                      )}
-                    </ul>
-
-
-
-
-                    {isPending ? (
-                      <span>Wait....</span>
+                      ))
                     ) : (
-                      <input
-                        disabled={isPending}
-                        className={` p-2 mt-5  w-full bg-black rounded-md text-center text-white cursor-pointer hover:bg-[#131313df]}`}
-                        onClick={() => getPlan(defaultPlan?._id)}
-                        type="button"
-                        value={t("Get Started")}
-                      />
+                      <li className="flex items-center">
+                        <img
+                          src={checkmark}
+                          alt="tick"
+                          className="w-5 h-5 mr-2"
+                        />
+                        <span className="text-left">No Features</span>
+                      </li>
                     )}
-                  </div>
-                );
-              })}
-            </div>
-        </div>
-        {orderData?.hash ? (
-          <div className="fixed inset-0 z-[99] flex justify-center items-center bg-black/50 backdrop-blur-sm">
-            <iframe
-              name="hppFrame"
-              title="Hosted Payment Page"
-              className="md:w-[40%] h-[500px] shadow-lg"
-              style={{ border: "none" }}
-            // src={hppUrl}
-            ></iframe>
-          </div>
-        ) : null}
-      </div>
+                  </ul>
 
+                  <input
+                    className={`p-2 mt-5 w-full bg-black rounded-md text-center text-white cursor-pointer hover:bg-[#131313df]}`}
+                    onClick={() => openConfirmation(defaultPlan)}
+                    type="button"
+                    value={t("Get Started")}
+                  />
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {isConfirmationOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
+            <div className="bg-white rounded-xl shadow-xl w-full max-w-lg max-h-[95vh] overflow-y-auto scrollbar mx-4">
+              <div className="p-4">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-2xl font-bold text-gray-900">
+                    Confirm Your Subscription
+                  </h2>
+                  <button
+                    onClick={closeConfirmation}
+                    className="text-gray-500 hover:text-gray-700 transition-colors"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                </div>
+
+                {selectedPlan && (
+                  <div className="space-y-4">
+                    <div className="flex items-center">
+                      <img
+                        src={`${imageUrl}/users/${selectedPlan?.planImg}`}
+                        alt="Plan"
+                        className="w-16 h-16 mr-4 rounded-lg object-cover"
+                      />
+                      <div>
+                        <h3 className="font-bold text-lg">
+                          {selectedPlan.planName}
+                        </h3>
+                        <p className="text-gray-600">
+                          ${selectedPlan.standardPrice}/month
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="border-t border-b border-gray-200 py-4">
+                      <h4 className="font-semibold mb-2">Plan Features:</h4>
+                      <ul className="space-y-2">
+                        {returnList(selectedPlan.planDesc)?.map(
+                          (feature, i) => (
+                            <li key={i} className="flex items-start">
+                              <svg
+                                className="h-5 w-5 text-green-500 mr-2 mt-0.5"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M5 13l4 4L19 7"
+                                />
+                              </svg>
+                              <span>{feature}</span>
+                            </li>
+                          )
+                        )}
+                      </ul>
+                    </div>
+
+                    <div className="bg-yellow-50 p-3 rounded-lg flex items-start">
+                      <svg
+                        className="h-5 w-5 text-yellow-500 mr-2 mt-0.5 flex-shrink-0"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      <p className="text-sm text-yellow-800">
+                        To Subscribe to the plan, we need to save your card
+                        details. Please note that your sensitive information
+                        will be secure with us.
+                      </p>
+                    </div>
+
+                    <div
+                      className={`${
+                        checkRef.data == false ? "bg-red-50" : "bg-green-50"
+                      } p-3 rounded-lg flex items-start`}
+                    >
+                      {checkRef.data == false ? (
+                        <svg
+                          className={`h-5 w-5 text-red-500 mr-2 mt-0.5 flex-shrink-0`}
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      ) : (
+                        <TiTickOutline className="h-5 w-5 text-green-800 mr-2" />
+                      )}
+
+                      {checkRef.data == false ? (
+                        <div>
+                          <p className="text-sm text-red-800 mt-1">
+                            We found that you don&apos;t have any basic
+                            information saved with us. Please enter your basic
+                            information and add yourself as a payer.
+                          </p>
+                        </div>
+                      ) : checkRef.status == "active" ? (
+                        <div>
+                          <p className="text-sm text-green-800">
+                            You already have an active subscription plan.
+                          </p>
+                        </div>
+                      ) : checkRef.status == "inactive" ? (
+                        <div>
+                          <p className="text-sm text-green-800">
+                            You dont have an active subscription plan. Subscribe
+                            to a plan and get started.
+                          </p>
+                        </div>
+                      ) : (
+                        <div>
+                          <p className="text-sm text-green-800">
+                            You already have a payment method saved with us. But
+                            your payment method is not active. Please add a
+                            payment method.
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="bg-blue-50 p-3 rounded-lg flex items-start">
+                      <svg
+                        className="h-5 w-5 text-blue-500 mr-2 mt-0.5 flex-shrink-0"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      <p className="text-sm text-blue-800">
+                        By confirming, you agree to our Terms of Service and
+                        Privacy Policy. Your subscription will automatically
+                        renew each month until canceled.
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                <div className="mt-6 flex justify-end space-x-3">
+                  <button
+                    onClick={closeConfirmation}
+                    className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                  >
+                    Cancel
+                  </button>
+                  {checkRef.data == false ? (
+                    <button
+                      onClick={() => {
+                        closeConfirmation();
+                        setShowAddress(true);
+                      }}
+                      className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 transition-colors duration-200 flex items-center"
+                    >
+                      Add Payer
+                    </button>
+                  ) : checkRef.status == "active" ? (
+                    <button className="px-4 py-2 pointer-events-none cursor-not-allowed opacity-65 bg-black text-white rounded-md hover:bg-gray-800 transition-colors duration-200 flex items-center">
+                      Already Subscribed
+                    </button>
+                  ) : checkRef.status == "inactive" ? (
+                    <button className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 transition-colors duration-200 flex items-center">
+                      Subscribe To Plan
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => {
+                        closeConfirmation();
+                        setShowCreditCardForm(true);
+                      }}
+                      className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 transition-colors duration-200 flex items-center"
+                    >
+                      <svg
+                        className="w-4 h-4 mr-2"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                      Create & Proceed to Payment
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {showCreditCardForm && (
+          <CreditCardForm
+            onClose={() => setShowCreditCardForm(false)}
+            planId={selectedPlan._id}
+            isPending={isPending}
+            onSubmit={(cardDetails) => {
+              mutateAsync(cardDetails).then(() => {
+                setShowCreditCardForm(false);
+                window.location.reload();
+              });
+            }}
+          />
+        )}
+        {showAddress && (
+          <AddAddress
+            onClose={() => setShowAddress(false)}
+            data={checkRef?.billing ? checkRef.billing : null}
+          />
+        )}
+      </div>
     </div>
   );
 };

@@ -52,6 +52,7 @@ export const ARTTIST_ENDPOINTS = {
   CreateInvite: `${ARTIST_BASE_URl}/create-invite`,
   GetInviteCode: `${ARTIST_BASE_URl}/invite-code`,
   GetInviteData: `${ARTIST_BASE_URl}/get-invite`,
+  GetInviteFullData: `${ARTIST_BASE_URl}/get-invite-data`,
 
   // removeItems: `${ARTIST_BASE_URl}/remove-from-cart`,
 

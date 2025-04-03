@@ -308,13 +308,6 @@ const ProductInfo = ({ data }: any) => {
         <TabPanel>
           {isAuthorized ? (
             <div className="w-full my-5">
-              <Header
-                variant={{ size: "md", theme: "dark", weight: "semiBold" }}
-                className="mb-4"
-              >
-                Create a ticket to know additional details
-              </Header>
-
               <form className="flex md:w-[50%] flex-col gap-4">
                 <textarea
                   value={ticData.message}
@@ -326,7 +319,7 @@ const ProductInfo = ({ data }: any) => {
                     }))
                   }
                   className="p-2 border outline-none rounded"
-                  placeholder="Request Details"
+                  placeholder="Type here request..."
                   rows={4}
                 />
 

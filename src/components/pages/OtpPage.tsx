@@ -1,8 +1,10 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 import OTPInput from "react-otp-input";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import arrow from "../../assets/arrow.png";
 import loginimage from "../../assets/login.png";
@@ -11,12 +13,9 @@ import useOtpResendMutation from "../../http/auth/useOtpResendMutation";
 import useOtpVerifyMutation from "../../http/auth/useOtpVerifyMutation";
 import { useAppDispatch, useAppSelector } from "../../store/typedReduxHooks";
 import { forgotPasswordUserId } from "../../store/userSlice/userSlice";
-import useTimer, { formatTime } from "../hooks/useTimer";
 import BackButton from "../ui/BackButton";
 import Button from "../ui/Button";
 import P from "../ui/P";
-import { useTranslation } from "react-i18next";
-import toast from "react-hot-toast";
 
 const OtpPage = () => {
   const [localId, setLocalId] = useState("");
@@ -26,11 +25,8 @@ const OtpPage = () => {
 
   const navigate = useNavigate();
   const [otp, setOtp] = useState("");
-  const timerLimit = 2 * 60;
-  const { startTimer, stopTimer, seconds } = useTimer(timerLimit);
-
-  const [searchParams, setSearchParam] = useSearchParams();
-  const id = searchParams.get("id");
+  const [timer, setTimer] = useState(120);
+  const [isTimerRunning, setIsTimerRunning] = useState(true);
 
   const validationSchema = Yup.object().shape({
     // otp: Yup.string()
@@ -47,6 +43,23 @@ const OtpPage = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (isTimerRunning && timer > 0) {
+      const interval = setInterval(() => {
+        setTimer((prev) => prev - 1);
+      }, 1000);
+      return () => clearInterval(interval);
+    } else {
+      setIsTimerRunning(false);
+    }
+  }, [timer, isTimerRunning]);
+
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
+  };
+
   const {
     handleSubmit,
     formState: { errors, isSubmitting },
@@ -58,20 +71,14 @@ const OtpPage = () => {
   const { isPending: isResendPendig, mutateAsync: resendMutateAsync } =
     useOtpResendMutation();
 
-  useEffect(() => {
-    startTimer();
-
-    return () => {
-      stopTimer();
-    };
-  }, [startTimer, stopTimer]);
-
   const handleBack = () => {
     navigate("/");
   };
 
   const onSubmit = handleSubmit(async (data) => {
     if (!otp) return toast.error(t("Please enter OTP"));
+    if (otp.length !== 6) return toast.error(t("Please enter valid OTP"));
+
     try {
       const newData = {
         id: localId,
@@ -85,7 +92,16 @@ const OtpPage = () => {
   });
 
   const handleResendOtp = async () => {
-    await resendMutateAsync({ id: id });
+    if (timer > 0) return;
+
+    try {
+      const resendData = { id: localId };
+      await resendMutateAsync(resendData);
+      setTimer(120);
+      setIsTimerRunning(true);
+    } catch (error) {
+      console.error("Failed to resend OTP:", error);
+    }
   };
 
   return (
@@ -104,12 +120,7 @@ const OtpPage = () => {
           >
             {t("Enter the OTP From the Mail We Sent to You")}
           </P>
-          <P
-            variant={{ size: "base", theme: "dark", weight: "medium" }}
-            className="mb-4"
-          >
-            {formatTime(seconds)}
-          </P>
+          <P className="mb-4">{formatTime(timer)}</P>
 
           <form onSubmit={onSubmit} className="mb-4">
             <OTPInput
@@ -137,7 +148,11 @@ const OtpPage = () => {
               {t("Didn’t Receive Code ?")}{" "}
               <span
                 onClick={handleResendOtp}
-                className="font-bold cursor-pointer tracking-tight"
+                className={`${
+                  timer === 0
+                    ? ""
+                    : "pointer-events-none cursor-not-allowed opacity-65"
+                } font-bold cursor-pointer tracking-tight`}
               >
                 {isResendPendig ? t("Sending...") : t("Resend")}
               </span>

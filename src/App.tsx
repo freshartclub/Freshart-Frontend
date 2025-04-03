@@ -15,14 +15,11 @@ import { AuthProvider } from "./jwt/auth-provider";
 
 // Lazy loading the components
 import ArtistGuard from "./components/ArtistGuard";
-import OrderApprove from "./components/ArtistPanel/OrderApprove/OrderApprove";
-import Circle from "./components/CIrcle/Circle.tsx";
 import GetStarted from "./components/GetStarted/GetStarted";
 import HomePage from "./components/HomePage/HomePage";
 import PaymentPage from "./components/Payment_page/PaymentPage";
 import AboutUs from "./components/pages/AboutUs/AboutUs";
 import Faq from "./components/pages/Faq";
-import InvoicePdf from "./components/pages/InvoicePdf.tsx";
 import KbDatabase from "./components/pages/KbDatabase.tsx";
 import LoginPage from "./components/pages/Login";
 import NotFoundPage from "./components/pages/NotFoundPage";
@@ -146,27 +143,6 @@ const App: React.FC = () => {
             <Route path="/faq" element={<Faq />} />
             <Route path="/kb-database" element={<KbDatabase />} />
             <Route path="/about-us" element={<AboutUs />} />
-
-            <Route
-              path="/invoice-pdf*"
-              element={
-                <AuthGuard>
-                  <ArtistGuard>
-                    <InvoicePdf />
-                  </ArtistGuard>
-                </AuthGuard>
-              }
-            />
-            <Route
-              path="/order-approve*"
-              element={
-                <AuthGuard>
-                  <ArtistGuard>
-                    <OrderApprove />
-                  </ArtistGuard>
-                </AuthGuard>
-              }
-            />
 
             <Route
               path="/artist-panel/*"

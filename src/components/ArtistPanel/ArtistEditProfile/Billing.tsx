@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import { FaEllipsisV } from "react-icons/fa"; // Importing the icon for three dots
-import AdressPop from "./AdressPop";
-import { useGetBillingAddress } from "./http/useGetBillingAddress";
-import Loader from "../../ui/Loader";
-import useDefaultMutation from "./http/useDefaultMutation";
-import useRemoveBillingMutation from "./http/useRemoveBillingMutation";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { FaEllipsisV } from "react-icons/fa"; // Importing the icon for three dots
+import Loader from "../../ui/Loader";
+import AdressPop from "./AdressPop";
+import useDefaultMutation from "./http/useDefaultMutation";
+import { useGetBillingAddress } from "./http/useGetBillingAddress";
+import useRemoveBillingMutation from "./http/useRemoveBillingMutation";
 
 const Billing = () => {
   const [checkBox, setCheckBox] = useState(false);

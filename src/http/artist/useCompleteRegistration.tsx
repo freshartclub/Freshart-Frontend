@@ -31,7 +31,7 @@ const useCompleteRegistration = () => {
     onSuccess: async (res) => {
       dispatch(updateUser(res.data.user));
       toast.success(t(res.data.message));
-      navigate("/home");
+      navigate("/priceandplans", { replace: true });
     },
     onError: (error) => {
       toast.error(t(error.response?.data?.message));

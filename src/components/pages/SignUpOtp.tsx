@@ -13,6 +13,7 @@ import { useAppDispatch, useAppSelector } from "../../store/typedReduxHooks";
 import { useEffect, useState } from "react";
 import { forgotPasswordUserId } from "../../store/userSlice/userSlice";
 import { useTranslation } from "react-i18next";
+import toast from "react-hot-toast";
 
 const SignUpOtp = () => {
   const [localId, setLocalId] = useState("");
@@ -59,9 +60,11 @@ const SignUpOtp = () => {
         otp: data.passCode,
       };
 
-      await mutateAsync(newData).then(() => navigate("/priceandplans"));
+      await mutateAsync(newData).then(() => {
+        navigate("/registration_process");
+      });
     } catch (error) {
-      console.error(error.message);
+      toast.error(t(error.response?.data?.message));
     }
   });
 

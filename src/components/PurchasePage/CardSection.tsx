@@ -147,7 +147,7 @@ const CardSection = ({ data, type }) => {
   }, []);
 
   return (
-    <div className="grid place-items-center grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mx-auto">
+    <div className="grid place-items-center grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 mx-auto">
       {data && data?.length > 0 ? (
         data.map((item, index: number) => {
           const isOffensive = item?.additionalInfo?.offensive === "Yes";
@@ -224,13 +224,21 @@ const CardSection = ({ data, type }) => {
                   by {name(item)}
                 </p>
                 {type === "purchase" ? (
-                  <p className="mt-1 text-gray-800 font-bold">
+                  <p className="mt-1 flex gap-1 items-center text-gray-800 font-bold">
                     {getSymbolFromCurrency(item?.pricing?.currency.slice(0, 3))}{" "}
                     {item?.pricing?.basePrice}
+                    {item?.pricing?.dpersentage ? (
+                      <span>
+                        |{" "}
+                        <span className="text-red-500">
+                          {item?.pricing?.dpersentage}%
+                        </span>
+                      </span>
+                    ) : null}
                   </p>
                 ) : null}
 
-                <div className="absolute bottom-2 right-2">
+                <div className="absolute bottom-0 right-0">
                   <button
                     onClick={(e) => {
                       e.stopPropagation();

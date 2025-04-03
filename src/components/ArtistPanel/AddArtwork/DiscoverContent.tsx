@@ -40,7 +40,7 @@ const DiscoverContent = ({ data }) => {
 
   return (
     <>
-      <section className="border-b border-gray-300 pb-2 flex md:flex-row flex-col gap-2 justify-between w-full md:items-center">
+      <section className="border-b border-gray-300 pb-2 flex flex-col gap-2 justify-between w-full md:items-center">
         <div className="w-full">
           <Header
             variant={{ size: "xl", theme: "dark", weight: "bold" }}

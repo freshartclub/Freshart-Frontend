@@ -48,8 +48,7 @@ const Purchase = () => {
   const [allHoverData, setAllHoverData] = useState(null);
   const [hoveredDiscipline, setHoveredDiscipline] = useState(null);
 
-  const { data: hoverData, isLoading: hoverLoding } =
-    useGetHoveredData(hoveredDiscipline);
+  const { data: hoverData, isLoading: hoverLoding } = useGetHoveredData();
 
   useEffect(() => {
     if (hoverData && !allHoverData) {
@@ -86,9 +85,13 @@ const Purchase = () => {
     purchaseOption: "",
     newIn: "",
     bigDiscount: "",
+    insig: "",
   });
 
-  const [tag, setTag] = useState("");
+  const [keywords, setKeywords] = useState({
+    tag: "",
+    name: "",
+  });
   const [technicData, setTechnicData] = useState([]);
   const [themeData, setThemeData] = useState([]);
   const [styleData, setStyleData] = useState([]);
@@ -117,7 +120,8 @@ const Purchase = () => {
   const type = searchParams.get("type") || "subscription";
 
   const debounceQuery = useDebounce(query, 800);
-  const debounceTag = useDebounce(tag, 800);
+  const debounceTag = useDebounce(keywords.tag, 800);
+  const debounceArtist = useDebounce(keywords.name, 800);
 
   const { data, isLoading, refetch } = useGetPurchaseArtwork(
     type,
@@ -137,13 +141,15 @@ const Purchase = () => {
     sliderData.width,
     sliderData.price,
     debounceTag,
+    debounceArtist,
     options.currPage,
     options.cursor,
     options.direction,
     options.limit,
     moreOptions.exclusive,
     moreOptions.newIn,
-    moreOptions.bigDiscount
+    moreOptions.bigDiscount,
+    moreOptions.insig
   );
 
   const { data: techData } = useGetTechnic();
@@ -213,7 +219,10 @@ const Purchase = () => {
     setSelectedTechnic([]);
     setSelectedTheme([]);
     setSelectedStyle([]);
-    setTag("");
+    setKeywords({
+      tag: "",
+      name: "",
+    });
     setOptions({ cursor: "", direction: "", limit: 10, currPage: 1 });
     setMoreOptions({
       orientation: "",
@@ -225,6 +234,7 @@ const Purchase = () => {
       exclusive: "",
       newIn: "",
       bigDiscount: "",
+      insig: "",
     });
     setSliderData({
       depth: [0, defaultRanges.depth.max],
@@ -284,16 +294,15 @@ const Purchase = () => {
   };
 
   const commercialOptions = [
-    { key: "exclusive", label: "Exclusive", moreOptions: "Yes" },
-    { key: "newIn", label: "New In", moreOptions: "No" },
-    { key: "comingSoon", label: "Coming Soon", moreOptions: "Yes" },
+    { key: "exclusive", label: "Exclusive" },
+    { key: "newIn", label: "New In" },
+    { key: "comingSoon", label: "Coming Soon" },
   ];
 
   if (type == "purchase") {
     commercialOptions.push({
       key: "bigDiscount",
       label: "Big Discount",
-      moreOptions: "No",
     });
   }
 
@@ -551,76 +560,57 @@ const Purchase = () => {
                                 Commercial
                               </h3>
                               <ul className="space-y-2">
-                                {commercialOptions.map(
-                                  ({
-                                    key,
-                                    label,
-                                    moreOptions: defaultOption,
-                                  }) => (
-                                    <li
-                                      key={key}
-                                      className="text-sm text-black hover:text-blue-700 transition-colors duration-150 cursor-pointer"
-                                    >
-                                      <details>
-                                        <summary className="cursor-pointer font-normal text-sm text-white">
-                                          {label}
-                                        </summary>
-                                        <div className="flex flex-col gap-2 mt-2 pl-4">
-                                          {["Yes", "No"]
-                                            .filter(
-                                              (value) =>
-                                                defaultOption === "Yes" ||
-                                                value === "Yes"
-                                            )
-                                            .map((value) => (
-                                              <span
-                                                key={value}
-                                                className={`${
-                                                  moreOptions[key] === value
-                                                    ? "font-bold text-blue-700"
-                                                    : ""
-                                                } text-black hover:text-blue-700 transition-colors duration-150 cursor-pointer`}
-                                                onClick={() => {
-                                                  setMoreOptions((prev) => ({
-                                                    ...prev,
-                                                    [key]: value,
-                                                  }));
-                                                  setHoveredDiscipline(null);
-                                                }}
-                                              >
-                                                {value}
-                                              </span>
-                                            ))}
-                                        </div>
-                                      </details>
-                                    </li>
-                                  )
-                                )}
+                                {commercialOptions.map((key, i: number) => (
+                                  <li
+                                    key={i}
+                                    onClick={() =>
+                                      setMoreOptions((prev) => ({
+                                        ...prev,
+                                        [key.key]:
+                                          prev[key.key] === "Yes" ? "" : "Yes",
+                                      }))
+                                    }
+                                    className={`${
+                                      moreOptions[key.key] === "Yes"
+                                        ? "bg-gray-300 text-black px-1 rounded"
+                                        : "text-white"
+                                    } text-sm hover:text-blue-700 transition-colors duration-150 cursor-pointer`}
+                                  >
+                                    {key.label}
+                                  </li>
+                                ))}
                               </ul>
                             </div>
 
-                            {/* Artists Section */}
                             <div className="min-w-[120px]">
                               <h3 className="text-lg font-bold text-gray-900 mb-2">
                                 Artists
                               </h3>
                               <ul className="space-y-2">
-                                {allHoverData?.artists?.length > 0 ? (
-                                  allHoverData?.artists?.map(
-                                    (artist, artistIndex: number) => (
+                                {allHoverData?.insignia &&
+                                  allHoverData.insignia.map(
+                                    (key, i: number) => (
                                       <li
-                                        key={artistIndex}
-                                        className="text-sm text-gray-700 hover:text-blue-500 transition-colors duration-150 cursor-pointer"
+                                        key={i}
+                                        onClick={() =>
+                                          setMoreOptions((prev) => ({
+                                            ...prev,
+                                            insig:
+                                              prev.insig === key._id
+                                                ? ""
+                                                : key._id,
+                                          }))
+                                        }
+                                        className={`${
+                                          moreOptions.insig === key._id
+                                            ? "bg-gray-300 text-black px-1 rounded"
+                                            : "text-white"
+                                        } text-sm hover:text-blue-700 transition-colors duration-150 cursor-pointer`}
                                       >
-                                        {artist.artistName}
+                                        {key.credentialName}
                                       </li>
                                     )
-                                  )
-                                ) : (
-                                  <li className="text-sm text-gray-500 italic">
-                                    N/A
-                                  </li>
-                                )}
+                                  )}
                               </ul>
                             </div>
 
@@ -630,75 +620,69 @@ const Purchase = () => {
                                 Highlight
                               </h3>
                               <ul className="flex gap-4 flex-shrink-0">
-                                {allHoverData?.collection ? (
-                                  <>
-                                    {allHoverData?.collection ? (
-                                      <li
-                                        className="relative rounded-lg overflow-hidden w-[15vw] min-w-[120px] shadow-md hover:shadow-lg transition-all duration-200 group"
-                                        style={{
-                                          backgroundImage: `url(${
-                                            allHoverData?.collection
-                                              ? `${imageUrl}/users/${allHoverData?.collection[0]?.collectionFile}`
-                                              : "https://via.placeholder.com/80"
-                                          })`,
-                                          backgroundSize: "cover",
-                                          backgroundPosition: "center",
-                                          height: "40vh",
-                                        }}
-                                      >
-                                        <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-30 transition-all duration-200"></div>
-                                        <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-gray-900 to-transparent">
-                                          <div className="flex flex-col gap-2 items-center">
-                                            <p className="text-md text-white text-center truncate font-semibold">
-                                              {allHoverData?.collection[0]
-                                                .collectionName || "Untitled"}
-                                            </p>
-                                            <button className="mt-2 w-[20vh] place-content-center bg-blue-700 text-white text-md font-semibold py-3 px-3 rounded-2xl hover:bg-blue-800 transition-colors duration-150 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-300">
-                                              Discover
-                                            </button>
-                                          </div>
-                                        </div>
-                                      </li>
-                                    ) : (
-                                      <li className="text-sm text-gray-500 italic">
-                                        No collection available
-                                      </li>
-                                    )}
-
-                                    {allHoverData?.artists?.length > 0 ? (
-                                      <li
-                                        className="relative rounded-lg overflow-hidden w-[15vw] min-w-[120px] shadow-md hover:shadow-lg transition-all duration-200 group"
-                                        style={{
-                                          backgroundImage: `url(${
-                                            allHoverData?.artists[0].profile
-                                              ?.mainImage
-                                              ? `${imageUrl}/users/${allHoverData?.artists[0].profile.mainImage}`
-                                              : "https://via.placeholder.com/80"
-                                          })`,
-                                          backgroundSize: "cover",
-                                          backgroundPosition: "center",
-                                          height: "40vh",
-                                        }}
-                                      >
-                                        <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-30 transition-all duration-200"></div>
-                                        <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-gray-900 to-transparent">
-                                          <p className="text-md text-white text-center truncate font-medium">
-                                            {allHoverData?.artists[0]
-                                              .artistName || "Untitled"}
+                                <>
+                                  {allHoverData?.collection ? (
+                                    <li
+                                      className="relative rounded-lg overflow-hidden w-[15vw] min-w-[120px] shadow-md hover:shadow-lg transition-all duration-200 group"
+                                      style={{
+                                        backgroundImage: `url(${
+                                          allHoverData?.collection
+                                            ? `${imageUrl}/users/${allHoverData?.collection[0]?.collectionFile}`
+                                            : "https://via.placeholder.com/80"
+                                        })`,
+                                        backgroundSize: "cover",
+                                        backgroundPosition: "center",
+                                        height: "40vh",
+                                      }}
+                                    >
+                                      <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-30 transition-all duration-200"></div>
+                                      <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-gray-900 to-transparent">
+                                        <div className="flex flex-col gap-2 items-center">
+                                          <p className="text-md text-white text-center truncate font-semibold">
+                                            {allHoverData?.collection[0]
+                                              .collectionName || "Untitled"}
                                           </p>
+                                          <button className="mt-2 w-[20vh] place-content-center bg-blue-700 text-white text-md font-semibold py-3 px-3 rounded-2xl hover:bg-blue-800 transition-colors duration-150 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-300">
+                                            Discover
+                                          </button>
                                         </div>
-                                      </li>
-                                    ) : (
-                                      <li className="text-sm text-gray-500 italic">
-                                        No artist available
-                                      </li>
-                                    )}
-                                  </>
-                                ) : (
-                                  <li className="text-sm text-gray-500 italic">
-                                    No artworks available
-                                  </li>
-                                )}
+                                      </div>
+                                    </li>
+                                  ) : (
+                                    <li className="text-sm text-gray-500 italic">
+                                      No collection available
+                                    </li>
+                                  )}
+
+                                  {allHoverData?.artists?.length > 0 ? (
+                                    <li
+                                      className="relative rounded-lg overflow-hidden w-[15vw] min-w-[120px] shadow-md hover:shadow-lg transition-all duration-200 group"
+                                      style={{
+                                        backgroundImage: `url(${
+                                          allHoverData?.artists[0].profile
+                                            ?.mainImage
+                                            ? `${imageUrl}/users/${allHoverData?.artists[0].profile.mainImage}`
+                                            : "https://via.placeholder.com/80"
+                                        })`,
+                                        backgroundSize: "cover",
+                                        backgroundPosition: "center",
+                                        height: "40vh",
+                                      }}
+                                    >
+                                      <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-30 transition-all duration-200"></div>
+                                      <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-gray-900 to-transparent">
+                                        <p className="text-md text-white text-center truncate font-medium">
+                                          {allHoverData?.artists[0]
+                                            .artistName || "Untitled"}
+                                        </p>
+                                      </div>
+                                    </li>
+                                  ) : (
+                                    <li className="text-sm text-gray-500 italic">
+                                      No artist available
+                                    </li>
+                                  )}
+                                </>
                               </ul>
                             </div>
                           </div>
@@ -867,7 +851,7 @@ const Purchase = () => {
         <div
           className={`flex p-4 ${
             selectedOption.length > 0 ? "pt-0" : "pt-2"
-          } flex-col gap-3`}
+          } flex-col gap-2`}
         >
           <div className="">
             <Button
@@ -1101,25 +1085,70 @@ const Purchase = () => {
               Coming Soon
             </Button>
 
-            <div className="flex items-center gap-2">
-              {["Yes", "No"].map((item, i: number) => (
-                <span className="flex items-center gap-1" key={i}>
-                  <input
-                    type="radio"
-                    name="comingSoon"
-                    value={item}
-                    checked={moreOptions.comingSoon === item}
-                    onChange={(e) =>
-                      setMoreOptions((prev) => ({
-                        ...prev,
-                        comingSoon: e.target.value,
-                      }))
-                    }
-                  />
-                  <label>{item}</label>
-                </span>
-              ))}
-            </div>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                className="sr-only peer"
+                checked={moreOptions.comingSoon === "Yes"}
+                onChange={(e) =>
+                  setMoreOptions((prev) => ({
+                    ...prev,
+                    comingSoon: e.target.checked ? "Yes" : "",
+                  }))
+                }
+              />
+              <div className="w-11 h-6 bg-gray-300 peer-focus:ring-4 peer-focus:ring-gray-200 rounded-full peer-checked:bg-black transition-all relative">
+                <div
+                  className="absolute top-1 left-1 bg-white border border-gray-300 rounded-full h-4 w-4 transition-transform duration-200"
+                  style={{
+                    transform:
+                      moreOptions.comingSoon === "Yes"
+                        ? "translateX(20px)"
+                        : "translateX(0px)",
+                  }}
+                ></div>
+              </div>
+            </label>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <Button
+              id="dropdownDividerButton"
+              className="flex !px-0 justify-between w-full items-center"
+              type="button"
+              variant={{
+                fontSize: "base",
+                theme: "black",
+                fontWeight: "600",
+              }}
+            >
+              New In
+            </Button>
+
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                className="sr-only peer"
+                checked={moreOptions.newIn === "Yes"}
+                onChange={(e) =>
+                  setMoreOptions((prev) => ({
+                    ...prev,
+                    newIn: e.target.checked ? "Yes" : "",
+                  }))
+                }
+              />
+              <div className="w-11 h-6 bg-gray-300 peer-focus:ring-4 peer-focus:ring-gray-200 rounded-full peer-checked:bg-black transition-all relative">
+                <div
+                  className="absolute top-1 left-1 bg-white border border-gray-300 rounded-full h-4 w-4 transition-transform duration-200"
+                  style={{
+                    transform:
+                      moreOptions.newIn === "Yes"
+                        ? "translateX(20px)"
+                        : "translateX(0px)",
+                  }}
+                ></div>
+              </div>
+            </label>
           </div>
 
           <div>
@@ -1133,12 +1162,43 @@ const Purchase = () => {
                 fontWeight: "600",
               }}
             >
-              Tags
+              External Tags
             </Button>
             <input
               type="text"
-              placeholder="Search By Keywords/Tags"
-              onChange={(e) => setTag(e.target.value)}
+              placeholder="Search By Keywords/External Tags"
+              onChange={(e) =>
+                setKeywords((prev) => ({
+                  ...prev,
+                  tag: e.target.value,
+                }))
+              }
+              className="w-full border p-2 rounded"
+            />
+          </div>
+
+          <div>
+            <Button
+              id="dropdownDividerButton"
+              className="flex !px-0 justify-between w-full items-center"
+              type="button"
+              variant={{
+                fontSize: "base",
+                theme: "black",
+                fontWeight: "600",
+              }}
+            >
+              Search By Artist
+            </Button>
+            <input
+              type="text"
+              placeholder="Search By Artist Name"
+              onChange={(e) =>
+                setKeywords((prev) => ({
+                  ...prev,
+                  name: e.target.value,
+                }))
+              }
               className="w-full border p-2 rounded"
             />
           </div>
@@ -1201,25 +1261,30 @@ const Purchase = () => {
               Exclusive Artwork
             </Button>
 
-            <div className="flex items-center gap-2">
-              {["Yes", "No"].map((item, i: number) => (
-                <span className="flex items-center gap-1" key={i}>
-                  <input
-                    type="radio"
-                    name="discount"
-                    value={item}
-                    checked={moreOptions.exclusive === item}
-                    onChange={(e) =>
-                      setMoreOptions((prev) => ({
-                        ...prev,
-                        exclusive: e.target.value,
-                      }))
-                    }
-                  />
-                  <label>{item}</label>
-                </span>
-              ))}
-            </div>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                className="sr-only peer"
+                checked={moreOptions.exclusive === "Yes"}
+                onChange={(e) =>
+                  setMoreOptions((prev) => ({
+                    ...prev,
+                    exclusive: e.target.checked ? "Yes" : "",
+                  }))
+                }
+              />
+              <div className="w-11 h-6 bg-gray-300 peer-focus:ring-4 peer-focus:ring-gray-200 rounded-full peer-checked:bg-black transition-all relative">
+                <div
+                  className="absolute top-1 left-1 bg-white border border-gray-300 rounded-full h-4 w-4 transition-transform duration-200"
+                  style={{
+                    transform:
+                      moreOptions.exclusive === "Yes"
+                        ? "translateX(20px)"
+                        : "translateX(0px)",
+                  }}
+                ></div>
+              </div>
+            </label>
           </div>
 
           {type == "purchase" ? (
@@ -1238,25 +1303,30 @@ const Purchase = () => {
                   Discount Available
                 </Button>
 
-                <div className="flex items-center gap-2">
-                  {["Yes", "No"].map((item, i: number) => (
-                    <span className="flex items-center gap-1" key={i}>
-                      <input
-                        type="radio"
-                        name="discount"
-                        value={item}
-                        checked={moreOptions.discount === item}
-                        onChange={(e) =>
-                          setMoreOptions((prev) => ({
-                            ...prev,
-                            discount: e.target.value,
-                          }))
-                        }
-                      />
-                      <label>{item}</label>
-                    </span>
-                  ))}
-                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    className="sr-only peer"
+                    checked={moreOptions.discount === "Yes"}
+                    onChange={(e) =>
+                      setMoreOptions((prev) => ({
+                        ...prev,
+                        discount: e.target.checked ? "Yes" : "",
+                      }))
+                    }
+                  />
+                  <div className="w-11 h-6 bg-gray-300 peer-focus:ring-4 peer-focus:ring-gray-200 rounded-full peer-checked:bg-black transition-all relative">
+                    <div
+                      className="absolute top-1 left-1 bg-white border border-gray-300 rounded-full h-4 w-4 transition-transform duration-200"
+                      style={{
+                        transform:
+                          moreOptions.discount === "Yes"
+                            ? "translateX(20px)"
+                            : "translateX(0px)",
+                      }}
+                    ></div>
+                  </div>
+                </label>
               </div>
 
               <div>
@@ -1282,7 +1352,7 @@ const Purchase = () => {
                     }))
                   }
                 >
-                  <option value="">Select Option</option>
+                  <option value="">All</option>
 
                   {commOptions && commOptions.length > 0 ? (
                     commOptions.map((item, i: number) => (
@@ -1311,25 +1381,30 @@ const Purchase = () => {
                 Purchase Option
               </Button>
 
-              <div className="flex items-center gap-2">
-                {["Yes", "No"].map((item, i: number) => (
-                  <span className="flex items-center gap-1" key={i}>
-                    <input
-                      type="radio"
-                      name="purchaseOption"
-                      value={item}
-                      checked={moreOptions.purchaseOption === item}
-                      onChange={(e) =>
-                        setMoreOptions((prev) => ({
-                          ...prev,
-                          purchaseOption: e.target.value,
-                        }))
-                      }
-                    />
-                    <label>{item}</label>
-                  </span>
-                ))}
-              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="sr-only peer"
+                  checked={moreOptions.purchaseOption === "Yes"}
+                  onChange={(e) =>
+                    setMoreOptions((prev) => ({
+                      ...prev,
+                      purchaseOption: e.target.checked ? "Yes" : "",
+                    }))
+                  }
+                />
+                <div className="w-11 h-6 bg-gray-300 peer-focus:ring-4 peer-focus:ring-gray-200 rounded-full peer-checked:bg-black transition-all relative">
+                  <div
+                    className="absolute top-1 left-1 bg-white border border-gray-300 rounded-full h-4 w-4 transition-transform duration-200"
+                    style={{
+                      transform:
+                        moreOptions.purchaseOption === "Yes"
+                          ? "translateX(20px)"
+                          : "translateX(0px)",
+                    }}
+                  ></div>
+                </div>
+              </label>
             </div>
           )}
         </div>
@@ -1363,7 +1438,7 @@ const Purchase = () => {
               <div className="relative flex items-center rounded-full border border-gray-300">
                 <input
                   type="text"
-                  placeholder="Search by Artwork/Artist Name..."
+                  placeholder="Search by Artwork Name..."
                   className="w-full py-2 pl-10 rounded-full outline-none"
                   onChange={(e) => setQuery(e.target.value)}
                   value={query}

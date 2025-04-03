@@ -1,9 +1,6 @@
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick-theme.css";
-import "slick-carousel/slick/slick.css";
 import Header from "../../ui/Header";
 import Loader from "../../ui/Loader";
 import { imageUrl } from "../../utils/baseUrls";
@@ -12,7 +9,9 @@ import { useGetArtWorkById } from "./http/useGetArtworkById";
 import ProductInfo from "./ProductInfo";
 
 const DiscoverMore = () => {
-  const sliderRef = useRef<Slider>(null);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const sliderRef = useRef<HTMLDivElement>(null);
+  const sliderContainerRef = useRef<HTMLDivElement>(null);
   const id = useParams().id;
   const preview = true;
 
@@ -20,9 +19,7 @@ const DiscoverMore = () => {
   const { data, isLoading } = useGetArtWorkById(id, preview);
 
   const handleThumbnailClick = (index: number) => {
-    if (sliderRef.current) {
-      sliderRef.current.slickGoTo(index);
-    }
+    setCurrentSlide(index);
   };
 
   const url2 = `${imageUrl}/videos`;
@@ -44,110 +41,157 @@ const DiscoverMore = () => {
       ].filter((image) => image.src)
     : [];
 
-  const settings = {
-    dots: false,
-    infinite: images.length > 1,
-    arrows: false,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-  };
+  // Handle slide transition
+  useEffect(() => {
+    if (sliderRef.current && sliderContainerRef.current) {
+      const containerWidth = sliderContainerRef.current.offsetWidth;
+      sliderRef.current.style.transform = `translateX(-${
+        currentSlide * containerWidth
+      }px)`;
+    }
+  }, [currentSlide]);
+
   if (isLoading) return <Loader />;
 
   return (
-    <div className="m-3">
-      <div className="flex flex-col mb-5 min-[1450px]:w-[75%] mx-auto flex-wrap text-lg text-black">
-        <Header variant={{ size: "xl", theme: "dark", weight: "semiBold" }}>
-          {t("Artwork Review")}
-        </Header>
+    <div className="min-h-screen bg-gray-50 py-6 px-4">
+      <div className="max-w-6xl mx-auto">
+        <div className="text-center mb-6">
+          <Header
+            variant={{
+              size: "xl",
+              theme: "dark",
+              weight: "semiBold",
+            }}
+            className="text-3xl font-bold text-gray-800"
+          >
+            {t("Artwork Review")}
+          </Header>
+          <span className="text-sm text-gray-500">
+            {data?.data.artworkName} • ID: {data?.data.artworkId}
+          </span>
+        </div>
 
-        <span className="text-[12px] text-[#a5a5a5]">
-          {data?.data.artworkName} ({data?.data.artworkId})
-        </span>
-      </div>
-
-      <div className="flex lg:w-[77%] mx-auto md:flex-row flex-col gap-0 lg:gap-5">
-        <div className="flex lg:flex-row flex-col md:w-[60%] w-full gap-2 items-center">
-          <div className="flex overflow-hidden lg:justify-start justify-center lg:flex-col lg:max-h-[60vh] h-[5rem] lg:h-[60vh] md:w-[20rem] overflow-x-auto lg:overflow-y-auto gap-2 lg:w-[15%] lg:ml-4 scrollbar">
-            {images?.map((thumb, index) => {
-              const isVideo = thumb.src && thumb.src.endsWith(".mp4");
-              if (thumb.src) {
-                return isVideo ? (
-                  <video
+        <div className="flex flex-col lg:flex-row mx-auto lg:max-w-[85%] 2xl:max-w-[77%] gap-6">
+          <div className="lg:w-3/5 bg-white rounded-lg border border-zinc-300 shadow-sm">
+            <div className="flex flex-col lg:flex-row">
+              <div className="flex lg:flex-col p-2 gap-2 overflow-x-auto lg:max-h-96 scrollbar lg:overflow-y-auto">
+                {images?.map((thumb, index) => (
+                  <div
                     key={index}
-                    src={`${url2}/${thumb.src}`}
-                    className="md:mb-0 mb-4 lg:w-20 w-16 h-16 lg:h-24 cursor-pointer object-cover"
                     onClick={() => handleThumbnailClick(index)}
-                  />
-                ) : (
-                  <img
-                    key={index}
-                    src={`${imageUrl}/users/${thumb.src}`}
-                    alt={thumb.alt}
-                    className="md:mb-0 mb-4 lg:w-20 w-16 h-16 lg:h-24 cursor-pointer object-cover"
-                    onClick={() => handleThumbnailClick(index)}
-                  />
-                );
-              }
-              return null;
-            })}
-          </div>
-
-          <div className="flex-1 md:w-[80%] lg:h-[22rem] w-full overflow-hidden">
-            {images.length > 1 ? (
-              <Slider {...settings} ref={sliderRef} className="discover_more">
-                {images.map(
-                  (slide, index) =>
-                    slide.src && (
-                      <div
-                        key={index}
-                        className="relative bg-[#f8f8ea] p-2 w-full h-full"
-                      >
-                        {slide.src.endsWith(".mp4") ? (
-                          <video
-                            src={`${url2}/${slide.src}`}
-                            className="rounded mx-auto object-cover md:w-[25rem] lg:w-[25rem] h-[20rem] md:h-[60vh] !lg:h-[22rem]"
-                            controls
-                          />
-                        ) : (
-                          <img
-                            src={`${imageUrl}/users/${slide.src}`}
-                            alt={`Slide ${index + 1}`}
-                            className="mx-auto overflow-hidden object-contain md:w-[25rem] lg:w-full h-[20rem] md:h-[60vh] !lg:h-[22rem]"
-                          />
-                        )}
-                      </div>
-                    )
-                )}
-              </Slider>
-            ) : (
-              <div className="relative bg-[#f8f8ea] p-2 w-full h-full">
-                {images[0]?.src &&
-                  (images[0].src.endsWith(".mp4") ? (
-                    <video
-                      src={`${url2}/${images[0].src}`}
-                      className="rounded mx-auto object-cover md:w-[25rem] lg:w-[25rem] h-[20rem] md:h-[60vh] lg:h-[60vh]"
-                      controls
-                      autoPlay={true}
-                    />
-                  ) : (
-                    <img
-                      src={`${imageUrl}/users/${images[0]?.src}`}
-                      alt="Single Image"
-                      className="mx-auto overflow-hidden object-contain md:w-[25rem] lg:w-full h-[20rem] md:h-[60vh] !lg:h-[22rem]"
-                    />
-                  ))}
+                    className={`flex-shrink-0 cursor-pointer ${
+                      currentSlide === index ? "ring-2 ring-blue-500" : ""
+                    }`}
+                  >
+                    {thumb.src.endsWith(".mp4") ? (
+                      <video
+                        src={`${url2}/${thumb.src}`}
+                        className="w-16 h-16 lg:w-20 lg:h-20 object-cover rounded"
+                      />
+                    ) : (
+                      <img
+                        src={`${imageUrl}/users/${thumb.src}`}
+                        alt={thumb.alt}
+                        className="w-16 h-16 lg:w-20 lg:h-20 object-cover rounded"
+                      />
+                    )}
+                  </div>
+                ))}
               </div>
-            )}
+
+              <div
+                ref={sliderContainerRef}
+                className="relative flex-1 overflow-hidden"
+              >
+                <div
+                  ref={sliderRef}
+                  className="flex transition-transform duration-300 ease-in-out h-80 lg:h-96"
+                >
+                  {images.map((slide, index) => (
+                    <div
+                      key={index}
+                      className="w-full flex-shrink-0 flex items-center overflow-hidden justify-center rounded-r-xl bg-gray-100"
+                    >
+                      {slide.src.endsWith(".mp4") ? (
+                        <video
+                          src={`${url2}/${slide.src}`}
+                          className="w-[98%] object-contain"
+                          controls
+                          autoPlay={currentSlide === index}
+                        />
+                      ) : (
+                        <img
+                          src={`${imageUrl}/users/${slide.src}`}
+                          alt={`Slide ${index + 1}`}
+                          className="w-full h-full object-contain"
+                        />
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                {images.length > 1 && (
+                  <>
+                    <button
+                      onClick={() =>
+                        setCurrentSlide((prev) =>
+                          prev === 0 ? images.length - 1 : prev - 1
+                        )
+                      }
+                      className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full shadow"
+                    >
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 19l-7-7 7-7"
+                        />
+                      </svg>
+                    </button>
+                    <button
+                      onClick={() =>
+                        setCurrentSlide((prev) =>
+                          prev === images.length - 1 ? 0 : prev + 1
+                        )
+                      }
+                      className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full shadow"
+                    >
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div className="lg:w-2/5">
+            <DiscoverContent data={data?.data} />
           </div>
         </div>
 
-        <div className="md:w-[40%] lg:mt-0 md:mt-[5rem] w-full">
-          <DiscoverContent data={data?.data} />
+        <div className="mt-6">
+          <ProductInfo data={data} />
         </div>
       </div>
-
-      <ProductInfo data={data} />
     </div>
   );
 };

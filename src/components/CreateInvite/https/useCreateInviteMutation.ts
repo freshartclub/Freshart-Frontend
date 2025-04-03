@@ -3,23 +3,17 @@ import toast from "react-hot-toast";
 import axiosInstance from "../../utils/axios";
 import { ARTTIST_ENDPOINTS } from "../../../http/apiEndPoints/Artist";
 
-let toastId: any;
-
 async function useinvite(input: any) {
   return await axiosInstance.post(`${ARTTIST_ENDPOINTS.CreateInvite}`, input);
 }
 
-const useCreateInviteMutation = () => {
-
-
+const useCreateInviteMutation = (setInviteId) => {
   return useMutation({
     mutationFn: useinvite,
 
     onSuccess: async (res) => {
-      toast.dismiss(toastId);
-      toast.success(res.data.message, {
-        duration: 5000,
-      });
+      setInviteId(res.data.data);
+      toast.success(res.data.message);
     },
     onError: (error) => {
       toast.error(error.response?.data?.message || "An error occurred");

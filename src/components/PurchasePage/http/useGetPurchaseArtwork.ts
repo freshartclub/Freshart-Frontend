@@ -21,16 +21,18 @@ async function fetchData(
   width: number[],
   price: number[],
   tag: string,
+  name: string,
   currPage: number,
   cursor: string,
   direction: string,
   limit: number,
   exclusive: string,
   newIn: string,
-  bigDiscount: string
+  bigDiscount: string,
+  insig: string
 ) {
   const { data } = await axiosInstance.get(
-    `${ARTTIST_ENDPOINTS.GetAllArtwork}?type=${type}&s=${query}&theme=${selectedTheme}&discipline=${selectedOption}&technic=${selectedTechnic}&style=${selectedStyle}&color=${color}&comingsoon=${comingSoon}&orientation=${orientation}&depth=${depth}&&height=${height}&width=${width}&price=${price}&tag=${tag}&discount=${discount}&purchase=${purchase}&purchaseOption=${purchaseOption}&currPage=${currPage}&cursor=${cursor}&direction=${direction}&limit=${limit}&exclusive=${exclusive}&newIn=${newIn}&bigDiscount=${bigDiscount}`
+    `${ARTTIST_ENDPOINTS.GetAllArtwork}?type=${type}&s=${query}&theme=${selectedTheme}&discipline=${selectedOption}&technic=${selectedTechnic}&style=${selectedStyle}&color=${color}&comingsoon=${comingSoon}&orientation=${orientation}&depth=${depth}&height=${height}&width=${width}&price=${price}&tag=${tag}&name=${name}&discount=${discount}&purchase=${purchase}&purchaseOption=${purchaseOption}&currPage=${currPage}&cursor=${cursor}&direction=${direction}&limit=${limit}&exclusive=${exclusive}&newIn=${newIn}&bigDiscount=${bigDiscount}&insig=${insig}`
   );
 
   return data;
@@ -54,13 +56,15 @@ export const useGetPurchaseArtwork = (
   width: number[],
   price: number[],
   tag: string,
+  name: string,
   currPage: number,
   cursor: string,
   direction: string,
   limit: number,
   exclusive: string,
   newIn: string,
-  bigDiscount: string
+  bigDiscount: string,
+  insig: string
 ) => {
   const debounceWidthMax = useDebounce(width[1], 800);
   const debounceHeightMax = useDebounce(height[1], 800);
@@ -97,6 +101,7 @@ export const useGetPurchaseArtwork = (
       dWidth,
       dPrice,
       tag,
+      name,
       currPage,
       cursor,
       direction,
@@ -104,6 +109,7 @@ export const useGetPurchaseArtwork = (
       exclusive,
       newIn,
       bigDiscount,
+      insig,
     ],
     queryFn: () =>
       fetchData(
@@ -124,13 +130,15 @@ export const useGetPurchaseArtwork = (
         dWidth,
         dPrice,
         tag,
+        name,
         currPage,
         cursor,
         direction,
         limit,
         exclusive,
         newIn,
-        bigDiscount
+        bigDiscount,
+        insig
       ),
 
     refetchOnWindowFocus: false,

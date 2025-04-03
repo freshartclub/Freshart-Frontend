@@ -13,6 +13,7 @@ import useAddToFavorite from "./http/useAddToFavorite";
 import { IoIosAdd } from "react-icons/io";
 import { useGetFavoriteList } from "./http/useGetFavoriteList";
 import useClickOutside from "../utils/useClickOutside";
+import getSymbolFromCurrency from "currency-symbol-map";
 
 const ArtCard = ({ data, title, viewType, loading }) => {
   const [viewedImages, setViewedImages] = useState({});
@@ -177,7 +178,6 @@ const ArtCard = ({ data, title, viewType, loading }) => {
   const renderCard = (item) => {
     const isOffensive = item?.additionalInfo?.offensive === "Yes";
     const isViewed = viewedImages[item?._id];
-    const hasDiscount = item?.additionalInfo?.discount > 0;
 
     return (
       <div
@@ -188,7 +188,7 @@ const ArtCard = ({ data, title, viewType, loading }) => {
           }
           handleRedirectToDescription(item?._id);
         }}
-        className="relative cursor-pointer p-3 border flex-shrink-0 bg-white hover:shadow-[5px_5px_5px_rgba(0,0,0,0.05)] transition-shadow duration-300 min-w-[230px] max-w-[300px] h-[300px] group"
+        className="relative cursor-pointer p-3 border flex-shrink-0 bg-white hover:shadow-[5px_5px_5px_rgba(0,0,0,0.05)] transition-shadow duration-300 min-w-[230px] max-w-[300px] h-[320px] group"
       >
         <div className="relative overflow-hidden rounded-md h-[200px] w-full">
           <img
@@ -237,30 +237,22 @@ const ArtCard = ({ data, title, viewType, loading }) => {
               : item?.artworkName}
           </h1>
           <p className="text-xs text-gray-600 mt-1 font-light italic">
-            by {item?.owner?.artistName}
+            {item?.owner?.artistName} by {item?.provideArtistName}
           </p>
           <p className="text-xs text-gray-500 mt-1">
             {item?.discipline?.artworkDiscipline} •{" "}
             {item?.additionalInfo?.artworkTechnic}
           </p>
-          {hasDiscount ? (
-            <div className="mt-2 flex items-center gap-1">
-              <span className="text-red-600 font-medium text-sm">
-                ${item?.additionalInfo?.finalPrice}
-              </span>
-              <span className="text-gray-500 line-through text-xs">
-                ${item?.additionalInfo?.originalPrice}
-              </span>
-              <span className="text-red-600 text-xs">
-                ({item?.additionalInfo?.discount}% off)
-              </span>
-            </div>
-          ) : (
-            <p className="text-gray-700 mt-2 font-medium text-sm">
-              {item?.size}
+          {item?.activeTab == "purchase" ? (
+            <p className="mt-1 flex gap-1 items-center text-gray-800 font-bold">
+              {getSymbolFromCurrency(item?.currency.slice(0, 3))} {item?.price}
+              {item?.discount ? (
+                <span>
+                  | <span className="text-red-500">{item?.discount}%</span>
+                </span>
+              ) : null}
             </p>
-          )}
-
+          ) : null}
           <div className="absolute bottom-3 right-3">
             <button
               onClick={(e) => {
