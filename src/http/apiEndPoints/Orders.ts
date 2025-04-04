@@ -13,6 +13,7 @@ export const ORDERS_ENDPOINTS = {
   getHash: `${ARTIST_ORDER_URl}/hash`,
   getStatus: `${ARTIST_ORDER_URl}/status`,
   SubscriptionPlans: `${ARTIST_ORDER_URl}/subscribe-plan`,
+  AgainSubscriptionPlans: `${ARTIST_ORDER_URl}/create-subscribe-plan`,
   GetKey: `${ARTIST_ORDER_URl}/get-key`,
   checkRef: `${ARTIST_ORDER_URl}/check-user-ref`,
   createPayer: `${ARTIST_ORDER_URl}/create-payer`,

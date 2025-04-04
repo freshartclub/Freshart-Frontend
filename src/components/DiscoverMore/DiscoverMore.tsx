@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { FaToggleOff, FaToggleOn } from "react-icons/fa";
 import { Link, useParams, useSearchParams } from "react-router-dom";
-import Slider from "react-slick";
 import arrow from "../../assets/arrow_22.png";
 import home from "../../assets/home.png";
 import Loader from "../ui/Loader";
@@ -12,15 +11,12 @@ import { useGetArtWorkById } from "./http/useGetArtWorkById";
 import ProductInfo from "./ProductInfo";
 import SelectedSection from "./SelectedSection";
 
-// New MagnifierImage Component
 const MagnifierImage = ({ src, alt, isOffensive, safeMode }) => {
   const containerRef = useRef(null);
   const magnifierRef = useRef(null);
   const imgRef = useRef(null);
-  const [isHovered, setIsHovered] = useState(false);
   const [imgDimensions, setImgDimensions] = useState({ width: 0, height: 0 });
 
-  // Calculate image dimensions when it loads
   const handleImageLoad = () => {
     if (imgRef.current) {
       setImgDimensions({
@@ -38,31 +34,22 @@ const MagnifierImage = ({ src, alt, isOffensive, safeMode }) => {
     const magnifier = magnifierRef.current;
     const img = imgRef.current;
 
-    // Get container and image dimensions
     const containerRect = container.getBoundingClientRect();
     const imgRect = img.getBoundingClientRect();
 
-    // Calculate mouse position relative to the image
     const posX = e.clientX - imgRect.left;
     const posY = e.clientY - imgRect.top;
 
-    // Calculate position in percentages
     const percX = (posX / imgRect.width) * 100;
     const percY = (posY / imgRect.height) * 100;
     const backgroundPos = `${percX}% ${percY}%`;
 
-    // Calculate magnifier size relative to image size (15% of image width)
-    const magnifierSize = Math.min(
-      Math.max(imgRect.width * 0.15, 100), // Minimum 100px, 15% of image width
-      200 // Maximum 200px
-    );
+    const magnifierSize = Math.min(Math.max(imgRect.width * 0.15, 100), 200);
     const magnifierOffset = magnifierSize / 2;
 
-    // Position the magnifier (centered on cursor)
     let magnifierX = e.clientX - containerRect.left - magnifierOffset;
     let magnifierY = e.clientY - containerRect.top - magnifierOffset;
 
-    // Boundary checks
     magnifierX = Math.max(
       0,
       Math.min(magnifierX, containerRect.width - magnifierSize)
@@ -72,10 +59,8 @@ const MagnifierImage = ({ src, alt, isOffensive, safeMode }) => {
       Math.min(magnifierY, containerRect.height - magnifierSize)
     );
 
-    // Calculate zoom level (2x by default, adjust based on image size)
     const zoomLevel = imgRect.width < 400 ? 3 : 2;
 
-    // Apply styles
     magnifier.style.width = `${magnifierSize}px`;
     magnifier.style.height = `${magnifierSize}px`;
     magnifier.style.left = `${magnifierX}px`;
@@ -87,14 +72,12 @@ const MagnifierImage = ({ src, alt, isOffensive, safeMode }) => {
   };
 
   const handleMouseEnter = () => {
-    setIsHovered(true);
     if (magnifierRef.current) {
       magnifierRef.current.style.display = "block";
     }
   };
 
   const handleMouseLeave = () => {
-    setIsHovered(false);
     if (magnifierRef.current) {
       magnifierRef.current.style.display = "none";
     }
@@ -103,7 +86,7 @@ const MagnifierImage = ({ src, alt, isOffensive, safeMode }) => {
   return (
     <div
       ref={containerRef}
-      className="relative bg-[#f8f8ea] p-2 w-full h-full"
+      className="relative bg-zinc-100 p-2 w-full h-full"
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -115,7 +98,7 @@ const MagnifierImage = ({ src, alt, isOffensive, safeMode }) => {
         onLoad={handleImageLoad}
         className={`${
           isOffensive && safeMode === "Off" ? "blur-lg brightness-75" : ""
-        } mx-auto overflow-hidden object-contain md:w-[25rem] lg:w-full h-[20rem] md:h-[60vh] !lg:h-[22rem]`}
+        } mx-auto overflow-hidden object-contain md:w-[25rem] lg:w-full h-[20rem] md:h-[60vh]`}
       />
       <div
         ref={magnifierRef}
@@ -140,16 +123,16 @@ const MagnifierImage = ({ src, alt, isOffensive, safeMode }) => {
 
 const DiscoverMore = () => {
   const TEN_DAYS_MS = 10 * 24 * 60 * 60 * 1000;
-  const sliderRef = useRef(null);
   const { id } = useParams();
   const preview = false;
-
   const [searchParams] = useSearchParams();
   const comingFrom = searchParams.get("comingFrom");
-
   const { data, isLoading } = useGetArtWorkById(id, preview, comingFrom);
   const [safeMode, setSafeMode] = useState("Off");
   const [viewedImages, setViewedImages] = useState({});
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const sliderRef = useRef(null);
+  const sliderContainerRef = useRef(null);
 
   const images = data?.data
     ? [
@@ -168,17 +151,8 @@ const DiscoverMore = () => {
       ].filter((image) => image.src)
     : [];
 
-  const settings = {
-    dots: false,
-    infinite: images.length > 1,
-    arrows: false,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-  };
-
   const handleThumbnailClick = (index) => {
-    sliderRef.current?.slickGoTo(index);
+    setCurrentSlide(index);
   };
 
   const checkArtworkType = data?.data?.commercialization?.activeTab;
@@ -212,6 +186,31 @@ const DiscoverMore = () => {
     setSafeMode(filteredData[id] ? "On" : "Off");
     setViewedImages(filteredData);
   }, [id]);
+
+  // Handle slide transition
+  useEffect(() => {
+    if (sliderRef.current && sliderContainerRef.current) {
+      const containerWidth = sliderContainerRef.current.offsetWidth;
+      sliderRef.current.style.transform = `translateX(-${
+        currentSlide * containerWidth
+      }px)`;
+    }
+  }, [currentSlide]);
+
+  // Handle window resize
+  useEffect(() => {
+    const handleResize = () => {
+      if (sliderRef.current && sliderContainerRef.current) {
+        const containerWidth = sliderContainerRef.current.offsetWidth;
+        sliderRef.current.style.transform = `translateX(-${
+          currentSlide * containerWidth
+        }px)`;
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [currentSlide]);
 
   if (isLoading) return <Loader />;
 
@@ -263,124 +262,150 @@ const DiscoverMore = () => {
       </ul>
 
       <div className="flex lg:w-[77%] mx-auto md:flex-row flex-col gap-0 lg:gap-5">
-        <div className="flex lg:flex-row flex-col md:w-[60%] w-full gap-2 items-center">
-          <div className="flex overflow-hidden lg:justify-start justify-center lg:flex-col lg:max-h-[60vh] h-[5rem] lg:h-[60vh] md:w-[20rem] overflow-x-auto lg:overflow-y-auto gap-2 lg:w-[15%] lg:ml-4 scrollbar">
+        <div className="flex lg:flex-row flex-col md:w-[60%] border border-zinc-300 rounded-lg shadow-md overflow-hidden w-full gap-2 items-center">
+          <div className="flex lg:flex-col lg:h-[60vh] h-[4rem] w-full lg:w-[17%] overflow-x-auto lg:overflow-y-auto gap-2 lg:pl-2 scrollbar">
             {images?.map((thumb, index) => {
               const isVideo = thumb.src?.endsWith(".mp4");
               return thumb.src ? (
-                isVideo ? (
-                  <video
-                    key={index}
-                    src={`${imageUrl}/videos/${thumb.src}`}
-                    className={`${
-                      offensive && safeMode === "Off"
-                        ? "blur-md brightness-75"
-                        : ""
-                    } md:mb-0 mb-4 lg:w-20 w-16 h-16 lg:h-24 cursor-pointer object-cover`}
-                    onClick={() => handleThumbnailClick(index)}
-                  />
-                ) : (
-                  <img
-                    key={index}
-                    src={`${lowImageUrl}/${thumb.src}`}
-                    alt={thumb.alt}
-                    className={`${
-                      offensive && safeMode === "Off"
-                        ? "blur-md brightness-75"
-                        : ""
-                    } md:mb-0 mb-4 lg:w-20 w-16 h-16 lg:h-24 cursor-pointer object-cover`}
-                    onClick={() => handleThumbnailClick(index)}
-                  />
-                )
+                <div
+                  key={index}
+                  onClick={() => handleThumbnailClick(index)}
+                  className={`flex-shrink-0 cursor-pointer ${
+                    currentSlide === index
+                      ? "border-2 border-blue-500 rounded-lg"
+                      : ""
+                  }`}
+                >
+                  {isVideo ? (
+                    <video
+                      src={`${imageUrl}/videos/${thumb.src}`}
+                      className={`${
+                        offensive && safeMode === "Off"
+                          ? "blur-md brightness-75"
+                          : ""
+                      } lg:w-full w-16 h-16 lg:h-20 object-cover rounded`}
+                    />
+                  ) : (
+                    <img
+                      src={`${lowImageUrl}/${thumb.src}`}
+                      alt={thumb.alt}
+                      className={`${
+                        offensive && safeMode === "Off"
+                          ? "blur-md brightness-75"
+                          : ""
+                      } lg:w-full w-16 h-16 lg:h-20 object-cover rounded`}
+                    />
+                  )}
+                </div>
               ) : null;
             })}
           </div>
 
-          <div className="flex-1 md:w-[80%] lg:h-[22rem] w-full overflow-hidden">
-            {images.length > 1 ? (
-              <Slider {...settings} ref={sliderRef} className="discover_more">
-                {images.map(
-                  (slide, index) =>
-                    slide.src && (
-                      <div key={index} className="mt-2 overflow-hidden">
-                        {slide.src.endsWith(".mp4") ? (
-                          <video
-                            src={`${imageUrl}/videos/${slide.src}`}
-                            className={`${
-                              offensive && safeMode === "Off"
-                                ? "blur-lg brightness-75"
-                                : ""
-                            } shadow rounded mx-auto object-cover md:w-[25rem] lg:w-[25rem] h-[20rem] md:h-[60vh] !lg:h-[22rem]`}
-                            controls
-                          />
-                        ) : (
-                          <div className="relative">
-                            <MagnifierImage
-                              src={`${lowImageUrl}/${slide.src}`}
-                              alt={`Slide ${index + 1}`}
-                              isOffensive={offensive}
-                              safeMode={safeMode}
-                            />
-                            {offensive && safeMode === "Off" ? (
-                              <div
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleViewClick(data?.data?._id);
-                                }}
-                                className="absolute z-[99] border bg-white px-2 py-1 rounded top-2 right-2 flex items-center gap-2"
-                              >
-                                <p className="text-[12px]">
-                                  Offensive View Off
-                                </p>
-                                <FaToggleOff
-                                  size={20}
-                                  className="text-green-500"
-                                />
-                              </div>
-                            ) : offensive && safeMode === "On" ? (
-                              <div
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleHideClick(data?.data?._id);
-                                }}
-                                className="absolute z-[99] border bg-white px-2 py-1 rounded top-2 right-2 flex items-center gap-2"
-                              >
-                                <p className="text-[12px]">Offensive View On</p>
-                                <FaToggleOn
-                                  size={20}
-                                  className="text-green-500"
-                                />
-                              </div>
-                            ) : null}
-                          </div>
-                        )}
-                      </div>
-                    )
-                )}
-              </Slider>
-            ) : (
-              images[0]?.src &&
-              (images[0].src.endsWith(".mp4") ? (
-                <video
-                  src={`${imageUrl}/videos/${images[0].src}`}
-                  className={`${
-                    offensive && safeMode === "Off"
-                      ? "blur-lg brightness-75"
-                      : ""
-                  } shadow rounded mx-auto object-cover md:w-[25rem] lg:w-[25rem] h-[20rem] md:h-[60vh] lg:h-[60vh]`}
-                  controls
-                  autoPlay
-                />
-              ) : (
-                <div className="relative">
-                  <MagnifierImage
-                    src={`${lowImageUrl}/${images[0].src}`}
-                    alt="Single Image"
-                    isOffensive={offensive}
-                    safeMode={safeMode}
-                  />
+          <div
+            ref={sliderContainerRef}
+            className="flex-1 lg:w-[80%] lg:h-[22rem] w-full overflow-hidden relative"
+          >
+            <div
+              ref={sliderRef}
+              className="flex transition-transform duration-300 ease-in-out h-full"
+            >
+              {images.map((slide, index) => (
+                <div key={index} className="w-full flex-shrink-0">
+                  {slide.src.endsWith(".mp4") ? (
+                    <video
+                      src={`${imageUrl}/videos/${slide.src}`}
+                      className={`${
+                        offensive && safeMode === "Off"
+                          ? "blur-lg brightness-75"
+                          : ""
+                      } shadow rounded-l mx-auto object-cover w-full h-[20rem] md:h-[60vh] lg:h-[22rem]`}
+                      controls
+                      autoPlay={currentSlide === index}
+                    />
+                  ) : (
+                    <div className="relative h-full">
+                      <MagnifierImage
+                        src={`${lowImageUrl}/${slide.src}`}
+                        alt={`Slide ${index + 1}`}
+                        isOffensive={offensive}
+                        safeMode={safeMode}
+                      />
+                      {offensive && safeMode === "Off" ? (
+                        <div
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleViewClick(data?.data?._id);
+                          }}
+                          className="absolute z-[99] border bg-white px-2 py-1 rounded top-2 right-2 flex items-center gap-2"
+                        >
+                          <p className="text-[12px]">Offensive View Off</p>
+                          <FaToggleOff size={20} className="text-green-500" />
+                        </div>
+                      ) : offensive && safeMode === "On" ? (
+                        <div
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleHideClick(data?.data?._id);
+                          }}
+                          className="absolute z-[99] border bg-white px-2 py-1 rounded top-2 right-2 flex items-center gap-2"
+                        >
+                          <p className="text-[12px]">Offensive View On</p>
+                          <FaToggleOn size={20} className="text-green-500" />
+                        </div>
+                      ) : null}
+                    </div>
+                  )}
                 </div>
-              ))
+              ))}
+            </div>
+
+            {images.length > 1 && (
+              <>
+                <button
+                  onClick={() =>
+                    setCurrentSlide((prev) =>
+                      prev === 0 ? images.length - 1 : prev - 1
+                    )
+                  }
+                  className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full shadow-md"
+                >
+                  <svg
+                    className="w-6 h-6 text-gray-800"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 19l-7-7 7-7"
+                    />
+                  </svg>
+                </button>
+                <button
+                  onClick={() =>
+                    setCurrentSlide((prev) =>
+                      prev === images.length - 1 ? 0 : prev + 1
+                    )
+                  }
+                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full shadow-md"
+                >
+                  <svg
+                    className="w-6 h-6 text-gray-800"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </button>
+              </>
             )}
           </div>
         </div>

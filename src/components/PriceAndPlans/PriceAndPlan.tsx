@@ -15,6 +15,8 @@ import useSubscriptionMutation from "./http/useSubscriptionMutation";
 import { useCheckUserRef } from "./http/useCheckUserRef";
 import AddAddress from "./AddAddress";
 import { TiTickOutline } from "react-icons/ti";
+import toast from "react-hot-toast";
+import useAgainSubscription from "./http/useAgainSubscription";
 
 const PriceAndPlan = () => {
   const [activePlans, setActivePlans] = useState({});
@@ -22,11 +24,16 @@ const PriceAndPlan = () => {
   const [showCreditCardForm, setShowCreditCardForm] = useState(false);
   const [showAddress, setShowAddress] = useState(false);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+  const [showInput, setShowInput] = useState(false);
+  const [userNum, setUserNum] = useState("");
+
   const navigate = useNavigate();
   const { data, isLoading } = useGetAllPlans();
   const { t } = useTranslation();
 
   const { mutateAsync, isPending } = useSubscriptionMutation();
+  const { mutateAsync: againMutateAsync, isPending: againPending } =
+    useAgainSubscription();
   const { data: checkRef } = useCheckUserRef();
 
   const handleNavigate = () => {
@@ -83,6 +90,22 @@ const PriceAndPlan = () => {
 
   const closeConfirmation = () => {
     setIsConfirmationOpen(false);
+  };
+
+  const handleSubscribe = () => {
+    if (!userNum) return toast.error("CVV is required");
+
+    const input = {
+      planId: selectedPlan._id,
+      user_num: userNum,
+    };
+
+    againMutateAsync(input).then(() => {
+      setUserNum("");
+      setShowInput(false);
+      setIsConfirmationOpen(false);
+      window.location.reload();
+    });
   };
 
   return (
@@ -349,7 +372,8 @@ const PriceAndPlan = () => {
                             You already have an active subscription plan.
                           </p>
                         </div>
-                      ) : checkRef.status == "inactive" ? (
+                      ) : checkRef.status == "inactive" &&
+                        checkRef?.store == true ? (
                         <div>
                           <p className="text-sm text-green-800">
                             You dont have an active subscription plan. Subscribe
@@ -360,8 +384,7 @@ const PriceAndPlan = () => {
                         <div>
                           <p className="text-sm text-green-800">
                             You already have a payment method saved with us. But
-                            your payment method is not active. Please add a
-                            payment method.
+                            your payment method is not active.
                           </p>
                         </div>
                       )}
@@ -388,56 +411,142 @@ const PriceAndPlan = () => {
                   </div>
                 )}
 
-                <div className="mt-6 flex justify-end space-x-3">
-                  <button
-                    onClick={closeConfirmation}
-                    className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors duration-200"
-                  >
-                    Cancel
-                  </button>
-                  {checkRef.data == false ? (
-                    <button
-                      onClick={() => {
-                        closeConfirmation();
-                        setShowAddress(true);
-                      }}
-                      className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 transition-colors duration-200 flex items-center"
-                    >
-                      Add Payer
-                    </button>
-                  ) : checkRef.status == "active" ? (
-                    <button className="px-4 py-2 pointer-events-none cursor-not-allowed opacity-65 bg-black text-white rounded-md hover:bg-gray-800 transition-colors duration-200 flex items-center">
-                      Already Subscribed
-                    </button>
-                  ) : checkRef.status == "inactive" ? (
-                    <button className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 transition-colors duration-200 flex items-center">
-                      Subscribe To Plan
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => {
-                        closeConfirmation();
-                        setShowCreditCardForm(true);
-                      }}
-                      className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 transition-colors duration-200 flex items-center"
-                    >
+                {showInput ? (
+                  <div className="mt-4 flex flex-col w-full gap-2">
+                    <div className="bg-blue-50 p-3 rounded-lg flex items-start">
                       <svg
-                        className="w-4 h-4 mr-2"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
+                        className="h-5 w-5 text-blue-500 mr-2 mt-0.5 flex-shrink-0"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
                       >
                         <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M5 13l4 4L19 7"
+                          fillRule="evenodd"
+                          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9z"
+                          clipRule="evenodd"
                         />
                       </svg>
-                      Create & Proceed to Payment
+                      <p className="text-sm text-blue-800">
+                        In accordance with PCI compliance regulations, storing
+                        the security code (CVN, CVV) is not permitted. So Please
+                        enter your CVV to process your transaction
+                      </p>
+                    </div>
+                    <input
+                      type="text"
+                      value={userNum}
+                      onChange={(e) =>
+                        setUserNum(e.target.value.replace(/[^0-9]/g, ""))
+                      }
+                      placeholder="•••"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      maxLength={4}
+                    />
+                    <div className="flex w-full gap-2">
+                      <button
+                        onClick={() => {
+                          closeConfirmation();
+                          setUserNum("");
+                          setShowInput(false);
+                        }}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                      >
+                        Cancel
+                      </button>
+                      {againPending ? (
+                        <button
+                          disabled={againPending}
+                          className="w-full px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 transition-colors flex items-center justify-center duration-200"
+                        >
+                          <svg
+                            className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                          >
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                            ></circle>
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            ></path>
+                          </svg>
+                          {t("Processing...")}
+                        </button>
+                      ) : (
+                        <button
+                          onClick={handleSubscribe}
+                          className="w-full px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 transition-colors duration-200"
+                        >
+                          Subscribe
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="mt-6 flex justify-end space-x-3">
+                    <button
+                      onClick={closeConfirmation}
+                      className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                    >
+                      Cancel
                     </button>
-                  )}
-                </div>
+                    {checkRef.data == false ? (
+                      <button
+                        onClick={() => {
+                          closeConfirmation();
+                          setShowAddress(true);
+                        }}
+                        className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 transition-colors duration-200 flex items-center"
+                      >
+                        Add Payer
+                      </button>
+                    ) : checkRef.status == "active" ? (
+                      <button className="px-4 py-2 pointer-events-none cursor-not-allowed opacity-65 bg-black text-white rounded-md hover:bg-gray-800 transition-colors duration-200 flex items-center">
+                        Already Subscribed
+                      </button>
+                    ) : checkRef.status == "inactive" &&
+                      checkRef?.store == true ? (
+                      <button
+                        onClick={() => {
+                          setShowInput(true);
+                        }}
+                        className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 transition-colors duration-200 flex items-center"
+                      >
+                        Subscribe To Plan
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => {
+                          closeConfirmation();
+                          setShowCreditCardForm(true);
+                        }}
+                        className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 transition-colors duration-200 flex items-center"
+                      >
+                        <svg
+                          className="w-4 h-4 mr-2"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M5 13l4 4L19 7"
+                          />
+                        </svg>
+                        Create & Proceed to Payment
+                      </button>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </div>

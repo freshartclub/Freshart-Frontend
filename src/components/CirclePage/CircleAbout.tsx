@@ -2,7 +2,6 @@ import Header from "../ui/Header";
 import P from "../ui/P";
 
 const CircleAbout = ({ data }) => {
-  console.log(data);
   return (
     <>
       <div className="shadow bg-white my-5 sm:p-6 p-3 rounded-xl border">
