@@ -147,9 +147,9 @@ const ProductInfo = ({ data }) => {
     {
       heading: "Artist Fee",
       description:
-        `${getSymbolFromCurrency(currency.slice(0, 3))} ${
-          data?.data?.pricing?.artistFees
-        }` || "N/A",
+        // `${getSymbolFromCurrency(currency.slice(0, 3))} ${
+        data?.data?.pricing?.artistFees || "N/A",
+      // }` || "N/A",
     },
     {
       heading: "Discount Percentage",
