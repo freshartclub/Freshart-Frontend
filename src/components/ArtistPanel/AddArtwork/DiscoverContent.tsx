@@ -143,9 +143,13 @@ const DiscoverContent = ({ data }) => {
           variant={{ size: "lg", theme: "dark", weight: "semiBold" }}
           className="my-2"
         >
-          {`${getSymbolFromCurrency(data?.pricing?.currency?.slice(0, 3))} ${
-            data?.pricing?.basePrice
-          }`}
+          {data?.pricing?.currency ? (
+            <>{`${getSymbolFromCurrency(
+              data?.pricing?.currency?.slice(0, 3)
+            )} ${data?.pricing?.basePrice}`}</>
+          ) : (
+            <>{`${getSymbolFromCurrency("EUR")} ${data?.pricing?.basePrice}`}</>
+          )}
         </Header>
       ) : null}
 
