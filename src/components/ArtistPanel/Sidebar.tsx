@@ -44,36 +44,35 @@ const sections = [
       { key: "profile", label: "Artist Profile", path: "edit-artistprofile" },
     ],
   },
-  {
-    key: "order",
-    label: "Order",
-    icon: order,
-    path: "order",
-    submenu: [{ key: "current", label: "Current Orders", path: "order" }, 
-      { key: "Custom", label: "Custom Orders", path: "order/custom" }
-    ],
-  
+  // {
+  //   key: "order",
+  //   label: "Order",
+  //   icon: order,
+  //   path: "order",
+  //   submenu: [{ key: "current", label: "Current Orders", path: "order" },
+  //     { key: "Custom", label: "Custom Orders", path: "order/custom" }
+  //   ],
 
-  },
-  {
-    key: "invoice",
-    label: "Invoice",
-    icon: invoice,
-    path: "invoice",
-  },
-  {
-    key: "circle",
-    label: "Circle",
-    icon: circle,
-    path: "circle",
-    submenu: [{ key: "circle", label: "Circle List", path: "circle" }],
-  },
-  {
-    key: "mail",
-    label: "Mail",
-    icon: mail,
-    path: "mail",
-  },
+  // },
+  // {
+  //   key: "invoice",
+  //   label: "Invoice",
+  //   icon: invoice,
+  //   path: "invoice",
+  // },
+  // {
+  //   key: "circle",
+  //   label: "Circle",
+  //   icon: circle,
+  //   path: "circle",
+  //   submenu: [{ key: "circle", label: "Circle List", path: "circle" }],
+  // },
+  // {
+  //   key: "mail",
+  //   label: "Mail",
+  //   icon: mail,
+  //   path: "mail",
+  // },
   {
     key: "help",
     label: "Help & Support",

@@ -340,7 +340,7 @@ const BecomeArtist = () => {
           <div className="xl:w-[70%] lg:w-[90%] w-full mx-auto pt-4 sm:py-10">
             <form
               onSubmit={onSubmit}
-              className="bg-white rounded px-2 sm:px-8 pt-6 pb-8 mb-4"
+              className="bg-white border border-zinc-300 rounded-lg px-2 sm:px-8 pt-6 pb-8 mb-4"
             >
               <Header
                 variant={{ size: "3xl", weight: "bold", theme: "dark" }}

@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { MdArrowOutward } from "react-icons/md";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import logo from "/logofarc.svg";
+import { useLocation, useNavigate } from "react-router-dom";
 import semicircle from "../../assets/semicircle.png";
 import { useAppDispatch } from "../../store/typedReduxHooks";
 import { setLanguage } from "../../store/userSlice/userSlice";
+import logo from "/logofarc.svg";
 
 const LogNaveBar = () => {
   const [isLanguageDropdownOpen, setLanguageDropdownOpen] = useState(false);
@@ -16,20 +16,7 @@ const LogNaveBar = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const handleRedirectToArtistLogin = () => {
-    navigate("/become_artist");
-  };
-
   const { t } = useTranslation();
-
-  const handleRedirectToBecomeAnArtist = () => {
-    navigate("/become_artist");
-  };
-
-  const redirectToHomepage = () => {
-    navigate("/");
-  };
-
   const getCurrency = localStorage.getItem("currency");
 
   const countries = [
@@ -116,14 +103,14 @@ const LogNaveBar = () => {
   };
 
   const location = useLocation();
-  const isSignupPage = location.pathname.includes("signup");
+  const isSignupPage = location.pathname.includes("login");
 
   return (
     <div className="mx-auto shadow-md md:px-6 px-3">
       <header className="relative py-4">
         <div className="flex md:flex-row relative flex-col justify-between items-center">
           <img
-            onClick={redirectToHomepage}
+            onClick={() => navigate("/")}
             src={logo}
             alt="Fresh Art Club"
             className="h-10 cursor-pointer"
@@ -170,29 +157,20 @@ const LogNaveBar = () => {
             {isSignupPage ? (
               <span
                 className="cursor-pointer bg-[#102031] font-semibold md:text-base text-sm text-white p-2 rounded-full flex max-[430px]:w-full justify-center  gap-2 items-center"
-                onClick={handleRedirectToBecomeAnArtist}
+                onClick={() => navigate("/become_artist")}
               >
                 {t("Become an Artist")}
                 <MdArrowOutward />
               </span>
             ) : (
               <span
-                onClick={handleRedirectToArtistLogin}
+                onClick={() => navigate("/login")}
                 className="cursor-pointer bg-[#102031] font-semibold md:text-base text-sm text-white p-2 px-2.5 rounded-full flex max-[430px]:w-full justify-center gap-2  items-center"
               >
-                {t("Become an Artist")}
+                {t("Sign In")}
                 <MdArrowOutward />
               </span>
             )}
-
-            {isSignupPage ? (
-              <Link
-                to="/login"
-                className="text-black bg-orange-100 border rounded-full font-semibold p-2 px-2.5 uppercase"
-              >
-                {t("Sign In")}
-              </Link>
-            ) : null}
           </div>
         </div>
         <img
