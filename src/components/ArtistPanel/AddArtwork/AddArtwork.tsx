@@ -1184,7 +1184,7 @@ const AddArtwork = () => {
                 </div>
 
                 {isArtProvider === "Yes" ? (
-                  <div className="mb-4">
+                  <div className="invisible h-0">
                     <label className="block text-sm text-[#203F58] font-semibold mb-2">
                       {t("Art Provider")}
                     </label>

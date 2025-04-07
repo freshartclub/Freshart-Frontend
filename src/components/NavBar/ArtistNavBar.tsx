@@ -66,6 +66,7 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
   const handleProfile = () => {
     navigate("/home", { replace: true });
     localStorage.setItem("profile", "user");
+    window.location.reload();
   };
 
   const handleRedirect = () => {

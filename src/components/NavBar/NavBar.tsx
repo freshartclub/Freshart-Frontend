@@ -93,6 +93,7 @@ const NavBar = () => {
     if (isArtist) {
       navigate("/artist-panel", { replace: true });
       localStorage.setItem("profile", "artist");
+      window.location.reload();
     }
   };
 

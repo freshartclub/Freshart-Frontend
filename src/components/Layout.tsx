@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import LogNaveBar from "./NavBar/LogNaveBar";
 import NavBar from "./NavBar/NavBar";
 import NavForHome from "./NavBar/NavForHome";
+import { useAppSelector } from "../store/typedReduxHooks";
 
 interface LayoutProps {
   isAuthenticated: boolean;
@@ -12,6 +13,7 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const user = localStorage.getItem("profile");
+  const isAuthorized = useAppSelector((state) => state.user.isAuthorized);
 
   const location = useLocation();
   const isLoginPage = location.pathname === "/login";
@@ -20,21 +22,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const becomeAnArtist = location.pathname === "/become_artist";
   const home = location.pathname === "/home";
 
-  // let RoleBaseNavBar;
-
-  // if (user === "artist") {
-  //   RoleBaseNavBar = null;
-  // } else {
-  //   RoleBaseNavBar = NavBar;
-  // }
-
   return (
     <div>
       {isLoginPage || isSignUpPage || isForgetPassword || becomeAnArtist ? (
         <LogNaveBar />
       ) : home ? (
         <NavForHome />
-      ) : user === "artist" ? null : ( // <NavBar /> // <NavForHome />
+      ) : user === "artist" && isAuthorized ? null : (
         <NavBar />
       )}
       <main>{children}</main>

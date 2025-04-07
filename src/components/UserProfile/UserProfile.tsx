@@ -9,7 +9,6 @@ import Loader from "../ui/Loader";
 
 const UserProfile = () => {
   const { user } = useAppSelector((state) => state.user);
-  const url = "https://dev.freshartclub.com/images";
 
   if (!user) {
     return <Loader />;
@@ -51,7 +50,7 @@ const UserProfile = () => {
         </ul>
 
         <div className="flex md:flex-row flex-col w-full xl:gap-10 lg:gap-5 gap-5 mt-8">
-          <UserImage user={user} />
+          <UserImage img={user?.mainImage} />
           <UserDescription user={user} />
         </div>
       </div>

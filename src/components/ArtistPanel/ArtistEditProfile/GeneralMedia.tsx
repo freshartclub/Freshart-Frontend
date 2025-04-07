@@ -203,7 +203,7 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
                 variant={{ size: "base", theme: "dark", weight: "semiBold" }}
                 className="mb-2 text-[#203F58]"
               >
-                {t("Main Photo")}
+                {t("Profile Photo")}
               </Header>
               <input
                 type="file"
@@ -256,7 +256,7 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
                 variant={{ size: "base", theme: "dark", weight: "semiBold" }}
                 className="mb-2 text-[#203F58]"
               >
-                {t("In-Process Photo")}
+                {t("Main Artwork")}
               </Header>
               <input
                 type="file"
@@ -306,7 +306,7 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
             variant={{ size: "base", theme: "dark", weight: "semiBold" }}
             className="mb-2 text-[#203F58]"
           >
-            {t("Additional Photos")}
+            {t("In Action (Studio/Events Images)")}
           </Header>
           <input
             type="file"
@@ -430,7 +430,7 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
               variant={{ size: "base", weight: "semiBold" }}
               className="mb-2 text-[#203F58]"
             >
-              {t("Additional Videos")}
+              {t("In Action (Studio/Events Videos)")}
             </Header>
             <input
               type="file"

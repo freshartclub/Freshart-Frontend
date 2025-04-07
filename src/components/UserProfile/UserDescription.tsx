@@ -1,22 +1,20 @@
 import { Link, useNavigate } from "react-router-dom";
+import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import Header from "../ui/Header";
 import P from "../ui/P";
-import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
-import overview from "./assets/user.png";
-import billing from "./assets/icon2.png";
-import setting from "./assets/setting.png";
-import Button from "../ui/Button";
-import edit from "./assets/edit.png";
-import order1 from "./assets/Rocket.png";
-import order2 from "./assets/Receipt.png";
-import order3 from "./assets/Package.png";
 import add_arrow from "./assets/ArrowRight.png";
-import visa from "./assets/Visa.png";
-import mastercard from "./assets/mastercard.png";
-import view1 from "./assets/viewArrow.png";
-import dots from "./assets/DotsThree.png";
 import copy from "./assets/Copy.png";
-import { useAppSelector } from "../../store/typedReduxHooks";
+import dots from "./assets/DotsThree.png";
+import edit from "./assets/edit.png";
+import billing from "./assets/icon2.png";
+import mastercard from "./assets/mastercard.png";
+import order3 from "./assets/Package.png";
+import order2 from "./assets/Receipt.png";
+import order1 from "./assets/Rocket.png";
+import setting from "./assets/setting.png";
+import overview from "./assets/user.png";
+import view1 from "./assets/viewArrow.png";
+import visa from "./assets/Visa.png";
 
 const order_data = [
   {
@@ -78,7 +76,6 @@ const getStatusColor = (status: any) => {
 const colors = ["bg-[#EAF6FE]", "bg-[#FFF3EB]", "bg-[#EAF7E9]"];
 
 const UserDescription = ({ user }) => {
-  const isArtist = useAppSelector((state) => state.user.isArtist);
   const navigate = useNavigate();
 
   const handleProfile = () => {
@@ -431,35 +428,36 @@ const UserDescription = ({ user }) => {
                     </thead>
                     <tbody>
                       {table_data.map((item, index) => (
-                        <>
-                          <tr className="bg-white dark:bg-gray-800 overflow-x-scroll">
-                            <th
-                              scope="row"
-                              className="xl:px-6 lg:px-4 px-1 py-4 text-sm font-semibold text-[#191C1F] whitespace-nowrap dark:text-white"
-                            >
-                              {item.order_id}
-                            </th>
-                            <td
-                              className={`xl:px-6 lg:px-4 px-1 py-4 uppercase text-sm font-semibold  ${getStatusColor(
-                                item.status
-                              )}`}
-                            >
-                              {item.status}
+                        <tr
+                          key={index}
+                          className="bg-white dark:bg-gray-800 overflow-x-scroll"
+                        >
+                          <th
+                            scope="row"
+                            className="xl:px-6 lg:px-4 px-1 py-4 text-sm font-semibold text-[#191C1F] whitespace-nowrap dark:text-white"
+                          >
+                            {item.order_id}
+                          </th>
+                          <td
+                            className={`xl:px-6 lg:px-4 px-1 py-4 uppercase text-sm font-semibold  ${getStatusColor(
+                              item.status
+                            )}`}
+                          >
+                            {item.status}
+                          </td>
+                          <td className="xl:px-6 lg:px-4 px-1 py-4 text-sm text-[#5F6C72] font-medium">
+                            {item.date}
+                          </td>
+                          <td className="xl:px-6 lg:px-4 px-1 py-4 text-sm text-[#475156] font-medium">
+                            {item.total}
+                          </td>
+                          <div className="flex items-center text-sm cursor-pointer">
+                            <td className="xl:px-2 px-1 py-4 text-sm text-[#35637C] font-semibold">
+                              {item.action}
                             </td>
-                            <td className="xl:px-6 lg:px-4 px-1 py-4 text-sm text-[#5F6C72] font-medium">
-                              {item.date}
-                            </td>
-                            <td className="xl:px-6 lg:px-4 px-1 py-4 text-sm text-[#475156] font-medium">
-                              {item.total}
-                            </td>
-                            <div className="flex items-center text-sm cursor-pointer">
-                              <td className="xl:px-2 px-1 py-4 text-sm text-[#35637C] font-semibold">
-                                {item.action}
-                              </td>
-                              <img src={view1} alt="view" />
-                            </div>
-                          </tr>
-                        </>
+                            <img src={view1} alt="view" />
+                          </div>
+                        </tr>
                       ))}
                     </tbody>
                   </table>
