@@ -64,7 +64,6 @@ const NavBar = () => {
 
   useClickOutside(closePopup, () => {
     setIsProfileDropdown(false);
-    setIsModalOpen(false);
   });
 
   const handleClickOutside = (event) => {
@@ -390,8 +389,8 @@ const NavBar = () => {
                       <div className="border-t border-gray-100 px-4 pb-2 pt-3">
                         <button
                           onClick={() => {
-                            setIsModalOpen(true);
                             setIsProfileDropdown(false);
+                            setIsModalOpen(true);
                           }}
                           className="w-full text-center bg-[#EE1D52] text-white hover:bg-red-50 hover:text-[#EE1D52] px-2 py-2.5 rounded text-sm font-medium"
                         >
@@ -574,10 +573,7 @@ const NavBar = () => {
                   Cancel
                 </button>
                 <button
-                  onClick={() => {
-                    toggleModal();
-                    logOut();
-                  }}
+                  onClick={() => logOut()}
                   className="px-4 py-2 bg-[#EE1D52] rounded-md text-sm font-medium text-white hover:bg-[#ee1d51c2]"
                 >
                   Logout

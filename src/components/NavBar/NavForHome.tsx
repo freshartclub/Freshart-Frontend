@@ -68,7 +68,6 @@ const NavForHome = () => {
 
   useClickOutside(closePopup, () => {
     setIsProfileDropdown(false);
-    setIsModalOpen(false);
   });
 
   const handleClickOutside = (event) => {
@@ -642,11 +641,7 @@ const NavForHome = () => {
                   Cancel
                 </button>
                 <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    // toggleModal();
-                    logOut();
-                  }}
+                  onClick={() => logOut()}
                   className="px-4 py-2 bg-[#EE1D52] rounded-md text-sm font-medium text-white hover:bg-[#ee1d51c2]"
                 >
                   Logout
