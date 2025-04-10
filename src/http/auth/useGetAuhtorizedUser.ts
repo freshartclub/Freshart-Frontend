@@ -9,7 +9,7 @@ import {
   setIsArtProvider,
   setIsAuthorized,
   updateUser,
-} from "../../store/userSlice/userSlice";
+} from "../../store/slice/userSlice";
 
 const useCheckIsAuthorized = () => {
   const dispatch = useAppDispatch();

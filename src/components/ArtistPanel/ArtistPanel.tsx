@@ -57,7 +57,7 @@ const ArtistPanel = () => {
         />
 
         <div
-          className={`flex-1 mt-20 transition-all duration-300 bg-zinc-100 overflow-auto ${
+          className={`flex-1 mt-[4.8rem] transition-all duration-300 bg-zinc-100 overflow-auto ${
             smallWidth ? "ml-0" : isOpen ? "ml-64" : "ml-14"
           }`}
         >
@@ -65,16 +65,16 @@ const ArtistPanel = () => {
             <Route index element={<Dashboard />} />
             <Route path="artdashboard" element={<Dashboard />} />
             <Route path="artwork" element={<Artwork />} />
-            {/* <Route path="order" element={<Orders />} />
-            <Route path="order/custom" element={<CustomOrder />} /> */}
+            <Route path="order" element={<Orders />} />
+            <Route path="order/custom" element={<CustomOrder />} />
 
-            {/* <Route path="order/orderDetail" element={<OrdersDetail />} />
-            <Route path="order/approve-order" element={<OrderApprove />} /> */}
+            <Route path="order/orderDetail" element={<OrdersDetail />} />
+            <Route path="order/approve-order" element={<OrderApprove />} />
             <Route path="artwork/add" element={<AddArtwork />} />
             <Route path="edit-artistprofile" element={<ArtistProfile />} />
             <Route path="settings" element={<Settings />} />
-            {/* <Route path="circle" element={<Circle />} />
-            <Route path="circle/circlepage" element={<CirclePage />} /> */}
+            <Route path="circle" element={<Circle />} />
+            <Route path="circle/circlepage" element={<CirclePage />} />
 
             <Route path="ticket/tickets" element={<TicketHistory />} />
             <Route path="/ticket" element={<Support />} />

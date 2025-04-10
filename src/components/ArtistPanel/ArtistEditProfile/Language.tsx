@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { FaAngleDown } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { useAppDispatch } from "../../../store/typedReduxHooks";
-import { setLanguage } from "../../../store/userSlice/userSlice";
+import { setLanguage } from "../../../store/slice/userSlice";
 import { useTranslation } from "react-i18next";
 
 const options = [

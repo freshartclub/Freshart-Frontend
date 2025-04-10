@@ -17,4 +17,5 @@ export const ORDERS_ENDPOINTS = {
   GetKey: `${ARTIST_ORDER_URl}/get-key`,
   checkRef: `${ARTIST_ORDER_URl}/check-user-ref`,
   createPayer: `${ARTIST_ORDER_URl}/create-payer`,
+  getPlans: `${ARTIST_ORDER_URl}/user-plans`,
 };

@@ -9,7 +9,7 @@ import {
   setIsArtist,
   setIsAuthorized,
   updateUser,
-} from "../../store/userSlice/userSlice";
+} from "../../store/slice/userSlice";
 import { AUTH_ENDPOINTS } from "../apiEndPoints/Auth";
 
 async function logOut() {

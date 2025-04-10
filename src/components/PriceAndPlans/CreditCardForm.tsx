@@ -4,7 +4,13 @@ import CryptoJS from "crypto-js";
 import { useGetKey } from "./http/useGetKey";
 import toast from "react-hot-toast";
 
-const CreditCardForm = ({ onClose, planId, onSubmit, isPending }) => {
+const CreditCardForm = ({
+  onClose,
+  planId,
+  onSubmit,
+  isPending,
+  billingCycle,
+}) => {
   const { t } = useTranslation();
   const [cardNumber, setCardNumber] = useState("");
   const [cardHolder, setCardHolder] = useState("");
@@ -97,6 +103,7 @@ const CreditCardForm = ({ onClose, planId, onSubmit, isPending }) => {
       cvv,
       cardType,
       planId,
+      type: billingCycle == "yearly" ? "yearly" : "monthly",
     };
 
     const secData = encryptCardData(data);

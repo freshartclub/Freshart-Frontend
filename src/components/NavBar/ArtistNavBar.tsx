@@ -93,7 +93,7 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
 
   return (
     <div className="w-full fixed top-0 left-0 z-[99] bg-white shadow-md">
-      <div className="w-full py-5 px-5 flex items-center gap-5 relative justify-between">
+      <div className="w-full py-4 px-6 flex items-center gap-5 relative justify-between">
         <GiHamburgerMenu
           className="cursor-pointer block sm:hidden"
           size="2em"
@@ -112,7 +112,7 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
           />
         </div>
 
-        {/* <div
+        <div
           ref={isNotificationOpen}
           className={`absolute top-20 right-0 ${
             isOpen ? "right-0" : "right-[-20rem]"
@@ -169,15 +169,15 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
               </li>
             )}
           </ul>
-        </div> */}
+        </div>
 
         <div className="flex items-center gap-5 ">
-          {/* <div onClick={openNotification} className="relative cursor-pointer">
+          <div onClick={openNotification} className="relative cursor-pointer">
             <IoNotifications className="lg:block" size="1.5em" />
             <div className="w-5 h-5 bg-red-500 text-black rounded-full -top-3 right-0 absolute flex items-center justify-center font-semibold">
               {unreadCount}
             </div>
-          </div> */}
+          </div>
 
           <span
             onClick={() => setIsToggelOpen(!isToogleOpen)}
@@ -219,14 +219,6 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
                 {t("User Settings")}
               </Link>
 
-              {/* <Link
-                className="font-medium hover:bg-zinc-200 transition-all duration-200"
-                to="/artist-panel/settings"
-                onClick={() => setIsToggelOpen(false)}
-              >
-                {t("Notification")}
-              </Link> */}
-
               <span
                 className="font-medium hover:bg-zinc-200 transition-all duration-200 cursor-pointer"
                 onClick={handleInvitePopUp}
@@ -234,12 +226,12 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
                 {t("Invite Artist")}
               </span>
 
-              {/* <button
+              <button
                 className="font-medium hover:bg-zinc-200"
                 onClick={handleProfile}
               >
                 {t("Switch To User Profile")}
-              </button> */}
+              </button>
               <button
                 className="bg-red-300 flex flex-col items-center justify-center gap-1 py-2 rounded hover:bg-red-400 font-medium"
                 onClick={handleLogOut}

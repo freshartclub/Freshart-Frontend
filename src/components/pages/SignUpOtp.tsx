@@ -11,7 +11,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import useVerifySignUpMutation from "../../http/auth/useVerifySignUpMutation";
 import { useAppDispatch, useAppSelector } from "../../store/typedReduxHooks";
 import { useEffect, useState } from "react";
-import { forgotPasswordUserId } from "../../store/userSlice/userSlice";
+import { forgotPasswordUserId } from "../../store/slice/userSlice";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 

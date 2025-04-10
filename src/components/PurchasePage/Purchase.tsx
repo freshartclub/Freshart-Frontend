@@ -1,13 +1,12 @@
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 import { useEffect, useRef, useState } from "react";
-import { FaBars, FaSearch } from "react-icons/fa";
+import { FaBars, FaMoon, FaSearch, FaSun } from "react-icons/fa";
 import { GiHamburgerMenu } from "react-icons/gi";
 import {
   MdArrowBackIosNew,
   MdArrowForwardIos,
   MdKeyboardArrowDown,
-  MdOutlineCancel,
   MdOutlineFilterList,
 } from "react-icons/md";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -15,9 +14,9 @@ import { useGetTechnic } from "../ArtistPanel/AddArtwork/http/useGetTechnic";
 import { useGetTheme } from "../ArtistPanel/AddArtwork/http/useGetTheme";
 import { useGetDiscipline } from "../pages/http/useGetDiscipline";
 import { useGetStyle } from "../pages/http/useGetStyle";
-import Button from "../ui/Button";
+import Badge from "../ui/Badge";
 import Loader from "../ui/Loader";
-import P from "../ui/P";
+import SelectOption from "../ui/SelectOption";
 import { imageUrl } from "../utils/baseUrls";
 import { RenderAllPicklist } from "../utils/RenderAllPicklist";
 import useClickOutside from "../utils/useClickOutside";
@@ -25,7 +24,7 @@ import { useDebounce } from "../utils/useDebounce";
 import CardSection from "./CardSection";
 import { useGetHoveredData } from "./http/useGetHoveredData";
 import { useGetPurchaseArtwork } from "./http/useGetPurchaseArtwork";
-import SelectOption from "../ui/SelectOption";
+import { useAppSelector } from "../../store/typedReduxHooks";
 
 const Purchase = () => {
   const [showAllDiscipline, setShowAllDiscipline] = useState(false);
@@ -38,6 +37,11 @@ const Purchase = () => {
   const [selectedTheme, setSelectedTheme] = useState<string[]>([]);
   const [selectedTechnic, setSelectedTechnic] = useState<string[]>([]);
   const [selectedStyle, setSelectedStyle] = useState<string[]>([]);
+
+  const dark = useAppSelector((state) => state.theme.mode);
+
+  console.log(dark);
+
   const defaultRanges = {
     height: { min: 0, max: 300, step: 10 },
     width: { min: 0, max: 300, step: 10 },
@@ -48,32 +52,12 @@ const Purchase = () => {
   const [allHoverData, setAllHoverData] = useState(null);
   const [hoveredDiscipline, setHoveredDiscipline] = useState(null);
 
-  const { data: hoverData, isLoading: hoverLoding } = useGetHoveredData();
-
-  useEffect(() => {
-    if (hoverData && !allHoverData) {
-      setAllHoverData(hoverData.data);
-    }
-  }, [hoverData, allHoverData]);
-
-  const filteredHoverData =
-    allHoverData?.disData?.find(
-      (item) => item.discipline === hoveredDiscipline?.disciplineName
-    ) || null;
-
   const [sliderData, setSliderData] = useState({
     height: [0, defaultRanges.height.max],
     width: [0, defaultRanges.width.max],
     depth: [0, defaultRanges.depth.max],
     price: [0, defaultRanges.price.max],
   });
-
-  const handleSliderChange = (key, value) => {
-    setSliderData((prev) => ({
-      ...prev,
-      [key]: [...value],
-    }));
-  };
 
   const [moreOptions, setMoreOptions] = useState({
     orientation: "",
@@ -92,9 +76,11 @@ const Purchase = () => {
     tag: "",
     name: "",
   });
+
   const [technicData, setTechnicData] = useState([]);
   const [themeData, setThemeData] = useState([]);
   const [styleData, setStyleData] = useState([]);
+
   const [isOpenSidePanel, setIsOpenSidePanel] = useState(false);
   const [optionOpen, setOptionOpen] = useState({
     theme: true,
@@ -103,6 +89,7 @@ const Purchase = () => {
     style: true,
   });
   const [isOpen, setIsOpen] = useState(false);
+
   const [nextCursor, setNextCursor] = useState(null);
   const [prevCursor, setPrevCursor] = useState(null);
   const [options, setOptions] = useState({
@@ -112,10 +99,10 @@ const Purchase = () => {
     currPage: 1,
   });
 
+  const { data: hoverData, isLoading: hoverLoading } = useGetHoveredData();
   const { data: disciplineData } = useGetDiscipline();
   const navigate = useNavigate();
   const openRef = useRef(null);
-
   const [searchParams] = useSearchParams();
   const type = searchParams.get("type") || "subscription";
 
@@ -163,32 +150,22 @@ const Purchase = () => {
   });
 
   useEffect(() => {
-    if (selectedOption) {
-      const matchesAllSelectedOptions = (item) => {
-        const disciplineNames =
-          item.discipline?.map((newItem) => newItem.disciplineName) || [];
-        return selectedOption.every((option) =>
-          disciplineNames.includes(option)
-        );
-      };
-
-      const newTechnic = techData?.data
-        ?.filter(matchesAllSelectedOptions)
-        .map((item) => item.technicName);
-
-      const newTheme = theData?.data
-        ?.filter(matchesAllSelectedOptions)
-        .map((item) => item.themeName);
-
-      const newStyle = stData?.data
-        ?.filter(matchesAllSelectedOptions)
-        .map((item) => item.styleName);
-
-      setTechnicData(newTechnic || []);
-      setThemeData(newTheme || []);
-      setStyleData(newStyle || []);
+    if (hoverData && !allHoverData) {
+      setAllHoverData(hoverData.data);
     }
-  }, [selectedOption, techData, theData, stData]);
+  }, [hoverData, allHoverData]);
+
+  const filteredHoverData =
+    allHoverData?.disData?.find(
+      (item) => item.discipline === hoveredDiscipline?.disciplineName
+    ) || null;
+
+  const handleSliderChange = (key, value) => {
+    setSliderData((prev) => ({
+      ...prev,
+      [key]: [...value],
+    }));
+  };
 
   const filteredDisciplineData =
     disciplineData?.data?.filter((item) => item?.isMain) || [];
@@ -320,29 +297,41 @@ const Purchase = () => {
 
     return (
       <div
-        id="dropdownDivider"
-        className="z-10 border flex flex-col p-2 gap-2 bg-[#102031] text-white rounded-lg dark:bg-gray-700 dark:divide-gray-600"
+        className={`z-10 border flex flex-col p-2 gap-2 ${
+          dark
+            ? "bg-gray-800 text-gray-100 border-gray-700"
+            : "bg-white text-gray-800 border-gray-200"
+        } rounded-lg shadow-md`}
       >
         {dataToShow?.map((item, index: number) => (
-          <span
-            className={`cursor-pointer ${
-              selectedOption.includes(item.disciplineName)
-                ? "bg-gray-300 text-black px-1 rounded"
-                : ""
-            }`}
-            onClick={() => handleOptionSelect(item.disciplineName)}
+          <label
             key={index}
+            className="flex items-center space-x-2 cursor-pointer"
           >
-            {item.disciplineName}
-          </span>
+            <input
+              type="checkbox"
+              checked={selectedOption.includes(item.disciplineName)}
+              onChange={() => handleOptionSelect(item.disciplineName)}
+              className={`form-checkbox h-4 w-4 rounded ${
+                dark
+                  ? "text-blue-400 bg-gray-700 border-gray-600"
+                  : "text-blue-600"
+              }`}
+            />
+            <span className="text-sm">{item.disciplineName}</span>
+          </label>
         ))}
         {disciplineData?.data?.length > filteredDisciplineData.length && (
-          <span
-            className="cursor-pointer text-sm text-blue-500"
+          <button
+            className={`text-sm ${
+              dark
+                ? "text-blue-400 hover:text-blue-300"
+                : "text-blue-600 hover:text-blue-800"
+            } mt-2`}
             onClick={() => setShowAllDiscipline(!showAllDiscipline)}
           >
             {showAllDiscipline ? "Show Less" : "Show More"}
-          </span>
+          </button>
         )}
       </div>
     );
@@ -353,29 +342,41 @@ const Purchase = () => {
 
     return (
       <div
-        id="dropdownDivider"
-        className="z-10 border flex flex-col p-2 gap-2 bg-[#102031] text-white rounded-lg dark:bg-gray-700 dark:divide-gray-600"
+        className={`z-10 border flex flex-col p-2 gap-2 ${
+          dark
+            ? "bg-gray-800 text-gray-100 border-gray-700"
+            : "bg-white text-gray-800 border-gray-200"
+        } rounded-lg shadow-md`}
       >
         {dataToShow?.map((item: string, index: number) => (
-          <span
-            className={`cursor-pointer ${
-              selectedTechnic.includes(item)
-                ? "bg-gray-300 text-black px-1 rounded"
-                : ""
-            }`}
-            onClick={() => handleTechnicSelect(item)}
+          <label
             key={index}
+            className="flex items-center space-x-2 cursor-pointer"
           >
-            {item}
-          </span>
+            <input
+              type="checkbox"
+              checked={selectedTechnic.includes(item)}
+              onChange={() => handleTechnicSelect(item)}
+              className={`form-checkbox h-4 w-4 rounded ${
+                dark
+                  ? "text-blue-400 bg-gray-700 border-gray-600"
+                  : "text-blue-600"
+              }`}
+            />
+            <span className="text-sm">{item}</span>
+          </label>
         ))}
         {technicData?.length > filteredTechnicData.length && (
-          <span
-            className="cursor-pointer text-sm text-blue-500"
+          <button
+            className={`text-sm ${
+              dark
+                ? "text-blue-400 hover:text-blue-300"
+                : "text-blue-600 hover:text-blue-800"
+            } mt-2`}
             onClick={() => setShowAllTechnic(!showAllTechnic)}
           >
             {showAllTechnic ? "Show Less" : "Show More"}
-          </span>
+          </button>
         )}
       </div>
     );
@@ -385,29 +386,41 @@ const Purchase = () => {
     const dataToShow = showAllTheme ? themeData : filteredThemeData;
     return (
       <div
-        id="dropdownDivider"
-        className="z-10 border flex flex-col p-2 gap-2 bg-[#102031] text-white rounded-lg dark:bg-gray-700 dark:divide-gray-600"
+        className={`z-10 border flex flex-col p-2 gap-2 ${
+          dark
+            ? "bg-gray-800 text-gray-100 border-gray-700"
+            : "bg-white text-gray-800 border-gray-200"
+        } rounded-lg shadow-md`}
       >
         {dataToShow?.map((item: string, index: number) => (
-          <span
-            className={`cursor-pointer ${
-              selectedTheme.includes(item)
-                ? "bg-gray-300 text-black px-1 rounded"
-                : ""
-            }`}
-            onClick={() => handleThemeSelect(item)}
+          <label
             key={index}
+            className="flex items-center space-x-2 cursor-pointer"
           >
-            {item}
-          </span>
+            <input
+              type="checkbox"
+              checked={selectedTheme.includes(item)}
+              onChange={() => handleThemeSelect(item)}
+              className={`form-checkbox h-4 w-4 rounded ${
+                dark
+                  ? "text-blue-400 bg-gray-700 border-gray-600"
+                  : "text-blue-600"
+              }`}
+            />
+            <span className="text-sm">{item}</span>
+          </label>
         ))}
         {themeData?.length > filteredThemeData.length && (
-          <span
-            className="cursor-pointer text-sm text-blue-500"
+          <button
+            className={`text-sm ${
+              dark
+                ? "text-blue-400 hover:text-blue-300"
+                : "text-blue-600 hover:text-blue-800"
+            } mt-2`}
             onClick={() => setShowAllTheme(!showAllTheme)}
           >
             {showAllTheme ? "Show Less" : "Show More"}
-          </span>
+          </button>
         )}
       </div>
     );
@@ -417,41 +430,81 @@ const Purchase = () => {
     const dataToShow = showAllStyle ? styleData : filteredStyleData;
     return (
       <div
-        id="dropdownDivider"
-        className="z-10 border flex flex-col p-2 gap-2 bg-[#102031] text-white rounded-lg dark:bg-gray-700 dark:divide-gray-600"
+        className={`z-10 border flex flex-col p-2 gap-2 ${
+          dark
+            ? "bg-gray-800 text-gray-100 border-gray-700"
+            : "bg-white text-gray-800 border-gray-200"
+        } rounded-lg shadow-md`}
       >
         {dataToShow?.map((item: string, index: number) => (
-          <span
-            className={`cursor-pointer ${
-              selectedStyle.includes(item)
-                ? "bg-gray-300 text-black px-1 rounded"
-                : ""
-            }`}
-            onClick={() => handleStyleSelect(item)}
+          <label
             key={index}
+            className="flex items-center space-x-2 cursor-pointer"
           >
-            {item}
-          </span>
+            <input
+              type="checkbox"
+              checked={selectedStyle.includes(item)}
+              onChange={() => handleStyleSelect(item)}
+              className={`form-checkbox h-4 w-4 rounded ${
+                dark
+                  ? "text-blue-400 bg-gray-700 border-gray-600"
+                  : "text-blue-600"
+              }`}
+            />
+            <span className="text-sm">{item}</span>
+          </label>
         ))}
         {styleData?.length > filteredStyleData.length && (
-          <span
-            className="cursor-pointer text-sm text-blue-500"
+          <button
+            className={`text-sm ${
+              dark
+                ? "text-blue-400 hover:text-blue-300"
+                : "text-blue-600 hover:text-blue-800"
+            } mt-2`}
             onClick={() => setShowAllStyle(!showAllStyle)}
           >
             {showAllStyle ? "Show Less" : "Show More"}
-          </span>
+          </button>
         )}
       </div>
     );
   };
 
+  const activeFiltersCount = [
+    ...selectedOption,
+    ...selectedTechnic,
+    ...selectedTheme,
+    ...selectedStyle,
+    ...Object.values(moreOptions).filter((val) => val && val !== ""),
+    ...Object.values(sliderData).flatMap((range) =>
+      range[0] !== 0 ||
+      range[1] !==
+        defaultRanges[
+          Object.keys(sliderData).find((key) => sliderData[key] === range)
+        ].max
+        ? [true]
+        : []
+    ),
+    keywords.tag ? true : false,
+    keywords.name ? true : false,
+    query ? true : false,
+  ].filter(Boolean).length;
+
   return (
-    <>
-      <div className="px-4 shadow-[#1020319d] bg-[#1020319d] sm:px-6 md:px-10 lg:px-14">
+    <div className={`min-h-screen ${dark ? "bg-gray-900" : "bg-gray-50"}`}>
+      <div
+        className={`px-4 shadow-md sticky top-0 z-20 ${
+          dark ? "bg-gray-800 border-b border-gray-700" : "bg-white"
+        } sm:px-6 md:px-10 lg:px-14`}
+      >
         <div className="flex justify-between py-3 items-center">
           <div className="relative w-full">
             <button
-              className="lg:hidden p-2"
+              className={`lg:hidden p-2 ${
+                dark
+                  ? "text-gray-300 hover:text-white"
+                  : "text-gray-600 hover:text-gray-900"
+              }`}
               onClick={() => setIsOpen((prev) => !prev)}
               aria-label="Toggle menu"
             >
@@ -463,16 +516,21 @@ const Purchase = () => {
                 isOpen ? "block" : "hidden"
               } lg:flex flex-col lg:flex-row items-start lg:items-center mt-3 lg:mt-0
            space-y-2 lg:space-y-0 lg:space-x-4 absolute lg:relative z-10 md:w-[40%] sm:w-[50%]
-            lg:w-auto shadow-lg lg:shadow-none p-4 lg:p-0 bg-gray-900 lg:bg-transparent`}
+            lg:w-auto shadow-lg lg:shadow-none p-4 lg:p-0 ${
+              dark ? "bg-gray-800" : "bg-white"
+            } lg:bg-transparent rounded-lg lg:rounded-none`}
             >
               {disciplineData?.data?.map((item, index: number) => (
                 <div key={index}>
                   <div
                     className="relative group"
                     onMouseEnter={() => setHoveredDiscipline(item)}
-                    // onMouseLeave={() => setHoveredDiscipline(null)}
                   >
-                    <span className="text-white font-semibold px-3 cursor-pointer transition-all duration-200 ease-in-out group-hover:text-blue-700 rounded-md">
+                    <span
+                      className={`${
+                        dark ? "text-gray-300" : "text-gray-700"
+                      } font-semibold px-3 cursor-pointer group-hover:text-[#EE1D52] transition-all duration-200 ease-in-out rounded-md`}
+                    >
                       {item.disciplineName}
                     </span>
                   </div>
@@ -480,17 +538,29 @@ const Purchase = () => {
                   {hoveredDiscipline?.disciplineName ===
                     item.disciplineName && (
                     <>
-                      {hoverLoding ? (
-                        <p className="text-gray-400 text-sm animate-pulse"></p>
+                      {hoverLoading ? (
+                        <p
+                          className={`${
+                            dark ? "text-gray-400" : "text-gray-400"
+                          } text-sm animate-pulse`}
+                        ></p>
                       ) : (
                         <div
-                          className="absolute border-t -left-[60px] top-[42px] w-[99.1vw] bg-[#6C7680] text-gray-800 z-30 pt-3 pb-6 flex items-start justify-between gap-6 transform transition-all duration-300 ease-in-out overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
+                          className={`absolute border-t -left-[60px] top-[42px] w-[99.1vw] ${
+                            dark
+                              ? "bg-gray-800 text-gray-100 border-gray-700"
+                              : "bg-white text-gray-800"
+                          } z-30 pt-3 pb-6 flex items-start justify-between gap-6 transform transition-all duration-300 ease-in-out overflow-x-auto scrollbar-thin shadow-xl`}
                           onMouseEnter={() => setHoveredDiscipline(item)}
                           onMouseLeave={() => setHoveredDiscipline(null)}
                         >
                           <div className="flex flex-wrap items-start justify-center gap-10 flex-grow">
                             <div className="min-w-[120px]">
-                              <h3 className="text-lg font-bold text-gray-900 mb-2">
+                              <h3
+                                className={`text-lg font-bold ${
+                                  dark ? "text-white" : "text-gray-900"
+                                } mb-2`}
+                              >
                                 Style
                               </h3>
                               <ul className="space-y-2">
@@ -508,14 +578,22 @@ const Purchase = () => {
                                           setHoveredDiscipline(null);
                                         }}
                                         key={styleIndex}
-                                        className="text-sm text-black hover:text-blue-700 transition-colors duration-150 cursor-pointer"
+                                        className={`text-sm ${
+                                          dark
+                                            ? "text-gray-300 hover:text-blue-400"
+                                            : "text-gray-700 hover:text-blue-600"
+                                        } transition-colors duration-150 cursor-pointer`}
                                       >
                                         {styleItem.styleName}
                                       </li>
                                     )
                                   )
                                 ) : (
-                                  <li className="text-sm text-gray-500 italic">
+                                  <li
+                                    className={`text-sm ${
+                                      dark ? "text-gray-500" : "text-gray-500"
+                                    } italic`}
+                                  >
                                     N/A
                                   </li>
                                 )}
@@ -523,7 +601,11 @@ const Purchase = () => {
                             </div>
 
                             <div className="min-w-[120px]">
-                              <h3 className="text-lg font-bold text-gray-900 mb-2">
+                              <h3
+                                className={`text-lg font-bold ${
+                                  dark ? "text-white" : "text-gray-900"
+                                } mb-2`}
+                              >
                                 Theme
                               </h3>
                               <ul className="space-y-2">
@@ -532,7 +614,11 @@ const Purchase = () => {
                                     (themeItem, themeIndex: number) => (
                                       <li
                                         key={themeIndex}
-                                        className="text-sm text-black hover:text-blue-700 transition-colors duration-150 cursor-pointer"
+                                        className={`text-sm ${
+                                          dark
+                                            ? "text-gray-300 hover:text-blue-400"
+                                            : "text-gray-700 hover:text-blue-600"
+                                        } transition-colors duration-150 cursor-pointer`}
                                         onClick={() => {
                                           handleOptionSelect(
                                             hoveredDiscipline?.disciplineName
@@ -548,7 +634,11 @@ const Purchase = () => {
                                     )
                                   )
                                 ) : (
-                                  <li className="text-sm text-gray-500 italic">
+                                  <li
+                                    className={`text-sm ${
+                                      dark ? "text-gray-500" : "text-gray-500"
+                                    } italic`}
+                                  >
                                     N/A
                                   </li>
                                 )}
@@ -556,7 +646,11 @@ const Purchase = () => {
                             </div>
 
                             <div className="min-w-[120px]">
-                              <h3 className="text-lg font-bold text-gray-900 mb-2">
+                              <h3
+                                className={`text-lg font-bold ${
+                                  dark ? "text-white" : "text-gray-900"
+                                } mb-2`}
+                              >
                                 Commercial
                               </h3>
                               <ul className="space-y-2">
@@ -572,9 +666,15 @@ const Purchase = () => {
                                     }
                                     className={`${
                                       moreOptions[key.key] === "Yes"
-                                        ? "bg-gray-300 text-black px-1 rounded"
-                                        : "text-white"
-                                    } text-sm hover:text-blue-700 transition-colors duration-150 cursor-pointer`}
+                                        ? `${
+                                            dark
+                                              ? "bg-blue-900 text-blue-200"
+                                              : "bg-blue-100 text-blue-800"
+                                          } px-2 rounded`
+                                        : dark
+                                        ? "text-gray-300"
+                                        : "text-gray-700"
+                                    } text-sm hover:text-blue-600 transition-colors duration-150 cursor-pointer`}
                                   >
                                     {key.label}
                                   </li>
@@ -583,7 +683,11 @@ const Purchase = () => {
                             </div>
 
                             <div className="min-w-[120px]">
-                              <h3 className="text-lg font-bold text-gray-900 mb-2">
+                              <h3
+                                className={`text-lg font-bold ${
+                                  dark ? "text-white" : "text-gray-900"
+                                } mb-2`}
+                              >
                                 Artists
                               </h3>
                               <ul className="space-y-2">
@@ -603,9 +707,15 @@ const Purchase = () => {
                                         }
                                         className={`${
                                           moreOptions.insig === key._id
-                                            ? "bg-gray-300 text-black px-1 rounded"
-                                            : "text-white"
-                                        } text-sm hover:text-blue-700 transition-colors duration-150 cursor-pointer`}
+                                            ? `${
+                                                dark
+                                                  ? "bg-blue-900 text-blue-200"
+                                                  : "bg-blue-100 text-blue-800"
+                                              } px-2 rounded`
+                                            : dark
+                                            ? "text-gray-300"
+                                            : "text-gray-700"
+                                        } text-sm hover:text-blue-600 transition-colors duration-150 cursor-pointer`}
                                       >
                                         {key.credentialName}
                                       </li>
@@ -616,7 +726,11 @@ const Purchase = () => {
 
                             {/* Promoted Artworks Section */}
                             <div className="min-w-[200px]">
-                              <h3 className="text-lg font-bold text-gray-900 mb-2">
+                              <h3
+                                className={`text-lg font-bold ${
+                                  dark ? "text-white" : "text-gray-900"
+                                } mb-2`}
+                              >
                                 Highlight
                               </h3>
                               <ul className="flex gap-4 flex-shrink-0">
@@ -642,14 +756,18 @@ const Purchase = () => {
                                             {allHoverData?.collection[0]
                                               .collectionName || "Untitled"}
                                           </p>
-                                          <button className="mt-2 w-[20vh] place-content-center bg-blue-700 text-white text-md font-semibold py-3 px-3 rounded-2xl hover:bg-blue-800 transition-colors duration-150 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-300">
+                                          <button className="mt-2 w-[20vh] place-content-center bg-blue-600 text-white text-md font-semibold py-3 px-3 rounded-2xl hover:bg-blue-700 transition-colors duration-150 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-300">
                                             Discover
                                           </button>
                                         </div>
                                       </div>
                                     </li>
                                   ) : (
-                                    <li className="text-sm text-gray-500 italic">
+                                    <li
+                                      className={`text-sm ${
+                                        dark ? "text-gray-500" : "text-gray-500"
+                                      } italic`}
+                                    >
                                       No collection available
                                     </li>
                                   )}
@@ -678,7 +796,11 @@ const Purchase = () => {
                                       </div>
                                     </li>
                                   ) : (
-                                    <li className="text-sm text-gray-500 italic">
+                                    <li
+                                      className={`text-sm ${
+                                        dark ? "text-gray-500" : "text-gray-500"
+                                      } italic`}
+                                    >
                                       No artist available
                                     </li>
                                   )}
@@ -696,755 +818,708 @@ const Purchase = () => {
           </div>
 
           <div className="flex gap-4">
-            <span
-              className="rounded-full bg-[#102031] py-2 px-3 text-white font-medium cursor-pointer hover:bg-[#1a3555] transition-colors duration-200"
+            <button
+              className="rounded-full bg-[#EE1D52] py-2 px-4 text-white font-medium cursor-pointer hover:bg-[#FF3A6E] transition-colors duration-200 shadow-md"
               onClick={() => navigate("/explore")}
             >
               Explore
-            </span>
-            <span
-              className="rounded-full bg-[#102031] py-2 px-3 text-white font-medium cursor-pointer hover:bg-[#1a3555] transition-colors duration-200"
+            </button>
+            <button
+              className="rounded-full bg-[#EE1D52] py-2 px-4 text-white font-medium cursor-pointer hover:bg-[#FF3A6E] transition-colors duration-200 shadow-md"
               onClick={() => navigate("/collections")}
             >
               Discovery
-            </span>
+            </button>
           </div>
         </div>
       </div>
 
       <div
         ref={openRef}
-        className={`fixed border-r shadow-md bg-white top-0 left-0 h-screen overflow-y-auto text-black w-80 transform ${
+        className={`fixed border-r shadow-xl top-0 left-0 h-screen overflow-y-auto w-80 transform ${
           isOpenSidePanel ? "translate-x-0" : "-translate-x-full"
-        } transition-transform duration-300 ease-in-out z-10`}
+        } transition-transform duration-300 ease-in-out z-30 ${
+          dark
+            ? "bg-gray-800 border-gray-700 text-gray-100"
+            : "bg-white text-gray-800"
+        }`}
       >
-        <div className="flex items-center justify-between border-b border-gray-400 px-4 py-3">
-          <GiHamburgerMenu
-            className="cursor-pointer block"
-            size="2em"
-            onClick={() => setIsOpenSidePanel((prev) => !prev)}
-          />
+        <div className={`flex items-center justify-between border-b px-4 py-3`}>
+          <div className="flex items-center gap-2">
+            <GiHamburgerMenu
+              className="cursor-pointer"
+              size="1.5em"
+              onClick={() => setIsOpenSidePanel((prev) => !prev)}
+            />
+            <span className="font-semibold">Filters</span>
+            {activeFiltersCount > 0 && (
+              <Badge color={dark ? "blue" : "yellow"} className="ml-2">
+                {activeFiltersCount}
+              </Badge>
+            )}
+          </div>
 
-          <span
-            className="uppercase text-[14px] cursor-pointer bg-[#102031] text-white rounded py-1 px-3"
+          <button
+            className={`text-sm bg-[#FF3A6E] text-white rounded-full py-1 px-3 hover:bg-[#FF3A6E] transition-colors`}
             onClick={handleClear}
           >
             Clear All
-          </span>
+          </button>
         </div>
 
-        {selectedOption.length > 0 ? (
-          <div className="flex bg-[#102031] text-white p-2 flex-col gap-2">
-            {handleOptions.map(({ key, label, handler }) => {
-              const items = eval(key);
+        {activeFiltersCount > 0 && (
+          <div
+            className={`p-3 border-b ${
+              dark ? "bg-gray-700 border-gray-600" : "bg-gray-50"
+            }`}
+          >
+            <div className="flex flex-wrap gap-2">
+              {handleOptions.map(({ key, label }) => {
+                const items = eval(key);
+                return (
+                  items.length > 0 &&
+                  items.map((item: string, i: number) => (
+                    <Badge
+                      key={`${key}-${i}`}
+                      color="blue"
+                      onRemove={() =>
+                        handleOptions.find((o) => o.key === key)?.handler(item)
+                      }
+                    >
+                      {label}: {item}
+                    </Badge>
+                  ))
+                );
+              })}
 
-              return (
-                items.length > 0 && (
-                  <div key={key} className="flex gap-1.5">
-                    <span className="text-[13px] whitespace-nowrap font-semibold">
-                      {label} :
-                    </span>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      {items.map((item: string, i: number) => (
-                        <span
-                          key={i}
-                          className="text-[11px] text-black flex gap-1 items-center px-1 rounded-full bg-[#c3c3c3]"
-                        >
-                          {item}
-                          <MdOutlineCancel
-                            onClick={() => handler(item)}
-                            className="cursor-pointer"
-                          />
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )
-              );
-            })}
+              {Object.entries(moreOptions).map(([key, value]) => {
+                if (!value || value === "") return null;
+
+                const labelMap = {
+                  orientation: "Orientation",
+                  color: "Color",
+                  comingSoon: "Coming Soon",
+                  discount: "Discount",
+                  purchase: "Purchase Type",
+                  exclusive: "Exclusive",
+                  purchaseOption: "Purchase Option",
+                  newIn: "New In",
+                  bigDiscount: "Big Discount",
+                  insig: "Artist",
+                };
+
+                return (
+                  <Badge
+                    key={key}
+                    color="blue"
+                    onRemove={() =>
+                      setMoreOptions((prev) => ({ ...prev, [key]: "" }))
+                    }
+                  >
+                    {labelMap[key]}: {value}
+                  </Badge>
+                );
+              })}
+
+              {Object.entries(sliderData).map(([key, [min, max]]) => {
+                const defaultRange = defaultRanges[key];
+                if (min === defaultRange.min && max === defaultRange.max)
+                  return null;
+
+                const labelMap = {
+                  height: "Height",
+                  width: "Width",
+                  depth: "Depth",
+                  price: "Price",
+                };
+
+                return (
+                  <Badge
+                    key={key}
+                    color="blue"
+                    onRemove={() =>
+                      handleSliderChange(key, [
+                        defaultRange.min,
+                        defaultRange.max,
+                      ])
+                    }
+                  >
+                    {labelMap[key]}: {min}-{max}
+                    {key === "price" ? "" : "cm"}
+                  </Badge>
+                );
+              })}
+
+              {keywords.tag && (
+                <Badge
+                  color="blue"
+                  onRemove={() => setKeywords((prev) => ({ ...prev, tag: "" }))}
+                >
+                  Tag: {keywords.tag}
+                </Badge>
+              )}
+
+              {keywords.name && (
+                <Badge
+                  color="blue"
+                  onRemove={() =>
+                    setKeywords((prev) => ({ ...prev, name: "" }))
+                  }
+                >
+                  Artist: {keywords.name}
+                </Badge>
+              )}
+
+              {query && (
+                <Badge color="blue" onRemove={() => setQuery("")}>
+                  Search: {query}
+                </Badge>
+              )}
+            </div>
           </div>
-        ) : null}
-        <div className="flex bg-[#102031] text-white p-2 pt-0 flex-col gap-2">
-          {moreOptions.comingSoon && (
-            <div className="flex gap-1.5">
-              <span className="text-[13px] whitespace-nowrap font-semibold">
-                Comming Soon :
-              </span>
+        )}
 
-              <span className="text-[11px] text-black flex gap-1 items-center px-1 rounded-full bg-[#c3c3c3]">
-                {moreOptions.comingSoon}
-                <MdOutlineCancel
-                  onClick={() =>
-                    setMoreOptions((prev) => ({
-                      ...prev,
-                      comingSoon: "",
-                    }))
-                  }
-                  className="cursor-pointer"
-                />
-              </span>
+        <div className="p-4 space-y-6">
+          {/* Search Section */}
+          <div>
+            <h3
+              className={`text-lg font-semibold mb-2 ${
+                dark ? "text-gray-100" : "text-gray-800"
+              }`}
+            >
+              Search
+            </h3>
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search artworks..."
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                className={`w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all ${
+                  dark
+                    ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+                    : "border-gray-300"
+                }`}
+              />
+              <FaSearch
+                className={`absolute left-3 top-3 ${
+                  dark ? "text-gray-400" : "text-gray-400"
+                }`}
+              />
             </div>
-          )}
-          {moreOptions.exclusive && (
-            <div className="flex gap-1.5">
-              <span className="text-[13px] whitespace-nowrap font-semibold">
-                Exclusive Artwork :
-              </span>
-
-              <span className="text-[11px] text-black flex gap-1 items-center px-1 rounded-full bg-[#c3c3c3]">
-                {moreOptions.exclusive}
-                <MdOutlineCancel
-                  onClick={() =>
-                    setMoreOptions((prev) => ({
-                      ...prev,
-                      exclusive: "",
-                    }))
-                  }
-                  className="cursor-pointer"
-                />
-              </span>
-            </div>
-          )}
-
-          {moreOptions.discount && (
-            <div className="flex gap-1.5">
-              <span className="text-[13px] whitespace-nowrap font-semibold">
-                Discount Available :
-              </span>
-
-              <span className="text-[11px] text-black flex gap-1 items-center px-1 rounded-full bg-[#c3c3c3]">
-                {moreOptions.discount}
-                <MdOutlineCancel
-                  onClick={() =>
-                    setMoreOptions((prev) => ({
-                      ...prev,
-                      discount: "",
-                    }))
-                  }
-                  className="cursor-pointer"
-                />
-              </span>
-            </div>
-          )}
-          {moreOptions.bigDiscount && (
-            <div className="flex gap-1.5">
-              <span className="text-[13px] whitespace-nowrap font-semibold">
-                Big Discount :
-              </span>
-
-              <span className="text-[11px] text-black flex gap-1 items-center px-1 rounded-full bg-[#c3c3c3]">
-                {moreOptions.bigDiscount}
-                <MdOutlineCancel
-                  onClick={() =>
-                    setMoreOptions((prev) => ({
-                      ...prev,
-                      bigDiscount: "",
-                    }))
-                  }
-                  className="cursor-pointer"
-                />
-              </span>
-            </div>
-          )}
-        </div>
-
-        <div
-          className={`flex p-4 ${
-            selectedOption.length > 0 ? "pt-0" : "pt-2"
-          } flex-col gap-2`}
-        >
-          <div className="">
-            <Button
-              id="dropdownDividerButton"
+          </div>
+          {/* Discipline Filter */}
+          <div className="space-y-2">
+            <button
               onClick={() =>
                 setOptionOpen((prev) => ({
                   ...prev,
                   discipline: !prev.discipline,
                 }))
               }
-              className="flex !px-0 justify-between w-full items-center"
-              type="button"
-              variant={{
-                fontSize: "base",
-                theme: "black",
-                fontWeight: "600",
-              }}
+              className={`flex justify-between items-center w-full text-left font-semibold ${
+                dark ? "text-gray-100" : "text-gray-800"
+              }`}
             >
-              Discipline
-              <MdKeyboardArrowDown size={20} />
-            </Button>
-
-            {optionOpen.discipline ? renderDisciplineOptions() : null}
+              <span>Discipline</span>
+              <MdKeyboardArrowDown
+                size={20}
+                className={`transition-transform ${
+                  optionOpen.discipline ? "rotate-180" : ""
+                }`}
+              />
+            </button>
+            {optionOpen.discipline && renderDisciplineOptions()}
           </div>
 
-          {selectedOption.length > 0 ? (
-            <>
-              <div className="">
-                <Button
-                  id="dropdownDividerButton"
-                  onClick={() =>
-                    setOptionOpen((prev) => ({
-                      ...prev,
-                      theme: !prev.theme,
-                    }))
-                  }
-                  className="flex !px-0 justify-between w-full items-center"
-                  type="button"
-                  variant={{
-                    fontSize: "base",
-                    theme: "black",
-                    fontWeight: "600",
-                  }}
-                >
-                  Theme
-                  <MdKeyboardArrowDown size={20} />
-                </Button>
-
-                {optionOpen.theme ? renderThemeOptions() : null}
-              </div>
-
-              <div className="">
-                <Button
-                  id="dropdownDividerButton"
-                  onClick={() =>
-                    setOptionOpen((prev) => ({
-                      ...prev,
-                      technic: !prev.technic,
-                    }))
-                  }
-                  className="flex !px-0 justify-between w-full items-center"
-                  type="button"
-                  variant={{
-                    fontSize: "base",
-                    theme: "black",
-                    fontWeight: "600",
-                  }}
-                >
-                  Technic
-                  <MdKeyboardArrowDown size={20} />
-                </Button>
-
-                {optionOpen.technic ? renderTechnicOptions() : null}
-              </div>
-
-              <div className="">
-                <Button
-                  id="dropdownDividerButton"
-                  onClick={() =>
-                    setOptionOpen((prev) => ({
-                      ...prev,
-                      style: !prev.style,
-                    }))
-                  }
-                  className="flex !px-0 justify-between w-full items-center"
-                  type="button"
-                  variant={{
-                    fontSize: "base",
-                    theme: "black",
-                    fontWeight: "600",
-                  }}
-                >
-                  Style
-                  <MdKeyboardArrowDown size={20} />
-                </Button>
-
-                {optionOpen.style ? renderStyleOptions() : null}
-              </div>
-            </>
-          ) : null}
-
-          <div>
-            <Button
-              id="dropdownDividerButton"
-              className="flex !px-0 justify-between w-full items-center"
-              type="button"
-              variant={{
-                fontSize: "base",
-                theme: "black",
-                fontWeight: "600",
-              }}
+          {selectedOption.length > 0 && (
+            <div className="space-y-2">
+              <button
+                onClick={() =>
+                  setOptionOpen((prev) => ({
+                    ...prev,
+                    theme: !prev.theme,
+                  }))
+                }
+                className={`flex justify-between items-center w-full text-left font-semibold ${
+                  dark ? "text-gray-100" : "text-gray-800"
+                }`}
+              >
+                <span>Theme</span>
+                <MdKeyboardArrowDown
+                  size={20}
+                  className={`transition-transform ${
+                    optionOpen.theme ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+              {optionOpen.theme && renderThemeOptions()}
+            </div>
+          )}
+          {/* Technic Filter (only shown when disciplines are selected) */}
+          {selectedOption.length > 0 && (
+            <div className="space-y-2">
+              <button
+                onClick={() =>
+                  setOptionOpen((prev) => ({
+                    ...prev,
+                    technic: !prev.technic,
+                  }))
+                }
+                className={`flex justify-between items-center w-full text-left font-semibold ${
+                  dark ? "text-gray-100" : "text-gray-800"
+                }`}
+              >
+                <span>Technic</span>
+                <MdKeyboardArrowDown
+                  size={20}
+                  className={`transition-transform ${
+                    optionOpen.technic ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+              {optionOpen.technic && renderTechnicOptions()}
+            </div>
+          )}
+          {/* Style Filter (only shown when disciplines are selected) */}
+          {selectedOption.length > 0 && (
+            <div className="space-y-2">
+              <button
+                onClick={() =>
+                  setOptionOpen((prev) => ({
+                    ...prev,
+                    style: !prev.style,
+                  }))
+                }
+                className={`flex justify-between items-center w-full text-left font-semibold ${
+                  dark ? "text-gray-100" : "text-gray-800"
+                }`}
+              >
+                <span>Style</span>
+                <MdKeyboardArrowDown
+                  size={20}
+                  className={`transition-transform ${
+                    optionOpen.style ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+              {optionOpen.style && renderStyleOptions()}
+            </div>
+          )}
+          {/* Orientation Filter */}
+          <div className="space-y-2">
+            <h3
+              className={`font-semibold ${
+                dark ? "text-gray-100" : "text-gray-800"
+              }`}
             >
               Orientation
-              <MdKeyboardArrowDown size={20} />
-            </Button>
-
-            <div className="flex gap-2 item-center">
-              <div
-                onClick={() =>
-                  setMoreOptions((prev) => ({
-                    ...prev,
-                    orientation: "Vertical",
-                  }))
-                }
-                className={`${
-                  moreOptions.orientation == "Vertical"
-                    ? "bg-slate-300"
-                    : "bg-[#eaeaea]"
-                } w-8 hover:bg-slate-300 cursor-pointer`}
-              >
-                <P
-                  variant={{
-                    size: "small",
-                    theme: "light",
-                    weight: "semiBold",
-                  }}
-                  className="bg-[#102030] m-2 py-4 px-1 text-center"
-                ></P>
-              </div>
-              <div
-                onClick={() =>
-                  setMoreOptions((prev) => ({
-                    ...prev,
-                    orientation: "Neutral",
-                  }))
-                }
-                className={`${
-                  moreOptions.orientation == "Neutral"
-                    ? "bg-slate-300"
-                    : "bg-[#eaeaea]"
-                } w-12 hover:bg-slate-300 cursor-pointer`}
-              >
-                <P
-                  variant={{
-                    size: "small",
-                    theme: "light",
-                    weight: "semiBold",
-                  }}
-                  className="bg-[#102030] m-2 py-4 px-1 text-center"
-                ></P>
-              </div>
-              <div
-                onClick={() =>
-                  setMoreOptions((prev) => ({
-                    ...prev,
-                    orientation: "Horizontal",
-                  }))
-                }
-                className={`${
-                  moreOptions.orientation == "Horizontal"
-                    ? "bg-slate-300"
-                    : "bg-[#eaeaea]"
-                } w-12 hover:bg-slate-300 cursor-pointer`}
-              >
-                <P
-                  variant={{
-                    size: "small",
-                    theme: "light",
-                    weight: "semiBold",
-                  }}
-                  className="bg-[#102030] mx-2 my-4 py-2 text-center"
-                ></P>
-              </div>
+            </h3>
+            <div className="flex gap-4">
+              {[
+                { value: "Vertical", icon: "↕", width: "w-8" },
+                { value: "Neutral", icon: "⚪", width: "w-12" },
+                { value: "Horizontal", icon: "↔", width: "w-12" },
+              ].map((item) => (
+                <button
+                  key={item.value}
+                  onClick={() =>
+                    setMoreOptions((prev) => ({
+                      ...prev,
+                      orientation:
+                        prev.orientation === item.value ? "" : item.value,
+                    }))
+                  }
+                  className={`${
+                    item.width
+                  } h-12 flex items-center justify-center rounded-lg border-2 ${
+                    moreOptions.orientation === item.value
+                      ? dark
+                        ? "border-blue-500 bg-blue-900"
+                        : "border-blue-500 bg-blue-50"
+                      : dark
+                      ? "border-gray-600 hover:border-gray-500"
+                      : "border-gray-200 hover:border-gray-300"
+                  } transition-colors`}
+                >
+                  <span className="text-xl">{item.icon}</span>
+                </button>
+              ))}
             </div>
           </div>
-
-          <div>
-            <Button
-              id="dropdownDividerButton"
-              className="flex !px-0 justify-between w-full items-center"
-              type="button"
-              variant={{
-                fontSize: "base",
-                theme: "black",
-                fontWeight: "600",
-              }}
+          {/* Color Filter */}
+          <div className="space-y-2">
+            <h3
+              className={`font-semibold ${
+                dark ? "text-gray-100" : "text-gray-800"
+              }`}
             >
-              Select Color
-            </Button>
-
+              Color
+            </h3>
             <select
-              className="w-full border py-2 rounded"
+              value={moreOptions.color}
               onChange={(e) =>
                 setMoreOptions((prev) => ({ ...prev, color: e.target.value }))
               }
+              className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all ${
+                dark
+                  ? "bg-gray-700 border-gray-600 text-white"
+                  : "border-gray-300"
+              }`}
             >
               <option value="">Select Color</option>
-              {colors && colors.length > 0 ? (
-                colors.map((item, i: number) => (
-                  <option value={item.value} key={i}>
-                    {item.value}
-                  </option>
-                ))
-              ) : (
-                <option disabled>No Options</option>
-              )}
+              {colors?.map((item, i) => (
+                <option key={i} value={item.value}>
+                  {item.value}
+                </option>
+              ))}
             </select>
           </div>
-
-          <div className="flex items-center justify-between">
-            <Button
-              id="dropdownDividerButton"
-              className="flex !px-0 justify-between w-full items-center"
-              type="button"
-              variant={{
-                fontSize: "base",
-                theme: "black",
-                fontWeight: "600",
-              }}
+          {/* Commercial Options */}
+          <div className="space-y-2">
+            <h3
+              className={`font-semibold ${
+                dark ? "text-gray-100" : "text-gray-800"
+              }`}
             >
-              Coming Soon
-            </Button>
-
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                className="sr-only peer"
-                checked={moreOptions.comingSoon === "Yes"}
-                onChange={(e) =>
-                  setMoreOptions((prev) => ({
-                    ...prev,
-                    comingSoon: e.target.checked ? "Yes" : "",
-                  }))
-                }
-              />
-              <div className="w-11 h-6 bg-gray-300 peer-focus:ring-4 peer-focus:ring-gray-200 rounded-full peer-checked:bg-black transition-all relative">
-                <div
-                  className="absolute top-1 left-1 bg-white border border-gray-300 rounded-full h-4 w-4 transition-transform duration-200"
-                  style={{
-                    transform:
-                      moreOptions.comingSoon === "Yes"
-                        ? "translateX(20px)"
-                        : "translateX(0px)",
-                  }}
-                ></div>
-              </div>
-            </label>
+              Commercial Options
+            </h3>
+            <div className="space-y-2">
+              {commercialOptions.map((option) => (
+                <label
+                  key={option.key}
+                  className="flex items-center justify-between"
+                >
+                  <span className={dark ? "text-gray-300" : "text-gray-700"}>
+                    {option.label}
+                  </span>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      className="sr-only peer"
+                      checked={moreOptions[option.key] === "Yes"}
+                      onChange={(e) =>
+                        setMoreOptions((prev) => ({
+                          ...prev,
+                          [option.key]: e.target.checked ? "Yes" : "",
+                        }))
+                      }
+                    />
+                    <div
+                      className={`w-11 h-6 rounded-full peer peer-focus:ring-4 ${
+                        dark
+                          ? "peer-focus:ring-blue-800 bg-gray-600 peer-checked:bg-blue-600"
+                          : "peer-focus:ring-blue-300 bg-gray-200 peer-checked:bg-blue-600"
+                      } after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full`}
+                    ></div>
+                  </label>
+                </label>
+              ))}
+            </div>
           </div>
 
-          <div className="flex items-center justify-between">
-            <Button
-              id="dropdownDividerButton"
-              className="flex !px-0 justify-between w-full items-center"
-              type="button"
-              variant={{
-                fontSize: "base",
-                theme: "black",
-                fontWeight: "600",
-              }}
-            >
-              New In
-            </Button>
+          {/* Dimensions Filters */}
+          <div className="space-y-4">
+            {Object.entries(defaultRanges).map(([key, range]) => {
+              if (selectedOption != "Sculpture" && key == "depth") return null;
+              if (type != "purchase" && key == "price") return null;
 
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                className="sr-only peer"
-                checked={moreOptions.newIn === "Yes"}
-                onChange={(e) =>
-                  setMoreOptions((prev) => ({
-                    ...prev,
-                    newIn: e.target.checked ? "Yes" : "",
-                  }))
-                }
-              />
-              <div className="w-11 h-6 bg-gray-300 peer-focus:ring-4 peer-focus:ring-gray-200 rounded-full peer-checked:bg-black transition-all relative">
-                <div
-                  className="absolute top-1 left-1 bg-white border border-gray-300 rounded-full h-4 w-4 transition-transform duration-200"
-                  style={{
-                    transform:
-                      moreOptions.newIn === "Yes"
-                        ? "translateX(20px)"
-                        : "translateX(0px)",
-                  }}
-                ></div>
-              </div>
-            </label>
+              const labelMap = {
+                height: "Height (cm)",
+                width: "Width (cm)",
+                depth: "Depth (cm)",
+                price: "Price (EUR)",
+              };
+
+              return (
+                <div key={key} className="space-y-2">
+                  <h3
+                    className={`font-semibold ${
+                      dark ? "text-gray-100" : "text-gray-800"
+                    }`}
+                  >
+                    {labelMap[key]}
+                  </h3>
+                  <div
+                    className={`flex justify-between text-sm ${
+                      dark ? "text-gray-400" : "text-gray-600"
+                    }`}
+                  >
+                    <span>{sliderData[key][0]}</span>
+                    <span>{sliderData[key][1]}</span>
+                  </div>
+                  <Slider
+                    range
+                    min={range.min}
+                    max={range.max}
+                    step={range.step}
+                    value={sliderData[key]}
+                    onChange={(value) => handleSliderChange(key, value)}
+                    trackStyle={[
+                      { backgroundColor: dark ? "#60A5FA" : "#3B82F6" },
+                    ]}
+                    handleStyle={[
+                      {
+                        backgroundColor: dark ? "#60A5FA" : "#3B82F6",
+                        borderColor: dark ? "#60A5FA" : "#3B82F6",
+                        opacity: 1,
+                      },
+                      {
+                        backgroundColor: dark ? "#60A5FA" : "#3B82F6",
+                        borderColor: dark ? "#60A5FA" : "#3B82F6",
+                        opacity: 1,
+                      },
+                    ]}
+                    railStyle={{
+                      backgroundColor: dark ? "#374151" : "#E5E7EB",
+                    }}
+                    className="mt-2"
+                  />
+                </div>
+              );
+            })}
           </div>
-
-          <div>
-            <Button
-              id="dropdownDividerButton"
-              className="flex !px-0 justify-between w-full items-center"
-              type="button"
-              variant={{
-                fontSize: "base",
-                theme: "black",
-                fontWeight: "600",
-              }}
+          {/* Additional Filters */}
+          <div className="space-y-2">
+            <h3
+              className={`font-semibold ${
+                dark ? "text-gray-100" : "text-gray-800"
+              }`}
             >
-              External Tags
-            </Button>
+              Additional Filters
+            </h3>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className={dark ? "text-gray-300" : "text-gray-700"}>
+                  Exclusive Artwork
+                </span>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    className="sr-only peer"
+                    checked={moreOptions.exclusive === "Yes"}
+                    onChange={(e) =>
+                      setMoreOptions((prev) => ({
+                        ...prev,
+                        exclusive: e.target.checked ? "Yes" : "",
+                      }))
+                    }
+                  />
+                  <div
+                    className={`w-11 h-6 rounded-full peer peer-focus:ring-4 ${
+                      dark
+                        ? "peer-focus:ring-blue-800 bg-gray-600 peer-checked:bg-blue-600"
+                        : "peer-focus:ring-blue-300 bg-gray-200 peer-checked:bg-blue-600"
+                    } after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full`}
+                  ></div>
+                </label>
+              </div>
+
+              {type === "purchase" && (
+                <>
+                  <div className="flex items-center justify-between">
+                    <span className={dark ? "text-gray-300" : "text-gray-700"}>
+                      Discount Available
+                    </span>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        className="sr-only peer"
+                        checked={moreOptions.discount === "Yes"}
+                        onChange={(e) =>
+                          setMoreOptions((prev) => ({
+                            ...prev,
+                            discount: e.target.checked ? "Yes" : "",
+                          }))
+                        }
+                      />
+                      <div
+                        className={`w-11 h-6 rounded-full peer peer-focus:ring-4 ${
+                          dark
+                            ? "peer-focus:ring-blue-800 bg-gray-600 peer-checked:bg-blue-600"
+                            : "peer-focus:ring-blue-300 bg-gray-200 peer-checked:bg-blue-600"
+                        } after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full`}
+                      ></div>
+                    </label>
+                  </div>
+
+                  <div className="space-y-1">
+                    <h3
+                      className={`font-semibold ${
+                        dark ? "text-gray-100" : "text-gray-800"
+                      }`}
+                    >
+                      Purchase Type
+                    </h3>
+                    <select
+                      value={moreOptions.purchase}
+                      onChange={(e) =>
+                        setMoreOptions((prev) => ({
+                          ...prev,
+                          purchase: e.target.value,
+                        }))
+                      }
+                      className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all ${
+                        dark
+                          ? "bg-gray-700 border-gray-600 text-white"
+                          : "border-gray-300"
+                      }`}
+                    >
+                      <option value="">All</option>
+                      {commOptions?.map((item, i) => (
+                        <option key={i} value={item.value}>
+                          {item.value}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </>
+              )}
+
+              {type !== "purchase" && (
+                <div className="flex items-center justify-between">
+                  <span className={dark ? "text-gray-300" : "text-gray-700"}>
+                    Purchase Option
+                  </span>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      className="sr-only peer"
+                      checked={moreOptions.purchaseOption === "Yes"}
+                      onChange={(e) =>
+                        setMoreOptions((prev) => ({
+                          ...prev,
+                          purchaseOption: e.target.checked ? "Yes" : "",
+                        }))
+                      }
+                    />
+                    <div
+                      className={`w-11 h-6 rounded-full peer peer-focus:ring-4 ${
+                        dark
+                          ? "peer-focus:ring-blue-800 bg-gray-600 peer-checked:bg-blue-600"
+                          : "peer-focus:ring-blue-300 bg-gray-200 peer-checked:bg-blue-600"
+                      } after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full`}
+                    ></div>
+                  </label>
+                </div>
+              )}
+            </div>
+          </div>
+          {/* Keywords Filter */}
+          <div className="space-y-2">
+            <h3
+              className={`font-semibold ${
+                dark ? "text-gray-100" : "text-gray-800"
+              }`}
+            >
+              Keywords
+            </h3>
             <input
               type="text"
-              placeholder="Search By Keywords/External Tags"
+              placeholder="Search by tags..."
+              value={keywords.tag}
               onChange={(e) =>
                 setKeywords((prev) => ({
                   ...prev,
                   tag: e.target.value,
                 }))
               }
-              className="w-full border p-2 rounded"
+              className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all ${
+                dark
+                  ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+                  : "border-gray-300"
+              }`}
             />
           </div>
-
-          <div>
-            <Button
-              id="dropdownDividerButton"
-              className="flex !px-0 justify-between w-full items-center"
-              type="button"
-              variant={{
-                fontSize: "base",
-                theme: "black",
-                fontWeight: "600",
-              }}
+          {/* Artist Filter */}
+          <div className="space-y-2">
+            <h3
+              className={`font-semibold ${
+                dark ? "text-gray-100" : "text-gray-800"
+              }`}
             >
-              Search By Artist
-            </Button>
+              Artist
+            </h3>
             <input
               type="text"
-              placeholder="Search By Artist Name"
+              placeholder="Search by artist..."
+              value={keywords.name}
               onChange={(e) =>
                 setKeywords((prev) => ({
                   ...prev,
                   name: e.target.value,
                 }))
               }
-              className="w-full border p-2 rounded"
+              className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all ${
+                dark
+                  ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+                  : "border-gray-300"
+              }`}
             />
           </div>
-
-          {Object.entries(defaultRanges).map(([key, range]) => {
-            if (selectedOption != "Sculpture" && key == "depth") return null;
-            if (type != "purchase" && key == "price") return null;
-
-            return (
-              <div key={key}>
-                <Button
-                  id="dropdownDividerButton"
-                  className="flex capitalize !px-0 justify-between w-full items-center"
-                  type="button"
-                  variant={{
-                    fontSize: "base",
-                    theme: "black",
-                    fontWeight: "600",
-                  }}
-                >
-                  {key} Range{" "}
-                  {key === "weight"
-                    ? "(in kg)"
-                    : key == "price"
-                    ? ""
-                    : "(in cm)"}
-                </Button>
-
-                <div className="text-gray-600 font-semibold text-[12px] mb-1">
-                  {sliderData[key][0]} - {sliderData[key][1]}
-                </div>
-                <Slider
-                  range
-                  min={range.min}
-                  max={range.max}
-                  step={range.step}
-                  value={sliderData[key]}
-                  onChange={(value) => handleSliderChange(key, value)}
-                  trackStyle={[{ backgroundColor: "#4A90E2" }]}
-                  handleStyle={[
-                    { backgroundColor: "#4A90E2", borderColor: "#4A90E2" },
-                    { backgroundColor: "#4A90E2", borderColor: "#4A90E2" },
-                  ]}
-                />
-              </div>
-            );
-          })}
-
-          <div className="flex items-center justify-between">
-            <Button
-              id="dropdownDividerButton"
-              className="flex !px-0 justify-between w-full items-center"
-              type="button"
-              variant={{
-                fontSize: "base",
-                theme: "black",
-                fontWeight: "600",
-              }}
-            >
-              Exclusive Artwork
-            </Button>
-
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                className="sr-only peer"
-                checked={moreOptions.exclusive === "Yes"}
-                onChange={(e) =>
-                  setMoreOptions((prev) => ({
-                    ...prev,
-                    exclusive: e.target.checked ? "Yes" : "",
-                  }))
-                }
-              />
-              <div className="w-11 h-6 bg-gray-300 peer-focus:ring-4 peer-focus:ring-gray-200 rounded-full peer-checked:bg-black transition-all relative">
-                <div
-                  className="absolute top-1 left-1 bg-white border border-gray-300 rounded-full h-4 w-4 transition-transform duration-200"
-                  style={{
-                    transform:
-                      moreOptions.exclusive === "Yes"
-                        ? "translateX(20px)"
-                        : "translateX(0px)",
-                  }}
-                ></div>
-              </div>
-            </label>
-          </div>
-
-          {type == "purchase" ? (
-            <>
-              <div className="flex items-center justify-between">
-                <Button
-                  id="dropdownDividerButton"
-                  className="flex !px-0 justify-between w-full items-center"
-                  type="button"
-                  variant={{
-                    fontSize: "base",
-                    theme: "black",
-                    fontWeight: "600",
-                  }}
-                >
-                  Discount Available
-                </Button>
-
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input
-                    type="checkbox"
-                    className="sr-only peer"
-                    checked={moreOptions.discount === "Yes"}
-                    onChange={(e) =>
-                      setMoreOptions((prev) => ({
-                        ...prev,
-                        discount: e.target.checked ? "Yes" : "",
-                      }))
-                    }
-                  />
-                  <div className="w-11 h-6 bg-gray-300 peer-focus:ring-4 peer-focus:ring-gray-200 rounded-full peer-checked:bg-black transition-all relative">
-                    <div
-                      className="absolute top-1 left-1 bg-white border border-gray-300 rounded-full h-4 w-4 transition-transform duration-200"
-                      style={{
-                        transform:
-                          moreOptions.discount === "Yes"
-                            ? "translateX(20px)"
-                            : "translateX(0px)",
-                      }}
-                    ></div>
-                  </div>
-                </label>
-              </div>
-
-              <div>
-                <Button
-                  id="dropdownDividerButton"
-                  className="flex !px-0 justify-between w-full items-center"
-                  type="button"
-                  variant={{
-                    fontSize: "base",
-                    theme: "black",
-                    fontWeight: "600",
-                  }}
-                >
-                  Purchase Type
-                </Button>
-
-                <select
-                  className="w-full border py-2 rounded"
-                  onChange={(e) =>
-                    setMoreOptions((prev) => ({
-                      ...prev,
-                      purchase: e.target.value,
-                    }))
-                  }
-                >
-                  <option value="">All</option>
-
-                  {commOptions && commOptions.length > 0 ? (
-                    commOptions.map((item, i: number) => (
-                      <option value={item.value} key={i}>
-                        {item.value}
-                      </option>
-                    ))
-                  ) : (
-                    <option disabled>No Options</option>
-                  )}
-                </select>
-              </div>
-            </>
-          ) : (
-            <div className="flex items-center justify-between">
-              <Button
-                id="dropdownDividerButton"
-                className="flex !px-0 justify-between w-full items-center"
-                type="button"
-                variant={{
-                  fontSize: "base",
-                  theme: "black",
-                  fontWeight: "600",
-                }}
-              >
-                Purchase Option
-              </Button>
-
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  className="sr-only peer"
-                  checked={moreOptions.purchaseOption === "Yes"}
-                  onChange={(e) =>
-                    setMoreOptions((prev) => ({
-                      ...prev,
-                      purchaseOption: e.target.checked ? "Yes" : "",
-                    }))
-                  }
-                />
-                <div className="w-11 h-6 bg-gray-300 peer-focus:ring-4 peer-focus:ring-gray-200 rounded-full peer-checked:bg-black transition-all relative">
-                  <div
-                    className="absolute top-1 left-1 bg-white border border-gray-300 rounded-full h-4 w-4 transition-transform duration-200"
-                    style={{
-                      transform:
-                        moreOptions.purchaseOption === "Yes"
-                          ? "translateX(20px)"
-                          : "translateX(0px)",
-                    }}
-                  ></div>
-                </div>
-              </label>
-            </div>
-          )}
         </div>
       </div>
 
       {isLoading ? (
-        <Loader />
+        <div
+          className={`flex justify-center items-center h-[60vh] ${
+            dark ? "bg-gray-900" : "bg-gray-50"
+          }`}
+        >
+          <Loader />
+        </div>
       ) : (
-        <div className="px-4 sm:px-6 md:px-10 lg:px-14">
-          <div className="flex sm:flex-row flex-col items-center justify-between w-full gap-3 mt-10 mb-6">
-            <div className="flex w-full whitespace-nowrap gap-2 items-center">
-              <span
-                className="flex gap-2 bg-[#102031] text-white rounded-full cursor-pointer px-4 py-2"
+        <div
+          className={`px-4 sm:px-6 md:px-10 lg:px-14 py-6 ${
+            dark ? "bg-gray-900" : "bg-gray-50"
+          }`}
+        >
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+            <div className="flex items-center gap-3">
+              <button
+                className={`flex items-center gap-2 rounded-full px-4 py-2 shadow-md transition-colors ${
+                  dark
+                    ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
+                    : "bg-white text-gray-800 hover:bg-gray-50"
+                }`}
                 onClick={() => setIsOpenSidePanel((prev) => !prev)}
               >
                 <MdOutlineFilterList size={20} />
-                <P variant={{ size: "base", theme: "light", weight: "medium" }}>
-                  Filter
-                </P>
-              </span>
-              <P variant={{ theme: "dark", weight: "medium", size: "small" }}>
-                Showing{" "}
-                {`${(options.currPage - 1) * options.limit + 1} - ${Math.min(
-                  options.currPage * options.limit,
-                  data?.totalCount
-                )} of ${data?.totalCount}`}{" "}
+                <span className="font-medium">Filters</span>
+                {activeFiltersCount > 0 && (
+                  <Badge color={dark ? "blue" : "blue"} className="ml-1">
+                    {activeFiltersCount}
+                  </Badge>
+                )}
+              </button>
+              <span
+                className={`text-sm ${
+                  dark ? "text-gray-400" : "text-gray-600"
+                }`}
+              >
+                Showing {data?.data?.length || 0} of {data?.totalCount || 0}{" "}
                 results
-              </P>
+              </span>
             </div>
-            <div className="flex w-full sm:justify-end justify-between items-center gap-2">
-              <div className="relative flex items-center rounded-full border border-gray-300">
+
+            <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+              <div className="relative flex-1 sm:w-64">
                 <input
                   type="text"
-                  placeholder="Search by Artwork Name..."
-                  className="w-full py-2 pl-10 rounded-full outline-none"
-                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Search artworks..."
                   value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  className={`w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all ${
+                    dark
+                      ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+                      : "border-gray-300"
+                  }`}
                 />
-
-                <FaSearch className="w-5 h-5 left-3 absolute" />
+                <FaSearch
+                  className={`absolute left-3 top-3 ${
+                    dark ? "text-gray-400" : "text-gray-400"
+                  }`}
+                />
               </div>
               <SelectOption
                 value={
@@ -1462,53 +1537,53 @@ const Purchase = () => {
                     comingSoon: e?.value === "Coming Soon" ? "Yes" : "",
                   }));
                 }}
-                placeholder="Show"
+                dark={dark}
               />
             </div>
           </div>
 
-          <CardSection data={data?.data} type={type} />
+          <CardSection data={data?.data} type={type} darkMode={dark} />
 
-          <div className="flex max-[410px]:flex-col max-[440px]:gap-5 items-center my-10 justify-between">
-            <div className="bg-[#102031] text-white rounded-full flex items-center gap-0.5 px-4 py-2">
-              <span className="text-[14px] font-medium">Rows per page :</span>
+          <div
+            className={`flex flex-col sm:flex-row items-center justify-between gap-4 mt-8 ${
+              dark ? "text-gray-300" : "text-gray-700"
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <span className="text-sm">Rows per page:</span>
               <select
-                className="outline-none bg-transparent"
+                value={options.limit}
                 onChange={(e) =>
                   setOptions({
                     ...options,
                     cursor: "",
                     currPage: 1,
-                    limit: e.target.value,
+                    limit: Number(e.target.value),
                   })
                 }
-                value={options.limit}
+                className={`border rounded-md px-2 py-1 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none ${
+                  dark ? "bg-gray-700 border-gray-600" : "border-gray-300"
+                }`}
               >
-                {[5, 10, 25].map((option, i) => (
-                  <option
-                    className="bg-[#102031] text-white font-medium"
-                    key={i}
-                    value={option}
-                  >
+                {[5, 10, 25].map((option) => (
+                  <option key={option} value={option}>
                     {option}
                   </option>
                 ))}
               </select>
             </div>
-            <div className="flex gap-2 items-center">
-              <span className="text-[14px] font-medium bg-[#102031] text-white rounded-full px-4 py-2">
-                {`${(options.currPage - 1) * options.limit + 1} - ${Math.min(
-                  options.currPage * options.limit,
+
+            <div className="flex items-center gap-4">
+              <span className="text-sm">
+                {Math.min(
+                  (options.currPage - 1) * options.limit + 1,
                   data?.totalCount
-                )} of ${data?.totalCount}`}
+                )}
+                -{Math.min(options.currPage * options.limit, data?.totalCount)}{" "}
+                of {data?.totalCount}
               </span>
-              <span className="flex gap-2 items-center">
-                <MdArrowBackIosNew
-                  className={`cursor-pointer border border-[#102031] bg-slate-200 rounded-full p-2 text-[2rem] ${
-                    !prevCursor || isLoading
-                      ? "opacity-50 pointer-events-none"
-                      : ""
-                  }`}
+              <div className="flex gap-2">
+                <button
                   onClick={() => {
                     setOptions({
                       ...options,
@@ -1518,13 +1593,20 @@ const Purchase = () => {
                         options.currPage === 1 ? 1 : options.currPage - 1,
                     });
                   }}
-                />
-                <MdArrowForwardIos
-                  className={`cursor-pointer border border-[#102031] bg-slate-200 rounded-full p-2 text-[2rem] ${
-                    !nextCursor || isLoading
-                      ? "opacity-50 pointer-events-none"
-                      : ""
+                  disabled={!prevCursor || isLoading}
+                  className={`p-2 rounded-full border ${
+                    !prevCursor || isLoading
+                      ? dark
+                        ? "bg-gray-700 text-gray-500 cursor-not-allowed"
+                        : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                      : dark
+                      ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                      : "bg-white text-gray-700 hover:bg-gray-50"
                   }`}
+                >
+                  <MdArrowBackIosNew size={18} />
+                </button>
+                <button
                   onClick={() => {
                     setOptions({
                       ...options,
@@ -1533,13 +1615,25 @@ const Purchase = () => {
                       currPage: options.currPage + 1,
                     });
                   }}
-                />
-              </span>
+                  disabled={!nextCursor || isLoading}
+                  className={`p-2 rounded-full border ${
+                    !nextCursor || isLoading
+                      ? dark
+                        ? "bg-gray-700 text-gray-500 cursor-not-allowed"
+                        : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                      : dark
+                      ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                      : "bg-white text-gray-700 hover:bg-gray-50"
+                  }`}
+                >
+                  <MdArrowForwardIos size={18} />
+                </button>
+              </div>
             </div>
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

@@ -1,29 +1,27 @@
-import type { AxiosRequestConfig } from 'axios';
+import type { AxiosRequestConfig } from "axios";
 
-import axios from 'axios';
-import { store } from '../../store/store';
-import { setIsAuthorized } from '../../store/userSlice/userSlice';
-import { getToken } from './tokenHelper';
-
-
+import axios from "axios";
+import { store } from "../../store/store";
+import { setIsAuthorized } from "../../store/slice/userSlice";
+import { getToken } from "./tokenHelper";
 
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_SERVER_BASE_URL,
   timeout: 300000,
   headers: {
-    'Access-Control-Allow-Origin': '*',
-    'ngrok-skip-browser-warning': '69420',
-    'Access-Control-Allow-Credentials': true,
-    'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
+    "Access-Control-Allow-Origin": "*",
+    "ngrok-skip-browser-warning": "69420",
+    "Access-Control-Allow-Credentials": true,
+    "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+    Accept: "application/json",
+    "Content-Type": "application/json",
   },
 });
 
 const ERROR_MSGs = [
-  'Token is not found',
-  'You are not authorized',
-  'Invalid token please do re-login',
+  "Token is not found",
+  "You are not authorized",
+  "Invalid token please do re-login",
 ];
 
 export function setup() {
@@ -31,7 +29,7 @@ export function setup() {
     (config) => {
       const token = getToken();
       config.headers = {
-        Authorization: `${token ? `Bearer ${token}` : ''}`,
+        Authorization: `${token ? `Bearer ${token}` : ""}`,
         ...config.headers,
       };
       return config;
@@ -61,7 +59,7 @@ export const fetcher = async (args: string | [string, AxiosRequestConfig]) => {
 
     return res.data;
   } catch (error) {
-    console.error('Failed to fetch:', error);
+    console.error("Failed to fetch:", error);
     throw error;
   }
 };
@@ -69,28 +67,28 @@ export const fetcher = async (args: string | [string, AxiosRequestConfig]) => {
 // ----------------------------------------------------------------------
 
 export const endpoints = {
-  chat: '/api/chat',
-  kanban: '/api/kanban',
-  calendar: '/api/calendar',
+  chat: "/api/chat",
+  kanban: "/api/kanban",
+  calendar: "/api/calendar",
   auth: {
-    me: '/api/auth/me',
-    signIn: '/api/auth/sign-in',
-    signUp: '/api/auth/sign-up',
+    me: "/api/auth/me",
+    signIn: "/api/auth/sign-in",
+    signUp: "/api/auth/sign-up",
   },
   mail: {
-    list: '/api/mail/list',
-    details: '/api/mail/details',
-    labels: '/api/mail/labels',
+    list: "/api/mail/list",
+    details: "/api/mail/details",
+    labels: "/api/mail/labels",
   },
   post: {
-    list: '/api/post/list',
-    details: '/api/post/details',
-    latest: '/api/post/latest',
-    search: '/api/post/search',
+    list: "/api/post/list",
+    details: "/api/post/details",
+    latest: "/api/post/latest",
+    search: "/api/post/search",
   },
   product: {
-    list: '/api/product/list',
-    details: '/api/product/details',
-    search: '/api/product/search',
+    list: "/api/product/list",
+    details: "/api/product/details",
+    search: "/api/product/search",
   },
 };

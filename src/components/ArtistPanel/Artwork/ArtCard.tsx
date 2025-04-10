@@ -1,77 +1,81 @@
 import { useTranslation } from "react-i18next";
-import { imageUrl } from "../../utils/baseUrls";
-import edit from "../assets/Container (1).png";
-import deleteimg from "../assets/Container (2).png";
+import { MdModeEditOutline } from "react-icons/md";
 import { NavLink } from "react-router-dom";
+import { imageUrl } from "../../utils/baseUrls";
+import deleteimg from "../assets/Container (2).png";
 
 const ArtCard = ({ record }: any) => {
   const { t } = useTranslation();
   return (
-    <>
-      <div
-        className={`bg-white rounded-lg pb-5 border-b-4  ${
-          record?.status === "published"
-            ? "border-[#00DE00]"
-            : record?.status === "pending"
-            ? "border-[#D8F002]"
-            : record?.status === "draft"
-            ? "border-[#f0dd32]"
-            : record?.status === "modified"
-            ? "border-[#ac329e]"
-            : record?.status === "notAvailable"
-            ? "border-[#e53a3a]"
-            : "border-[#D8F002]"
-        }`}
-      >
-        <div className="flex flex-wrap justify-center relative overflow-hidden bg-cover bg-no-repeat">
-          <img
-            src={`${imageUrl}/users/${record?.media}`}
-            className="rounded-md w-[20rem] xl:w-[19rem] sm:w-[20rem] md:w-[20rem] lg:w-[20rem] h-[22rem] object-cover"
-            alt="Media"
-          />
-          <div className="absolute bottom-0 left-0 right-0 top-0 h-full w-full overflow-hidden bg-[#D9D9D9] bg-fixed flex items-center justify-center opacity-0 transition duration-300 ease-in-out hover:opacity-50 hover:cursor-pointer">
-            {record?.status === "draft" ? (
-              <div className="flex gap-2">
-                <NavLink to={`/artist-panel/artwork/add?id=${record._id}`}>
-                  <img src={edit} alt="Edit" />
-                </NavLink>
-                <img src={deleteimg} alt="Delete" />
-              </div>
-            ) : null}
+    <div
+      className={`relative group border rounded-md overflow-hidden transition-all sm:w-[300px] w-[250px] duration-300 hover:shadow-lg ${
+        record?.status === "published"
+          ? "border-[#00DE00]"
+          : record?.status === "pending"
+          ? "border-[#D8F002]"
+          : record?.status === "draft"
+          ? "border-[#696868]"
+          : record?.status === "modified"
+          ? "border-[#ac329e]"
+          : record?.status === "notAvailable"
+          ? "border-[#EE1D52]"
+          : "border-gray-200"
+      }`}
+    >
+      <div className="h-48 w-full bg-gray-100 flex items-center justify-center overflow-hidden">
+        <img
+          className="object-contain w-full h-full p-2"
+          src={`${imageUrl}/users/${record?.media}`}
+          alt="Media"
+        />
+        {record?.status === "draft" ? (
+          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 cursor-pointer">
+            <div className="flex items-center gap-4">
+              <NavLink
+                className="flex items-center justify-center w-10 h-10 bg-white rounded-full hover:bg-gray-100 transition-colors"
+                to={`/artist-panel/artwork/add?id=${record._id}`}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <MdModeEditOutline className="text-gray-800" size={18} />
+              </NavLink>
+              <button className="w-10 h-10 bg-white rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors">
+                <img src={deleteimg} alt="delete" className="w-5 h-5" />
+              </button>
+            </div>
           </div>
-        </div>
+        ) : null}
+      </div>
 
-        <div className="flex flex-col items-center text-center py-2">
-          <div
-            className={`w-[.8em] h-[.8em] rounded-lg ${
-              record?.status === "published"
-                ? "bg-[#00DE00]"
-                : record?.status === "pending"
-                ? "bg-[#D8F002]"
-                : record?.status === "draft"
-                ? "bg-[#f0dd32]"
-                : record?.status === "modified"
-                ? "bg-[#ac329e]"
-                : record?.status === "notAvailable"
-                ? "bg-[#e53a3a]"
-                : "bg-[#D8F002]"
-            }`}
-          ></div>
+      <div className="flex flex-col items-center text-center py-2">
+        <div
+          className={`w-[.8em] h-[.8em] rounded-lg ${
+            record?.status === "published"
+              ? "bg-[#00DE00]"
+              : record?.status === "pending"
+              ? "bg-[#D8F002]"
+              : record?.status === "draft"
+              ? "bg-[#f0dd32]"
+              : record?.status === "modified"
+              ? "bg-[#ac329e]"
+              : record?.status === "notAvailable"
+              ? "bg-[#e53a3a]"
+              : "bg-[#D8F002]"
+          }`}
+        ></div>
 
-          <p className="text-[12px]">
-            {t(record?.discipline?.artworkDiscipline)}
+        <div className="p-3">
+          <p className="text-xs text-gray-500 text-center font-light italic mb-1">
+            {t(record?.discipline?.artworkDiscipline)} |{" "}
+            {t(record?.artworkTechnic)}
           </p>
-          <p className="text-black text-[16px] font-bold">
-            {record?.artworkName.length > 20
-              ? `${record?.artworkName.slice(0, 20)}...`
+          <h3 className="font-medium text-gray-900 text-center truncate">
+            {record?.artworkName.length > 17
+              ? record?.artworkName.slice(0, 17) + "..."
               : record?.artworkName}
-          </p>
-          <p className="text-black text-[13px] font-meedium">
-            {record.owner?.artistName}
-          </p>
+          </h3>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

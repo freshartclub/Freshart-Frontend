@@ -1,23 +1,21 @@
 import { useEffect, useRef, useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
+import { HiOutlineMenu, HiOutlineX } from "react-icons/hi";
+import { IoIosFlower } from "react-icons/io";
 import { Link, useNavigate } from "react-router-dom";
 import bag from "../../assets/Bag.png";
 import heart from "../../assets/Heart.png";
 import selling from "../../assets/Images-cuate 1.png";
-import logo from "/logofarcwhite.svg";
 import useLogOutMutation from "../../http/auth/useLogOutMutation";
 import { useAppSelector } from "../../store/typedReduxHooks";
 import { useGetCartItems } from "../pages/http/useGetCartItems";
 import { useGetDiscipline } from "../pages/http/useGetDiscipline";
 import ShoppingCard from "../pages/ShoppingCard";
-import Button from "../ui/Button";
-import Header from "../ui/Header";
-import P from "../ui/P";
 import { useGetArtistDetails } from "../UserProfile/http/useGetDetails";
 import { imageUrl } from "../utils/baseUrls";
 import useClickOutside from "../utils/useClickOutside";
 import { useGetPicklist } from "./http/getPickList";
-import { IoIosFlower } from "react-icons/io";
+import logo from "/logofarcwhite.svg";
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -66,6 +64,7 @@ const NavBar = () => {
 
   useClickOutside(closePopup, () => {
     setIsProfileDropdown(false);
+    setIsModalOpen(false);
   });
 
   const handleClickOutside = (event) => {
@@ -111,45 +110,46 @@ const NavBar = () => {
 
   return (
     <>
-      <nav className="bg-[#102030] pt-4 pb-4 px-6 relative">
+      <nav className="bg-[#102030] py-4 px-6 relative">
         <div className="flex justify-between items-center">
           {token && isAuthorized ? (
             <>
               <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="text-white focus:outline-none sm:hidden"
+                className="text-white focus:outline-none lg:hidden"
+                aria-label="Toggle menu"
               >
-                <svg
-                  className="w-8 h-8"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M4 6h16M4 12h16M4 18h16"
-                  ></path>
-                </svg>
+                {isOpen ? (
+                  <HiOutlineX size={28} />
+                ) : (
+                  <HiOutlineMenu size={28} />
+                )}
               </button>
 
-              <div className="hidden lg:flex items-center gap-5 text-white">
+              <div
+                className="hidden sm:block"
+                onClick={() => navigate("/home")}
+              >
+                <img src={logo} alt="logo" className="w-36 sm:w-40 md:w-48" />
+              </div>
+
+              <div className="hidden lg:flex gap-6 text-white pt-2">
                 <Link
                   to="/home"
-                  className="font-semibold text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
+                  className="font-medium text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300 pb-1"
                 >
                   Home
                 </Link>
                 <div className="cursor-pointer" ref={dropDownPopup}>
-                  <span
-                    className="group font-semibold text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300 flex px-2"
+                  <div
+                    className="font-medium text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300 pb-1 flex items-center gap-1"
                     onClick={() => setIsDropdownOpen((prev) => !prev)}
                   >
                     Subscribe
                     <svg
-                      className="w-2.5 h-2.5 ml-1 mt-2"
+                      className={`w-3 h-3 transition-transform ${
+                        isDropdownOpen ? "rotate-180" : ""
+                      }`}
                       aria-hidden="true"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
@@ -163,118 +163,122 @@ const NavBar = () => {
                         d="m1 1 4 4 4-4"
                       />
                     </svg>
-                    {isDropdownOpen && (
-                      <div
-                        onClick={(e) => e.stopPropagation()}
-                        className="absolute w-full left-0 z-10 top-[5.6rem] grid grid-cols-[1fr_1fr_1fr_1fr_4fr] gap-4 text-sm bg-white border shadow-md p-8"
-                      >
-                        <div className="text-gray-900 md:pb-4 flex px-5">
-                          <ul className="space-y-4 w-[10vw]">
-                            <li className="uppercase font-bold">Discipline</li>
-
-                            {disciplineData && disciplineData?.data?.length > 0
-                              ? disciplineData?.data?.map((item, i) => (
-                                  <li
-                                    key={i}
-                                    onClick={() => setIsDropdownOpen(false)}
-                                  >
-                                    <Link
-                                      to={`${item.disciplineName}?option=subscription`}
-                                      className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500"
-                                    >
-                                      {item?.disciplineName}
-                                    </Link>
-                                  </li>
-                                ))
-                              : null}
-                          </ul>
-
-                          <ul
-                            className="space-y-4  px-5  w-[10vw] "
-                            aria-labelledby="mega-menu-dropdown-button"
-                          >
-                            <li className="uppercase font-bold">Series</li>
-
-                            {selectSeriesPicklist &&
-                              selectSeriesPicklist.length > 0 &&
-                              selectSeriesPicklist[0]?.picklist?.map(
-                                (item, i) => (
-                                  <li
-                                    key={i}
-                                    onClick={() => setIsDropdownOpen(false)}
-                                  >
-                                    <h1 className=" text-gray-500  dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500">
-                                      {item?.name}
-                                    </h1>
-                                  </li>
-                                )
-                              )}
-                          </ul>
-
-                          <ul
-                            className="space-y-4 mr-6"
-                            aria-labelledby="mega-menu-dropdown-button"
-                          >
-                            <li className="uppercase font-bold">Collection</li>
-
-                            <li onClick={() => setIsDropdownOpen(false)}>
-                              <a className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500">
-                                Collection
-                              </a>
+                  </div>
+                  {isDropdownOpen && (
+                    <div
+                      onClick={(e) => e.stopPropagation()}
+                      className="absolute left-0 z-[98] top-[4.4rem] grid grid-cols-1 md:grid-cols-4 gap-6 text-sm bg-white border shadow-lg p-6 dark:bg-gray-700 dark:border-gray-600"
+                    >
+                      <div className="space-y-4">
+                        <h3 className="uppercase font-bold dark:text-gray-400 text-gray-800">
+                          Discipline
+                        </h3>
+                        <ul className="space-y-3">
+                          {disciplineData?.data?.map((item, i) => (
+                            <li
+                              key={i}
+                              onClick={() => setIsDropdownOpen(false)}
+                            >
+                              <Link
+                                to={`${item.disciplineName}?option=subscription`}
+                                className="dark:text-white text-gray-600"
+                              >
+                                {item?.disciplineName}
+                              </Link>
                             </li>
-                          </ul>
-                        </div>
-
-                        <div>
-                          <Header
-                            variant={{
-                              theme: "dark",
-                              weight: "bold",
-                            }}
-                            className="uppercase text-sm w-[30vw] "
-                          >
-                            Top selling product
-                          </Header>
-                          <img src={selling} alt="selling product " />
-                        </div>
+                          ))}
+                        </ul>
                       </div>
-                    )}
-                  </span>
+
+                      <div className="space-y-4">
+                        <h3 className="uppercase font-bold dark:text-gray-400 text-gray-800">
+                          Series
+                        </h3>
+                        <ul className="space-y-3">
+                          {selectSeriesPicklist?.[0]?.picklist?.map(
+                            (item, i) => (
+                              <li
+                                key={i}
+                                onClick={() => setIsDropdownOpen(false)}
+                              >
+                                <span className="dark:text-white text-gray-600 cursor-pointer">
+                                  {item?.name}
+                                </span>
+                              </li>
+                            )
+                          )}
+                        </ul>
+                      </div>
+
+                      <div className="space-y-4">
+                        <h3 className="uppercase font-bold dark:text-gray-400 text-gray-800">
+                          Collection
+                        </h3>
+                        <ul className="space-y-3">
+                          <li onClick={() => setIsDropdownOpen(false)}>
+                            <span className="text-gray-600 dark:text-white cursor-pointer">
+                              Collection
+                            </span>
+                          </li>
+                        </ul>
+                      </div>
+
+                      <div className="md:col-span-1">
+                        <h3 className="uppercase font-bold dark:text-gray-400 text-gray-800 text-sm mb-3">
+                          Top selling product
+                        </h3>
+                        <img
+                          src={selling}
+                          alt="selling product"
+                          className="rounded-lg shadow"
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
                 <Link
                   to="/all-artworks?type=purchase"
-                  className="font-semibold text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
+                  className="font-medium text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300 pb-1"
                 >
                   Purchase
                 </Link>
                 <Link
                   to="/all_artist"
-                  className="font-semibold text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
+                  className="font-medium text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300 pb-1"
                 >
                   Artist
                 </Link>
+                <Link
+                  to="/priceandplans"
+                  className="font-medium text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300 pb-1"
+                >
+                  Subscription Plan
+                </Link>
               </div>
 
-              <div
-                className="hidden sm:block"
-                onClick={() => navigate("/home")}
-              >
-                <img src={logo} alt="logo" className="w-[15rem]" />
-              </div>
-
-              <div className="flex gap-5 justify-end">
+              <div className="flex gap-3 sm:gap-4 justify-end items-center">
                 <Link
                   to="/wishlist"
-                  className="focus:outline-none lg:block hidden"
+                  className="focus:outline-none hidden lg:block"
+                  aria-label="Wishlist"
                 >
-                  <img src={heart} alt="heart" className="w-8 h-8 text-white" />
+                  <img
+                    src={heart}
+                    alt="heart"
+                    className="w-6 h-6 sm:w-7 sm:h-7 text-white"
+                  />
                 </Link>
-                <IoIosFlower
+                <button
                   onClick={() => navigate("/circle")}
-                  className="cursor-pointer"
-                  fontSize="2em"
-                  color="white"
-                />
+                  aria-label="Circle"
+                  className="hidden sm:block"
+                >
+                  <IoIosFlower
+                    className="cursor-pointer"
+                    fontSize="1.8em"
+                    color="white"
+                  />
+                </button>
 
                 {window.location.pathname !== "/payment_page" &&
                   window.location.pathname !== "/purchase_cart" && (
@@ -290,221 +294,113 @@ const NavBar = () => {
                         <img
                           src={bag}
                           alt="bag"
-                          className="w-8 h-8 text-white"
+                          className="w-6 h-6 sm:w-7 sm:h-7 text-white"
                         />
-                        <span className="absolute bg-red-300 w-4 h-4 right-0 top-0  rounded-full flex items-center justify-center">
-                          {cartItem ? (
-                            <h1 className="text-sm font-semibold">
-                              {cartItem?.data?.cart?.length}
-                            </h1>
-                          ) : null}
-                        </span>
+                        {cartItem?.data?.cart?.length > 0 && (
+                          <span className="absolute bg-red-500 text-white text-xs w-4 h-4 -right-1 -top-1 rounded-full flex items-center justify-center">
+                            {cartItem?.data?.cart?.length}
+                          </span>
+                        )}
                       </button>
                     </>
                   )}
 
-                <button
-                  ref={closePopup}
-                  className="focus:outline-none relative"
-                >
-                  {user?.mainImage ? (
-                    <img
-                      src={`${imageUrl}/users/${user?.mainImage}`}
-                      alt="Profile"
-                      onClick={() => setIsProfileDropdown((prev) => !prev)}
-                      className=" text-white mx-2 rounded-full object-cover w-8 h-8"
-                    />
-                  ) : (
-                    <FaUserCircle
-                      onClick={() => setIsProfileDropdown((prev) => !prev)}
-                      size="2em"
-                      color="white"
-                    />
-                  )}
+                <div className="relative" ref={closePopup}>
+                  <button
+                    className="focus:outline-none"
+                    onClick={() => setIsProfileDropdown((prev) => !prev)}
+                    aria-label="User profile"
+                  >
+                    {user?.mainImage ? (
+                      <img
+                        src={`${imageUrl}/users/${user?.mainImage}`}
+                        alt="Profile"
+                        className="text-white rounded-full object-cover w-7 h-7 sm:w-8 sm:h-8 border border-white"
+                      />
+                    ) : (
+                      <FaUserCircle size="1.8em" color="white" />
+                    )}
+                  </button>
 
                   {isProfileDropdown && (
-                    <div className="absolute w-[13rem] right-0 z-10 top-[4rem] bg-white divide-y divide-gray-100 rounded-md shadow dark:bg-gray-700 dark:divide-gray-600 pb-3">
-                      <ul
-                        className="text-sm flex flex-col gap-4 p-4"
-                        aria-labelledby="dropdownInformationButton"
-                      >
+                    <div className="absolute right-0 z-[99] top-10 w-56 bg-white dark:bg-gray-700 rounded-md shadow-lg py-1">
+                      <div className="flex flex-col gap-2 px-4 py-2 text-sm text-gray-700 dark:text-white">
                         <Link
-                          className="text-left"
                           to="/user_profile"
-                          onClick={(prev) => setIsProfileDropdown(!prev)}
+                          className="hover:bg-gray-100 dark:hover:bg-gray-600 px-2 py-1 rounded"
+                          onClick={() => setIsProfileDropdown(false)}
                         >
                           View Profile
                         </Link>
                         <Link
-                          className="text-left"
                           to="/account_setting"
-                          onClick={(prev) => setIsProfileDropdown(!prev)}
+                          className="hover:bg-gray-100 dark:hover:bg-gray-600 px-2 py-1 rounded"
+                          onClick={() => setIsProfileDropdown(false)}
                         >
                           Account Settings
                         </Link>
                         <Link
-                          className="text-left"
                           to="/wishlist"
-                          onClick={(prev) => setIsProfileDropdown(!prev)}
+                          className="hover:bg-gray-100 dark:hover:bg-gray-600 px-2 py-1 rounded"
+                          onClick={() => setIsProfileDropdown(false)}
                         >
                           Favourites ArtWork
                         </Link>
-                        {isArtist ? (
-                          <button className="text-left" onClick={handleProfile}>
+                        {isArtist && (
+                          <button
+                            className="text-left hover:bg-gray-100 dark:hover:bg-gray-600 px-2 py-1 rounded"
+                            onClick={handleProfile}
+                          >
                             Switch To Artist Profile
                           </button>
-                        ) : null}
-                        <Link className="text-left" to="/create_invite">
+                        )}
+                        <Link
+                          to="/priceandplans"
+                          className="hover:bg-gray-100 dark:hover:bg-gray-600 px-2 py-1 rounded"
+                        >
+                          Subscription Plan
+                        </Link>
+                        <Link
+                          to="/my_plans"
+                          className="hover:bg-gray-100 dark:hover:bg-gray-600 px-2 py-1 rounded"
+                        >
+                          My Plans
+                        </Link>
+                        <Link
+                          to="/create_invite"
+                          className="hover:bg-gray-100 dark:hover:bg-gray-600 px-2 py-1 rounded"
+                        >
                           Create Invite
                         </Link>
                         <Link
-                          className="text-left"
                           to="/order"
-                          onClick={(prev) => setIsProfileDropdown(!prev)}
+                          className="hover:bg-gray-100 dark:hover:bg-gray-600 px-2 py-1 rounded"
+                          onClick={() => setIsProfileDropdown(false)}
                         >
                           My Orders
                         </Link>
                         <Link
-                          className="text-left"
-                          onClick={(prev) => setIsProfileDropdown(!prev)}
                           to="/support"
+                          className="hover:bg-gray-100 dark:hover:bg-gray-600 px-2 py-1 rounded"
+                          onClick={() => setIsProfileDropdown(false)}
                         >
                           Support
                         </Link>
-                      </ul>
-
-                      <div className="pt-2">
-                        <a
-                          className="cursor-pointer flex items-center justify-center"
-                          onClick={() => setIsModalOpen((prev) => !prev)}
+                      </div>
+                      <div className="border-t border-gray-100 px-4 pb-2 pt-3">
+                        <button
+                          onClick={() => {
+                            setIsModalOpen(true);
+                            setIsProfileDropdown(false);
+                          }}
+                          className="w-full text-center bg-[#EE1D52] text-white hover:bg-red-50 hover:text-[#EE1D52] px-2 py-2.5 rounded text-sm font-medium"
                         >
-                          <Button
-                            variant={{
-                              fontSize: "md",
-                              theme: "dark",
-                              fontWeight: "400",
-                              rounded: "md",
-                            }}
-                            type="button"
-                            className="mx-2 w-full bg-red-600 text-white border border-transparent"
-                          >
-                            Log Out
-                          </Button>
-                        </a>
-
-                        {isModalOpen && (
-                          <div
-                            id="popup-modal"
-                            className="fixed inset-0 z-50 flex justify-center items-center w-full h-full bg-black bg-opacity-50"
-                          >
-                            <div className="relative p-4 w-full max-w-md max-h-full">
-                              <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                                <button
-                                  type="button"
-                                  onClick={toggleModal}
-                                  className="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                                >
-                                  <svg
-                                    className="w-3 h-3"
-                                    aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 14 14"
-                                  >
-                                    <path
-                                      stroke="currentColor"
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      strokeWidth="2"
-                                      d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
-                                    />
-                                  </svg>
-                                  <span className="sr-only">Close modal</span>
-                                </button>
-                                <div className="p-4 md:p-5 text-center">
-                                  <svg
-                                    className="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200"
-                                    aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 20 20"
-                                  >
-                                    <path
-                                      stroke="currentColor"
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      strokeWidth="2"
-                                      d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                                    />
-                                  </svg>
-                                  <Header
-                                    variant={{
-                                      size: "lg",
-                                      theme: "dark",
-                                      weight: "semiBold",
-                                    }}
-                                    className="mb-5"
-                                  >
-                                    Are you sure you want to logout?
-                                  </Header>
-
-                                  <P
-                                    variant={{
-                                      size: "base",
-                                      weight: "medium",
-                                    }}
-                                    className=" text-[#696868]"
-                                  >
-                                    Are you sure you want to logout this
-                                    account?
-                                  </P>
-                                  <P
-                                    variant={{
-                                      size: "base",
-                                      weight: "medium",
-                                    }}
-                                    className="mb-5 text-[#696868]"
-                                  >
-                                    Click on the right to logout.
-                                  </P>
-                                  <Button
-                                    variant={{
-                                      fontSize: "md",
-                                      theme: "light",
-                                      fontWeight: "500",
-                                    }}
-                                    onClick={toggleModal}
-                                    type="button"
-                                    className="mx-2 border border-gray w-40"
-                                  >
-                                    Cancel
-                                  </Button>
-
-                                  <Button
-                                    variant={{
-                                      fontSize: "md",
-                                      theme: "dark",
-                                      fontWeight: "400",
-                                      rounded: "md",
-                                    }}
-                                    onClick={() => {
-                                      setIsModalOpen((prev) => !prev);
-                                      logOut();
-                                    }}
-                                    type="button"
-                                    className="mx-2 bg-red-600 text-white border border-transparent w-40"
-                                  >
-                                    Yes
-                                  </Button>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        )}
+                          Log Out
+                        </button>
                       </div>
                     </div>
                   )}
-                </button>
+                </div>
               </div>
             </>
           ) : (
@@ -517,7 +413,7 @@ const NavBar = () => {
               </div>
 
               <div className="flex items-center gap-4 justify-center">
-                {/* <div className="flex items-center justify-center">
+                <div className="flex items-center justify-center">
                   <div className="overflow-x-hidden">
                     <ShoppingCard
                       isOpen={isSidebarOpen}
@@ -542,53 +438,155 @@ const NavBar = () => {
                       ) : null}
                     </span>
                   </button>
-                </div> */}
+                </div>
                 <Link
                   to="/login"
                   className="px-4 py-2 text-sm bg-white rounded-md hover:bg-gray-200 focus:outline-none"
                 >
                   Sign In
                 </Link>
-                {/* <Link to="/signup" className="text-sm text-white ">
+                <Link to="/signup" className="text-sm text-white ">
                   Sign Up
-                </Link> */}
+                </Link>
               </div>
             </>
           )}
         </div>
 
-        {isOpen ? (
+        {isOpen && (
           <div
             ref={mobileNavPopup}
-            className="absolute sm:hidden border-t-2 top-16 left-0 right-0 z-10 flex flex-col gap-3 bg-[#102030] text-white px-6 pb-4"
+            className="absolute lg:hidden top-full left-0 right-0 z-20 bg-[#102030] text-white px-6 py-4 shadow-lg"
           >
-            <Link
-              to="/home"
-              className="font-semibold w-max pt-3 text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
-            >
-              Home
-            </Link>
-            <Link
-              to="/all-artworks?type=subscription"
-              className="font-semibold w-max text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
-            >
-              Subscribe
-            </Link>
-            <Link
-              to="/all-artworks?type=purchase"
-              className="font-semibold w-max text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
-            >
-              Purchase
-            </Link>
-            <Link
-              to="/all_artist"
-              className="font-semibold w-max text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300"
-            >
-              Artist
-            </Link>
+            <div className="flex flex-col gap-4">
+              <Link
+                to="/home"
+                className="font-medium py-2 border-b border-white/20"
+                onClick={() => setIsOpen(false)}
+              >
+                Home
+              </Link>
+              <Link
+                to="/all-artworks?type=subscription"
+                className="font-medium py-2 border-b border-white/20"
+                onClick={() => setIsOpen(false)}
+              >
+                Subscribe
+              </Link>
+              <Link
+                to="/all-artworks?type=purchase"
+                className="font-medium py-2 border-b border-white/20"
+                onClick={() => setIsOpen(false)}
+              >
+                Purchase
+              </Link>
+              {isArtist && (
+                <button
+                  className="font-medium py-2 border-b border-white/20"
+                  onClick={handleProfile}
+                >
+                  Switch To Artist Profile
+                </button>
+              )}
+              <Link
+                to="/priceandplans"
+                className="font-medium py-2 border-b border-white/20"
+              >
+                Subscription Plan
+              </Link>
+              <Link
+                to="/my_plans"
+                className="font-medium py-2 border-b border-white/20"
+              >
+                My Plans
+              </Link>
+              <Link
+                to="/all_artist"
+                className="font-medium py-2 border-b border-white/20"
+                onClick={() => setIsOpen(false)}
+              >
+                Artist
+              </Link>
+              <Link
+                to="/priceandplans"
+                className="font-medium py-2 border-b border-white/20"
+                onClick={() => setIsOpen(false)}
+              >
+                Subscription Plan
+              </Link>
+              <Link
+                to="/circle"
+                className="font-medium py-2 border-b border-white/20 flex items-center gap-2"
+                onClick={() => setIsOpen(false)}
+              >
+                <IoIosFlower size={20} />
+                Circle
+              </Link>
+              <Link
+                to="/wishlist"
+                className="font-medium py-2 border-b border-white/20 flex items-center gap-2"
+                onClick={() => setIsOpen(false)}
+              >
+                <img src={heart} alt="heart" className="w-5 h-5" />
+                Wishlist
+              </Link>
+            </div>
           </div>
-        ) : null}
+        )}
       </nav>
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50">
+          <div className="relative bg-white rounded-lg max-w-md w-full mx-4 dark:bg-gray-700">
+            <button
+              type="button"
+              onClick={toggleModal}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-500 dark:hover:bg-gray-600 dark:hover:text-white"
+            >
+              <HiOutlineX size={24} />
+            </button>
+            <div className="p-6 text-center">
+              <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+                <svg
+                  className="h-6 w-6 text-[#EE1D52]"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-lg font-medium dark:text-white text-gray-900 mb-2">
+                Are you sure you want to logout?
+              </h3>
+              <p className="text-gray-500 mb-6 dark:text-gray-400">
+                You'll need to sign in again to access your account.
+              </p>
+              <div className="flex justify-center gap-4">
+                <button
+                  onClick={toggleModal}
+                  className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium dark:text-white text-gray-700 hover:dark:text-gray-700 hover:bg-gray-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => {
+                    toggleModal();
+                    logOut();
+                  }}
+                  className="px-4 py-2 bg-[#EE1D52] rounded-md text-sm font-medium text-white hover:bg-[#ee1d51c2]"
+                >
+                  Logout
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

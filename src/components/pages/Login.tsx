@@ -42,11 +42,6 @@ const Login: React.FC = () => {
   }, [setValue]);
 
   const onSubmit = handleSubmit(async (data) => {
-    if (rememberMe) {
-      localStorage.setItem("email", data.email);
-    } else {
-      localStorage.removeItem("email");
-    }
     try {
       await mutateAsync(data);
     } catch (error) {
@@ -158,7 +153,7 @@ const Login: React.FC = () => {
             </Link>
           </div>
 
-          {/* <div className="flex sm:flex-row flex-col mt-5 justify-center">
+          <div className="flex sm:flex-row flex-col mt-5 justify-center">
             <P
               variant={{ theme: "dark", weight: "medium" }}
               className="md:text-base text-sm"
@@ -171,7 +166,7 @@ const Login: React.FC = () => {
                 {t("Sign Up")}
               </Link>
             </P>
-          </div> */}
+          </div>
           <Link
             to="/become_artist"
             className="hover:underline decoration-red-700  cursor-pointer"

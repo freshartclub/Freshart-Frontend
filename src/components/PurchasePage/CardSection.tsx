@@ -13,7 +13,7 @@ import { useGetFavoriteList } from "../HomePage/http/useGetFavoriteList";
 import { lowImageUrl } from "../utils/baseUrls";
 import useClickOutside from "../utils/useClickOutside";
 
-const CardSection = ({ data, type }) => {
+const CardSection = ({ data, type, darkMode }) => {
   const TEN_DAYS_MS = 10 * 24 * 60 * 60 * 1000;
   const [favoriteLists, setFavoriteLists] = useState({});
   const [isFavorite, setIsFavorite] = useState("");
@@ -161,7 +161,9 @@ const CardSection = ({ data, type }) => {
                   handleRedirectToDescription(item?._id);
                 }
               }}
-              className={`relative cursor-pointer p-3 border flex-shrink-0 bg-white hover:shadow-[5px_5px_5px_rgba(0,0,0,0.05)] transition-shadow duration-300 min-w-[250px] max-w-[300px] ${
+              className={`relative rounded-lg cursor-pointer p-3 border flex-shrink-0 ${
+                darkMode ? "bg-gray-700 border-gray-800" : "bg-white"
+              } hover:shadow-[5px_5px_5px_rgba(0,0,0,0.05)] transition-shadow duration-300 min-w-[250px] max-w-[300px] ${
                 type === "purchase" ? "h-[317px]" : "h-[295px]"
               } group`}
             >
@@ -177,7 +179,11 @@ const CardSection = ({ data, type }) => {
                 {isOffensive && !isViewed ? (
                   <div className="absolute inset-0 flex flex-col justify-center items-center gap-3 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <button
-                      className="bg-white text-gray-800 px-3 py-1 rounded-full text-xs font-medium hover:bg-gray-100 transition-colors flex items-center gap-2"
+                      className={`${
+                        darkMode
+                          ? "bg-gray-700 text-gray-100 hover:bg-gray-600"
+                          : "bg-white text-gray-800 hover:bg-gray-100"
+                      } px-3 py-1 rounded-full text-xs font-medium transition-colors flex items-center gap-2`}
                       onClick={(e) => {
                         e.stopPropagation();
                         handleViewClick(item?._id);
@@ -190,7 +196,11 @@ const CardSection = ({ data, type }) => {
                         e.stopPropagation();
                         handleRedirectToDescription(item?._id);
                       }}
-                      className="bg-white text-gray-800 px-3 py-1 rounded-full text-xs font-medium hover:bg-gray-100 transition-colors flex items-center gap-2"
+                      className={`${
+                        darkMode
+                          ? "bg-gray-700 text-gray-100 hover:bg-gray-600"
+                          : "bg-white text-gray-800 hover:bg-gray-100"
+                      } px-3 py-1 rounded-full text-xs font-medium transition-colors flex items-center gap-2`}
                     >
                       <MdOutlineOpenInNew /> View Details
                     </button>
@@ -203,28 +213,64 @@ const CardSection = ({ data, type }) => {
                       e.stopPropagation();
                       handleHideClick(item?._id);
                     }}
-                    className="absolute bg-white/90 px-2 py-1 rounded-full top-2 right-2 flex items-center gap-1 text-xs"
+                    className={`absolute ${
+                      darkMode ? "bg-gray-700" : "bg-white/90"
+                    } px-2 py-1 rounded-full top-2 right-2 flex items-center gap-1 text-xs`}
                   >
-                    <p className="text-xs font-medium text-gray-700">Hide</p>
-                    <FaToggleOn size={18} className="text-gray-600" />
+                    <p
+                      className={`text-xs font-medium ${
+                        darkMode ? "text-gray-200" : "text-gray-700"
+                      }`}
+                    >
+                      Hide
+                    </p>
+                    <FaToggleOn
+                      size={18}
+                      className={darkMode ? "text-gray-400" : "text-gray-600"}
+                    />
                   </div>
                 ) : null}
               </div>
 
-              <div className="flex flex-col bg-white mt-3 relative">
-                <p className="text-xs text-gray-500">{item?.discipline}</p>
+              <div
+                className={`flex flex-col ${
+                  darkMode ? "bg-gray-700" : "bg-white"
+                } mt-3 relative`}
+              >
+                <p
+                  className={`text-xs ${
+                    darkMode ? "text-gray-400" : "text-gray-500"
+                  }`}
+                >
+                  {item?.discipline}
+                </p>
 
-                <p className="text-lg text-gray-900 font-semibold line-clamp-2 leading-tight">
+                <p
+                  className={`text-lg ${
+                    darkMode ? "text-gray-100" : "text-gray-900"
+                  } font-semibold line-clamp-2 leading-tight`}
+                >
                   {item?.artworkName?.length > 17
                     ? `${item?.artworkName?.slice(0, 17)}...`
                     : item?.artworkName}
                 </p>
 
-                <p className="text-xs text-gray-600 font-light italic">
-                  by {name(item)}
+                <p
+                  className={`text-xs ${
+                    darkMode ? "text-gray-400" : "text-gray-600"
+                  } font-light italic`}
+                >
+                  by{" "}
+                  {name(item).length > 25
+                    ? `${name(item)?.slice(0, 25)}...`
+                    : name(item)}
                 </p>
                 {type === "purchase" ? (
-                  <p className="mt-1 flex gap-1 items-center text-gray-800 font-bold">
+                  <p
+                    className={`mt-1 flex gap-1 items-center ${
+                      darkMode ? "text-gray-200" : "text-gray-800"
+                    } font-bold`}
+                  >
                     {getSymbolFromCurrency(item?.pricing?.currency.slice(0, 3))}{" "}
                     {item?.pricing?.basePrice}
                     {item?.pricing?.dpersentage ? (
@@ -244,13 +290,17 @@ const CardSection = ({ data, type }) => {
                       e.stopPropagation();
                       handleFavoriteClick(item._id);
                     }}
-                    className="p-2 rounded-full hover:bg-gray-100"
+                    className={`p-2 rounded-full ${
+                      darkMode ? "hover:bg-gray-700" : "hover:bg-gray-100"
+                    }`}
                   >
                     <IoHeartOutline
                       size="1.2rem"
                       className={
                         Object.values(favoriteLists).flat().includes(item?._id)
                           ? "text-red-500"
+                          : darkMode
+                          ? "text-gray-400"
                           : "text-gray-500"
                       }
                     />
@@ -259,28 +309,39 @@ const CardSection = ({ data, type }) => {
                   {isFavorite === item._id && (
                     <div
                       ref={favoriteListRef}
-                      className="absolute bottom-10 right-0 bg-white shadow-lg rounded-md p-3 w-56 z-10"
+                      className={`absolute bottom-10 right-0 ${
+                        darkMode ? "bg-gray-800" : "bg-white"
+                      } shadow-lg rounded-md p-3 w-56 z-10`}
                     >
                       {Object.keys(favoriteLists).map((listName) => (
                         <div
                           key={listName}
-                          className="flex items-center justify-between px-2 py-1 hover:bg-gray-100 cursor-pointer text-sm"
+                          className={`flex items-center justify-between px-2 py-1 ${
+                            darkMode ? "hover:bg-gray-600" : "hover:bg-gray-100"
+                          } cursor-pointer text-sm`}
                           onClick={(e) => {
                             e.stopPropagation();
                             addToFavoriteList(item._id, listName);
                           }}
                         >
-                          <span>{listName}</span>
+                          <span className={darkMode ? "text-gray-200" : ""}>
+                            {listName}
+                          </span>
                           <input
                             type="checkbox"
                             checked={favoriteLists[listName].includes(item._id)}
                             readOnly
+                            className={darkMode ? "accent-blue-500" : ""}
                           />
                         </div>
                       ))}
                       <div className="border-t mt-2 pt-2">
                         <button
-                          className="text-xs flex items-center gap-1 rounded text-white py-1 justify-center bg-gray-900 w-full font-medium hover:bg-gray-700 transition-colors"
+                          className={`text-xs flex items-center gap-1 rounded text-white py-1 justify-center ${
+                            darkMode
+                              ? "bg-gray-600 hover:bg-gray-500"
+                              : "bg-gray-900 hover:bg-gray-700"
+                          } w-full font-medium transition-colors`}
                           onClick={(e) => {
                             e.stopPropagation();
                             setShowManageLists((prev) => !prev);
@@ -298,14 +359,22 @@ const CardSection = ({ data, type }) => {
                             onChange={(e) => setNewListName(e.target.value)}
                             onClick={(e) => e.stopPropagation()}
                             placeholder="New List Name"
-                            className="w-full text-sm p-1 border rounded mb-2"
+                            className={`w-full text-sm p-1 border rounded mb-2 ${
+                              darkMode
+                                ? "bg-gray-600 border-gray-500 text-white placeholder-gray-400"
+                                : ""
+                            }`}
                           />
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
                               handleAddNewList(item._id);
                             }}
-                            className="w-full bg-gray-800 text-white text-xs py-1 rounded-md hover:bg-gray-900 transition-colors"
+                            className={`w-full ${
+                              darkMode
+                                ? "bg-gray-600 hover:bg-gray-500"
+                                : "bg-gray-800 hover:bg-gray-900"
+                            } text-white text-xs py-1 rounded-md transition-colors`}
                           >
                             {newLoading ? "Adding..." : "Add List"}
                           </button>
@@ -319,7 +388,13 @@ const CardSection = ({ data, type }) => {
           );
         })
       ) : (
-        <div className="h-[5rem] font-semibold col-span-4 rounded w-full border-2 border-gray-300 flex items-center justify-center text-gray-600 bg-gray-50">
+        <div
+          className={`h-[5rem] font-semibold col-span-4 rounded w-full border-2 ${
+            darkMode
+              ? "border-gray-600 bg-gray-800 text-gray-300"
+              : "border-gray-300 bg-gray-50 text-gray-600"
+          } flex items-center justify-center`}
+        >
           No Artworks Available
         </div>
       )}

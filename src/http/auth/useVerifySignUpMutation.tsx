@@ -7,7 +7,7 @@ import { useAppDispatch } from "../../store/typedReduxHooks";
 import {
   forgotPasswordUserId,
   setIsAuthorized,
-} from "../../store/userSlice/userSlice";
+} from "../../store/slice/userSlice";
 import { AUTH_ENDPOINTS } from "../apiEndPoints/Auth";
 
 async function verifyOtp(input: any) {

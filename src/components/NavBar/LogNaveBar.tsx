@@ -4,7 +4,7 @@ import { MdArrowOutward } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router-dom";
 import semicircle from "../../assets/semicircle.png";
 import { useAppDispatch } from "../../store/typedReduxHooks";
-import { setLanguage } from "../../store/userSlice/userSlice";
+import { setLanguage } from "../../store/slice/userSlice";
 import logo from "/logofarc.svg";
 
 const LogNaveBar = () => {

@@ -11,7 +11,7 @@ import {
   setIsArtProvider,
   setIsAuthorized,
   updateUser,
-} from "../../store/userSlice/userSlice";
+} from "../../store/slice/userSlice";
 import { AUTH_ENDPOINTS } from "../apiEndPoints/Auth";
 import { useTranslation } from "react-i18next";
 
@@ -41,6 +41,7 @@ const useSigInInMutation = () => {
 
         localStorage.setItem("profile", "artist");
         navigate("/artist-panel", { replace: true });
+        window.location.reload();
       } else {
         localStorage.setItem("profile", "user");
         navigate("/home", { replace: true });

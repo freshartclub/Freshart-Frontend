@@ -69,7 +69,7 @@ const DiscoverContent = ({ data }: any) => {
         >
           {data?.artworkName}
         </Header>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 whitespace-nowrap">
           <Header
             className="!text-[13px]"
             variant={{ size: "base", theme: "dark", weight: "medium" }}
@@ -77,7 +77,7 @@ const DiscoverContent = ({ data }: any) => {
             Author :
           </Header>
           <P
-            className="text-[#999999] !text-[13px]"
+            className="text-[#999999] !text-[13px] items-center flex scrollbar whitespace-nowrap capitalize !w-full !max-w-full overflow-x-auto"
             variant={{ size: "small", weight: "medium" }}
           >
             {name(data?.owner)}

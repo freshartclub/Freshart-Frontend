@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../components/utils/axios";
 import { useAppDispatch } from "../../store/typedReduxHooks";
-import { updateUser } from "../../store/userSlice/userSlice";
+import { updateUser } from "../../store/slice/userSlice";
 import { AUTH_ENDPOINTS } from "../apiEndPoints/Auth";
 
 async function completeRegistration(input: any) {

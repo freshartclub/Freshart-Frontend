@@ -12,7 +12,7 @@ import otpimage from "../../assets/otp.png";
 import useOtpResendMutation from "../../http/auth/useOtpResendMutation";
 import useOtpVerifyMutation from "../../http/auth/useOtpVerifyMutation";
 import { useAppDispatch, useAppSelector } from "../../store/typedReduxHooks";
-import { forgotPasswordUserId } from "../../store/userSlice/userSlice";
+import { forgotPasswordUserId } from "../../store/slice/userSlice";
 import BackButton from "../ui/BackButton";
 import Button from "../ui/Button";
 import P from "../ui/P";

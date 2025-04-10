@@ -146,6 +146,7 @@ const AddArtwork = () => {
   const query = searchParams.get("view");
 
   const { data, isLoading, refetch: refetchData } = useGetArtWorkById(id);
+  console.log("data", data);
   const { data: userData, isLoading: userIsLoading } = useGetArtistDetails();
 
   const userID = userData?.data?.artist?._id;

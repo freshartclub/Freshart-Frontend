@@ -11,5 +11,6 @@ export const useGetRootPageData = () => {
   return useQuery({
     queryKey: [generalPath.getRootPageData],
     queryFn: fetchData,
+    refetchOnWindowFocus: false,
   });
 };

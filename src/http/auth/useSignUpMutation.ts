@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../components/utils/axios";
 import { useAppDispatch } from "../../store/typedReduxHooks";
-import { forgotPasswordUserId } from "../../store/userSlice/userSlice";
+import { forgotPasswordUserId } from "../../store/slice/userSlice";
 import { AUTH_ENDPOINTS } from "../apiEndPoints/Auth";
 
 async function signUp(input: any) {

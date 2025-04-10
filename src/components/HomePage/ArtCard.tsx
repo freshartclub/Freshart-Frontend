@@ -4,8 +4,6 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 import { IoHeartOutline } from "react-icons/io5";
 import { MdOutlineOpenInNew } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-import "slick-carousel/slick/slick-theme.css";
-import "slick-carousel/slick/slick.css";
 import Loader from "../ui/Loader";
 import { lowImageUrl } from "../utils/baseUrls";
 import postRecentArtworkMutation from "./http/postRecentView";
@@ -237,7 +235,16 @@ const ArtCard = ({ data, title, viewType, loading }) => {
               : item?.artworkName}
           </h1>
           <p className="text-xs text-gray-600 mt-1 font-light italic">
-            {item?.owner?.artistName} by {item?.provideArtistName}
+            {item?.owner?.artistName.length > 25
+              ? `${item?.owner?.artistName?.slice(0, 25)}...`
+              : item?.owner?.artistName}{" "}
+            {item?.provideArtistName
+              ? `by ${
+                  item?.provideArtistName?.length > 25
+                    ? `${item?.provideArtistName?.slice(0, 25)}...`
+                    : item?.provideArtistName
+                } `
+              : null}
           </p>
           <p className="text-xs text-gray-500 mt-1">
             {item?.discipline?.artworkDiscipline} •{" "}

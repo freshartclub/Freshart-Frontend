@@ -100,6 +100,7 @@ const AddAddress = ({ onClose, data }) => {
                       <input
                         {...field}
                         type="text"
+                        required
                         placeholder="Dianne"
                         className="border border-[#D3D3D3] p-2 w-full rounded-md focus:outline-none"
                       />
@@ -121,6 +122,7 @@ const AddAddress = ({ onClose, data }) => {
                       <input
                         {...field}
                         type="text"
+                        required
                         placeholder="Russell"
                         className="border border-[#D3D3D3] p-2 w-full rounded-md focus:outline-none"
                       />
@@ -165,6 +167,7 @@ const AddAddress = ({ onClose, data }) => {
                       <input
                         {...field}
                         type="text"
+                        required
                         placeholder="dianne.russell@gmail.com"
                         className="border border-[#D3D3D3] p-2 w-full rounded-md focus:outline-none"
                       />
@@ -214,7 +217,6 @@ const AddAddress = ({ onClose, data }) => {
                 </div>
               </div>
 
-              {/* Zip Code */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
                 <div className="sm:my-3 my-1 w-full">
                   <label
@@ -245,6 +247,7 @@ const AddAddress = ({ onClose, data }) => {
                       <input
                         {...field}
                         type="text"
+                        required
                         placeholder="200033"
                         className="border border-[#D3D3D3] p-2 w-full rounded-md focus:outline-none"
                       />
@@ -253,7 +256,6 @@ const AddAddress = ({ onClose, data }) => {
                 </div>
               </div>
 
-              {/* State and City */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
                 <div className="sm:my-3 my-1 w-full">
                   <label
@@ -269,6 +271,7 @@ const AddAddress = ({ onClose, data }) => {
                       <input
                         {...field}
                         type="text"
+                        required
                         placeholder={t("Enter your state")}
                         className="border border-[#D3D3D3] p-2 w-full rounded-md focus:outline-none"
                       />
@@ -290,6 +293,7 @@ const AddAddress = ({ onClose, data }) => {
                       <input
                         {...field}
                         type="text"
+                        required
                         placeholder={t("Enter your city")}
                         className="border border-[#D3D3D3] p-2 w-full rounded-md focus:outline-none"
                       />
@@ -298,7 +302,6 @@ const AddAddress = ({ onClose, data }) => {
                 </div>
               </div>
 
-              {/* Street Address */}
               <div className="sm:my-3 my-1 w-full">
                 <label
                   htmlFor="address"
@@ -313,6 +316,7 @@ const AddAddress = ({ onClose, data }) => {
                     <input
                       {...field}
                       type="text"
+                      required
                       placeholder="4140 Parl"
                       className="border border-[#D3D3D3] p-2 w-full rounded-md focus:outline-none"
                     />

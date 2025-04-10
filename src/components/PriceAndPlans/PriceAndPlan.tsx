@@ -1,5 +1,8 @@
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
+import { FiCheck } from "react-icons/fi";
+import { TiTickOutline } from "react-icons/ti";
 import { useNavigate } from "react-router-dom";
 import exclamation from "../../assets/exclamation-thick.png";
 import Button from "../ui/Button";
@@ -8,15 +11,12 @@ import Header from "../ui/Header";
 import Loader from "../ui/Loader";
 import P from "../ui/P";
 import { imageUrl } from "../utils/baseUrls";
-import checkmark from "./assets/checkmark.png";
+import AddAddress from "./AddAddress";
 import CreditCardForm from "./CreditCardForm";
+import useAgainSubscription from "./http/useAgainSubscription";
+import { useCheckUserRef } from "./http/useCheckUserRef";
 import { useGetAllPlans } from "./http/useGetAllPlans";
 import useSubscriptionMutation from "./http/useSubscriptionMutation";
-import { useCheckUserRef } from "./http/useCheckUserRef";
-import AddAddress from "./AddAddress";
-import { TiTickOutline } from "react-icons/ti";
-import toast from "react-hot-toast";
-import useAgainSubscription from "./http/useAgainSubscription";
 
 const PriceAndPlan = () => {
   const [activePlans, setActivePlans] = useState({});
@@ -26,6 +26,7 @@ const PriceAndPlan = () => {
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const [showInput, setShowInput] = useState(false);
   const [userNum, setUserNum] = useState("");
+  const [billingCycle, setBillingCycle] = useState("monthly");
 
   const navigate = useNavigate();
   const { data, isLoading } = useGetAllPlans();
@@ -48,6 +49,30 @@ const PriceAndPlan = () => {
       acc[planGrp].push(plan);
       return acc;
     }, {});
+
+    for (const group in grouped) {
+      grouped[group].sort((a, b) => {
+        if (!a.priority && !b.priority) return 0;
+        if (!a.priority) return 1;
+        if (!b.priority) return -1;
+
+        const aLetter = a.priority.match(/[A-Za-z]+/)?.[0] || "";
+        const aNumber = parseInt(a.priority.match(/\d+/)?.[0]) || 0;
+
+        const bLetter = b.priority.match(/[A-Za-z]+/)?.[0] || "";
+        const bNumber = parseInt(b.priority.match(/\d+/)?.[0]) || 0;
+
+        if (aLetter < bLetter) return -1;
+        if (aLetter > bLetter) return 1;
+
+        return aNumber - bNumber;
+      });
+
+      if (!grouped[group].some((plan) => plan.isDefault)) {
+        grouped[group][0].isDefault = true;
+      }
+    }
+
     return grouped;
   };
 
@@ -73,7 +98,7 @@ const PriceAndPlan = () => {
 
   const groupedPlans = groupPlans(data || []);
 
-  const returnList = (planDesc) => {
+  const returnList = (planDesc: string) => {
     const parser = new DOMParser();
     const doc = parser.parseFromString(planDesc, "text/html");
 
@@ -98,6 +123,7 @@ const PriceAndPlan = () => {
     const input = {
       planId: selectedPlan._id,
       user_num: userNum,
+      plan_type: billingCycle === "yearly" ? "yearly" : "monthly",
     };
 
     againMutateAsync(input).then(() => {
@@ -108,8 +134,19 @@ const PriceAndPlan = () => {
     });
   };
 
+  const getPlanPrice = (plan) => {
+    return billingCycle === "yearly"
+      ? plan.currentYearlyPrice
+      : plan.currentPrice;
+  };
+
+  const getBillingText = () => {
+    // return billingCycle === "yearly" ? "/year (save 10%)" : "/month";
+    return billingCycle === "yearly" ? "/year" : "/month";
+  };
+
   return (
-    <div className="bg-[#F5F2EB] pt-10 pb-10 relative">
+    <div className="bg-[#F5F2EB] pt-10 pb-20 relative">
       <div className="container mx-auto md:px-6 px-3">
         <div className="md:w-[65%] w-full m-auto text-center">
           <Header
@@ -126,6 +163,32 @@ const PriceAndPlan = () => {
           >
             {t("Choose the perfect plan for your business needs")}
           </P>
+
+          <div className="mt-6 flex justify-center">
+            <div className="inline-flex bg-white rounded-lg p-1 shadow-sm border">
+              <button
+                onClick={() => setBillingCycle("monthly")}
+                className={`px-4 py-2 text-sm font-medium rounded-md ${
+                  billingCycle === "monthly"
+                    ? "bg-black text-white"
+                    : "text-gray-700 hover:bg-gray-50"
+                }`}
+              >
+                Monthly Billing
+              </button>
+              <button
+                onClick={() => setBillingCycle("yearly")}
+                className={`px-4 py-2 text-sm font-medium rounded-md ${
+                  billingCycle === "yearly"
+                    ? "bg-black text-white"
+                    : "text-gray-700 hover:bg-gray-50"
+                }`}
+              >
+                {/* Yearly Billing (Save 10%) */}
+                Yearly Billing
+              </button>
+            </div>
+          </div>
         </div>
 
         <div className="mt-8">
@@ -159,96 +222,129 @@ const PriceAndPlan = () => {
             </div>
           </div>
 
-          <div className="grid mt-6 lg:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-5 items-center justify-center w-full">
-            {Object.entries(groupedPlans).map(([groupName, plans]) => {
-              const defaultPlan = activePlans[groupName] || plans[0];
+          <div className="grid mt-6 lg:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-5 items-stretch">
+            {Object.entries(groupedPlans)
+              .sort(([groupNameA, plansA], [groupNameB, plansB]) => {
+                const defaultPlanA = plansA[0];
+                const defaultPlanB = plansB[0];
 
-              return (
-                <div
-                  key={groupName}
-                  className="border rounded-lg shadow-md p-6 bg-white w-full flex-wrap md:wrap-no"
-                >
-                  <img
-                    src={`${imageUrl}/users/${defaultPlan?.planImg}`}
-                    alt="Plan Image"
-                    className="object-cover mb-4 w-[90px] h-[90px]"
-                  />
-                  <Header
-                    variant={{ size: "xl", theme: "dark", weight: "bold" }}
-                    className="text-left my-4"
+                const priceA = getPlanPrice(defaultPlanA);
+                const priceB = getPlanPrice(defaultPlanB);
+
+                return priceA - priceB;
+              })
+              .map(([groupName, plans]) => {
+                const defaultPlan =
+                  activePlans[groupName] ||
+                  plans.find((plan) => plan.defaultPlan === true);
+                const price = getPlanPrice(defaultPlan);
+                const billingText = getBillingText();
+
+                return (
+                  <div
+                    key={groupName}
+                    className={`border rounded-xl shadow-sm p-6 bg-white w-full flex flex-col ${
+                      groupName === "2" ? "ring-2 ring-black" : ""
+                    }`}
                   >
-                    Plan {groupName}
-                  </Header>
-                  <div className="text-center mb-4 flex">
-                    <Header
-                      variant={{ size: "2xl", theme: "dark", weight: "bold" }}
-                    >
-                      ${defaultPlan?.standardPrice}
-                    </Header>
-                    <P
-                      variant={{
-                        size: "small",
-                        theme: "dark",
-                        weight: "medium",
-                      }}
-                      className="mt-3 ml-1"
-                    >
-                      {t("/month")}
-                    </P>
-                  </div>
-                  <select
-                    className="border border-gray-300 rounded-md p-2 w-full mb-4"
-                    value={defaultPlan?.planName}
-                    onChange={(e) =>
-                      handlePlanChange(groupName, e.target.value)
-                    }
-                  >
-                    {plans.map((plan) => (
-                      <option key={plan.planName} value={plan.planName}>
-                        {plan.planName}
-                      </option>
-                    ))}
-                  </select>
-                  <ul className="space-y-2 md:min-h-auto min-h-[150px]">
-                    {returnList(defaultPlan.planDesc) ? (
-                      returnList(defaultPlan.planDesc).map((feature, i) => (
-                        <li key={i} className="flex items-center">
-                          <img
-                            src={checkmark}
-                            alt="tick"
-                            className="w-5 h-5 mr-2"
-                          />
-                          <span className="text-left">{feature}</span>
-                        </li>
-                      ))
-                    ) : (
-                      <li className="flex items-center">
-                        <img
-                          src={checkmark}
-                          alt="tick"
-                          className="w-5 h-5 mr-2"
-                        />
-                        <span className="text-left">No Features</span>
-                      </li>
+                    {defaultPlan?.defaultPlan == true && (
+                      <div className="bg-black text-white text-xs font-bold px-3 py-1 rounded-full inline-block mb-4 self-start">
+                        MOST POPULAR
+                      </div>
                     )}
-                  </ul>
 
-                  <input
-                    className={`p-2 mt-5 w-full bg-black rounded-md text-center text-white cursor-pointer hover:bg-[#131313df]}`}
-                    onClick={() => openConfirmation(defaultPlan)}
-                    type="button"
-                    value={t("Get Started")}
-                  />
-                </div>
-              );
-            })}
+                    <img
+                      src={`${imageUrl}/users/${defaultPlan?.planImg}`}
+                      alt="Plan Image"
+                      className="object-cover w-[90px] h-[90px]"
+                    />
+                    <div>
+                      <Header
+                        variant={{ size: "xl", theme: "dark", weight: "bold" }}
+                        className="text-left my-2"
+                      >
+                        Plan {groupName}
+                      </Header>
+                      <Header
+                        variant={{ size: "md", theme: "dark", weight: "bold" }}
+                        className="text-left mt-2"
+                      >
+                        {defaultPlan?.planName}
+                      </Header>
+
+                      <div className="text-left mb-4 flex items-baseline">
+                        <Header
+                          variant={{
+                            size: "base",
+                            theme: "dark",
+                            weight: "bold",
+                          }}
+                        >
+                          ${price}
+                        </Header>
+                        <P
+                          variant={{
+                            size: "small",
+                            theme: "dark",
+                            weight: "medium",
+                          }}
+                          className="ml-2 text-zinc-500"
+                        >
+                          {billingText}
+                        </P>
+                      </div>
+                    </div>
+
+                    <select
+                      className="border border-gray-300 rounded-md p-2 w-full mb-4 bg-white text-sm"
+                      value={defaultPlan?.planName}
+                      onChange={(e) =>
+                        handlePlanChange(groupName, e.target.value)
+                      }
+                    >
+                      {plans.map((plan) => (
+                        <option key={plan.planName} value={plan.planName}>
+                          {plan.planName}
+                        </option>
+                      ))}
+                    </select>
+
+                    <ul className="space-y-3 flex-grow">
+                      {returnList(defaultPlan.planDesc) ? (
+                        returnList(defaultPlan.planDesc).map((feature, i) => (
+                          <li key={i} className="flex items-start">
+                            <FiCheck className="text-green-500 mt-0.5 mr-2 flex-shrink-0" />
+                            <span className="text-left text-sm">{feature}</span>
+                          </li>
+                        ))
+                      ) : (
+                        <li className="flex items-center">
+                          <FiCheck className="text-green-500 mr-2" />
+                          <span className="text-left">No Features</span>
+                        </li>
+                      )}
+                    </ul>
+
+                    <button
+                      className={`mt-6 w-full py-3 rounded-md font-medium transition-all ${
+                        groupName === "2"
+                          ? "bg-black text-white hover:bg-gray-900"
+                          : "bg-white text-black border border-black hover:bg-gray-50"
+                      }`}
+                      onClick={() => openConfirmation(defaultPlan)}
+                    >
+                      {t("Get Started")}
+                    </button>
+                  </div>
+                );
+              })}
           </div>
         </div>
 
         {isConfirmationOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
             <div className="bg-white rounded-xl shadow-xl w-full max-w-lg max-h-[95vh] overflow-y-auto scrollbar mx-4">
-              <div className="p-4">
+              <div className="p-6">
                 <div className="flex justify-between items-center mb-4">
                   <h2 className="text-2xl font-bold text-gray-900">
                     Confirm Your Subscription
@@ -287,7 +383,13 @@ const PriceAndPlan = () => {
                           {selectedPlan.planName}
                         </h3>
                         <p className="text-gray-600">
-                          ${selectedPlan.standardPrice}/month
+                          ${getPlanPrice(selectedPlan)}{" "}
+                          {billingCycle === "yearly" ? "per year" : "per month"}
+                          {/* {billingCycle === "yearly" && (
+                            <span className="text-sm text-green-600 ml-2">
+                              (Save 10%)
+                            </span>
+                          )} */}
                         </p>
                       </div>
                     </div>
@@ -298,19 +400,7 @@ const PriceAndPlan = () => {
                         {returnList(selectedPlan.planDesc)?.map(
                           (feature, i) => (
                             <li key={i} className="flex items-start">
-                              <svg
-                                className="h-5 w-5 text-green-500 mr-2 mt-0.5"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M5 13l4 4L19 7"
-                                />
-                              </svg>
+                              <FiCheck className="text-green-500 mt-0.5 mr-2 flex-shrink-0" />
                               <span>{feature}</span>
                             </li>
                           )
@@ -405,7 +495,9 @@ const PriceAndPlan = () => {
                       <p className="text-sm text-blue-800">
                         By confirming, you agree to our Terms of Service and
                         Privacy Policy. Your subscription will automatically
-                        renew each month until canceled.
+                        renew each{" "}
+                        {billingCycle === "yearly" ? "year" : "month"} until
+                        canceled.
                       </p>
                     </div>
                   </div>
@@ -441,7 +533,7 @@ const PriceAndPlan = () => {
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                       maxLength={4}
                     />
-                    <div className="flex w-full gap-2">
+                    <div className="flex w-full gap-2 mt-2">
                       <button
                         onClick={() => {
                           closeConfirmation();
@@ -507,12 +599,7 @@ const PriceAndPlan = () => {
                       >
                         Add Payer
                       </button>
-                    ) : checkRef.status == "active" ? (
-                      <button className="px-4 py-2 pointer-events-none cursor-not-allowed opacity-65 bg-black text-white rounded-md hover:bg-gray-800 transition-colors duration-200 flex items-center">
-                        Already Subscribed
-                      </button>
-                    ) : checkRef.status == "inactive" &&
-                      checkRef?.store == true ? (
+                    ) : checkRef?.store == true ? (
                       <button
                         onClick={() => {
                           setShowInput(true);
@@ -529,19 +616,7 @@ const PriceAndPlan = () => {
                         }}
                         className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 transition-colors duration-200 flex items-center"
                       >
-                        <svg
-                          className="w-4 h-4 mr-2"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M5 13l4 4L19 7"
-                          />
-                        </svg>
+                        <FiCheck className="w-4 h-4 mr-2" />
                         Create & Proceed to Payment
                       </button>
                     )}
@@ -557,6 +632,7 @@ const PriceAndPlan = () => {
             onClose={() => setShowCreditCardForm(false)}
             planId={selectedPlan._id}
             isPending={isPending}
+            billingCycle={billingCycle}
             onSubmit={(cardDetails) => {
               mutateAsync(cardDetails).then(() => {
                 setShowCreditCardForm(false);
