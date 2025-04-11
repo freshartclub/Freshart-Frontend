@@ -6,11 +6,9 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 async function newPassword(input: any) {
-  return axiosInstance.post(
-    `${AUTH_ENDPOINTS.ResetPassword}?id=${input.id}&token=${input.token}`,
-    input
-  );
+  return axiosInstance.post(`${AUTH_ENDPOINTS.ResetPassword}?id=${input.id}&token=${input.token}`, input);
 }
+
 const useNewPasswordMutation = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();

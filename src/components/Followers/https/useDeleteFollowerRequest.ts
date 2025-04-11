@@ -14,14 +14,16 @@ async function circleDeleteRequestMutation(data) {
 
 const useDeleteFollowerRequest = () => {
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: circleDeleteRequestMutation,
 
     onSuccess: async (res) => {
-      toast.success(t(res.data.message), {
-        duration: 5000,
+      queryClient.invalidateQueries({
+        queryKey: [CIRCLE_ENDPOINTS.FollowRequests],
       });
+      toast.success(t(res.data.message));
     },
     onError: (error) => {
       toast.error(t(error.response?.data?.message) || t("An error occurred"));

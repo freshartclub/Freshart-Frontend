@@ -7,6 +7,7 @@ import HelpSection from "./HelpSection";
 import { useGetHomeData } from "./http/useGetHomeData";
 import RecentSection from "./RecentSection";
 import SecondSection from "./SecondSection";
+import { useEffect } from "react";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -15,7 +16,13 @@ const HomePage = () => {
   const { data, isLoading } = useGetHomeData();
 
   const token = localStorage.getItem("auth_token");
-  if (profile === "artist") return navigate("/artist-panel");
+  useEffect(() => {
+    if (profile === "artist") {
+      navigate("/artist-panel");
+    }
+  }, [profile, navigate]);
+
+  if (profile === "artist") return null;
 
   return (
     <div className="overflow-x-hidden">

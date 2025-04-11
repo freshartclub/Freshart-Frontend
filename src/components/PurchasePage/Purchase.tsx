@@ -40,8 +40,6 @@ const Purchase = () => {
 
   const dark = useAppSelector((state) => state.theme.mode);
 
-  console.log(dark);
-
   const defaultRanges = {
     height: { min: 0, max: 300, step: 10 },
     width: { min: 0, max: 300, step: 10 },

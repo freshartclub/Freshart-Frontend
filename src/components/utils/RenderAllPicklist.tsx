@@ -16,9 +16,7 @@ export const RenderAllPicklists = (fields: string[]) => {
     const groupedPicklist =
       data && data.length > 0
         ? fields.map((field) => {
-            const matchedField = data.find(
-              (item: any) => item?.picklistName === field
-            );
+            const matchedField = data.find((item: any) => item?.picklistName === field);
             return {
               fieldName: field,
               picklist: matchedField?.picklist
@@ -50,9 +48,7 @@ export const RenderAllSinglePicklist = (fields: string[]) => {
     const groupedPicklist =
       data && data.length > 0
         ? fields.map((field) => {
-            const matchedField = data.find(
-              (item: any) => item?.picklistName === field
-            );
+            const matchedField = data.find((item: any) => item?.picklistName === field);
             return {
               fieldName: field,
               picklist: matchedField?.picklist,
@@ -72,10 +68,7 @@ export const RenderAllPicklist = (field: string) => {
   const { t } = useTranslation();
 
   useEffect(() => {
-    const list =
-      data && data.length > 0
-        ? data.filter((item: any) => item?.picklistName === field)
-        : [];
+    const list = data && data.length > 0 ? data.filter((item: any) => item?.picklistName === field) : [];
 
     if (list?.length > 0 && list[0]?.picklist?.length > 0) {
       setPicklist(

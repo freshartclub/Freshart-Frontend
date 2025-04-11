@@ -21,12 +21,10 @@ const useRemoveFollowerMutaion = () => {
 
     onSuccess: async (res) => {
       queryClient.invalidateQueries({
-        queryKey: ["RemovedFollower"],
+        queryKey: [CIRCLE_ENDPOINTS.GetFollowers],
         refetchType: "all",
       });
-      toast.success(t(res.data.message), {
-        duration: 5000,
-      });
+      toast.success(t(res.data.message));
     },
     onError: (error) => {
       toast.error(t(error.response?.data?.message) || t("An error occurred"));

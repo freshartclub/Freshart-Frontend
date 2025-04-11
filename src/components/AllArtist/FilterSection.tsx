@@ -26,11 +26,7 @@ const FilterSection = ({
       <div className="flex mt-4 w-full max-w-full overflow-x-auto scrollbar items-center gap-4">
         {cred && cred.length > 0 ? (
           cred.map((item, i: number) => (
-            <div
-              key={i}
-              className="group relative cursor-pointer flex items-center"
-              onClick={() => setSelectedInsignia(item?.credentialName)}
-            >
+            <div key={i} className="group relative cursor-pointer flex items-center" onClick={() => setSelectedInsignia(item?.credentialName)}>
               <div className="relative overflow-hidden w-[250px] h-[250px]">
                 <img
                   src={`${imageUrl}/users/${item?.insigniaImage}`}
@@ -45,9 +41,7 @@ const FilterSection = ({
             </div>
           ))
         ) : (
-          <div className="border border-[#FF536B] rounded-full px-4 py-1 text-[#FF536B] cursor-pointer">
-            No Data Found
-          </div>
+          <div className="border border-[#FF536B] rounded-full px-4 py-1 text-[#FF536B] cursor-pointer">No Data Found</div>
         )}
       </div>
 
@@ -65,11 +59,7 @@ const FilterSection = ({
 
         <div className="flex flex-wrap items-center gap-3">
           <SelectOption
-            value={
-              selectedOption
-                ? { value: selectedOption, label: selectedOption }
-                : null
-            }
+            value={selectedOption ? { value: selectedOption, label: selectedOption } : null}
             options={
               discipline && discipline.length > 0
                 ? discipline.map((item) => ({
@@ -83,26 +73,14 @@ const FilterSection = ({
           />
 
           <SelectOption
-            value={
-              selectedStyle
-                ? { value: selectedStyle, label: selectedStyle }
-                : null
-            }
-            options={
-              styleData && styleData.length > 0
-                ? styleData.map((item) => ({ value: item, label: item }))
-                : []
-            }
+            value={selectedStyle ? { value: selectedStyle, label: selectedStyle } : null}
+            options={styleData && styleData.length > 0 ? styleData.map((item) => ({ value: item, label: item })) : []}
             onChange={(e) => setSelectedStyle(e?.value)}
             placeholder="Style"
           />
 
           <SelectOption
-            value={
-              selectedInsignia
-                ? { value: selectedInsignia, label: selectedInsignia }
-                : null
-            }
+            value={selectedInsignia ? { value: selectedInsignia, label: selectedInsignia } : null}
             options={
               cred && cred.length > 0
                 ? cred.map((item) => ({
@@ -125,14 +103,8 @@ const FilterSection = ({
             placeholder="Sort"
           />
 
-          {!letter &&
-          !selectedOption &&
-          !selectedStyle &&
-          !selectedInsignia ? null : (
-            <span
-              className="uppercase text-[14px] cursor-pointer bg-[#102031] text-white rounded-full p-2"
-              onClick={handleClear}
-            >
+          {!letter && !selectedOption && !selectedStyle && !selectedInsignia ? null : (
+            <span className="uppercase text-[14px] cursor-pointer bg-[#102031] text-white rounded-full p-2" onClick={handleClear}>
               Clear Filter
             </span>
           )}

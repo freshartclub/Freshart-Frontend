@@ -6,9 +6,7 @@ import NavForHome from "./NavBar/NavForHome";
 import { useAppSelector } from "../store/typedReduxHooks";
 
 interface LayoutProps {
-  isAuthenticated: boolean;
   children: React.ReactNode;
-  check?: boolean;
 }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
@@ -23,7 +21,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const home = location.pathname === "/home";
 
   return (
-    <div>
+    <>
       {isLoginPage || isSignUpPage || isForgetPassword || becomeAnArtist ? (
         <LogNaveBar />
       ) : home ? (
@@ -31,8 +29,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       ) : user === "artist" && isAuthorized ? null : (
         <NavBar />
       )}
-      <main>{children}</main>
-    </div>
+      {children}
+    </>
   );
 };
 

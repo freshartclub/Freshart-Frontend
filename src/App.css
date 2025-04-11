@@ -5,9 +5,6 @@
 .PhoneInput {
   width: 100%;
 }
-.PhoneInput--focus {
-  /* outline: dotted; */
-}
 
 .PhoneInput-color--focus {
   background-color: red;

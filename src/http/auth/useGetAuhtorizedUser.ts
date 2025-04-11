@@ -1,31 +1,22 @@
 import { useQuery } from "@tanstack/react-query";
-
-import { AUTH_ENDPOINTS } from "../apiEndPoints/Auth";
 import axiosInstance from "../../components/utils/axios";
+import { setIsArtist, setIsArtProvider, setIsAuthorized, updateUser } from "../../store/slice/userSlice";
 import { useAppDispatch } from "../../store/typedReduxHooks";
-import {
-  forgotPasswordUserId,
-  setIsArtist,
-  setIsArtProvider,
-  setIsAuthorized,
-  updateUser,
-} from "../../store/slice/userSlice";
+import { AUTH_ENDPOINTS } from "../apiEndPoints/Auth";
+
+async function getUser() {
+  const { data } = await axiosInstance.get(AUTH_ENDPOINTS.CheckToken);
+  return data;
+}
 
 const useCheckIsAuthorized = () => {
   const dispatch = useAppDispatch();
-
-  async function getUser() {
-    const { data } = await axiosInstance.get(AUTH_ENDPOINTS.CheckToken);
-    return data;
-  }
-
   const fetchUser = async () => {
     try {
       const res = await getUser();
 
       dispatch(updateUser(res.artist));
       dispatch(setIsAuthorized(true));
-
       dispatch(setIsArtProvider(res.artist?.commercilization?.artProvider));
 
       if (res.artist.isActivated) {

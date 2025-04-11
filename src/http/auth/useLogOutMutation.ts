@@ -4,12 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../components/utils/axios";
 import { useAppDispatch } from "../../store/typedReduxHooks";
-import {
-  removeUser,
-  setIsArtist,
-  setIsAuthorized,
-  updateUser,
-} from "../../store/slice/userSlice";
+import { removeUser, setIsArtist, setIsAuthorized, updateUser } from "../../store/slice/userSlice";
 import { AUTH_ENDPOINTS } from "../apiEndPoints/Auth";
 
 async function logOut() {
@@ -21,6 +16,7 @@ async function logOut() {
     },
   });
 }
+
 const useLogOutMutation = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -31,13 +27,11 @@ const useLogOutMutation = () => {
 
     onSuccess: async (res) => {
       dispatch(setIsAuthorized(false));
-
       dispatch(setIsArtist(false));
       dispatch(updateUser(null));
+      dispatch(removeUser());
 
       toast.success(t(res.data.message));
-
-      dispatch(removeUser());
 
       localStorage.removeItem("auth_token");
       localStorage.removeItem("profile");

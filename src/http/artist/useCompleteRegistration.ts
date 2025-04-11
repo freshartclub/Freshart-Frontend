@@ -8,15 +8,11 @@ import { updateUser } from "../../store/slice/userSlice";
 import { AUTH_ENDPOINTS } from "../apiEndPoints/Auth";
 
 async function completeRegistration(input: any) {
-  return await axiosInstance.post(
-    `${AUTH_ENDPOINTS.CompleteProfile}`,
-    input.data,
-    {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    }
-  );
+  return await axiosInstance.post(`${AUTH_ENDPOINTS.CompleteProfile}`, input.data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
 }
 
 const useCompleteRegistration = () => {

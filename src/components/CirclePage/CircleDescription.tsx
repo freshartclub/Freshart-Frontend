@@ -1,9 +1,18 @@
 import CircleRight from "./CircleRight";
 
-const CircleDescription = ({ data }) => {
+interface CircleDescriptionProps {
+  data: any;
+  dark: boolean;
+}
+
+const CircleDescription = ({ data, dark }: CircleDescriptionProps) => {
   return (
-    <div className="flex w-full mx-auto flex-col items-center gap-5 mt-5">
-      <CircleRight data={data} />
+    <div
+      className={`flex w-full mx-auto flex-col items-center gap-5 mt-5 ${
+        dark ? "bg-gray-900" : ""
+      }`}
+    >
+      <CircleRight data={data} dark={dark} />
     </div>
   );
 };

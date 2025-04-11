@@ -1,13 +1,33 @@
+import { motion, AnimatePresence } from "framer-motion";
 import { FaLocationDot } from "react-icons/fa6";
 import Header from "../ui/Header";
 import P from "../ui/P";
 import { imageUrl } from "../utils/baseUrls";
 
-const Managers = ({ data }) => {
-  const name = (val) => {
+interface ManagerProps {
+  data?: {
+    data?: {
+      managers?: Array<{
+        id: string;
+        img?: string;
+        artistName?: string;
+        nickName?: string;
+        artistSurname1?: string;
+        artistSurname2?: string;
+        address?: {
+          country?: string;
+        };
+      }>;
+    };
+  };
+  dark?: boolean;
+}
+
+const Managers = ({ data, dark = false }: ManagerProps) => {
+  const name = (val: any) => {
     let fullName = val?.artistName || "";
 
-    if (val?.nickName) fullName += " " + `"${val?.nickName}"`;
+    if (val?.nickName) fullName += ` "${val?.nickName}"`;
     if (val?.artistSurname1) fullName += " " + val?.artistSurname1;
     if (val?.artistSurname2) fullName += " " + val?.artistSurname2;
 
@@ -15,55 +35,112 @@ const Managers = ({ data }) => {
   };
 
   return (
-    <div className="mx-auto px-3 sm:px-6 my-5">
-      <Header variant={{ size: "2xl", theme: "dark", weight: "bold" }}>
-        Managers
-      </Header>
+    <section className={`mx-auto px-3 sm:px-6 my-8 ${dark ? "text-gray-100" : "text-gray-800"}`}>
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
+        <Header
+          variant={{
+            size: "2xl",
+            theme: dark ? "light" : "dark",
+            weight: "bold",
+          }}
+          className="mb-1"
+        >
+          Managers
+        </Header>
+        <P
+          variant={{
+            theme: dark ? "light" : "dark",
+            weight: "normal",
+          }}
+          className="opacity-80"
+        >
+          {data?.data?.managers?.length || 0} team members
+        </P>
+      </motion.div>
 
-      <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 2xl:gap-10 md:gap-6 gap-5 mt-5 mb-10">
-        {data?.data?.managers ? (
-          data?.data?.managers?.map((item, index: number) => (
-            <div
-              key={index}
-              className="flex flex-wrap justify-between border border-zinc-300 items-center shadow-md p-4 rounded-lg"
-            >
-              <div key={item.id} className="flex gap-3 items-center">
-                <img
-                  src={`${imageUrl}/users/${item?.img}`}
-                  className="w-[50px] h-[50px] rounded-full object-cover"
-                  alt="profile image"
-                />
-                <div className="flex flex-col gap-1">
-                  <P
-                    variant={{
-                      size: "md",
-                      theme: "dark",
-                      weight: "semiBold",
-                    }}
-                    className="xl:text-md text-base"
-                  >
-                    {name(item)}
-                  </P>
-                  <div className="flex items-center gap-2">
-                    <FaLocationDot size={15} />
-                    <P
-                      variant={{ size: "small", weight: "normal" }}
-                      className="text-[#919EAB]"
+      <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 mt-6">
+        <AnimatePresence>
+          {data?.data?.managers?.length ? (
+            data.data.managers.map((item, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1, duration: 0.3 }}
+                className={`p-4 rounded-xl shadow transition-all duration-200 ${
+                  dark ? "bg-gray-800 border-gray-700 hover:bg-gray-700" : "bg-white border-gray-200 hover:bg-gray-100"
+                } border`}
+              >
+                <div className="flex items-center gap-4">
+                  <div className="relative">
+                    <img
+                      src={`${imageUrl}/users/${item?.img}`}
+                      className="w-12 h-12 rounded-full object-cover border-2 border-blue-500"
+                      alt="profile"
+                    />
+                    <div
+                      className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 ${
+                        dark ? "border-gray-800 bg-green-500" : "border-white bg-green-500"
+                      }`}
+                    ></div>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <Header
+                      variant={{
+                        size: "lg",
+                        theme: dark ? "light" : "dark",
+                        weight: "semiBold",
+                      }}
+                      className="truncate"
                     >
-                      {item?.address?.country}
-                    </P>
+                      {name(item)}
+                    </Header>
+                    <div className="flex items-center gap-2 mt-1">
+                      <FaLocationDot size={14} className={dark ? "text-blue-400" : "text-blue-600"} />
+                      <P
+                        variant={{
+                          theme: dark ? "light" : "dark",
+                          weight: "normal",
+                        }}
+                        className="truncate opacity-80"
+                      >
+                        {item?.address?.country || "Unknown location"}
+                      </P>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          ))
-        ) : (
-          <div className="col-span-full text-center text-gray-500  border border-zinc-300 rounded py-4">
-            No Managers Found
-          </div>
-        )}
+              </motion.div>
+            ))
+          ) : (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className={`col-span-full py-8 rounded-xl text-center ${dark ? "bg-gray-800 border-gray-700" : "bg-gray-50 border-gray-200"} border`}
+            >
+              <P
+                variant={{
+                  size: "md",
+                  theme: dark ? "light" : "dark",
+                  weight: "medium",
+                }}
+                className="opacity-70"
+              >
+                No managers found
+              </P>
+              <P
+                variant={{
+                  theme: dark ? "light" : "dark",
+                  weight: "normal",
+                }}
+                className="mt-1 opacity-50"
+              >
+                This circle currently has no managers
+              </P>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
-    </div>
+    </section>
   );
 };
 

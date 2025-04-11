@@ -1,6 +1,5 @@
 import { Navigate } from "react-router-dom";
 import { useAppSelector } from "../store/typedReduxHooks";
-// import { components } from "react-select";
 
 interface ArtistGuardProps {
   children: React.ReactNode;

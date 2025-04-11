@@ -1,4 +1,5 @@
-import { useState } from "react"; // Add this import
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { FaLocationDot } from "react-icons/fa6";
 import { useSearchParams } from "react-router-dom";
 import { useAppSelector } from "../../store/typedReduxHooks";
@@ -10,11 +11,21 @@ import { imageUrl } from "../utils/baseUrls";
 import { useGetFollowers } from "./https/useGetFollowers";
 import useRemoveFollowerMutaion from "./https/useRemoveFollowerMutaion";
 
-const Followers = ({ newData }) => {
+interface FollowerProps {
+  newData?: {
+    data?: {
+      managers?: Array<{
+        _id?: string;
+      }>;
+    };
+  };
+  dark?: boolean;
+}
+
+const Followers = ({ newData, dark = false }: FollowerProps) => {
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
-
-  const [removingUserId, setRemovingUserId] = useState(null);
+  const [removingUserId, setRemovingUserId] = useState<string | null>(null);
   const userId = useAppSelector((state) => state?.user?.user?._id);
   const { data, isLoading } = useGetFollowers(id);
   const { mutate, isPending } = useRemoveFollowerMutaion();
@@ -23,7 +34,7 @@ const Followers = ({ newData }) => {
     newData?.data?.managers?.some((manager) => manager?._id === userId) ||
     false;
 
-  const handleFollowClick = (userId) => {
+  const handleFollowClick = (userId: string) => {
     setRemovingUserId(userId);
     const newData = {
       circleId: id,
@@ -36,10 +47,10 @@ const Followers = ({ newData }) => {
     });
   };
 
-  const name = (val) => {
+  const name = (val: any) => {
     let fullName = val?.artistName || "";
 
-    if (val?.nickName) fullName += " " + `"${val?.nickName}"`;
+    if (val?.nickName) fullName += ` "${val?.nickName}"`;
     if (val?.artistSurname1) fullName += " " + val?.artistSurname1;
     if (val?.artistSurname2) fullName += " " + val?.artistSurname2;
 
@@ -47,76 +58,182 @@ const Followers = ({ newData }) => {
   };
 
   return (
-    <div className="mx-auto px-3 sm:px-6 my-5">
-      <Header variant={{ size: "2xl", theme: "dark", weight: "bold" }}>
-        Followers
-      </Header>
+    <section
+      className={`mx-auto px-3 sm:px-6 my-8 ${
+        dark ? "text-gray-100" : "text-gray-800"
+      }`}
+    >
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        <Header
+          variant={{
+            size: "2xl",
+            theme: dark ? "light" : "dark",
+            weight: "bold",
+          }}
+          className="mb-1"
+        >
+          Followers
+        </Header>
+        <P
+          variant={{
+            theme: dark ? "light" : "dark",
+            weight: "normal",
+          }}
+          className="opacity-80"
+        >
+          {data?.data?.length || 0} people following
+        </P>
+      </motion.div>
 
       {isLoading ? (
-        <Loader />
+        <div className="flex justify-center py-10">
+          <Loader />
+        </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6 2xl:gap-10 mt-5 mb-10">
-          {data?.data?.length > 0 ? (
-            data?.data?.map((item, index: number) => (
-              <div
-                key={index}
-                className="flex flex-wrap justify-between border border-zinc-300 items-center shadow-md p-4 rounded-lg"
-              >
-                <div className="flex items-center gap-2 xl:gap-4 w-full max-w-[70%]">
-                  <img
-                    src={`${imageUrl}/users/${item?.user?.img}`}
-                    className="w-[50px] h-[50px] rounded-full object-cover"
-                    alt="profile image"
-                  />
-                  <div className="flex flex-col gap-1">
-                    <P
-                      variant={{
-                        size: "md",
-                        theme: "dark",
-                        weight: "semiBold",
-                      }}
-                      className="text-base xl:text-md truncate"
-                    >
-                      {name(item?.user)}
-                    </P>
-                    <div className="flex items-center gap-2">
-                      <FaLocationDot size={15} />
-                      <P
-                        variant={{ size: "small", weight: "normal" }}
-                        className="text-[#919EAB] truncate"
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+          <AnimatePresence>
+            {data?.data?.length ? (
+              data.data.map((item, index: number) => (
+                <motion.div
+                  key={item?.user?._id || index}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1, duration: 0.3 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  className={`p-4 rounded-xl shadow-sm transition-all duration-200 ${
+                    dark
+                      ? "bg-gray-800 border-gray-700 hover:bg-gray-700"
+                      : "bg-white border-gray-200 hover:bg-gray-50"
+                  } border flex justify-between items-center`}
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="relative flex-shrink-0">
+                      <img
+                        src={`${imageUrl}/users/${item?.user?.img}`}
+                        className="w-12 h-12 rounded-full object-cover border-2 border-blue-500"
+                        alt="profile"
+                      />
+                    </div>
+                    <div className="min-w-0">
+                      <Header
+                        variant={{
+                          size: "lg",
+                          theme: dark ? "light" : "dark",
+                          weight: "semiBold",
+                        }}
+                        className="truncate"
                       >
-                        {item?.user?.location?.country}
-                      </P>
+                        {name(item?.user)}
+                      </Header>
+                      <div className="flex items-center gap-2 mt-1">
+                        <FaLocationDot
+                          size={14}
+                          className={dark ? "text-blue-400" : "text-blue-600"}
+                        />
+                        <P
+                          variant={{
+                            theme: dark ? "light" : "dark",
+                            weight: "normal",
+                          }}
+                          className="truncate opacity-80"
+                        >
+                          {item?.user?.location?.country || "Unknown location"}
+                        </P>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="flex-shrink-0">
-                  {isManager ? (
-                    <Button
-                      variant={{
-                        fontSize: "small",
-                        rounded: "md",
-                        fontWeight: "600",
-                      }}
-                      onClick={() => handleFollowClick(item?.user?._id)}
-                      className="border border-[#919EAB51] py-1 px-2 whitespace-nowrap"
+                  {isManager && (
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
                     >
-                      {isPending && removingUserId === item?.user?._id
-                        ? "Removing..."
-                        : "Remove"}
-                    </Button>
-                  ) : null}
-                </div>
-              </div>
-            ))
-          ) : (
-            <div className="col-span-full text-center text-gray-500  border border-zinc-300 rounded py-4">
-              No Followers Found
-            </div>
-          )}
+                      <Button
+                        variant={{
+                          fontSize: "sm",
+                          rounded: "lg",
+                          fontWeight: "medium",
+                        }}
+                        onClick={() => handleFollowClick(item?.user?._id)}
+                        className={`whitespace-nowrap ${
+                          dark
+                            ? "bg-red-600 hover:bg-red-700 text-white"
+                            : "bg-red-500 hover:bg-red-600 text-white"
+                        }`}
+                        disabled={
+                          isPending && removingUserId === item?.user?._id
+                        }
+                      >
+                        {isPending && removingUserId === item?.user?._id ? (
+                          <span className="flex items-center gap-2">
+                            <svg
+                              className="animate-spin h-4 w-4"
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                            >
+                              <circle
+                                className="opacity-25"
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                strokeWidth="4"
+                              ></circle>
+                              <path
+                                className="opacity-75"
+                                fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                              ></path>
+                            </svg>
+                            Removing
+                          </span>
+                        ) : (
+                          "Remove"
+                        )}
+                      </Button>
+                    </motion.div>
+                  )}
+                </motion.div>
+              ))
+            ) : (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className={`col-span-full py-8 rounded-xl text-center ${
+                  dark
+                    ? "bg-gray-800 border-gray-700"
+                    : "bg-gray-50 border-gray-200"
+                } border`}
+              >
+                <P
+                  variant={{
+                    size: "md",
+                    theme: dark ? "light" : "dark",
+                    weight: "medium",
+                  }}
+                  className="opacity-70"
+                >
+                  No followers yet
+                </P>
+                <P
+                  variant={{
+                    theme: dark ? "light" : "dark",
+                    weight: "normal",
+                  }}
+                  className="mt-1 opacity-50"
+                >
+                  This circle currently has no followers
+                </P>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       )}
-    </div>
+    </section>
   );
 };
 

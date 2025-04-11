@@ -1,17 +1,10 @@
 import { useMutation } from "@tanstack/react-query";
-
-// import { paths } from 'src/routes/paths';
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../components/utils/axios";
 import { setToken } from "../../components/utils/tokenHelper";
 import { useAppDispatch } from "../../store/typedReduxHooks";
-import {
-  setIsArtist,
-  setIsArtProvider,
-  setIsAuthorized,
-  updateUser,
-} from "../../store/slice/userSlice";
+import { setIsArtist, setIsArtProvider, setIsAuthorized, updateUser } from "../../store/slice/userSlice";
 import { AUTH_ENDPOINTS } from "../apiEndPoints/Auth";
 import { useTranslation } from "react-i18next";
 
@@ -31,10 +24,7 @@ const useSigInInMutation = () => {
       setToken(res.data.token, input.rememberMe);
       dispatch(updateUser(res?.data?.user));
       dispatch(setIsAuthorized(true));
-
-      dispatch(
-        setIsArtProvider(res?.data?.user?.commercilization?.artProvider)
-      );
+      dispatch(setIsArtProvider(res?.data?.user?.commercilization?.artProvider));
 
       if (res.data.user.isActivated) {
         dispatch(setIsArtist(true));
@@ -45,6 +35,7 @@ const useSigInInMutation = () => {
       } else {
         localStorage.setItem("profile", "user");
         navigate("/home", { replace: true });
+        window.location.reload();
       }
 
       toast.success(t(res.data.message));

@@ -1,117 +1,78 @@
-// src/App.tsx
-import React, { Suspense, lazy, useEffect, useState } from "react";
+import React, { Suspense, lazy, useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import ArtistPanel from "./components/ArtistPanel/ArtistPanel";
 import AuthGuard from "./components/AuthGuard";
 import FooterSection from "./components/HomePage/FooterSection";
 import Layout from "./components/Layout";
-import TicketHistory from "./components/NewTicket/ticket history/TicketHistory";
-import SingleTicket from "./components/NewTicket/ticket history/ticketDetail";
 import Loader from "./components/ui/Loader";
 import { setup } from "./components/utils/axios";
 import "./components/utils/i18n.ts";
 import useCheckIsAuthorized from "./http/auth/useGetAuhtorizedUser";
 import { AuthProvider } from "./jwt/auth-provider";
 import { toggleTheme } from "./store/slice/themeSlice";
+import { FaMoon, FaSun } from "react-icons/fa6";
+import ArtistGuard from "./components/ArtistGuard";
+import { useAppDispatch, useAppSelector } from "./store/typedReduxHooks";
+import i18n from "./components/utils/i18n.ts";
 
 // Lazy loading the components
-import ArtistGuard from "./components/ArtistGuard";
-import GetStarted from "./components/GetStarted/GetStarted";
-import HomePage from "./components/HomePage/HomePage";
-import PaymentPage from "./components/Payment_page/PaymentPage";
-import AboutUs from "./components/pages/AboutUs/AboutUs";
-import Faq from "./components/pages/Faq";
-import KbDatabase from "./components/pages/KbDatabase.tsx";
-import LoginPage from "./components/pages/Login";
-import NotFoundPage from "./components/pages/NotFoundPage";
-import i18n from "./components/utils/i18n.ts";
-import { useAppDispatch, useAppSelector } from "./store/typedReduxHooks";
-import UserCircleList from "./components/CIrcle/UserCircleList.tsx";
-import UnderConstruction from "./components/GetStarted/UnderConstruction.tsx";
-import { FaMoon, FaSun } from "react-icons/fa6";
+const UserCircleList = lazy(() => import("./components/CIrcle/UserCircleList"));
+const SingleTicket = lazy(() => import("./components/NewTicket/ticket history/ticketDetail"));
+const TicketHistory = lazy(() => import("./components/NewTicket/ticket history/TicketHistory"));
+const PaymentPage = lazy(() => import("./components/Payment_page/PaymentPage"));
+const GetStarted = lazy(() => import("./components/GetStarted/GetStarted"));
+const AboutUs = lazy(() => import("./components/pages/AboutUs/AboutUs"));
+const Faq = lazy(() => import("./components/pages/Faq"));
+const KbDatabase = lazy(() => import("./components/pages/KbDatabase.tsx"));
+const NotFoundPage = lazy(() => import("./components/pages/NotFoundPage"));
+const HomePage = lazy(() => import("./components/HomePage/HomePage"));
+const LoginPage = lazy(() => import("./components/pages/Login"));
 const SignUp = lazy(() => import("./components/pages/SignUp"));
 const ForgetPassword = lazy(() => import("./components/pages/ForgetPassword"));
 const ChangePassword = lazy(() => import("./components/pages/ChangePassword"));
 const OtpPage = lazy(() => import("./components/pages/OtpPage"));
-const PaymentSuccessfull = lazy(
-  () => import("./components/pages/PaymentSuccessfull")
-);
+const PaymentSuccessfull = lazy(() => import("./components/pages/PaymentSuccessfull"));
 const ThankYou = lazy(() => import("./components/pages/ThankYou"));
 const ErrorPage = lazy(() => import("./components/pages/ErrorPage"));
 const BlogAndNews = lazy(() => import("./components/BlogAndNews/BlogAndNews"));
 const CircleBlog = lazy(() => import("./components/CircleBlog/CircleBlog"));
-const CompleteProfileForm = lazy(
-  () => import("./components/pages/RegistrationProcess")
-);
+const CompleteProfileForm = lazy(() => import("./components/pages/RegistrationProcess"));
 const BecomeArtist = lazy(() => import("./components/pages/BecomeArtist"));
-const CardSuccessPage = lazy(
-  () => import("./components/pages/CardSuccessPage")
-);
-const DiscoveryArt = lazy(
-  () => import("./components/DiscoveryArt/DiscoveryArt")
-);
+const CardSuccessPage = lazy(() => import("./components/pages/CardSuccessPage"));
+const DiscoveryArt = lazy(() => import("./components/DiscoveryArt/DiscoveryArt"));
 const Support = lazy(() => import("./components/pages/Support"));
 const OrderPage = lazy(() => import("./components/pages/OrderPage"));
-const TermAndCondition = lazy(
-  () => import("./components/pages/TermAndCondition")
-);
-const PaymentPremium = lazy(
-  () => import("./components/PaymentPremium/PaymentPremium")
-);
+const TermAndCondition = lazy(() => import("./components/pages/TermAndCondition"));
+const PaymentPremium = lazy(() => import("./components/PaymentPremium/PaymentPremium"));
 const Wishlist = lazy(() => import("./components/pages/Wishlist"));
-const PriceAndPlan = lazy(
-  () => import("./components/PriceAndPlans/PriceAndPlan")
-);
-const ArtistPortfolioPage = lazy(
-  () => import("./components/ArtistPortfolioPage/ArtistPortfolioPage")
-);
-const DiscoverMore = lazy(
-  () => import("./components/DiscoverMore/DiscoverMore")
-);
+const PriceAndPlan = lazy(() => import("./components/PriceAndPlans/PriceAndPlan"));
+const ArtistPortfolioPage = lazy(() => import("./components/ArtistPortfolioPage/ArtistPortfolioPage"));
+const DiscoverMore = lazy(() => import("./components/DiscoverMore/DiscoverMore"));
 const Purchase = lazy(() => import("./components/PurchasePage/Purchase"));
-const PurchaseCart = lazy(
-  () => import("./components/PurchasePage/PurchaseCart")
-);
+const PurchaseCart = lazy(() => import("./components/PurchasePage/PurchaseCart"));
 const ExplorePage = lazy(() => import("./components/Explore/ExplorePage"));
-const ArtistDetail = lazy(
-  () => import("./components/ArtistDetail/ArtistDetail")
-);
+const ArtistDetail = lazy(() => import("./components/ArtistDetail/ArtistDetail"));
 const NewTicket = lazy(() => import("./components/NewTicket/NewTicket"));
 const CartSuccess = lazy(() => import("./components/pages/CartSuccess"));
 const UserProfile = lazy(() => import("./components/UserProfile/UserProfile"));
 const CirclePage = lazy(() => import("./components/CirclePage/CirclePage"));
 const Followers = lazy(() => import("./components/Followers/Followers.tsx"));
 const AllArtist = lazy(() => import("./components/AllArtist/AllArtist"));
-const DiscoveryMore = lazy(
-  () => import("./components/DiscoveryMore/DiscoveryMore")
-);
-const ArtworkGroup = lazy(
-  () => import("./components/PurchasePage/ArtworkGroup")
-);
-const CreateInvite = lazy(
-  () => import("./components/CreateInvite/CreateInvite")
-);
-const OrderTracking = lazy(
-  () => import("./components/OrderTracking/OrderTracking")
-);
-const AccountSetting = lazy(
-  () => import("./components/AccountSetting/AccountSetting")
-);
+const DiscoveryMore = lazy(() => import("./components/DiscoveryMore/DiscoveryMore"));
+const ArtworkGroup = lazy(() => import("./components/PurchasePage/ArtworkGroup"));
+const CreateInvite = lazy(() => import("./components/CreateInvite/CreateInvite"));
+const OrderTracking = lazy(() => import("./components/OrderTracking/OrderTracking"));
+const AccountSetting = lazy(() => import("./components/AccountSetting/AccountSetting"));
 const Blogs = lazy(() => import("./components/Blogs/Blogs"));
 const EditProfile = lazy(() => import("./components/EditProfile/EditProfile"));
-const ArtistDashboard = lazy(
-  () => import("./components/ArtistDashboard/ArtistDashboard")
-);
+const ArtistDashboard = lazy(() => import("./components/ArtistDashboard/ArtistDashboard"));
 const SignUpOtp = lazy(() => import("./components/pages/SignUpOtp"));
-const OrderDetail = lazy(
-  () => import("./components/ArtistPanel/Orderdetail/OrderDetails")
-);
+const OrderDetail = lazy(() => import("./components/ArtistPanel/Orderdetail/OrderDetails"));
 const MyPlans = lazy(() => import("./components/MyPlans/Myplans.tsx"));
 
 const App: React.FC = () => {
   setup();
   const { isLoading } = useCheckIsAuthorized();
-  const [isAuthenticated] = useState<boolean>(false);
   const theme = useAppSelector((state) => state.theme.mode);
   const lng = useAppSelector((state) => state.user.language);
 
@@ -130,12 +91,11 @@ const App: React.FC = () => {
 
   return (
     <AuthProvider>
-      <Layout isAuthenticated={isAuthenticated}>
+      <Layout>
         <Suspense fallback={<Loader />}>
           <div>
             <Routes>
               <Route path="/" element={<GetStarted />} />
-              <Route path="/" element={<UnderConstruction />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<SignUp />} />
               <Route path="/become_artist" element={<BecomeArtist />} />
@@ -144,8 +104,6 @@ const App: React.FC = () => {
               <Route path="/otp" element={<OtpPage />} />
               <Route path="/sign-up-otp" element={<SignUpOtp />} />
               <Route path="/terms" element={<TermAndCondition />} />
-
-              <Route path="*" element={<NotFoundPage />} />
               <Route path="/faq" element={<Faq />} />
               <Route path="/kb-database" element={<KbDatabase />} />
               <Route path="/about-us" element={<AboutUs />} />
@@ -186,14 +144,7 @@ const App: React.FC = () => {
                 }
               />
 
-              <Route
-                path="/home"
-                element={
-                  // <AuthGuard>
-                  <HomePage />
-                  // </AuthGuard>
-                }
-              />
+              <Route path="/home" element={<HomePage />} />
               <Route
                 path="/payment_successful"
                 element={
@@ -486,22 +437,19 @@ const App: React.FC = () => {
                   </AuthGuard>
                 }
               />
+              <Route path="*" element={<NotFoundPage />} />
             </Routes>
             <button
               onClick={() => dispatch(toggleTheme())}
               className={`fixed right-4 bottom-4 z-50 p-3 rounded-full shadow-lg ${
-                theme
-                  ? "bg-gray-700 text-yellow-300"
-                  : "bg-gray-200 text-gray-700"
+                theme ? "bg-gray-700 text-yellow-300" : "bg-gray-200 text-gray-700"
               }`}
               aria-label="Toggle mode"
             >
               {theme ? <FaSun size={20} /> : <FaMoon size={20} />}
             </button>
           </div>
-          {window.location.pathname.includes("/artist-panel") ? null : (
-            <FooterSection />
-          )}
+          {window.location.pathname.includes("/artist-panel") ? null : <FooterSection />}
         </Suspense>
       </Layout>
     </AuthProvider>

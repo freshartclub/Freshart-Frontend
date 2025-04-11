@@ -11,6 +11,7 @@ async function sendEmail(input: any) {
 
 const useSendOtp = () => {
   const { t } = useTranslation();
+
   return useMutation({
     mutationFn: sendEmail,
     onSuccess: async (res) => {

@@ -36,14 +36,11 @@ const NavForHome = () => {
   const dropDownPopup = useRef(null);
   const mobileNavPopup = useRef(null);
 
-  const { data: seriesPickList, isLoading: seriesPickListLoading } =
-    useGetPicklist();
+  const { data: seriesPickList, isLoading: seriesPickListLoading } = useGetPicklist();
   const { data: cartItem, isLoading: cartLoading } = useGetCartItems();
   const { data: disciplineData } = useGetDiscipline();
 
-  const selectSeriesPicklist = seriesPickList?.data?.filter(
-    (item) => item?.picklistName === "Series"
-  );
+  const selectSeriesPicklist = seriesPickList?.data?.filter((item) => item?.picklistName === "Series");
 
   const { isLoading, refetch } = useGetArtistDetails();
 
@@ -71,10 +68,7 @@ const NavForHome = () => {
   });
 
   const handleClickOutside = (event) => {
-    if (
-      dropDownPopup.current &&
-      !dropDownPopup.current.contains(event.target)
-    ) {
+    if (dropDownPopup.current && !dropDownPopup.current.contains(event.target)) {
       setIsDropdownOpen(false);
     }
   };
@@ -161,22 +155,11 @@ const NavForHome = () => {
           {token && isAuthorized ? (
             <div className="w-full relative flex flex-col gap-2 items-center">
               <div className="w-full flex justify-between items-center">
-                <button
-                  onClick={() => setIsOpen(!isOpen)}
-                  className="text-white focus:outline-none lg:hidden"
-                  aria-label="Toggle menu"
-                >
-                  {isOpen ? (
-                    <HiOutlineX size={28} />
-                  ) : (
-                    <HiOutlineMenu size={28} />
-                  )}
+                <button onClick={() => setIsOpen(!isOpen)} className="text-white focus:outline-none lg:hidden" aria-label="Toggle menu">
+                  {isOpen ? <HiOutlineX size={28} /> : <HiOutlineMenu size={28} />}
                 </button>
 
-                <div
-                  className="cursor-pointer"
-                  onClick={() => navigate("/home")}
-                >
+                <div className="cursor-pointer" onClick={() => navigate("/home")}>
                   <img src={logo} alt="logo" className="w-36 sm:w-40 md:w-48" />
                 </div>
 
@@ -190,63 +173,28 @@ const NavForHome = () => {
                     onFocus={() => setIsFocused(true)}
                     onBlur={() => setIsFocused(false)}
                   />
-                  <span
-                    className={`absolute top-1/2 -translate-y-1/2 transition-all duration-300 ${
-                      isFocused ? "right-0 pr-2" : "left-0 pl-2"
-                    }`}
-                  >
+                  <span className={`absolute top-1/2 -translate-y-1/2 transition-all duration-300 ${isFocused ? "right-0 pr-2" : "left-0 pl-2"}`}>
                     {inputValue === "" ? (
                       <GoSearch size="1.3em" className="text-gray-600" />
                     ) : (
-                      <GoX
-                        size="1.3em"
-                        className="cursor-pointer z-20 text-gray-600"
-                        onClick={clearInput}
-                      />
+                      <GoX size="1.3em" className="cursor-pointer z-20 text-gray-600" onClick={clearInput} />
                     )}
                   </span>
                 </div>
 
                 <div className="flex gap-3 sm:gap-4 justify-end items-center">
-                  <Link
-                    to="/wishlist"
-                    className="focus:outline-none hidden lg:block"
-                    aria-label="Wishlist"
-                  >
-                    <img
-                      src={heart}
-                      alt="heart"
-                      className="w-6 h-6 sm:w-7 sm:h-7 text-white"
-                    />
+                  <Link to="/wishlist" className="focus:outline-none hidden lg:block" aria-label="Wishlist">
+                    <img src={heart} alt="heart" className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
                   </Link>
 
-                  <button
-                    onClick={() => navigate("/circle")}
-                    aria-label="Circle"
-                    className="hidden sm:block"
-                  >
-                    <IoIosFlower
-                      className="cursor-pointer"
-                      fontSize="1.8em"
-                      color="white"
-                    />
+                  <button onClick={() => navigate("/circle")} aria-label="Circle" className="hidden sm:block">
+                    <IoIosFlower className="cursor-pointer" fontSize="1.8em" color="white" />
                   </button>
 
-                  <ShoppingCard
-                    isOpen={isSidebarOpen}
-                    onClose={toggleSidebar}
-                  />
+                  <ShoppingCard isOpen={isSidebarOpen} onClose={toggleSidebar} />
 
-                  <button
-                    onClick={toggleSidebar}
-                    className="relative focus:outline-none"
-                    aria-label="Shopping cart"
-                  >
-                    <img
-                      src={bag}
-                      alt="bag"
-                      className="w-6 h-6 sm:w-7 sm:h-7 text-white"
-                    />
+                  <button onClick={toggleSidebar} className="relative focus:outline-none" aria-label="Shopping cart">
+                    <img src={bag} alt="bag" className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
                     {cartItem?.data?.cart?.length > 0 && (
                       <span className="absolute bg-red-500 text-white text-xs w-4 h-4 -right-1 -top-1 rounded-full flex items-center justify-center">
                         {cartItem?.data?.cart?.length}
@@ -255,11 +203,7 @@ const NavForHome = () => {
                   </button>
 
                   <div className="relative" ref={closePopup}>
-                    <button
-                      className="focus:outline-none"
-                      onClick={() => setIsProfileDropdown((prev) => !prev)}
-                      aria-label="User profile"
-                    >
+                    <button className="focus:outline-none" onClick={() => setIsProfileDropdown((prev) => !prev)} aria-label="User profile">
                       {user?.mainImage ? (
                         <img
                           src={`${imageUrl}/users/${user?.mainImage}`}
@@ -296,29 +240,17 @@ const NavForHome = () => {
                             Favourites ArtWork
                           </Link>
                           {isArtist && (
-                            <button
-                              className="text-left hover:bg-gray-100 dark:hover:bg-gray-600 px-2 py-1 rounded"
-                              onClick={handleProfile}
-                            >
+                            <button className="text-left hover:bg-gray-100 dark:hover:bg-gray-600 px-2 py-1 rounded" onClick={handleProfile}>
                               Switch To Artist Profile
                             </button>
                           )}
-                          <Link
-                            to="/priceandplans"
-                            className="hover:bg-gray-100 dark:hover:bg-gray-600 px-2 py-1 rounded"
-                          >
+                          <Link to="/priceandplans" className="hover:bg-gray-100 dark:hover:bg-gray-600 px-2 py-1 rounded">
                             Subscription Plan
                           </Link>
-                          <Link
-                            to="/my_plans"
-                            className="hover:bg-gray-100 dark:hover:bg-gray-600 px-2 py-1 rounded"
-                          >
+                          <Link to="/my_plans" className="hover:bg-gray-100 dark:hover:bg-gray-600 px-2 py-1 rounded">
                             My Plans
                           </Link>
-                          <Link
-                            to="/create_invite"
-                            className="hover:bg-gray-100 dark:hover:bg-gray-600 px-2 py-1 rounded"
-                          >
+                          <Link to="/create_invite" className="hover:bg-gray-100 dark:hover:bg-gray-600 px-2 py-1 rounded">
                             Create Invite
                           </Link>
                           <Link
@@ -354,10 +286,7 @@ const NavForHome = () => {
               </div>
 
               <div className="hidden lg:flex gap-6 text-white pt-2">
-                <Link
-                  to="/home"
-                  className="font-medium text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300 pb-1"
-                >
+                <Link to="/home" className="font-medium text-white border-b-2 border-transparent hover:border-[#E19D00] transition duration-300 pb-1">
                   Home
                 </Link>
                 <div className="cursor-pointer" ref={dropDownPopup}>
@@ -367,21 +296,13 @@ const NavForHome = () => {
                   >
                     Subscribe
                     <svg
-                      className={`w-3 h-3 transition-transform ${
-                        isDropdownOpen ? "rotate-180" : ""
-                      }`}
+                      className={`w-3 h-3 transition-transform ${isDropdownOpen ? "rotate-180" : ""}`}
                       aria-hidden="true"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 10 6"
                     >
-                      <path
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="m1 1 4 4 4-4"
-                      />
+                      <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
                     </svg>
                   </div>
                   {isDropdownOpen && (
@@ -390,19 +311,11 @@ const NavForHome = () => {
                       className="absolute left-0 z-10 top-24 grid grid-cols-1 md:grid-cols-4 gap-6 text-sm bg-white border shadow-lg p-6 rounded-lg dark:bg-gray-700 dark:border-gray-600"
                     >
                       <div className="space-y-4">
-                        <h3 className="uppercase font-bold dark:text-gray-400 text-gray-800">
-                          Discipline
-                        </h3>
+                        <h3 className="uppercase font-bold dark:text-gray-400 text-gray-800">Discipline</h3>
                         <ul className="space-y-3">
                           {disciplineData?.data?.map((item, i) => (
-                            <li
-                              key={i}
-                              onClick={() => setIsDropdownOpen(false)}
-                            >
-                              <Link
-                                to={`${item.disciplineName}?option=subscription`}
-                                className="dark:text-white text-gray-600 "
-                              >
+                            <li key={i} onClick={() => setIsDropdownOpen(false)}>
+                              <Link to={`${item.disciplineName}?option=subscription`} className="dark:text-white text-gray-600 ">
                                 {item?.disciplineName}
                               </Link>
                             </li>
@@ -411,47 +324,28 @@ const NavForHome = () => {
                       </div>
 
                       <div className="space-y-4">
-                        <h3 className="uppercase font-bold dark:text-gray-400 text-gray-800">
-                          Series
-                        </h3>
+                        <h3 className="uppercase font-bold dark:text-gray-400 text-gray-800">Series</h3>
                         <ul className="space-y-3">
-                          {selectSeriesPicklist?.[0]?.picklist?.map(
-                            (item, i) => (
-                              <li
-                                key={i}
-                                onClick={() => setIsDropdownOpen(false)}
-                              >
-                                <span className="dark:text-white text-gray-600 cursor-pointer">
-                                  {item?.name}
-                                </span>
-                              </li>
-                            )
-                          )}
+                          {selectSeriesPicklist?.[0]?.picklist?.map((item, i) => (
+                            <li key={i} onClick={() => setIsDropdownOpen(false)}>
+                              <span className="dark:text-white text-gray-600 cursor-pointer">{item?.name}</span>
+                            </li>
+                          ))}
                         </ul>
                       </div>
 
                       <div className="space-y-4">
-                        <h3 className="uppercase font-bold dark:text-gray-400 text-gray-800">
-                          Collection
-                        </h3>
+                        <h3 className="uppercase font-bold dark:text-gray-400 text-gray-800">Collection</h3>
                         <ul className="space-y-3">
                           <li onClick={() => setIsDropdownOpen(false)}>
-                            <span className="text-gray-600 dark:text-white cursor-pointer">
-                              Collection
-                            </span>
+                            <span className="text-gray-600 dark:text-white cursor-pointer">Collection</span>
                           </li>
                         </ul>
                       </div>
 
                       <div className="md:col-span-1">
-                        <h3 className="uppercase font-bold dark:text-gray-400 text-gray-800 text-sm mb-3">
-                          Top selling product
-                        </h3>
-                        <img
-                          src={selling}
-                          alt="selling product"
-                          className="rounded-lg shadow"
-                        />
+                        <h3 className="uppercase font-bold dark:text-gray-400 text-gray-800 text-sm mb-3">Top selling product</h3>
+                        <img src={selling} alt="selling product" className="rounded-lg shadow" />
                       </div>
                     </div>
                   )}
@@ -485,16 +379,8 @@ const NavForHome = () => {
               <div className="flex gap-3 sm:gap-4 items-center">
                 <ShoppingCard isOpen={isSidebarOpen} onClose={toggleSidebar} />
 
-                <button
-                  onClick={toggleSidebar}
-                  className="relative focus:outline-none"
-                  aria-label="Shopping cart"
-                >
-                  <img
-                    src={bag}
-                    alt="bag"
-                    className="w-6 h-6 sm:w-7 sm:h-7 text-white"
-                  />
+                <button onClick={toggleSidebar} className="relative focus:outline-none" aria-label="Shopping cart">
+                  <img src={bag} alt="bag" className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
                   {cartItem?.data?.cart?.length > 0 && (
                     <span className="absolute bg-red-500 text-white text-xs w-4 h-4 -right-1 -top-1 rounded-full flex items-center justify-center">
                       {cartItem?.data?.cart?.length}
@@ -508,10 +394,7 @@ const NavForHome = () => {
                 >
                   Sign In
                 </Link>
-                <Link
-                  to="/signup"
-                  className="text-sm text-white hover:text-gray-200 transition-colors"
-                >
+                <Link to="/signup" className="text-sm text-white hover:text-gray-200 transition-colors">
                   Sign Up
                 </Link>
               </div>
@@ -520,10 +403,7 @@ const NavForHome = () => {
         </div>
 
         {isOpen && (
-          <div
-            ref={mobileNavPopup}
-            className="absolute lg:hidden top-full left-0 right-0 z-20 bg-[#102030] text-white px-6 py-4 shadow-lg"
-          >
+          <div ref={mobileNavPopup} className="absolute lg:hidden top-full left-0 right-0 z-20 bg-[#102030] text-white px-6 py-4 shadow-lg">
             <div className="relative mb-4">
               <input
                 className="w-full bg-white/90 py-2 px-4 pr-10 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#E19D00]"
@@ -536,64 +416,32 @@ const NavForHome = () => {
                 {inputValue === "" ? (
                   <GoSearch size="1.3em" className="text-gray-600" />
                 ) : (
-                  <GoX
-                    size="1.3em"
-                    className="cursor-pointer text-gray-600"
-                    onClick={clearInput}
-                  />
+                  <GoX size="1.3em" className="cursor-pointer text-gray-600" onClick={clearInput} />
                 )}
               </span>
             </div>
 
             <div className="flex flex-col gap-4">
-              <Link
-                to="/home"
-                className="font-medium py-2 border-b border-white/20"
-                onClick={() => setIsOpen(false)}
-              >
+              <Link to="/home" className="font-medium py-2 border-b border-white/20" onClick={() => setIsOpen(false)}>
                 Home
               </Link>
-              <Link
-                to="/all-artworks?type=subscription"
-                className="font-medium py-2 border-b border-white/20"
-                onClick={() => setIsOpen(false)}
-              >
+              <Link to="/all-artworks?type=subscription" className="font-medium py-2 border-b border-white/20" onClick={() => setIsOpen(false)}>
                 Subscribe
               </Link>
-              <Link
-                to="/all-artworks?type=purchase"
-                className="font-medium py-2 border-b border-white/20"
-                onClick={() => setIsOpen(false)}
-              >
+              <Link to="/all-artworks?type=purchase" className="font-medium py-2 border-b border-white/20" onClick={() => setIsOpen(false)}>
                 Purchase
               </Link>
-              <Link
-                to="/all_artist"
-                className="font-medium py-2 border-b border-white/20"
-                onClick={() => setIsOpen(false)}
-              >
+              <Link to="/all_artist" className="font-medium py-2 border-b border-white/20" onClick={() => setIsOpen(false)}>
                 Artist
               </Link>
-              <Link
-                to="/priceandplans"
-                className="font-medium py-2 border-b border-white/20"
-                onClick={() => setIsOpen(false)}
-              >
+              <Link to="/priceandplans" className="font-medium py-2 border-b border-white/20" onClick={() => setIsOpen(false)}>
                 Subscription Plan
               </Link>
-              <Link
-                to="/circle"
-                className="font-medium py-2 border-b border-white/20 flex items-center gap-2"
-                onClick={() => setIsOpen(false)}
-              >
+              <Link to="/circle" className="font-medium py-2 border-b border-white/20 flex items-center gap-2" onClick={() => setIsOpen(false)}>
                 <IoIosFlower size={20} />
                 Circle
               </Link>
-              <Link
-                to="/wishlist"
-                className="font-medium py-2 border-b border-white/20 flex items-center gap-2"
-                onClick={() => setIsOpen(false)}
-              >
+              <Link to="/wishlist" className="font-medium py-2 border-b border-white/20 flex items-center gap-2" onClick={() => setIsOpen(false)}>
                 <img src={heart} alt="heart" className="w-5 h-5" />
                 Wishlist
               </Link>
@@ -613,12 +461,7 @@ const NavForHome = () => {
             </button>
             <div className="p-6 text-center">
               <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
-                <svg
-                  className="h-6 w-6 text-[#EE1D52]"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
+                <svg className="h-6 w-6 text-[#EE1D52]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -627,12 +470,8 @@ const NavForHome = () => {
                   />
                 </svg>
               </div>
-              <h3 className="text-lg font-medium dark:text-white text-gray-900 mb-2">
-                Are you sure you want to logout?
-              </h3>
-              <p className="text-gray-500 mb-6 dark:text-gray-400">
-                You'll need to sign in again to access your account.
-              </p>
+              <h3 className="text-lg font-medium dark:text-white text-gray-900 mb-2">Are you sure you want to logout?</h3>
+              <p className="text-gray-500 mb-6 dark:text-gray-400">You'll need to sign in again to access your account.</p>
               <div className="flex justify-center gap-4">
                 <button
                   onClick={toggleModal}
@@ -640,10 +479,7 @@ const NavForHome = () => {
                 >
                   Cancel
                 </button>
-                <button
-                  onClick={() => logOut()}
-                  className="px-4 py-2 bg-[#EE1D52] rounded-md text-sm font-medium text-white hover:bg-[#ee1d51c2]"
-                >
+                <button onClick={() => logOut()} className="px-4 py-2 bg-[#EE1D52] rounded-md text-sm font-medium text-white hover:bg-[#ee1d51c2]">
                   Logout
                 </button>
               </div>
