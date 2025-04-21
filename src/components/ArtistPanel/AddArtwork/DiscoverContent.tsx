@@ -61,6 +61,21 @@ const DiscoverContent = ({ data, dark }) => {
               {name(data?.owner)}
             </P>
           </div>
+          {name(data?.owner) !== data?.provideArtistName && (
+            <div className="flex items-center gap-2 whitespace-nowrap">
+              <Header className="!text-[13px]" variant={{ size: "base", theme: dark ? "light" : "dark", weight: "medium" }}>
+                {t("Art Provider")} :
+              </Header>
+              <P
+                className={`${
+                  dark ? "text-gray-300" : "text-[#999999]"
+                } !text-[13px] items-center flex scrollbar whitespace-nowrap capitalize !w-full !max-w-full overflow-x-auto`}
+                variant={{ size: "small", weight: "medium" }}
+              >
+                {data?.provideArtistName}
+              </P>
+            </div>
+          )}
         </div>
 
         <div className="flex w-full items-center gap-2">
@@ -69,7 +84,7 @@ const DiscoverContent = ({ data, dark }) => {
               onClick={() => handlePublishedArtwork(data?._id)}
               variant={{
                 rounded: "full",
-                theme: "dark",
+                theme: `${dark ? "dark" : "light"}`,
               }}
               className="flex justify-center border border-[#263238] w-full font-medium text-sm"
             >
@@ -82,9 +97,9 @@ const DiscoverContent = ({ data, dark }) => {
               onClick={() => editArtwork(data?._id)}
               variant={{
                 rounded: "full",
-                theme: "light",
+                theme: `${dark ? "light" : "dark"}`,
               }}
-              className="text-sm border border-[#263238] w-full text-nowrap font-medium"
+              className={`text-sm border ${dark ? "text-black" : "text-white"} border-[#263238] w-full text-nowrap font-medium`}
             >
               {t("Continue Edit")}
             </Button>
