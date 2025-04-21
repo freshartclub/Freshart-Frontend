@@ -18,6 +18,7 @@ type Plan = {
   isScheduled: boolean;
   createdAt: string;
   isCurrActive: boolean;
+  isCancelled: boolean;
   plan: {
     currentPrice: number;
     currentYearlyPrice: number;
@@ -30,7 +31,6 @@ type Plan = {
 
 const MyPlans = () => {
   const [plans, setPlans] = useState<Plan[]>([]);
-  const [isEnable, setIsEnabled] = useState(false);
   const [activeTab, setActiveTab] = useState<"all" | "active" | "not_started" | "inactive">("all");
   const [showModal, setShowModal] = useState(false);
   const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
@@ -46,11 +46,6 @@ const MyPlans = () => {
   useEffect(() => {
     if (data) {
       setPlans(data);
-
-      if (data.length > 0) {
-        const findIsSchedule = data.filter((i) => i.isScheduled === true);
-        if (findIsSchedule?.length > 1) setIsEnabled(true);
-      }
     }
   }, [data]);
 
@@ -76,7 +71,7 @@ const MyPlans = () => {
         return <FaCheckCircle size={15} className="text-green-500" />;
       case "not_started":
         return <FaClock size={15} className="text-yellow-500" />;
-      case "inactive":
+      case "expired":
         return <FaTimesCircle size={15} className="text-red-500" />;
       default:
         return null;
@@ -90,6 +85,18 @@ const MyPlans = () => {
       day: "numeric",
     };
     return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
+  const formatDateTime = (dateString: string) => {
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      second: "numeric",
+    };
+    return new Date(dateString).toLocaleString(undefined, options);
   };
 
   const openManageModal = (planId: string) => {
@@ -140,7 +147,7 @@ const MyPlans = () => {
                   : "text-gray-600 hover:bg-gray-100"
               }`}
             >
-              {tab === "all" ? "All Plans" : tab.replace("_", " ")}
+              {tab === "all" ? "All Plans" : tab == "expired" ? "Expired/Cancelled" : tab.replace("_", " ")}
             </button>
           ))}
         </div>
@@ -179,11 +186,15 @@ const MyPlans = () => {
                     <div className="flex justify-between items-start mb-4">
                       <div className="flex flex-col">
                         <h3 className={`text-xl font-bold ${dark ? "text-white" : "text-gray-800"}`}>Plan {plan.plan.planGrp}</h3>
-                        <span className={`font-bold ${dark ? "text-white" : "text-gray-400"}`}>{plan.plan.planName}</span>
+                        <span className={`font-bold ${dark ? "text-white" : "text-gray-400"}`}>
+                          {plan.plan.planName} ({plan.isScheduled ? "Recurring" : "One-time"})
+                        </span>
                       </div>
                       <div
                         className={` ${
-                          plan.status === "active"
+                          plan.isCancelled
+                            ? "bg-red-100 px-1.5 py-1 rounded-full text-red-600"
+                            : plan.status === "active"
                             ? "bg-green-100 px-1.5 py-1 rounded-full text-green-600"
                             : plan.status === "not_started"
                             ? "bg-yellow-100 px-1.5 py-1 rounded-full text-yellow-600"
@@ -191,15 +202,35 @@ const MyPlans = () => {
                         } ${dark ? "text-opacity-90" : ""} flex items-center`}
                       >
                         {getStatusIcon(plan.status)}
-                        <span className="ml-2 capitalize text-xs">{plan.status.replace("_", " ")}</span>
+                        <span className="ml-2 capitalize text-xs">{plan.isCancelled ? "Cancelled" : plan.status.replace("_", " ")}</span>
                       </div>
                     </div>
 
-                    <div className={`mb-4 ${dark ? "text-gray-300" : "text-gray-600"}`}>
+                    <div className={`mb-4 text-sm ${dark ? "text-gray-300" : "text-gray-600"}`}>
+                      <div className="flex justify-between mb-2">
+                        <span>Purchased On:</span>
+                        <span>{formatDateTime(plan.createdAt)}</span>
+                      </div>
+                      <div className="flex justify-between mb-2">
+                        <span>Plan Type:</span>
+                        <span>{plan.type === "yearly" ? "Yearly" : "Monthly"}</span>
+                      </div>
                       <div className="flex justify-between mb-2">
                         <span>Period:</span>
                         <span>
-                          {formatDate(plan.start_date)} - {plan.end_date ? formatDate(plan.end_date) : "Infinite"}
+                          {plan.status == "expired" && plan.isCancelled == true
+                            ? "Plan Cancelled"
+                            : plan.status == "expired"
+                            ? "Plan Expired"
+                            : formatDate(plan.start_date) + " - "}
+
+                          {plan.status == "expired" && plan.isCancelled == true
+                            ? ""
+                            : plan.status == "expired"
+                            ? ""
+                            : plan.end_date
+                            ? formatDate(plan.end_date)
+                            : "Untill Cancelled"}
                         </span>
                       </div>
                       <div className="flex justify-between mb-2">
@@ -214,7 +245,19 @@ const MyPlans = () => {
                     )} */}
                     </div>
 
-                    {plan.status === "active" && timeRemaining ? (
+                    {plan.isScheduled ? (
+                      <div
+                        className={`mt-4 border p-2 justify-center rounded-lg ${
+                          dark ? "text-gray-300 bg-gray-700 border-gray-600" : "text-gray-700 border-zinc-300 bg-gray-200"
+                        } flex w-full items-center`}
+                      >
+                        {plan.status == "expired" && plan.isCancelled == true
+                          ? "Plan Cancelled"
+                          : plan.status == "expired"
+                          ? "Plan Expired"
+                          : `Automatically Renewed ${plan.type === "yearly" ? "Yearly" : "Monthly"}`}
+                      </div>
+                    ) : (
                       <div className="mt-4">
                         <div className="flex justify-between text-sm mb-2">
                           <span className={dark ? "dark:text-gray-400" : "text-gray-600"}>
@@ -233,20 +276,6 @@ const MyPlans = () => {
                               width: timeRemaining.expired ? "100%" : `${Math.min(100, 100 - (timeRemaining.days / 365) * 100)}%`,
                             }}
                           ></div>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="mt-4">
-                        <div className="flex flex-col text-sm">
-                          <span className={dark ? "dark:text-gray-400" : "text-gray-600"}>Time remaining: (Not Started)</span>
-                          <div className={`w-full mt-2 rounded-full h-2 ${dark ? "dark:bg-gray-700" : "bg-gray-200"}`}>
-                            <div
-                              className={`h-2 rounded-full bg-gray-500`}
-                              style={{
-                                width: "100%",
-                              }}
-                            ></div>
-                          </div>
                         </div>
                       </div>
                     )}
@@ -270,10 +299,10 @@ const MyPlans = () => {
                       )}
                     </ul>
 
-                    <div className="flex mt-3 flex-wrap gap-3">
-                      {plan.isScheduled && (
+                    {plan.status == "expired" || plan.status == "cancelled" ? null : (
+                      <div className="flex mt-3 flex-wrap gap-3">
                         <>
-                          {isEnable && !plan?.isCurrActive && (
+                          {!plan?.isCurrActive ? (
                             <button
                               onClick={() => openManageModal(plan._id)}
                               className={`flex-1 px-4 py-2 rounded-lg font-medium flex items-center justify-center gap-2 ${
@@ -282,23 +311,25 @@ const MyPlans = () => {
                             >
                               <FiExternalLink /> Manage
                             </button>
-                          )}
-                          {plan?.isCurrActive && (
+                          ) : (
                             <span className={`flex-1 px-4 py-2 rounded-lg text-center font-medium bg-[#EE1D52] hover:bg-[#EE1D52]/80 text-white`}>
                               Currently Active
                             </span>
                           )}
-                          <button
-                            onClick={() => setDeletePop({ isDelete: true, isConfirm: false, id: plan._id })}
-                            className={`flex-1 px-4 py-2 rounded-lg font-medium flex items-center justify-center gap-2 ${
-                              dark ? "bg-gray-700 hover:bg-gray-600 text-white" : "bg-gray-200 hover:bg-gray-300 text-gray-800"
-                            }`}
-                          >
-                            <IoMdTrash /> Cancel
-                          </button>
+
+                          {plan.isScheduled && !plan.isCurrActive && (
+                            <button
+                              onClick={() => setDeletePop({ isDelete: true, isConfirm: false, id: plan._id, text: "" })}
+                              className={`flex-1 px-4 py-2 rounded-lg font-medium flex items-center justify-center gap-2 ${
+                                dark ? "bg-gray-700 hover:bg-gray-600 text-white" : "bg-gray-200 hover:bg-gray-300 text-gray-800"
+                              }`}
+                            >
+                              <IoMdTrash /> Cancel
+                            </button>
+                          )}
                         </>
-                      )}
-                    </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               );

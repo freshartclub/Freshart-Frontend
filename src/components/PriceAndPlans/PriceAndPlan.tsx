@@ -490,6 +490,13 @@ const PriceAndPlan = () => {
                       >
                         Subscribe To Plan
                       </button>
+                    ) : checkRef?.prev_saved == true && checkRef?.store == false ? (
+                      <span
+                        onClick={() => navigate("/my_card")}
+                        className="px-4 py-2 bg-black cursor-pointer text-white rounded-md hover:bg-gray-800 transition-colors duration-200 flex items-center"
+                      >
+                        Add Payment Method
+                      </span>
                     ) : (
                       <button
                         onClick={() => {
