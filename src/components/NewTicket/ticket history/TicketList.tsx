@@ -1,4 +1,5 @@
 import dayjs from "dayjs";
+import { AnimatePresence, motion } from "framer-motion";
 import { FC, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { AiFillDislike, AiFillLike } from "react-icons/ai";
@@ -7,15 +8,15 @@ import { GrStatusGood } from "react-icons/gr";
 import { TbUrgent } from "react-icons/tb";
 import { useLocation, useNavigate } from "react-router-dom";
 import Loader from "../../ui/Loader";
-import blue from "../ticket history/assets/blue.png";
-import green from "../ticket history/assets/green.png";
-import orange from "../ticket history/assets/orange.png";
 import usePatchFeedbackMutation from "./http/usePatchFeedback";
 
-const TicketsList: FC<{
+interface TicketsListProps {
   tickets: any[];
-  isLoading: any;
-}> = ({ tickets, isLoading }) => {
+  isLoading: boolean;
+  dark: boolean;
+}
+
+const TicketsList: FC<TicketsListProps> = ({ tickets, isLoading, dark }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -29,9 +30,7 @@ const TicketsList: FC<{
   const { mutateAsync, isPending } = usePatchFeedbackMutation();
 
   const handleClick = (id: string) => {
-    const SingleTicketLink = isArtistProfile
-      ? `/artist-panel/ticket_detail?id=${id}`
-      : `/ticket_detail?id=${id}`;
+    const SingleTicketLink = isArtistProfile ? `/artist-panel/ticket_detail?id=${id}` : `/ticket_detail?id=${id}`;
     navigate(SingleTicketLink);
   };
 
@@ -54,8 +53,8 @@ const TicketsList: FC<{
   const handleFeedBack = (ticketId: string) => {
     const data = {
       id: ticketId,
-      message: feedbackData[ticketId].feedback,
-      isLiked: feedbackData[ticketId].isLiked,
+      message: feedbackData[ticketId]?.feedback || "",
+      isLiked: feedbackData[ticketId]?.isLiked || false,
     };
     mutateAsync(data).then(() => {
       setOpenTicketId(null);
@@ -69,207 +68,178 @@ const TicketsList: FC<{
   if (isLoading) return <Loader />;
 
   return (
-    <div className="h-[90vh] max-h-[90vh] scrollbar2 overflow-y-auto rounded-b-lg">
+    <div className={`h-[90vh] max-h-[90vh] scrollbar2 overflow-y-auto ${dark ? "bg-gray-900" : "bg-white"}`}>
       {tickets?.length === 0 ? (
-        <p className="bg-[#FEFEFE] text-center text-[16px] font-semibold rounded-b-lg border p-4">
-          {t("No Tickets Found")}
-        </p>
+        <div className={`text-center p-8 ${dark ? "text-gray-300" : "text-gray-600"}`}>
+          <p className="text-lg font-medium">{t("No Tickets Found")}</p>
+        </div>
       ) : (
-        tickets?.map((ticket) => {
-          let imageSrc;
-          switch (ticket.status) {
-            case "Requested":
-              imageSrc = blue;
-              break;
-            case "Dispatched":
-              imageSrc = orange;
-              break;
-            case "Resolved Tickets":
-              imageSrc = green;
-              break;
-            default:
-              imageSrc = null;
-          }
+        <div className="space-y-3 py-3">
+          {tickets?.map((ticket) => {
+            const statusColor =
+              ticket.status === "Requested"
+                ? `${dark ? "bg-blue-900 text-blue-200" : "bg-blue-100 text-blue-800"}`
+                : ticket.status === "Dispatched" || ticket.status == "In Progress"
+                ? `${dark ? "bg-orange-900 text-orange-200" : "bg-orange-100 text-orange-800"}`
+                : ticket.status === "Closed"
+                ? `${dark ? "bg-green-900 text-green-200" : "bg-green-100 text-green-800"}`
+                : ticket.status === "Technical Finish"
+                ? `${dark ? "bg-red-900 text-red-200" : "bg-red-100 text-red-800"}`
+                : `${dark ? "bg-gray-900 text-gray-200" : "bg-gray-300 text-gray-800"}`;
 
-          return (
-            <div
-              key={ticket._id}
-              className={`shadow border p-2 rounded mb-2 ticket-li ${
-                ticket.isRead ? "bg-zinc-200 " : "bg-white"
-              }`}
-            >
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-[100%]">
-                {imageSrc && (
-                  <img
-                    src={imageSrc}
-                    alt={`${ticket.status} icon`}
-                    className="rounded-full h-4 w-4 mr-2"
-                  />
-                )}
-                <div className="flex sm:flex-row flex-col justify-between w-[100%]">
-                  <h3
-                    className="text-sm font-bold"
-                    style={{ color: "#2E2C34" }}
-                  >
-                    {ticket?.ticketId}
-                  </h3>
-                  <h2
-                    className="text-[13px] font-semibold"
-                    style={{ color: "#212529" }}
-                  >
-                    {dayjs(ticket?.createdAt).format("MMMM D, YYYY")}
-                  </h2>
+            return (
+              <motion.div
+                key={ticket._id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.2 }}
+                className={`rounded-lg shadow-sm border ${dark ? "border-gray-700 bg-gray-800" : "border-gray-200 bg-white"} p-4`}
+              >
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                  <div className="flex items-center gap-2">
+                    <span className={`text-xs px-2 py-1 rounded-full ${statusColor}`}>{ticket.status}</span>
+                    <h3 className={`text-sm font-bold ${dark ? "text-white" : "text-gray-800"}`}>{ticket?.ticketId}</h3>
+                  </div>
+                  <span className={`text-xs ${dark ? "text-gray-400" : "text-gray-500"}`}>{dayjs(ticket?.createdAt).format("MMMM D, YYYY")}</span>
                 </div>
-              </div>
-              <div className="text-[16px] flex justify-between font-semibold mt-[2px] mb-[3px]">
-                {ticket.subject}
-              </div>
-              <div className="text-xs sm:text-sm my-2 w-[90%]">
-                {ticket?.message.length < 200
-                  ? ticket.message
-                  : ticket.message?.slice(0, 200) + "..."}
-              </div>
-              {ticket?.ticketFeedback ? (
-                <div className="bg-[#F5F5F5] text-sm p-2 flex flex-col border gap-1">
-                  <span className="text-[14px] text-[#84818A]">
-                    {t("Feedback")} -{" "}
-                    <span className="font-semibold text-[#000000]">
-                      {ticket?.ticketFeedback?.isLiked
-                        ? "Helpfull"
-                        : "Not Helpfull"}{" "}
-                      {ticket?.ticketFeedback?.isLiked ? "👍" : "👎"}
-                    </span>
-                  </span>
-                  <span className="text-[14px] text-[#84818A]">
-                    {t("Comment")} -{" "}
-                    <span className="font-semibold text-[#000000]">
-                      {ticket?.ticketFeedback?.message
-                        ? ticket?.ticketFeedback?.message
-                        : "N/A"}
-                    </span>
-                  </span>
-                </div>
-              ) : null}
-              <div className="bg-[#F5F5F5] w-full max-w-full overflow-x-auto scrollbar text-sm p-2 flex border items-center gap-3">
-                <span
-                  className={`flex w-max flex-shrink-0 p-2 rounded items-center hover:cursor-pointer hover:bg-[#e6e6e6] gap-1  ${
-                    ticket?.status === "Closed"
-                      ? "bg-red-300"
-                      : ticket?.status === "Created"
-                      ? "bg-green-300"
-                      : "bg-zinc-300"
-                  }`}
-                >
-                  <GrStatusGood /> {t("Status")} ({t(ticket?.status)})
-                </span>
 
-                <span
-                  className={`flex w-max flex-shrink-0 p-2 rounded hover:cursor-pointer hover:bg-[#e6e6e6] items-center gap-1`}
-                >
-                  <GiGooeyImpact /> {t("Impact")} ({t(ticket?.impact)})
-                </span>
-                <span
-                  className={`flex w-max flex-shrink-0 p-2 rounded hover:cursor-pointer hover:bg-[#e6e6e6] items-center gap-1`}
-                >
-                  <TbUrgent /> {t("Urgency")} ({t(ticket?.urgency)})
-                </span>
-              </div>
-              <div className="flex mt-2 items-center justify-between">
-                <button
-                  onClick={() => handleClick(ticket?._id)}
-                  className="font-bold bg-[#102030] text-sm text-white p-2 rounded"
-                >
-                  {t("Open Ticket")}
-                </button>
-                <div className="flex items-center gap-3">
-                  {ticket?.ticketFeedback ? null : ticket.status ===
-                      "Technical Finish" || ticket.status === "Closed" ? (
-                    <div className="flex items-center gap-2 ">
-                      <p className="font-bold border px-2 rounded-md border-zinc-200 ">
-                        {ticket?.ticketFeedback?.message}
-                      </p>
+                <h2 className={`text-base font-semibold mt-2 ${dark ? "text-white" : "text-gray-800"}`}>{ticket.subject}</h2>
 
+                <p className={`text-sm my-2 ${dark ? "text-gray-300" : "text-gray-600"}`}>
+                  {ticket?.message.length < 200 ? ticket.message : ticket.message?.slice(0, 200) + "..."}
+                </p>
+
+                {ticket?.ticketFeedback && (
+                  <div className={`p-3 rounded-lg mb-3 ${dark ? "bg-gray-600" : "bg-gray-100"}`}>
+                    <div className="flex items-center gap-2">
+                      <span className={`text-sm ${dark ? "text-gray-300" : "text-gray-600"}`}>{t("Feedback")}:</span>
                       <span
-                        className={`${
-                          ticket.status === "Closed"
-                            ? "pointer-events-none"
-                            : "cursor-pointer"
+                        className={`font-medium ${
+                          ticket?.ticketFeedback?.isLiked ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"
                         }`}
-                        onClick={() => handleLike(ticket._id)}
                       >
-                        <AiFillLike
-                          size="1.5em"
-                          color={
-                            feedbackData[ticket._id]?.isLiked === true ||
-                            ticket?.ticketFeedback?.isLiked === true
-                              ? "green"
-                              : "gray"
-                          }
-                        />
-                      </span>
-                      <span
-                        className={`${
-                          ticket.status === "Closed"
-                            ? "pointer-events-none"
-                            : "cursor-pointer"
-                        }`}
-                        onClick={() => handleDisLike(ticket._id)}
-                      >
-                        <AiFillDislike
-                          size="1.5em"
-                          color={
-                            feedbackData[ticket._id]?.isLiked === false ||
-                            ticket?.ticketFeedback?.isLiked === false
-                              ? "red"
-                              : "gray"
-                          }
-                        />
+                        {ticket?.ticketFeedback?.isLiked ? t("Helpful") : t("Not Helpful")}
                       </span>
                     </div>
-                  ) : null}
-                  {openTicketId === ticket._id && (
-                    <div className="fixed z-[100] inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                      <div className="bg-white p-6 rounded-lg lg:w-1/3">
-                        <h2 className="  xl:text-xl mb-4">
-                          {t("We'd love your feedback!")}
-                        </h2>
-                        <textarea
-                          value={feedbackData[ticket._id]?.feedback || ""}
-                          onChange={(e) =>
-                            setFeedbackData((prevData) => ({
-                              ...prevData,
-                              [ticket._id]: {
-                                ...prevData[ticket._id],
-                                feedback: e.target.value,
-                              },
-                            }))
-                          }
-                          className="text-sm w-full h-20 border rounded-lg p-2"
-                          placeholder={t("Please leave your feedback...")}
-                        />
-                        <div className="mt-4 flex flex-col md:flex-row justify-center gap-4">
-                          <button
-                            onClick={handleCloseModal}
-                            className="bg-gray-300 p-2 rounded"
-                          >
-                            {t("Close")}
-                          </button>
-                          <button
-                            className="bg-blue-500 text-white p-2 rounded"
-                            onClick={() => handleFeedBack(ticket._id)}
-                          >
-                            {isPending ? t("Submiting...") : t("Submit")}
-                          </button>
-                        </div>
+                    {ticket?.ticketFeedback?.message && (
+                      <div className="mt-1">
+                        <span className={`text-sm ${dark ? "text-gray-300" : "text-gray-600"}`}>{t("Comment")}:</span>
+                        <p className={`text-sm ${dark ? "text-white" : "text-gray-800"}`}>{ticket?.ticketFeedback?.message}</p>
                       </div>
+                    )}
+                  </div>
+                )}
+
+                <div className={`flex flex-wrap gap-2 p-2 border rounded-lg ${dark ? "bg-gray-700 border-gray-600" : "bg-gray-100"}`}>
+                  <span className={`flex items-center gap-1 text-xs px-2 py-1 rounded ${dark ? "bg-gray-800 text-white" : "bg-white text-gray-600"}`}>
+                    <GrStatusGood className={dark ? "text-white" : "text-gray-600"} />
+                    {t("Status")}: {t(ticket?.status)}
+                  </span>
+                  <span className={`flex items-center gap-1 text-xs px-2 py-1 rounded ${dark ? "bg-gray-800 text-white" : "bg-white text-gray-600"}`}>
+                    <GiGooeyImpact className={dark ? "text-white" : "text-gray-600"} />
+                    {t("Impact")}: {t(ticket?.impact)}
+                  </span>
+                  <span className={`flex items-center gap-1 text-xs px-2 py-1 rounded ${dark ? "bg-gray-800 text-white" : "bg-white text-gray-600"}`}>
+                    <TbUrgent className={dark ? "text-white" : "text-gray-600"} />
+                    {t("Urgency")}: {t(ticket?.urgency)}
+                  </span>
+                </div>
+
+                <div className="flex mt-3 items-center justify-between">
+                  <button
+                    onClick={() => handleClick(ticket?._id)}
+                    className={`text-sm px-4 py-2 rounded-lg font-medium bg-blue-700 hover:bg-blue-700/80 text-white`}
+                  >
+                    {t("Open Ticket")}
+                  </button>
+
+                  {(ticket.status === "Technical Finish" || ticket.status === "Closed") && !ticket?.ticketFeedback && (
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => handleLike(ticket._id)}
+                        className={`p-2 rounded-full ${
+                          feedbackData[ticket._id]?.isLiked === true
+                            ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200"
+                            : dark
+                            ? "bg-gray-600 hover:bg-gray-500"
+                            : "bg-gray-200 hover:bg-gray-300"
+                        }`}
+                      >
+                        <AiFillLike size="1.2em" />
+                      </button>
+                      <button
+                        onClick={() => handleDisLike(ticket._id)}
+                        className={`p-2 rounded-full ${
+                          feedbackData[ticket._id]?.isLiked === false
+                            ? "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-200"
+                            : dark
+                            ? "bg-gray-600 hover:bg-gray-500"
+                            : "bg-gray-200 hover:bg-gray-300"
+                        }`}
+                      >
+                        <AiFillDislike size="1.2em" />
+                      </button>
                     </div>
                   )}
                 </div>
-              </div>
-            </div>
-          );
-        })
+              </motion.div>
+            );
+          })}
+        </div>
       )}
+
+      <AnimatePresence>
+        {openTicketId && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50"
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              className={`w-full max-w-md mx-4 p-6 rounded-lg shadow-lg ${dark ? "bg-gray-800" : "bg-white"}`}
+            >
+              <h2 className={`text-xl font-semibold mb-4 ${dark ? "text-white" : "text-gray-800"}`}>{t("We'd love your feedback!")}</h2>
+              <textarea
+                value={feedbackData[openTicketId]?.feedback || ""}
+                onChange={(e) =>
+                  setFeedbackData((prevData) => ({
+                    ...prevData,
+                    [openTicketId]: {
+                      ...prevData[openTicketId],
+                      feedback: e.target.value,
+                    },
+                  }))
+                }
+                className={`w-full h-32 p-3 rounded-lg border ${
+                  dark ? "bg-gray-700 border-gray-600 text-white" : "bg-white border-gray-300 text-gray-800"
+                }`}
+                placeholder={t("Please leave your feedback...")}
+              />
+              <div className="mt-4 flex justify-end gap-3">
+                <button
+                  onClick={handleCloseModal}
+                  className={`px-4 py-2 rounded-lg ${
+                    dark ? "bg-gray-700 hover:bg-gray-600 text-white" : "bg-gray-200 hover:bg-gray-300 text-gray-800"
+                  }`}
+                >
+                  {t("Close")}
+                </button>
+                <button
+                  onClick={() => handleFeedBack(openTicketId)}
+                  className={`px-4 py-2 rounded-lg text-white ${dark ? "bg-blue-600 hover:bg-blue-700" : "bg-blue-500 hover:bg-blue-600"}`}
+                  disabled={isPending}
+                >
+                  {isPending ? t("Submitting...") : t("Submit")}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

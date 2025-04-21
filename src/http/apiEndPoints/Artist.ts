@@ -57,7 +57,6 @@ export const ARTTIST_ENDPOINTS = {
   // removeItems: `${ARTIST_BASE_URl}/remove-from-cart`,
 
   GetAllArtwork: `${ARTIST_BASE_URl}/get-all-artworks`,
-
   addToWishList: `${ARTIST_BASE_URl}/item-to-wishlist`,
   getWishList: `${ARTIST_BASE_URl}/get-wishlist`,
   usePatchSeries: `${ARTIST_BASE_URl}/add-series-to-artist`,
@@ -67,8 +66,10 @@ export const ARTTIST_ENDPOINTS = {
 
   getAllPlans: `${ARTIST_BASE_URl}/get-all-plans`,
 
-  // collection
+  // card
+  getCard: `${ARTIST_BASE_URl}/card`,
 
+  // collection
   getAllCollections: `${ARTIST_BASE_URl}/get-all-collections`,
   useGetCollectionById: `${ARTIST_BASE_URl}/get-collection`,
 

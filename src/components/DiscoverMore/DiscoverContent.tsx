@@ -3,6 +3,7 @@ import toast from "react-hot-toast";
 import { AiFillLike, AiOutlineHeart, AiOutlineLike } from "react-icons/ai";
 import { BsFillQuestionCircleFill } from "react-icons/bs";
 import { FaShareFromSquare } from "react-icons/fa6";
+import { useAppSelector } from "../../store/typedReduxHooks";
 import useLikeUnlikeArtworkMutation from "../HomePage/http/useLikeUnLike";
 import { useGetCartItems } from "../pages/http/useGetCartItems";
 import { useGetLikedItems } from "../pages/http/useGetLikedItems";
@@ -14,6 +15,7 @@ import mark from "./assets/offer.png";
 import useAddToCartMutation from "./http/useAddToCartMutation";
 
 const DiscoverContent = ({ data }: any) => {
+  const dark = useAppSelector((state) => state.theme.mode);
   const { mutate, isPending } = useAddToCartMutation();
   const { data: cartItem } = useGetCartItems();
   const { mutate: likeMutation } = useLikeUnlikeArtworkMutation();
@@ -23,18 +25,14 @@ const DiscoverContent = ({ data }: any) => {
 
   const addToCart = (id: string) => {
     if (!token) {
-      const items: string[] = JSON.parse(
-        localStorage.getItem("_my_cart") || "[]"
-      );
+      const items: string[] = JSON.parse(localStorage.getItem("_my_cart") || "[]");
       if (!items.includes(id)) {
         items.push(id);
         localStorage.setItem("_my_cart", JSON.stringify(items));
         return toast.success("Item Temporarily added to cart");
       }
-
       return toast.error("Item already in cart");
     }
-
     mutate(id);
     return toast.success("Item added to cart successfully");
   };
@@ -47,37 +45,30 @@ const DiscoverContent = ({ data }: any) => {
     return item._id === data._id;
   });
 
-  const name = (val: {
-    artistName: string;
-    artistSurname1: string;
-    artistSurname2: string;
-  }) => {
+  const name = (val: { artistName: string; artistSurname1: string; artistSurname2: string }) => {
     let fullName = val?.artistName || "";
-
     if (val?.artistSurname1) fullName += " " + val?.artistSurname1;
     if (val?.artistSurname2) fullName += " " + val?.artistSurname2;
-
     return fullName.trim();
   };
 
   return (
-    <div>
-      <div className="border-b pb-0.5">
+    <div className={`${dark ? "text-gray-100" : "text-gray-800"}`}>
+      <div className={`border-b ${dark ? "border-gray-700" : "border-gray-200"} pb-0.5`}>
         <Header
-          variant={{ size: "xl", theme: "dark", weight: "bold" }}
+          variant={{ size: "xl", theme: dark ? "light" : "dark", weight: "bold" }}
           className="items-center flex scrollbar whitespace-nowrap capitalize !w-full !max-w-full overflow-x-auto"
         >
           {data?.artworkName}
         </Header>
         <div className="flex items-center gap-2 whitespace-nowrap">
-          <Header
-            className="!text-[13px]"
-            variant={{ size: "base", theme: "dark", weight: "medium" }}
-          >
+          <Header className="!text-[13px]" variant={{ size: "base", theme: dark ? "light" : "dark", weight: "medium" }}>
             Author :
           </Header>
           <P
-            className="text-[#999999] !text-[13px] items-center flex scrollbar whitespace-nowrap capitalize !w-full !max-w-full overflow-x-auto"
+            className={`${
+              dark ? "text-gray-300" : "text-[#999999]"
+            } !text-[13px] items-center flex scrollbar whitespace-nowrap capitalize !w-full !max-w-full overflow-x-auto`}
             variant={{ size: "small", weight: "medium" }}
           >
             {name(data?.owner)}
@@ -86,125 +77,93 @@ const DiscoverContent = ({ data }: any) => {
       </div>
 
       <div className="flex gap-2 mt-1">
-        <P
-          className="!text-[13px]"
-          variant={{ size: "small", theme: "dark", weight: "medium" }}
-        >
+        <P className="!text-[13px]" variant={{ size: "small", theme: dark ? "light" : "dark", weight: "medium" }}>
           Year of Creation :
         </P>
         <P
-          className="text-[#999999] !text-[13px]"
-          variant={{ size: "small", theme: "dark", weight: "medium" }}
+          className={`${dark ? "text-gray-300" : "text-[#999999]"} !text-[13px]`}
+          variant={{ size: "small", theme: dark ? "light" : "dark", weight: "medium" }}
         >
           {data?.artworkCreationYear}
         </P>
       </div>
 
       <div className="flex gap-2">
-        <P
-          className="!text-[13px]"
-          variant={{ size: "small", theme: "dark", weight: "medium" }}
-        >
+        <P className="!text-[13px]" variant={{ size: "small", theme: dark ? "light" : "dark", weight: "medium" }}>
           Series :
         </P>
         <P
-          className="text-[#999999] !text-[13px]"
-          variant={{ size: "small", theme: "dark", weight: "medium" }}
+          className={`${dark ? "text-gray-300" : "text-[#999999]"} !text-[13px]`}
+          variant={{ size: "small", theme: dark ? "light" : "dark", weight: "medium" }}
         >
           {data?.artworkSeries}
         </P>
       </div>
 
       <div className="flex gap-2">
-        <P
-          className="!text-[13px]"
-          variant={{ size: "small", theme: "dark", weight: "medium" }}
-        >
+        <P className="!text-[13px]" variant={{ size: "small", theme: dark ? "light" : "dark", weight: "medium" }}>
           Discipline :
         </P>
         <P
-          className="text-[#999999] !text-[13px]"
-          variant={{ size: "small", theme: "dark", weight: "medium" }}
+          className={`${dark ? "text-gray-300" : "text-[#999999]"} !text-[13px]`}
+          variant={{ size: "small", theme: dark ? "light" : "dark", weight: "medium" }}
         >
           {data?.discipline}
         </P>
       </div>
 
       <div className="flex gap-3">
-        <P
-          className="!text-[13px]"
-          variant={{ size: "small", theme: "dark", weight: "medium" }}
-        >
+        <P className="!text-[13px]" variant={{ size: "small", theme: dark ? "light" : "dark", weight: "medium" }}>
           Size :
         </P>
         <P
-          className="text-[#999999] !text-[13px]"
-          variant={{ size: "small", theme: "dark", weight: "medium" }}
+          className={`${dark ? "text-gray-300" : "text-[#999999]"} !text-[13px]`}
+          variant={{ size: "small", theme: dark ? "light" : "dark", weight: "medium" }}
         >
-          {data?.additionalInfo?.length} x {data?.additionalInfo?.width} x{" "}
-          {data?.additionalInfo?.height} cm
+          {data?.additionalInfo?.length} x {data?.additionalInfo?.width} x {data?.additionalInfo?.height} cm
         </P>
       </div>
 
       {data?.pricing?.basePrice ? (
-        <Header
-          variant={{ size: "lg", theme: "dark", weight: "semiBold" }}
-          className="my-2"
-        >
-          {`${getSymbolFromCurrency(data?.pricing?.currency?.slice(0, 3))} ${
-            data?.pricing?.basePrice
-          }`}
+        <Header variant={{ size: "lg", theme: dark ? "light" : "dark", weight: "semiBold" }} className="my-2">
+          {`${getSymbolFromCurrency(data?.pricing?.currency?.slice(0, 3))} ${data?.pricing?.basePrice}`}
         </Header>
       ) : null}
 
       <div
-        className={`${
-          data?.commingSoon == true
-            ? "pointer-events-none cursor-not-allowed opacity-50"
-            : ""
-        } ${data?.pricing?.basePrice ? "" : "mt-10"} flex flex-col gap-2`}
+        className={`${data?.commingSoon == true ? "pointer-events-none cursor-not-allowed opacity-50" : ""} ${
+          data?.pricing?.basePrice ? "" : "mt-10"
+        } flex flex-col gap-2`}
       >
         <Button
           onClick={() => addToCart(data?._id)}
           variant={{
-            theme: "dark",
+            theme: dark ? "light" : "dark",
             fontWeight: "600",
             rounded: "full",
           }}
-          className={`text-base flex items-center justify-center w-full ${
-            checkCartItem?.length ? "pointer-events-none opacity-50" : ""
-          } `}
+          className={`text-base flex items-center justify-center w-full ${checkCartItem?.length ? "pointer-events-none opacity-50" : ""} `}
         >
           <img src={cart} alt="" className="w-5 h-5 md:mx-2 mx-1" />
-          <P variant={{ size: "base", theme: "light", weight: "normal" }}>
-            {checkCartItem?.length
-              ? "Already Added"
-              : isPending
-              ? "Adding..."
-              : "Add to cart"}
+          <P variant={{ size: "base", theme: dark ? "dark" : "light", weight: "normal" }}>
+            {checkCartItem?.length ? "Already Added" : isPending ? "Adding..." : "Add to cart"}
           </P>
         </Button>
 
         <Button
           variant={{
-            theme: "",
+            theme: dark ? "light" : "",
             rounded: "full",
           }}
-          className="text-base flex border-zinc-300 items-center justify-center border w-full"
+          className={`text-base flex ${dark ? "border-gray-600" : "border-zinc-300"} items-center justify-center border w-full`}
         >
           <img src={mark} alt="" className="w-4 h-4 md:mx-2 mx-1" />
-          <P variant={{ size: "base", theme: "dark", weight: "normal" }}>
-            Make an offer
-          </P>
+          <P variant={{ size: "base", theme: dark ? "dark" : "dark", weight: "normal" }}>Make an offer</P>
         </Button>
       </div>
 
       <div className="flex flex-wrap w-full items-center justify-between mt-5 px-1">
-        <AiOutlineHeart
-          className="cursor-pointer"
-          size="1.5rem"
-          color="#999999"
-        />
+        <AiOutlineHeart className="cursor-pointer" size="1.5rem" color={dark ? "#9CA3AF" : "#999999"} />
 
         {checkWishlist?.length ? (
           <AiFillLike
@@ -228,11 +187,12 @@ const DiscoverContent = ({ data }: any) => {
               })
             }
             size="1.5rem"
+            color={dark ? "#9CA3AF" : "#999999"}
           />
         )}
 
-        <BsFillQuestionCircleFill className="cursor-pointer" size="1.5rem" />
-        <FaShareFromSquare className="cursor-pointer" size="1.5rem" />
+        <BsFillQuestionCircleFill className="cursor-pointer" size="1.5rem" color={dark ? "#9CA3AF" : "#999999"} />
+        <FaShareFromSquare className="cursor-pointer" size="1.5rem" color={dark ? "#9CA3AF" : "#999999"} />
       </div>
     </div>
   );

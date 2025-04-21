@@ -21,17 +21,16 @@ interface ArtworkItem {
   owner: {
     artistName: string;
   };
+  status?: string;
 }
 
-const ArtCardPagination = () => {
+const ArtCardPagination = ({ dark }: { dark: boolean }) => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const recordPerPage = 6;
   const lastIndex = currentPage * recordPerPage;
   const firstIndex = lastIndex - recordPerPage;
 
-  const [originalArtwork, setOriginalArtwork] = useState<ArtworkItem[] | null>(
-    null
-  );
+  const [originalArtwork, setOriginalArtwork] = useState<ArtworkItem[] | null>(null);
   const [artwork, setArtwork] = useState<ArtworkItem[] | null>(null);
   const [searchData, setSearchData] = useState<string>("");
 
@@ -47,13 +46,10 @@ const ArtCardPagination = () => {
 
   const handleSearch = (query: string) => {
     setSearchData(query);
-
     if (query === "") {
       setArtwork(originalArtwork);
     } else {
-      const filteredArtwork = originalArtwork?.filter((item) =>
-        item.artworkName.toLowerCase().includes(query.toLowerCase())
-      );
+      const filteredArtwork = originalArtwork?.filter((item) => item.artworkName.toLowerCase().includes(query.toLowerCase()));
       setArtwork(filteredArtwork || null);
     }
   };
@@ -66,81 +62,79 @@ const ArtCardPagination = () => {
   if (isFetching) return <Loader />;
 
   return (
-    <div className="mt-5 border bg-white rounded shadow-sm">
-      <div className="flex rounded-t bg-gray-200 p-2 px-3 border-b border-gray-300 items-center flex-wrap justify-between">
-        <p className="text-black text-[18px] font-semibold text-center sm:text-left">
-          {t("Artworks")}
-        </p>
-        <div className="relative border rounded">
+    <div
+      className={`my-5 rounded-lg shadow-sm transition-colors duration-200 ${
+        dark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
+      } border`}
+    >
+      <div
+        className={`flex rounded-t-lg p-3 items-center flex-wrap justify-between ${
+          dark ? "bg-gray-700 border-gray-600" : "bg-gray-100 border-gray-300"
+        } border-b`}
+      >
+        <p className={`text-[18px] font-semibold ${dark ? "text-white" : "text-gray-800"}`}>{t("Artworks")}</p>
+        <div className="relative">
+          <div className={`absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none ${dark ? "text-gray-400" : "text-gray-500"}`}>
+            <IoIosSearch className="h-5 w-5" />
+          </div>
           <input
             type="text"
             placeholder={t("Search Artworks...")}
-            className="border border-gray-50 bg-white rounded-md py-1 pr-2 pl-8"
+            className={`block w-full pl-10 pr-3 py-2 rounded-md border ${
+              dark
+                ? "bg-gray-800 border-gray-500 text-white placeholder-gray-400 focus:ring-[#EE1D52] focus:border-[#EE1D52]"
+                : "bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:ring-[#EE1D52] focus:border-[#EE1D52]"
+            } focus:outline-none focus:ring-1 sm:text-sm`}
             onChange={(e) => handleSearch(e.target.value)}
             value={searchData}
           />
-          <IoIosSearch className="absolute left-2 top-2 flex items-center" />
         </div>
-      </div>
-      <div className="flex flex-wrap justify-center gap-5 mt-6">
-        {artwork && artwork.length > 0 ? (
-          artwork?.slice(firstIndex, lastIndex).map((record, index: number) => (
-            <div key={index}>
-              <ArtCard record={record} data={data} />
-            </div>
-          ))
-        ) : (
-          <div className="flex flex-col items-center justify-center w-full">
-            <p className="text-lg text-center font-medium mb-4">
-              {t("You don't have any artwork yet.")}
-            </p>
-            <NavLink to="/artist-panel/artwork/add">
-              <button className="px-6 py-2 bg-zinc-800 text-white rounded-lg">
-                {t("Add Artwork")}
-              </button>
-            </NavLink>
-          </div>
-        )}
       </div>
 
-      <div className="flex gap-2 flex-wrap justify-center mt-4">
-        <div className="flex gap-2 items-center">
-          <div className="w-[.8em] h-[.8em] rounded-full bg-[#00DE00] flex items-center"></div>
-          <p className="text-[14px] text-black">{t("Published")}</p>
+      <div className="p-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {artwork && artwork.length > 0 ? (
+            artwork.slice(firstIndex, lastIndex).map((record, index) => <ArtCard key={index} record={record} data={data} dark={dark} />)
+          ) : (
+            <div className="col-span-full flex flex-col items-center justify-center py-12">
+              <p className={`text-lg font-medium mb-4 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t("You don't have any artwork yet.")}</p>
+              <NavLink to="/artist-panel/artwork/add">
+                <button
+                  className={`px-6 py-2 rounded-lg transition-colors ${
+                    dark ? "bg-[#EE1D52] hover:bg-[#EE1D52]/90 text-white" : "bg-zinc-800 hover:bg-zinc-700 text-white"
+                  }`}
+                >
+                  {t("Add Artwork")}
+                </button>
+              </NavLink>
+            </div>
+          )}
         </div>
-        <div className="flex gap-2 items-center">
-          <div className="w-[.8em] h-[.8em] rounded-full bg-[#f0dd32] flex items-center"></div>
-          <p className="text-[14px] text-black">{t("Draft")}</p>
-        </div>
-        <div className="flex gap-2 items-center">
-          <div className="w-[.8em] h-[.8em] rounded-full bg-[#D8F002] flex items-center"></div>
-          <p className="text-[14px] text-black">{t("Pending")}</p>
-        </div>
-        <div className="flex gap-2 items-center">
-          <div className="w-[.8em] h-[.8em] rounded-full bg-[#ac329e] flex items-center"></div>
-          <p className="text-[14px] text-black">{t("Modified")}</p>
-        </div>
-        <div className="flex gap-2 items-center">
-          <div className="w-[.8em] h-[.8em] rounded-full bg-blue-600 flex items-center"></div>
-          <p className="text-[14px] text-black">{t("Subscription")}</p>
-        </div>
-        <div className="flex gap-2 items-center">
-          <div className="w-[.8em] h-[.8em] rounded-full   bg-[#EE1D52]   flex items-center"></div>
-          <p className="text-[14px] text-black">{t("Not Available")}</p>
-        </div>
-        <div className="flex gap-2 items-center">
-          <div className="w-[.8em] h-[.8em] rounded-full bg-[#696868] flex items-center"></div>
-          <p className="text-[14px] text-black">{t("Purchased")}</p>
+      </div>
+
+      <div className={`p-4 border-t ${dark ? "border-gray-700" : "border-gray-200"}`}>
+        <div className="flex flex-wrap gap-4 justify-center">
+          {[
+            { status: "Published", color: "#00DE00" },
+            { status: "Draft", color: "#f0dd32" },
+            { status: "Pending", color: "#D8F002" },
+            { status: "Modified", color: "#ac329e" },
+            { status: "Subscription", color: "#3b82f6" },
+            { status: "Not Available", color: "#EE1D52" },
+            { status: "Purchased", color: "#696868" },
+          ].map((item, index) => (
+            <div key={index} className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
+              <span className={`text-sm ${dark ? "text-gray-300" : "text-gray-700"}`}>{t(item.status)}</span>
+            </div>
+          ))}
         </div>
       </div>
 
       {artwork && artwork.length > 0 && (
-        <PaginationTabs
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-          numbers={numbers}
-          nPages={nPages}
-        />
+        <div className={`p-4 border-t ${dark ? "border-gray-700" : "border-gray-200"}`}>
+          <PaginationTabs currentPage={currentPage} setCurrentPage={setCurrentPage} numbers={numbers} nPages={nPages} dark={dark} />
+        </div>
       )}
     </div>
   );

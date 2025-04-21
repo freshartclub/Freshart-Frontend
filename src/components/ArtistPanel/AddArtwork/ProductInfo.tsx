@@ -1,16 +1,10 @@
-import getSymbolFromCurrency from "currency-symbol-map";
 import { useTranslation } from "react-i18next";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
-// import "react-tabs/style/react-tabs.css";
+import { useState } from "react";
 import Header from "../../ui/Header";
 import P from "../../ui/P";
-import delivery from "./assets/delivery.png";
-import print from "./assets/print.png";
-import return1 from "./assets/return.png";
-import secure from "./assets/secure.png";
-import { useState } from "react";
 
-const ProductInfo = ({ data }) => {
+const ProductInfo = ({ data, dark }) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState(0);
   const currency = data?.data?.pricing?.currency;
@@ -73,21 +67,15 @@ const ProductInfo = ({ data }) => {
     },
     {
       heading: "Frame Height",
-      description: data?.data?.additionalInfo?.frameHeight
-        ? data?.data?.additionalInfo?.frameHeight + " " + "cm"
-        : "N/A",
+      description: data?.data?.additionalInfo?.frameHeight ? data?.data?.additionalInfo?.frameHeight + " " + "cm" : "N/A",
     },
     {
       heading: "Frame Depth",
-      description: data?.data?.additionalInfo?.frameLength
-        ? data?.data?.additionalInfo?.frameLength + " " + "cm"
-        : "N/A",
+      description: data?.data?.additionalInfo?.frameLength ? data?.data?.additionalInfo?.frameLength + " " + "cm" : "N/A",
     },
     {
       heading: "Frame Width",
-      description: data?.data?.additionalInfo?.frameWidth
-        ? data?.data?.additionalInfo?.frameWidth + " " + "cm"
-        : "N/A",
+      description: data?.data?.additionalInfo?.frameWidth ? data?.data?.additionalInfo?.frameWidth + " " + "cm" : "N/A",
     },
   ];
 
@@ -113,8 +101,7 @@ const ProductInfo = ({ data }) => {
     },
     {
       heading: "Purchase Catalog",
-      description:
-        data?.data?.commercialization?.publishingCatalog?.catalogName,
+      description: data?.data?.commercialization?.publishingCatalog?.catalogName,
     },
     {
       heading: "Purchase Type",
@@ -129,8 +116,7 @@ const ProductInfo = ({ data }) => {
     },
     {
       heading: "Subscription Catalog",
-      description:
-        data?.data?.commercialization?.publishingCatalog?.catalogName,
+      description: data?.data?.commercialization?.publishingCatalog?.catalogName,
     },
 
     {
@@ -188,28 +174,23 @@ const ProductInfo = ({ data }) => {
 
     {
       heading: "Package Material",
-      description:
-        `${data?.data?.inventoryShipping?.packageMaterial} ` || "N/A",
+      description: `${data?.data?.inventoryShipping?.packageMaterial} ` || "N/A",
     },
     {
       heading: "Package Depth",
-      description:
-        data?.data?.inventoryShipping?.packageLength + " " + "cm" || "N/A",
+      description: data?.data?.inventoryShipping?.packageLength + " " + "cm" || "N/A",
     },
     {
       heading: "Package Height",
-      description:
-        data?.data?.inventoryShipping?.packageHeight + " " + "cm" || "N/A",
+      description: data?.data?.inventoryShipping?.packageHeight + " " + "cm" || "N/A",
     },
     {
       heading: "Package Width",
-      description:
-        data?.data?.inventoryShipping?.packageWidth + " " + "cm" || "N/A",
+      description: data?.data?.inventoryShipping?.packageWidth + " " + "cm" || "N/A",
     },
     {
       heading: "Package Weight",
-      description:
-        data?.data?.inventoryShipping?.packageWeight + " " + "kg" || "N/A",
+      description: data?.data?.inventoryShipping?.packageWeight + " " + "kg" || "N/A",
     },
     {
       heading: "Coming Soon",
@@ -218,60 +199,45 @@ const ProductInfo = ({ data }) => {
   ];
 
   return (
-    <div className="mt-6 min-[1450px]:w-[75%] mx-auto">
-      <Tabs>
-        <TabList className="bg-gray-200 flex scrollbar gap-4 p-2 border border-gray-300 rounded justify-between max-w-full w-full overflow-x-auto font-semibold">
-          {[
-            "Description",
-            "Additional Information",
-            "Commercialization",
-            "Pricing",
-            "Inventory & Shipping",
-            "More Details",
-          ].map((tab, index) => (
+    <div className={`mt-6 mx-6 ${dark ? "text-gray-100" : "text-gray-800"}`}>
+      <Tabs onSelect={(index: number) => setActiveTab(index)}>
+        <TabList
+          className={`flex gap-5 p-2 scrollbar1 rounded-lg overflow-x-auto scrollbar1 whitespace-nowrap ${dark ? "bg-gray-800" : "bg-gray-200"}`}
+        >
+          {["Description", "Additional Information", "Commercialization", "Pricing", "Inventory & Shipping", "More Details"].map((tab, index) => (
             <Tab
               key={index}
-              onClick={() => setActiveTab(index)}
-              className={`flex-shrink-0 border-none px-4 py-2 rounded cursor-pointer transition ${
-                activeTab === index
-                  ? "bg-black text-white"
-                  : "bg-gray-200 text-gray-700"
+              className={`cursor-pointer px-4 py-2 rounded-md transition-colors shrink-0 ${
+                activeTab === index ? (dark ? "text-[#EE1D52] font-semibold" : "text-[#EE1D52] bg-transparent font-semibold") : ""
               }`}
             >
-              {t(tab)}
+              {tab}
             </Tab>
           ))}
         </TabList>
 
         <TabPanel>
-          <div className="flex flex-col border bg-white rounded gap-2 justify-between mb-10 p-2 mt-3">
-            <Header variant={{ size: "md", theme: "dark", weight: "semiBold" }}>
-              {t("Product Information")}
-            </Header>
-            <P
-              variant={{ size: "base", theme: "dark", weight: "medium" }}
-              className="mb-5 text-[#999999]"
-            >
-              {data?.data?.productDescription}
-            </P>
-          </div>
+          <P
+            variant={{ size: "small", theme: dark ? "light" : "dark", weight: "normal" }}
+            className={`${dark ? "text-gray-300" : "text-[#999999]"} my-5 italic`}
+          >
+            {data?.data?.productDescription}
+          </P>
         </TabPanel>
 
         <TabPanel>
-          <div className="flex border bg-white rounded flex-col lg:flex-row gap-10 justify-between w-full p-2 mb-2 mt-3">
+          <div
+            className={`flex border ${
+              dark ? "border-gray-600 bg-gray-800" : "border-gray-200 bg-white"
+            } rounded flex-col lg:flex-row gap-10 justify-between w-full p-2 mb-2 mt-3`}
+          >
             <div className="w-full">
               {overview_date.map((item, index) => (
                 <div key={index} className="flex ">
-                  <P
-                    variant={{ size: "small", theme: "dark", weight: "medium" }}
-                    className="w-60 my-1"
-                  >
+                  <P variant={{ size: "small", theme: dark ? "light" : "dark", weight: "medium" }} className="w-60 my-1">
                     {t(item.head)} :
                   </P>
-                  <P
-                    variant={{ size: "small", weight: "medium" }}
-                    className="text-[#999999]"
-                  >
+                  <P variant={{ size: "small", weight: "medium" }} className="text-[#999999]">
                     {t(item.name)}
                   </P>
                 </div>
@@ -281,32 +247,20 @@ const ProductInfo = ({ data }) => {
             <div className="w-full">
               {artwork_detail.map((item, index) => (
                 <div key={index} className="flex items-center">
-                  <P
-                    variant={{ size: "small", theme: "dark", weight: "medium" }}
-                    className="w-60 my-1"
-                  >
+                  <P variant={{ size: "small", theme: dark ? "light" : "dark", weight: "medium" }} className="w-60 my-1">
                     {t(item.heading)} :
                   </P>
-                  <P
-                    variant={{ size: "small", weight: "medium" }}
-                    className="text-[#999999]"
-                  >
+                  <P variant={{ size: "small", weight: "medium" }} className="text-[#999999]">
                     {item.description}
                   </P>
                 </div>
               ))}
               {highlight_data.map((item, index) => (
                 <div key={index} className="flex  items-center">
-                  <P
-                    variant={{ size: "small", theme: "dark", weight: "medium" }}
-                    className="w-60 my-1"
-                  >
+                  <P variant={{ size: "small", theme: dark ? "light" : "dark", weight: "medium" }} className="w-60 my-1">
                     {t(item.heading)} :
                   </P>
-                  <P
-                    variant={{ size: "small", weight: "medium" }}
-                    className="text-[#999999] capitalize"
-                  >
+                  <P variant={{ size: "small", weight: "medium" }} className="text-[#999999] capitalize">
                     {item.description}
                   </P>
                 </div>
@@ -314,23 +268,23 @@ const ProductInfo = ({ data }) => {
             </div>
           </div>
 
-          <div className="flex border bg-white rounded p-2 flex-col mb-2">
+          <div className={`flex border ${dark ? "bg-gray-800 border-gray-600" : "bg-white border-zinc-300"} rounded p-2 flex-col mb-2`}>
             <h1 className="font-semibold">{t("Hanging Description")}:</h1>
-            <span className="text-[#999999] text-[14px] mt-2">
-              {data?.data?.additionalInfo?.hangingDescription || "N/A"}
-            </span>
+            <span className="text-[#999999] text-[14px] mt-2">{data?.data?.additionalInfo?.hangingDescription || "N/A"}</span>
           </div>
 
-          <div className="flex border bg-white rounded p-2 flex-col mb-5">
+          <div className={`flex border ${dark ? "bg-gray-800 border-gray-600" : "bg-white border-zinc-300"} rounded p-2 flex-col mb-5`}>
             <h1 className="font-semibold">{t("Framed Description")}:</h1>
-            <span className="text-[#999999] text-[14px] mt-2">
-              {data?.data?.additionalInfo?.framedDescription || "N/A"}
-            </span>
+            <span className="text-[#999999] text-[14px] mt-2">{data?.data?.additionalInfo?.framedDescription || "N/A"}</span>
           </div>
         </TabPanel>
 
         <TabPanel>
-          <div className="flex border bg-white rounded p-2 flex-col lg:flex-row gap-10 justify-between w-full mt-3 mb-5">
+          <div
+            className={`flex border ${
+              dark ? "border-gray-600 bg-gray-800" : "border-gray-200 bg-white"
+            } rounded flex-col lg:flex-row gap-10 justify-between w-full p-2 mb-2 mt-3`}
+          >
             <div className="w-full">
               {data?.data?.commercialization?.activeTab === "purchase"
                 ? purchaseData.map((item, index) => (
@@ -338,7 +292,7 @@ const ProductInfo = ({ data }) => {
                       <P
                         variant={{
                           size: "small",
-                          theme: "dark",
+                          theme: dark ? "light" : "dark",
                           weight: "medium",
                         }}
                         className="w-48 my-1"
@@ -361,7 +315,7 @@ const ProductInfo = ({ data }) => {
                       <P
                         variant={{
                           size: "small",
-                          theme: "dark",
+                          theme: dark ? "light" : "dark",
                           weight: "medium",
                         }}
                         className="w-48 my-1"
@@ -384,14 +338,15 @@ const ProductInfo = ({ data }) => {
         </TabPanel>
 
         <TabPanel>
-          <div className="flex border bg-white rounded p-2 gap-10 justify-between w-full mt-3 mb-5">
+          <div
+            className={`flex border ${
+              dark ? "border-gray-600 bg-gray-800" : "border-gray-200 bg-white"
+            } rounded flex-col lg:flex-row gap-10 justify-between w-full p-2 mb-2 mt-3`}
+          >
             <div className="w-full">
               {Pricing_data.map((item, index) => (
                 <div key={index} className="flex items-center gap-2 ">
-                  <P
-                    variant={{ size: "small", theme: "dark", weight: "medium" }}
-                    className="lg:w-48 my-1"
-                  >
+                  <P variant={{ size: "small", theme: dark ? "light" : "dark", weight: "medium" }} className="lg:w-48 my-1">
                     {t(item.heading)} :
                   </P>
                   <P
@@ -410,14 +365,15 @@ const ProductInfo = ({ data }) => {
         </TabPanel>
 
         <TabPanel>
-          <div className="flex border bg-white rounded p-2 mt-3 flex-wrap gap-10 justify-between w-full mb-5">
+          <div
+            className={`flex border ${
+              dark ? "border-gray-600 bg-gray-800" : "border-gray-200 bg-white"
+            } rounded flex-col lg:flex-row gap-10 justify-between w-full p-2 mb-2 mt-3`}
+          >
             <div className="w-full">
               {shipping_data.map((item, index) => (
                 <div key={index} className="flex items-center  gap-3">
-                  <P
-                    variant={{ size: "small", theme: "dark", weight: "medium" }}
-                    className="w-60 my-1"
-                  >
+                  <P variant={{ size: "small", theme: dark ? "light" : "dark", weight: "medium" }} className="w-60 my-1">
                     {t(item.heading)} :
                   </P>
                   <P
@@ -436,14 +392,15 @@ const ProductInfo = ({ data }) => {
         </TabPanel>
 
         <TabPanel>
-          <div className="flex border bg-white rounded p-2 mt-3 flex-wrap gap-10 justify-between w-full mb-5">
+          <div
+            className={`flex border ${
+              dark ? "border-gray-600 bg-gray-800" : "border-gray-200 bg-white"
+            } rounded flex-col lg:flex-row gap-10 justify-between w-full p-2 mb-2 mt-3`}
+          >
             <div className="w-full">
               {moreInfo_data.map((item, index) => (
                 <div key={index} className="flex items-start ">
-                  <P
-                    variant={{ size: "small", theme: "dark", weight: "medium" }}
-                    className="w-48 my-1"
-                  >
+                  <P variant={{ size: "small", theme: dark ? "light" : "dark", weight: "medium" }} className="w-48 my-1">
                     {t(item.heading)} :
                   </P>
                   <P

@@ -1,51 +1,14 @@
 import { useNavigate } from "react-router-dom";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick-theme.css";
-import "slick-carousel/slick/slick.css";
-import Header from "../ui/Header";
-import ViewButton from "../ui/ViewButton";
-import "./ArtistPortfoilio.css";
+import { useAppSelector } from "../../store/typedReduxHooks";
 import { imageUrl } from "../utils/baseUrls";
+import { useEffect, useRef, useState } from "react";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 
 const ArtistPortfolio = ({ data }) => {
-  const settings = {
-    dots: true,
-    infinite: data && data.length > 1 ? true : false,
-    speed: 500,
-    slidesToShow: 4,
-    slidesToScroll: 1,
-    autoplay: false,
-    autoplaySpeed: 2000,
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 3,
-          slidesToScroll: 1,
-          infinite: data && data.length > 1 ? true : false,
-          dots: true,
-        },
-      },
-      {
-        breakpoint: 768,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 1,
-          infinite: data && data.length > 1 ? true : false,
-          dots: true,
-        },
-      },
-      {
-        breakpoint: 440,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-          infinite: data && data.length > 1 ? true : false,
-          dots: true,
-        },
-      },
-    ],
-  };
+  const dark = useAppSelector((state) => state.theme.mode);
+  const [isStart, setIsStart] = useState(true);
+  const [isEnd, setIsEnd] = useState(false);
+  const scrollContainerRef = useRef(null);
   const navigate = useNavigate();
 
   const redirectToAllArtistPage = () => {
@@ -58,11 +21,7 @@ const ArtistPortfolio = ({ data }) => {
     window.scroll(0, 0);
   };
 
-  const name = (val: {
-    artistName: string;
-    artistSurname1: string;
-    artistSurname2: string;
-  }) => {
+  const name = (val: { artistName: string; artistSurname1: string; artistSurname2: string }) => {
     let fullName = val?.artistName || "";
 
     if (val?.artistSurname1) fullName += " " + val?.artistSurname1;
@@ -76,65 +35,108 @@ const ArtistPortfolio = ({ data }) => {
     return val.join(" | ");
   };
 
+  useEffect(() => {
+    const handleScrollCheck = () => {
+      const container = scrollContainerRef.current;
+      if (!container) return;
+      setIsStart(container.scrollLeft === 0);
+      setIsEnd(container.scrollLeft + container.clientWidth >= container.scrollWidth);
+    };
+
+    const container = scrollContainerRef.current;
+    if (container) {
+      container.addEventListener("scroll", handleScrollCheck);
+      handleScrollCheck();
+    }
+
+    return () => container?.removeEventListener("scroll", handleScrollCheck);
+  }, [data]);
+
+  const handleScroll = (direction) => {
+    const container = scrollContainerRef.current;
+    if (container) {
+      const scrollAmount = 300;
+      container.scrollBy({
+        left: direction === "left" ? -scrollAmount : scrollAmount,
+        behavior: "smooth",
+      });
+    }
+  };
+
   return (
-    <div className="container mx-auto md:px-6 px-3 ">
-      <div className="mt-10">
-        <div className="flex max-[450px]:flex-col items-center justify-between">
-          <Header
-            variant={{ size: "xl", theme: "dark", weight: "semiBold" }}
-            className="text-[30px] font-semibold"
-          >
-            Artist Portfolio
-          </Header>
+    <div className={`mx-auto px-4 md:px-8 lg:px-12 mt-10 ${dark ? "bg-gray-900" : "bg-white"}`}>
+      <h1 className={`text-xl font-semibold ${dark ? "text-gray-100" : "text-gray-900"} mb-6 tracking-tight`}>Artist Portfolio's</h1>
 
-          <ViewButton onClick={redirectToAllArtistPage} />
-        </div>
-      </div>
-      <div className="artist_slider h-auto">
-        <Slider {...settings}>
-          {data?.artists?.map((item, i) => (
-            <div
-              key={i}
-              className="px-2 text-center cursor-pointer"
-              onClick={() => handleArtistDesc(item._id)}
-            >
-              <div className="mt-14 rounded-lg border border-[#FF536B] flex  flex-col items-center">
-                <img
-                  src={`${imageUrl}/users/${item?.profile?.mainImage}`}
-                  alt="profile"
-                  className="-mt-8 w-[10vh] h-[10vh] rounded-full object-cover"
-                />
-                <h1 className="text-xl line-clamp-1 px-2 font-medium">
-                  {name(item)}
-                </h1>
-                <p className="text-sm flex flex-wrap justify-center gap-2 min-h-[20px]">
-                  {item?.aboutArtist?.discipline &&
-                    mapData(
-                      item?.aboutArtist?.discipline?.map(
-                        (item) => item?.discipline
-                      )
-                    )}
-                </p>
+      <div className="relative">
+        <button
+          className={`absolute left-0 top-1/2 transform -translate-y-1/2 p-2 rounded-full shadow-lg z-10 ${
+            isStart ? "hidden" : `${dark ? "bg-gray-700 hover:bg-gray-600" : "bg-gray-800 hover:bg-gray-900"} text-white`
+          }`}
+          onClick={() => handleScroll("left")}
+          disabled={isStart}
+        >
+          <FaChevronLeft size={20} />
+        </button>
 
-                {item?.profile?.inProcessImage || item?.profile?.mainImage ? (
+        <div ref={scrollContainerRef} className="overflow-x-auto scrollbar pb-4">
+          <div className="flex gap-4 px-2" style={{ paddingTop: "3rem" }}>
+            {data?.artists?.map((item, i: number) => (
+              <div
+                key={i}
+                className={`relative cursor-pointer p-3 border flex-shrink-0 ${
+                  dark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
+                } hover:shadow-lg transition-shadow duration-300 w-[230px] h-[320px]`}
+                onClick={() => handleArtistDesc(item._id)}
+              >
+                <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 w-[4.5rem] h-[4.5rem] z-50 rounded-full border-2 border-white overflow-hidden shadow-md">
                   <img
-                    src={`${imageUrl}/users/${
-                      item?.profile?.inProcessImage || item?.profile?.mainImage
-                    }`}
-                    alt="Artwork"
-                    className="p-2 rounded w-full h-[40vh] sm:w-[30vw] sm:h-[30vh] object-cover"
+                    src={`${imageUrl}/users/${item?.profile?.mainImage}`}
+                    alt="profile"
+                    className="w-full h-full object-cover bg-gray-100"
+                    onError={(e) =>
+                      (e.currentTarget.src = "https://www.shutterstock.com/image-vector/user-profile-icon-vector-avatar-600nw-2247726673.jpg")
+                    }
                   />
-                ) : (
-                  <img
-                    src="https://www.shutterstock.com/image-vector/user-profile-icon-vector-avatar-600nw-2247726673.jpg"
-                    alt="Artwork"
-                    className="p-2 rounded w-full h-[40vh] sm:w-[30vw] sm:h-[30vh] object-cover"
-                  />
-                )}
+                </div>
+
+                <div className="h-full flex flex-col items-center pt-8">
+                  <h3 className={`text-lg font-medium text-center ${dark ? "text-gray-100" : "text-gray-900"}`}>
+                    {name(item).length > 17 ? name(item).slice(0, 17) + "..." : name(item)}
+                  </h3>
+
+                  <p className={`text-sm ${dark ? "text-gray-400" : "text-gray-600"} text-center line-clamp-2`}>
+                    {item?.aboutArtist?.discipline && mapData(item.aboutArtist.discipline.map((d) => d.discipline))}
+                  </p>
+
+                  <div className="mt-4 w-full h-52 overflow-hidden rounded">
+                    <img
+                      className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                      src={
+                        item?.profile?.inProcessImage || item?.profile?.mainImage
+                          ? `${imageUrl}/users/${item?.profile?.inProcessImage || item?.profile?.mainImage}`
+                          : "https://www.shutterstock.com/image-vector/user-profile-icon-vector-avatar-600nw-2247726673.jpg"
+                      }
+                      alt="Artwork"
+                      onError={(e) =>
+                        (e.currentTarget.src = "https://www.shutterstock.com/image-vector/user-profile-icon-vector-avatar-600nw-2247726673.jpg")
+                      }
+                    />
+                  </div>
+                </div>
               </div>
-            </div>
-          ))}
-        </Slider>
+            ))}
+          </div>
+        </div>
+
+        <button
+          className={`absolute right-0 top-1/2 transform -translate-y-1/2 p-2 rounded-full shadow-lg z-10 ${
+            isEnd ? "hidden" : `${dark ? "bg-gray-700 hover:bg-gray-600" : "bg-gray-800 hover:bg-gray-900"} text-white`
+          }`}
+          onClick={() => handleScroll("right")}
+          disabled={isEnd}
+        >
+          <FaChevronRight size={20} />
+        </button>
       </div>
     </div>
   );

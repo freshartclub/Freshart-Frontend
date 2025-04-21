@@ -21,7 +21,6 @@ const themeSlice = createSlice({
   reducers: {
     toggleTheme: (state) => {
       state.mode = state.mode === true ? false : true;
-      console.log(state.mode);
       localStorage.setItem("theme", `${state.mode}`);
     },
     setTheme: (state, action) => {

@@ -1,7 +1,7 @@
 import { Controller, useFieldArray } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
-const Commercilization = ({ control, getValues }) => {
+const Commercilization = ({ control, getValues, dark }) => {
   const { t } = useTranslation();
   const { fields, remove } = useFieldArray({
     control,
@@ -53,38 +53,38 @@ const Commercilization = ({ control, getValues }) => {
   ];
 
   return (
-    <div className="p-4 pb-0 mx-auto border border-custom-gray bg-white rounded-md shadow-custom mb-4 mt-4">
-      <h2 className="text-lg font-semibold mb-3 pb-3 text-[#1A1C21]">
-        {t("Commercilization")}
-      </h2>
+    <div className={`p-6 mt-6 border rounded-xl shadow-sm ${dark ? "bg-gray-800 border-gray-600" : "bg-white"}`}>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className={`text-xl font-bold ${dark ? "text-white" : "text-gray-800"}`}>{t("Commercilization")}</h2>
+        <div className="w-10 h-1 rounded-full bg-gradient-to-r from-blue-500 to-purple-500"></div>
+      </div>
       <div className="flex flex-wrap justify-between w-full gap-4 mb-4">
-        {commercializationData.map(({ name, label, message }) => (
+        {commercializationData.map(({ name, label }) => (
           <div key={name} className="md:w-[48%] w-full relative">
+            <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t(label)}</label>
             <input
               disabled
               type="text"
               value={t(getValues(name))}
               {...control.register(name)}
-              className="border pointer-events-none border-[#E6E6E6] p-3 w-full rounded-md placeholder::font-montserrat font-normal text-left placeholder:text-[#1C252E] outline-none"
+              className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
+                dark
+                  ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+                  : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
+              }`}
             />
-            <label
-              htmlFor={name}
-              className="absolute text-sm top-[-10px] left-3 bg-white px-1 font-montserrat font-semibold text-[#637381]"
-            >
-              {t(label)}
-            </label>
           </div>
         ))}
       </div>
 
       {fields.map((account, index) => (
         <div key={account.id} className="mb-6">
-          <div className="flex  items-center gap-5 justify-between mb-2 w-full">
-            <div className="flex flex-col lg:flex-row w-full gap-4 items-center">
+          <div className="flex flex-col md:flex-row items-center gap-5 justify-between mb-2 w-full">
+            <div className="flex flex-col md:flex-row w-full gap-4 items-center">
               <div className="w-full">
-                <label className="block font-semibold text-sm leading-5 tracking-wide text-[#203F58] mb-1">
-                  {`${t("Catalog")} ${index + 1}`}
-                </label>
+                <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{`${t("Catalog")} ${
+                  index + 1
+                }`}</label>
                 <Controller
                   control={control}
                   name={`publishingCatalog.${index}.catalogName`}
@@ -92,7 +92,11 @@ const Commercilization = ({ control, getValues }) => {
                     <select
                       disabled
                       {...field}
-                      className="border border-gray-300 rounded p-3 w-full outline-none "
+                      className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
+                        dark
+                          ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+                          : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
+                      }`}
                     >
                       {fields?.map((item, index) => (
                         <option key={index} value={item.catalogName}>
@@ -104,9 +108,7 @@ const Commercilization = ({ control, getValues }) => {
                 />
               </div>
               <div className="w-full">
-                <label className="block font-semibold text-sm leading-5 tracking-wide text-[#203F58] mb-1 ">
-                  {t("Artist Fee")}
-                </label>
+                <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t("Artist Fee")}</label>
                 <Controller
                   control={control}
                   name={`publishingCatalog.${index}.ArtistFees`}
@@ -116,15 +118,21 @@ const Commercilization = ({ control, getValues }) => {
                       {...field}
                       type="text"
                       placeholder="0.00"
-                      className="border border-gray-300 rounded p-3 w-full outline-none"
+                      className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
+                        dark
+                          ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+                          : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
+                      }`}
                     />
                   )}
                 />
               </div>
             </div>
             <button
+              className={`${
+                dark ? "bg-red-100" : "bg-white"
+              } text-red-600 md:w-fit w-full border border-red-600 px-3 rounded-lg font-semibold translate-y-[-3px] md:mt-auto h-[2.8rem]`}
               onClick={() => remove(index)}
-              className="md:w-fit w-full border text-red-600 border-red-600 p-2 rounded font-semibold translate-y-[-3px] mt-3 md:mt-auto opacity-75 pointer-events-none"
             >
               {t("Remove")}
             </button>

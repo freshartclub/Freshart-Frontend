@@ -1,12 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
-import image_icon from "../../../assets/image_icon.png";
-import video_icon from "../../../assets/video_icon.png";
-import Header from "../../ui/Header";
-import { imageUrl } from "../../utils/baseUrls";
 import { useTranslation } from "react-i18next";
+import { imageUrl } from "../../utils/baseUrls";
 
-const GeneralMedia = ({ control, data, isActiveStatus }) => {
+const GeneralMedia = ({ control, data, isActiveStatus, dark }) => {
   const { t } = useTranslation();
   const { setValue, getValues, watch } = useFormContext();
 
@@ -39,11 +36,10 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
     name: "mainImage",
   });
 
-  const { append: appendAdditionalImage, remove: removeAdditionalImageFrom } =
-    useFieldArray({
-      control,
-      name: "additionalImage",
-    });
+  const { append: appendAdditionalImage, remove: removeAdditionalImageFrom } = useFieldArray({
+    control,
+    name: "additionalImage",
+  });
 
   const mainImageInputRef = useRef<HTMLInputElement>(null);
   const inProcessImageInputRef = useRef<HTMLInputElement>(null);
@@ -57,16 +53,10 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
   const [existingInProcessImage, setExistingInProcessImage] = useState(null);
 
   useEffect(() => {
-    setExistingMainImage(
-      data?.mainImage ? `${imageUrl}/users/${data?.mainImage}` : null
-    );
+    setExistingMainImage(data?.mainImage ? `${imageUrl}/users/${data?.mainImage}` : null);
     setExistingAdditionalImage(data?.additionalImage);
-    setExistingInProcessImage(
-      data?.inProcessImage ? `${imageUrl}/users/${data?.inProcessImage}` : null
-    );
-    setExistingMainVideo(
-      data?.mainVideo ? `${imageUrl}/videos/${data?.mainVideo}` : null
-    );
+    setExistingInProcessImage(data?.inProcessImage ? `${imageUrl}/users/${data?.inProcessImage}` : null);
+    setExistingMainVideo(data?.mainVideo ? `${imageUrl}/videos/${data?.mainVideo}` : null);
     setExistingAdditionalVideo(data?.additionalVideo);
   }, [data]);
 
@@ -135,9 +125,7 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
     if (typeFile === "File") {
       removeAdditionalImageFrom(index);
     } else {
-      const updatedImages = existingAdditionalImage.filter(
-        (_, i) => i !== index
-      );
+      const updatedImages = existingAdditionalImage.filter((_, i) => i !== index);
 
       setExistingAdditionalImage(updatedImages);
       setValue("existingAdditionalImage", updatedImages);
@@ -177,9 +165,7 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
     }
 
     if (typeFile === "Url") {
-      const updatedVideos = existingAdditionalVideo.filter(
-        (_, i) => i !== index
-      );
+      const updatedVideos = existingAdditionalVideo.filter((_, i) => i !== index);
 
       setExistingAdditionalVideo(updatedVideos);
       setValue("existingAdditionalVideo", updatedVideos);
@@ -187,319 +173,327 @@ const GeneralMedia = ({ control, data, isActiveStatus }) => {
   };
 
   return (
-    <div className="p-4 mt-6 bg-white rounded-lg shadow-md border mb-4 ">
-      <Header
-        variant={{ theme: "dark", weight: "semiBold" }}
-        className="text-lg mb-2"
-      >
-        {t("Media")}
-      </Header>
+    <div className={`p-6 mt-6 border rounded-xl shadow-sm ${dark ? "bg-gray-800 border-gray-600" : "bg-white"}`}>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className={`text-xl font-bold ${dark ? "text-white" : "text-gray-800"}`}>{t("Media")}</h2>
+        <div className="w-10 h-1 rounded-full bg-gradient-to-r from-blue-500 to-purple-500"></div>
+      </div>
 
-      <div className="border-dashed border-2 border-gray-400 rounded-md p-4">
-        <div className="bg-white rounded-md">
-          <div className="grid lg:grid-cols-2 gap-4">
-            <div>
-              <Header
-                variant={{ size: "base", theme: "dark", weight: "semiBold" }}
-                className="mb-2 text-[#203F58]"
-              >
-                {t("Profile Photo")}
-              </Header>
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden "
-                ref={mainImageInputRef}
-                onChange={(e) => handleMainImageChange(e)}
-              />
-              <div className="bg-[#F9F9FC] shadow rounded-md border border-dashed py-4 sm:py-6 px-4 sm:px-12 flex flex-col items-center">
-                <div className="relative">
-                  {existingMainImage ? (
-                    <img
-                      src={existingMainImage}
-                      alt="Main Image"
-                      className="w-28 h-28 object-cover"
-                    />
-                  ) : (
-                    <img
-                      src={image_icon}
-                      className="w-28 h-28 bg-gray-200 rounded-md mb-4"
-                    />
-                  )}
-                  <span
-                    className={`absolute top-1 ${
-                      existingMainImage ? "block" : "hidden"
-                    } right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer ${
-                      isActiveStatus !== "active" ? "" : ""
-                    }`}
-                    onClick={(e) => handleRemoveMainImage("Url")}
-                  >
-                    &times;
-                  </span>
-                </div>
-                {existingMainImage ? null : (
-                  <p className="text-center text-xs md:text-base">
-                    {t("Drag and drop image here, or click to add image")}
-                  </p>
-                )}
+      <div className="grid lg:grid-cols-2 gap-6">
+        <div>
+          <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t("Profile Photo")}</label>
+          <div
+            className={`border-2 border-dashed rounded-xl p-4 flex flex-col items-center justify-center transition-all hover:border-blue-500 ${
+              dark ? "border-gray-600 bg-gray-700" : "border-gray-300 bg-gray-50"
+            } ${!existingMainImage ? "min-h-[200px]" : ""}`}
+            onClick={triggerMainImageInput}
+          >
+            <input type="file" accept="image/*" className="hidden " ref={mainImageInputRef} onChange={(e) => handleMainImageChange(e)} />
+            {existingMainImage ? (
+              <div className="relative w-full">
+                <img src={existingMainImage} alt="Main artwork" className="w-full h-48 object-cover rounded-lg" />
                 <span
-                  className="bg-[#DEDEFA] sm:w-fit w-full text-center font-bold mt-2 p-3 px-4 rounded-md cursor-pointer"
-                  onClick={triggerMainImageInput}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleRemoveMainImage("Url");
+                  }}
+                  className={`absolute top-2 right-2 p-1 rounded-full ${dark ? "bg-red-600" : "bg-red-500"} text-white`}
                 >
-                  {t("Add Image")}
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path
+                      fillRule="evenodd"
+                      d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
                 </span>
               </div>
-            </div>
-
-            <div>
-              <Header
-                variant={{ size: "base", theme: "dark", weight: "semiBold" }}
-                className="mb-2 text-[#203F58]"
-              >
-                {t("Main Artwork")}
-              </Header>
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                ref={inProcessImageInputRef}
-                onChange={(e) => handleInProcessImageUpload(e)}
-              />
-              <div className="bg-[#F9F9FC] shadow rounded-md border border-dashed py-4 sm:py-6 px-4 sm:px-12 flex flex-col items-center">
-                {existingInProcessImage ? (
-                  <div className="relative">
-                    <img
-                      src={existingInProcessImage}
-                      alt="In-Process Image"
-                      className="w-28 h-28 object-cover"
-                    />
-                    <span
-                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer"
-                      onClick={() => handleRemoveInProcessImage("url")}
-                    >
-                      &times;
-                    </span>
-                  </div>
-                ) : (
-                  <img
-                    src={image_icon}
-                    className="w-28 h-28 bg-gray-200 rounded-md mb-4"
+            ) : (
+              <>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className={`h-12 w-12 mb-3 ${dark ? "text-gray-400" : "text-gray-500"}`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                   />
-                )}
-                {existingInProcessImage ? null : (
-                  <p className="text-center text-xs md:text-base">
-                    {t("Drag and drop image here, or click to add image")}
-                  </p>
-                )}
-                <span
-                  className="bg-[#DEDEFA] sm:w-fit w-full text-center font-bold mt-2 p-3 px-4 rounded-md cursor-pointer"
-                  onClick={triggerInProcessImageInput}
-                >
-                  {t("Add Image")}
-                </span>
-              </div>
-            </div>
+                </svg>
+                <p className={`text-center ${dark ? "text-gray-400" : "text-gray-500"}`}>{t("Drag and drop image here, or click add image")}</p>
+              </>
+            )}
           </div>
         </div>
-        <div className="bg-white rounded-md mt-4">
-          <Header
-            variant={{ size: "base", theme: "dark", weight: "semiBold" }}
-            className="mb-2 text-[#203F58]"
+
+        <div>
+          <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t("Main Artwork")}</label>
+
+          <div
+            className={`border-2 border-dashed rounded-xl p-4 flex flex-col items-center justify-center transition-all hover:border-blue-500 ${
+              dark ? "border-gray-600 bg-gray-700" : "border-gray-300 bg-gray-50"
+            } ${!existingInProcessImage ? "min-h-[200px]" : ""}`}
+            onClick={triggerInProcessImageInput}
           >
-            {t("In Action (Studio/Events Images)")}
-          </Header>
-          <input
-            type="file"
-            accept="image/*"
-            className="hidden"
-            id="photos-input"
-            multiple
-            onChange={(e) => handleAdditionalImageUpload(e)}
-          />
-          <div className="flex flex-col p-4 shadow rounded-md border border-dashed flex-wrap gap-4 items-center">
+            <input type="file" accept="image/*" className="hidden" ref={inProcessImageInputRef} onChange={(e) => handleInProcessImageUpload(e)} />
+
+            {existingInProcessImage ? (
+              <div className="relative w-full">
+                <img src={existingInProcessImage} alt="In-Process Image" className="w-full h-48 object-cover rounded-lg" />
+                <span
+                  className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleRemoveInProcessImage("url");
+                  }}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path
+                      fillRule="evenodd"
+                      d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </span>
+              </div>
+            ) : (
+              <>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className={`h-12 w-12 mb-3 ${dark ? "text-gray-400" : "text-gray-500"}`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
+                </svg>
+                <p className={`text-center ${dark ? "text-gray-400" : "text-gray-500"}`}>{t("Drag and drop image here, or click add image")}</p>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+      <div className="mt-6">
+        <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>
+          {t("In Action (Studio/Events Images)")}
+        </label>
+        <div
+          className={`border-2 border-dashed rounded-xl p-6 flex flex-col items-center justify-center transition-all hover:border-blue-500 ${
+            dark ? "border-gray-600 bg-gray-700" : "border-gray-300 bg-gray-50"
+          }`}
+          onClick={() => document.getElementById("photo-input")?.click()}
+        >
+          <input type="file" accept="image/*" className="hidden" id="photos-input" multiple onChange={(e) => handleAdditionalImageUpload(e)} />
+          <div className="flex flex-wrap gap-4 w-full">
             {getValues("additionalImage") &&
               getValues("additionalImage").length > 0 &&
-              getValues("additionalImage").map((field, i) => (
-                <div key={i} className="relative w-28 h-28">
-                  <img
-                    src={URL.createObjectURL(field)}
-                    alt={`Additional Image ${i}`}
-                    className="w-full h-full object-cover"
-                  />
+              getValues("additionalImage").map((field, i: number) => (
+                <div key={i} className="relative w-32 h-32">
+                  <img src={URL.createObjectURL(field)} alt={`Additional Image ${i}`} className="w-full h-full object-cover" />
                   <span
-                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer"
-                    onClick={() => removeAdditionalImage(i, "File")}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      removeAdditionalImage(i, "File");
+                    }}
+                    className={`absolute top-1 right-1 p-1 rounded-full ${dark ? "bg-red-600" : "bg-red-500"} text-white`}
                   >
-                    &times;
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                      <path
+                        fillRule="evenodd"
+                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
                   </span>
                 </div>
               ))}
             {existingAdditionalImage &&
               existingAdditionalImage?.length > 0 &&
-              existingAdditionalImage?.map((field: string, i: number) => (
-                <div key={i} className="relative w-28 h-28">
-                  <img
-                    src={`${imageUrl}/users/${field}`}
-                    alt={`Additional Image ${i}`}
-                    className="w-full h-full object-cover"
-                  />
-                  <span
-                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer"
-                    onClick={() => removeAdditionalImage(i, "Url")}
-                  >
-                    &times;
-                  </span>
-                </div>
-              ))}
+              existingAdditionalImage?.map((field: string, i: number) => {
+                const index = i + (getValues("additionalImage")?.length || 0);
+                return (
+                  <div key={index} className="relative w-28 h-28">
+                    <img src={`${imageUrl}/users/${field}`} alt={`Additional Image ${i}`} className="w-full h-full object-cover" />
+                    <span
+                      className={`absolute top-1 right-1 p-1 rounded-full ${dark ? "bg-red-600" : "bg-red-500"} text-white`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removeAdditionalImage(i, "Url");
+                      }}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                        <path
+                          fillRule="evenodd"
+                          d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </span>
+                  </div>
+                );
+              })}
 
-            {getValues("additionalImage")?.length === 0 &&
-            existingAdditionalImage?.length === 0 ? (
-              <div className="flex flex-col items-center">
-                <img
-                  src={image_icon}
-                  className="w-28 h-28 bg-gray-200 rounded-md mb-4"
-                />
-                <p className="text-center text-xs md:text-base">
-                  {t("Click to add additional images")}
-                </p>
+            {(typeof getValues("additionalImage")?.length == "undefined" || getValues("additionalImage")?.length == 0) &&
+              existingAdditionalImage?.length === 0 && (
+                <div className="flex gap-4 items-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className={`h-12 w-12 ${dark ? "text-gray-400" : "text-gray-500"}`}
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    />
+                  </svg>
+                  <p className={`text-center ${dark ? "text-gray-400" : "text-gray-500"}`}>{t("Drag and drop image here, or click add image")}</p>
+                </div>
+              )}
+          </div>
+        </div>
+      </div>
+
+      <div className="grid lg:grid-cols-2 mt-6 gap-4">
+        <div>
+          <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t("Main Video")}</label>
+          <div
+            className={`border-2 border-dashed rounded-xl p-4 flex flex-col items-center justify-center transition-all hover:border-blue-500 ${
+              dark ? "border-gray-600 bg-gray-700" : "border-gray-300 bg-gray-50"
+            } ${!existingMainVideo ? "min-h-[200px]" : ""}`}
+            onClick={triggerVideoInput}
+          >
+            <input type="file" accept="video/*" className="hidden" ref={videoInputRef} onChange={(e) => handleMainVideoChange(e)} />
+
+            {existingMainVideo ? (
+              <div className="relative w-full">
+                <video src={existingMainVideo} controls className="w-28 h-28 object-cover" />
+                <span
+                  className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleRemoveMainVidoe("Url");
+                  }}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path
+                      fillRule="evenodd"
+                      d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </span>
               </div>
-            ) : null}
-            <span
-              className="bg-[#DEDEFA] font-bold mt-2 p-3 px-4 rounded-md w-full text-center cursor-pointer flex items-center justify-center"
-              onClick={() => document.querySelector("#photos-input").click()}
-            >
-              {t("Add Image")}
-            </span>
+            ) : (
+              <>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className={`h-12 w-12 mb-3 ${dark ? "text-gray-400" : "text-gray-500"}`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                  />
+                </svg>
+                <p className={`text-center ${dark ? "text-gray-400" : "text-gray-500"}`}>{t("Drag and drop video here, or click add video")}</p>
+              </>
+            )}
           </div>
         </div>
 
-        <div className="grid lg:grid-cols-1 gap-4">
-          <div>
-            <Header
-              variant={{ size: "base", theme: "dark", weight: "semiBold" }}
-              className="mt-4 text-[#203F58]"
-            >
-              {t("Main Video")}
-            </Header>
-            <input
-              type="file"
-              accept="video/*"
-              className="hidden"
-              ref={videoInputRef}
-              onChange={(e) => handleMainVideoChange(e)}
-            />
-            <div className="bg-[#F9F9FC] shadow rounded border border-dashed p-4 flex flex-col items-center">
-              <div className="relative">
-                {existingMainVideo ? (
-                  <video
-                    src={existingMainVideo}
-                    controls
-                    className="w-28 h-28 object-cover"
-                  />
-                ) : (
-                  <img
-                    src={video_icon}
-                    className="w-28 h-28 bg-gray-200 rounded-md mb-4"
-                  />
-                )}
-                <span
-                  className={`absolute ${
-                    existingMainVideo ? "block" : "hidden"
-                  } top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer`}
-                  onClick={(e) => handleRemoveMainVidoe("Url")}
-                >
-                  &times;
-                </span>
-              </div>
-              {existingMainVideo ? null : (
-                <p className="text-center  text-sm md:text-base">
-                  {t("Drag and drop video here, or click add video")}
-                </p>
-              )}
-              <span
-                className="bg-[#DEDEFA] font-bold mt-2 p-3 px-4 w-full text-center rounded-md cursor-pointer"
-                onClick={triggerVideoInput}
-              >
-                {t("Add Video")}
-              </span>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-md">
-            <Header
-              variant={{ size: "base", weight: "semiBold" }}
-              className="mb-2 text-[#203F58]"
-            >
-              {t("In Action (Studio/Events Videos)")}
-            </Header>
-            <input
-              type="file"
-              accept="video/*"
-              className="hidden"
-              id="Videos-input"
-              multiple
-              onChange={(e) => handleAdditionalVideoUpload(e)}
-            />
-            <div className="flex flex-col p-4 shadow rounded-md border border-dashed flex-wrap gap-2 items-center">
+        <div>
+          <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>
+            {t("In Action (Studio/Events Videos)")}
+          </label>
+          <div
+            className={`border-2 border-dashed rounded-xl p-4 flex flex-col items-center justify-center transition-all hover:border-blue-500 ${
+              dark ? "border-gray-600 bg-gray-700" : "border-gray-300 bg-gray-50"
+            } ${existingAdditionalVideo.length === 0 ? "min-h-[200px]" : ""}`}
+            onClick={() => document.querySelector("#Videos-input").click()}
+          >
+            <input type="file" accept="video/*" className="hidden" id="Videos-input" multiple onChange={(e) => handleAdditionalVideoUpload(e)} />
+            <div className="flex flex-wrap gap-4 w-full">
               {getValues("additionalVideo") &&
                 getValues("additionalVideo").length > 0 &&
                 getValues("additionalVideo")?.map((field, i: number) => (
-                  <div key={i} className="relative w-28 h-28">
-                    <video
-                      src={URL.createObjectURL(field)}
-                      controls
-                      className="w-full h-full object-cover"
-                    />
+                  <div key={i} className="relative w-32 h-32">
+                    <video src={URL.createObjectURL(field)} controls className="w-full h-full object-cover rounded-lg" />
                     <span
-                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer"
+                      className={`absolute top-1 right-1 p-1 rounded-full ${dark ? "bg-red-600" : "bg-red-500"} text-white`}
                       onClick={() => removeAdditionalVideo(i, "File")}
                     >
-                      &times;
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                        <path
+                          fillRule="evenodd"
+                          d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
                     </span>
                   </div>
                 ))}
               {existingAdditionalVideo &&
                 existingAdditionalVideo?.length > 0 &&
-                existingAdditionalVideo?.map(
-                  (
-                    field: string,
-                    i = getValues("additionalVideo")?.length + 1
-                  ) => (
-                    <div key={i} className="relative w-28 h-28">
-                      <video
-                        src={`${imageUrl}/videos/${field}`}
-                        controls
-                        className="w-full h-full object-cover"
-                      />
+                existingAdditionalVideo?.map((field: string, i: number) => {
+                  const index = i + (getValues("additionalVideo")?.length || 0);
+                  return (
+                    <div key={index} className="relative">
+                      <video src={`${imageUrl}/videos/${field}`} controls className="w-full h-full object-cover rounded-lg" />
                       <span
-                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer"
-                        onClick={() => removeAdditionalVideo(i, "Url")}
+                        className={`absolute top-1 right-1 p-1 rounded-full ${dark ? "bg-red-600" : "bg-red-500"} text-white`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeAdditionalVideo(i, "Url");
+                        }}
                       >
-                        &times;
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                          <path
+                            fillRule="evenodd"
+                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
                       </span>
                     </div>
-                  )
-                )}
+                  );
+                })}
 
-              {existingAdditionalVideo?.length === 0 &&
-              getValues("additionalVideo")?.length === 0 ? (
+              {existingAdditionalVideo?.length === 0 && getValues("additionalVideo")?.length === 0 && (
                 <div className="flex flex-col items-center">
-                  <img
-                    src={video_icon}
-                    className="w-28 h-28 bg-gray-200 rounded-md mb-4"
-                  />
-                  <p className="text-center  text-sm md:text-base">
-                    {t("Drag and drop video here, or click add video")}
-                  </p>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className={`h-12 w-12 mb-3 ${dark ? "text-gray-400" : "text-gray-500"}`}
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                    />
+                  </svg>
+                  <p className={`text-center ${dark ? "text-gray-400" : "text-gray-500"}`}>{t("Drag and drop video here, or click add video")}</p>
                 </div>
-              ) : null}
-
-              <span
-                className="bg-[#DEDEFA] font-bold mt-2 p-3 px-4 w-full text-center rounded-md cursor-pointer flex items-center justify-center"
-                onClick={() => document.querySelector("#Videos-input").click()}
-              >
-                {t("Add Video")}
-              </span>
+              )}
             </div>
           </div>
         </div>

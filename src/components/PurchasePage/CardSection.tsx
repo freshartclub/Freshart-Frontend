@@ -82,9 +82,7 @@ const CardSection = ({ data, type, darkMode }) => {
         const updatedList = { ...prev };
 
         if (isAlreadyFavorite) {
-          updatedList[listName] = updatedList[listName].filter(
-            (favId) => favId !== id
-          );
+          updatedList[listName] = updatedList[listName].filter((favId) => favId !== id);
         } else {
           updatedList[listName] = [...(updatedList[listName] || []), id];
         }
@@ -147,7 +145,7 @@ const CardSection = ({ data, type, darkMode }) => {
   }, []);
 
   return (
-    <div className="grid place-items-center grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 mx-auto">
+    <div className="grid grid-cols-1 min-[450px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-2 p-2">
       {data && data?.length > 0 ? (
         data.map((item, index: number) => {
           const isOffensive = item?.additionalInfo?.offensive === "Yes";
@@ -161,13 +159,11 @@ const CardSection = ({ data, type, darkMode }) => {
                   handleRedirectToDescription(item?._id);
                 }
               }}
-              className={`relative rounded-lg cursor-pointer p-3 border flex-shrink-0 ${
-                darkMode ? "bg-gray-700 border-gray-800" : "bg-white"
-              } hover:shadow-[5px_5px_5px_rgba(0,0,0,0.05)] transition-shadow duration-300 min-w-[250px] max-w-[300px] ${
-                type === "purchase" ? "h-[317px]" : "h-[295px]"
-              } group`}
+              className={`relative rounded-lg cursor-pointer p-2 border ${
+                darkMode ? "bg-gray-800 border-gray-700" : "bg-white"
+              } hover:shadow-md transition-shadow duration-200 w-full group`}
             >
-              <div className="relative overflow-hidden rounded-md h-[200px] w-full">
+              <div className="relative overflow-hidden rounded-md aspect-[4/3] w-full">
                 <img
                   src={`${lowImageUrl}/${item?.media}`}
                   alt="Artwork"
@@ -180,9 +176,7 @@ const CardSection = ({ data, type, darkMode }) => {
                   <div className="absolute inset-0 flex flex-col justify-center items-center gap-3 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <button
                       className={`${
-                        darkMode
-                          ? "bg-gray-700 text-gray-100 hover:bg-gray-600"
-                          : "bg-white text-gray-800 hover:bg-gray-100"
+                        darkMode ? "bg-gray-700 text-gray-100 hover:bg-gray-600" : "bg-white text-gray-800 hover:bg-gray-100"
                       } px-3 py-1 rounded-full text-xs font-medium transition-colors flex items-center gap-2`}
                       onClick={(e) => {
                         e.stopPropagation();
@@ -197,9 +191,7 @@ const CardSection = ({ data, type, darkMode }) => {
                         handleRedirectToDescription(item?._id);
                       }}
                       className={`${
-                        darkMode
-                          ? "bg-gray-700 text-gray-100 hover:bg-gray-600"
-                          : "bg-white text-gray-800 hover:bg-gray-100"
+                        darkMode ? "bg-gray-700 text-gray-100 hover:bg-gray-600" : "bg-white text-gray-800 hover:bg-gray-100"
                       } px-3 py-1 rounded-full text-xs font-medium transition-colors flex items-center gap-2`}
                     >
                       <MdOutlineOpenInNew /> View Details
@@ -217,68 +209,28 @@ const CardSection = ({ data, type, darkMode }) => {
                       darkMode ? "bg-gray-700" : "bg-white/90"
                     } px-2 py-1 rounded-full top-2 right-2 flex items-center gap-1 text-xs`}
                   >
-                    <p
-                      className={`text-xs font-medium ${
-                        darkMode ? "text-gray-200" : "text-gray-700"
-                      }`}
-                    >
-                      Hide
-                    </p>
-                    <FaToggleOn
-                      size={18}
-                      className={darkMode ? "text-gray-400" : "text-gray-600"}
-                    />
+                    <p className={`text-xs font-medium ${darkMode ? "text-gray-200" : "text-gray-700"}`}>Hide</p>
+                    <FaToggleOn size={18} className={darkMode ? "text-gray-400" : "text-gray-600"} />
                   </div>
                 ) : null}
               </div>
 
-              <div
-                className={`flex flex-col ${
-                  darkMode ? "bg-gray-700" : "bg-white"
-                } mt-3 relative`}
-              >
-                <p
-                  className={`text-xs ${
-                    darkMode ? "text-gray-400" : "text-gray-500"
-                  }`}
-                >
-                  {item?.discipline}
+              <div className={`flex flex-col ${darkMode ? "bg-gray-800" : "bg-white"} mt-1 relative text-sm`}>
+                <p className={`text-xs ${darkMode ? "text-gray-400" : "text-gray-500"}`}>{item?.discipline}</p>
+
+                <p className={`text-lg ${darkMode ? "text-gray-100" : "text-gray-900"} font-semibold line-clamp-2 leading-tight`}>
+                  {item?.artworkName?.length > 17 ? `${item?.artworkName?.slice(0, 17)}...` : item?.artworkName}
                 </p>
 
-                <p
-                  className={`text-lg ${
-                    darkMode ? "text-gray-100" : "text-gray-900"
-                  } font-semibold line-clamp-2 leading-tight`}
-                >
-                  {item?.artworkName?.length > 17
-                    ? `${item?.artworkName?.slice(0, 17)}...`
-                    : item?.artworkName}
-                </p>
-
-                <p
-                  className={`text-xs ${
-                    darkMode ? "text-gray-400" : "text-gray-600"
-                  } font-light italic`}
-                >
-                  by{" "}
-                  {name(item).length > 25
-                    ? `${name(item)?.slice(0, 25)}...`
-                    : name(item)}
+                <p className={`text-xs ${darkMode ? "text-gray-400" : "text-gray-600"} font-light italic`}>
+                  by {name(item).length > 25 ? `${name(item)?.slice(0, 25)}...` : name(item)}
                 </p>
                 {type === "purchase" ? (
-                  <p
-                    className={`mt-1 flex gap-1 items-center ${
-                      darkMode ? "text-gray-200" : "text-gray-800"
-                    } font-bold`}
-                  >
-                    {getSymbolFromCurrency(item?.pricing?.currency.slice(0, 3))}{" "}
-                    {item?.pricing?.basePrice}
+                  <p className={`mt-1 flex gap-1 items-center ${darkMode ? "text-gray-200" : "text-gray-800"} font-bold`}>
+                    {getSymbolFromCurrency(item?.pricing?.currency.slice(0, 3))} {item?.pricing?.basePrice}
                     {item?.pricing?.dpersentage ? (
                       <span>
-                        |{" "}
-                        <span className="text-red-500">
-                          {item?.pricing?.dpersentage}%
-                        </span>
+                        | <span className="text-[#EE1D52]">{item?.pricing?.dpersentage}%</span>
                       </span>
                     ) : null}
                   </p>
@@ -290,18 +242,12 @@ const CardSection = ({ data, type, darkMode }) => {
                       e.stopPropagation();
                       handleFavoriteClick(item._id);
                     }}
-                    className={`p-2 rounded-full ${
-                      darkMode ? "hover:bg-gray-700" : "hover:bg-gray-100"
-                    }`}
+                    className={`p-2 rounded-full ${darkMode ? "hover:bg-gray-700" : "hover:bg-gray-100"}`}
                   >
                     <IoHeartOutline
                       size="1.2rem"
                       className={
-                        Object.values(favoriteLists).flat().includes(item?._id)
-                          ? "text-red-500"
-                          : darkMode
-                          ? "text-gray-400"
-                          : "text-gray-500"
+                        Object.values(favoriteLists).flat().includes(item?._id) ? "text-red-500" : darkMode ? "text-gray-400" : "text-gray-500"
                       }
                     />
                   </button>
@@ -309,9 +255,7 @@ const CardSection = ({ data, type, darkMode }) => {
                   {isFavorite === item._id && (
                     <div
                       ref={favoriteListRef}
-                      className={`absolute bottom-10 right-0 ${
-                        darkMode ? "bg-gray-800" : "bg-white"
-                      } shadow-lg rounded-md p-3 w-56 z-10`}
+                      className={`absolute bottom-10 right-0 ${darkMode ? "bg-gray-700" : "bg-white"} shadow-lg rounded-md p-3 w-56 z-10`}
                     >
                       {Object.keys(favoriteLists).map((listName) => (
                         <div
@@ -324,9 +268,7 @@ const CardSection = ({ data, type, darkMode }) => {
                             addToFavoriteList(item._id, listName);
                           }}
                         >
-                          <span className={darkMode ? "text-gray-200" : ""}>
-                            {listName}
-                          </span>
+                          <span className={darkMode ? "text-gray-200" : ""}>{listName}</span>
                           <input
                             type="checkbox"
                             checked={favoriteLists[listName].includes(item._id)}
@@ -338,9 +280,7 @@ const CardSection = ({ data, type, darkMode }) => {
                       <div className="border-t mt-2 pt-2">
                         <button
                           className={`text-xs flex items-center gap-1 rounded text-white py-1 justify-center ${
-                            darkMode
-                              ? "bg-gray-600 hover:bg-gray-500"
-                              : "bg-gray-900 hover:bg-gray-700"
+                            darkMode ? "bg-gray-600 hover:bg-gray-500" : "bg-gray-900 hover:bg-gray-700"
                           } w-full font-medium transition-colors`}
                           onClick={(e) => {
                             e.stopPropagation();
@@ -360,9 +300,7 @@ const CardSection = ({ data, type, darkMode }) => {
                             onClick={(e) => e.stopPropagation()}
                             placeholder="New List Name"
                             className={`w-full text-sm p-1 border rounded mb-2 ${
-                              darkMode
-                                ? "bg-gray-600 border-gray-500 text-white placeholder-gray-400"
-                                : ""
+                              darkMode ? "bg-gray-600 border-gray-500 text-white placeholder-gray-400" : ""
                             }`}
                           />
                           <button
@@ -371,9 +309,7 @@ const CardSection = ({ data, type, darkMode }) => {
                               handleAddNewList(item._id);
                             }}
                             className={`w-full ${
-                              darkMode
-                                ? "bg-gray-600 hover:bg-gray-500"
-                                : "bg-gray-800 hover:bg-gray-900"
+                              darkMode ? "bg-gray-600 hover:bg-gray-500" : "bg-gray-800 hover:bg-gray-900"
                             } text-white text-xs py-1 rounded-md transition-colors`}
                           >
                             {newLoading ? "Adding..." : "Add List"}
@@ -390,9 +326,7 @@ const CardSection = ({ data, type, darkMode }) => {
       ) : (
         <div
           className={`h-[5rem] font-semibold col-span-4 rounded w-full border-2 ${
-            darkMode
-              ? "border-gray-600 bg-gray-800 text-gray-300"
-              : "border-gray-300 bg-gray-50 text-gray-600"
+            darkMode ? "border-gray-600 bg-gray-800 text-gray-300" : "border-gray-300 bg-gray-50 text-gray-600"
           } flex items-center justify-center`}
         >
           No Artworks Available

@@ -4,6 +4,7 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 import { IoHeartOutline } from "react-icons/io5";
 import { MdOutlineOpenInNew } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import { useAppSelector } from "../../store/typedReduxHooks";
 import Loader from "../ui/Loader";
 import { lowImageUrl } from "../utils/baseUrls";
 import postRecentArtworkMutation from "./http/postRecentView";
@@ -14,6 +15,7 @@ import useClickOutside from "../utils/useClickOutside";
 import getSymbolFromCurrency from "currency-symbol-map";
 
 const ArtCard = ({ data, title, viewType, loading }) => {
+  const dark = useAppSelector((state) => state.theme.mode);
   const [viewedImages, setViewedImages] = useState({});
   const [favoriteLists, setFavoriteLists] = useState({});
   const favoriteListRef = useRef(null);
@@ -77,9 +79,7 @@ const ArtCard = ({ data, title, viewType, loading }) => {
         const updatedList = { ...prev };
 
         if (isAlreadyFavorite) {
-          updatedList[listName] = updatedList[listName].filter(
-            (favId) => favId !== id
-          );
+          updatedList[listName] = updatedList[listName].filter((favId) => favId !== id);
         } else {
           updatedList[listName] = [...(updatedList[listName] || []), id];
         }
@@ -148,9 +148,7 @@ const ArtCard = ({ data, title, viewType, loading }) => {
       const container = scrollContainerRef.current;
       if (!container) return;
       setIsStart(container.scrollLeft === 0);
-      setIsEnd(
-        container.scrollLeft + container.clientWidth >= container.scrollWidth
-      );
+      setIsEnd(container.scrollLeft + container.clientWidth >= container.scrollWidth);
     };
 
     const container = scrollContainerRef.current;
@@ -186,7 +184,9 @@ const ArtCard = ({ data, title, viewType, loading }) => {
           }
           handleRedirectToDescription(item?._id);
         }}
-        className="relative cursor-pointer p-3 border flex-shrink-0 bg-white hover:shadow-[5px_5px_5px_rgba(0,0,0,0.05)] transition-shadow duration-300 min-w-[230px] max-w-[300px] h-[320px] group"
+        className={`relative cursor-pointer p-3 border flex-shrink-0 ${
+          dark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
+        } hover:shadow-[5px_5px_5px_rgba(0,0,0,0.05)] transition-shadow duration-300 min-w-[230px] max-w-[300px] h-[320px] group`}
       >
         <div className="relative overflow-hidden rounded-md h-[200px] w-full">
           <img
@@ -200,14 +200,18 @@ const ArtCard = ({ data, title, viewType, loading }) => {
           {isOffensive && !isViewed ? (
             <div className="absolute inset-0 flex flex-col justify-center items-center gap-3 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               <button
-                className="bg-white text-gray-800 px-3 py-1 rounded-full text-xs font-medium hover:bg-gray-100 transition-colors flex items-center gap-2"
+                className={`${
+                  dark ? "bg-gray-700 text-gray-100 hover:bg-gray-600" : "bg-white text-gray-800 hover:bg-gray-100"
+                } px-3 py-1 rounded-full text-xs font-medium transition-colors flex items-center gap-2`}
                 onClick={() => handleViewClick(item?._id)}
               >
                 <FaEye /> View Image
               </button>
               <button
                 onClick={() => handleRedirectToDescription(item?._id)}
-                className="bg-white text-gray-800 px-3 py-1 rounded-full text-xs font-medium hover:bg-gray-100 transition-colors flex items-center gap-2"
+                className={`${
+                  dark ? "bg-gray-700 text-gray-100 hover:bg-gray-600" : "bg-white text-gray-800 hover:bg-gray-100"
+                } px-3 py-1 rounded-full text-xs font-medium transition-colors flex items-center gap-2`}
               >
                 <MdOutlineOpenInNew /> View Details
               </button>
@@ -220,38 +224,29 @@ const ArtCard = ({ data, title, viewType, loading }) => {
                 e.stopPropagation();
                 handleHideClick(item?._id);
               }}
-              className="absolute bg-white/90 px-2 py-1 rounded-full top-2 right-2 flex items-center gap-1 text-xs"
+              className={`absolute ${dark ? "bg-gray-700/90" : "bg-white/90"} px-2 py-1 rounded-full top-2 right-2 flex items-center gap-1 text-xs`}
             >
               <p>Offensive</p>
-              <FaToggleOn className="text-gray-600" />
+              <FaToggleOn className={`${dark ? "text-gray-400" : "text-gray-600"}`} />
             </div>
           ) : null}
         </div>
 
         <div className="mt-3">
-          <h1 className="font-semibold text-md text-gray-900 truncate">
-            {item?.artworkName?.length > 17
-              ? `${item?.artworkName?.slice(0, 17)}...`
-              : item?.artworkName}
+          <h1 className={`font-semibold text-md ${dark ? "text-gray-100" : "text-gray-900"} truncate`}>
+            {item?.artworkName?.length > 17 ? `${item?.artworkName?.slice(0, 17)}...` : item?.artworkName}
           </h1>
-          <p className="text-xs text-gray-600 mt-1 font-light italic">
-            {item?.owner?.artistName.length > 25
-              ? `${item?.owner?.artistName?.slice(0, 25)}...`
-              : item?.owner?.artistName}{" "}
+          <p className={`text-xs ${dark ? "text-gray-300" : "text-gray-600"} mt-1 font-light italic`}>
+            {item?.owner?.artistName.length > 25 ? `${item?.owner?.artistName?.slice(0, 25)}...` : item?.owner?.artistName}{" "}
             {item?.provideArtistName
-              ? `by ${
-                  item?.provideArtistName?.length > 25
-                    ? `${item?.provideArtistName?.slice(0, 25)}...`
-                    : item?.provideArtistName
-                } `
+              ? `by ${item?.provideArtistName?.length > 25 ? `${item?.provideArtistName?.slice(0, 25)}...` : item?.provideArtistName} `
               : null}
           </p>
-          <p className="text-xs text-gray-500 mt-1">
-            {item?.discipline?.artworkDiscipline} •{" "}
-            {item?.additionalInfo?.artworkTechnic}
+          <p className={`text-xs ${dark ? "text-gray-400" : "text-gray-500"} mt-1`}>
+            {item?.discipline?.artworkDiscipline} • {item?.additionalInfo?.artworkTechnic}
           </p>
           {item?.activeTab == "purchase" ? (
-            <p className="mt-1 flex gap-1 items-center text-gray-800 font-bold">
+            <p className={`mt-1 flex gap-1 items-center ${dark ? "text-gray-100" : "text-gray-800"} font-bold`}>
               {getSymbolFromCurrency(item?.currency.slice(0, 3))} {item?.price}
               {item?.discount ? (
                 <span>
@@ -266,16 +261,12 @@ const ArtCard = ({ data, title, viewType, loading }) => {
                 e.stopPropagation();
                 handleFavoriteClick(item._id);
               }}
-              className="p-1 rounded-full hover:bg-gray-100 transition-colors"
+              className={`p-1 rounded-full ${dark ? "hover:bg-gray-700" : "hover:bg-gray-100"} transition-colors`}
               aria-label="Add to favorites"
             >
               <IoHeartOutline
                 size="1.1rem"
-                className={
-                  Object.values(favoriteLists).flat().includes(item?._id)
-                    ? "text-rose-600"
-                    : "text-gray-400"
-                }
+                className={Object.values(favoriteLists).flat().includes(item?._id) ? "text-rose-600" : dark ? "text-gray-400" : "text-gray-400"}
               />
             </button>
 
@@ -283,26 +274,27 @@ const ArtCard = ({ data, title, viewType, loading }) => {
               <div
                 ref={favoriteListRef}
                 onClick={(e) => e.stopPropagation()}
-                className="absolute bottom-0 right-0 bg-white shadow-lg rounded-md p-3 w-56 z-10 border border-zinc-300"
+                className={`absolute bottom-0 right-0 ${
+                  dark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
+                } shadow-lg rounded-md p-3 w-56 z-10 border`}
               >
                 {Object.keys(favoriteLists).map((listName) => (
                   <div
                     key={listName}
-                    className="flex items-center justify-between px-2 py-1 hover:bg-gray-50 cursor-pointer text-xs text-gray-700 transition-colors"
+                    className={`flex items-center justify-between px-2 py-1 ${
+                      dark ? "hover:bg-gray-700" : "hover:bg-gray-50"
+                    } cursor-pointer text-xs ${dark ? "text-gray-300" : "text-gray-700"} transition-colors`}
                     onClick={() => addToFavoriteList(item._id, listName)}
                   >
                     <span>{listName}</span>
-                    <input
-                      type="checkbox"
-                      checked={favoriteLists[listName].includes(item._id)}
-                      readOnly
-                      className="h-4 w-4 text-rose-600"
-                    />
+                    <input type="checkbox" checked={favoriteLists[listName].includes(item._id)} readOnly className="h-4 w-4 text-rose-600" />
                   </div>
                 ))}
-                <div className="border-t mt-2 pt-2">
+                <div className={`${dark ? "border-gray-700" : "border-gray-200"} border-t mt-2 pt-2`}>
                   <button
-                    className="text-xs flex items-center gap-1 rounded text-white py-1 justify-center bg-gray-900 w-full font-medium hover:bg-gray-700 transition-colors"
+                    className={`text-xs flex items-center gap-1 rounded ${
+                      dark ? "text-white bg-gray-700 hover:bg-gray-600" : "text-white bg-gray-800 hover:bg-gray-900"
+                    } py-1 justify-center w-full font-medium transition-colors`}
                     onClick={() => setShowManageLists((prev) => !prev)}
                   >
                     <IoIosAdd size={17} /> New List
@@ -310,17 +302,21 @@ const ArtCard = ({ data, title, viewType, loading }) => {
                 </div>
 
                 {showManageLists && (
-                  <div className="mt-2 border-t pt-2">
+                  <div className={`${dark ? "border-gray-700" : "border-gray-200"} border-t mt-2 pt-2`}>
                     <input
                       type="text"
                       value={newListName}
                       onChange={(e) => setNewListName(e.target.value)}
                       placeholder="New List Name"
-                      className="w-full text-xs p-2 border rounded-md mb-2 focus:outline-none focus:ring-1 focus:ring-gray-300"
+                      className={`w-full text-xs p-2 ${
+                        dark ? "bg-gray-700 border-gray-600 text-gray-100" : "bg-white border-gray-200 text-gray-800"
+                      } border rounded-md mb-2 focus:outline-none focus:ring-1 ${dark ? "focus:ring-gray-500" : "focus:ring-gray-300"}`}
                     />
                     <button
                       onClick={() => handleAddNewList(item._id)}
-                      className="w-full bg-gray-800 text-white text-xs py-1 rounded-md hover:bg-gray-900 transition-colors"
+                      className={`w-full ${
+                        dark ? "bg-gray-700 hover:bg-gray-600" : "bg-gray-800 hover:bg-gray-900"
+                      } text-white text-xs py-1 rounded-md transition-colors`}
                     >
                       {newLoading ? "Adding..." : "Add List"}
                     </button>
@@ -335,10 +331,8 @@ const ArtCard = ({ data, title, viewType, loading }) => {
   };
 
   return (
-    <div className="mx-auto px-4 md:px-8 lg:px-12 mt-12">
-      <h1 className="text-xl font-semibold text-gray-900 mb-6 tracking-tight">
-        {title}
-      </h1>
+    <div className={`mx-auto px-4 md:px-8 lg:px-12 mt-12 ${dark ? "bg-gray-900" : "bg-white"}`}>
+      <h1 className={`text-xl font-semibold ${dark ? "text-gray-100" : "text-gray-900"} mb-6 tracking-tight`}>{title}</h1>
       {loading ? (
         <Loader />
       ) : data && data?.length > 0 ? (
@@ -346,7 +340,7 @@ const ArtCard = ({ data, title, viewType, loading }) => {
           <div className="relative">
             <button
               className={`absolute left-0 top-1/2 transform -translate-y-1/2 p-2 rounded-full shadow-lg z-10 ${
-                isStart ? "hidden" : "bg-gray-800 hover:bg-gray-900 text-white"
+                isStart ? "hidden" : `${dark ? "bg-gray-700 hover:bg-gray-600" : "bg-gray-800 hover:bg-gray-900"} text-white`
               }`}
               onClick={() => handleScroll("left")}
               disabled={isStart}
@@ -354,16 +348,13 @@ const ArtCard = ({ data, title, viewType, loading }) => {
               <FaChevronLeft size={20} />
             </button>
 
-            <div
-              ref={scrollContainerRef}
-              className="flex overflow-x-scroll no-scrollbar space-x-4 pb-2 scrollbar"
-            >
+            <div ref={scrollContainerRef} className="flex overflow-x-scroll no-scrollbar space-x-4 pb-2 scrollbar">
               {data.map((item) => renderCard(item))}
             </div>
 
             <button
               className={`absolute right-0 top-1/2 transform -translate-y-1/2 p-2 rounded-full shadow-lg z-10 ${
-                isEnd ? "hidden" : "bg-gray-800 hover:bg-gray-900 text-white"
+                isEnd ? "hidden" : `${dark ? "bg-gray-700 hover:bg-gray-600" : "bg-gray-800 hover:bg-gray-900"} text-white`
               }`}
               onClick={() => handleScroll("right")}
               disabled={isEnd}
@@ -373,7 +364,11 @@ const ArtCard = ({ data, title, viewType, loading }) => {
           </div>
         </>
       ) : (
-        <div className="h-[5rem] font-semibold rounded w-full border-2 border-gray-300 flex items-center justify-center text-gray-600 bg-gray-50">
+        <div
+          className={`h-[5rem] font-semibold rounded w-full border-2 ${
+            dark ? "border-gray-700 bg-gray-800 text-gray-300" : "border-gray-300 bg-gray-50 text-gray-600"
+          } flex items-center justify-center`}
+        >
           No Artworks Available
         </div>
       )}

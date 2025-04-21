@@ -1,7 +1,9 @@
+import { useAppSelector } from "../../store/typedReduxHooks";
 import CommonCardData from "./CommonCardData";
 import { useGetOtherArtworks } from "./http/useGetOtherArtworks";
 
 const SelectedSection = ({ data }) => {
+  const dark = useAppSelector((state) => state.theme.mode);
   const subscription = "Yes";
 
   const { data: highlightData, isLoading } = useGetOtherArtworks({
@@ -13,17 +15,9 @@ const SelectedSection = ({ data }) => {
   });
 
   return (
-    <div className="mx-auto">
-      <CommonCardData
-        heading="From this artist"
-        highlightData={data.artworks}
-      />
-      {/* {/* <CommonCardData heading="Selected for you" highlightData={data} /> */}
-      <CommonCardData
-        heading="Other Artworks you may like"
-        highlightData={highlightData}
-        isLoading={isLoading}
-      />
+    <div className={`mx-auto ${dark ? "bg-gray-900" : "bg-white"}`}>
+      <CommonCardData heading="From this artist" highlightData={data.artworks} />
+      <CommonCardData heading="Other Artworks you may like" highlightData={highlightData} isLoading={isLoading} />
     </div>
   );
 };

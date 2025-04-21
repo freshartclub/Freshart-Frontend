@@ -18,4 +18,8 @@ export const ORDERS_ENDPOINTS = {
   checkRef: `${ARTIST_ORDER_URl}/check-user-ref`,
   createPayer: `${ARTIST_ORDER_URl}/create-payer`,
   getPlans: `${ARTIST_ORDER_URl}/user-plans`,
+  setActive: `${ARTIST_ORDER_URl}/active`,
+  deleteCard: `${ARTIST_ORDER_URl}/delete`,
+  addCard: `${ARTIST_ORDER_URl}/add-new`,
+  cancelSchedule:`${ARTIST_ORDER_URl}/cancel`
 };

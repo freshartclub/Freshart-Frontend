@@ -1,28 +1,19 @@
 import { useEffect, useRef, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
-import { BsBackspace } from "react-icons/bs";
+import { IoCloseSharp } from "react-icons/io5";
 import { TiPlus } from "react-icons/ti";
 import QRCode from "react-qr-code";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Select from "react-select";
-import image_icon from "../../../assets/image_icon.png";
-import logoIcon from "../../../assets/loginlogo.png";
-import video_icon from "../../../assets/video_icon.png";
-import Button from "../../ui/Button";
-import Header from "../../ui/Header";
 import Loader from "../../ui/Loader";
-import P from "../../ui/P";
-import {
-  artwork_orientation,
-  Framed_dimension,
-  package_dimension,
-  shipping_inventry,
-} from "../../utils/mockData";
+import { artwork_orientation, Framed_dimension, package_dimension } from "../../utils/mockData";
 import ArtworkRight from "./ArtworkRight";
 import { useGetArtWorkById } from "./http/useGetArtworkById";
 import { useGetTechnic } from "./http/useGetTechnic";
 import { useGetTheme } from "./http/useGetTheme";
 import usePostArtWorkMutation from "./http/usePostArtwork";
+import logoIcon from "/logofarc.svg";
+import logoWIcon from "/logofarcwhite.svg";
 
 import html2canvas from "html2canvas";
 import Calendar from "react-calendar";
@@ -31,6 +22,7 @@ import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { MdDelete } from "react-icons/md";
+import { useAppSelector } from "../../../store/typedReduxHooks";
 import { baseUrl, imageUrl } from "../../utils/baseUrls";
 import { RenderAllPicklists } from "../../utils/RenderAllPicklist";
 import { useGetArtistDetails } from "../ArtistEditProfile/http/useGetDetails";
@@ -40,7 +32,6 @@ import { useGetMediaSupport } from "./http/useGetMediaSupport";
 import { useGetSeries } from "./http/useGetSeries";
 import usePostModifyArtworkMutation from "./http/usePostModifyArtwork";
 import { SeriesPop } from "./SeriesPop";
-import { useAppSelector } from "../../../store/typedReduxHooks";
 
 const AddArtwork = () => {
   const [copySuccess, setCopySuccess] = useState("");
@@ -49,6 +40,7 @@ const AddArtwork = () => {
   const [catalogPrice, setCatalogPrice] = useState(null);
 
   const user = useAppSelector((state) => state.user.user);
+  const dark = useAppSelector((state) => state.theme.mode);
 
   const { t } = useTranslation();
 
@@ -71,13 +63,11 @@ const AddArtwork = () => {
     mode: "onChange",
   });
 
-  const CustomYearPicker = ({
-    selectedYear,
-    toggleCalendar,
-    showCalendar,
-    field,
-  }) => {
-    const handleYearSelect = (year) => {
+  const CustomYearPicker = ({ selectedYear, toggleCalendar, showCalendar, field }) => {
+    const dark = useAppSelector((state) => state.theme.mode);
+    const { t } = useTranslation();
+
+    const handleYearSelect = (year: number | string) => {
       setValue("artworkCreationYear", year);
       toggleCalendar();
     };
@@ -86,19 +76,20 @@ const AddArtwork = () => {
       <div className="relative w-full">
         <div
           onClick={toggleCalendar}
-          className="bg-[#F9F9FC] mt-1 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5 text-left cursor-pointer"
+          className={`mt-1 border rounded-lg w-full p-3 text-left cursor-pointer ${
+            dark ? "bg-gray-700 border-gray-600 text-gray-400" : "bg-[#F9F9FC] border-gray-300 text-gray-900"
+          }`}
         >
           {selectedYear ? `${selectedYear}` : t("Select Year")}
         </div>
 
         {showCalendar && (
-          <div className="absolute z-10 mt-1 bg-white shadow-lg rounded-lg px-10 py-2 ">
+          <div className={`absolute z-10 mt-1 shadow-lg rounded-lg px-10 py-2 ${dark ? "bg-gray-600" : "bg-white"}`}>
             <Calendar
               view="decade"
               defaultView="decade"
               onClickYear={(date) => {
                 const year = date.getFullYear();
-
                 handleYearSelect(year);
               }}
               showNeighboringMonth={false}
@@ -146,7 +137,6 @@ const AddArtwork = () => {
   const query = searchParams.get("view");
 
   const { data, isLoading, refetch: refetchData } = useGetArtWorkById(id);
-  console.log("data", data);
   const { data: userData, isLoading: userIsLoading } = useGetArtistDetails();
 
   const userID = userData?.data?.artist?._id;
@@ -156,22 +146,14 @@ const AddArtwork = () => {
   const { data: themeData, isLoading: themeLoading } = useGetTheme();
   const { mutateAsync: seriesDelete } = useDeleteSeriesMutation();
 
-  const { data: getMediaSupport, isLoading: getMediaSupportLoding } =
-    useGetMediaSupport();
+  const { data: getMediaSupport, isLoading: getMediaSupportLoding } = useGetMediaSupport();
 
-  const {
-    data: seriesData,
-    isLoading: seriesLoading,
-    refetch,
-  } = useGetSeries(userID);
+  const { data: seriesData, isLoading: seriesLoading, refetch } = useGetSeries(userID);
 
   const { mutate, isPending } = usePostArtWorkMutation();
-  const { mutate: modifyMuatate, isPending: modifyIsPending } =
-    usePostModifyArtworkMutation();
+  const { mutate: modifyMuatate, isPending: modifyIsPending } = usePostModifyArtworkMutation();
 
-  const vatAmount = data?.data?.pricing?.vatAmount
-    ? data?.data?.pricing?.vatAmount
-    : userData?.data?.artist?.invoice?.vatAmount;
+  const vatAmount = data?.data?.pricing?.vatAmount ? data?.data?.pricing?.vatAmount : userData?.data?.artist?.invoice?.vatAmount;
 
   useEffect(() => {
     refetch();
@@ -179,50 +161,22 @@ const AddArtwork = () => {
   }, [id]);
 
   useEffect(() => {
-    if (
-      isLoading ||
-      userIsLoading ||
-      technicLoading ||
-      themeLoading ||
-      seriesLoading ||
-      getMediaSupportLoding
-    ) {
+    if (isLoading || userIsLoading || technicLoading || themeLoading || seriesLoading || getMediaSupportLoding) {
       setLoading(true);
     } else {
       setLoading(false);
     }
-  }, [
-    isLoading,
-    userIsLoading,
-    technicLoading,
-    themeLoading,
-    seriesLoading,
-    getMediaSupportLoding,
-  ]);
+  }, [isLoading, userIsLoading, technicLoading, themeLoading, seriesLoading, getMediaSupportLoding]);
 
-  const getOutDiscipline = seriesData?.discipline?.map(
-    (item) => item?.discipline
-  );
+  const getOutDiscipline = seriesData?.discipline?.map((item) => item?.discipline);
 
   const newTechnic = technicData?.data?.filter(
-    (item) =>
-      item.discipline &&
-      item.discipline.some((newItem) =>
-        newItem.disciplineName.includes(artDicipline)
-      )
+    (item) => item.discipline && item.discipline.some((newItem) => newItem.disciplineName.includes(artDicipline))
   );
-
   const newTheme = themeData?.data?.filter(
-    (item) =>
-      item.discipline &&
-      item.discipline.some((newItem) =>
-        newItem.disciplineName.includes(artDicipline)
-      )
+    (item) => item.discipline && item.discipline.some((newItem) => newItem.disciplineName.includes(artDicipline))
   );
-
-  const newArtworkStyle =
-    seriesData?.discipline?.find((item) => item?.discipline === artDicipline)
-      ?.style || [];
+  const newArtworkStyle = seriesData?.discipline?.find((item) => item?.discipline === artDicipline)?.style || [];
 
   const name = (val) => {
     let fullName = val?.artistName || "";
@@ -236,232 +190,73 @@ const AddArtwork = () => {
 
   useEffect(() => {
     if (id) {
-      setIsArtProviderField(
-        ispreviewed
-          ? data?.data?.reviewDetails?.isArtProvider
-          : data?.data?.isArtProvider || ""
-      );
-
-      setArtDicipline(
-        ispreviewed
-          ? data?.data?.reviewDetails?.discipline?.artworkDiscipline
-          : data?.data?.discipline?.artworkDiscipline || ""
-      );
-
-      setActiveTab(
-        ispreviewed
-          ? data?.data?.reviewDetails?.commercialization?.activeTab
-          : data?.data?.commercialization?.activeTab || ""
-      );
-
-      setInternalTags(
-        ispreviewed
-          ? data?.data?.reviewDetails?.tags?.intTags
-          : data?.data?.tags?.intTags || []
-      );
-
-      setExternalTags(
-        ispreviewed
-          ? data?.data?.reviewDetails?.tags?.extTags
-          : data?.data?.tags?.extTags || []
-      );
-
-      setCatalogPrice(
-        ispreviewed
-          ? data?.data?.reviewDetails?.pricing?.artistFees
-          : data?.data?.pricing?.artistFees || 0
-      );
-
-      setValue(
-        "currency",
-        ispreviewed
-          ? data?.data?.reviewDetails?.pricing?.currency
-          : data?.data?.pricing?.currency || "EUR"
-      );
-
+      setIsArtProviderField(ispreviewed ? data?.data?.reviewDetails?.isArtProvider : data?.data?.isArtProvider || "");
+      setArtDicipline(ispreviewed ? data?.data?.reviewDetails?.discipline?.artworkDiscipline : data?.data?.discipline?.artworkDiscipline || "");
+      setActiveTab(ispreviewed ? data?.data?.reviewDetails?.commercialization?.activeTab : data?.data?.commercialization?.activeTab || "");
+      setInternalTags(ispreviewed ? data?.data?.reviewDetails?.tags?.intTags : data?.data?.tags?.intTags || []);
+      setExternalTags(ispreviewed ? data?.data?.reviewDetails?.tags?.extTags : data?.data?.tags?.extTags || []);
+      setCatalogPrice(ispreviewed ? data?.data?.reviewDetails?.pricing?.artistFees : data?.data?.pricing?.artistFees || 0);
+      setValue("currency", ispreviewed ? data?.data?.reviewDetails?.pricing?.currency : data?.data?.pricing?.currency || "EUR");
       setValue(
         "purchaseCatalog",
-        ispreviewed
-          ? data?.data?.reviewDetails?.commercialization?.purchaseCatalog
-          : data?.data?.commercialization?.purchaseCatalog || ""
+        ispreviewed ? data?.data?.reviewDetails?.commercialization?.purchaseCatalog : data?.data?.commercialization?.purchaseCatalog || ""
       );
-
-      setValue(
-        "availableTo",
-        ispreviewed
-          ? data?.data?.reviewDetails?.restriction?.availableTo
-          : data?.data?.restriction?.availableTo || ""
-      );
-
-      setValue(
-        "collectionList",
-        ispreviewed
-          ? data?.data?.reviewDetails?.collectionList
-          : data?.data?.collectionList || ""
-      );
-
+      setValue("availableTo", ispreviewed ? data?.data?.reviewDetails?.restriction?.availableTo : data?.data?.restriction?.availableTo || "");
+      setValue("collectionList", ispreviewed ? data?.data?.reviewDetails?.collectionList : data?.data?.collectionList || "");
       setValue(
         "discountAcceptation",
-        ispreviewed
-          ? data?.data?.reviewDetails?.restriction?.discountAcceptation
-          : data?.data?.restriction?.discountAcceptation || ""
+        ispreviewed ? data?.data?.reviewDetails?.restriction?.discountAcceptation : data?.data?.restriction?.discountAcceptation || ""
       );
-
-      setValue(
-        "provideArtistName",
-        ispreviewed
-          ? data?.data?.reviewDetails?.provideArtistName
-          : data?.data?.provideArtistName || ""
-      );
-
-      setValue(
-        "artworkSeries",
-        ispreviewed
-          ? data?.data?.reviewDetails?.artworkSeries
-          : data?.data?.artworkSeries || ""
-      );
-
-      setValue(
-        "artworkCreationYear",
-        ispreviewed
-          ? data?.data?.reviewDetails?.artworkCreationYear
-          : data?.data?.artworkCreationYear || ""
-      );
-
-      setValue(
-        "artworkName",
-        ispreviewed
-          ? data?.data?.reviewDetails?.artworkName
-          : data?.data?.artworkName || ""
-      );
-
-      setValue(
-        "productDescription",
-        ispreviewed
-          ? data?.data?.reviewDetails?.productDescription
-          : data?.data?.productDescription || ""
-      );
-
+      setValue("provideArtistName", ispreviewed ? data?.data?.reviewDetails?.provideArtistName : data?.data?.provideArtistName || "");
+      setValue("artworkSeries", ispreviewed ? data?.data?.reviewDetails?.artworkSeries : data?.data?.artworkSeries || "");
+      setValue("artworkCreationYear", ispreviewed ? data?.data?.reviewDetails?.artworkCreationYear : data?.data?.artworkCreationYear || "");
+      setValue("artworkName", ispreviewed ? data?.data?.reviewDetails?.artworkName : data?.data?.artworkName || "");
+      setValue("productDescription", ispreviewed ? data?.data?.reviewDetails?.productDescription : data?.data?.productDescription || "");
       setValue(
         "artworkTechnic",
-        ispreviewed
-          ? data?.data?.reviewDetails?.additionalInfo?.artworkTechnic
-          : data?.data?.additionalInfo?.artworkTechnic || ""
+        ispreviewed ? data?.data?.reviewDetails?.additionalInfo?.artworkTechnic : data?.data?.additionalInfo?.artworkTechnic || ""
       );
-
       setValue(
         "artworkTheme",
-        ispreviewed
-          ? data?.data?.reviewDetails?.additionalInfo?.artworkTheme
-          : data?.data?.additionalInfo?.artworkTheme || ""
+        ispreviewed ? data?.data?.reviewDetails?.additionalInfo?.artworkTheme : data?.data?.additionalInfo?.artworkTheme || ""
       );
-
       setValue(
         "artworkOrientation",
-        ispreviewed
-          ? data?.data?.reviewDetails?.additionalInfo?.artworkOrientation
-          : data?.data?.additionalInfo?.artworkOrientation || ""
+        ispreviewed ? data?.data?.reviewDetails?.additionalInfo?.artworkOrientation : data?.data?.additionalInfo?.artworkOrientation || ""
       );
-
-      setValue(
-        "material",
-        ispreviewed
-          ? data?.data?.reviewDetails?.additionalInfo?.material
-          : data?.data?.additionalInfo?.material || ""
-      );
-
-      setValue(
-        "weight",
-        ispreviewed
-          ? String(data?.data?.reviewDetails?.additionalInfo?.weight)
-          : String(data?.data?.additionalInfo?.weight) || ""
-      );
-
-      setValue(
-        "length",
-        ispreviewed
-          ? String(data?.data?.reviewDetails?.additionalInfo?.length)
-          : String(data?.data?.additionalInfo?.length) || ""
-      );
-
-      setValue(
-        "height",
-        ispreviewed
-          ? String(data?.data?.reviewDetails?.additionalInfo?.height)
-          : String(data?.data?.additionalInfo?.height) || ""
-      );
-
-      setValue(
-        "width",
-        ispreviewed
-          ? String(data?.data?.reviewDetails?.additionalInfo?.width)
-          : String(data?.data?.additionalInfo?.width) || ""
-      );
-
+      setValue("material", ispreviewed ? data?.data?.reviewDetails?.additionalInfo?.material : data?.data?.additionalInfo?.material || "");
+      setValue("weight", ispreviewed ? String(data?.data?.reviewDetails?.additionalInfo?.weight) : String(data?.data?.additionalInfo?.weight) || "");
+      setValue("length", ispreviewed ? String(data?.data?.reviewDetails?.additionalInfo?.length) : String(data?.data?.additionalInfo?.length) || "");
+      setValue("height", ispreviewed ? String(data?.data?.reviewDetails?.additionalInfo?.height) : String(data?.data?.additionalInfo?.height) || "");
+      setValue("width", ispreviewed ? String(data?.data?.reviewDetails?.additionalInfo?.width) : String(data?.data?.additionalInfo?.width) || "");
       setValue(
         "hangingAvailable",
-        ispreviewed
-          ? data?.data?.reviewDetails?.additionalInfo?.hangingAvailable
-          : data?.data?.additionalInfo?.hangingAvailable || ""
+        ispreviewed ? data?.data?.reviewDetails?.additionalInfo?.hangingAvailable : data?.data?.additionalInfo?.hangingAvailable || ""
       );
-
       setValue(
         "hangingDescription",
-        ispreviewed
-          ? data?.data?.reviewDetails?.additionalInfo?.hangingDescription
-          : data?.data?.additionalInfo?.hangingDescription || ""
+        ispreviewed ? data?.data?.reviewDetails?.additionalInfo?.hangingDescription : data?.data?.additionalInfo?.hangingDescription || ""
       );
-
-      setValue(
-        "framed",
-        ispreviewed
-          ? data?.data?.reviewDetails?.additionalInfo?.framed
-          : data?.data?.additionalInfo?.framed || ""
-      );
-
+      setValue("framed", ispreviewed ? data?.data?.reviewDetails?.additionalInfo?.framed : data?.data?.additionalInfo?.framed || "");
       setValue(
         "framedDescription",
-        ispreviewed
-          ? data?.data?.reviewDetails?.additionalInfo?.framedDescription
-          : data?.data?.additionalInfo?.framedDescription || ""
+        ispreviewed ? data?.data?.reviewDetails?.additionalInfo?.framedDescription : data?.data?.additionalInfo?.framedDescription || ""
       );
-
-      setValue(
-        "frameHeight",
-        ispreviewed
-          ? data?.data?.reviewDetails?.additionalInfo?.frameHeight
-          : data?.data?.additionalInfo?.frameHeight || ""
-      );
-
-      setValue(
-        "frameLength",
-        ispreviewed
-          ? data?.data?.reviewDetails?.additionalInfo?.frameLength
-          : data?.data?.additionalInfo?.frameLength || ""
-      );
-
-      setValue(
-        "frameWidth",
-        ispreviewed
-          ? data?.data?.reviewDetails?.additionalInfo?.frameWidth
-          : data?.data?.additionalInfo?.frameWidth || ""
-      );
-
+      setValue("frameHeight", ispreviewed ? data?.data?.reviewDetails?.additionalInfo?.frameHeight : data?.data?.additionalInfo?.frameHeight || "");
+      setValue("frameLength", ispreviewed ? data?.data?.reviewDetails?.additionalInfo?.frameLength : data?.data?.additionalInfo?.frameLength || "");
+      setValue("frameWidth", ispreviewed ? data?.data?.reviewDetails?.additionalInfo?.frameWidth : data?.data?.additionalInfo?.frameWidth || "");
       setValue(
         "artworkStyleType",
         ispreviewed
-          ? data?.data?.reviewDetails?.additionalInfo?.artworkStyle?.map(
-              (opt) => ({
-                value: opt,
-                label: t(opt),
-              })
-            )
+          ? data?.data?.reviewDetails?.additionalInfo?.artworkStyle?.map((opt) => ({
+              value: opt,
+              label: t(opt),
+            }))
           : data?.data?.additionalInfo?.artworkStyle?.map((opt) => ({
               value: opt,
               label: t(opt),
             })) || ""
       );
-
       setValue(
         "emotions",
         ispreviewed
@@ -474,7 +269,6 @@ const AddArtwork = () => {
               label: t(opt),
             })) || ""
       );
-
       setValue(
         "colors",
         ispreviewed
@@ -487,14 +281,7 @@ const AddArtwork = () => {
               label: t(opt),
             })) || ""
       );
-
-      setValue(
-        "offensive",
-        ispreviewed
-          ? data?.data?.reviewDetails?.additionalInfo?.offensive
-          : data?.data?.additionalInfo?.offensive || ""
-      );
-
+      setValue("offensive", ispreviewed ? data?.data?.reviewDetails?.additionalInfo?.offensive : data?.data?.additionalInfo?.offensive || "");
       setValue(
         "exclusive",
         ispreviewed
@@ -509,187 +296,69 @@ const AddArtwork = () => {
           ? "No"
           : ""
       );
-
       setValue(
         "purchaseType",
-        ispreviewed
-          ? data?.data?.reviewDetails?.commercialization?.purchaseType
-          : data?.data?.commercialization?.purchaseType || ""
+        ispreviewed ? data?.data?.reviewDetails?.commercialization?.purchaseType : data?.data?.commercialization?.purchaseType || ""
       );
-
       setValue(
         "downwardOffer",
-        ispreviewed
-          ? data?.data?.reviewDetails?.commercialization?.downwardOffer
-          : data?.data?.commercialization?.downwardOffer || ""
+        ispreviewed ? data?.data?.reviewDetails?.commercialization?.downwardOffer : data?.data?.commercialization?.downwardOffer || ""
       );
-
       setValue(
         "upworkOffer",
-        ispreviewed
-          ? data?.data?.reviewDetails?.commercialization?.upworkOffer
-          : data?.data?.commercialization?.upworkOffer || ""
+        ispreviewed ? data?.data?.reviewDetails?.commercialization?.upworkOffer : data?.data?.commercialization?.upworkOffer || ""
       );
-
-      setValue(
-        "acceptOfferPrice",
-        ispreviewed
-          ? data?.data?.reviewDetails?.pricing?.acceptOfferPrice
-          : data?.data?.pricing?.acceptOfferPrice || ""
-      );
-
+      setValue("acceptOfferPrice", ispreviewed ? data?.data?.reviewDetails?.pricing?.acceptOfferPrice : data?.data?.pricing?.acceptOfferPrice || "");
       setValue(
         "priceRequest",
-        ispreviewed
-          ? data?.data?.reviewDetails?.commercialization?.priceRequest
-          : data?.data?.commercialization?.priceRequest || ""
+        ispreviewed ? data?.data?.reviewDetails?.commercialization?.priceRequest : data?.data?.commercialization?.priceRequest || ""
       );
-
       setValue(
         "artistbaseFees",
-        ispreviewed
-          ? data?.data?.reviewDetails?.commercialization?.artistbaseFees
-          : data?.data?.commercialization?.artistbaseFees || ""
+        ispreviewed ? data?.data?.reviewDetails?.commercialization?.artistbaseFees : data?.data?.commercialization?.artistbaseFees || ""
       );
-
-      setValue(
-        "basePrice",
-        ispreviewed
-          ? String(data?.data?.reviewDetails?.pricing?.basePrice)
-          : String(data?.data?.pricing?.basePrice) || ""
-      );
-
-      setValue(
-        "dpersentage",
-        ispreviewed
-          ? data?.data?.reviewDetails?.pricing?.dpersentage
-          : data?.data?.pricing?.dpersentage || 0
-      );
-
-      setValue(
-        "pCode",
-        ispreviewed
-          ? data?.data?.reviewDetails?.inventoryShipping?.pCode
-          : data?.data?.inventoryShipping?.pCode || ""
-      );
-
-      setValue(
-        "location",
-        ispreviewed
-          ? data?.data?.reviewDetails?.inventoryShipping?.location
-          : data?.data?.inventoryShipping?.location || ""
-      );
-
-      setValue(
-        "artworkTags",
-        ispreviewed
-          ? data?.data?.reviewDetails?.discipline?.artworkTags
-          : data?.data?.discipline?.artworkTags || []
-      );
-
-      setValue(
-        "existingVideo",
-        ispreviewed
-          ? data?.data?.reviewDetails?.media?.otherVideo
-          : data?.data?.media?.otherVideo || []
-      );
-
-      setValue(
-        "existingImage",
-        ispreviewed
-          ? data?.data?.reviewDetails?.media?.images
-          : data?.data?.media?.images || []
-      );
-
-      setValue(
-        "promotion",
-        ispreviewed
-          ? data?.data?.reviewDetails?.promotions?.promotion
-          : data?.data?.promotions?.promotion || ""
-      );
-
-      setValue(
-        "promotionScore",
-        ispreviewed
-          ? data?.data?.reviewDetails?.promotions?.promotionScore
-          : data?.data?.promotions?.promotionScore || ""
-      );
-
-      setValue(
-        "isArtProvider",
-        ispreviewed
-          ? data?.data?.reviewDetails?.isArtProvider
-          : data?.data?.isArtProvider || ""
-      );
-
+      setValue("basePrice", ispreviewed ? String(data?.data?.reviewDetails?.pricing?.basePrice) : String(data?.data?.pricing?.basePrice) || "");
+      setValue("dpersentage", ispreviewed ? data?.data?.reviewDetails?.pricing?.dpersentage : data?.data?.pricing?.dpersentage || 0);
+      setValue("pCode", ispreviewed ? data?.data?.reviewDetails?.inventoryShipping?.pCode : data?.data?.inventoryShipping?.pCode || "");
+      setValue("location", ispreviewed ? data?.data?.reviewDetails?.inventoryShipping?.location : data?.data?.inventoryShipping?.location || "");
+      setValue("artworkTags", ispreviewed ? data?.data?.reviewDetails?.discipline?.artworkTags : data?.data?.discipline?.artworkTags || []);
+      setValue("existingVideo", ispreviewed ? data?.data?.reviewDetails?.media?.otherVideo : data?.data?.media?.otherVideo || []);
+      setValue("existingImage", ispreviewed ? data?.data?.reviewDetails?.media?.images : data?.data?.media?.images || []);
+      setValue("promotion", ispreviewed ? data?.data?.reviewDetails?.promotions?.promotion : data?.data?.promotions?.promotion || "");
+      setValue("promotionScore", ispreviewed ? data?.data?.reviewDetails?.promotions?.promotionScore : data?.data?.promotions?.promotionScore || "");
+      setValue("isArtProvider", ispreviewed ? data?.data?.reviewDetails?.isArtProvider : data?.data?.isArtProvider || "");
       setValue(
         "subscriptionCatalog",
-        ispreviewed
-          ? data?.data?.reviewDetails?.commercialization?.subscriptionCatalog
-          : data?.data?.commercialization?.subscriptionCatalog || ""
+        ispreviewed ? data?.data?.reviewDetails?.commercialization?.subscriptionCatalog : data?.data?.commercialization?.subscriptionCatalog || ""
       );
-
       setValue(
         "purchaseOption",
-        ispreviewed
-          ? data?.data?.reviewDetails?.commercialization?.purchaseOption
-          : data?.data?.commercialization?.purchaseOption || ""
+        ispreviewed ? data?.data?.reviewDetails?.commercialization?.purchaseOption : data?.data?.commercialization?.purchaseOption || ""
       );
-
-      setValue(
-        "intTags",
-        ispreviewed
-          ? data?.data?.reviewDetails?.intTags
-          : data?.data?.intTags || []
-      );
-
-      setValue(
-        "extTags",
-        ispreviewed
-          ? data?.data?.reviewDetails?.extTags
-          : data?.data?.extTags || []
-      );
-
+      setValue("intTags", ispreviewed ? data?.data?.reviewDetails?.intTags : data?.data?.intTags || []);
+      setValue("extTags", ispreviewed ? data?.data?.reviewDetails?.extTags : data?.data?.extTags || []);
       setValue(
         "packageMaterial",
-        ispreviewed
-          ? data?.data?.reviewDetails?.inventoryShipping?.packageMaterial
-          : data?.data?.inventoryShipping?.packageMaterial || ""
+        ispreviewed ? data?.data?.reviewDetails?.inventoryShipping?.packageMaterial : data?.data?.inventoryShipping?.packageMaterial || ""
       );
-
       setValue(
         "packageWeight",
-        ispreviewed
-          ? data?.data?.reviewDetails?.inventoryShipping?.packageWeight
-          : data?.data?.inventoryShipping?.packageWeight || ""
+        ispreviewed ? data?.data?.reviewDetails?.inventoryShipping?.packageWeight : data?.data?.inventoryShipping?.packageWeight || ""
       );
-
       setValue(
         "packageHeight",
-        ispreviewed
-          ? data?.data?.reviewDetails?.inventoryShipping?.packageHeight
-          : data?.data?.inventoryShipping?.packageHeight || ""
+        ispreviewed ? data?.data?.reviewDetails?.inventoryShipping?.packageHeight : data?.data?.inventoryShipping?.packageHeight || ""
       );
-
       setValue(
         "packageLength",
-        ispreviewed
-          ? data?.data?.reviewDetails?.inventoryShipping?.packageLength
-          : data?.data?.inventoryShipping?.packageLength || ""
+        ispreviewed ? data?.data?.reviewDetails?.inventoryShipping?.packageLength : data?.data?.inventoryShipping?.packageLength || ""
       );
-
       setValue(
         "packageWidth",
-        ispreviewed
-          ? data?.data?.reviewDetails?.inventoryShipping?.packageWidth
-          : data?.data?.inventoryShipping?.packageWidth || ""
+        ispreviewed ? data?.data?.reviewDetails?.inventoryShipping?.packageWidth : data?.data?.inventoryShipping?.packageWidth || ""
       );
 
-      setIsComingSoon(
-        ispreviewed
-          ? data?.data?.reviewDetails?.inventoryShipping?.comingSoon
-          : data?.data?.inventoryShipping?.comingSoon || Boolean
-      );
+      setIsComingSoon(ispreviewed ? data?.data?.reviewDetails?.inventoryShipping?.comingSoon : data?.data?.inventoryShipping?.comingSoon || Boolean);
     } else {
       setValue("provideArtistName", name(user));
     }
@@ -698,7 +367,7 @@ const AddArtwork = () => {
   const status = data?.data?.status;
 
   const url = `${baseUrl}/discover_more/${id}?referral=${"QR"}`;
-  const seriesOptions = seriesData?.seriesList?.map((item, i) => item);
+  const seriesOptions = seriesData?.seriesList?.map((item) => item);
 
   const currentPageUrl = url;
 
@@ -746,11 +415,7 @@ const AddArtwork = () => {
   const orientation = picklistMap["Artwork Orientation"];
 
   let getMaterial = getMediaSupport?.data?.filter(
-    (item) =>
-      item.discipline &&
-      item.discipline.some((newItem) =>
-        newItem.disciplineName.includes(artDicipline)
-      )
+    (item) => item.discipline && item.discipline.some((newItem) => newItem.disciplineName.includes(artDicipline))
   );
 
   getMaterial = getMaterial?.map((item) => {
@@ -839,13 +504,10 @@ const AddArtwork = () => {
 
   useEffect(() => {
     if (activeTab === "purchase") {
-      const purchaseItem = seriesData?.purchaseCatalog?.find(
-        (item) => item?._id === getValues("purchaseCatalog")
-      );
+      const purchaseItem = seriesData?.purchaseCatalog?.find((item) => item?._id === getValues("purchaseCatalog"));
 
       if (purchaseItem && purchaseItem.details) {
-        const { maxHeight, maxWeight, maxWidth, maxDepth, maxPrice } =
-          purchaseItem.details;
+        const { maxHeight, maxWeight, maxWidth, maxDepth, maxPrice } = purchaseItem.details;
 
         setBasePriceError(maxPrice ? maxPrice : null);
         setPackageHeightError(maxHeight ? maxHeight : null);
@@ -854,13 +516,10 @@ const AddArtwork = () => {
         setPackageDepthError(maxDepth ? maxDepth : null);
       }
     } else if (activeTab === "subscription") {
-      const subscriptionItem = seriesData?.subscriptionCatalog?.find(
-        (item) => item?._id === getValues("subscriptionCatalog")
-      );
+      const subscriptionItem = seriesData?.subscriptionCatalog?.find((item) => item?._id === getValues("subscriptionCatalog"));
 
       if (subscriptionItem && subscriptionItem.details) {
-        const { maxHeight, maxWeight, maxWidth, maxDepth, maxPrice } =
-          subscriptionItem.details;
+        const { maxHeight, maxWeight, maxWidth, maxDepth, maxPrice } = subscriptionItem.details;
 
         setBasePriceError(maxPrice ? maxPrice : null);
         setPackageHeightError(maxHeight ? maxHeight : null);
@@ -869,14 +528,7 @@ const AddArtwork = () => {
         setPackageDepthError(maxDepth ? maxDepth : null);
       }
     }
-  }, [
-    activeTab,
-    watch("purchaseType"),
-    watch("purchaseOption"),
-    id,
-    data,
-    seriesData,
-  ]);
+  }, [activeTab, watch("purchaseType"), watch("purchaseOption"), id, data, seriesData]);
 
   const onSubmit = handleSubmit(async (values: any) => {
     if (
@@ -1001,26 +653,10 @@ const AddArtwork = () => {
 
   useEffect(() => {
     if (data && id) {
-      setMainImage(
-        data?.data?.media?.mainImage
-          ? `${imageUrl}/users/${data?.data?.media?.mainImage}`
-          : null
-      );
-      setBackImage(
-        data?.data?.media?.backImage
-          ? `${imageUrl}/users/${data?.data?.media?.backImage}`
-          : null
-      );
-      setInProcessImage(
-        data?.data?.media?.inProcessImage
-          ? `${imageUrl}/users/${data?.data?.media?.inProcessImage}`
-          : null
-      );
-      setMainVideo(
-        data?.data?.media?.mainVideo
-          ? `${imageUrl}/videos/${data?.data?.media?.mainVideo}`
-          : null
-      );
+      setMainImage(data?.data?.media?.mainImage ? `${imageUrl}/users/${data?.data?.media?.mainImage}` : null);
+      setBackImage(data?.data?.media?.backImage ? `${imageUrl}/users/${data?.data?.media?.backImage}` : null);
+      setInProcessImage(data?.data?.media?.inProcessImage ? `${imageUrl}/users/${data?.data?.media?.inProcessImage}` : null);
+      setMainVideo(data?.data?.media?.mainVideo ? `${imageUrl}/videos/${data?.data?.media?.mainVideo}` : null);
     }
   }, [data]);
 
@@ -1029,14 +665,10 @@ const AddArtwork = () => {
     const catalogValue = values.target.value;
 
     if (catalogType === "subscriptionCatalog") {
-      const selectedCatalog = seriesData?.subscriptionCatalog?.find(
-        (item) => item?._id === catalogValue
-      );
+      const selectedCatalog = seriesData?.subscriptionCatalog?.find((item) => item?._id === catalogValue);
       setCatalogPrice(selectedCatalog?.artistFees);
     } else if (catalogType === "purchaseCatalog") {
-      const selectedCatalog = seriesData?.purchaseCatalog?.find(
-        (item) => item?._id === catalogValue
-      );
+      const selectedCatalog = seriesData?.purchaseCatalog?.find((item) => item?._id === catalogValue);
 
       setCatalogPrice(selectedCatalog?.artistFees);
     }
@@ -1058,9 +690,23 @@ const AddArtwork = () => {
 
   const handleDownloadPDF = async () => {
     setIsLoadingPdf(true);
+    setErrorMessage("");
 
     try {
-      const canvas = await html2canvas(qrCodeRef.current);
+      if (!qrCodeRef.current) {
+        setErrorMessage("QR element not found.");
+        setIsLoadingPdf(false);
+        return;
+      }
+
+      await new Promise((r) => setTimeout(r, 100));
+
+      const canvas = await html2canvas(qrCodeRef.current, {
+        useCORS: true,
+        backgroundColor: null,
+        scale: 2,
+      });
+
       const dataUrl = canvas.toDataURL("image/png");
 
       const link = document.createElement("a");
@@ -1068,6 +714,7 @@ const AddArtwork = () => {
       link.download = "qr-code.png";
       link.click();
     } catch (error) {
+      console.error("Download failed:", error);
       setErrorMessage("Failed to download QR code.");
     }
 
@@ -1096,99 +743,105 @@ const AddArtwork = () => {
 
   return (
     <>
-      <div className={`${qrVisible ? "bg-white blur-sm" : ""}`}>
-        <Header
-          variant={{ size: "xl", theme: "dark", weight: "semiBold" }}
-          className="text-black ml-3 mt-3"
-        >
-          {t("Add Artwork")}
-        </Header>
+      <div className={`${qrVisible ? "blur-sm" : ""} ${dark ? "bg-gray-900" : "bg-gray-50"}`}>
+        <div className="p-4">
+          <h1 className={`text-2xl font-bold mb-1 ${dark ? "text-white" : "text-gray-800"}`}> {t("Add Artwork")}</h1>
+          <p className={`text-sm ${dark ? "text-gray-400" : "text-gray-600"}`}>{t("Add your artwork here")}</p>
+        </div>
 
         <form onSubmit={onSubmit}>
-          {/* <div className="flex flex-col 2xl:flex-row justify-between 2xl:items-center mt-3 2xl:mt-0 mb-4 mx-2"> */}
-          {/* <ArtBreadcrumbs /> */}
-
-          <div className="flex flex-col lg:flex-row w-fit gap-4 flex-wrap mt-6 mx-3 mb-2">
-            {query ? (
-              <h1
-                onClick={() => handleGenerateQRCode()}
-                className="cursor-pointer gap-2 bg-black text-white text-[12px] md:text-[16px] px-2 py-2 rounded hover:bg-gray-800"
+          <div className="flex flex-col lg:flex-row w-fit gap-4 flex-wrap m-3 mt-1">
+            {query && (
+              <span
+                onClick={handleGenerateQRCode}
+                className={`flex items-center gap-2 cursor-pointer border px-5 py-3 rounded-xl text-sm md:text-base font-semibold ${
+                  dark ? "bg-gray-700 border-gray-600 hover:bg-gray-800" : "bg-gray-900 hover:bg-gray-700"
+                } transition-all text-white duration-200 shadow-md hover:shadow-lg active:scale-95`}
               >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
                 {t("Generate QR Code")}
-              </h1>
-            ) : null}
+              </span>
+            )}
 
-            <h1 className="cursor-pointer gap-2 bg-black text-white text-[12px] md:text-[16px] px-2 py-2 rounded hover:bg-gray-800">
+            <span
+              className={`flex items-center cursor-pointer gap-2 px-5 py-3 rounded-xl text-white text-sm md:text-base font-semibold bg-[#EE1D52] hover:bg-[#EE1D52]/80 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95`}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
+              </svg>
               {t("Generate Certificate Of Authenticity")}
-            </h1>
+            </span>
 
-            {status === "modified" ? (
-              <>
+            {status === "modified" && (
+              <div className="flex items-center gap-2">
                 <span
                   onClick={() => setIsPreviewed(false)}
-                  className={`inline-block px-4 py-2 rounded-md cursor-pointer transition duration-300 font-semibold ${
+                  className={`px-4 py-2 rounded-lg font-medium cursor-pointer transition-all ${
                     !ispreviewed
-                      ? "bg-black border border-zinc-500 text-white"
-                      : " text-black border border-zinc-500 "
+                      ? dark
+                        ? "bg-blue-600 text-white"
+                        : "bg-blue-500 text-white"
+                      : dark
+                      ? "bg-gray-700 text-gray-300 opacity-75"
+                      : "bg-gray-200 text-gray-700 opacity-75"
                   }`}
                 >
-                  Old Version
+                  {t("Old Version")}
                 </span>
                 <span
                   onClick={() => setIsPreviewed(true)}
-                  className={`inline-block px-4 py-2 rounded-md cursor-pointer transition duration-300 font-semibold ${
+                  className={`px-4 py-2 rounded-lg font-medium cursor-pointer transition-all ${
                     ispreviewed
-                      ? "bg-black border border-zinc-500 text-white"
-                      : " text-black  border border-zinc-500"
+                      ? dark
+                        ? "bg-blue-600 text-white"
+                        : "bg-blue-500 text-white"
+                      : dark
+                      ? "bg-gray-700 text-gray-300 opacity-75"
+                      : "bg-gray-200 text-gray-700 opacity-75"
                   }`}
                 >
-                  Modified Version
+                  {t("Modified Version")}
                 </span>
-              </>
-            ) : null}
+              </div>
+            )}
           </div>
-          {/* </div> */}
 
-          <div className="grid xl:grid-cols-4 gap-4 mx-3">
-            <div className="xl:col-span-3 rounded-md">
-              <div className="bg-white p-4 rounded-md shadow-md border">
-                <Header
-                  variant={{
-                    size: "base",
-                    theme: "dark",
-                    weight: "semiBold",
-                  }}
-                  className="text-[18px] text-black font-semibold mb-4"
-                >
-                  {t("General Information")}
-                </Header>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mx-3 pb-3">
+            <div className="col-span-2 space-y-4">
+              {/* General Information Card */}
+              <div className={`p-6 border rounded-xl shadow-sm ${dark ? "bg-gray-800 border-gray-600" : "bg-white"}`}>
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className={`text-xl font-bold ${dark ? "text-white" : "text-gray-800"}`}>{t("General Information")}</h2>
+                  <div className="w-10 h-1 rounded-full bg-gradient-to-r from-blue-500 to-purple-500"></div>
+                </div>
 
-                <div className="mb-4">
-                  <label className="block  text-sm text-[#203F58] font-semibold mb-2">
-                    {t("Artwork Name")} *
-                  </label>
+                <div>
+                  <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t("Artwork Name")} *</label>
                   <input
-                    {...register("artworkName", {
-                      required: t("Artwork Name is required"),
-                    })}
+                    {...register("artworkName", { required: t("Artwork Name is required") })}
+                    className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
+                      dark
+                        ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+                        : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
+                    }`}
                     type="text"
                     id="artworkName"
-                    readOnly={query ? true : false}
                     placeholder={t("Enter Artwork Name")}
-                    className="w-full bg-[#F9F9FC] border text-sm border-gray-300 rounded-md p-1 sm:p-3 outline-none"
+                    readOnly={query ? true : false}
                   />
-                  {errors.artworkName ? (
-                    <div className="error text-red-500 mt-1 text-sm">
-                      {t(`${errors.artworkName.message}`)}
-                    </div>
-                  ) : null}
+                  {errors.artworkName && <p className="mt-1 text-sm text-red-500">{t(`${errors.artworkName.message}`)}</p>}
                 </div>
 
                 {isArtProvider === "Yes" ? (
                   <div className="invisible h-0">
-                    <label className="block text-sm text-[#203F58] font-semibold mb-2">
-                      {t("Art Provider")}
-                    </label>
+                    <label className="block text-sm text-[#203F58] font-semibold mb-2">{t("Art Provider")}</label>
                     <select
                       {...register("isArtProvider")}
                       id="isArtProvider"
@@ -1203,545 +856,476 @@ const AddArtwork = () => {
                   </div>
                 ) : null}
 
-                {isArtProvider === "Yes" ? (
-                  <div className="mb-4">
-                    <label className="block text-sm text-[#203F58] font-semibold mb-2">
-                      {t("Artist Name")}
-                    </label>
+                {isArtProvider === "Yes" && (
+                  <div className="mt-4">
+                    <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t("Artist Name")}</label>
                     <input
-                      type="text"
                       {...register("provideArtistName")}
+                      className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
+                        dark
+                          ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+                          : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
+                      }`}
                       name="provideArtistName"
                       id="provideArtistName"
                       readOnly={query ? true : false}
-                      placeholder={t(
-                        "Type artist name here (if different from artist)..."
-                      )}
-                      className="w-full bg-[#F9F9FC] text-sm border border-gray-300 rounded-md p-1 sm:p-3 outline-none"
+                      placeholder={t("Type artist name here (if different from artist)...")}
                     />
                   </div>
-                ) : null}
+                )}
 
-                <div className="mb-4 flex flex-col lg:flex-row gap-2 w-full">
-                  <div
-                    className={`w-full ${query ? "pointer-events-none" : ""}`}
-                  >
-                    <label className="block text-sm text-[#203F58] font-semibold mb-2">
+                <div className="grid md:grid-cols-2 gap-6 mt-4">
+                  <div>
+                    <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>
                       {t("Artwork Creation Year")} *
                     </label>
-
                     <Controller
                       name="artworkCreationYear"
                       control={control}
                       defaultValue=""
                       render={({ field }) => (
-                        <CustomYearPicker
-                          {...field}
-                          selectedYear={field.value}
-                          toggleCalendar={toggleCalendar}
-                          showCalendar={showCalendar}
-                        />
+                        <CustomYearPicker {...field} selectedYear={field.value} toggleCalendar={toggleCalendar} showCalendar={showCalendar} />
                       )}
                     />
                   </div>
 
-                  <div className="w-full">
-                    <div className="flex justify-between mb-1">
-                      <label className="block text-sm text-[#203F58] font-semibold">
-                        {t("Select Series")}
-                      </label>
-                      <p className="text-[#5C59E8] text-sm flex items-center gap-[2px] cursor-pointer">
-                        {query ? null : (
-                          <span onClick={() => setIsPopupOpen(true)}>
-                            <TiPlus size="1.2em" />
-                          </span>
-                        )}
-                      </p>
+                  <div>
+                    <div className="flex justify-between items-center mb-2">
+                      <label className={`block text-sm font-medium ${dark ? "text-gray-300" : "text-gray-700"}`}>{t("Select Series")}</label>
+                      {!query && (
+                        <span onClick={() => setIsPopupOpen(true)} className="text-blue-500 hover:text-blue-600">
+                          <TiPlus size={20} />
+                        </span>
+                      )}
                     </div>
 
                     <SeriesPop isOpen={isPopupOpen} onClose={closePopup} />
 
-                    <div className="relative w-full">
-                      <div className="flex flex-col mb-1">
-                        <input
-                          {...register("artworkSeries")}
-                          value={getValues("artworkSeries")}
-                          type="text"
-                          readOnly={query ? true : false}
-                          className="w-full bg-[#F9F9FC] border cursor-pointer  border-gray-300 rounded-md  p-1 sm:p-3 outline-none text-sm"
-                          onClick={handleDropDown}
-                          autoComplete="off"
-                          placeholder={t("Select Series")}
-                        />
-                      </div>
-
+                    <div className="relative">
+                      <input
+                        {...register("artworkSeries")}
+                        value={getValues("artworkSeries")}
+                        type="text"
+                        readOnly={query ? true : false}
+                        className={`w-full px-4 py-3 rounded-lg border focus:outline-none ${
+                          dark ? "bg-gray-700 border-gray-600 text-white" : "bg-gray-50 border-gray-300 text-gray-900"
+                        }`}
+                        placeholder={t("Select Series")}
+                        autoComplete="off"
+                        onClick={handleDropDown}
+                      />
                       {isDropdownOpen && !query && (
-                        <div className="absolute top-full left-0 w-full mt-2 bg-white border border-gray-300 rounded-lg shadow-lg">
-                          <ul className="max-h-60 overflow-y-auto flex flex-col gap-2 p-2">
-                            {seriesOptions
-                              ? seriesOptions.map((option) => (
-                                  <div className="flex justify-between">
-                                    <li
-                                      key={option.value}
-                                      onClick={() => {
-                                        handleDropDown();
-                                        handleSelectOption(option);
-                                      }}
-                                      className={`flex justify-between w-full items-center py-1 px-2 text-sm cursor-pointer hover:bg-blue-100 `}
-                                    >
-                                      <span className="cursor-pointer w-full">
-                                        {option}
-                                      </span>
-                                    </li>
-                                    <span
-                                      onClick={() => handleRemoveSeries(option)}
-                                      className="cursor-pointer bg-black   px-2 py-2 rounded-md text-white"
-                                    >
-                                      <MdDelete size="1em" />
-                                    </span>
-                                  </div>
-                                ))
-                              : null}
-                          </ul>
+                        <div className={`absolute z-10 mt-1 w-full rounded-lg shadow-lg overflow-hidden ${dark ? "bg-gray-700" : "bg-white"}`}>
+                          {seriesOptions?.map((option, index: number) => (
+                            <div
+                              key={index}
+                              className={`flex justify-between items-center px-4 py-2 cursor-pointer hover:bg-opacity-10 ${
+                                dark ? "!text-white hover:bg-gray-300" : "hover:bg-gray-100"
+                              }`}
+                            >
+                              <span
+                                onClick={() => {
+                                  handleSelectOption(option);
+                                  handleDropDown();
+                                }}
+                                className="flex-1"
+                              >
+                                {option}
+                              </span>
+                              <span
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleRemoveSeries(option);
+                                }}
+                                className="text-red-500 hover:text-red-600"
+                              >
+                                <MdDelete size={18} />
+                              </span>
+                            </div>
+                          ))}
                         </div>
                       )}
                     </div>
                   </div>
                 </div>
 
-                <>
-                  <label className="block text-sm mb-2 font-semibold text-[#203F58]">
-                    {t("Artwork Description")} *
-                  </label>
+                <div className="mt-6">
+                  <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t("Artwork Description")} *</label>
                   <textarea
-                    {...register("productDescription")}
-                    rows={6}
+                    {...register("productDescription", { required: t("Artwork description is required") })}
+                    rows={5}
+                    className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
+                      dark
+                        ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+                        : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
+                    }`}
                     name="productDescription"
                     placeholder={t("Type product description here...")}
                     readOnly={query ? true : false}
-                    className="w-full text-sm bg-[#F9F9FC] border border-gray-300 rounded-md p-1 sm:p-3 outline-none"
                   />
-                </>
+                  {errors.productDescription && <p className="mt-1 text-sm text-red-500">{t(`${errors.productDescription.message}`)}</p>}
+                </div>
               </div>
 
-              <div className=" bg-white p-4 rounded-md mt-6 border shadow-md">
-                <Header
-                  variant={{
-                    size: "md",
-                    theme: "dark",
-                    weight: "semiBold",
-                  }}
-                  className="text-[18px] text-black font-semibold mb-4"
-                >
-                  {t("Media")}
-                </Header>
+              {/* Media Card */}
+              <div className={`p-6 border rounded-xl shadow-sm ${dark ? "bg-gray-800 border-gray-600" : "bg-white"}`}>
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className={`text-xl font-bold ${dark ? "text-white" : "text-gray-800"}`}>{t("Media")}</h2>
+                  <div className="w-10 h-1 rounded-full bg-gradient-to-r from-blue-500 to-purple-500"></div>
+                </div>
 
-                <div className="bg-white rounded-md mt-3">
-                  <div className="grid lg:grid-cols-3 gap-4">
-                    <div>
-                      <Header
-                        variant={{
-                          size: "base",
-                          theme: "dark",
-                          weight: "semiBold",
-                        }}
-                        className="mb-2 text-[#203F58]"
-                      >
-                        {t("Main Photo")} *
-                      </Header>
+                <div className="grid lg:grid-cols-3 gap-6">
+                  {/* Main Photo */}
+                  <div>
+                    <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t("Main Photo")} *</label>
+                    <div
+                      className={`border-2 border-dashed rounded-xl p-4 flex flex-col items-center justify-center transition-all hover:border-blue-500 ${
+                        dark ? "border-gray-600 bg-gray-700" : "border-gray-300 bg-gray-50"
+                      } ${!mainImage ? "min-h-[200px]" : ""}`}
+                      onClick={() => document.getElementById("main-photo-input")?.click()}
+                    >
                       <input
                         type="file"
-                        accept="image/*"
                         id="main-photo-input"
+                        accept="image/*"
                         onChange={(e) => handleFileChange(e, setMainImage)}
                         className="hidden"
                         disabled={query ? true : false}
                       />
-                      <div className="bg-[#F9F9FC] border border-dashed py-2 px-2 flex flex-col items-center">
-                        {mainImage ? (
-                          <div className="relative">
-                            <img
-                              src={mainImage}
-                              alt="image"
-                              className="w-28 h-28 object-cover"
-                            />
-                            <span
-                              className={`absolute top-1 right-1 bg-red-500 cursor-pointer text-white rounded-full w-6 h-6 flex items-center justify-center ${
-                                query ? "pointer-events-none opacity-50" : ""
-                              }`}
-                              onClick={() => removeImage("mainImage", 0)}
-                            >
-                              &times;
-                            </span>
-                          </div>
-                        ) : (
-                          <>
-                            <img
-                              src={image_icon}
-                              alt="icon"
-                              className="w-28 max-h-28 min-h-28 object-cover mb-4"
-                            />
-                            <P
-                              variant={{
-                                size: "small",
-                                theme: "dark",
-                                weight: "normal",
-                              }}
-                              className="text-center"
-                            >
-                              {t(
-                                "Drag and drop image here, or click add image"
-                              )}
-                            </P>
-                          </>
-                        )}
-                        <span
-                          onClick={() =>
-                            document.querySelector("#main-photo-input").click()
-                          }
-                          className="bg-[#DEDEFA] font-bold mt-2 p-3 w-full text-center px-4 rounded-md cursor-pointer"
-                        >
-                          {t("Add Image")}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div>
-                      <Header
-                        variant={{
-                          size: "base",
-                          theme: "dark",
-                          weight: "semiBold",
-                        }}
-                        className="mb-2 text-[#203F58]"
-                      >
-                        {t("Back Photo")}
-                      </Header>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        id="back-photo-input"
-                        onChange={(e) =>
-                          handleFileChangeBackImage(e, setBackImage)
-                        }
-                        className="hidden"
-                        disabled={query ? true : false}
-                      />
-                      <div className="bg-[#F9F9FC]  border border-dashed py-2 px-2 flex flex-col items-center">
-                        {backImage ? (
-                          <div className="relative">
-                            <img
-                              src={backImage}
-                              alt="image"
-                              className="w-28 h-28 object-cover"
-                            />
-                            <span
-                              className={`absolute top-1 right-1 cursor-pointer bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center ${
-                                query ? "pointer-events-none opacity-50" : ""
-                              }`}
-                              onClick={() => removeImage("backImage", 0)}
-                            >
-                              &times;
-                            </span>
-                          </div>
-                        ) : (
-                          <>
-                            <img
-                              src={image_icon}
-                              alt="icon"
-                              className="w-28 max-h-28 min-h-28 object-cover mb-4"
-                            />
-                            <P
-                              variant={{
-                                size: "small",
-                                theme: "dark",
-                                weight: "normal",
-                              }}
-                              className="text-center"
-                            >
-                              {t(
-                                "Drag and drop image here, or click add image"
-                              )}
-                            </P>
-                          </>
-                        )}
-
-                        <span
-                          onClick={() =>
-                            document.querySelector("#back-photo-input").click()
-                          }
-                          className="bg-[#DEDEFA] font-bold mt-2 p-3 w-full text-center px-4 rounded-md cursor-pointer"
-                        >
-                          {t("Add Image")}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div>
-                      <Header
-                        variant={{
-                          size: "base",
-                          theme: "dark",
-                          weight: "semiBold",
-                        }}
-                        className="mb-2 text-[#203F58]"
-                      >
-                        {t("Inprocess Photo")}
-                      </Header>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        id="inprocess-photo-input"
-                        onChange={(e) =>
-                          handleFileChangeInprocessImage(e, setInProcessImage)
-                        }
-                        className="hidden"
-                        disabled={query ? true : false}
-                      />
-                      <div className="bg-[#F9F9FC]  border border-dashed py-2 px-2 flex flex-col items-center">
-                        {inProcessImage ? (
-                          <div className="relative">
-                            <img
-                              src={inProcessImage}
-                              alt="image"
-                              className="w-28 h-28 object-cover"
-                            />
-                            <span
-                              className="absolute top-1 right-1 cursor-pointer bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center "
-                              onClick={() => removeImage("inProcessImage", 0)}
-                            >
-                              &times;
-                            </span>
-                          </div>
-                        ) : (
-                          <>
-                            <img
-                              src={image_icon}
-                              alt="icon"
-                              className="w-28 max-h-28 min-h-28 object-cover mb-4"
-                            />
-                            <P
-                              variant={{
-                                size: "small",
-                                theme: "dark",
-                                weight: "normal",
-                              }}
-                              className="text-center"
-                            >
-                              {t(
-                                "Drag and drop image here, or click add image"
-                              )}
-                            </P>
-                          </>
-                        )}
-
-                        <span
-                          onClick={() =>
-                            document
-                              .querySelector("#inprocess-photo-input")
-                              .click()
-                          }
-                          className="bg-[#DEDEFA] font-bold mt-2 p-3 px-4 w-full text-center rounded-md cursor-pointer"
-                        >
-                          {t("Add Image")}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  {/* details photos */}
-                  <div className="grid mt-4 gap-4">
-                    <div>
-                      <Header
-                        variant={{
-                          size: "base",
-                          theme: "dark",
-                          weight: "semiBold",
-                        }}
-                        className="mb-2 text-[#203F58]"
-                      >
-                        {t("Details Photos (max 3 images)")}
-                      </Header>
-                      <input
-                        type="file"
-                        multiple
-                        accept="image/*"
-                        id="details-photo-input"
-                        name="images"
-                        onChange={(e) =>
-                          handleFileChangeDetailsImage(e, setImages)
-                        }
-                        className="hidden"
-                        disabled={query ? true : false}
-                      />
-                      <div className="bg-[#F9F9FC]  border border-dashed p-2 sm:py-6 sm:px-12 flex flex-col items-center">
-                        <div className="flex gap-2 flex-wrap">
-                          {images &&
-                            images.length > 0 &&
-                            images.map((img, i) => {
-                              return (
-                                <div key={i} className="relative">
-                                  <img
-                                    src={URL.createObjectURL(img)}
-                                    alt="image"
-                                    className="w-28 h-28 object-cover"
-                                  />
-                                  <span
-                                    className="absolute top-1 right-1 bg-red-500 cursor-pointer text-white rounded-full w-6 h-6 flex items-center justify-center "
-                                    onClick={() =>
-                                      removeImage("images", i, "File")
-                                    } // Remove image by index
-                                  >
-                                    &times;
-                                  </span>
-                                </div>
-                              );
-                            })}
-                          {getValues("existingImage") &&
-                            getValues("existingImage").length > 0 &&
-                            getValues("existingImage")?.map(
-                              (img, i: number) => {
-                                return (
-                                  <div key={i} className="relative">
-                                    <img
-                                      src={`${imageUrl}/users/${img}`}
-                                      alt="image"
-                                      className="w-28 h-28 object-cover"
-                                    />
-                                    <span
-                                      className={`absolute top-1 right-1 cursor-pointer bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center ${
-                                        query
-                                          ? "pointer-events-none opacity-50"
-                                          : ""
-                                      }`}
-                                      onClick={() =>
-                                        removeExistingImage(i, "Url")
-                                      }
-                                    >
-                                      &times;
-                                    </span>
-                                  </div>
-                                );
-                              }
-                            )}
-                          {(typeof getValues("existingImage")?.length ==
-                            "undefined" ||
-                            getValues("existingImage")?.length == 0) &&
-                          images?.length == 0 ? (
-                            <div className="flex flex-col items-center">
-                              <img
-                                src={image_icon}
-                                alt="icon"
-                                className="w-28 max-h-28 min-h-28 object-cover mb-4"
+                      {mainImage ? (
+                        <div className="relative w-full">
+                          <img src={mainImage} alt="Main artwork" className="w-full h-48 object-cover rounded-lg" />
+                          <span
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              removeImage("mainImage", 0);
+                            }}
+                            className={`absolute top-2 right-2 p-1 rounded-full ${dark ? "bg-red-600" : "bg-red-500"} text-white`}
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                              <path
+                                fillRule="evenodd"
+                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                clipRule="evenodd"
                               />
-                              <P
-                                variant={{
-                                  size: "small",
-                                  theme: "dark",
-                                  weight: "normal",
-                                }}
-                                className="text-center"
-                              >
-                                {t(
-                                  "Drag and drop image here, or click add image"
-                                )}
-                              </P>
-                            </div>
-                          ) : null}
+                            </svg>
+                          </span>
                         </div>
-                        <span
-                          onClick={() =>
-                            document
-                              .querySelector("#details-photo-input")
-                              .click()
-                          }
-                          className="bg-[#DEDEFA] font-bold mt-2 sm:w-fit w-full text-center p-3 px-4 rounded-md cursor-pointer"
-                        >
-                          {t("Add Images")}
-                        </span>
-                      </div>
+                      ) : (
+                        <>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className={`h-12 w-12 mb-3 ${dark ? "text-gray-400" : "text-gray-500"}`}
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                            />
+                          </svg>
+                          <p className={`text-center ${dark ? "text-gray-400" : "text-gray-500"}`}>
+                            {t("Drag and drop image here, or click add image")}
+                          </p>
+                        </>
+                      )}
                     </div>
                   </div>
 
-                  <div className="grid lg:grid-cols-2 mt-4 gap-4">
-                    <div>
-                      <Header
-                        variant={{
-                          size: "base",
-                          theme: "dark",
-                          weight: "semiBold",
-                        }}
-                        className="mb-2 text-[#203F58]"
-                      >
-                        {t("Main Video")}
-                      </Header>
+                  {/* Back Photo */}
+                  <div>
+                    <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t("Back Photo")}</label>
+                    <div
+                      className={`border-2 border-dashed rounded-xl p-4 flex flex-col items-center justify-center transition-all hover:border-blue-500 ${
+                        dark ? "border-gray-600 bg-gray-700" : "border-gray-300 bg-gray-50"
+                      } ${!backImage ? "min-h-[200px]" : ""}`}
+                      onClick={() => document.getElementById("back-photo-input")?.click()}
+                    >
                       <input
                         type="file"
-                        accept="video/*"
+                        id="back-photo-input"
+                        accept="image/*"
+                        onChange={(e) => handleFileChangeBackImage(e, setBackImage)}
+                        className="hidden"
+                        disabled={query ? true : false}
+                      />
+                      {backImage ? (
+                        <div className="relative w-full">
+                          <img src={backImage} alt="Back of artwork" className="w-full h-48 object-cover rounded-lg" />
+                          <span
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              removeImage("backImage", 0);
+                            }}
+                            className={`absolute top-2 right-2 p-1 rounded-full ${dark ? "bg-red-600" : "bg-red-500"} text-white`}
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                              <path
+                                fillRule="evenodd"
+                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                          </span>
+                        </div>
+                      ) : (
+                        <>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className={`h-12 w-12 mb-3 ${dark ? "text-gray-400" : "text-gray-500"}`}
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                            />
+                          </svg>
+                          <p className={`text-center ${dark ? "text-gray-400" : "text-gray-500"}`}>
+                            {" "}
+                            {t("Drag and drop image here, or click add image")}
+                          </p>
+                        </>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Inprocess Photo */}
+                  <div>
+                    <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t("Inprocess Photo")}</label>
+                    <div
+                      className={`border-2 border-dashed rounded-xl p-4 flex flex-col items-center justify-center transition-all hover:border-blue-500 ${
+                        dark ? "border-gray-600 bg-gray-700" : "border-gray-300 bg-gray-50"
+                      } ${!inProcessImage ? "min-h-[200px]" : ""}`}
+                      onClick={() => document.getElementById("inprocess-photo-input")?.click()}
+                    >
+                      <input
+                        type="file"
+                        id="inprocess-photo-input"
+                        accept="image/*"
+                        onChange={(e) => handleFileChangeInprocessImage(e, setInProcessImage)}
+                        className="hidden"
+                        disabled={query ? true : false}
+                      />
+                      {inProcessImage ? (
+                        <div className="relative w-full">
+                          <img src={inProcessImage} alt="Artwork in process" className="w-full h-48 object-cover rounded-lg" />
+                          <span
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              removeImage("inProcessImage", 0);
+                            }}
+                            className={`absolute top-2 right-2 p-1 rounded-full ${dark ? "bg-red-600" : "bg-red-500"} text-white`}
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                              <path
+                                fillRule="evenodd"
+                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                          </span>
+                        </div>
+                      ) : (
+                        <>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className={`h-12 w-12 mb-3 ${dark ? "text-gray-400" : "text-gray-500"}`}
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                            />
+                          </svg>
+                          <p className={`text-center ${dark ? "text-gray-400" : "text-gray-500"}`}>
+                            {t("Drag and drop image here, or click add image")}
+                          </p>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Details Photos */}
+                <div className="mt-6">
+                  <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>
+                    {t("Details Photos (max 3 images)")}
+                  </label>
+                  <div
+                    className={`border-2 border-dashed rounded-xl p-6 flex flex-col items-center justify-center transition-all hover:border-blue-500 ${
+                      dark ? "border-gray-600 bg-gray-700" : "border-gray-300 bg-gray-50"
+                    }`}
+                    onClick={() => document.getElementById("details-photo-input")?.click()}
+                  >
+                    <input
+                      type="file"
+                      id="details-photo-input"
+                      accept="image/*"
+                      multiple
+                      name="images"
+                      onChange={(e) => handleFileChangeDetailsImage(e, setImages)}
+                      className="hidden"
+                      disabled={query ? true : false}
+                    />
+                    <div className="flex flex-wrap gap-4 w-full">
+                      {images &&
+                        images.length > 0 &&
+                        images.map((img, index: number) => (
+                          <div key={index} className="relative w-32 h-32">
+                            <img src={URL.createObjectURL(img)} alt={`Detail ${index + 1}`} className="w-full h-full object-cover rounded-lg" />
+                            <span
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                removeImage("images", index, "File");
+                              }}
+                              className={`absolute top-1 right-1 p-1 rounded-full ${dark ? "bg-red-600" : "bg-red-500"} text-white`}
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                <path
+                                  fillRule="evenodd"
+                                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                            </span>
+                          </div>
+                        ))}
+
+                      {getValues("existingImage") &&
+                        getValues("existingImage").length > 0 &&
+                        getValues("existingImage")?.map((img: string, i: number) => {
+                          const index = i + (images?.length || 0);
+                          return (
+                            <div key={index} className="relative">
+                              <img src={`${imageUrl}/users/${img}`} alt="image" className="w-full h-full object-cover rounded-lg" />
+                              <span
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  removeExistingImage(i, "Url");
+                                }}
+                                className={`absolute top-1 right-1 p-1 rounded-full ${dark ? "bg-red-600" : "bg-red-500"} text-white`}
+                              >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                  <path
+                                    fillRule="evenodd"
+                                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                    clipRule="evenodd"
+                                  />
+                                </svg>
+                              </span>
+                            </div>
+                          );
+                        })}
+                      {(typeof getValues("existingImage")?.length == "undefined" || getValues("existingImage")?.length == 0) &&
+                        images.length === 0 && (
+                          <div className="flex gap-4 items-center">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className={`h-12 w-12 ${dark ? "text-gray-400" : "text-gray-500"}`}
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                              />
+                            </svg>
+                            <p className={`text-center ${dark ? "text-gray-400" : "text-gray-500"}`}>
+                              {t("Drag and drop image here, or click add image")}
+                            </p>
+                          </div>
+                        )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid lg:grid-cols-2 gap-6 mt-6">
+                  {/* Main Video */}
+                  <div>
+                    <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t("Main Video")}</label>
+                    <div
+                      className={`border-2 border-dashed rounded-xl p-4 flex flex-col items-center justify-center transition-all hover:border-blue-500 ${
+                        dark ? "border-gray-600 bg-gray-700" : "border-gray-300 bg-gray-50"
+                      } ${!mainVideo ? "min-h-[200px]" : ""}`}
+                      onClick={() => document.getElementById("main-video-input")?.click()}
+                    >
+                      <input
+                        type="file"
                         id="main-video-input"
+                        accept="video/*"
                         onChange={(e) => handleMainVideo(e, setMainVideo)}
                         className="hidden"
                         disabled={query ? true : false}
                       />
-                      <div className="bg-[#F9F9FC]  border border-dashed p-2 flex flex-col items-center">
-                        {mainVideo ? (
-                          <div className="relative">
-                            <video
-                              src={mainVideo}
-                              className="w-28 max-h-32 object-cover mb-4"
-                              controls
+                      {mainVideo ? (
+                        <div className="relative w-full">
+                          <video src={mainVideo} controls className="w-full h-48 object-cover rounded-lg" />
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              removeImage("mainvideo", 0);
+                            }}
+                            className={`absolute top-2 right-2 p-1 rounded-full ${dark ? "bg-red-600" : "bg-red-500"} ${
+                              query ? "pointer-events-none opacity-50" : ""
+                            } text-white`}
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                              <path
+                                fillRule="evenodd"
+                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                          </button>
+                        </div>
+                      ) : (
+                        <>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className={`h-12 w-12 mb-3 ${dark ? "text-gray-400" : "text-gray-500"}`}
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
                             />
-                            <span
-                              className={`absolute top-1 right-1 cursor-pointer bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center ${
-                                query ? "pointer-events-none opacity-50" : ""
-                              }`}
-                              onClick={() => removeImage("mainvideo", 0)}
-                            >
-                              &times;
-                            </span>
-                          </div>
-                        ) : (
-                          <>
-                            <img
-                              src={video_icon}
-                              alt="icon"
-                              className="w-28 max-h-28 min-h-28 object-cover mb-4"
-                            />
-                            <P
-                              variant={{
-                                size: "small",
-                                theme: "dark",
-                                weight: "normal",
-                              }}
-                              className="text-center"
-                            >
-                              {t(
-                                "Drag and drop video here, or click add video"
-                              )}
-                            </P>
-                          </>
-                        )}
-                        <span
-                          onClick={() =>
-                            document.querySelector("#main-video-input").click()
-                          }
-                          className="bg-[#DEDEFA] font-bold mt-2 w-full text-center p-3 px-4 rounded-md cursor-pointer"
-                        >
-                          {t("Add Video")}
-                        </span>
-                      </div>
+                          </svg>
+                          <p className={`text-center ${dark ? "text-gray-400" : "text-gray-500"}`}>
+                            {t("Drag and drop video here, or click add video")}
+                          </p>
+                        </>
+                      )}
                     </div>
+                  </div>
 
-                    <div>
-                      <Header
-                        variant={{
-                          size: "base",
-                          theme: "dark",
-                          weight: "semiBold",
-                        }}
-                        className="mb-2 text-[#203F58]"
-                      >
-                        {t("Other Video")}
-                      </Header>
+                  {/* Other Videos */}
+                  <div>
+                    <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t("Other Videos")}</label>
+                    <div
+                      className={`border-2 border-dashed rounded-xl p-4 flex flex-col items-center justify-center transition-all hover:border-blue-500 ${
+                        dark ? "border-gray-600 bg-gray-700" : "border-gray-300 bg-gray-50"
+                      } ${otherVideo.length === 0 ? "min-h-[200px]" : ""}`}
+                      onClick={() => document.getElementById("other-video-input")?.click()}
+                    >
                       <input
                         type="file"
                         id="other-video-input"
@@ -1751,93 +1335,88 @@ const AddArtwork = () => {
                         className="hidden"
                         disabled={query ? true : false}
                       />
-                      <div className="bg-[#F9F9FC]  border border-dashed p-2 flex flex-col items-center">
+                      <div className="flex flex-wrap gap-4 w-full">
                         {otherVideo &&
                           otherVideo.length > 0 &&
-                          otherVideo.map((video, i) => (
-                            <div key={i} className="relative">
-                              <video
-                                src={URL.createObjectURL(video)} // Use the URL for the video preview
-                                className="w-28 max-h-28 object-cover mb-4"
-                                controls
-                              />
+                          otherVideo.map((video, index) => (
+                            <div key={index} className="relative w-32 h-32">
+                              <video src={URL.createObjectURL(video)} controls className="w-full h-full object-cover rounded-lg" />
                               <span
-                                className="absolute top-1 right-1 cursor-pointer bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
-                                onClick={() => removeVideo(i, "File")} // Custom function to remove video from state
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  removeVideo(index, "File");
+                                }}
+                                className={`absolute top-1 right-1 p-1 rounded-full ${dark ? "bg-red-600" : "bg-red-500"} text-white`}
                               >
-                                &times;
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                  <path
+                                    fillRule="evenodd"
+                                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                    clipRule="evenodd"
+                                  />
+                                </svg>
                               </span>
                             </div>
                           ))}
 
                         {exVidoes &&
                           exVidoes.length > 0 &&
-                          exVidoes.map((video, i = otherVideo.length + 1) => (
-                            <div key={i} className="relative">
-                              <video
-                                src={`${imageUrl}/videos/${video}`} // Use the URL for the video preview
-                                className="w-28 max-h-28 object-cover mb-4"
-                                controls
+                          exVidoes.map((video: string, i: number) => {
+                            const index = i + (otherVideo?.length || 0);
+                            return (
+                              <div key={index} className="relative">
+                                <video src={`${imageUrl}/videos/${video}`} className="w-full h-full object-cover rounded-lg" controls />
+                                <span
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    removeExistingVideo(i, "Url");
+                                  }}
+                                  className={`absolute top-1 right-1 p-1 rounded-full ${dark ? "bg-red-600" : "bg-red-500"} text-white`}
+                                >
+                                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                    <path
+                                      fillRule="evenodd"
+                                      d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                      clipRule="evenodd"
+                                    />
+                                  </svg>
+                                </span>
+                              </div>
+                            );
+                          })}
+                        {(typeof exVidoes?.length == "undefined" || exVidoes?.length == 0) && otherVideo.length === 0 && (
+                          <div className="flex flex-col items-center">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className={`h-12 w-12 mb-3 ${dark ? "text-gray-400" : "text-gray-500"}`}
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
                               />
-                              <span
-                                className={`absolute top-1 right-1 bg-red-500 cursor-pointer text-white rounded-full w-6 h-6 flex items-center justify-center ${
-                                  query ? "pointer-events-none opacity-50" : ""
-                                }`}
-                                onClick={() => removeExistingVideo(i, "Url")}
-                              >
-                                &times;
-                              </span>
-                            </div>
-                          ))}
-
-                        {(typeof exVidoes?.length == "undefined" ||
-                          exVidoes?.length == 0) &&
-                          otherVideo?.length == 0 && (
-                            <>
-                              <img
-                                src={video_icon}
-                                alt="icon"
-                                className="w-28 max-h-28 min-h-28 object-cover mb-4"
-                              />
-                              <P
-                                variant={{
-                                  size: "small",
-                                  theme: "dark",
-                                  weight: "normal",
-                                }}
-                                className="text-center"
-                              >
-                                {t(
-                                  "Drag and drop video here, or click add video"
-                                )}
-                              </P>
-                            </>
-                          )}
-                        <span
-                          onClick={() =>
-                            document.querySelector("#other-video-input").click()
-                          }
-                          className="bg-[#DEDEFA] font-bold mt-2 p-3 w-full text-center px-4 rounded-md cursor-pointer"
-                        >
-                          {t("Add Videos")}
-                        </span>
+                            </svg>
+                            <p className={`text-center ${dark ? "text-gray-400" : "text-gray-500"}`}>
+                              {t("Drag and drop video here, or click add video")}
+                            </p>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white p-4 rounded-md mt-6 border border-[#E0E2E7] shadow-md ">
-                <Header
-                  variant={{
-                    size: "md",
-                    theme: "dark",
-                    weight: "semiBold",
-                  }}
-                  className="mb-4"
-                >
-                  {t("Descriptive Information And Categorization")}
-                </Header>
+              {/* Descriptive Information Card */}
+              <div className={`p-6 border rounded-xl shadow-sm ${dark ? "bg-gray-800 border-gray-600" : "bg-white"}`}>
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className={`text-xl font-bold ${dark ? "text-white" : "text-gray-800"}`}>{t("Descriptive Information And Categorization")}</h2>
+                  <div className="w-10 h-1 rounded-full bg-gradient-to-r from-blue-500 to-purple-500"></div>
+                </div>
 
                 <Dicipline
                   query={query}
@@ -1847,27 +1426,26 @@ const AddArtwork = () => {
                   errors={errors}
                   getOutDiscipline={getOutDiscipline}
                   setValue={setValue}
+                  dark={dark}
                 />
 
-                <div className="grid md:grid-cols-2 gap-3 mb-4 mt-3">
+                <div className="grid md:grid-cols-2 gap-6 mt-6">
                   <div>
-                    <label className="block text-sm text-[#203F58] font-semibold mb-2">
-                      {t("Artwork Technic")} *
-                    </label>
+                    <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t("Artwork Technic")} *</label>
                     <select
-                      {...register("artworkTechnic", {
-                        required: "Artwork Technic is required",
-                      })}
+                      {...register("artworkTechnic", { required: "Artwork Technic is required" })}
+                      className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
+                        dark
+                          ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+                          : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
+                      }`}
                       id="artworkTechnic"
                       disabled={query ? true : false}
-                      className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full  p-1 sm:p-2.5 "
                     >
                       <option value="">{t("Select Type")}</option>
-                      {technicLoading ? null : newTechnic &&
-                        Array.isArray(newTechnic) &&
-                        newTechnic.length > 0 ? (
-                        newTechnic.map((item, i) => (
-                          <option value={item.technicName} key={i}>
+                      {newTechnic && newTechnic.length > 0 ? (
+                        newTechnic?.map((item, index: number) => (
+                          <option key={index} value={item.technicName}>
                             {t(item.technicName)}
                           </option>
                         ))
@@ -1875,31 +1453,25 @@ const AddArtwork = () => {
                         <option disabled>{t("No Technics Available")}</option>
                       )}
                     </select>
-                    {errors.artworkTechnic ? (
-                      <div className="error text-red-500 mt-1 text-sm">
-                        {t(`${errors.artworkTechnic.message}`)}
-                      </div>
-                    ) : null}
+                    {errors.artworkTechnic && <p className="mt-1 text-sm text-red-500">{t(`${errors.artworkTechnic.message}`)}</p>}
                   </div>
 
-                  <div className="text-[#203F58] text-sm">
-                    <label className="text-[#203F58] text-sm font-semibold">
-                      {t("Artwork Theme")} *
-                    </label>
+                  <div>
+                    <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t("Artwork Theme")} *</label>
                     <select
-                      id="artworkTheme"
-                      {...register("artworkTheme", {
-                        required: "Artwork Theme is required",
-                      })}
+                      {...register("artworkTheme", { required: "Artwork Theme is required" })}
+                      className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
+                        dark
+                          ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+                          : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
+                      }`}
                       disabled={query ? true : false}
-                      className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5 "
+                      id="artworkTheme"
                     >
                       <option value="">{t("Select Type")}</option>
-                      {themeLoading ? null : newTheme &&
-                        Array.isArray(newTheme) &&
-                        newTheme.length > 0 ? (
-                        newTheme.map((item, i: number) => (
-                          <option value={item.themeName} key={i}>
+                      {newTheme && newTheme.length > 0 ? (
+                        newTheme?.map((item, index) => (
+                          <option key={index} value={item.themeName}>
                             {t(item.themeName)}
                           </option>
                         ))
@@ -1909,97 +1481,138 @@ const AddArtwork = () => {
                         </option>
                       )}
                     </select>
-                    {errors.artworkTheme ? (
-                      <div className="error text-red-500 mt-1 text-sm">
-                        {t(`${errors.artworkTheme.message}`)}
-                      </div>
-                    ) : null}
+                    {errors.artworkTheme && <p className="mt-1 text-sm text-red-500">{t(`${errors.artworkTheme.message}`)}</p>}
                   </div>
                 </div>
 
-                <div className="mt-5">
+                {/* Artwork Style */}
+                <div className="mt-6">
+                  <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t("Artwork Style")} *</label>
                   <Select
                     options={newArtworkStyle?.map((item) => ({
                       value: item,
                       label: t(item),
                     }))}
-                    placeholder={t("Select Artwork Style") + " *"}
                     isMulti
-                    className="text-sm"
+                    placeholder={t("Select Artwork Style") + " *"}
                     isDisabled={query ? true : false}
                     value={getValues("artworkStyleType")}
                     {...register("artworkStyleType", {
                       required: "Artwork Style is required",
                     })}
-                    onChange={(selectedOptions) =>
-                      setValue("artworkStyleType", selectedOptions)
-                    }
+                    onChange={(selectedOptions) => setValue("artworkStyleType", selectedOptions)}
                     styles={{
-                      dropdownIndicator: () => ({
-                        color: "black",
+                      control: (provided) => ({
+                        ...provided,
+                        backgroundColor: dark ? "#374151" : "#f9fafb",
+                        borderColor: dark ? "#4b5563" : "#d1d5db",
+                        minHeight: "48px",
+                      }),
+                      menu: (provided) => ({
+                        ...provided,
+                        backgroundColor: dark ? "#374151" : "#ffffff",
+                      }),
+                      option: (provided, state) => ({
+                        ...provided,
+                        backgroundColor: state.isSelected
+                          ? dark
+                            ? "#3b82f6"
+                            : "#3b82f6"
+                          : state.isFocused
+                          ? dark
+                            ? "#4b5563"
+                            : "#f3f4f6"
+                          : dark
+                          ? "#374151"
+                          : "#ffffff",
+                        color: state.isSelected ? "#ffffff" : dark ? "#e5e7eb" : "#111827",
+                      }),
+                      multiValue: (provided) => ({
+                        ...provided,
+                        backgroundColor: dark ? "#3b82f6" : "#3b82f6",
                       }),
                       multiValueLabel: (provided) => ({
                         ...provided,
-                        backgroundColor: "#203F58",
-                        color: "white",
+                        color: "#ffffff",
                       }),
-
                       multiValueRemove: (provided) => ({
                         ...provided,
-                        backgroundColor: "#203F58",
-                        color: "white",
+                        color: "#ffffff",
+                        ":hover": {
+                          backgroundColor: dark ? "#2563eb" : "#2563eb",
+                        },
                       }),
                     }}
                   />
-                  {errors.artworkStyleType ? (
-                    <div className="error text-red-500 mt-1 text-sm">
-                      {t(`${errors.artworkStyleType.message}`)}
-                    </div>
-                  ) : null}
+                  {errors.artworkStyleType && <p className="mt-1 text-sm text-red-500">{t(`${errors.artworkStyleType.message}`)}</p>}
                 </div>
 
-                <div className="mt-3 mb-2">
+                {/* Emotions */}
+                <div className="mt-6">
+                  <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t("Emotions")} *</label>
                   <Select
-                    options={emotions ? emotions : []}
+                    options={emotions || []}
                     placeholder={`${t("Select Emotions")} *`}
                     isMulti
                     className="text-sm"
                     isDisabled={query ? true : false}
+                    value={getValues("emotions")}
                     {...register("emotions", {
                       required: "Emotions are required",
                     })}
-                    value={getValues("emotions")}
-                    onChange={(selectedOptions) =>
-                      setValue("emotions", selectedOptions)
-                    }
+                    onChange={(selectedOptions) => setValue("emotions", selectedOptions)}
                     styles={{
-                      dropdownIndicator: () => ({
-                        color: "black",
+                      control: (provided) => ({
+                        ...provided,
+                        backgroundColor: dark ? "#374151" : "#f9fafb",
+                        borderColor: dark ? "#4b5563" : "#d1d5db",
+                        minHeight: "48px",
                       }),
-
+                      menu: (provided) => ({
+                        ...provided,
+                        backgroundColor: dark ? "#374151" : "#ffffff",
+                      }),
+                      option: (provided, state) => ({
+                        ...provided,
+                        backgroundColor: state.isSelected
+                          ? dark
+                            ? "#3b82f6"
+                            : "#3b82f6"
+                          : state.isFocused
+                          ? dark
+                            ? "#4b5563"
+                            : "#f3f4f6"
+                          : dark
+                          ? "#374151"
+                          : "#ffffff",
+                        color: state.isSelected ? "#ffffff" : dark ? "#e5e7eb" : "#111827",
+                      }),
+                      multiValue: (provided) => ({
+                        ...provided,
+                        backgroundColor: dark ? "#3b82f6" : "#3b82f6",
+                      }),
                       multiValueLabel: (provided) => ({
                         ...provided,
-                        backgroundColor: "#203F58",
-                        color: "white",
+                        color: "#ffffff",
                       }),
-
                       multiValueRemove: (provided) => ({
                         ...provided,
-                        backgroundColor: "#203F58",
-                        color: "white",
+                        color: "#ffffff",
+                        ":hover": {
+                          backgroundColor: dark ? "#2563eb" : "#2563eb",
+                        },
                       }),
                     }}
                   />
-                  {errors.emotions ? (
-                    <div className="error text-red-500 mt-1 text-sm">
-                      {t(`${errors.emotions.message}`)}
-                    </div>
-                  ) : null}
+                  {errors.emotions && <p className="mt-1 text-sm text-red-500">{t(`${errors.emotions.message}`)}</p>}
                 </div>
 
-                <div className="mb-3">
+                {/* Colors */}
+                <div className="mt-6">
+                  <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t("Colors")} *</label>
                   <Select
-                    options={colors ? colors : []}
+                    options={colors || []}
+                    isMulti
                     className="text-sm"
                     placeholder={`${t("Select Color")} *`}
                     {...register("colors", {
@@ -2007,335 +1620,343 @@ const AddArtwork = () => {
                     })}
                     isDisabled={query ? true : false}
                     value={getValues("colors")}
-                    onChange={(selectedOption) => {
-                      const selectedValues = Array.isArray(selectedOption)
-                        ? selectedOption
-                        : selectedOption
-                        ? [selectedOption]
-                        : [];
-
-                      setValue("colors", selectedValues);
-                    }}
-                    isMulti={true}
+                    onChange={(selectedOptions) => setValue("colors", selectedOptions)}
                     styles={{
-                      dropdownIndicator: () => ({
-                        color: "black",
+                      control: (provided) => ({
+                        ...provided,
+                        backgroundColor: dark ? "#374151" : "#f9fafb",
+                        borderColor: dark ? "#4b5563" : "#d1d5db",
+                        minHeight: "48px",
+                      }),
+                      menu: (provided) => ({
+                        ...provided,
+                        backgroundColor: dark ? "#374151" : "#ffffff",
+                      }),
+                      option: (provided, state) => ({
+                        ...provided,
+                        backgroundColor: state.isSelected
+                          ? dark
+                            ? "#3b82f6"
+                            : "#3b82f6"
+                          : state.isFocused
+                          ? dark
+                            ? "#4b5563"
+                            : "#f3f4f6"
+                          : dark
+                          ? "#374151"
+                          : "#ffffff",
+                        color: state.isSelected ? "#ffffff" : dark ? "#e5e7eb" : "#111827",
+                      }),
+                      multiValue: (provided) => ({
+                        ...provided,
+                        backgroundColor: dark ? "#3b82f6" : "#3b82f6",
                       }),
                       multiValueLabel: (provided) => ({
                         ...provided,
-                        backgroundColor: "#203F58",
-                        color: "white",
+                        color: "#ffffff",
                       }),
                       multiValueRemove: (provided) => ({
                         ...provided,
-                        backgroundColor: "#203F58",
-                        color: "white",
+                        color: "#ffffff",
+                        ":hover": {
+                          backgroundColor: dark ? "#2563eb" : "#2563eb",
+                        },
                       }),
                     }}
                   />
-                  {errors.colors ? (
-                    <div className="error text-red-500 mt-1 text-sm">
-                      {t(`${errors.colors.message}`)}
-                    </div>
-                  ) : null}
+                  {errors.colors && <p className="mt-1 text-sm text-red-500">{t(`${errors.colors.message}`)}</p>}
                 </div>
 
-                <label className="text-[#203F58] text-sm font-semibold  ">
-                  {t("Offensive")}
+                {/* Offensive */}
+                <div className="mt-6">
+                  <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t("Offensive")} *</label>
                   <select
-                    id="offensive"
-                    {...register("offensive", {
-                      required: t("Offensive is required"),
-                    })}
+                    {...register("offensive", { required: "Offensive is required" })}
                     disabled={query ? true : false}
-                    className="bg-[#F9F9FC] mt-1 border mb-3 border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
+                    className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
+                      dark
+                        ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+                        : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
+                    }`}
                   >
                     <option value="No">{t("No")}</option>
-                    <option value="Yes">{t("Yes")} </option>
+                    <option value="Yes">{t("Yes")}</option>
                   </select>
-                </label>
+                </div>
 
-                <label className="text-[#203F58] text-sm font-semibold ">
-                  {t("Tags External")}
-                  <div className="flex flex-wrap gap-2 mt-1">
+                {/* Tags External */}
+                <div className="mt-6">
+                  <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t("Tags External")}</label>
+                  <div className={`flex flex-wrap gap-2 ${externalTags?.length > 0 ? "mb-2" : ""}`}>
+                    {externalTags &&
+                      externalTags.length > 0 &&
+                      externalTags.map((tag, index) => (
+                        <span
+                          key={index}
+                          className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                            dark ? "bg-blue-900 text-blue-100" : "bg-blue-100 text-blue-800"
+                          }`}
+                        >
+                          {tag}
+                          <span
+                            onClick={() => handleRemoveExternalTag(index)}
+                            className="ml-1.5 inline-flex items-center justify-center w-4 h-4 rounded-full hover:bg-blue-200 hover:text-blue-800"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3" viewBox="0 0 20 20" fill="currentColor">
+                              <path
+                                fillRule="evenodd"
+                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                          </span>
+                        </span>
+                      ))}
+                  </div>
+                  <div className="relative">
                     <input
                       type="text"
                       id="extTags"
                       name="extTags"
                       readOnly={query ? true : false}
-                      className="bg-[#F9F9FC] border mb-3 border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5"
-                      placeholder={t("Enter tags (e.g., #example)")}
                       onKeyDown={(e) => {
                         if (e.key === "Enter") {
                           e.preventDefault();
                           handleAddExternalTag(e);
                         }
                       }}
+                      className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
+                        dark
+                          ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+                          : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
+                      }`}
+                      placeholder={t("Enter tags (e.g., #example)")}
                     />
-                  </div>
-                  {externalTags && externalTags.length > 0 ? (
-                    <div className="mt-2 mb-3">
-                      {externalTags.map((tag, index) => (
-                        <span
-                          key={index}
-                          className="bg-blue-100 border border-blue-800 px-2 py-1 rounded-full text-sm mr-2 mb-2 w-fit"
-                        >
-                          {tag}
-                          <span
-                            onClick={() => handleRemoveExternalTag(index)}
-                            className="ml-2 cursor-pointer text-black"
-                          >
-                            X
-                          </span>
-                        </span>
-                      ))}
-                    </div>
-                  ) : null}
-                </label>
-
-                <div className=" md:grid-cols-2 gap-3 mb-4">
-                  <div>
-                    <label className="text-[#203F58] text-sm font-semibold">
-                      {t("Material")} *
-                    </label>
-                    <select
-                      id="Material"
-                      {...register("material", {
-                        required: "Material is required",
-                      })}
-                      disabled={query ? true : false}
-                      className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5"
-                    >
-                      <option value="">{t("Select Type")}</option>
-                      {getMaterial &&
-                        getMaterial?.map((item, index: number) => (
-                          <option key={index} value={item?.value}>
-                            {t(item?.label)}
-                          </option>
-                        ))}
-                    </select>
-                    {errors.material ? (
-                      <div className="error text-red-500 mt-1 text-sm">
-                        {t(`${errors.material.message}`)}
-                      </div>
-                    ) : null}
                   </div>
                 </div>
 
-                <div className="flex justify-between flex-col md:flex-row mb-3 gap-3">
+                <div className="mt-6">
+                  <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t("Material")} *</label>
+                  <select
+                    id="Material"
+                    {...register("material", {
+                      required: "Material is required",
+                    })}
+                    disabled={query ? true : false}
+                    className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
+                      dark
+                        ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+                        : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
+                    }`}
+                  >
+                    <option value="">{t("Select Type")}</option>
+                    {getMaterial &&
+                      getMaterial?.map((item, index: number) => (
+                        <option key={index} value={item?.value}>
+                          {t(item?.label)}
+                        </option>
+                      ))}
+                  </select>
+                  {errors.material ? <div className="text-red-500 mt-1 text-sm">{t(`${errors.material.message}`)}</div> : null}
+                </div>
+
+                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
                   {artwork_orientation?.map((field) => (
-                    <span key={field.name} className="w-full">
-                      <label className="p-1 text-[14px] text-sm text-[#203F58] font-semibold">
-                        {t(field.label)} *
-                      </label>
+                    <div key={field.name}>
+                      <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t(field.label)} *</label>
                       <input
                         type="text"
                         {...register(field.name, {
-                          required: t(`${field.label} is required`)
-                            ? field.name
-                            : "",
+                          required: t(`${field.label} is required`) ? field.name : "",
                         })}
                         name={field.name}
                         id={field.name}
                         placeholder={t(field.placeholder)}
                         readOnly={query ? true : false}
-                        className="bg-[#F9F9FC] border mb-2 border-gray-300 outline-none text-[#203F58] text-sm rounded-lg block w-full p-1 sm:p-2.5"
+                        className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
+                          dark
+                            ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+                            : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
+                        }`}
                       />
 
                       {errors[field.name] ? (
-                        <div className="error text-red-500 mt-1 text-sm">
-                          {t(`${errors[field.name].message} is required`)}
-                        </div>
+                        <div className="error text-red-500 mt-1 text-sm">{t(`${errors[field.name].message} is required`)}</div>
                       ) : null}
-                    </span>
+                    </div>
                   ))}
                 </div>
 
-                <div className="flex flex-col space-y-4">
-                  <div>
-                    <label className="text-[#203F58] text-sm font-semibold">
-                      {t("Hanging Available")}
-                    </label>
-                    <select
-                      id="hangingAvailable"
-                      {...register("hangingAvailable", {
-                        required: "Hanging available is required",
-                      })}
-                      disabled={query ? true : false}
-                      className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
-                    >
-                      <option value="">{t("Select")}</option>
-                      <option value="Yes">{t("Yes")}</option>
-                      <option value="No">{t("No")}</option>
-                    </select>
-                    {errors.hangingAvailable ? (
-                      <div className="error text-red-500 mt-1 text-sm">
-                        {t(`${errors.hangingAvailable.message}`)}
-                      </div>
-                    ) : null}
-                  </div>
+                <div className="mt-6">
+                  <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t("Hanging Available")}</label>
+                  <select
+                    id="hangingAvailable"
+                    {...register("hangingAvailable", {
+                      required: "Hanging available is required",
+                    })}
+                    disabled={query ? true : false}
+                    className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
+                      dark
+                        ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+                        : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
+                    }`}
+                  >
+                    <option value="">{t("Select")}</option>
+                    <option value="Yes">{t("Yes")}</option>
+                    <option value="No">{t("No")}</option>
+                  </select>
+                  {errors.hangingAvailable ? <div className="text-red-500 mt-1 text-sm">{t(`${errors.hangingAvailable.message}`)}</div> : null}
+                </div>
 
-                  {getValues("hangingAvailable") === "Yes" ? (
-                    <label className="text-[#203F58] text-sm font-semibold">
-                      {t("Hanging Description")}
+                <div className="mt-6">
+                  {getValues("hangingAvailable") === "Yes" && (
+                    <>
+                      <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>
+                        {t("Hanging Description")}
+                      </label>
                       <textarea
                         id="hangingDescription"
                         {...register("hangingDescription", {
                           required: t("Hanging Description is required"),
                         })}
+                        rows={5}
                         readOnly={query ? true : false}
                         placeholder={t("Type Hanging description here...")}
-                        className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none font-normal text-gray-900 text-sm rounded-lg block w-full  p-1 sm:p-2.5 pb-10 "
+                        className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
+                          dark
+                            ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+                            : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
+                        }`}
                       />
-                    </label>
-                  ) : null}
-
-                  <div>
-                    <label className="text-[#203F58] text-sm font-semibold">
-                      {t("Framed")} *
-                    </label>
-                    <select
-                      id="Farmed"
-                      {...register("framed", {
-                        required: t("Framed is required"),
-                      })}
-                      disabled={query ? true : false}
-                      className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
-                    >
-                      <option value="">{t("Select")}</option>
-                      <option value="Yes">{t("Yes")}</option>
-                      <option value="No">{t("No")}</option>
-                    </select>
-                    {errors.framed ? (
-                      <div className="error text-red-500 mt-1 text-sm">
-                        {t(`${errors.framed.message}`)}
-                      </div>
-                    ) : null}
-                  </div>
-
-                  {getValues("framed") === "Yes" ? (
-                    <>
-                      <label className="text-[#203F58] text-sm font-semibold">
-                        {t("Frame Description")} *
-                        <textarea
-                          id="framedDescription"
-                          {...register("framedDescription", {
-                            required: "Frame Description is required",
-                          })}
-                          placeholder={t("Type Framed description here...")}
-                          readOnly={query ? true : false}
-                          className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full font-normal p-1 sm:p-2.5 pb-10"
-                        />
-                        {errors?.framedDescription && (
-                          <div className="error text-red-500 mt-1 text-sm">
-                            {t(`${errors.framedDescription.message}`)}
-                          </div>
-                        )}
-                      </label>
-
-                      <div className="grid grid-cols-3 mb-4 gap-3 ">
-                        {Framed_dimension?.map((field) => (
-                          <span key={field.name}>
-                            <label className="p-1 text-[14px] text-sm text-[#203F58] font-semibold">
-                              {t(field.label)} *
-                            </label>
-                            <input
-                              {...register(field.name, {
-                                required: t(`${field.label} is required`),
-                              })}
-                              type="text"
-                              name={field.name}
-                              id={field.name}
-                              readOnly={query ? true : false}
-                              placeholder={t(field.placeholder)}
-                              className="bg-[#F9F9FC] border mb-2 border-gray-300 outline-none text-[#203F58] text-sm rounded-lg block w-full p-1 sm:p-2.5"
-                            />
-
-                            {errors?.[field.name] && (
-                              <div className="error text-red-500 mt-1 text-sm">
-                                {t(`${errors?.[field.name]?.message}`)}
-                              </div>
-                            )}
-                          </span>
-                        ))}
-                      </div>
                     </>
-                  ) : null}
+                  )}
+                </div>
 
-                  <div>
-                    <label className="text-[#203F58] text-sm font-semibold">
-                      {t("Exclusive")} *
-                    </label>
-                    <select
-                      id="Exclusive"
-                      {...register("exclusive", {
-                        required: t("Exclusive is required"),
-                      })}
-                      disabled={query ? true : false}
-                      className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
-                    >
-                      <option value="">{t("Select")}</option>
-                      <option value="Yes">{t("Yes")}</option>
-                      <option value="No">{t("No")}</option>
-                    </select>
-                    {errors.exclusive ? (
-                      <div className="error text-red-500 mt-1 text-sm">
-                        {t(`${errors.exclusive.message}`)}
-                      </div>
-                    ) : null}
-                  </div>
+                <div className="mt-4">
+                  <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t("Framed")} *</label>
+                  <select
+                    id="Farmed"
+                    {...register("framed", {
+                      required: t("Framed is required"),
+                    })}
+                    disabled={query ? true : false}
+                    className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
+                      dark
+                        ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+                        : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
+                    }`}
+                  >
+                    <option value="">{t("Select")}</option>
+                    <option value="Yes">{t("Yes")}</option>
+                    <option value="No">{t("No")}</option>
+                  </select>
+                  {errors.framed ? <div className="text-red-500 mt-1 text-sm">{t(`${errors.framed.message}`)}</div> : null}
+                </div>
 
-                  <div>
-                    <label className="text-[#203F58] text-sm font-semibold">
-                      {t("Artwork Orientation")} *
-                    </label>
-                    <select
-                      id="artworkOrientation"
-                      {...register("artworkOrientation", {
-                        required: "Artwork Orientation is required",
-                      })}
-                      disabled={query ? true : false}
-                      className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg   block w-full p-1 sm:p-2.5 "
-                    >
-                      <option value="">{t("Select Type")}</option>
-                      {/* <option value="Square">{t("Square")} </option>
-                      <option value="Rectangle">{t("Rectangle")}</option>
-                      <option value="Circle">{t("Circle")}</option>
-                      <option value="Star">{t("Star")}</option> */}
-                      {orientation && orientation?.length > 0
-                        ? orientation?.map((item: any, i: number) => (
-                            <option value={item?.value} key={i}>
-                              {t(item?.value)}
-                            </option>
-                          ))
-                        : null}
-                    </select>
-                    {errors.artworkOrientation ? (
-                      <div className="error text-red-500 mt-1 text-sm">
-                        {t(`${errors.artworkOrientation.message}`)}
-                      </div>
-                    ) : null}
-                  </div>
+                {getValues("framed") === "Yes" && (
+                  <>
+                    <div className="mt-6">
+                      <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>
+                        {t("Frame Description")} *
+                      </label>
+                      <textarea
+                        id="framedDescription"
+                        {...register("framedDescription", {
+                          required: "Frame Description is required",
+                        })}
+                        placeholder={t("Type Framed description here...")}
+                        readOnly={query ? true : false}
+                        className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
+                          dark
+                            ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+                            : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
+                        }`}
+                      />
+                      {errors?.framedDescription && <div className="text-red-500 mt-1 text-sm">{t(`${errors.framedDescription.message}`)}</div>}
+                    </div>
+                    <div className="grid md:grid-cols-3 my-4 gap-3">
+                      {Framed_dimension?.map((field) => (
+                        <div key={field.name}>
+                          <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t(field.label)} *</label>
+                          <input
+                            {...register(field.name, {
+                              required: t(`${field.label} is required`),
+                            })}
+                            type="text"
+                            name={field.name}
+                            id={field.name}
+                            readOnly={query ? true : false}
+                            placeholder={t(field.placeholder)}
+                            className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
+                              dark
+                                ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+                                : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
+                            }`}
+                          />
+
+                          {errors?.[field.name] && <div className="text-red-500 mt-1 text-sm">{t(`${errors?.[field.name]?.message}`)}</div>}
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
+
+                <div className="mt-6">
+                  <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t("Exclusive")} *</label>
+                  <select
+                    id="Exclusive"
+                    {...register("exclusive", {
+                      required: t("Exclusive is required"),
+                    })}
+                    disabled={query ? true : false}
+                    className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
+                      dark
+                        ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+                        : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
+                    }`}
+                  >
+                    <option value="">{t("Select")}</option>
+                    <option value="Yes">{t("Yes")}</option>
+                    <option value="No">{t("No")}</option>
+                  </select>
+                  {errors.exclusive ? <div className="text-red-500 mt-1 text-sm">{t(`${errors.exclusive.message}`)}</div> : null}
+                </div>
+
+                <div className="mt-6">
+                  <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t("Artwork Orientation")} *</label>
+                  <select
+                    id="artworkOrientation"
+                    {...register("artworkOrientation", {
+                      required: "Artwork Orientation is required",
+                    })}
+                    disabled={query ? true : false}
+                    className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
+                      dark
+                        ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+                        : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
+                    }`}
+                  >
+                    <option value="">{t("Select Type")}</option>
+                    {orientation &&
+                      orientation?.length > 0 &&
+                      orientation?.map((item: any, i: number) => (
+                        <option value={item?.value} key={i}>
+                          {t(item?.value)}
+                        </option>
+                      ))}
+                  </select>
+                  {errors.artworkOrientation ? <div className="text-red-500 mt-1 text-sm">{t(`${errors.artworkOrientation.message}`)}</div> : null}
                 </div>
               </div>
 
-              <div className="bg-white p-4 rounded-md mt-6 border border-[#E0E2E7] shadow-md ">
-                <Header
-                  variant={{
-                    size: "md",
-                    theme: "dark",
-                    weight: "semiBold",
-                  }}
-                  className="mb-4"
-                >
-                  {t("Commercialization")} *
-                </Header>
+              {/* Commercialization Card */}
+              <div className={`p-6 border rounded-xl shadow-sm ${dark ? "bg-gray-800 border-gray-600" : "bg-white"}`}>
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className={`text-xl font-bold ${dark ? "text-white" : "text-gray-800"}`}>{t("Commercialization")}</h2>
+                  <div className="w-10 h-1 rounded-full bg-gradient-to-r from-blue-500 to-purple-500"></div>
+                </div>
 
-                <div
-                  className={`flex border-b  border-gray-300 ${
-                    query ? "pointer-events-none" : ""
-                  }`}
-                >
+                <div className={`flex border-b ${dark ? "border-gray-600" : "border-gray-300"} ${query ? "pointer-events-none" : ""}`}>
                   <span
                     onClick={() => {
                       setValue("purchaseCatalog", "");
@@ -2349,9 +1970,13 @@ const AddArtwork = () => {
                       setPackageHeightError(null);
                       setBasePriceError(null);
                     }}
-                    className={`py-2 font-semibold cursor-pointer ${
+                    className={`py-2 font-semibold transition-all ${
                       activeTab === "subscription"
-                        ? "border-b-4 border-black"
+                        ? dark
+                          ? "border-b-2 border-blue-400 text-blue-400"
+                          : "border-b-2 border-blue-500 text-blue-500"
+                        : dark
+                        ? "text-gray-400"
                         : "text-gray-500"
                     }`}
                   >
@@ -2370,9 +1995,13 @@ const AddArtwork = () => {
                       setPackageHeightError(null);
                       setBasePriceError(null);
                     }}
-                    className={`py-2 mx-8 font-semibold cursor-pointer ${
+                    className={`py-2 mx-8 font-semibold transition-all ${
                       activeTab === "purchase"
-                        ? "border-b-4 border-black"
+                        ? dark
+                          ? "border-b-2 border-blue-400 text-blue-400"
+                          : "border-b-2 border-blue-500 text-blue-500"
+                        : dark
+                        ? "text-gray-400"
                         : "text-gray-500"
                     }`}
                   >
@@ -2380,470 +2009,358 @@ const AddArtwork = () => {
                   </span>
                 </div>
 
-                <div className="">
-                  {activeTab === "subscription" && (
-                    <>
-                      <div className="mt-4 space-y-2">
-                        <label className="text-[#203F58] text-sm font-semibold ">
-                          {t("Subscription Catalog")}
-                          <select
-                            id="subscriptionCatalog"
-                            {...register("subscriptionCatalog")}
-                            onChange={(val) => {
-                              handleCheckArtistFee(val);
-                              setValue("purchaseOption", "");
-                              setsubscriptionCatlogValue(val.target.value);
-                            }}
-                            disabled={query ? true : false}
-                            className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
-                          >
-                            <option value="">{t("Select")}</option>
-
-                            {seriesData?.subscriptionCatalog?.map(
-                              (series, index: number) => (
-                                <option
-                                  key={index}
-                                  label={series?.catalogName}
-                                  value={series?._id || subscriptionCatlogValue}
-                                >
-                                  {t(series?.catalogName)}
-                                </option>
-                              )
-                            )}
-                          </select>
-                        </label>
-                      </div>
-
-                      <div className="mt-4 space-y-2">
-                        <label className="text-[#203F58] text-sm font-semibold ">
-                          {t("Purchase Option")}
-                          <select
-                            {...register("purchaseOption")}
-                            id="purchaseOption"
-                            disabled={query ? true : false}
-                            className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
-                          >
-                            <option value="">{t("Select")}</option>
-                            <option value="Yes">{t("Yes")}</option>
-                            <option value="No">{t("No")}</option>
-                          </select>
-                        </label>
-                      </div>
-                    </>
-                  )}
-                </div>
-
-                <div className="py-4">
-                  {activeTab === "purchase" && (
+                {activeTab === "subscription" && (
+                  <div className="mt-6 space-y-6">
                     <div>
-                      <div className="space-y-2">
-                        <label className="text-[#203F58] text-sm font-semibold ">
-                          {t("Purchase Catalog")}
-                          <select
-                            id="purchaseCatalog"
-                            {...register("purchaseCatalog")}
-                            onChange={(val) => {
-                              handleCheckArtistFee(val);
-                              setPurchaseCatlogValue(val.target.value);
-                              setsubscriptionCatlogValue("");
-                              setValue("purchaseType", "");
-                            }}
-                            disabled={query ? true : false}
-                            className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg block w-full p-1 sm:p-2.5"
-                          >
-                            <option value="">{t("Select")}</option>
-                            {seriesData?.purchaseCatalog?.map((item, index) => (
-                              <option
-                                value={item?._id || purchaseCatlogValue}
-                                label={t(item?.catalogName)}
-                                key={index}
-                              >
-                                {t(item?.catalogName)}
-                              </option>
-                            ))}
-                          </select>
-                        </label>
-                      </div>
-
-                      <div className="mt-4">
-                        <label className="text-[#203F58] text-sm font-semibold ">
-                          {t("Purchase Type")}
-                          <select
-                            id="purchaseType"
-                            {...register("purchaseType")}
-                            value={getValues("purchaseType") || ""}
-                            disabled={query ? true : false}
-                            className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg block w-full p-1 sm:p-2.5"
-                          >
-                            <option value="">{t("Select")}</option>
-                            {purOption
-                              ? purOption.map((item, i) => (
-                                  <option value={item?.value} key={i}>
-                                    {t(item?.value)}
-                                  </option>
-                                ))
-                              : []}
-                          </select>
-                        </label>
-                      </div>
+                      <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>
+                        {t("Subscription Catalog")}
+                      </label>
+                      <select
+                        id="subscriptionCatalog"
+                        {...register("subscriptionCatalog")}
+                        onChange={(val) => {
+                          handleCheckArtistFee(val);
+                          setValue("purchaseOption", "");
+                          setsubscriptionCatlogValue(val.target.value);
+                        }}
+                        disabled={query ? true : false}
+                        className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
+                          dark
+                            ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+                            : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
+                        }`}
+                      >
+                        <option value="">{t("Select")}</option>
+                        {seriesData?.subscriptionCatalog?.map((series, i: number) => (
+                          <option key={i} value={series?._id || subscriptionCatlogValue}>
+                            {t(series?.catalogName)}
+                          </option>
+                        ))}
+                      </select>
                     </div>
-                  )}
-                </div>
+
+                    <div>
+                      <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t("Purchase Option")}</label>
+                      <select
+                        {...register("purchaseOption")}
+                        id="purchaseOption"
+                        disabled={query ? true : false}
+                        className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
+                          dark
+                            ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+                            : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
+                        }`}
+                      >
+                        <option value="">{t("Select")}</option>
+                        <option value="Yes">{t("Yes")}</option>
+                        <option value="No">{t("No")}</option>
+                      </select>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === "purchase" && (
+                  <div className="mt-6 space-y-6">
+                    <div>
+                      <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t("Purchase Catalog")}</label>
+                      <select
+                        id="purchaseCatalog"
+                        {...register("purchaseCatalog")}
+                        onChange={(val) => {
+                          handleCheckArtistFee(val);
+                          setPurchaseCatlogValue(val.target.value);
+                          setsubscriptionCatlogValue("");
+                          setValue("purchaseType", "");
+                        }}
+                        disabled={query ? true : false}
+                        className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
+                          dark
+                            ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+                            : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
+                        }`}
+                      >
+                        <option value="">{t("Select")}</option>
+                        {seriesData?.purchaseCatalog?.map((item, index: number) => (
+                          <option key={index} value={item?._id || purchaseCatlogValue}>
+                            {t(item?.catalogName)}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t("Purchase Type")}</label>
+                      <select
+                        id="purchaseType"
+                        {...register("purchaseType")}
+                        value={getValues("purchaseType") || ""}
+                        disabled={query ? true : false}
+                        className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
+                          dark
+                            ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+                            : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
+                        }`}
+                      >
+                        <option value="">{t("Select")}</option>
+                        {purOption
+                          ? purOption?.map((item, index: number) => (
+                              <option key={index} value={item?.value}>
+                                {t(item?.value)}
+                              </option>
+                            ))
+                          : []}
+                      </select>
+                    </div>
+                  </div>
+                )}
               </div>
 
-              <div className="bg-white p-4 rounded-md mt-4 border border-[#E0E2E7]">
-                <Header
-                  variant={{
-                    size: "md",
-                    theme: "dark",
-                    weight: "semiBold",
-                  }}
-                  className="mb-4"
-                >
-                  {t("Pricing")}
-                </Header>
-
-                <div
-                  className={`${
-                    activeTab === "subscription"
-                  } ? "flex justify-between" : ""`}
-                >
-                  <label className="text-[#203F58] text-sm font-semibold ">
-                    {t("Currency")}
-                    <select
-                      {...register("currency")}
-                      id="currency"
-                      disabled={query ? true : false}
-                      className="bg-[#F9F9FC] mb-3 mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg block w-full p-1 sm:p-2.5 "
-                    >
-                      {currency?.map((item: any, i: number) => (
-                        <option key={i} value={item?.value}>
-                          {t(item?.value)}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-
-                  {activeTab === "subscription" &&
-                  watch("subscriptionCatalog") ? (
-                    <div className="flex items-center border border-zinc-500 w-full py-3 px-4 bg-yellow-100 text-yellow-800">
-                      {/* Warning Icon */}
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="w-6 h-6 mr-2"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M12 9v2m0 4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"
-                        />
-                      </svg>
-
-                      <span>
-                        {t(
-                          "Price must be less than or equal to the specified amount"
-                        )}
-                        . {basePriceError}
-                      </span>
-                    </div>
-                  ) : null}
-
-                  {activeTab === "subscription" ? (
-                    <label className="text-[#203F58] text-sm font-semibold">
-                      {t("Base Price")}
-                      <input
-                        {...register("basePrice", {
-                          required: "Base Price is Required",
-                        })}
-                        id="basePrice"
-                        placeholder={t("Enter Base Price")}
-                        disabled={query ? true : false}
-                        className="bg-[#F9F9FC] mb-3 mt-1 border border-gray-300 outline-none text-[#203F58] text-sm rounded-lg   block w-full p-1  sm:p-2.5 "
-                      />
-                      {activeTab === "subscription" && errors.basePrice ? (
-                        <div className="error text-red-500 mt-1 text-sm">
-                          {t(`${errors.basePrice.message}`)}
-                        </div>
-                      ) : null}
-                    </label>
-                  ) : (
-                    ""
-                  )}
+              {/* Pricing Card */}
+              <div className={`p-6 border rounded-xl shadow-sm ${dark ? "bg-gray-800 border-gray-600" : "bg-white"}`}>
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className={`text-xl font-bold ${dark ? "text-white" : "text-gray-800"}`}>{t("Pricing")}</h2>
+                  <div className="w-10 h-1 rounded-full bg-gradient-to-r from-blue-500 to-purple-500"></div>
                 </div>
 
-                {watch("purchaseType") === "Downward Offer" ||
-                watch("purchaseType") === "Fixed Price" ||
-                watch("purchaseType") === "Price By Request" ||
-                watch("purchaseType") === "Upward Offer" ? (
-                  <>
-                    {activeTab === "purchase" || watch("purchaseCatalog") ? (
-                      <div className="flex items-center border border-zinc-500 w-full py-3 px-4 bg-yellow-100 text-yellow-800">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="w-6 h-6 mr-2"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M12 9v2m0 4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"
-                          />
-                        </svg>
-                        <span>
-                          {t(
-                            "Price must be less than or equal to the specified amount"
-                          )}{" "}
-                          {basePriceError}
-                        </span>
-                      </div>
-                    ) : null}
+                <div>
+                  <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t("Currency")}</label>
+                  <select
+                    {...register("currency")}
+                    id="currency"
+                    disabled={query ? true : false}
+                    className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
+                      dark
+                        ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+                        : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
+                    }`}
+                  >
+                    {currency?.map((item, index: number) => (
+                      <option key={index} value={item?.value}>
+                        {t(item?.value)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-                    <span>
-                      <label className="text-[#203F58] text-sm font-semibold">
-                        {t("Base Price")}
-                      </label>
-
-                      <div className="flex flex-col space-x-2">
-                        <input
-                          {...register("basePrice", {
-                            required: t("Base Price is Required"),
-                          })}
-                          type="text"
-                          name="basePrice"
-                          id="basePrice"
-                          placeholder={t("Type base price here...")}
-                          readOnly={query ? true : false}
-                          className="bg-[#F9F9FC] border mb-3 border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5"
-                        />
-
-                        {activeTab === "purchase" && errors.basePrice ? (
-                          <div className="error text-red-500 mt-1 text-sm">
-                            {t(`${errors.basePrice.message}`)}
-                          </div>
-                        ) : null}
-                      </div>
-
-                      <div
-                        className={`${
-                          getValues("purchaseType") === "Downword Offer"
-                            ? "grid md:grid-cols-2 gap-3"
-                            : "w-full"
-                        } grid md:grid-cols-2 gap-3`}
-                      >
-                        <label className="text-[#203F58] text-sm font-semibold">
-                          {t("Discount Percentage")}
-                          <input
-                            {...register("dpersentage")}
-                            type="text"
-                            name="dpersentage"
-                            id="dpersentage"
-                            placeholder="0.0 %"
-                            readOnly={query ? true : false}
-                            className="bg-[#F9F9FC] border mb-3 border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5"
-                          />
-                        </label>
-
-                        {watch("purchaseType") === "Downward Offer" ||
-                        watch("purchaseType") === "Upward Offer" ? (
-                          <label className="text-[#203F58] text-sm font-semibold">
-                            {t("Accept Offer Minimum Price")}
-                            <input
-                              {...register("acceptOfferPrice")}
-                              type="text"
-                              id="acceptOfferPrice"
-                              placeholder={t("Accept Offer Minimum Price")}
-                              readOnly={query ? true : false}
-                              className="bg-[#F9F9FC] border mb-3 border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5"
-                            />
-                          </label>
-                        ) : null}
-                      </div>
-                    </span>
-                  </>
+                {(activeTab === "subscription" && watch("subscriptionCatalog")) || (activeTab === "purchase" && watch("purchaseCatalog")) ? (
+                  <div className={`p-4 rounded-lg mt-6 border ${dark ? "bg-yellow-900 border-yellow-700" : "bg-yellow-100 border-yellow-200"}`}>
+                    <p className={`text-sm ${dark ? "text-yellow-200" : "text-yellow-800"}`}>
+                      {t("Price must be less than or equal to the specified amount")} - {basePriceError}
+                    </p>
+                  </div>
                 ) : null}
 
-                <div className="grid md:grid-cols-2 gap-3">
-                  <label className="text-[#203F58] text-sm font-semibold">
-                    {t("Artist Base Fees")}
-                    <div className="flex space-x-2">
+                <div className="mt-6">
+                  <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t("Base Price")} *</label>
+                  <input
+                    {...register("basePrice", { required: "Base Price is Required" })}
+                    type="text"
+                    className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
+                      dark
+                        ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+                        : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
+                    }`}
+                    id="basePrice"
+                    placeholder={t("Enter Base Price")}
+                    disabled={query ? true : false}
+                  />
+                  {errors.basePrice && <p className="mt-1 text-sm text-red-500">{t(`${errors.basePrice.message}`)}</p>}
+                </div>
+
+                {(watch("purchaseType") === "Downward Offer" ||
+                  watch("purchaseType") === "Fixed Price" ||
+                  watch("purchaseType") === "Price By Request" ||
+                  watch("purchaseType") === "Upward Offer") && (
+                  <div className="grid md:grid-cols-2 gap-6 mt-6">
+                    <div>
+                      <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>
+                        {t("Discount Percentage")}
+                      </label>
                       <input
-                        id="artistFees"
-                        name="artistFees"
-                        value={catalogPrice}
-                        placeholder={t("Enter Artist Base Fees")}
-                        readOnly={true}
-                        className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5"
+                        {...register("dpersentage")}
+                        type="text"
+                        className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
+                          dark
+                            ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+                            : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
+                        }`}
+                        name="dpersentage"
+                        id="dpersentage"
+                        placeholder="0.0 %"
+                        readOnly={query ? true : false}
                       />
                     </div>
-                  </label>
 
-                  <label className="text-[#203F58] text-sm font-semibold">
-                    {t("VAT Amount (%)")}
+                    {(watch("purchaseType") === "Downward Offer" || watch("purchaseType") === "Upward Offer") && (
+                      <div>
+                        <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>
+                          {t("Accept Offer Minimum Price")}
+                        </label>
+                        <input
+                          {...register("acceptOfferPrice")}
+                          type="text"
+                          id="acceptOfferPrice"
+                          placeholder={t("Accept Offer Minimum Price")}
+                          readOnly={query ? true : false}
+                          className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
+                            dark
+                              ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+                              : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
+                          }`}
+                        />
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                <div className="grid md:grid-cols-2 gap-6 mt-6">
+                  <div>
+                    <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t("Artist Base Fees")}</label>
+                    <input
+                      value={catalogPrice || ""}
+                      id="artistFees"
+                      name="artistFees"
+                      placeholder={t("Enter Artist Base Fees")}
+                      readOnly
+                      className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
+                        dark
+                          ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+                          : "bg-gray-100 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
+                      }`}
+                    />
+                  </div>
+
+                  <div>
+                    <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t("VAT Amount (%)")}</label>
                     <input
                       type="text"
                       id="vatAmount"
                       {...register("vatAmount")}
                       placeholder={t("Enter VAT amount")}
                       value={vatAmount}
-                      readOnly={true}
-                      className="bg-[#F9F9FC] mt-1 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg block w-full p-1 sm:p-2.5"
+                      className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
+                        dark
+                          ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+                          : "bg-gray-100 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
+                      }`}
                     />
-                  </label>
+                  </div>
                 </div>
               </div>
 
-              <div className="bg-white p-4  rounded-md mt-4 border border-[#E0E2E7] shadow-md">
-                <Header
-                  variant={{
-                    size: "lg",
-                    theme: "dark",
-                    weight: "semiBold",
-                  }}
-                  className="mb-2"
-                >
-                  {t("Inventory & Shipping")}
-                </Header>
-
-                <div className="grid md:grid-cols-2 gap-3 items-center">
-                  {shipping_inventry.map((shipping) => (
-                    <span key={shipping.name}>
-                      <label className="p-1 text-[#203F58] text-[14px] text-sm font-semibold">
-                        {t(shipping.label)}
-                      </label>
-                      <input
-                        type="text"
-                        {...register(shipping.name)}
-                        name={shipping.name}
-                        id={shipping.name}
-                        placeholder={t(shipping.placeholder)}
-                        readOnly={query ? true : false}
-                        className="bg-[#F9F9FC] border mb-2 border-gray-300 outline-none text-[#203F58] text-sm rounded-lg block w-full p-1 sm:p-2.5"
-                      />
-                    </span>
-                  ))}
-
-                  <span>
-                    <label className="p-1 text-[#203F58] text-[14px] text-sm font-semibold">
-                      {t("Location")}
-                    </label>
-                    <input
-                      type="text"
-                      id="location"
-                      placeholder={t("Enter Your Location")}
-                      {...register("location")}
-                      readOnly={query ? true : false}
-                      className="bg-[#F9F9FC] border mb-2 border-gray-300 outline-none text-[#203F58] text-sm rounded-lg block w-full p-1 sm:p-2.5"
-                    />
-                  </span>
+              {/* Inventory & Shipping Card */}
+              <div className={`p-6 border rounded-xl shadow-sm ${dark ? "bg-gray-800 border-gray-600" : "bg-white"}`}>
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className={`text-xl font-bold ${dark ? "text-white" : "text-gray-800"}`}>{t("Inventory & Shipping")}</h2>
+                  <div className="w-10 h-1 rounded-full bg-gradient-to-r from-blue-500 to-purple-500"></div>
                 </div>
 
-                <div>
-                  <label className="text-[#203F58] text-sm font-semibold">
-                    {t("Package Material")} *
-                  </label>
+                <div className="mt-6">
+                  <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t("Product Code")}</label>
+                  <input
+                    type="text"
+                    {...register("pCode")}
+                    name="Product Code"
+                    id="Product Code"
+                    placeholder={t("Product Code")}
+                    readOnly={query ? true : false}
+                    className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
+                      dark
+                        ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+                        : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
+                    }`}
+                  />
+                </div>
+
+                <div className="mt-6">
+                  <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t("Location")}</label>
+                  <input
+                    type="text"
+                    id="location"
+                    placeholder={t("Enter Your Location")}
+                    {...register("location")}
+                    readOnly={query ? true : false}
+                    className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
+                      dark
+                        ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+                        : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
+                    }`}
+                  />
+                </div>
+
+                <div className="mt-6">
+                  <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t("Package Material")} *</label>
                   <select
-                    id="packageMaterial"
-                    {...register("packageMaterial", {
-                      required: "Package Material is required",
-                    })}
                     disabled={query ? true : false}
-                    className="bg-[#F9F9FC] mt-1 border mb-3 border-gray-300 outline-none text-[#203F58] text-sm rounded-lg block w-full p-1 sm:p-2.5"
+                    {...register("packageMaterial", { required: "Package Material is required" })}
+                    className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
+                      dark
+                        ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+                        : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
+                    }`}
                   >
                     <option value="">{t("Select")}</option>
-                    {packMaterial?.map((item, i: number) => (
-                      <option value={item.value} key={i}>
-                        {t(item.value)}
+                    {packMaterial?.map((item, index: number) => (
+                      <option key={index} value={item?.value}>
+                        {t(item?.value)}
                       </option>
                     ))}
                   </select>
-                  {errors.packageMaterial ? (
-                    <div className="error text-red-500 mt-1 text-sm">
-                      {t(`${errors.packageMaterial.message}`)}
-                    </div>
-                  ) : null}
+                  {errors.packageMaterial && <p className="mt-1 text-sm text-red-500">{t(`${errors.packageMaterial.message}`)}</p>}
                 </div>
 
-                <div className="flex items-center border border-zinc-500 w-full py-3 px-4 mb-3 bg-yellow-100 text-yellow-800">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="w-6 h-6 mr-2"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M12 9v2m0 4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"
-                    />
-                  </svg>
-
-                  <span>
-                    {t(
-                      "Max Dimensions should not be greater than the Dimensions in selected Catalog."
-                    )}
-                    <ul className="list-disc ml-5 mt-2">
-                      <li>
-                        {t("Max Height")} : {packageHeightError}
-                      </li>
-                      <li>
-                        {t("Max Width")} : {packageWidthError}
-                      </li>
-                      <li>
-                        {t("Max Depth")} : {packageDepthError}
-                      </li>
-                      <li>
-                        {t("Max Weight")} :{packageWeightError}
-                      </li>
-                    </ul>
-                  </span>
+                <div className={`mt-6 p-4 rounded-lg border ${dark ? "bg-yellow-900 border-yellow-700" : "bg-yellow-100 border-yellow-200"}`}>
+                  <p className={`text-sm font-medium ${dark ? "text-yellow-200" : "text-yellow-800"}`}>
+                    {t("Max Dimensions should not be greater than the Dimensions in selected Catalog.")}
+                  </p>
+                  <ul className={`mt-2 text-sm list-disc pl-5 ${dark ? "text-yellow-200" : "text-yellow-800"}`}>
+                    <li>
+                      {t("Max Height")}: {packageHeightError || "N/A"}
+                    </li>
+                    <li>
+                      {t("Max Width")}: {packageWidthError || "N/A"}
+                    </li>
+                    <li>
+                      {t("Max Depth")}: {packageDepthError || "N/A"}
+                    </li>
+                    <li>
+                      {t("Max Weight")}: {packageWeightError || "N/A"}
+                    </li>
+                  </ul>
                 </div>
 
-                <div className="flex items-center flex-col md:flex-row md:gap-2 justify-between">
+                <div className="grid md:grid-cols-2 gap-6 mt-6">
                   {package_dimension.map((field) => (
-                    <span key={field.name} className="w-full">
-                      <label className="p-1 text-[14px] text-sm text-[#203F58] font-semibold">
-                        {t(field.label)} *
-                      </label>
+                    <div key={field.name}>
+                      <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t(field.label)} *</label>
                       <input
+                        {...register(field.name, { required: `${field.label} is required` })}
+                        className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
+                          dark
+                            ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+                            : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
+                        }`}
                         type="text"
-                        {...register(field.name, {
-                          required: `${field.label} is required`,
-                        })}
                         id={field.name}
                         readOnly={query ? true : false}
                         placeholder={t(`Enter ${field.placeholder}`)}
-                        className="bg-[#F9F9FC] border mb-2 border-gray-300 outline-none text-[#203F58] text-sm rounded-lg block w-full p-1 sm:p-2.5 "
                       />
-
-                      {errors[field.name] ? (
-                        <div className="error text-red-500 mt-1 text-sm">
-                          {t(`${field.placeholder} is required`)}
-                        </div>
-                      ) : null}
-                    </span>
+                      {errors[field.name] && <p className="mt-1 text-sm text-red-500">{t(`${field.placeholder} is required`)}</p>}
+                    </div>
                   ))}
                 </div>
 
-                <div className="flex items-center">
+                <div className="flex items-center mt-6">
                   <input
                     type="checkbox"
-                    onChange={() => setIsComingSoon((prev) => !prev)}
-                    checked={isComingSoon == true}
                     id="comingSoon"
-                    className="mr-2"
+                    checked={isComingSoon === true}
+                    onChange={() => setIsComingSoon(!isComingSoon)}
+                    className={`w-4 h-4 rounded focus:ring-blue-500 ${dark ? "bg-gray-700 border-gray-600" : "bg-gray-50 border-gray-300"}`}
                   />
-                  <span className="p-1 text-[14px] text-[#203F58] font-semibold">
+                  <label htmlFor="comingSoon" className={`ml-2 text-sm font-medium ${dark ? "text-gray-300" : "text-gray-700"}`}>
                     {t("Coming Soon")}
-                  </span>
+                  </label>
                 </div>
               </div>
             </div>
@@ -2855,132 +2372,162 @@ const AddArtwork = () => {
               availableTo={availableTo}
               getValue={getValues}
               setValue={setValue}
+              dark={dark}
             />
           </div>
 
-          <div className="my-5 px-2 gap-2 flex flex-col sm:flex-row items-center lg:fixed md:-bottom-3 right-5 justify-end w-full">
-            {!query ? (
+          {/* Footer Buttons */}
+          <div className={`fixed bottom-0 left-0 right-0 py-4 px-6 flex justify-end gap-4`}>
+            {!query && (
               <>
-                <span
-                  onClick={() => handleNavigate()}
-                  className="border bg-red-500 sm:w-fit w-full text-center text-white hover:border-red-600 hover:bg-white hover:text-red-500 rounded px-4 py-3 text-sm font-semibold cursor-pointer"
+                <button
+                  type="button"
+                  onClick={handleNavigate}
+                  className={`px-6 py-3 rounded-lg font-medium transition-all ${
+                    dark ? "bg-red-600 hover:bg-red-700 text-white" : "bg-red-500 hover:bg-red-600 text-white"
+                  }`}
                 >
-                  ✕ {t("Cancel")}
-                </span>
-
+                  {t("Cancel")}
+                </button>
                 {status === "published" ? (
-                  <Button
+                  <button
                     type="submit"
-                    variant={{
-                      fontSize: "sm",
-                      thickness: "thick",
-                      fontWeight: "600",
-                      theme: "dark",
-                    }}
-                    className={`text-white sm:w-fit w-full text-center px-4 py-3 hover:bg-white hover:border hover:border-[#102031] hover:text-[#102031]  rounded ${
-                      modifyIsPending ? "opacity-70 pointer-events-none" : ""
+                    disabled={modifyIsPending}
+                    className={`px-6 py-3 rounded-lg font-medium transition-all ${
+                      modifyIsPending ? "bg-gray-400 cursor-not-allowed" : dark && "bg-[#EE1D52] hover:bg-[#EE1D52]/80 text-white"
                     }`}
                   >
                     {modifyIsPending ? t("Modifying...") : t("Modify Artwork")}
-                  </Button>
+                  </button>
                 ) : (
-                  <Button
+                  <button
                     type="submit"
-                    variant={{
-                      fontSize: "sm",
-                      thickness: "thick",
-                      fontWeight: "600",
-                      theme: "dark",
-                    }}
-                    className={`text-white sm:w-fit w-full text-center ${
-                      status === "modified" && ispreviewed === false
-                        ? "opacity-70 pointer-events-none"
-                        : ""
-                    } hover:bg-white hover:border hover:border-[#102031] hover:text-[#102031] px-4 py-3 rounded ${
-                      isPending ? "opacity-70 pointer-events-none" : ""
+                    disabled={isPending || (status === "modified" && !ispreviewed)}
+                    className={`px-6 py-3 rounded-lg font-medium transition-all ${
+                      isPending || (status === "modified" && !ispreviewed)
+                        ? "bg-gray-400 opacity-65 pointer-events-none cursor-not-allowed"
+                        : "bg-[#EE1D52] hover:bg-[#EE1D52]/80 text-white"
                     }`}
                   >
-                    {isPending ? t("Previewing...") : t("Save & Preview")}
-                  </Button>
+                    {isPending ? t("Processing...") : t("Save & Preview")}
+                  </button>
                 )}
               </>
-            ) : null}
+            )}
           </div>
         </form>
       </div>
 
+      {/* QR Code Modal */}
       {qrVisible && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm z-[100]">
-          <div className="relative bg-white w-[90%] sm:w-[60%] md:w-[50%] lg:w-[40%] h-auto max-h-[80vh] p-6 rounded-2xl shadow-2xl flex flex-col items-center">
-            <h1 className="font-bold text-xl text-center mt-2 text-gray-800">
-              {t("QR Code")}
-            </h1>
-            <img
-              src={logoIcon}
-              alt="Logo"
-              className="object-contain w-24 h-12 mt-3"
-            />
-
+        <div className="fixed inset-0 flex items-center justify-center z-[100] bg-black/60 backdrop-blur-sm">
+          <div
+            className={`relative w-full h-[90vh] overflow-y-auto scrollbar max-w-md p-4 border rounded-2xl shadow-2xl ${
+              dark ? "bg-gradient-to-br border-gray-600 from-gray-900 to-gray-800" : "bg-white"
+            } transition-all`}
+          >
             <span
               onClick={() => {
                 setQrVisible(false);
                 setCopySuccess("");
                 setErrorMessage("");
               }}
-              className="absolute right-5 top-5 cursor-pointer text-gray-500 hover:text-gray-700 transition"
+              className={`absolute rounded-full cursor-pointer ${
+                dark ? "hover:bg-gray-600" : "hover:bg-gray-100"
+              } top-4 right-4 text-gray-400 hover:text-red-500 transition-colors`}
             >
-              <BsBackspace size="1.8em" />
+              <IoCloseSharp size={26} />
             </span>
 
-            <div
-              ref={qrCodeRef}
-              className="flex justify-center items-center bg-gray-100 p-4 rounded-lg mt-4"
-              style={{ maxWidth: 200, width: "100%" }}
-            >
-              <QRCode
-                size={256}
-                style={{ height: "auto", maxWidth: "100%", width: "100%" }}
-                value={currentPageUrl}
-                viewBox="0 0 256 256"
-              />
-            </div>
+            <div className="flex flex-col items-center">
+              <h2 className={`text-xl font-bold mb-3 ${dark ? "text-white" : "text-gray-800"}`}>{t("QR Code")}</h2>
+              <img src={dark ? logoWIcon : logoIcon} alt="Logo" className="h-12 mb-5" />
 
-            <input
-              type="text"
-              value={url}
-              id="linkInput"
-              readOnly
-              className="w-[80%] sm:w-[70%] p-3 text-lg border border-gray-300 rounded-md mt-5 text-center bg-gray-50 focus:outline-none"
-            />
+              <div ref={qrCodeRef} className={`p-5 rounded-xl mb-6 shadow-inner ${dark ? "bg-gray-700" : "bg-gray-100"}`}>
+                <QRCode
+                  size={180}
+                  value={currentPageUrl}
+                  viewBox="0 0 256 256"
+                  className="rounded-lg"
+                  fgColor={dark ? "#ffffff" : "#000000"}
+                  bgColor="transparent"
+                />
+              </div>
 
-            <div className="flex flex-col sm:flex-row justify-center gap-3 mt-4 w-full">
+              <div className="w-full mb-5">
+                <div className="relative">
+                  <input
+                    type="text"
+                    id="linkInput"
+                    value={url}
+                    readOnly
+                    className={`w-full px-4 py-3 rounded-lg border text-sm font-medium outline-none focus:ring-2 transition-all ${
+                      dark
+                        ? "bg-gray-800 border-gray-700 text-white focus:ring-blue-600"
+                        : "bg-gray-100 border-gray-300 text-gray-900 focus:ring-blue-400"
+                    }`}
+                  />
+                  <button
+                    type="button"
+                    onClick={handleCopy}
+                    className={`absolute right-2 top-1.5 px-3 py-1.5 rounded-md text-sm font-semibold shadow-sm transition-all ${
+                      dark ? "bg-blue-600 hover:bg-blue-700" : "bg-blue-500 hover:bg-blue-600"
+                    } text-white`}
+                  >
+                    {t("Copy Link")}
+                  </button>
+                </div>
+              </div>
+
               <button
-                onClick={handleCopy}
-                className="bg-blue-600 text-white px-5 py-2 rounded-lg text-md font-medium cursor-pointer hover:bg-blue-700 transition"
-              >
-                {t("Copy Link")}
-              </button>
-
-              <button
+                type="button"
                 onClick={handleDownloadPDF}
-                className="bg-green-600 text-white px-5 py-2 rounded-lg text-md font-medium cursor-pointer hover:bg-green-700 transition"
-                disabled={isLoading}
+                disabled={isLoadingPdf}
+                className={`w-full py-3 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all ${
+                  isLoadingPdf
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : dark
+                    ? "bg-green-600 hover:bg-green-700 text-white"
+                    : "bg-green-500 hover:bg-green-600 text-white"
+                }`}
               >
-                {isLoadingPdf ? t("Downloading Image...") : t("Download Image")}
+                {isLoadingPdf ? (
+                  <>
+                    <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                    {t("Downloading Image...")}
+                  </>
+                ) : (
+                  <>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path
+                        fillRule="evenodd"
+                        d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    {t("Download Image")}
+                  </>
+                )}
               </button>
+
+              {copySuccess && (
+                <div className={`mt-4 p-2 rounded-md text-sm font-medium ${dark ? "bg-green-900 text-green-200" : "bg-green-100 text-green-800"}`}>
+                  {t(copySuccess)}
+                </div>
+              )}
+              {errorMessage && (
+                <div className={`mt-4 p-2 rounded-md text-sm font-medium ${dark ? "bg-red-900 text-red-200" : "bg-red-100 text-red-800"}`}>
+                  {t(errorMessage)}
+                </div>
+              )}
             </div>
-
-            {copySuccess && (
-              <p className="mt-3 text-green-500 font-semibold">
-                {t(copySuccess)}
-              </p>
-            )}
-
-            {errorMessage && (
-              <p className="mt-3 text-red-500 font-semibold">
-                {t(errorMessage)}
-              </p>
-            )}
           </div>
         </div>
       )}

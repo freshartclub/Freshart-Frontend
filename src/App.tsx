@@ -69,6 +69,7 @@ const ArtistDashboard = lazy(() => import("./components/ArtistDashboard/ArtistDa
 const SignUpOtp = lazy(() => import("./components/pages/SignUpOtp"));
 const OrderDetail = lazy(() => import("./components/ArtistPanel/Orderdetail/OrderDetails"));
 const MyPlans = lazy(() => import("./components/MyPlans/Myplans.tsx"));
+const SavedCards = lazy(() => import("./components/SavedCard/SavedCards.tsx"));
 
 const App: React.FC = () => {
   setup();
@@ -231,6 +232,14 @@ const App: React.FC = () => {
                 element={
                   <AuthGuard>
                     <MyPlans />
+                  </AuthGuard>
+                }
+              />
+              <Route
+                path="/my_card"
+                element={
+                  <AuthGuard>
+                    <SavedCards />
                   </AuthGuard>
                 }
               />

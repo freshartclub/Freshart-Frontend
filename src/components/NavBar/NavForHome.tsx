@@ -247,6 +247,9 @@ const NavForHome = () => {
                           <Link to="/priceandplans" className="hover:bg-gray-100 dark:hover:bg-gray-600 px-2 py-1 rounded">
                             Subscription Plan
                           </Link>
+                          <Link to="/my_card" className="hover:bg-gray-100 dark:hover:bg-gray-600 px-2 py-1 rounded">
+                            Saved Card
+                          </Link>
                           <Link to="/my_plans" className="hover:bg-gray-100 dark:hover:bg-gray-600 px-2 py-1 rounded">
                             My Plans
                           </Link>
@@ -436,6 +439,9 @@ const NavForHome = () => {
               </Link>
               <Link to="/priceandplans" className="font-medium py-2 border-b border-white/20" onClick={() => setIsOpen(false)}>
                 Subscription Plan
+              </Link>
+              <Link to="/my_card" className="font-medium py-2 border-b border-white/20" onClick={() => setIsOpen(false)}>
+                Saved Card
               </Link>
               <Link to="/circle" className="font-medium py-2 border-b border-white/20 flex items-center gap-2" onClick={() => setIsOpen(false)}>
                 <IoIosFlower size={20} />

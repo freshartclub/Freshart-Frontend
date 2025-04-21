@@ -4,7 +4,7 @@ import { IoArrowUp } from "react-icons/io5";
 import { IoArrowDownSharp } from "react-icons/io5";
 import { useTranslation } from "react-i18next";
 
-const Progress = () => {
+const Progress = ({ dark }: { dark: boolean }) => {
   const { t } = useTranslation();
   const progress = [
     {
@@ -19,26 +19,19 @@ const Progress = () => {
   return (
     <div className="p-4 border shadow rounded-md">
       <div className="flex justify-between items-center">
-        <p className="text-[18px] font-semibold text-black">
-          {t("Sales Progress")}
-        </p>
+        <p className="text-[18px] font-semibold text-black">{t("Sales Progress")}</p>
         <PiDotsThreeVerticalBold className="text-[16px] cursor-pointer" />
       </div>
       <p className="text-[14px] text-gray-500">{t("This Quarter")}</p>
 
       <div>
         {progress.map((value, index) => (
-          <div
-            key={index}
-            className="flex flex-col justify-center items-center mt-4"
-          >
+          <div key={index} className="flex flex-col justify-center items-center mt-4">
             <ProgressBar progress={value.percentage} className="mx-auto" />
 
             <div className="mt-4 w-full">
               <p className="text-center">
-                {t("You earned")}{" "}
-                <span className="font-semibold">{value.todaysale}</span>{" "}
-                {t("today")},{t("which is higher than yesterday.")}
+                {t("You earned")} <span className="font-semibold">{value.todaysale}</span> {t("today")},{t("which is higher than yesterday.")}
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">

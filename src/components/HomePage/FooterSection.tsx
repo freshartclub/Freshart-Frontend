@@ -25,7 +25,7 @@ const FooterSection = () => {
       <div className="mx-auto px-6 lg:px-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           <div className="sm:text-left text-center">
-            <img src={logo} alt="Fresh Art Club Logo" />
+            <img src={logo} alt="Fresh Art Club Logo" className="min-[450px]:w-[200px] w-[150px]" />
             <p className="mt-6 text-sm">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
           </div>
 

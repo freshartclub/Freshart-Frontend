@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { BiSolidImageAdd } from "react-icons/bi";
@@ -6,8 +7,6 @@ import { MdDelete } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { imageUrl, lowImageUrl } from "../../utils/baseUrls";
 import { formateCurrency } from "../../utils/FormatCurrency";
-import edit from "../assets/icon.png";
-import select_file from "../assets/select_file.png";
 import usePostCancelItem from "./https/usePostCancelItem";
 import usePostEvidenceMutation from "./https/usePostEvidenceMutation";
 import ProductPopup from "./ProductPopup";
@@ -19,13 +18,11 @@ const OrderApproveDetails = ({ data }) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [selectedProductPop, setSelectedProductPop] = useState(null);
-
   const [total, setTotal] = useState(0);
   const [subTotal, setSubTotal] = useState(0);
   const [discount, setDiscount] = useState(0);
 
   const { t } = useTranslation();
-
   const [id, setId] = useState("");
   const [orderType, setOrderType] = useState("");
   const [artworkId, setArtworkId] = useState("");
@@ -40,8 +37,7 @@ const OrderApproveDetails = ({ data }) => {
   } = useForm();
 
   const { mutateAsync, isPending } = usePostEvidenceMutation();
-  const { mutateAsync: cancelItemMutation, isPending: cancelItemPending } =
-    usePostCancelItem();
+  const { mutateAsync: cancelItemMutation, isPending: cancelItemPending } = usePostCancelItem();
 
   const delivery = {
     shipping: "DHL",
@@ -49,9 +45,8 @@ const OrderApproveDetails = ({ data }) => {
     tracking_no: "SPX037739199373",
   };
 
-  const openModal = (product: React.SetStateAction<null>) => {
+  const openModal = (product) => {
     setArtworkId(product?.artwork?._id);
-
     setSelectedProduct(product);
     setIsModalOpen(true);
   };
@@ -63,14 +58,11 @@ const OrderApproveDetails = ({ data }) => {
 
   const handleClick = () => {
     const fileInput = document.getElementById("fileInput");
-    if (fileInput) {
-      fileInput.click();
-    }
+    fileInput?.click();
   };
 
-  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = (event) => {
     const files = event.target.files;
-
     if (files && files.length > 0) {
       const fileArray = Array.from(files);
       setValue("evidenceImg", fileArray);
@@ -81,24 +73,20 @@ const OrderApproveDetails = ({ data }) => {
 
   const handleCancelItem = (data) => {
     data.artworkId = id;
-
-    try {
-      cancelItemMutation(data).then(() => {
+    cancelItemMutation(data)
+      .then(() => {
         setOrderModal(false);
-      });
-    } catch (error) {
-      console.error(error);
-    }
+      })
+      .catch(console.error);
   };
 
-  const onSubmit = (value, reset) => {
+  const onSubmit = (value) => {
     const data = {
       id,
       artworkId,
       orderType,
       value,
     };
-
     mutateAsync(data).then(() => {
       setIsModalOpen(false);
       reset();
@@ -108,7 +96,7 @@ const OrderApproveDetails = ({ data }) => {
   };
 
   useEffect(() => {
-    if (data?.items && data.items.length > 0) {
+    if (data?.items?.length > 0) {
       let calculatedSubTotal = 0;
       let calculatedDiscount = 0;
       let calculatedTotal = 0;
@@ -117,8 +105,7 @@ const OrderApproveDetails = ({ data }) => {
         if (item.other) {
           calculatedSubTotal += item.other.subTotal || 0;
           calculatedDiscount += item.other.totalDiscount || 0;
-          calculatedTotal +=
-            item.other.subTotal - item.other.totalDiscount || 0;
+          calculatedTotal += item.other.subTotal - item.other.totalDiscount || 0;
         }
       });
 
@@ -128,462 +115,423 @@ const OrderApproveDetails = ({ data }) => {
     }
   }, [data?.items]);
 
-  const reviewArtWork = (id: string) => {
+  const reviewArtWork = (id) => {
     navigate(`/artist-panel/artwork/preview?id=${id}&preview=true&type=order`);
   };
 
   return (
-    <>
-      <div className="flex flex-col justify-between w-full gap-5">
-        <div className="left flex flex-col w-full ">
-          <div className="bg-white p-4 md:p-6 shadow-md border rounded-lg mt-4">
-            <h2 className="text-base md:text-lg font-bold mb-4">
-              {t("Order Details")}
-            </h2>
+    <div className="flex flex-col gap-6 w-full">
+      <div className="flex-1">
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+          <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-6">{t("Order Details")}</h2>
 
-            <div className="overflow-x-auto w-full">
-              <table className="min-w-[800px] w-full  divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+              <thead className="bg-gray-50 dark:bg-gray-700">
+                <tr>
+                  {[t("Artwork Name"), t("Type"), t("Price"), t("Total"), t("Discount"), t("Evidence"), t("Actions")].map((header, idx) => (
                     <th
+                      key={idx}
                       scope="col"
-                      className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
                     >
-                      {t("Artwork Name")}
+                      {header}
                     </th>
-                    <th
-                      scope="col"
-                      className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      {t("Type")}
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      {t("Price")}
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      {t("Total")}
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      {t("Discount")}
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      {t("Evidence")}
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      {t("Actions")}
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {data?.items &&
-                    data?.items?.length > 0 &&
-                    data?.items?.map((product, index: number) => (
-                      <tr key={index} className="hover:bg-gray-50">
-                        <td
-                          onClick={() => reviewArtWork(product?.artwork?._id)}
-                          className="px-4 py-2 cursor-pointer"
-                        >
-                          <div className="flex min-w-[18vw] flex-col md:flex-row items-start md:items-center gap-2">
-                            <img
-                              src={`${lowImageUrl}/${product?.artwork?.media}`}
-                              alt="product"
-                              className="rounded-full border-2 w-11 h-11 object-cover"
-                            />
-
-                            <div>
-                              <h3 className="font-semibold text-sm md:text-base text-gray-800">
-                                {product?.artwork?.artworkName}
-                              </h3>
-                              <p className="text-xs text-gray-500">
-                                {t("Product Code")}:{" "}
-                                {product?.artwork?.inventoryShipping?.pCode ||
-                                  "N/A"}
-                              </p>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-4 py-2">
-                          <p className="text-sm md:text-base text-gray-600 capitalize font-semibold">
-                            {data?.type}
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                {data?.items?.map((product, index) => (
+                  <motion.tr
+                    key={index}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: index * 0.05 }}
+                    className="hover:bg-gray-50 dark:hover:bg-gray-700/50"
+                  >
+                    <td onClick={() => reviewArtWork(product?.artwork?._id)} className="px-4 py-4 cursor-pointer">
+                      <div className="flex items-center gap-3 min-w-[200px]">
+                        <img
+                          src={`${lowImageUrl}/${product?.artwork?.media}`}
+                          alt="product"
+                          className="rounded-full border-2 w-11 h-11 object-cover"
+                        />
+                        <div>
+                          <h3 className="font-semibold text-gray-800 dark:text-white">{product?.artwork?.artworkName}</h3>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">
+                            {t("Product Code")}: {product?.artwork?.inventoryShipping?.pCode || "N/A"}
                           </p>
-                        </td>
-                        <td className="px-4 py-2">
-                          <p className="text-sm md:text-base text-gray-600 capitalize font-semibold">
-                            {formateCurrency(product?.other?.subTotal, "$")}
-                          </p>
-                        </td>
-                        <td className="px-4 py-2">
-                          <p className="text-sm md:text-base text-gray-600 font-semibold">
-                            {formateCurrency(
-                              product?.other?.subTotal -
-                                product?.other?.totalDiscount,
-                              "$"
-                            )}
-                          </p>
-                        </td>
-                        <td className="px-4 py-2">
-                          <p className="text-sm md:text-base font-semibold">
-                            {(product?.artwork?.pricing?.dpersentage || "0") +
-                              "%"}
-                          </p>
-                        </td>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-4 py-4">
+                      <span className="inline-flex px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 capitalize">
+                        {data?.type}
+                      </span>
+                    </td>
+                    <td className="px-4 py-4 text-gray-700 dark:text-gray-300 font-medium">{formateCurrency(product?.other?.subTotal, "$")}</td>
+                    <td className="px-4 py-4 font-semibold text-gray-900 dark:text-white">
+                      {formateCurrency(product?.other?.subTotal - product?.other?.totalDiscount, "$")}
+                    </td>
+                    <td className="px-4 py-4 text-red-500 font-medium">{(product?.artwork?.pricing?.dpersentage || "0") + "%"}</td>
 
-                        {product?.other?.isCancelled ? (
-                          <td className="px-4 py-2">
-                            <p className="text-xs text-gray-600 font-semibold">
-                              {t("Not Available")}
-                            </p>
-                          </td>
-                        ) : (
-                          <td className="px-4 py-2">
-                            {product?.other?.evidenceImg &&
-                            product?.other?.evidenceImg?.length > 0 ? (
-                              <div className="flex flex-col gap-2">
-                                <div className="flex gap-2 mb-2">
-                                  {product.other.evidenceImg
-                                    .slice(0, 1)
-                                    .map((img, i: number) => (
-                                      <img
-                                        key={i}
-                                        src={`${imageUrl}/users/${img}`}
-                                        alt={`Evidence ${i + 1}`}
-                                        className="w-12 h-12 rounded-md object-cover"
-                                      />
-                                    ))}
-
-                                  <ProductPopup
-                                    product={selectedProductPop}
-                                    imageUrl={imageUrl}
-                                    setIsPopupOpen={setIsPopupOpen}
-                                    isPopupOpen={isPopupOpen}
-                                  />
-
-                                  <BiSolidImageAdd
-                                    onClick={() => {
-                                      setOrderType(data?.type);
-                                      setId(data?._id);
-                                      openModal(product);
-                                    }}
-                                    size="2.5em"
-                                    className="cursor-pointer"
-                                  />
-                                </div>
-                                <button
-                                  className="px-3 py-1 border text-xs font-semibold rounded-md border-zinc-400"
+                    <td className="px-4 py-4">
+                      {product?.other?.isCancelled ? (
+                        <span className="text-xs text-gray-500 dark:text-gray-400">{t("Not Available")}</span>
+                      ) : product?.other?.evidenceImg?.length > 0 ? (
+                        <div className="flex flex-col gap-2">
+                          <div className="flex gap-2">
+                            {product.other.evidenceImg.slice(0, 1).map((img, i) => (
+                              <motion.div key={i} whileHover={{ scale: 1.05 }} className="relative">
+                                <img
+                                  src={`${imageUrl}/users/${img}`}
+                                  alt={`Evidence ${i + 1}`}
+                                  className="w-12 h-12 rounded-md object-cover cursor-pointer"
                                   onClick={() => {
-                                    setIsPopupOpen(!isPopupOpen);
+                                    setIsPopupOpen(true);
                                     setSelectedProductPop(product);
                                   }}
-                                >
-                                  {t("View All")}
-                                </button>
-                              </div>
-                            ) : (
-                              <span
-                                className="cursor-pointer w-full sm:w-[8rem] font-medium text-xs sm:text-sm p-1.5 sm:p-2 rounded-md inline-block text-center mb-2"
-                                onClick={() => {
-                                  setOrderType(data?.type);
-                                  setId(data?._id);
-                                  openModal(product);
-                                }}
-                              >
-                                <BiSolidImageAdd size="2.5em" />
-                              </span>
-                            )}
-                          </td>
-                        )}
-
-                        <td className="px-3 md:px-6 py-2 md:py-4">
-                          <div className="flex justify-end   pr-2 md:pr-5">
-                            {!product?.other?.isCancelled ? (
-                              <span
-                                className="cursor-pointer w-full sm:w-[5rem]  font-medium text-xs sm:text-sm p-1.5 sm:p-2 rounded-md inline-block text-center"
-                                onClick={() => {
-                                  setId(product?.artwork?._id);
-                                  setSelectedProduct(product);
-                                  setOrderModal(true);
-                                }}
-                              >
-                                <MdDelete size="2em" />
-                              </span>
-                            ) : (
-                              <span className="cursor-pointer w-full bg-red-300 text-black pointer-events-none font-medium text-xs py-1 px-2 rounded-md inline-block text-center">
-                                {t("Cancelled By You")}
-                              </span>
-                            )}
+                                />
+                              </motion.div>
+                            ))}
+                            <button
+                              onClick={() => {
+                                setOrderType(data?.type);
+                                setId(data?._id);
+                                openModal(product);
+                              }}
+                              className="p-2 rounded-md bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                            >
+                              <BiSolidImageAdd className="text-gray-600 dark:text-gray-300" size={20} />
+                            </button>
                           </div>
-                        </td>
-                      </tr>
-                    ))}
-                </tbody>
-              </table>
-            </div>
+                          <button
+                            className="text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline"
+                            onClick={() => {
+                              setIsPopupOpen(true);
+                              setSelectedProductPop(product);
+                            }}
+                          >
+                            {t("View All")}
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => {
+                            setOrderType(data?.type);
+                            setId(data?._id);
+                            openModal(product);
+                          }}
+                          className="p-2 rounded-md bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                        >
+                          <BiSolidImageAdd className="text-gray-600 dark:text-gray-300" size={20} />
+                        </button>
+                      )}
+                    </td>
 
-            {/* Summary Section */}
-            <div className="mt-6 p-4 rounded-lg w-full lg:w-2/5 lg:ml-auto">
-              <div className="flex justify-between text-sm md:text-base text-gray-400 mb-1 font-semibold">
-                <span>{t("Subtotal")} :</span>
-                <span className="font-semibold text-black">
-                  {formateCurrency(subTotal, "$")}
-                </span>
+                    <td className="px-4 py-4 text-right">
+                      {!product?.other?.isCancelled ? (
+                        <button
+                          onClick={() => {
+                            setId(product?.artwork?._id);
+                            setSelectedProduct(product);
+                            setOrderModal(true);
+                          }}
+                          className="p-2 text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors"
+                          title={t("Cancel Item")}
+                        >
+                          <MdDelete size={20} />
+                        </button>
+                      ) : (
+                        <span className="text-xs px-2 py-1 rounded-full bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300">
+                          {t("Cancelled")}
+                        </span>
+                      )}
+                    </td>
+                  </motion.tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Order Summary */}
+          <div className="mt-8 p-6 bg-gray-50 dark:bg-gray-700/30 rounded-lg max-w-md ml-auto">
+            <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-4">{t("Order Summary")}</h3>
+            <div className="space-y-3">
+              <div className="flex justify-between">
+                <span className="text-gray-600 dark:text-gray-300">{t("Subtotal")}:</span>
+                <span className="font-medium text-gray-800 dark:text-white">{formateCurrency(subTotal, "$")}</span>
               </div>
-              <div className="flex justify-between text-sm md:text-base text-gray-400 mb-1 font-semibold">
-                <span>{t("Discount")} :</span>
-                <span className="text-red-400">
-                  {formateCurrency(discount, "$")}
-                </span>
+              <div className="flex justify-between">
+                <span className="text-gray-600 dark:text-gray-300">{t("Discount")}:</span>
+                <span className="text-red-500 dark:text-red-400">-{formateCurrency(discount, "$")}</span>
               </div>
-              <div className="flex justify-between text-gray-800 font-semibold text-sm md:text-md mt-4">
-                <span>{"Total"}</span>
-                {formateCurrency(total, "$")}
+              <div className="border-t border-gray-200 dark:border-gray-600 my-2"></div>
+              <div className="flex justify-between text-lg font-bold">
+                <span className="text-gray-800 dark:text-white">{t("Total")}:</span>
+                <span className="text-blue-600 dark:text-blue-400">{formateCurrency(total, "$")}</span>
               </div>
-              {/* <div className="flex justify-between text-sm md:text-base text-gray-400 mb-1 font-semibold">
-                <span>{t("Shipping")} :</span>
-                <span className="text-red-400">
-                  {formateCurrency(data?.shipping, "$")}
-                </span>
-              </div> */}
-              {/* <div className="flex justify-between text-sm md:text-base text-gray-400 mb-1 font-semibold">
-                <span>{t("Taxes")}:</span>
-                <span className="text-black font-semibold">
-                  {formateCurrency(data?.taxAmount, "$")}
-                </span>
-              </div> */}
             </div>
           </div>
-        </div>
-
-        <div className="bg-[#fff] right border border-gray-100 shadow-lg mt-4 h-auto rounded-lg w-full lg:w-2/5 p-4 md:p-6">
-          <div className="flex justify-between items-center">
-            <h1 className="font-bold text-base md:text-lg">
-              {t("Customer Info")}
-            </h1>
-          </div>
-
-          <div className="flex flex-row items-center gap-4 border-b-2 border-dashed py-4">
-            <img
-              className="rounded-full w-14 h-14 object-cover"
-              src={`${imageUrl}/users/${data?.user?.mainImage}`}
-              alt="Image"
-            />
-
-            <div>
-              <p className="font-bold text-sm md:text-base text-gray-600">
-                {`${data?.user?.artistName} 
-                ${data?.user?.artistSurname1} ${data?.user?.artistSurname2}`}
-              </p>
-              <p className="text-gray-400 text-xs md:text-sm">
-                {data?.user?.email}
-              </p>
-            </div>
-          </div>
-
-          <div className="flex justify-between items-center mt-4 md:mt-6">
-            <h1 className="font-bold text-base md:text-lg">Delivery</h1>
-            <img
-              className="cursor-pointer w-4 h-4 md:w-5 md:h-5"
-              src={edit}
-              alt="edit"
-            />
-          </div>
-
-          <div className="w-full mt-4 md:mt-6">
-            <div className="flex justify-between text-sm md:text-base text-gray-400 mb-1">
-              <span>{t("Ship by")}</span>
-              <span className="text-black w-1/2">{delivery.shipping}</span>
-            </div>
-
-            <div className="flex justify-between text-sm md:text-base text-gray-400 mb-1">
-              <span>{t("Speedy")}</span>
-              <span className="text-black w-1/2">{delivery.speedy}</span>
-            </div>
-
-            <div className="flex justify-between text-sm md:text-base text-gray-400 mb-1">
-              <span>{t("Tracking No.")}</span>
-              <span className="text-black w-1/2">{delivery.tracking_no}</span>
-            </div>
-          </div>
-
-          <button className="w-full md:w-auto px-4 py-2 border border-zinc-800 rounded-md bg-black text-white text-sm md:text-base mt-4 md:mt-5">
-            {t("Track Order")}
-          </button>
         </div>
       </div>
 
-      {orderModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[100]">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-2/3 ">
-            <h2 className="text-lg font-bold mb-4 pb-4 border-b-2">
-              {t("Reason For Cancel")}
-            </h2>
+      <div className="w-full lg:w-80 xl:w-96">
+        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm p-6">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-lg font-bold text-gray-800 dark:text-white">{t("Customer Info")}</h2>
+          </div>
 
-            <form onSubmit={handleSubmit(handleCancelItem)}>
-              <h2 className="text- font-semibold mb-2">{t("Artwork Name")}</h2>
+          <div className="flex items-center gap-4 pb-6 border-b border-gray-200 dark:border-gray-700">
+            <img
+              className="rounded-full w-14 h-14 object-cover border-2 border-gray-200 dark:border-gray-600"
+              src={`${imageUrl}/users/${data?.user?.mainImage}`}
+              alt="Customer"
+            />
+            <div>
+              <p className="font-semibold text-gray-800 dark:text-white">
+                {`${data?.user?.artistName} ${data?.user?.artistSurname1} ${data?.user?.artistSurname2}`}
+              </p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">{data?.user?.email}</p>
+            </div>
+          </div>
 
-              <input
-                type="text"
-                placeholder="Ex: Adventure Seekers Expedition..."
-                defaultValue={selectedProduct?.artwork?.artworkName}
-                readOnly
-                className="h-12 w-full border rounded-lg p-2 mb-3 outline-none"
-                {...register("title")}
-              />
+          <div className="mt-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-bold text-gray-800 dark:text-white">{t("Delivery Info")}</h2>
+              <button className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                </svg>
+              </button>
+            </div>
 
-              <h2 className="text- font-semibold mb-2">{t("Topic")}</h2>
-
-              <select
-                className="h-12 w-full border rounded-lg p-2 mb-3 outline-none"
-                {...register("reason", { required: true })}
-              >
-                <option value="">
-                  {t("Select a reason for cancellation")}
-                </option>
-                <option value="damaged">{t("Product Damaged")}</option>
-                <option value="wrong item">{t("Wrong Item Received")}</option>
-                <option value="quality issues">{t("Quality Issues")}</option>
-                <option value="shipping delay">{t("Shipping Delay")}</option>
-                <option value="customer request">
-                  {t("Customer Request")}
-                </option>
-                <option value="out of stock">{t("Out of Stock")}</option>
-                <option value="other">{t("Other")}</option>
-              </select>
-              {errors.reason && (
-                <p className="text-red-500 text-sm mb-3">
-                  {t("Please select a reason")}
-                </p>
-              )}
-
-              <h2 className="text- font-semibold mb-2">
-                {t("Describe the reason")}
-              </h2>
-              <textarea
-                {...register("description", { required: true })}
-                placeholder={t(
-                  "Please describe the reason for cancellation..."
-                )}
-                className="h-20 w-full border rounded-lg p-2 resize-none"
-              />
-
-              <div className="flex justify-end gap-4 px-2 py-2 rounded">
-                <span
-                  onClick={closeModal}
-                  className="bg-white-500 text-black text-md px-2 py-2 rounded-lg border-2 font-bold"
-                >
-                  {t("Cancel")}
-                </span>
-                <button
-                  type="submit"
-                  disabled={cancelItemPending}
-                  className="px-2 py-2 rounded-lg bg-black text-white text-md font-bold"
-                >
-                  {cancelItemPending ? t("Rejecting...") : t("Reject")}
-                </button>
+            <div className="space-y-3">
+              <div className="flex justify-between">
+                <span className="text-gray-600 dark:text-gray-300">{t("Ship by")}:</span>
+                <span className="text-gray-800 dark:text-white">{delivery.shipping}</span>
               </div>
-            </form>
+              <div className="flex justify-between">
+                <span className="text-gray-600 dark:text-gray-300">{t("Speedy")}:</span>
+                <span className="text-gray-800 dark:text-white">{delivery.speedy}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600 dark:text-gray-300">{t("Tracking No.")}:</span>
+                <span className="text-gray-800 dark:text-white">{delivery.tracking_no}</span>
+              </div>
+            </div>
+
+            <button className="w-full mt-6 px-4 py-2.5 bg-black dark:bg-gray-900 text-white dark:text-gray-100 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-700 transition-colors font-medium">
+              {t("Track Order")}
+            </button>
           </div>
         </div>
-      )}
+      </div>
 
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[100]">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-2/3 ">
-            <form onSubmit={handleSubmit((data) => onSubmit(data, reset))}>
-              <h2 className="text-lg font-bold mb-3 border-b-2 pb-4">
-                {t("Upload Evidence")}
-              </h2>
-              <h2 className="text-sm font-semibold mb-2 mt-4">
-                {t("Upload Images")}
-              </h2>
-
-              <div className="flex flex-col items-center justify-center gap-x-4 bg-[#919EAB33] rounded-lg">
-                <div className="mt-20 flex flex-col items-center justify-center ">
-                  <input
-                    id="fileInput"
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    style={{ display: "none" }}
-                    {...register("evidenceImg", {
-                      onChange: (e) => handleFileSelect(e),
-                    })}
-                  />
-                  <img src={select_file} alt="Select file" />
-                  <h1 className="font-bold text-base mb-4">
-                    {t("Drop or select file")}
-                  </h1>
-                  <p
-                    className="text-sm mb-10 text-gray-600 cursor-pointer"
-                    onClick={handleClick}
-                  >
-                    {t("Drop files here or click to")}{" "}
-                    <span className="text-[#00A76F]">{t("browse")}</span>{" "}
-                    {t("through your computer.")}
-                  </p>
-                </div>
+      <AnimatePresence>
+        {orderModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] backdrop-blur-sm"
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              className="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-md"
+            >
+              <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+                <h2 className="text-xl font-bold text-gray-800 dark:text-white">{t("Reason For Cancel")}</h2>
               </div>
 
-              <div className="flex flex-col sm:flex-row mt-6">
-                {selectedImage && selectedImage.length > 0 ? (
-                  <div className="flex flex-wrap gap-4">
-                    {selectedImage.map((image, index: number) => (
-                      <div
-                        key={index}
-                        className="p-2 border border-gray-300 rounded-md"
-                      >
-                        <img
-                          src={image}
-                          alt={`Selected Preview ${index + 1}`}
-                          className="w-16 h-14 rounded-md object-cover"
-                        />
-                      </div>
-                    ))}
+              <form onSubmit={handleSubmit(handleCancelItem)} className="p-6">
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("Artwork Name")}</label>
+                    <input
+                      type="text"
+                      defaultValue={selectedProduct?.artwork?.artworkName}
+                      readOnly
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 dark:text-white"
+                    />
                   </div>
-                ) : (
-                  <p className="text-gray-500 text-sm">
-                    {t("No Images Selected")}
-                  </p>
-                )}
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("Reason")} *</label>
+                    <select
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 dark:text-white"
+                      {...register("reason", { required: true })}
+                    >
+                      <option value="">{t("Select a reason")}</option>
+                      <option value="damaged">{t("Product Damaged")}</option>
+                      <option value="wrong item">{t("Wrong Item Received")}</option>
+                      <option value="quality issues">{t("Quality Issues")}</option>
+                      <option value="shipping delay">{t("Shipping Delay")}</option>
+                      <option value="customer request">{t("Customer Request")}</option>
+                      <option value="out of stock">{t("Out of Stock")}</option>
+                      <option value="other">{t("Other")}</option>
+                    </select>
+                    {errors.reason && <p className="mt-1 text-sm text-red-600">{t("Please select a reason")}</p>}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("Description")} *</label>
+                    <textarea
+                      {...register("description", { required: true })}
+                      placeholder={t("Describe the reason...")}
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 dark:text-white"
+                      rows={4}
+                    />
+                    {errors.description && <p className="mt-1 text-sm text-red-600">{t("Please provide a description")}</p>}
+                  </div>
+                </div>
+
+                <div className="mt-6 flex justify-end gap-3">
+                  <button
+                    type="button"
+                    onClick={closeModal}
+                    className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                  >
+                    {t("Cancel")}
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={cancelItemPending}
+                    className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-70"
+                  >
+                    {cancelItemPending ? t("Cancelling...") : t("Confirm Cancel")}
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+
+        {/* Evidence Upload Modal */}
+        {isModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] backdrop-blur-sm"
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              className="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-2xl"
+            >
+              <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+                <h2 className="text-xl font-bold text-gray-800 dark:text-white">{t("Upload Evidence")}</h2>
               </div>
 
-              <div className="flex justify-end gap-4 px-2 py-2 rounded">
-                <span
-                  onClick={() => {
-                    setIsModalOpen(false);
-                    setSelectedImage(null);
-                  }}
-                  className="bg-white-500 cursor-pointer text-black text-md px-2 py-2 rounded-lg border-2 font-bold"
-                >
-                  {t("Cancel")}
-                </span>
-                <button
-                  type="submit"
-                  className="px-2 py-2 rounded-lg bg-black text-white text-md font-bold"
-                >
-                  {" "}
-                  {isPending ? t("Submiting...") : t("Submit")}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-    </>
+              <form onSubmit={handleSubmit((data) => onSubmit(data))} className="p-6">
+                <div className="space-y-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t("Upload Images")}</label>
+                    <input
+                      id="fileInput"
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      className="hidden"
+                      {...register("evidenceImg", {
+                        onChange: (e) => handleFileSelect(e),
+                      })}
+                    />
+                    <motion.div
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={handleClick}
+                      className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-8 text-center cursor-pointer bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                    >
+                      <div className="mx-auto w-16 h-16 mb-4 flex items-center justify-center bg-blue-100 dark:bg-blue-900/30 rounded-full">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-8 w-8 text-blue-500 dark:text-blue-400"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                          />
+                        </svg>
+                      </div>
+                      <p className="text-gray-600 dark:text-gray-300">
+                        {t("Click to upload")} <span className="text-blue-500">{t("or drag and drop")}</span>
+                      </p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{t("PNG, JPG, GIF up to 10MB")}</p>
+                    </motion.div>
+                  </div>
+
+                  {selectedImage?.length > 0 && (
+                    <div>
+                      <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t("Selected Images")}</h3>
+                      <div className="flex flex-wrap gap-3">
+                        {selectedImage.map((image, index) => (
+                          <motion.div key={index} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="relative group">
+                            <img
+                              src={image}
+                              alt={`Preview ${index + 1}`}
+                              className="w-20 h-20 rounded-md object-cover border border-gray-200 dark:border-gray-600"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const newImages = [...selectedImage];
+                                newImages.splice(index, 1);
+                                setSelectedImage(newImages);
+                              }}
+                              className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                <path
+                                  fillRule="evenodd"
+                                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                            </button>
+                          </motion.div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="mt-8 flex justify-end gap-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsModalOpen(false);
+                      setSelectedImage(null);
+                    }}
+                    className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                  >
+                    {t("Cancel")}
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isPending || !selectedImage}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+                  >
+                    {isPending ? t("Uploading...") : t("Upload Evidence")}
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <ProductPopup product={selectedProductPop} imageUrl={imageUrl} setIsPopupOpen={setIsPopupOpen} isPopupOpen={isPopupOpen} />
+    </div>
   );
 };
 

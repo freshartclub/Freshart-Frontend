@@ -3,13 +3,13 @@ import { FaEye, FaToggleOn } from "react-icons/fa";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 import { MdOutlineOpenInNew } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-import "slick-carousel/slick/slick-theme.css";
-import "slick-carousel/slick/slick.css";
+import { useAppSelector } from "../../store/typedReduxHooks";
 import Loader from "../ui/Loader";
 import { lowImageUrl } from "../utils/baseUrls";
 import { useGetRecentArtwork } from "./http/getRecentArtwork";
 
 const RecentSection = () => {
+  const dark = useAppSelector((state) => state.theme.mode);
   const { data, isLoading } = useGetRecentArtwork();
   const [viewedImages, setViewedImages] = useState({});
   const scrollContainerRef = useRef(null);
@@ -24,7 +24,7 @@ const RecentSection = () => {
   };
 
   const handleViewClick = (id: string) => {
-    const newViewedImages = { ...viewedImages, [id]: Date.now() }; // Store timestamp
+    const newViewedImages = { ...viewedImages, [id]: Date.now() };
     localStorage.setItem("viewedImages", JSON.stringify(newViewedImages));
     setViewedImages(newViewedImages);
   };
@@ -56,9 +56,7 @@ const RecentSection = () => {
       const container = scrollContainerRef.current;
       if (!container) return;
       setIsStart(container.scrollLeft === 0);
-      setIsEnd(
-        container.scrollLeft + container.clientWidth >= container.scrollWidth
-      );
+      setIsEnd(container.scrollLeft + container.clientWidth >= container.scrollWidth);
     };
 
     const container = scrollContainerRef.current;
@@ -95,7 +93,9 @@ const RecentSection = () => {
           }
           handleRedirectToDescription(item?._id);
         }}
-        className="relative cursor-pointer p-3 border flex-shrink-0 bg-white hover:shadow-[5px_5px_5px_rgba(0,0,0,0.05)] transition-shadow duration-300 min-w-[230px] max-w-[300px] h-[300px] group"
+        className={`relative cursor-pointer p-3 border flex-shrink-0 ${
+          dark ? "bg-gray-700 border-gray-600" : "bg-white border-gray-200"
+        } hover:shadow-[5px_5px_5px_rgba(0,0,0,0.05)] transition-shadow duration-300 min-w-[230px] max-w-[300px] h-[300px] group`}
       >
         <div className="relative overflow-hidden rounded-md h-[200px] w-full">
           <img
@@ -109,14 +109,18 @@ const RecentSection = () => {
           {isOffensive && !isViewed ? (
             <div className="absolute inset-0 flex flex-col justify-center items-center gap-3 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               <button
-                className="bg-white text-gray-800 px-3 py-1 rounded-full text-xs font-medium hover:bg-gray-100 transition-colors flex items-center gap-2"
+                className={`${
+                  dark ? "bg-gray-700 text-gray-100 hover:bg-gray-600" : "bg-white text-gray-800 hover:bg-gray-100"
+                } px-3 py-1 rounded-full text-xs font-medium transition-colors flex items-center gap-2`}
                 onClick={() => handleViewClick(item?._id)}
               >
                 <FaEye /> View Image
               </button>
               <button
                 onClick={() => handleRedirectToDescription(item?._id)}
-                className="bg-white text-gray-800 px-3 py-1 rounded-full text-xs font-medium hover:bg-gray-100 transition-colors flex items-center gap-2"
+                className={`${
+                  dark ? "bg-gray-700 text-gray-100 hover:bg-gray-600" : "bg-white text-gray-800 hover:bg-gray-100"
+                } px-3 py-1 rounded-full text-xs font-medium transition-colors flex items-center gap-2`}
               >
                 <MdOutlineOpenInNew /> Details
               </button>
@@ -129,43 +133,30 @@ const RecentSection = () => {
                 e.stopPropagation();
                 handleHideClick(item?._id);
               }}
-              className="absolute bg-white/90 px-2 py-1 rounded-full top-2 right-2 flex items-center gap-1 text-xs"
+              className={`absolute ${dark ? "bg-gray-700/90" : "bg-white/90"} px-2 py-1 rounded-full top-2 right-2 flex items-center gap-1 text-xs`}
             >
               <p>Offensive</p>
-              <FaToggleOn className="text-gray-600" />
+              <FaToggleOn className={`${dark ? "text-gray-400" : "text-gray-600"}`} />
             </div>
           ) : null}
         </div>
 
         <div className="mt-3">
-          <h1 className="font-semibold text-md text-gray-900 truncate">
-            {item?.artworkName?.length > 17
-              ? `${item?.artworkName?.slice(0, 17)}...`
-              : item?.artworkName}
+          <h1 className={`font-semibold text-md ${dark ? "text-gray-100" : "text-gray-900"} truncate`}>
+            {item?.artworkName?.length > 17 ? `${item?.artworkName?.slice(0, 17)}...` : item?.artworkName}
           </h1>
-          <p className="text-xs text-gray-600 mt-1 font-light italic">
-            by {item?.owner?.artistName}
-          </p>
-          <p className="text-xs text-gray-500 mt-1">
-            {item?.discipline?.artworkDiscipline} •{" "}
-            {item?.additionalInfo?.artworkTechnic}
+          <p className={`text-xs ${dark ? "text-gray-300" : "text-gray-600"} mt-1 font-light italic`}>by {item?.owner?.artistName}</p>
+          <p className={`text-xs ${dark ? "text-gray-400" : "text-gray-500"} mt-1`}>
+            {item?.discipline?.artworkDiscipline} • {item?.additionalInfo?.artworkTechnic}
           </p>
           {hasDiscount ? (
             <div className="mt-2 flex items-center gap-1">
-              <span className="text-red-600 font-medium text-sm">
-                ${item?.additionalInfo?.finalPrice}
-              </span>
-              <span className="text-gray-500 line-through text-xs">
-                ${item?.additionalInfo?.originalPrice}
-              </span>
-              <span className="text-red-600 text-xs">
-                ({item?.additionalInfo?.discount}% off)
-              </span>
+              <span className="text-red-600 font-medium text-sm">${item?.additionalInfo?.finalPrice}</span>
+              <span className={`${dark ? "text-gray-400" : "text-gray-500"} line-through text-xs`}>${item?.additionalInfo?.originalPrice}</span>
+              <span className="text-red-600 text-xs">({item?.additionalInfo?.discount}% off)</span>
             </div>
           ) : (
-            <p className="text-gray-700 mt-2 font-medium text-sm">
-              {item?.size}
-            </p>
+            <p className={`${dark ? "text-gray-300" : "text-gray-700"} mt-2 font-medium text-sm`}>{item?.size}</p>
           )}
         </div>
       </div>
@@ -175,16 +166,14 @@ const RecentSection = () => {
   return isLoading ? (
     <Loader />
   ) : (
-    <div className="container bg-[#F5F2EB] mx-auto pt-5 pb-10 md:px-6 px-3 mt-10">
-      <h1 className="text-[25px] md:text-[30px] font-semibold mb-5 w-1/2 sm:w-full">
-        Recent Viewed
-      </h1>
+    <div className={`container ${dark ? "bg-gray-800" : "bg-[#F5F2EB]"} mx-auto pt-5 pb-10 md:px-6 px-3 mt-10`}>
+      <h1 className={`text-[25px] md:text-[30px] font-semibold mb-5 w-1/2 sm:w-full ${dark ? "text-gray-100" : "text-gray-900"}`}>Recent Viewed</h1>
 
       {data?.data && data?.data?.length > 0 ? (
         <div className="relative">
           <button
             className={`absolute left-0 top-1/2 transform -translate-y-1/2 p-2 rounded-full shadow-lg z-10 ${
-              isStart ? "hidden" : "bg-gray-800 hover:bg-gray-900 text-white"
+              isStart ? "hidden" : `${dark ? "bg-gray-700 hover:bg-gray-600" : "bg-gray-800 hover:bg-gray-900"} text-white`
             }`}
             onClick={() => handleScroll("left")}
             disabled={isStart}
@@ -192,16 +181,13 @@ const RecentSection = () => {
             <FaChevronLeft size={20} />
           </button>
 
-          <div
-            ref={scrollContainerRef}
-            className="flex overflow-x-scroll no-scrollbar space-x-4 pb-2 scrollbar"
-          >
+          <div ref={scrollContainerRef} className="flex overflow-x-scroll no-scrollbar space-x-4 pb-2 scrollbar">
             {data?.data.map((item) => renderCard(item))}
           </div>
 
           <button
             className={`absolute right-0 top-1/2 transform -translate-y-1/2 p-2 rounded-full shadow-lg z-10 ${
-              isEnd ? "hidden" : "bg-gray-800 hover:bg-gray-900 text-white"
+              isEnd ? "hidden" : `${dark ? "bg-gray-700 hover:bg-gray-600" : "bg-gray-800 hover:bg-gray-900"} text-white`
             }`}
             onClick={() => handleScroll("right")}
             disabled={isEnd}

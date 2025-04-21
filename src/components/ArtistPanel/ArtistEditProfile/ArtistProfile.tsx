@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import Header from "../../ui/Header";
-import Loader from "../../ui/Loader";
 import { useGetArtistDetails } from "../../UserProfile/http/useGetDetails";
 import dot from "./assets/dot.png";
 import GeneralUpload from "./GeneralUpload";
-import { useTranslation } from "react-i18next";
+import { useAppSelector } from "../../../store/typedReduxHooks";
 
 const ArtistProfile = () => {
   const { data, isLoading } = useGetArtistDetails();
   const [isActiveStatus, setIsActiveStatus] = useState("");
+  const dark = useAppSelector((state) => state.theme.mode);
 
   const { t } = useTranslation();
 
@@ -18,26 +19,14 @@ const ArtistProfile = () => {
     }
   }, [data]);
 
-  if (isLoading) return <Loader />;
-
   return (
-    <div className="m-2">
-      <Header
-        variant={{ theme: "dark", weight: "semiBold" }}
-        className="mt-6 ml-2 text-xl flex gap-2 items-center"
-      >
-        {t("Artist Profile")}
-      </Header>
+    <div className={`${dark ? "bg-gray-900" : "bg-gray-50"}`}>
+      <div className="p-4">
+        <h1 className={`text-2xl font-bold mb-1 ${dark ? "text-white" : "text-gray-800"}`}> {t("Artist Profile")}</h1>
+        <p className={`text-sm ${dark ? "text-gray-400" : "text-gray-600"}`}>{t("View/Update your artist profile")}</p>
+      </div>
 
-      <ol className="flex mt-2 items-center">
-        <li className="mx-2 text-sm font-medium text-gray-70">{t("Artist")}</li>
-        <img src={dot} alt="dot" />
-        <li className="text-[#919EAB] text-sm mx-2 font-medium">
-          {t("Profile")}
-        </li>
-      </ol>
-
-      <GeneralUpload isActiveStatus={isActiveStatus} />
+      <GeneralUpload isActiveStatus={isActiveStatus} isLoading={isLoading} />
     </div>
   );
 };

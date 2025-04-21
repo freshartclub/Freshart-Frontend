@@ -27,6 +27,15 @@
   /* 96px */
 }
 
+@layer components {
+  .table-transition {
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+  .hover-scale {
+    @apply transition-transform duration-200 hover:scale-[1.02];
+  }
+}
+
 .slider-container {
   display: flex;
   overflow: hidden;
@@ -156,6 +165,16 @@
   display: none !important;
 }
 
+.scrollbar1::-webkit-scrollbar {
+  display: visible;
+}
+
+@media (max-width: 450px) {
+  .scrollbar1::-webkit-scrollbar {
+    display: none !important;
+  }
+}
+
 .scrollbar2::-webkit-scrollbar-thumb {
   width: 8px !important;
   height: 8px !important;
@@ -282,8 +301,6 @@ html {
   top: 50% !important;
   transform: translate(-50%, -50%) !important;
 }
-
-
 
 /* Custom styles for slick slider dots */
 .custom-dots li button:before {

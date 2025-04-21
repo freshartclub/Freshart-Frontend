@@ -1,10 +1,11 @@
 import Slider from "react-slick";
 import banner from "../../assets/main banner.png";
 import Header from "../ui/Header";
-import P from "../ui/P";
 import banner2 from "../../assets/banner_2.jpg";
 import banner3 from "../../assets/banner3.png";
 import { useNavigate } from "react-router-dom";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 const BannerSection = () => {
   const navigate = useNavigate();
@@ -82,11 +83,7 @@ const BannerSection = () => {
       <Slider {...settings} className="banner_arrow">
         {bannerData.map((item, index) => (
           <div key={index} className=" flex items-center">
-            <img
-              src={item.image1}
-              alt="banner"
-              className="w-full h-screen relative object-cover"
-            />
+            <img src={item.image1} alt="banner" className="w-full h-screen relative object-cover" />
             <div className="container mx-auto">
               <div className="absolute top-[30%] left-12">
                 <div className="w-[90%] sm:w-[90%] md:w-[90%] xl:w-[80%] 2xl:w-[50%] md:text-left text-center text-white">
@@ -97,13 +94,8 @@ const BannerSection = () => {
                     {item.header}
                   </Header>
 
-                  <span className="md:text-[18px] sm:text-[14px] hidden sm:block mb-6 md:w-[88%] w-full mt-4">
-                    {item.para}
-                  </span>
-                  <button
-                    onClick={handleCollection}
-                    className="!border-b !bg-transparent"
-                  >
+                  <span className="md:text-[18px] sm:text-[14px] hidden sm:block mb-6 md:w-[88%] w-full mt-4">{item.para}</span>
+                  <button onClick={handleCollection} className="!border-b !bg-transparent">
                     {item.btn}
                   </button>
                 </div>

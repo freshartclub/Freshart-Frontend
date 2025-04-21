@@ -1135,26 +1135,47 @@ const Purchase = () => {
                   placeholder="Search artworks..."
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  className={`w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all ${
-                    dark ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400" : "border-gray-300"
+                  className={`w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#EE1D52] focus:border-[#EE1D52] outline-none transition-all ${
+                    dark ? "bg-gray-800 border-gray-600 text-white placeholder-gray-400" : "border-gray-300"
                   }`}
                 />
                 <FaSearch className={`absolute left-3 top-3 ${dark ? "text-gray-400" : "text-gray-400"}`} />
               </div>
-              <SelectOption
-                value={moreOptions.comingSoon === "Yes" ? { value: "Coming Soon", label: "Coming Soon" } : { value: "All", label: "Show" }}
-                options={["All", "Coming Soon"].map((item) => ({
-                  value: item,
-                  label: item,
-                }))}
-                onChange={(e) => {
-                  setMoreOptions((prev) => ({
-                    ...prev,
-                    comingSoon: e?.value === "Coming Soon" ? "Yes" : "",
-                  }));
-                }}
-                dark={dark}
-              />
+              <div className="relative w-48">
+                <select
+                  value={moreOptions.comingSoon === "Yes" ? "Coming Soon" : "All"}
+                  onChange={(e) =>
+                    setMoreOptions((prev) => ({
+                      ...prev,
+                      comingSoon: e.target.value === "Coming Soon" ? "Yes" : "",
+                    }))
+                  }
+                  className={`
+          w-full appearance-none px-4 py-2 rounded-lg border
+          ${dark ? "bg-gray-800 text-white border-gray-600" : "bg-white text-gray-900 border-gray-300"}
+          focus:outline-none focus:ring-2 ${dark ? "focus:ring-[#EE1D52]" : "focus:ring-[#EE1D52]"}
+          transition duration-200
+        `}
+                >
+                  <option value="All">Show All</option>
+                  <option value="Coming Soon">Coming Soon</option>
+                </select>
+
+                <div
+                  className={`
+          pointer-events-none absolute inset-y-0 right-3 flex items-center
+          ${dark ? "text-gray-300" : "text-gray-500"}
+        `}
+                >
+                  <svg className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                    <path
+                      fillRule="evenodd"
+                      d="M10 12a1 1 0 01-.707-.293l-4-4a1 1 0 111.414-1.414L10 9.586l3.293-3.293a1 1 0 111.414 1.414l-4 4A1 1 0 0110 12z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </div>
+              </div>
             </div>
           </div>
 

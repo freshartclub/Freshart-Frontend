@@ -49,17 +49,10 @@ const ArtistPanel = () => {
     <>
       <ArtistNavBar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
       <div className="flex w-full h-screen overflow-hidden">
-        <Sidebar
-          sidebarOpen={sidebarOpen}
-          setSidebarOpen={setSidebarOpen}
-          isOpen={isOpen}
-          setIsOpen={setIsOpen}
-        />
+        <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} isOpen={isOpen} setIsOpen={setIsOpen} />
 
         <div
-          className={`flex-1 mt-[4.8rem] transition-all duration-300 bg-zinc-100 overflow-auto ${
-            smallWidth ? "ml-0" : isOpen ? "ml-64" : "ml-14"
-          }`}
+          className={`flex-1 mt-[4.8rem] transition-all duration-300 bg-zinc-100 overflow-auto ${smallWidth ? "ml-0" : isOpen ? "ml-72" : "ml-14"}`}
         >
           <Routes>
             <Route index element={<Dashboard />} />
