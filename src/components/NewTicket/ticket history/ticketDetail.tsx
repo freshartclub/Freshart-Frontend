@@ -96,7 +96,7 @@ const SingleTicket = () => {
   return isLoading ? (
     <Loader />
   ) : (
-    <div className={`container mx-auto px-4 py-6 ${dark ? "bg-gray-900" : "bg-gray-50"} min-h-screen`}>
+    <div className={`px-4 py-6 ${dark ? "bg-gray-900" : "bg-gray-50"} min-h-screen`}>
       <div className="flex items-center gap-4 mb-6">
         <button onClick={() => navigate(-1)} className={`p-2 rounded-full ${dark ? "hover:bg-gray-700" : "hover:bg-gray-200"}`}>
           <FaArrowLeft className={dark ? "text-white" : "text-gray-800"} />

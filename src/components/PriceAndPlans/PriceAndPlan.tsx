@@ -319,7 +319,6 @@ const PriceAndPlan = () => {
                         </p>
                       </div>
                     </div>
-
                     <div className="border-t border-b border-gray-200 py-4">
                       <h4 className="font-semibold mb-2">Plan Features:</h4>
                       <ul className="space-y-2">
@@ -331,7 +330,6 @@ const PriceAndPlan = () => {
                         ))}
                       </ul>
                     </div>
-
                     <div className="bg-yellow-50 p-3 rounded-lg flex items-start">
                       <svg className="h-5 w-5 text-yellow-500 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                         <path
@@ -345,7 +343,6 @@ const PriceAndPlan = () => {
                         us.
                       </p>
                     </div>
-
                     <div className={`${checkRef.data == false ? "bg-red-50" : "bg-green-50"} p-3 rounded-lg flex items-start`}>
                       {checkRef.data == false ? (
                         <svg className={`h-5 w-5 text-red-500 mr-2 mt-0.5 flex-shrink-0`} fill="currentColor" viewBox="0 0 20 20">
@@ -377,12 +374,11 @@ const PriceAndPlan = () => {
                       ) : (
                         <div>
                           <p className="text-sm text-green-800">
-                            You already have a payment method saved with us. But your payment method is not active.
+                            You already added yourself as a payer with us. But your payment method is not active.
                           </p>
                         </div>
                       )}
                     </div>
-
                     <div className="bg-blue-50 p-3 rounded-lg flex items-start">
                       <svg className="h-5 w-5 text-blue-500 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                         <path
@@ -393,9 +389,10 @@ const PriceAndPlan = () => {
                       </svg>
                       <p className="text-sm text-blue-800">
                         By confirming, you agree to our Terms of Service and Privacy Policy. Your subscription will automatically renew each{" "}
-                        {billingCycle === "yearly" ? "year" : "month"} until canceled.
+                        {billingCycle === "yearly" ? "year" : "month"} until cancelled.
                       </p>
                     </div>
+                    a
                   </div>
                 )}
 

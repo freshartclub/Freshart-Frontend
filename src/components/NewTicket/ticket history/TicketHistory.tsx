@@ -92,7 +92,7 @@ const TicketHistory: React.FC = () => {
   if (isLoading) return <Loader />;
 
   return (
-    <div className={`container mx-auto px-3 py-4 ${dark ? "bg-gray-900" : "bg-gray-50"} min-h-screen`}>
+    <div className={`px-3 py-4 ${dark ? "bg-gray-900" : "bg-gray-50"} min-h-screen`}>
       <div className="max-w-7xl mx-auto">
         <h1 className={`font-bold text-2xl ${dark ? "text-white" : "text-gray-800"}`}>{t("All Tickets")}</h1>
         <p className={`text-sm mb-4 ${dark ? "text-gray-400" : "text-gray-600"}`}>{t("View/Update Status of your tickets")}</p>

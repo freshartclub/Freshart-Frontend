@@ -93,7 +93,7 @@ const SavedCards = () => {
     <div className={`min-h-screen ${dark ? "bg-gray-900" : "bg-gray-50"} transition-colors duration-200`}>
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className={`text-3xl font-bold mb-2 ${dark ? "text-white" : "text-gray-800"}`}>Saved Payment Methods</h1>
+          <h1 className={`text-3xl font-bold mb-2 ${dark ? "text-white" : "text-gray-800"}`}>Saved Payment Method</h1>
           <p className={`${dark ? "text-gray-400" : "text-gray-600"}`}>Manage your saved credit/debit card</p>
         </div>
 
@@ -112,7 +112,7 @@ const SavedCards = () => {
             </div>
             <h3 className="text-xl font-bold mb-2">Basic Info Missing</h3>
             <p className="mb-6">
-              Please add your basic information before adding a payment method. Please add your basic information by going to{" "}
+              Please add your basic information before adding a payment method. Add your basic information by going to{" "}
               <span className="text-[#EE1D52]">Price and Plan</span> clicking the button below.
             </p>
             <button

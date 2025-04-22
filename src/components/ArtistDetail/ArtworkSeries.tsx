@@ -4,15 +4,13 @@ import Loader from "../ui/Loader";
 import { imageUrl } from "../utils/baseUrls";
 import { useGetArtWorkBySeries } from "./http/getArtworkBySeries";
 
-const ArtworkSeries = () => {
+const ArtworkSeries = ({ dark }) => {
   const id = useParams().id as string;
   const { data, isLoading } = useGetArtWorkBySeries(id);
 
   return (
     <div className="mx-auto px-4 mt-8 series_artwork">
-      <Header variant={{ size: "xl", theme: "dark", weight: "semiBold" }}>
-        Series of Artwork
-      </Header>
+      <Header variant={{ size: "xl", theme: `${dark ? "light" : "dark"}`, weight: "semiBold" }}>Series of Artwork</Header>
 
       {isLoading ? (
         <Loader />
@@ -22,7 +20,9 @@ const ArtworkSeries = () => {
             data?.data?.map((group, i: number) => (
               <div
                 key={i}
-                className="group-container flex-1 max-w-[100%] sm:max-w-[48%] lg:max-w-[30%] h-full border border-zinc-300"
+                className={`group-container rounded-lg ${
+                  dark ? "bg-gray-800 border-gray-600" : "bg-white border-zinc-300"
+                } flex-1 max-w-[100%] sm:max-w-[48%] lg:max-w-[30%] h-full border`}
               >
                 <div className="artworks-container">
                   {group?.artworks && group?.artworks?.length === 1 ? (
@@ -71,28 +71,26 @@ const ArtworkSeries = () => {
                           className="relative cursor-pointer flex items-center justify-center text-center font-semibold text-white rounded-md h-[48%] w-full"
                         >
                           <div className="absolute inset-0 bg-black opacity-50 rounded-md"></div>
-                          <span className="relative font-bold drop-shadow-lg">
-                            See All
-                          </span>
+                          <span className="relative font-bold drop-shadow-lg">See All</span>
                         </div>
                       </div>
                     </div>
                   )}
                 </div>
 
-                <div className="flex justify-between p-2 items-center">
-                  <h3 className="group-name font-semibold text-md">
+                <div className="flex justify-between p-2 pb-3 items-center">
+                  <h3 className={`group-name ${dark ? "text-white" : "text-black"} font-semibold`}>
                     {group?.groupName == "N/A" ? "Untitled" : group?.groupName}
                   </h3>
 
-                  <h3 className="group-name text-sm uppercase">
-                    Artworks : {group?.artworks?.length || 0}
-                  </h3>
+                  <h3 className={`group-name ${dark ? "text-white" : "text-black"} text-sm`}>Artworks : {group?.artworks?.length || 0}</h3>
                 </div>
               </div>
             ))
           ) : (
-            <div className="p-2 border w-full bg-white mx-auto text-center font-semibold">
+            <div
+              className={`p-2 border w-full ${dark ? "bg-gray-800 border-gray-600" : "bg-white border-zinc-300"} mx-auto text-center font-semibold`}
+            >
               No Series Found
             </div>
           )}

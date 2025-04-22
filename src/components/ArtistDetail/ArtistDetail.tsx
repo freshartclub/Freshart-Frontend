@@ -5,25 +5,29 @@ import ArtistHeader from "./ArtistHeader";
 import ArtistProtfolioArtwork from "./ArtistProtfolioArtwork";
 import ArtworkSeries from "./ArtworkSeries";
 import { useGetArtistDetails } from "./http/useGetArtistDetails";
+import { useAppSelector } from "../../store/typedReduxHooks";
 
 const ArtistDetail = () => {
   const id = useParams().id as string;
   const { data, isLoading } = useGetArtistDetails(id);
+  const dark = useAppSelector((state) => state.theme.mode);
 
   if (isLoading) return <Loader />;
 
   return (
-    <div className="container mx-auto md:px-6 px-3">
-      <div className="flex lg:flex-row flex-col 2xl:gap-10 gap-6 mb-10">
-        <div className="bg-gray-100 lg:w-[50%] w-full mx-auto h-fit">
-          <ArtistHeader data={data?.artist} />
+    <div className={`px-4 py-6 transition-colors duration-300 ${dark ? "bg-gray-900" : "bg-gray-50"}`}>
+      <div className="flex flex-col lg:flex-row gap-8 mb-10">
+        <div className={`lg:w-1/2 w-full rounded-xl ${dark ? "bg-gray-800" : "bg-white"} shadow-md p-4`}>
+          <ArtistHeader data={data?.artist} dark={dark} />
         </div>
-        <div className="lg:w-[50%] w-full">
-          <ArtistDescription data={data} />
+        <div className="lg:w-1/2 w-full">
+          <ArtistDescription data={data} dark={dark} />
         </div>
       </div>
-      <ArtistProtfolioArtwork data={data} />
-      <ArtworkSeries />
+
+      <ArtistProtfolioArtwork data={data} dark={dark} />
+
+      <ArtworkSeries dark={dark} />
     </div>
   );
 };
