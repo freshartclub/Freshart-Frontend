@@ -5,26 +5,28 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import export_icon from "../../assets/export.png";
 import invoice from "../../assets/invoice.png";
 import processing from "../../assets/processing.png";
-import Button from "../ui/Button";
-import Header from "../ui/Header";
+import Button from "../ui/Button";  
 import Loader from "../ui/Loader";
+import Header from "../ui/Header";
 import P from "../ui/P";
 import { lowImageUrl } from "../utils/baseUrls";
 import { useGetOrder } from "./http/useGetOrder";
+import { useAppSelector } from "../../store/typedReduxHooks";
 
 const OrderPage = () => {
   const [state, setState] = useState("purchase");
   const { data, isLoading } = useGetOrder();
   const navigate = useNavigate();
+  const dark = useAppSelector((state) => state.theme.mode);
 
   const handleDetailPage = (item) => {
     navigate(`/order_tracking?id=${item?._id}&art=${item?.artwork?._id}`);
   };
 
   return (
-    <div className="bg-[#EFEFF7] pb-10">
+    <div className={`${dark  ? "bg-[#111827]" : "bg-[#EFEFF7]"} pb-10`}>
       <div className="container mx-auto md:px-6 px-3">
-        <nav className="flex pt-5 gap-2 text-sm text-[#2E4053] items-center">
+        <nav className={`flex pt-5 gap-2 text-sm ${dark  ? "text-gray-300" : "text-[#2E4053]"} items-center`}>
           <Link to="/" className="flex text-[#FF536B]">
             Home
           </Link>
@@ -35,20 +37,24 @@ const OrderPage = () => {
         </nav>
 
         <div className="flex sm:flex-row flex-col justify-between gap-5 mb-8">
-          <div className=" flex gap-5 mt-8">
+          <div className="flex gap-5 mt-8">
             <span
               onClick={() => setState("purchase")}
-              className={`${
-                state === "purchase" && "bg-[#FF536B] text-white"
-              } font-bold text-md border border-zinc-800 px-5 py-2 cursor-pointer rounded-md`}
+              className={`
+                ${state === "purchase" ? "bg-[#FF536B] text-white" : ""}
+                ${dark && state !== "purchase" ? "border-gray-400 text-gray-300" : "border-zinc-800"}
+                font-bold text-md border px-5 py-2 cursor-pointer rounded-md
+              `}
             >
               Purchase
             </span>
             <span
               onClick={() => setState("subscription")}
-              className={`${
-                state !== "purchase" && "bg-[#FF536B] text-white"
-              } font-bold text-md border border-zinc-800 px-5 py-2 cursor-pointer rounded-md`}
+              className={`
+                ${state !== "purchase" ? "bg-[#FF536B] text-white" : ""}
+                ${dark  && state === "purchase" ? "border-gray-400 text-gray-300" : "border-zinc-800"}
+                font-bold text-md border px-5 py-2 cursor-pointer rounded-md
+              `}
             >
               Subscription
             </span>
@@ -100,7 +106,7 @@ const OrderPage = () => {
               data.map((item, index: number) => (
                 <div
                   key={index}
-                  className="flex flex-col sm:flex-row justify-between gap-5 bg-white p-2 rounded-md"
+                  className={`${dark  ? "bg-[#2B2B2B]" : "bg-white"} flex flex-col sm:flex-row justify-between gap-5 p-2 rounded-md`}
                 >
                   <div className="flex flex-col gap-2 items-center">
                     <img
@@ -125,7 +131,7 @@ const OrderPage = () => {
                       <Header
                         variant={{
                           size: "lg",
-                          theme: "dark",
+                          theme: dark  ? "light" : "dark",
                           weight: "semiBold",
                         }}
                         className="flex items-baseline gap-2"
@@ -134,7 +140,7 @@ const OrderPage = () => {
                         <P
                           variant={{
                             size: "small",
-                            theme: "dark",
+                            theme: dark  ? "light" : "dark",
                             weight: "medium",
                           }}
                           className="text-[#848484]"
@@ -146,7 +152,7 @@ const OrderPage = () => {
                       <P
                         variant={{
                           size: "small",
-                          theme: "dark",
+                          theme: dark  ? "light" : "dark",
                           weight: "semiBold",
                         }}
                       >
@@ -155,7 +161,7 @@ const OrderPage = () => {
                     </div>
 
                     <div className="flex flex-col gap-1">
-                      <span className="text-xs font-semibold">
+                      <span className={`text-xs font-semibold ${dark  ? "text-white" : ""}`}>
                         € {item?.total}
                       </span>
                       <span className="capitalize text-[#71717199] text-xs">
@@ -166,7 +172,7 @@ const OrderPage = () => {
                 </div>
               ))
             ) : (
-              <div className="px-6 py-4 text-center border border-[#c6c6c9]">
+              <div className={`${dark ? "border-gray-600 text-gray-300" : "border-[#c6c6c9]"} px-6 py-4 text-center border`}>
                 <p className="text-lg text-center font-medium mb-4">
                   You haven't placed any orders.
                 </p>

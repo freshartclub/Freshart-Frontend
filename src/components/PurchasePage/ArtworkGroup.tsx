@@ -113,7 +113,7 @@ const ArtworkGroup = () => {
             <div key={index} className="sm:px-3 px-0 border-none outline-none">
               <img src={item.image} alt="image" className="w-full" />
               <div className="mt-3">
-                <p className="text-[14px] text-[#696868]">{item.title}</p>
+                <p className="text-[14px] text-[#696868]">{item?.title}</p>
                 <div className="flex justify-between items-center">
                   <h1 className="font-bold text-[20px] text-[#333333]">
                     {item.heading}
@@ -122,13 +122,13 @@ const ArtworkGroup = () => {
                     <img src={like} alt="" className="" />
                   </div>
                 </div>
-                <p className="text-[14px] text-[#696868]">{item.para}</p>
-                <p className="text-[14px] text-[#696868]">{item.size}</p>
+                <p className="text-[14px] text-[#696868]">{item?.para}</p>
+                <p className="text-[14px] text-[#696868]">{item?.size}</p>
                 <P
                   variant={{ theme: "dark", weight: "semiBold" }}
                   className="text-[14px] "
                 >
-                  {item.price}
+                  {item?.price}
                 </P>
               </div>
             </div>

@@ -149,13 +149,13 @@ const ProductInfo = ({ data }: any) => {
         <TabPanel>
           <div className="flex flex-col md:flex-row gap-10 w-full my-5">
             <div className="w-full md:w-[50%]">
-              {overview_data.map((item, index) => (
+              {overview_data?.map((item, index) => (
                 <div key={index} className="flex">
                   <P variant={{ size: "small", theme: dark ? "light" : "dark", weight: "medium" }} className="w-48 my-1">
-                    {item.head}
+                    {item?.head}
                   </P>
                   <P variant={{ size: "small", weight: "medium" }} className={`${dark ? "text-gray-300" : "text-[#999999]"}`}>
-                    {item.name}
+                    {item?.name}
                   </P>
                 </div>
               ))}
@@ -233,7 +233,7 @@ const ProductInfo = ({ data }: any) => {
                   External Tags :
                 </P>
                 <P variant={{ size: "small", weight: "medium" }} className={`${dark ? "text-gray-300" : "text-[#999999]"}`}>
-                  {data?.data?.tags?.extTags?.length ? data.data.tags.extTags.map((tag: string) => `#${tag}`).join(", ") : "N/A"}
+                  {data?.data?.tags?.extTags?.length ? data?.data?.tags?.extTags?.map((tag: string) => `#${tag}`).join(", ") : "N/A"}
                 </P>
               </div>
             </div>
@@ -245,10 +245,10 @@ const ProductInfo = ({ data }: any) => {
             {shipping_data.map((item, index) => (
               <div key={index} className="flex items-center">
                 <P variant={{ size: "small", theme: dark ? "light" : "dark", weight: "medium" }} className="w-48 my-1">
-                  {item.head}
+                  {item?.head}
                 </P>
                 <P variant={{ size: "small", weight: "medium" }} className={`${dark ? "text-gray-300" : "text-[#999999]"}`}>
-                  {item.name}
+                  {item?.name}
                 </P>
               </div>
             ))}

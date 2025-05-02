@@ -368,6 +368,7 @@ const CreditCardForm = ({ onClose, isSaved, planId, onSubmit, isPending, billing
                   )}
                 </button>
               </div>
+              {isPending ? "This is for sale" : "Not Availble"}
             </form>
           </div>
         </div>

@@ -1,110 +1,117 @@
-import Slider from "react-slick";
-import banner from "../../assets/main banner.png";
-import Header from "../ui/Header";
-import banner2 from "../../assets/banner_2.jpg";
-import banner3 from "../../assets/banner3.png";
 import { useNavigate } from "react-router-dom";
+import Slider from "react-slick";
+import { motion } from "framer-motion";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+
+import banner from "../../assets/main banner.png";
+import banner2 from "../../assets/banner_2.jpg";
+import banner3 from "../../assets/banner3.png";
+import Header from "../ui/Header";
+
+const bannerData = [
+  {
+    image: banner,
+    header: "World's Wonderful Art Collections",
+    para: "Accumsan lacus vel facilisis volutpat est. Egestas dui id ornare arcu odio. Viverra nibh cras pulvinar mattis nunc sed blandit libero.",
+    btn: "View Collection",
+  },
+  {
+    image: banner2,
+    header: "Latest Technologies Art Works!",
+    para: "Accumsan lacus vel facilisis volutpat est. Egestas dui id ornare arcu odio. Viverra nibh cras pulvinar mattis nunc sed blandit libero.",
+    btn: "View Collection",
+  },
+  {
+    image: banner3,
+    header: "Discover Original Works of Artists.",
+    para: "Accumsan lacus vel facilisis volutpat est. Egestas dui id ornare arcu odio. Viverra nibh cras pulvinar mattis nunc sed blandit libero.",
+    btn: "View Collection",
+  },
+];
+
+const settings = {
+  dots: false,
+  infinite: true,
+  fade: true,
+  speed: 1000,
+  slidesToShow: 1,
+  slidesToScroll: 1,
+  autoplay: true,
+  autoplaySpeed: 4000,
+  pauseOnHover: false,
+  responsive: [
+    {
+      breakpoint: 1024,
+      settings: { slidesToShow: 1, fade: true },
+    },
+    {
+      breakpoint: 768,
+      settings: { slidesToShow: 1, fade: true },
+    },
+    {
+      breakpoint: 480,
+      settings: { slidesToShow: 1, fade: true },
+    },
+  ],
+};
 
 const BannerSection = () => {
   const navigate = useNavigate();
 
-  const bannerData = [
-    {
-      image1: banner,
-      header: "Worlds Wonderful Art Collections",
-      para: "Accumsan lacus vel facilisis volutpat est. Egestas dui id ornare arcu odio. Viverra nibhcras pulvinar mattis nunc sed blandit libero. Amet justo donec enim vulputate ut pharetra. Ullamcorper dignissim cras tincidunt lobortis feugiat vivamus at augue.",
-      btn: "View Collection",
-    },
-    {
-      image1: banner2,
-      header: "Latest Technologies Art Works!",
-      para: "Accumsan lacus vel facilisis volutpat est. Egestas dui id ornare arcu odio. Viverra nibhcras pulvinar mattis nunc sed blandit libero. Amet justo donec enim vulputate ut pharetra. Ullamcorper dignissim cras tincidunt lobortis feugiat vivamus at augue.",
-      btn: "View Collection",
-    },
-    {
-      image1: banner3,
-      header: "Discover Original Works of Artist.",
-      para: "Accumsan lacus vel facilisis volutpat est. Egestas dui id ornare arcu odio. Viverra nibhcras pulvinar mattis nunc sed blandit libero. Amet justo donec enim vulputate ut pharetra. Ullamcorper dignissim cras tincidunt lobortis feugiat vivamus at augue.",
-      btn: "View Collection",
-    },
-  ];
-
-  const settings = {
-    dots: false,
-    infinite: true,
-    fade: true,
-    speed: 1000,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 3000,
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-          infinite: true,
-          dots: false,
-          fade: true,
-        },
-      },
-      {
-        breakpoint: 768,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-          infinite: true,
-          dots: false,
-          fade: true,
-        },
-      },
-      {
-        breakpoint: 480,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-          infinite: true,
-          dots: false,
-          fade: true,
-        },
-      },
-    ],
-  };
-
   const handleCollection = () => {
-    navigate("/purchase");
+    navigate("/collections");
   };
 
   return (
-    <>
-      <Slider {...settings} className="banner_arrow">
-        {bannerData.map((item, index) => (
-          <div key={index} className=" flex items-center">
-            <img src={item.image1} alt="banner" className="w-full h-screen relative object-cover" />
-            <div className="container mx-auto">
-              <div className="absolute top-[30%] left-12">
-                <div className="w-[90%] sm:w-[90%] md:w-[90%] xl:w-[80%] 2xl:w-[50%] md:text-left text-center text-white">
-                  <Header
-                    variant={{ theme: "light", weight: "light" }}
-                    className="xl:text-[65px] lg:text-[60px] md:text-[40px] sm:text-[35px] text-[30px] capitalize animate-fadeInDown"
-                  >
-                    {item.header}
-                  </Header>
+    <Slider {...settings} className="banner_arrow">
+      {bannerData.map((item, index) => (
+        <div key={index} className="relative w-full h-screen">
+          <img
+            src={item.image}
+            alt={`banner-${index + 1}`}
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-black/40" />
+          <div className="absolute inset-0 flex items-center justify-start">
+            <div className="container mx-auto px-6 md:px-12">
+              <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1, delay: 0.3 }}
+                className="text-white max-w-2xl"
+              >
+                <Header
+                  variant={{ theme: "light", weight: "light" }}
+                  className="text-3xl sm:text-4xl md:text-6xl font-semibold capitalize leading-tight"
+                >
+                  {item.header}
+                </Header>
 
-                  <span className="md:text-[18px] sm:text-[14px] hidden sm:block mb-6 md:w-[88%] w-full mt-4">{item.para}</span>
-                  <button onClick={handleCollection} className="!border-b !bg-transparent">
-                    {item.btn}
-                  </button>
-                </div>
-              </div>
+                <motion.p
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 1, delay: 0.6 }}
+                  className="mt-4 text-base sm:text-lg md:text-xl"
+                >
+                  {item.para}
+                </motion.p>
+
+                <motion.button
+                  onClick={handleCollection}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 1, delay: 0.9 }}
+                  className="mt-6 inline-block bg-gradient-to-r from-pink-500 to-red-500 hover:from-red-500 hover:to-pink-500 text-white font-medium py-3 px-8 rounded-full border transition-all duration-500"
+                >
+                  {item.btn}
+                </motion.button>
+              </motion.div>
             </div>
           </div>
-        ))}
-      </Slider>
-    </>
+        </div>
+      ))}
+    </Slider>
   );
 };
 

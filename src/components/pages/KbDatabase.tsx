@@ -16,6 +16,7 @@ const KbDatabase = () => {
     setOpenIndex(openIndex === index ? null : index);
   };
 
+  console.log(openIndex)
   return isLoading ? (
     <Loader />
   ) : (

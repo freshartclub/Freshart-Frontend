@@ -20,7 +20,7 @@ const sections = [
     key: "dashboard",
     label: "Dashboard",
     icon: dashboard,
-    path: "artdashboard",
+    path: "",
     submenu: [
       { key: "overview", label: "Overview", path: "artdashboard" },
       { key: "analytics", label: "Analytics", path: "artdashboard/analytics" },
@@ -50,14 +50,16 @@ const sections = [
     path: "order",
     submenu: [
       { key: "current", label: "Current Orders", path: "order" },
+      { key: "subscription", label: "Subscription Orders", path: "subscription-order" },
+
       { key: "Custom", label: "Custom Orders", path: "order/custom" },
     ],
   },
   {
-    key: "invoice",
-    label: "Invoice",
+    key: "offers",
+    label: "Offers Request",
     icon: invoice,
-    path: "invoice",
+    path: "offer",
   },
   {
     key: "circle",

@@ -69,7 +69,6 @@ const CardSection = ({ data, type, darkMode }) => {
   const addToFavoriteList = async (id: string, listName: string) => {
     try {
       const isAlreadyFavorite = favoriteLists[listName]?.includes(id);
-
       const newData = {
         id: id,
         name: listName,
@@ -80,7 +79,6 @@ const CardSection = ({ data, type, darkMode }) => {
 
       setFavoriteLists((prev) => {
         const updatedList = { ...prev };
-
         if (isAlreadyFavorite) {
           updatedList[listName] = updatedList[listName].filter((favId) => favId !== id);
         } else {
@@ -130,6 +128,7 @@ const CardSection = ({ data, type, darkMode }) => {
       setFavoriteLists(favoriteObject);
     }
   }, [favoriteData]);
+
 
   useEffect(() => {
     const storedData = JSON.parse(localStorage.getItem("viewedImages") || "{}");
@@ -227,7 +226,7 @@ const CardSection = ({ data, type, darkMode }) => {
                 </p>
                 {type === "purchase" ? (
                   <p className={`mt-1 flex gap-1 items-center ${darkMode ? "text-gray-200" : "text-gray-800"} font-bold`}>
-                    {getSymbolFromCurrency(item?.pricing?.currency.slice(0, 3))} {item?.pricing?.basePrice}
+                    {item?.pricing?.currency ?   getSymbolFromCurrency(item?.pricing?.currency.slice(0, 3)) : null} {item?.pricing?.basePrice}
                     {item?.pricing?.dpersentage ? (
                       <span>
                         | <span className="text-[#EE1D52]">{item?.pricing?.dpersentage}%</span>
@@ -240,7 +239,7 @@ const CardSection = ({ data, type, darkMode }) => {
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleFavoriteClick(item._id);
+                      handleFavoriteClick(item?._id);
                     }}
                     className={`p-2 rounded-full ${darkMode ? "hover:bg-gray-700" : "hover:bg-gray-100"}`}
                   >
@@ -252,7 +251,7 @@ const CardSection = ({ data, type, darkMode }) => {
                     />
                   </button>
 
-                  {isFavorite === item._id && (
+                  {isFavorite === item?._id && (
                     <div
                       ref={favoriteListRef}
                       className={`absolute bottom-10 right-0 ${darkMode ? "bg-gray-700" : "bg-white"} shadow-lg rounded-md p-3 w-56 z-10`}

@@ -149,15 +149,7 @@ const RecentSection = () => {
           <p className={`text-xs ${dark ? "text-gray-400" : "text-gray-500"} mt-1`}>
             {item?.discipline?.artworkDiscipline} • {item?.additionalInfo?.artworkTechnic}
           </p>
-          {hasDiscount ? (
-            <div className="mt-2 flex items-center gap-1">
-              <span className="text-red-600 font-medium text-sm">${item?.additionalInfo?.finalPrice}</span>
-              <span className={`${dark ? "text-gray-400" : "text-gray-500"} line-through text-xs`}>${item?.additionalInfo?.originalPrice}</span>
-              <span className="text-red-600 text-xs">({item?.additionalInfo?.discount}% off)</span>
-            </div>
-          ) : (
-            <p className={`${dark ? "text-gray-300" : "text-gray-700"} mt-2 font-medium text-sm`}>{item?.size}</p>
-          )}
+        
         </div>
       </div>
     );

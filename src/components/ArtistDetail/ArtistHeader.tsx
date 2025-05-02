@@ -3,8 +3,10 @@ import home from "../../assets/home.png";
 import arrow from "../../assets/Vector.png";
 import P from "../ui/P";
 import { imageUrl } from "../utils/baseUrls";
+import { useAppSelector } from "../../store/typedReduxHooks";
 
 const ArtistHeader = ({ data }) => {
+  const dark = useAppSelector((state) => state.theme.mode);
   const name = (val: {
     artistName: string;
     artistSurname1: string;
@@ -19,42 +21,58 @@ const ArtistHeader = ({ data }) => {
   };
 
   return (
-    <div className="lg:w-[80%] w-[90%] m-auto">
-      <ul className="flex p-2 mt-5 mb-0 lg:mb-5 gap-4 text-xl text-[#2E4053] items-center">
+    <div className={`lg:w-[80%] w-[90%] m-auto ${dark ? "dark" : ""}`}>
+      <ul className={`flex p-2 mt-5 mb-0 lg:mb-5 gap-4 text-xl items-center ${
+        dark ? "text-gray-300" : "text-[#2E4053]"
+      }`}>
         <li>
           <Link to="/" className="rounded-md transition-all flex gap-1">
-            <img src={home} alt="Home icon" className="w-[14px] h-[14px]" />
+            <img 
+              src={home} 
+              alt="Home icon" 
+              className={`w-[14px] h-[14px] ${dark ? "filter invert" : ""}`} 
+            />
             <P
-              variant={{ size: "small", theme: "dark", weight: "semiBold" }}
-              className="text-[#FF536B]"
+              variant={{ size: "small", theme: dark ? "light" : "dark", weight: "semiBold" }}
+              className={dark ? "text-[#FF8A9B]" : "text-[#FF536B]"}
             >
               Home
             </P>
           </Link>
         </li>
 
-        <img src={arrow} alt="Arrow icon" className="w-[4px] h-[6px]" />
+        <img 
+          src={arrow} 
+          alt="Arrow icon" 
+          className={`w-[4px] h-[6px] ${dark ? "filter invert" : ""}`} 
+        />
 
         <li>
           <Link
             to="/all_artist"
-            className="cursor-pointer hover:bg-[#E8DAEF] rounded-md transition-all duration-300"
+            className={`cursor-pointer rounded-md transition-all duration-300 ${
+              dark ? "hover:bg-gray-700" : "hover:bg-[#E8DAEF]"
+            }`}
           >
             <P
-              variant={{ size: "small", theme: "dark", weight: "semiBold" }}
-              className="text-[#FF536B]"
+              variant={{ size: "small", theme: dark ? "light" : "dark", weight: "semiBold" }}
+              className={dark ? "text-[#FF8A9B]" : "text-[#FF536B]"}
             >
               Artists
             </P>
           </Link>
         </li>
 
-        <img src={arrow} alt="Arrow icon" className="w-[4px] h-[6px]" />
+        <img 
+          src={arrow} 
+          alt="Arrow icon" 
+          className={`w-[4px] h-[6px] ${dark ? "filter invert" : ""}`} 
+        />
 
         <li className="whitespace-nowrap w-full max-w-full overflow-x-auto scrollbar">
           <P
-            variant={{ size: "small", theme: "dark", weight: "semiBold" }}
-            className="text-[#203F58]"
+            variant={{ size: "small", theme: dark ? "light" : "dark", weight: "semiBold" }}
+            className={dark ? "text-gray-300" : "text-[#203F58]"}
           >
             {name(data)}
           </P>

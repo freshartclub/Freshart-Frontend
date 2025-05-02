@@ -54,8 +54,6 @@ export const ARTTIST_ENDPOINTS = {
   GetInviteData: `${ARTIST_BASE_URl}/get-invite`,
   GetInviteFullData: `${ARTIST_BASE_URl}/get-invite-data`,
 
-  // removeItems: `${ARTIST_BASE_URl}/remove-from-cart`,
-
   GetAllArtwork: `${ARTIST_BASE_URl}/get-all-artworks`,
   addToWishList: `${ARTIST_BASE_URl}/item-to-wishlist`,
   getWishList: `${ARTIST_BASE_URl}/get-wishlist`,
@@ -63,17 +61,32 @@ export const ARTTIST_ENDPOINTS = {
   useDeleteSeries: `${ARTIST_BASE_URl}/delete-series-to-artist`,
   getSeries: `${ARTIST_BASE_URl}/get-series-list`,
   GetArtSeries: `${ARTIST_BASE_URl}/get-all-series`,
-
   getAllPlans: `${ARTIST_BASE_URl}/get-all-plans`,
 
-  // card
   getCard: `${ARTIST_BASE_URl}/card`,
-
-  // collection
   getAllCollections: `${ARTIST_BASE_URl}/get-all-collections`,
   useGetCollectionById: `${ARTIST_BASE_URl}/get-collection`,
-
   getToken: `${ARTIST_BASE_URl}/get-pay-token`,
-};
 
-// all the endpoints will be gonaa edit
+  exchangeArtwork: `${ARTIST_BASE_URl}/exchage`,
+
+  makeAnOffer: `${ARTIST_BASE_URl}/make-offer`,
+
+
+  getOfferList : `${ARTIST_BASE_URl}/artist-offers`,
+
+  acceptReject : `${ARTIST_BASE_URl}/accept-offer`,
+
+  getUserOfferList : `${ARTIST_BASE_URl}/user-offers`,
+
+  getArtistDashboard : `${ARTIST_BASE_URl}/get-dashboard-data`,
+
+  upLoadImg : `${ARTIST_BASE_URl}/check-upload-images`,
+
+  getUpLoadedImage : `${ARTIST_BASE_URl}/get-upload-images`,
+
+
+
+
+
+};

@@ -66,7 +66,7 @@ const ExploreSection = () => {
             {exploreData.map((item, index) => (
               <div key={index} className="px-2">
                 <img
-                  src={item.img}
+                  src={item?.img}
                   alt={`pic-${index}`}
                   className="w-full h-[320px] object-cover"
                 />

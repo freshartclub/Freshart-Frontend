@@ -13,10 +13,13 @@ import ret_arrow from "./assets/ArrowLeft.png";
 import gray_cross from "./assets/garycross.png";
 import CartTotal from "./CartTotal";
 import useRemoveMutation from "./http/useRemoveMutation";
+import { useAppSelector } from "../../store/typedReduxHooks";
+
 
 const PurchaseCart = () => {
   const [state, setState] = useState("purchase");
   const navigate = useNavigate();
+  const dark = useAppSelector((state) => state?.theme?.mode);
 
   const { data, isLoading } = useGetCartItems();
   const { mutate: removeProduct } = useRemoveMutation();
@@ -40,180 +43,157 @@ const PurchaseCart = () => {
   return isLoading ? (
     <Loader />
   ) : (
-    <div className="container mx-auto px-6 sm:px-3 mt-4">
-      <ul className="flex p-2 gap-4 text-xl text-[#2E4053] items-center">
-        <li>
-          <Link to="/home" className="rounded-md transition-all flex">
-            <img
-              src={home}
-              alt="Home icon"
-              className="w-[14px] h-[14px] mr-2"
-            />
+    <div className={`container mx-auto px-4 md:px-6 ${dark ? "bg-[#111827] text-white" : "bg-white text-black"}`}>
+      {/* Breadcrumb navigation */}
+      <nav className="py-4">
+        <ul className="flex items-center gap-2 text-sm">
+          <li>
+            <Link to="/home" className="flex items-center hover:text-[#FF536B] transition-colors">
+              <img
+                src={home}
+                alt="Home"
+                className="w-3.5 h-3.5 mr-1.5"
+              />
+              <P
+                variant={{ size: "small", weight: "medium" }}
+                className="text-[#FF536B]"
+              >
+                Home
+              </P>
+            </Link>
+          </li>
+          <img src={arrow} alt="Arrow" className="w-[4px] h-[6px]" />
+          <li>
             <P
-              variant={{ size: "small", theme: "dark", weight: "medium" }}
-              className="text-[#FF536B]"
-            >
-              Home
-            </P>
-          </Link>
-        </li>
-        <img src={arrow} alt="Home icon" className="w-[4px] h-[6px] mr-1" />
-        <li>
-          <Link to="/" className="rounded-md transition-all flex">
-            <P
-              variant={{ size: "small", theme: "dark", weight: "medium" }}
-              className="text-[#203F58] capitalize"
+              variant={{ size: "small", weight: "medium" }}
+              className={`${dark ? "text-gray-300" : "text-[#203F58]"} capitalize`}
             >
               {state} Cart
             </P>
-          </Link>
-        </li>
-      </ul>
+          </li>
+        </ul>
+      </nav>
 
-      <div className="mt-5">
+      <div className="mt-4 md:mt-6">
         <Header
           variant={{ theme: "dark", weight: "bold", size: "2xl" }}
-          className="text-center mb-5 capitalize"
+          className={`text-center mb-6 capitalize ${dark ? "text-white" : ""}`}
         >
           My {state} Cart
         </Header>
 
-        <div className="flex sm:flex-row flex-col justify-between gap-5 mb-8">
-          <div className=" flex gap-5 mt-8">
-            <span
-              onClick={() => setState("purchase")}
-              className={`${
-                state === "purchase" && "bg-[#FF536B] text-white"
-              } font-bold text-md border border-zinc-800 px-5 py-2 cursor-pointer rounded-md`}
-            >
-              Purchase
-            </span>
-            <span
-              onClick={() => setState("subscription")}
-              className={`${
-                state !== "purchase" && "bg-[#FF536B] text-white"
-              } font-bold text-md border border-zinc-800 px-5 py-2 cursor-pointer  rounded-md`}
-            >
-              Subscription
-            </span>
-          </div>
+        {/* Cart type selector */}
+        <div className="flex flex-wrap justify-center md:justify-start gap-4 mb-8">
+          <button
+            onClick={() => setState("purchase")}
+            className={`px-5 py-2.5 rounded-md font-medium text-sm transition-colors ${
+              state === "purchase" 
+                ? "bg-[#FF536B] text-white" 
+                : dark 
+                  ? "bg-gray-700 text-gray-300 border border-gray-600" 
+                  : "bg-white text-black border border-zinc-300"
+            }`}
+          >
+            Purchase
+          </button>
+          <button
+            onClick={() => setState("subscription")}
+            className={`px-5 py-2.5 rounded-md font-medium text-sm transition-colors ${
+              state !== "purchase" 
+                ? "bg-[#FF536B] text-white" 
+                : dark 
+                  ? "bg-gray-700 text-gray-300 border border-gray-600" 
+                  : "bg-white text-black border border-zinc-300"
+            }`}
+          >
+            Subscription
+          </button>
         </div>
 
-        <div className="w-full flex lg:flex-row flex-col gap-5 my-10">
-          <div className="lg:w-[75%] w-full border rounded-md">
+        {/* Cart content */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 pb-12">
+          {/* Cart items table */}
+          <div className={`lg:col-span-8 border rounded-md overflow-hidden ${dark ? "border-gray-700 bg-gray-800" : "border-gray-200 bg-white"}`}>
             <div className="overflow-x-auto w-full">
-              <table className=" min-w-[800px] border-b text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                <thead className="text-sm text-black uppercase bg-[#F2F4F5]">
+              <table className={`w-full min-w-[800px] ${dark ? "text-gray-300" : "text-gray-700"}`}>
+                <thead className={`text-xs uppercase ${dark ? "bg-gray-700 text-gray-300" : "bg-[#F2F4F5] text-black"}`}>
                   <tr>
-                    <th
-                      scope="col"
-                      className="xl:px-6 lg:px-4 px-2 py-3 uppercase"
-                    >
-                      Products
-                    </th>
-                    <th
-                      scope="col"
-                      className="xl:px-6 lg:px-4 px-2 py-3 uppercase"
-                    >
-                      Type
-                    </th>
-                    <th
-                      scope="col"
-                      className="xl:px-6 lg:px-4 px-2 py-3 uppercase"
-                    >
-                      Price
-                    </th>
-                    <th
-                      scope="col"
-                      className="xl:px-6 lg:px-4 px-2 py-3 uppercase"
-                    >
-                      Discount %
-                    </th>
-                    <th
-                      scope="col"
-                      className="xl:px-6 lg:px-4 px-2 py-3 uppercase"
-                    >
-                      Sub-total
-                    </th>
+                    <th scope="col" className="px-4 py-3 text-left">Products</th>
+                    <th scope="col" className="px-4 py-3 text-left">Type</th>
+                    <th scope="col" className="px-4 py-3 text-left">Price</th>
+                    <th scope="col" className="px-4 py-3 text-left">Discount %</th>
+                    <th scope="col" className="px-4 py-3 text-left">Sub-total</th>
                   </tr>
                 </thead>
                 <tbody>
                   {renderData && renderData?.length > 0 ? (
                     renderData?.map((table: any, index: number) => {
-                      const basePrice = table?.pricing?.basePrice;
-
-                      const discountPercentage =
-                        table?.pricing?.dpersentage || 0;
-
-                      const discountAmount =
-                        (basePrice * discountPercentage) / 100;
-
-                      const discountedPrice = (
-                        basePrice - discountAmount
-                      ).toFixed(2);
+                      const basePrice = state === "subscription" ? 0 : table?.pricing?.basePrice;
+                      const discountPercentage = state === "subscription" ? 0 : table?.pricing?.dpersentage || 0;
+                      const discountAmount = (basePrice * discountPercentage) / 100;
+                      const discountedPrice = (basePrice - discountAmount).toFixed(2);
 
                       return (
-                        <tr key={index} className="bg-white">
-                          <td
-                            scope="row"
-                            className="flex sm:flex-row flex-col justify-start xl:gap-4 lg:gap-2 gap-2 sm:items-center xl:px-6 lg:px-4 px-2 py-4 font-medium text-gray-900 dark:text-white"
-                          >
-                            <button onClick={() => handleRemove(table?._id)}>
-                              <img src={gray_cross} alt="cross" />
-                            </button>
-
-                            <img
-                              src={`${imageUrl}/users/${table?.media?.mainImage}`}
-                              alt="image"
-                              className="w-[72px] h-[72px] object-cover"
-                            />
-                            <P
-                              variant={{
-                                weight: "medium",
-                                theme: "dark",
-                              }}
-                              className="xl:text-base text-sm"
-                            >
-                              {table?.artworkName}
-                            </P>
+                        <tr key={index} className={`${dark ? "bg-gray-800" : "bg-white"} border-b ${dark ? "border-gray-700" : "border-gray-200"}`}>
+                          <td className="px-4 py-4">
+                            <div className="flex items-start md:items-center gap-3">
+                              <button 
+                                onClick={() => handleRemove(table?._id)}
+                                className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
+                              >
+                                <img src={gray_cross} alt="Remove" className="w-4 h-4" />
+                              </button>
+                              <div className="flex flex-col md:flex-row md:items-center gap-3">
+                                <img
+                                  src={`${imageUrl}/users/${table?.media?.mainImage}`}
+                                  alt={table?.artworkName}
+                                  className="w-16 h-16 object-cover rounded"
+                                />
+                                <P
+                                  variant={{ weight: "medium" }}
+                                  className={`text-sm ${dark ? "text-gray-300" : ""}`}
+                                >
+                                  {table?.artworkName}
+                                </P>
+                              </div>
+                            </div>
                           </td>
-
-                          <td className="xl:px-6 lg:px-4 px-2 py-4 text-[#475156] font-medium capitalize">
+                          <td className={`px-4 py-4 capitalize ${dark ? "text-gray-300" : "text-[#475156]"}`}>
                             {table?.commercialization?.activeTab}
                           </td>
-
-                          <td className="xl:px-6 lg:px-4 px-2 py-4 text-[#475156] font-medium">
-                            {getSymbolFromCurrency(
-                              table?.pricing?.currency.slice(0, 3)
-                            ) +
-                              " " +
-                              table.pricing?.basePrice}
+                          <td className={`px-4 py-4 ${dark ? "text-gray-300" : "text-[#475156]"}`}>
+                            {state === "subscription" 
+                              ? "00" 
+                              : getSymbolFromCurrency(
+                                  table?.pricing?.currency.slice(0, 3)
+                                ) + " " + table?.pricing?.basePrice}
                           </td>
-                          <td className="xl:px-6 lg:px-4 px-2 py-4 text-[#475156] font-medium">
-                            {table?.pricing?.dpersentage}%
+                          <td className={`px-4 py-4 ${dark ? "text-gray-300" : "text-[#475156]"}`}>
+                            {state === "subscription" ? "00" : table?.pricing?.dpersentage}%
                           </td>
-
-                          <td className="xl:px-6 lg:px-4 px-2 py-4 text-[#191C1F] font-semibold">
-                            {getSymbolFromCurrency(
-                              table?.pricing?.currency.slice(0, 3)
-                            ) +
-                              " " +
-                              discountedPrice}
+                          <td className={`px-4 py-4 font-semibold ${dark ? "text-gray-300" : "text-[#191C1F]"}`}>
+                            {state === "subscription" 
+                              ? "00" 
+                              : getSymbolFromCurrency(
+                                  table?.pricing?.currency.slice(0, 3)
+                                ) + " " + discountedPrice}
                           </td>
                         </tr>
                       );
                     })
                   ) : (
-                    <tr>
-                      <td className="px-6 py-4 text-center" colSpan={5}>
-                        <p className="text-lg text-center font-medium mb-4">
-                          You haven't added any artwork to your cart.
-                        </p>
-                        <NavLink to="/home">
-                          <button className="px-6 py-2 bg-zinc-800 text-white rounded-lg">
-                            Add To Cart
-                          </button>
-                        </NavLink>
+                    <tr className={dark ? "bg-gray-800" : ""}>
+                      <td className="px-6 py-8 text-center" colSpan={5}>
+                        <div className="flex flex-col items-center">
+                          <p className={`text-lg font-medium mb-4 ${dark ? "text-gray-300" : ""}`}>
+                            You haven't added any artwork to your cart.
+                          </p>
+                          <NavLink to="/home">
+                            <button className={`px-6 py-2.5 ${dark ? "bg-gray-600 hover:bg-gray-500" : "bg-zinc-800 hover:bg-zinc-700"} text-white rounded-lg transition-colors`}>
+                              Add To Cart
+                            </button>
+                          </NavLink>
+                        </div>
                       </td>
                     </tr>
                   )}
@@ -221,26 +201,25 @@ const PurchaseCart = () => {
               </table>
             </div>
 
-            <Button
-              onClick={handlepurchase}
-              className="mt-3 ml-3 border border-[#203F58] rounded-full flex items-center justify-center gap-2"
-            >
-              <img src={ret_arrow} alt="arrow" />
-              <P
-                variant={{
-                  size: "base",
-                  theme: "dark",
-                  weight: "semiBold",
-                }}
-                className="text-[#203F58]"
+            <div className="p-4">
+              <Button
+                onClick={handlepurchase}
+                className={`border ${dark ? "border-gray-600 hover:bg-gray-700" : "border-[#203F58] hover:bg-gray-100"} rounded-full flex items-center justify-center gap-2 px-5 py-2.5 transition-colors`}
               >
-                Return To Shop
-              </P>
-            </Button>
+                <img src={ret_arrow} alt="Return arrow" className="w-4 h-4" />
+                <P
+                  variant={{ size: "base", weight: "semiBold" }}
+                  className={dark ? "text-gray-300" : "text-[#203F58]"}
+                >
+                  Return To Shop
+                </P>
+              </Button>
+            </div>
           </div>
 
-          <div className="lg:w-[28%] w-full">
-            <CartTotal data={renderData} state={state} />
+          {/* Cart total */}
+          <div className="lg:col-span-4">
+            <CartTotal data={renderData} state={state} handleRemove={handleRemove} />
           </div>
         </div>
       </div>

@@ -3,7 +3,7 @@ import { useForm, Controller } from "react-hook-form";
 import Header from "../ui/Header";
 import Button from "../ui/Button";
 import P from "../ui/P";
-import { useGetArtistDetails } from "../UserProfile/http/useGetDetails";
+
 import countryList from "react-select-country-list";
 import CustomDropdown from "../pages/CustomDropdown";
 import { PhoneInput } from "react-international-phone";

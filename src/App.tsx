@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useEffect } from "react";
+ import React, { Suspense, lazy, useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import ArtistPanel from "./components/ArtistPanel/ArtistPanel";
 import AuthGuard from "./components/AuthGuard";
@@ -14,6 +14,8 @@ import { FaMoon, FaSun } from "react-icons/fa6";
 import ArtistGuard from "./components/ArtistGuard";
 import { useAppDispatch, useAppSelector } from "./store/typedReduxHooks";
 import i18n from "./components/utils/i18n.ts";
+import KbDetails from "./components/pages/KbDetails.tsx";
+import UserOfferRequest from "./components/ui/UserOfferRequest.tsx";
 
 // Lazy loading the components
 const UserCircleList = lazy(() => import("./components/CIrcle/UserCircleList"));
@@ -88,7 +90,7 @@ const App: React.FC = () => {
     }
   }, [lng]);
 
-  if (isLoading) return <Loader />;
+  if (isLoading) return <Loader  theme={theme}/>;
 
   return (
     <AuthProvider>
@@ -119,6 +121,7 @@ const App: React.FC = () => {
                   </AuthGuard>
                 }
               />
+              <Route path="/kb-details" element={<KbDetails />} />
 
               <Route
                 path="/tickets"
@@ -175,6 +178,14 @@ const App: React.FC = () => {
                 element={
                   <AuthGuard>
                     <BlogAndNews />
+                  </AuthGuard>
+                }
+              />
+              <Route
+                path="/offer-request"
+                element={
+                  <AuthGuard>
+                    <UserOfferRequest />
                   </AuthGuard>
                 }
               />

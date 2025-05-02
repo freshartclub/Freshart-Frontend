@@ -52,12 +52,12 @@ const NavForHome = () => {
   const user = useAppSelector((state) => state.user.user);
 
   useEffect(() => {
-    if (isLoading || seriesPickListLoading || cartLoading) {
+    if (isLoading  || cartLoading) {
       setLoading(true);
     } else {
       setLoading(false);
     }
-  }, [isLoading, cartLoading, seriesPickListLoading]);
+  }, [isLoading, cartLoading, ]);
 
   const token = localStorage.getItem("auth_token");
   const isAuthorized = useAppSelector((state) => state.user.isAuthorized);
@@ -176,9 +176,7 @@ const NavForHome = () => {
                   <span className={`absolute top-1/2 -translate-y-1/2 transition-all duration-300 ${isFocused ? "right-0 pr-2" : "left-0 pl-2"}`}>
                     {inputValue === "" ? (
                       <GoSearch size="1.3em" className="text-gray-600" />
-                    ) : (
-                      <GoX size="1.3em" className="cursor-pointer z-20 text-gray-600" onClick={clearInput} />
-                    )}
+                    ) : null}
                   </span>
                 </div>
 
@@ -239,6 +237,15 @@ const NavForHome = () => {
                           >
                             Favourites ArtWork
                           </Link>
+
+                          <Link
+                            to="/offer-request"
+                            className="hover:bg-gray-100 dark:hover:bg-gray-600 px-2 py-1 rounded"
+                            onClick={() => setIsProfileDropdown(false)}
+                          >
+                            Offers Request
+                          </Link>
+
                           {isArtist && (
                             <button className="text-left hover:bg-gray-100 dark:hover:bg-gray-600 px-2 py-1 rounded" onClick={handleProfile}>
                               Switch To Artist Profile
@@ -485,7 +492,7 @@ const NavForHome = () => {
                 >
                   Cancel
                 </button>
-                <button onClick={() => logOut()} className="px-4 py-2 bg-[#EE1D52] rounded-md text-sm font-medium text-white hover:bg-[#ee1d51c2]">
+                <button onClick={() => logOut()} className="px-4 py-2 bg-[#FF536B] rounded-md text-sm font-medium text-white hover:bg-[#ee1d51c2]">
                   Logout
                 </button>
               </div>

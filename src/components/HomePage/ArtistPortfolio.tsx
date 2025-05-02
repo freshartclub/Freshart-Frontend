@@ -11,10 +11,6 @@ const ArtistPortfolio = ({ data }) => {
   const scrollContainerRef = useRef(null);
   const navigate = useNavigate();
 
-  const redirectToAllArtistPage = () => {
-    navigate("/all_artist");
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
 
   const handleArtistDesc = (id: string) => {
     navigate(`/artist_detail/${id}`);
@@ -86,7 +82,7 @@ const ArtistPortfolio = ({ data }) => {
                 className={`relative cursor-pointer p-3 border flex-shrink-0 ${
                   dark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
                 } hover:shadow-lg transition-shadow duration-300 w-[230px] h-[320px]`}
-                onClick={() => handleArtistDesc(item._id)}
+                onClick={() => handleArtistDesc(item?._id)}
               >
                 <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 w-[4.5rem] h-[4.5rem] z-50 rounded-full border-2 border-white overflow-hidden shadow-md">
                   <img
@@ -105,7 +101,7 @@ const ArtistPortfolio = ({ data }) => {
                   </h3>
 
                   <p className={`text-sm ${dark ? "text-gray-400" : "text-gray-600"} text-center line-clamp-2`}>
-                    {item?.aboutArtist?.discipline && mapData(item.aboutArtist.discipline.map((d) => d.discipline))}
+                    {item?.aboutArtist?.discipline && mapData(item?.aboutArtist?.discipline?.map((d) => d.discipline))}
                   </p>
 
                   <div className="mt-4 w-full h-52 overflow-hidden rounded">

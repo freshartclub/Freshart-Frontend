@@ -72,7 +72,7 @@ const NewTicket = () => {
   const onSubmit = (values: any) => {
     const formData = new FormData();
     Object.keys(values).forEach((key) => {
-      if (key === "ticketImg" && fileInputRef.current?.files?.[0]) {
+      if (key === "ticketImg" && fileInputRefz.current?.files?.[0]) {
         formData.append(key, fileInputRef.current.files[0]);
       } else if (values[key] !== undefined) {
         formData.append(key, values[key]);

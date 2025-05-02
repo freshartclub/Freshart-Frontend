@@ -9,7 +9,7 @@ async function removeToCart(id: string) {
   );
 }
 
-const useRemoveMutation = () => {
+const useRemoveMutation = () => { 
   const queryClient = useQueryClient();
 
   return useMutation({

@@ -24,7 +24,7 @@ export const get_userId = () => {
   return userId;
 };
 
-//   check this
+
 
 export const setUserId = (user_id: string) => {
   if (typeof window === "undefined") {

@@ -21,7 +21,7 @@ const CustomSelect = ({
 
   return (
     <div className="relative inline-block w-[12rem] text-sm">
-      {/* Selected Option */}
+     
       <div
         onClick={() => setIsOpen(!isOpen)}
         className={`border border-[#f78494] rounded-full  flex justify-between items-center py-2 px-4 text-center cursor-pointer bg-white hover:border-[#f78494] ${

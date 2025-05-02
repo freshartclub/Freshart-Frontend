@@ -9,14 +9,10 @@ import share from "./assets/Vector (4).png";
 import CustomOrderForm from "./CustomOrderForm";
 
 const ArtistDescription = ({ data }) => {
+
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("about");
-
-
   const redirectToCircle = () => navigate("/circleblog");
-
-
-
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
@@ -26,9 +22,7 @@ const ArtistDescription = ({ data }) => {
           alt="profile image"
           className="cursor-pointer w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover"
         />
-
         <FaRegHeart size="1.5em" />
-
         <img
           src={share}
           alt="share icon"

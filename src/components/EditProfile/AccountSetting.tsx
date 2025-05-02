@@ -27,7 +27,7 @@ const AccountSetting = () => {
     formState: { isSubmitting },
     setValue,
     reset,
-    getValues,
+    
     register,
   } = useForm({
     defaultValues: {

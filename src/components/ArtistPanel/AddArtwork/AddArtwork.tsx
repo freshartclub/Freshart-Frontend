@@ -49,6 +49,7 @@ const AddArtwork = () => {
 
   const toggleCalendar = () => setShowCalendar(!showCalendar);
   const navigate = useNavigate();
+  const imageRef = useRef()
 
   const {
     register,
@@ -76,9 +77,8 @@ const AddArtwork = () => {
       <div className="relative w-full">
         <div
           onClick={toggleCalendar}
-          className={`mt-1 border rounded-lg w-full p-3 text-left cursor-pointer ${
-            dark ? "bg-gray-700 border-gray-600 text-gray-400" : "bg-[#F9F9FC] border-gray-300 text-gray-900"
-          }`}
+          className={`mt-1 border rounded-lg w-full p-3 text-left cursor-pointer ${dark ? "bg-gray-700 border-gray-600 text-gray-400" : "bg-[#F9F9FC] border-gray-300 text-gray-900"
+            }`}
         >
           {selectedYear ? `${selectedYear}` : t("Select Year")}
         </div>
@@ -138,6 +138,9 @@ const AddArtwork = () => {
 
   const { data, isLoading, refetch: refetchData } = useGetArtWorkById(id);
   const { data: userData, isLoading: userIsLoading } = useGetArtistDetails();
+
+
+  console.log(data)
 
   const userID = userData?.data?.artist?._id;
 
@@ -249,37 +252,37 @@ const AddArtwork = () => {
         "artworkStyleType",
         ispreviewed
           ? data?.data?.reviewDetails?.additionalInfo?.artworkStyle?.map((opt) => ({
-              value: opt,
-              label: t(opt),
-            }))
+            value: opt,
+            label: t(opt),
+          }))
           : data?.data?.additionalInfo?.artworkStyle?.map((opt) => ({
-              value: opt,
-              label: t(opt),
-            })) || ""
+            value: opt,
+            label: t(opt),
+          })) || ""
       );
       setValue(
         "emotions",
         ispreviewed
           ? data?.data?.reviewDetails?.additionalInfo?.emotions?.map((opt) => ({
-              value: opt,
-              label: t(opt),
-            }))
+            value: opt,
+            label: t(opt),
+          }))
           : data?.data?.additionalInfo?.emotions?.map((opt) => ({
-              value: opt,
-              label: t(opt),
-            })) || ""
+            value: opt,
+            label: t(opt),
+          })) || ""
       );
       setValue(
         "colors",
         ispreviewed
           ? data?.data?.reviewDetails?.additionalInfo?.colors?.map((opt) => ({
-              value: opt,
-              label: t(opt),
-            }))
+            value: opt,
+            label: t(opt),
+          }))
           : data?.data?.additionalInfo?.colors?.map((opt) => ({
-              value: opt,
-              label: t(opt),
-            })) || ""
+            value: opt,
+            label: t(opt),
+          })) || ""
       );
       setValue("offensive", ispreviewed ? data?.data?.reviewDetails?.additionalInfo?.offensive : data?.data?.additionalInfo?.offensive || "");
       setValue(
@@ -288,13 +291,13 @@ const AddArtwork = () => {
           ? data?.data?.reviewDetails?.exclusive === true
             ? "Yes"
             : data?.data?.reviewDetails?.exclusive === false
-            ? "No"
-            : ""
+              ? "No"
+              : ""
           : data?.data?.exclusive === true
-          ? "Yes"
-          : data?.data?.exclusive === false
-          ? "No"
-          : ""
+            ? "Yes"
+            : data?.data?.exclusive === false
+              ? "No"
+              : ""
       );
       setValue(
         "purchaseType",
@@ -653,12 +656,26 @@ const AddArtwork = () => {
 
   useEffect(() => {
     if (data && id) {
-      setMainImage(data?.data?.media?.mainImage ? `${imageUrl}/users/${data?.data?.media?.mainImage}` : null);
-      setBackImage(data?.data?.media?.backImage ? `${imageUrl}/users/${data?.data?.media?.backImage}` : null);
-      setInProcessImage(data?.data?.media?.inProcessImage ? `${imageUrl}/users/${data?.data?.media?.inProcessImage}` : null);
-      setMainVideo(data?.data?.media?.mainVideo ? `${imageUrl}/videos/${data?.data?.media?.mainVideo}` : null);
+      const media = data?.data?.media;
+      const reviewMedia = data?.data?.reviewDetails?.media;
+  
+      setMainImage(media?.mainImage ? `${imageUrl}/users/${media.mainImage}` : null);
+  
+      const backImage = ispreviewed
+        ? reviewMedia?.backImage
+          ? `${imageUrl}/users/${reviewMedia.backImage}`
+          : null
+        : media?.backImage
+        ? `${imageUrl}/users/${media.backImage}`
+        : null;
+      setBackImage(backImage);
+  
+      setInProcessImage(media?.inProcessImage ? `${imageUrl}/users/${media.inProcessImage}` : null);
+      setMainVideo(media?.mainVideo ? `${imageUrl}/videos/${media.mainVideo}` : null);
     }
-  }, [data]);
+  }, [data, id, ispreviewed]);
+  
+  console.log(backImage)
 
   const handleCheckArtistFee = (values) => {
     const catalogType = values.target.id;
@@ -739,6 +756,9 @@ const AddArtwork = () => {
     setDropdownOpen(!isDropdownOpen);
   };
 
+
+  console.log(ispreviewed)
+
   if (loading) return <Loader />;
 
   return (
@@ -754,9 +774,8 @@ const AddArtwork = () => {
             {query && (
               <span
                 onClick={handleGenerateQRCode}
-                className={`flex items-center gap-2 cursor-pointer border px-5 py-3 rounded-xl text-sm md:text-base font-semibold ${
-                  dark ? "bg-gray-700 border-gray-600 hover:bg-gray-800" : "bg-gray-900 hover:bg-gray-700"
-                } transition-all text-white duration-200 shadow-md hover:shadow-lg active:scale-95`}
+                className={`flex items-center gap-2 cursor-pointer border px-5 py-3 rounded-xl text-sm md:text-base font-semibold ${dark ? "bg-gray-700 border-gray-600 hover:bg-gray-800" : "bg-gray-900 hover:bg-gray-700"
+                  } transition-all text-white duration-200 shadow-md hover:shadow-lg active:scale-95`}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -783,29 +802,27 @@ const AddArtwork = () => {
               <div className="flex items-center gap-2">
                 <span
                   onClick={() => setIsPreviewed(false)}
-                  className={`px-4 py-2 rounded-lg font-medium cursor-pointer transition-all ${
-                    !ispreviewed
+                  className={`px-4 py-2 rounded-lg font-medium cursor-pointer transition-all ${!ispreviewed
                       ? dark
                         ? "bg-blue-600 text-white"
                         : "bg-blue-500 text-white"
                       : dark
-                      ? "bg-gray-700 text-gray-300 opacity-75"
-                      : "bg-gray-200 text-gray-700 opacity-75"
-                  }`}
+                        ? "bg-gray-700 text-gray-300 opacity-75"
+                        : "bg-gray-200 text-gray-700 opacity-75"
+                    }`}
                 >
                   {t("Old Version")}
                 </span>
                 <span
                   onClick={() => setIsPreviewed(true)}
-                  className={`px-4 py-2 rounded-lg font-medium cursor-pointer transition-all ${
-                    ispreviewed
+                  className={`px-4 py-2 rounded-lg font-medium cursor-pointer transition-all ${ispreviewed
                       ? dark
                         ? "bg-blue-600 text-white"
                         : "bg-blue-500 text-white"
                       : dark
-                      ? "bg-gray-700 text-gray-300 opacity-75"
-                      : "bg-gray-200 text-gray-700 opacity-75"
-                  }`}
+                        ? "bg-gray-700 text-gray-300 opacity-75"
+                        : "bg-gray-200 text-gray-700 opacity-75"
+                    }`}
                 >
                   {t("Modified Version")}
                 </span>
@@ -826,11 +843,10 @@ const AddArtwork = () => {
                   <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t("Artwork Name")} *</label>
                   <input
                     {...register("artworkName", { required: t("Artwork Name is required") })}
-                    className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
-                      dark
+                    className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${dark
                         ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
                         : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
-                    }`}
+                      }`}
                     type="text"
                     id="artworkName"
                     placeholder={t("Enter Artwork Name")}
@@ -861,11 +877,10 @@ const AddArtwork = () => {
                     <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t("Artist Name")}</label>
                     <input
                       {...register("provideArtistName")}
-                      className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
-                        dark
+                      className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${dark
                           ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
                           : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
-                      }`}
+                        }`}
                       name="provideArtistName"
                       id="provideArtistName"
                       readOnly={query ? true : false}
@@ -907,9 +922,8 @@ const AddArtwork = () => {
                         value={getValues("artworkSeries")}
                         type="text"
                         readOnly={query ? true : false}
-                        className={`w-full px-4 py-3 rounded-lg border focus:outline-none ${
-                          dark ? "bg-gray-700 border-gray-600 text-white" : "bg-gray-50 border-gray-300 text-gray-900"
-                        }`}
+                        className={`w-full px-4 py-3 rounded-lg border focus:outline-none ${dark ? "bg-gray-700 border-gray-600 text-white" : "bg-gray-50 border-gray-300 text-gray-900"
+                          }`}
                         placeholder={t("Select Series")}
                         autoComplete="off"
                         onClick={handleDropDown}
@@ -919,9 +933,8 @@ const AddArtwork = () => {
                           {seriesOptions?.map((option, index: number) => (
                             <div
                               key={index}
-                              className={`flex justify-between items-center px-4 py-2 cursor-pointer hover:bg-opacity-10 ${
-                                dark ? "!text-white hover:bg-gray-300" : "hover:bg-gray-100"
-                              }`}
+                              className={`flex justify-between items-center px-4 py-2 cursor-pointer hover:bg-opacity-10 ${dark ? "!text-white hover:bg-gray-300" : "hover:bg-gray-100"
+                                }`}
                             >
                               <span
                                 onClick={() => {
@@ -954,11 +967,10 @@ const AddArtwork = () => {
                   <textarea
                     {...register("productDescription", { required: t("Artwork description is required") })}
                     rows={5}
-                    className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
-                      dark
+                    className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${dark
                         ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
                         : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
-                    }`}
+                      }`}
                     name="productDescription"
                     placeholder={t("Type product description here...")}
                     readOnly={query ? true : false}
@@ -979,9 +991,8 @@ const AddArtwork = () => {
                   <div>
                     <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t("Main Photo")} *</label>
                     <div
-                      className={`border-2 border-dashed rounded-xl p-4 flex flex-col items-center justify-center transition-all hover:border-blue-500 ${
-                        dark ? "border-gray-600 bg-gray-700" : "border-gray-300 bg-gray-50"
-                      } ${!mainImage ? "min-h-[200px]" : ""}`}
+                      className={`border-2 border-dashed rounded-xl p-4 flex flex-col items-center justify-center transition-all hover:border-blue-500 ${dark ? "border-gray-600 bg-gray-700" : "border-gray-300 bg-gray-50"
+                        } ${!mainImage ? "min-h-[200px]" : ""}`}
                       onClick={() => document.getElementById("main-photo-input")?.click()}
                     >
                       <input
@@ -994,13 +1005,20 @@ const AddArtwork = () => {
                       />
                       {mainImage ? (
                         <div className="relative w-full">
-                          <img src={mainImage} alt="Main artwork" className="w-full h-48 object-cover rounded-lg" />
+                          <img
+                            id="mainImage"
+                            src={mainImage}
+                            alt="Main artwork"
+                            className="w-full h-48 object-cover rounded-lg"
+                          />
+
+                          {/* Delete Button */}
                           <span
                             onClick={(e) => {
                               e.stopPropagation();
                               removeImage("mainImage", 0);
                             }}
-                            className={`absolute top-2 right-2 p-1 rounded-full ${dark ? "bg-red-600" : "bg-red-500"} text-white`}
+                            className={`absolute top-2 right-2 p-1 rounded-full ${dark ? "bg-red-600" : "bg-red-500"} text-white z-10`}
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                               <path
@@ -1010,7 +1028,28 @@ const AddArtwork = () => {
                               />
                             </svg>
                           </span>
+
+                          {/* Fullscreen Toggle Button */}
+                          <span
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const img = document.getElementById("mainImage");
+                              if (!document.fullscreenElement) {
+                                img.requestFullscreen();
+                              } else {
+                                document.exitFullscreen();
+                              }
+                            }}
+                            className={`absolute top-2 right-10 p-1 rounded-full ${dark ? "bg-blue-600" : "bg-blue-500"} text-white z-10`}
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                              <path
+                                d="M3 3h6v2H5v4H3V3zm14 0v6h-2V5h-4V3h6zm0 14h-6v-2h4v-4h2v6zM3 17v-6h2v4h4v2H3z"
+                              />
+                            </svg>
+                          </span>
                         </div>
+
                       ) : (
                         <>
                           <svg
@@ -1039,9 +1078,8 @@ const AddArtwork = () => {
                   <div>
                     <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t("Back Photo")}</label>
                     <div
-                      className={`border-2 border-dashed rounded-xl p-4 flex flex-col items-center justify-center transition-all hover:border-blue-500 ${
-                        dark ? "border-gray-600 bg-gray-700" : "border-gray-300 bg-gray-50"
-                      } ${!backImage ? "min-h-[200px]" : ""}`}
+                      className={`border-2 border-dashed rounded-xl p-4 flex flex-col items-center justify-center transition-all hover:border-blue-500 ${dark ? "border-gray-600 bg-gray-700" : "border-gray-300 bg-gray-50"
+                        } ${!backImage ? "min-h-[200px]" : ""}`}
                       onClick={() => document.getElementById("back-photo-input")?.click()}
                     >
                       <input
@@ -1054,7 +1092,7 @@ const AddArtwork = () => {
                       />
                       {backImage ? (
                         <div className="relative w-full">
-                          <img src={backImage} alt="Back of artwork" className="w-full h-48 object-cover rounded-lg" />
+                          <img src={backImage} alt="Back of artwork" id="backImage" className="w-full h-48 object-cover rounded-lg" />
                           <span
                             onClick={(e) => {
                               e.stopPropagation();
@@ -1067,6 +1105,25 @@ const AddArtwork = () => {
                                 fillRule="evenodd"
                                 d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
                                 clipRule="evenodd"
+                              />
+                            </svg>
+                          </span>
+
+                          <span
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const img = document.getElementById("backImage");
+                              if (!document.fullscreenElement) {
+                                img.requestFullscreen();
+                              } else {
+                                document.exitFullscreen();
+                              }
+                            }}
+                            className={`absolute top-2 right-10 p-1 rounded-full ${dark ? "bg-blue-600" : "bg-blue-500"} text-white z-10`}
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                              <path
+                                d="M3 3h6v2H5v4H3V3zm14 0v6h-2V5h-4V3h6zm0 14h-6v-2h4v-4h2v6zM3 17v-6h2v4h4v2H3z"
                               />
                             </svg>
                           </span>
@@ -1100,9 +1157,8 @@ const AddArtwork = () => {
                   <div>
                     <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t("Inprocess Photo")}</label>
                     <div
-                      className={`border-2 border-dashed rounded-xl p-4 flex flex-col items-center justify-center transition-all hover:border-blue-500 ${
-                        dark ? "border-gray-600 bg-gray-700" : "border-gray-300 bg-gray-50"
-                      } ${!inProcessImage ? "min-h-[200px]" : ""}`}
+                      className={`border-2 border-dashed rounded-xl p-4 flex flex-col items-center justify-center transition-all hover:border-blue-500 ${dark ? "border-gray-600 bg-gray-700" : "border-gray-300 bg-gray-50"
+                        } ${!inProcessImage ? "min-h-[200px]" : ""}`}
                       onClick={() => document.getElementById("inprocess-photo-input")?.click()}
                     >
                       <input
@@ -1115,7 +1171,7 @@ const AddArtwork = () => {
                       />
                       {inProcessImage ? (
                         <div className="relative w-full">
-                          <img src={inProcessImage} alt="Artwork in process" className="w-full h-48 object-cover rounded-lg" />
+                          <img src={inProcessImage} alt="Artwork in process" id="inProcessImage" className="w-full h-48 object-cover rounded-lg" />
                           <span
                             onClick={(e) => {
                               e.stopPropagation();
@@ -1128,6 +1184,25 @@ const AddArtwork = () => {
                                 fillRule="evenodd"
                                 d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
                                 clipRule="evenodd"
+                              />
+                            </svg>
+                          </span>
+
+                          <span
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const img = document.getElementById("inProcessImage");
+                              if (!document.fullscreenElement) {
+                                img.requestFullscreen();
+                              } else {
+                                document.exitFullscreen();
+                              }
+                            }}
+                            className={`absolute top-2 right-10 p-1 rounded-full ${dark ? "bg-blue-600" : "bg-blue-500"} text-white z-10`}
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                              <path
+                                d="M3 3h6v2H5v4H3V3zm14 0v6h-2V5h-4V3h6zm0 14h-6v-2h4v-4h2v6zM3 17v-6h2v4h4v2H3z"
                               />
                             </svg>
                           </span>
@@ -1163,9 +1238,8 @@ const AddArtwork = () => {
                     {t("Details Photos (max 3 images)")}
                   </label>
                   <div
-                    className={`border-2 border-dashed rounded-xl p-6 flex flex-col items-center justify-center transition-all hover:border-blue-500 ${
-                      dark ? "border-gray-600 bg-gray-700" : "border-gray-300 bg-gray-50"
-                    }`}
+                    className={`border-2 border-dashed rounded-xl p-6 flex flex-col items-center justify-center transition-all hover:border-blue-500 ${dark ? "border-gray-600 bg-gray-700" : "border-gray-300 bg-gray-50"
+                      }`}
                     onClick={() => document.getElementById("details-photo-input")?.click()}
                   >
                     <input
@@ -1183,7 +1257,7 @@ const AddArtwork = () => {
                         images.length > 0 &&
                         images.map((img, index: number) => (
                           <div key={index} className="relative w-32 h-32">
-                            <img src={URL.createObjectURL(img)} alt={`Detail ${index + 1}`} className="w-full h-full object-cover rounded-lg" />
+                            <img src={URL.createObjectURL(img)} id="images" alt={`Detail ${index + 1}`} className="w-full h-full object-cover rounded-lg" />
                             <span
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -1199,6 +1273,25 @@ const AddArtwork = () => {
                                 />
                               </svg>
                             </span>
+
+                            <span
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const img = document.getElementById("images");
+                              if (!document.fullscreenElement) {
+                                img.requestFullscreen();
+                              } else {
+                                document.exitFullscreen();
+                              }
+                            }}
+                            className={`absolute top-2 right-10 p-1 rounded-full ${dark ? "bg-blue-600" : "bg-blue-500"} text-white z-10`}
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                              <path
+                                d="M3 3h6v2H5v4H3V3zm14 0v6h-2V5h-4V3h6zm0 14h-6v-2h4v-4h2v6zM3 17v-6h2v4h4v2H3z"
+                              />
+                            </svg>
+                          </span>
                           </div>
                         ))}
 
@@ -1258,9 +1351,8 @@ const AddArtwork = () => {
                   <div>
                     <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t("Main Video")}</label>
                     <div
-                      className={`border-2 border-dashed rounded-xl p-4 flex flex-col items-center justify-center transition-all hover:border-blue-500 ${
-                        dark ? "border-gray-600 bg-gray-700" : "border-gray-300 bg-gray-50"
-                      } ${!mainVideo ? "min-h-[200px]" : ""}`}
+                      className={`border-2 border-dashed rounded-xl p-4 flex flex-col items-center justify-center transition-all hover:border-blue-500 ${dark ? "border-gray-600 bg-gray-700" : "border-gray-300 bg-gray-50"
+                        } ${!mainVideo ? "min-h-[200px]" : ""}`}
                       onClick={() => document.getElementById("main-video-input")?.click()}
                     >
                       <input
@@ -1280,9 +1372,8 @@ const AddArtwork = () => {
                               e.stopPropagation();
                               removeImage("mainvideo", 0);
                             }}
-                            className={`absolute top-2 right-2 p-1 rounded-full ${dark ? "bg-red-600" : "bg-red-500"} ${
-                              query ? "pointer-events-none opacity-50" : ""
-                            } text-white`}
+                            className={`absolute top-2 right-2 p-1 rounded-full ${dark ? "bg-red-600" : "bg-red-500"} ${query ? "pointer-events-none opacity-50" : ""
+                              } text-white`}
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                               <path
@@ -1321,9 +1412,8 @@ const AddArtwork = () => {
                   <div>
                     <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t("Other Videos")}</label>
                     <div
-                      className={`border-2 border-dashed rounded-xl p-4 flex flex-col items-center justify-center transition-all hover:border-blue-500 ${
-                        dark ? "border-gray-600 bg-gray-700" : "border-gray-300 bg-gray-50"
-                      } ${otherVideo.length === 0 ? "min-h-[200px]" : ""}`}
+                      className={`border-2 border-dashed rounded-xl p-4 flex flex-col items-center justify-center transition-all hover:border-blue-500 ${dark ? "border-gray-600 bg-gray-700" : "border-gray-300 bg-gray-50"
+                        } ${otherVideo.length === 0 ? "min-h-[200px]" : ""}`}
                       onClick={() => document.getElementById("other-video-input")?.click()}
                     >
                       <input
@@ -1434,11 +1524,10 @@ const AddArtwork = () => {
                     <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t("Artwork Technic")} *</label>
                     <select
                       {...register("artworkTechnic", { required: "Artwork Technic is required" })}
-                      className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
-                        dark
+                      className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${dark
                           ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
                           : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
-                      }`}
+                        }`}
                       id="artworkTechnic"
                       disabled={query ? true : false}
                     >
@@ -1460,11 +1549,10 @@ const AddArtwork = () => {
                     <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t("Artwork Theme")} *</label>
                     <select
                       {...register("artworkTheme", { required: "Artwork Theme is required" })}
-                      className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
-                        dark
+                      className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${dark
                           ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
                           : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
-                      }`}
+                        }`}
                       disabled={query ? true : false}
                       id="artworkTheme"
                     >
@@ -1519,12 +1607,12 @@ const AddArtwork = () => {
                             ? "#3b82f6"
                             : "#3b82f6"
                           : state.isFocused
-                          ? dark
-                            ? "#4b5563"
-                            : "#f3f4f6"
-                          : dark
-                          ? "#374151"
-                          : "#ffffff",
+                            ? dark
+                              ? "#4b5563"
+                              : "#f3f4f6"
+                            : dark
+                              ? "#374151"
+                              : "#ffffff",
                         color: state.isSelected ? "#ffffff" : dark ? "#e5e7eb" : "#111827",
                       }),
                       multiValue: (provided) => ({
@@ -1579,12 +1667,12 @@ const AddArtwork = () => {
                             ? "#3b82f6"
                             : "#3b82f6"
                           : state.isFocused
-                          ? dark
-                            ? "#4b5563"
-                            : "#f3f4f6"
-                          : dark
-                          ? "#374151"
-                          : "#ffffff",
+                            ? dark
+                              ? "#4b5563"
+                              : "#f3f4f6"
+                            : dark
+                              ? "#374151"
+                              : "#ffffff",
                         color: state.isSelected ? "#ffffff" : dark ? "#e5e7eb" : "#111827",
                       }),
                       multiValue: (provided) => ({
@@ -1639,12 +1727,12 @@ const AddArtwork = () => {
                             ? "#3b82f6"
                             : "#3b82f6"
                           : state.isFocused
-                          ? dark
-                            ? "#4b5563"
-                            : "#f3f4f6"
-                          : dark
-                          ? "#374151"
-                          : "#ffffff",
+                            ? dark
+                              ? "#4b5563"
+                              : "#f3f4f6"
+                            : dark
+                              ? "#374151"
+                              : "#ffffff",
                         color: state.isSelected ? "#ffffff" : dark ? "#e5e7eb" : "#111827",
                       }),
                       multiValue: (provided) => ({
@@ -1673,11 +1761,10 @@ const AddArtwork = () => {
                   <select
                     {...register("offensive", { required: "Offensive is required" })}
                     disabled={query ? true : false}
-                    className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
-                      dark
+                    className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${dark
                         ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
                         : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
-                    }`}
+                      }`}
                   >
                     <option value="No">{t("No")}</option>
                     <option value="Yes">{t("Yes")}</option>
@@ -1693,9 +1780,8 @@ const AddArtwork = () => {
                       externalTags.map((tag, index) => (
                         <span
                           key={index}
-                          className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
-                            dark ? "bg-blue-900 text-blue-100" : "bg-blue-100 text-blue-800"
-                          }`}
+                          className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${dark ? "bg-blue-900 text-blue-100" : "bg-blue-100 text-blue-800"
+                            }`}
                         >
                           {tag}
                           <span
@@ -1725,11 +1811,10 @@ const AddArtwork = () => {
                           handleAddExternalTag(e);
                         }
                       }}
-                      className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
-                        dark
+                      className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${dark
                           ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
                           : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
-                      }`}
+                        }`}
                       placeholder={t("Enter tags (e.g., #example)")}
                     />
                   </div>
@@ -1743,11 +1828,10 @@ const AddArtwork = () => {
                       required: "Material is required",
                     })}
                     disabled={query ? true : false}
-                    className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
-                      dark
+                    className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${dark
                         ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
                         : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
-                    }`}
+                      }`}
                   >
                     <option value="">{t("Select Type")}</option>
                     {getMaterial &&
@@ -1773,11 +1857,10 @@ const AddArtwork = () => {
                         id={field.name}
                         placeholder={t(field.placeholder)}
                         readOnly={query ? true : false}
-                        className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
-                          dark
+                        className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${dark
                             ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
                             : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
-                        }`}
+                          }`}
                       />
 
                       {errors[field.name] ? (
@@ -1795,11 +1878,10 @@ const AddArtwork = () => {
                       required: "Hanging available is required",
                     })}
                     disabled={query ? true : false}
-                    className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
-                      dark
+                    className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${dark
                         ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
                         : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
-                    }`}
+                      }`}
                   >
                     <option value="">{t("Select")}</option>
                     <option value="Yes">{t("Yes")}</option>
@@ -1822,11 +1904,10 @@ const AddArtwork = () => {
                         rows={5}
                         readOnly={query ? true : false}
                         placeholder={t("Type Hanging description here...")}
-                        className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
-                          dark
+                        className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${dark
                             ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
                             : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
-                        }`}
+                          }`}
                       />
                     </>
                   )}
@@ -1840,11 +1921,10 @@ const AddArtwork = () => {
                       required: t("Framed is required"),
                     })}
                     disabled={query ? true : false}
-                    className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
-                      dark
+                    className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${dark
                         ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
                         : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
-                    }`}
+                      }`}
                   >
                     <option value="">{t("Select")}</option>
                     <option value="Yes">{t("Yes")}</option>
@@ -1866,11 +1946,10 @@ const AddArtwork = () => {
                         })}
                         placeholder={t("Type Framed description here...")}
                         readOnly={query ? true : false}
-                        className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
-                          dark
+                        className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${dark
                             ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
                             : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
-                        }`}
+                          }`}
                       />
                       {errors?.framedDescription && <div className="text-red-500 mt-1 text-sm">{t(`${errors.framedDescription.message}`)}</div>}
                     </div>
@@ -1887,11 +1966,10 @@ const AddArtwork = () => {
                             id={field.name}
                             readOnly={query ? true : false}
                             placeholder={t(field.placeholder)}
-                            className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
-                              dark
+                            className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${dark
                                 ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
                                 : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
-                            }`}
+                              }`}
                           />
 
                           {errors?.[field.name] && <div className="text-red-500 mt-1 text-sm">{t(`${errors?.[field.name]?.message}`)}</div>}
@@ -1909,11 +1987,10 @@ const AddArtwork = () => {
                       required: t("Exclusive is required"),
                     })}
                     disabled={query ? true : false}
-                    className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
-                      dark
+                    className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${dark
                         ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
                         : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
-                    }`}
+                      }`}
                   >
                     <option value="">{t("Select")}</option>
                     <option value="Yes">{t("Yes")}</option>
@@ -1930,11 +2007,10 @@ const AddArtwork = () => {
                       required: "Artwork Orientation is required",
                     })}
                     disabled={query ? true : false}
-                    className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
-                      dark
+                    className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${dark
                         ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
                         : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
-                    }`}
+                      }`}
                   >
                     <option value="">{t("Select Type")}</option>
                     {orientation &&
@@ -1970,15 +2046,14 @@ const AddArtwork = () => {
                       setPackageHeightError(null);
                       setBasePriceError(null);
                     }}
-                    className={`py-2 font-semibold transition-all ${
-                      activeTab === "subscription"
+                    className={`py-2 font-semibold transition-all ${activeTab === "subscription"
                         ? dark
                           ? "border-b-2 border-blue-400 text-blue-400"
                           : "border-b-2 border-blue-500 text-blue-500"
                         : dark
-                        ? "text-gray-400"
-                        : "text-gray-500"
-                    }`}
+                          ? "text-gray-400"
+                          : "text-gray-500"
+                      }`}
                   >
                     {t("Subscription")}
                   </span>
@@ -1995,15 +2070,14 @@ const AddArtwork = () => {
                       setPackageHeightError(null);
                       setBasePriceError(null);
                     }}
-                    className={`py-2 mx-8 font-semibold transition-all ${
-                      activeTab === "purchase"
+                    className={`py-2 mx-8 font-semibold transition-all ${activeTab === "purchase"
                         ? dark
                           ? "border-b-2 border-blue-400 text-blue-400"
                           : "border-b-2 border-blue-500 text-blue-500"
                         : dark
-                        ? "text-gray-400"
-                        : "text-gray-500"
-                    }`}
+                          ? "text-gray-400"
+                          : "text-gray-500"
+                      }`}
                   >
                     {t("Purchase")}
                   </span>
@@ -2024,11 +2098,10 @@ const AddArtwork = () => {
                           setsubscriptionCatlogValue(val.target.value);
                         }}
                         disabled={query ? true : false}
-                        className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
-                          dark
+                        className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${dark
                             ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
                             : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
-                        }`}
+                          }`}
                       >
                         <option value="">{t("Select")}</option>
                         {seriesData?.subscriptionCatalog?.map((series, i: number) => (
@@ -2045,11 +2118,10 @@ const AddArtwork = () => {
                         {...register("purchaseOption")}
                         id="purchaseOption"
                         disabled={query ? true : false}
-                        className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
-                          dark
+                        className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${dark
                             ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
                             : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
-                        }`}
+                          }`}
                       >
                         <option value="">{t("Select")}</option>
                         <option value="Yes">{t("Yes")}</option>
@@ -2073,11 +2145,10 @@ const AddArtwork = () => {
                           setValue("purchaseType", "");
                         }}
                         disabled={query ? true : false}
-                        className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
-                          dark
+                        className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${dark
                             ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
                             : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
-                        }`}
+                          }`}
                       >
                         <option value="">{t("Select")}</option>
                         {seriesData?.purchaseCatalog?.map((item, index: number) => (
@@ -2095,19 +2166,18 @@ const AddArtwork = () => {
                         {...register("purchaseType")}
                         value={getValues("purchaseType") || ""}
                         disabled={query ? true : false}
-                        className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
-                          dark
+                        className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${dark
                             ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
                             : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
-                        }`}
+                          }`}
                       >
                         <option value="">{t("Select")}</option>
                         {purOption
                           ? purOption?.map((item, index: number) => (
-                              <option key={index} value={item?.value}>
-                                {t(item?.value)}
-                              </option>
-                            ))
+                            <option key={index} value={item?.value}>
+                              {t(item?.value)}
+                            </option>
+                          ))
                           : []}
                       </select>
                     </div>
@@ -2128,11 +2198,10 @@ const AddArtwork = () => {
                     {...register("currency")}
                     id="currency"
                     disabled={query ? true : false}
-                    className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
-                      dark
+                    className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${dark
                         ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
                         : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
-                    }`}
+                      }`}
                   >
                     {currency?.map((item, index: number) => (
                       <option key={index} value={item?.value}>
@@ -2155,11 +2224,10 @@ const AddArtwork = () => {
                   <input
                     {...register("basePrice", { required: "Base Price is Required" })}
                     type="text"
-                    className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
-                      dark
+                    className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${dark
                         ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
                         : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
-                    }`}
+                      }`}
                     id="basePrice"
                     placeholder={t("Enter Base Price")}
                     disabled={query ? true : false}
@@ -2171,47 +2239,45 @@ const AddArtwork = () => {
                   watch("purchaseType") === "Fixed Price" ||
                   watch("purchaseType") === "Price By Request" ||
                   watch("purchaseType") === "Upward Offer") && (
-                  <div className="grid md:grid-cols-2 gap-6 mt-6">
-                    <div>
-                      <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>
-                        {t("Discount Percentage")}
-                      </label>
-                      <input
-                        {...register("dpersentage")}
-                        type="text"
-                        className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
-                          dark
-                            ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
-                            : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
-                        }`}
-                        name="dpersentage"
-                        id="dpersentage"
-                        placeholder="0.0 %"
-                        readOnly={query ? true : false}
-                      />
-                    </div>
-
-                    {(watch("purchaseType") === "Downward Offer" || watch("purchaseType") === "Upward Offer") && (
+                    <div className="grid md:grid-cols-2 gap-6 mt-6">
                       <div>
                         <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>
-                          {t("Accept Offer Minimum Price")}
+                          {t("Discount Percentage")}
                         </label>
                         <input
-                          {...register("acceptOfferPrice")}
+                          {...register("dpersentage")}
                           type="text"
-                          id="acceptOfferPrice"
-                          placeholder={t("Accept Offer Minimum Price")}
-                          readOnly={query ? true : false}
-                          className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
-                            dark
+                          className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${dark
                               ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
                               : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
-                          }`}
+                            }`}
+                          name="dpersentage"
+                          id="dpersentage"
+                          placeholder="0.0 %"
+                          readOnly={query ? true : false}
                         />
                       </div>
-                    )}
-                  </div>
-                )}
+
+                      {(watch("purchaseType") === "Downward Offer" || watch("purchaseType") === "Upward Offer") && (
+                        <div>
+                          <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>
+                            {t("Accept Offer Minimum Price")}
+                          </label>
+                          <input
+                            {...register("acceptOfferPrice")}
+                            type="text"
+                            id="acceptOfferPrice"
+                            placeholder={t("Accept Offer Minimum Price")}
+                            readOnly={query ? true : false}
+                            className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${dark
+                                ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
+                                : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
+                              }`}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
 
                 <div className="grid md:grid-cols-2 gap-6 mt-6">
                   <div>
@@ -2222,11 +2288,10 @@ const AddArtwork = () => {
                       name="artistFees"
                       placeholder={t("Enter Artist Base Fees")}
                       readOnly
-                      className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
-                        dark
+                      className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${dark
                           ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
                           : "bg-gray-100 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
-                      }`}
+                        }`}
                     />
                   </div>
 
@@ -2238,11 +2303,10 @@ const AddArtwork = () => {
                       {...register("vatAmount")}
                       placeholder={t("Enter VAT amount")}
                       value={vatAmount}
-                      className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
-                        dark
+                      className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${dark
                           ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
                           : "bg-gray-100 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
-                      }`}
+                        }`}
                     />
                   </div>
                 </div>
@@ -2264,11 +2328,10 @@ const AddArtwork = () => {
                     id="Product Code"
                     placeholder={t("Product Code")}
                     readOnly={query ? true : false}
-                    className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
-                      dark
+                    className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${dark
                         ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
                         : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
-                    }`}
+                      }`}
                   />
                 </div>
 
@@ -2280,11 +2343,10 @@ const AddArtwork = () => {
                     placeholder={t("Enter Your Location")}
                     {...register("location")}
                     readOnly={query ? true : false}
-                    className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
-                      dark
+                    className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${dark
                         ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
                         : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
-                    }`}
+                      }`}
                   />
                 </div>
 
@@ -2293,11 +2355,10 @@ const AddArtwork = () => {
                   <select
                     disabled={query ? true : false}
                     {...register("packageMaterial", { required: "Package Material is required" })}
-                    className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
-                      dark
+                    className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${dark
                         ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
                         : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
-                    }`}
+                      }`}
                   >
                     <option value="">{t("Select")}</option>
                     {packMaterial?.map((item, index: number) => (
@@ -2335,11 +2396,10 @@ const AddArtwork = () => {
                       <label className={`block text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{t(field.label)} *</label>
                       <input
                         {...register(field.name, { required: `${field.label} is required` })}
-                        className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
-                          dark
+                        className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${dark
                             ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
                             : "bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
-                        }`}
+                          }`}
                         type="text"
                         id={field.name}
                         readOnly={query ? true : false}
@@ -2350,7 +2410,7 @@ const AddArtwork = () => {
                   ))}
                 </div>
 
-                <div className="flex items-center mt-6">
+                <div className="flex items-center mt-6 ">
                   <input
                     type="checkbox"
                     id="comingSoon"
@@ -2377,15 +2437,14 @@ const AddArtwork = () => {
           </div>
 
           {/* Footer Buttons */}
-          <div className={`fixed bottom-0 left-0 right-0 py-4 px-6 flex justify-end gap-4`}>
+          <div className={`fixed bottom-0  right-0 py-4 px-6 flex justify-end gap-4 w-fit`}>
             {!query && (
               <>
                 <button
                   type="button"
                   onClick={handleNavigate}
-                  className={`px-6 py-3 rounded-lg font-medium transition-all ${
-                    dark ? "bg-red-600 hover:bg-red-700 text-white" : "bg-red-500 hover:bg-red-600 text-white"
-                  }`}
+                  className={`px-6 py-3 rounded-lg font-medium transition-all ${dark ? "bg-red-600 hover:bg-red-700 text-white" : "bg-red-500 hover:bg-red-600 text-white"
+                    }`}
                 >
                   {t("Cancel")}
                 </button>
@@ -2393,9 +2452,8 @@ const AddArtwork = () => {
                   <button
                     type="submit"
                     disabled={modifyIsPending}
-                    className={`px-6 py-3 rounded-lg font-medium transition-all ${
-                      modifyIsPending ? "bg-gray-400 cursor-not-allowed" : dark && "bg-[#EE1D52] hover:bg-[#EE1D52]/80 text-white"
-                    }`}
+                    className={`px-6 py-3 rounded-lg font-medium transition-all ${modifyIsPending ? "bg-gray-400 cursor-not-allowed" : dark && "bg-[#EE1D52] hover:bg-[#EE1D52]/80 text-white"
+                      }`}
                   >
                     {modifyIsPending ? t("Modifying...") : t("Modify Artwork")}
                   </button>
@@ -2403,11 +2461,10 @@ const AddArtwork = () => {
                   <button
                     type="submit"
                     disabled={isPending || (status === "modified" && !ispreviewed)}
-                    className={`px-6 py-3 rounded-lg font-medium transition-all ${
-                      isPending || (status === "modified" && !ispreviewed)
+                    className={`px-6 py-3 rounded-lg font-medium transition-all ${isPending || (status === "modified" && !ispreviewed)
                         ? "bg-gray-400 opacity-65 pointer-events-none cursor-not-allowed"
                         : "bg-[#EE1D52] hover:bg-[#EE1D52]/80 text-white"
-                    }`}
+                      }`}
                   >
                     {isPending ? t("Processing...") : t("Save & Preview")}
                   </button>
@@ -2422,9 +2479,8 @@ const AddArtwork = () => {
       {qrVisible && (
         <div className="fixed inset-0 flex items-center justify-center z-[100] bg-black/60 backdrop-blur-sm">
           <div
-            className={`relative w-full h-[90vh] overflow-y-auto scrollbar max-w-md p-4 border rounded-2xl shadow-2xl ${
-              dark ? "bg-gradient-to-br border-gray-600 from-gray-900 to-gray-800" : "bg-white"
-            } transition-all`}
+            className={`relative w-full h-[90vh] overflow-y-auto scrollbar max-w-md p-4 border rounded-2xl shadow-2xl ${dark ? "bg-gradient-to-br border-gray-600 from-gray-900 to-gray-800" : "bg-white"
+              } transition-all`}
           >
             <span
               onClick={() => {
@@ -2432,9 +2488,8 @@ const AddArtwork = () => {
                 setCopySuccess("");
                 setErrorMessage("");
               }}
-              className={`absolute rounded-full cursor-pointer ${
-                dark ? "hover:bg-gray-600" : "hover:bg-gray-100"
-              } top-4 right-4 text-gray-400 hover:text-red-500 transition-colors`}
+              className={`absolute rounded-full cursor-pointer ${dark ? "hover:bg-gray-600" : "hover:bg-gray-100"
+                } top-4 right-4 text-gray-400 hover:text-red-500 transition-colors`}
             >
               <IoCloseSharp size={26} />
             </span>
@@ -2461,18 +2516,16 @@ const AddArtwork = () => {
                     id="linkInput"
                     value={url}
                     readOnly
-                    className={`w-full px-4 py-3 rounded-lg border text-sm font-medium outline-none focus:ring-2 transition-all ${
-                      dark
+                    className={`w-full px-4 py-3 rounded-lg border text-sm font-medium outline-none focus:ring-2 transition-all ${dark
                         ? "bg-gray-800 border-gray-700 text-white focus:ring-blue-600"
                         : "bg-gray-100 border-gray-300 text-gray-900 focus:ring-blue-400"
-                    }`}
+                      }`}
                   />
                   <button
                     type="button"
                     onClick={handleCopy}
-                    className={`absolute right-2 top-1.5 px-3 py-1.5 rounded-md text-sm font-semibold shadow-sm transition-all ${
-                      dark ? "bg-blue-600 hover:bg-blue-700" : "bg-blue-500 hover:bg-blue-600"
-                    } text-white`}
+                    className={`absolute right-2 top-1.5 px-3 py-1.5 rounded-md text-sm font-semibold shadow-sm transition-all ${dark ? "bg-blue-600 hover:bg-blue-700" : "bg-blue-500 hover:bg-blue-600"
+                      } text-white`}
                   >
                     {t("Copy Link")}
                   </button>
@@ -2483,13 +2536,12 @@ const AddArtwork = () => {
                 type="button"
                 onClick={handleDownloadPDF}
                 disabled={isLoadingPdf}
-                className={`w-full py-3 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all ${
-                  isLoadingPdf
+                className={`w-full py-3 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all ${isLoadingPdf
                     ? "bg-gray-400 cursor-not-allowed"
                     : dark
-                    ? "bg-green-600 hover:bg-green-700 text-white"
-                    : "bg-green-500 hover:bg-green-600 text-white"
-                }`}
+                      ? "bg-green-600 hover:bg-green-700 text-white"
+                      : "bg-green-500 hover:bg-green-600 text-white"
+                  }`}
               >
                 {isLoadingPdf ? (
                   <>

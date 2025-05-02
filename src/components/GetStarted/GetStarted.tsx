@@ -39,7 +39,7 @@ const GetStarted = () => {
   }
 
   return (
-    <div>
+    <div className="overflow-hidden">
       {/* <UnderConstruction /> */}
       <BannerSection data={data?.data?.carousel} />
       <CenteredSection

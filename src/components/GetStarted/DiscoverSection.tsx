@@ -1,7 +1,31 @@
-import Button from "../ui/Button";
+import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import PropTypes from "prop-types";
+import { motion } from "framer-motion";
+import Button from "../ui/Button";
 import arrow from "../../assets/arrow.png";
+
+interface CenteredSectionProps {
+  title?: string;
+  text?: string;
+  imageSrc?: string | string[];
+  buttonText?: string;
+  buttonLink?: string;
+  backgroundColor?: string;
+  titleColor?: string;
+  textColor?: string;
+  imageSize?: string;
+  className?: string;
+  containerClassName?: string;
+}
+
+const fadeInUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: (i = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay: i * 0.2, duration: 0.6, ease: "easeOut" },
+  }),
+};
 
 const CenteredSection = ({
   title,
@@ -9,82 +33,109 @@ const CenteredSection = ({
   imageSrc,
   buttonText,
   buttonLink,
-
   backgroundColor = "#F5F2EB",
   titleColor = "#102030",
   textColor = "#102030",
   imageSize = "150px",
-
   className = "",
   containerClassName = "",
-}) => {
+}: CenteredSectionProps) => {
   const navigate = useNavigate();
 
-  const handleButtonClick = () => {
-    if (buttonLink) {
-      navigate(buttonLink);
+  const handleButtonClick = useCallback(() => {
+    if (buttonLink) navigate(buttonLink);
+  }, [buttonLink, navigate]);
+
+  const renderImage = () => {
+    if (!imageSrc) return null;
+
+    if (Array.isArray(imageSrc)) {
+      return (
+        <motion.div
+          className="flex flex-col sm:flex-row justify-center items-center lg:gap-32 md:gap-10 sm:gap-14 gap-0 mb-10"
+          variants={fadeInUp}
+          initial="hidden"
+          animate="visible"
+          custom={2}
+        >
+          {imageSrc.map((src, index) => (
+            <img
+              key={index}
+              src={src}
+              alt={`icon-${index + 1}`}
+              className="md:mb-0 mb-4"
+              width={imageSize}
+              height={imageSize}
+              loading="lazy"
+            />
+          ))}
+        </motion.div>
+      );
     }
+
+    return (
+      <motion.div
+        className="flex justify-center items-center mb-10"
+        variants={fadeInUp}
+        initial="hidden"
+        animate="visible"
+        custom={2}
+      >
+        <img
+          src={imageSrc}
+          alt="section"
+          width={imageSize}
+          height={imageSize}
+          loading="lazy"
+        />
+      </motion.div>
+    );
   };
 
   return (
-    <div
+    <section
       className={`py-20 ${className}`}
-      style={{ backgroundColor: backgroundColor }}
+      style={{ backgroundColor }}
     >
-      <div
-        className={`container mx-auto md:px-6 px-3 text-center ${containerClassName}`}
+      <motion.div
+        className={`container mx-auto px-3 md:px-6 text-center ${containerClassName}`}
+        initial="hidden"
+        animate="visible"
+        variants={{
+          hidden: {},
+          visible: {},
+        }}
       >
         {title && (
-          <h1
+          <motion.h1
             className="md:text-[36px] text-[30px] font-semibold pb-10"
             style={{ color: titleColor }}
+            variants={fadeInUp}
+            custom={0}
           >
             {title}
-          </h1>
+          </motion.h1>
         )}
 
         {text && (
-          <p
+          <motion.p
             className="md:text-[18px] text-[16px] mb-10"
             style={{ color: textColor }}
+            variants={fadeInUp}
+            custom={1}
           >
             {text}
-          </p>
+          </motion.p>
         )}
 
-        {imageSrc && (
-          <div className="flex justify-center items-center mb-10">
-            {Array.isArray(imageSrc) ? (
-              <div className="flex flex-col sm:flex-row justify-center items-center lg:gap-32 md:gap-10 sm:gap-14 gap-0">
-                {imageSrc.map((src, index) => (
-                  <img
-                    key={index}
-                    src={src}
-                    alt={`icon${index + 1}`}
-                    className="md:mb-0 mb-4"
-                    style={{
-                      width: imageSize,
-                      height: imageSize,
-                    }}
-                  />
-                ))}
-              </div>
-            ) : (
-              <img
-                src={imageSrc}
-                alt="section image"
-                className="md:mb-0 mb-4"
-                style={{
-                  width: imageSize,
-                  height: imageSize,
-                }}
-              />
-            )}
-          </div>
-        )}
+        {renderImage()}
 
         {buttonText && (
-          <div className="flex justify-center items-center">
+          <motion.div
+            className="flex justify-center items-center"
+            variants={fadeInUp}
+            custom={3}
+          >
             <Button
               variant={{
                 theme: "dark",
@@ -97,30 +148,15 @@ const CenteredSection = ({
               onClick={handleButtonClick}
             >
               {buttonText}
-              {buttonLink && <img src={arrow} alt="arrow" className="ml-2" />}
+              {buttonLink && (
+                <img src={arrow} alt="arrow" className="ml-2" loading="lazy" />
+              )}
             </Button>
-          </div>
+          </motion.div>
         )}
-      </div>
-    </div>
+      </motion.div>
+    </section>
   );
-};
-
-CenteredSection.propTypes = {
-  title: PropTypes.string,
-  text: PropTypes.string,
-  imageSrc: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.arrayOf(PropTypes.string),
-  ]),
-  buttonText: PropTypes.string,
-  buttonLink: PropTypes.string,
-  backgroundColor: PropTypes.string,
-  titleColor: PropTypes.string,
-  textColor: PropTypes.string,
-  imageSize: PropTypes.string,
-  className: PropTypes.string,
-  containerClassName: PropTypes.string,
 };
 
 export default CenteredSection;

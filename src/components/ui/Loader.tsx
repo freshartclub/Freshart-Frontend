@@ -1,74 +1,35 @@
-import styled from "styled-components";
+const Loader = ({ theme }) => {
+  // Define color classes based on theme
+  const colors = theme 
+    ? [
+        "bg-[#4c86f9]",  // first-color light
+        "bg-[#49a84c]",  // second-color light
+        "bg-[#f6bb02]",  // third-color light
+        "bg-[#f6bb02]",  // fourth-color light
+        "bg-[#2196f3]",  // fifth-color light
+      ]
+    : [
+        "bg-[#8ab4f8]",  // first-color dark
+        "bg-[#81c784]",  // second-color dark
+        "bg-[#ffd54f]",  // third-color dark
+        "bg-[#ffd54f]",  // fourth-color dark
+        "bg-[#64b5f6]",  // fifth-color dark
+      ];
 
-const Loader = () => {
   return (
-    <StyledWrapper>
-      <div className="loading ">
-        <span />
-        <span />
-        <span />
-        <span />
-        <span />
-      </div>
-    </StyledWrapper>
+    <div className="flex justify-center items-center w-full h-screen gap-1.5">
+      {colors.map((color, index) => (
+        <span
+          key={index}
+          className={`w-1 h-12 ${color} animate-scale`}
+          style={{
+            animationDelay: `${-0.8 + index * 0.1}s`,
+            animationDuration: "0.9s",
+          }}
+        />
+      ))}
+    </div>
   );
 };
-
-const StyledWrapper = styled.div`
-  .loading {
-    --speed-of-animation: 0.9s;
-    --gap: 6px;
-    --first-color: #4c86f9;
-    --second-color: #49a84c;
-    --third-color: #f6bb02;
-    --fourth-color: #f6bb02;
-    --fifth-color: #2196f3;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    gap: 6px;
-    height: 100vh;
-  }
-
-  .loading span {
-    width: 4px;
-    height: 50px;
-    background: var(--first-color);
-    animation: scale var(--speed-of-animation) ease-in-out infinite;
-  }
-
-  .loading span:nth-child(2) {
-    background: var(--second-color);
-    animation-delay: -0.8s;
-  }
-
-  .loading span:nth-child(3) {
-    background: var(--third-color);
-    animation-delay: -0.7s;
-  }
-
-  .loading span:nth-child(4) {
-    background: var(--fourth-color);
-    animation-delay: -0.6s;
-  }
-
-  .loading span:nth-child(5) {
-    background: var(--fifth-color);
-    animation-delay: -0.5s;
-  }
-
-  @keyframes scale {
-    0%,
-    40%,
-    100% {
-      transform: scaleY(0.05);
-    }
-
-    20% {
-      transform: scaleY(1);
-    }
-  }
-`;
 
 export default Loader;

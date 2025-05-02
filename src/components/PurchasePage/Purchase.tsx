@@ -11,7 +11,6 @@ import { useGetDiscipline } from "../pages/http/useGetDiscipline";
 import { useGetStyle } from "../pages/http/useGetStyle";
 import Badge from "../ui/Badge";
 import Loader from "../ui/Loader";
-import SelectOption from "../ui/SelectOption";
 import { imageUrl } from "../utils/baseUrls";
 import { RenderAllPicklist } from "../utils/RenderAllPicklist";
 import useClickOutside from "../utils/useClickOutside";
@@ -157,7 +156,7 @@ const Purchase = () => {
     }));
   };
 
-  const filteredDisciplineData = disciplineData?.data?.filter((item) => item?.isMain) || [];
+const filteredDisciplineData = disciplineData?.data?.filter((item) => item?.isMain) || [];
 
   const matchesSelectedDisciplines = (item) => {
     if (!selectedOption.length) return true;
@@ -165,12 +164,11 @@ const Purchase = () => {
     return selectedOption.every((option) => disciplineNames.includes(option));
   };
 
-  const filteredTechnicData =
-    techData?.data?.filter((item) => item?.isMain && matchesSelectedDisciplines(item)).map((item) => item.technicName) || [];
+  const filteredTechnicData = techData?.data?.filter((item) => item?.isMain && matchesSelectedDisciplines(item)).map((item) => item?.technicName) || [];
 
-  const filteredThemeData = theData?.data?.filter((item) => item?.isMain && matchesSelectedDisciplines(item)).map((item) => item.themeName) || [];
+  const filteredThemeData = theData?.data?.filter((item) => item?.isMain && matchesSelectedDisciplines(item)).map((item) => item?.themeName) || [];
 
-  const filteredStyleData = stData?.data?.filter((item) => item?.isMain && matchesSelectedDisciplines(item)).map((item) => item.styleName) || [];
+  const filteredStyleData = stData?.data?.filter((item) => item?.isMain && matchesSelectedDisciplines(item)).map((item) => item?.styleName) || [];
 
   const handleClear = async () => {
     setSelectedOption([]);
@@ -331,7 +329,7 @@ const Purchase = () => {
           <label key={index} className="flex items-center space-x-2 cursor-pointer">
             <input
               type="checkbox"
-              checked={selectedTheme.includes(item)}
+              checked={selectedTheme?.includes(item)}
               onChange={() => handleThemeSelect(item)}
               className={`form-checkbox h-4 w-4 rounded ${dark ? "text-blue-400 bg-gray-700 border-gray-600" : "text-blue-600"}`}
             />
@@ -421,11 +419,11 @@ const Purchase = () => {
                         dark ? "text-gray-300" : "text-gray-700"
                       } font-semibold px-3 cursor-pointer group-hover:text-[#EE1D52] transition-all duration-200 ease-in-out rounded-md`}
                     >
-                      {item.disciplineName}
+                      {item?.disciplineName}
                     </span>
                   </div>
 
-                  {hoveredDiscipline?.disciplineName === item.disciplineName && (
+                  {hoveredDiscipline?.disciplineName === item?.disciplineName && (
                     <>
                       {hoverLoading ? (
                         <p className={`${dark ? "text-gray-400" : "text-gray-400"} text-sm animate-pulse`}></p>
@@ -442,7 +440,7 @@ const Purchase = () => {
                               <h3 className={`text-lg font-bold ${dark ? "text-white" : "text-gray-900"} mb-2`}>Style</h3>
                               <ul className="space-y-2">
                                 {filteredHoverData?.style?.length > 0 ? (
-                                  filteredHoverData?.style.map((styleItem, styleIndex: number) => (
+                                  filteredHoverData?.style?.map((styleItem, styleIndex: number) => (
                                     <li
                                       onClick={() => {
                                         handleOptionSelect(hoveredDiscipline?.disciplineName);
@@ -454,7 +452,7 @@ const Purchase = () => {
                                         dark ? "text-gray-300 hover:text-blue-400" : "text-gray-700 hover:text-blue-600"
                                       } transition-colors duration-150 cursor-pointer`}
                                     >
-                                      {styleItem.styleName}
+                                      {styleItem?.styleName}
                                     </li>
                                   ))
                                 ) : (
@@ -467,7 +465,7 @@ const Purchase = () => {
                               <h3 className={`text-lg font-bold ${dark ? "text-white" : "text-gray-900"} mb-2`}>Theme</h3>
                               <ul className="space-y-2">
                                 {filteredHoverData?.theme?.length > 0 ? (
-                                  filteredHoverData?.theme.map((themeItem, themeIndex: number) => (
+                                  filteredHoverData?.theme?.map((themeItem, themeIndex: number) => (
                                     <li
                                       key={themeIndex}
                                       className={`text-sm ${
@@ -479,7 +477,7 @@ const Purchase = () => {
                                         setHoveredDiscipline(null);
                                       }}
                                     >
-                                      {themeItem.themeName}
+                                      {themeItem?.themeName}
                                     </li>
                                   ))
                                 ) : (
@@ -491,7 +489,7 @@ const Purchase = () => {
                             <div className="min-w-[120px]">
                               <h3 className={`text-lg font-bold ${dark ? "text-white" : "text-gray-900"} mb-2`}>Commercial</h3>
                               <ul className="space-y-2">
-                                {commercialOptions.map((key, i: number) => (
+                                {commercialOptions?.map((key, i: number) => (
                                   <li
                                     key={i}
                                     onClick={() =>
@@ -518,7 +516,7 @@ const Purchase = () => {
                               <h3 className={`text-lg font-bold ${dark ? "text-white" : "text-gray-900"} mb-2`}>Artists</h3>
                               <ul className="space-y-2">
                                 {allHoverData?.insignia &&
-                                  allHoverData.insignia.map((key, i: number) => (
+                                  allHoverData.insignia?.map((key, i: number) => (
                                     <li
                                       key={i}
                                       onClick={() =>
@@ -528,14 +526,14 @@ const Purchase = () => {
                                         }))
                                       }
                                       className={`${
-                                        moreOptions.insig === key._id
+                                        moreOptions?.insig === key._id
                                           ? `${dark ? "bg-blue-900 text-blue-200" : "bg-blue-100 text-blue-800"} px-2 rounded`
                                           : dark
                                           ? "text-gray-300"
                                           : "text-gray-700"
                                       } text-sm hover:text-blue-600 transition-colors duration-150 cursor-pointer`}
                                     >
-                                      {key.credentialName}
+                                      {key?.credentialName}
                                     </li>
                                   ))}
                               </ul>
@@ -593,7 +591,7 @@ const Purchase = () => {
                                       <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-30 transition-all duration-200"></div>
                                       <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-gray-900 to-transparent">
                                         <p className="text-md text-white text-center truncate font-medium">
-                                          {allHoverData?.artists[0].artistName || "Untitled"}
+                                          {allHoverData?.artists[0]?.artistName || "Untitled"}
                                         </p>
                                       </div>
                                     </li>
@@ -655,7 +653,7 @@ const Purchase = () => {
         {activeFiltersCount > 0 && (
           <div className={`p-3 border-b ${dark ? "bg-gray-700 border-gray-600" : "bg-gray-50"}`}>
             <div className="flex flex-wrap gap-2">
-              {handleOptions.map(({ key, label }) => {
+              {handleOptions?.map(({ key, label }) => {
                 const selectedItemsMap = {
                   selectedOption,
                   selectedTechnic,

@@ -20,6 +20,7 @@ const useSubscriptionMutation = () => {
     },
     onError: (error) => {
       toast.error(t(error.response?.data?.message));
+      console.error(error)
     },
   });
 };

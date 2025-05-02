@@ -21,6 +21,11 @@ import Orders from "./Orders";
 import Sidebar from "./Sidebar";
 import Circle from "../CIrcle/Circle";
 import CustomOrder from "./Orders/CustomOrder";
+import SubscriptionOrder from "./SubscriptionOrder";
+import ArtworkManagement from "./ArtistDashboard/ArtworkManagement";
+import CommercializationSection from "./ArtistDashboard/CommercializationSection";
+import ArtistDashboardSection from "./ArtistDashboard/ArtistDashboardSection";
+import Offers from "./Offer/Offers";
 
 const ArtistPanel = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -56,11 +61,22 @@ const ArtistPanel = () => {
         >
           <Routes>
             <Route index element={<Dashboard />} />
-            <Route path="artdashboard" element={<Dashboard />} />
+            {/* <Route index element={<Dashboard />} /> */}
+            <Route path="/arwork-mangement" element={<ArtworkManagement />} />
+            <Route path="/commercilization" element={<CommercializationSection />} />
+            <Route path="/artist-views" element={<ArtistDashboardSection />} />
+
+
+
             <Route path="artwork" element={<Artwork />} />
             <Route path="order" element={<Orders />} />
+            <Route path="subscription-order" element={<SubscriptionOrder />} />
+
             <Route path="order/custom" element={<CustomOrder />} />
 
+            <Route path="offer" element={<Offers />} />
+            
+            
             <Route path="order/orderDetail" element={<OrdersDetail />} />
             <Route path="order/approve-order" element={<OrderApprove />} />
             <Route path="artwork/add" element={<AddArtwork />} />

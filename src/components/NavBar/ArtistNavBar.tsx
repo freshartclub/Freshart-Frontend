@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
-import logo from "/logofarc.svg";
+
 import logoWhite from "/logofarcwhite.svg";
-import navigation_1 from "../../assets/navigation_1.png";
+
 import { useTranslation } from "react-i18next";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IoNotifications } from "react-icons/io5";

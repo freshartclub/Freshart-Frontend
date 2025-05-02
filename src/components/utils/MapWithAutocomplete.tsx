@@ -18,10 +18,9 @@ export interface AutocompleteInputProps
 
 const defaultCenter = {
   lat: 37.7749, // San Francisco
-  lng: -122.4194, // San Francisco
+  lng: -122.4194, 
 };
 
-// Define libraries as a constant outside the component to avoid re-creating it
 const libraries = ["places"];
 
 export const getCityStateFromZipCountry = async (
@@ -65,26 +64,4 @@ export const getCityStateFromZipCountry = async (
   }
 };
 
-// const MapWithAutocomplete = ({ paddingX, paddingY, ...props }) => {
-//   const [center, setCenter] = useState(defaultCenter);
 
-//   return (
-//     <Autocomplete
-//       apiKey={import.meta.env.VITE_APP_GOOGLE_MAPS_API_KEY}
-//       //   onPlaceSelected={handlePlaceSelect}
-//       libraries={["places"]}
-//       {...props}
-//       style={{
-//         width: "100%",
-//         border: "1px solid",
-//         padding: `${paddingX} ${paddingY}`,
-//       }}
-//       options={{
-//         types: [], // Limit search results to cities
-//         // componentRestrictions: { country: "us" }, // Restrict search results to United States only
-//       }}
-//     />
-//   );
-// };
-
-// export default MapWithAutocomplete;

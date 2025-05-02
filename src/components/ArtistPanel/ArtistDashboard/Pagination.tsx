@@ -60,7 +60,7 @@ const Pagination = () => {
               </thead>
 
               <tbody>
-                {data.map((value, index: number) => (
+                {data?.map((value, index: number) => (
                   <tr
                     key={index}
                     className="[&>*:nth-child(1)]:pl-4 border-b hover:bg-gray-100 bg-slate-50"

@@ -1,25 +1,19 @@
 import i18next from "i18next";
 import resourcesToBackend from "i18next-resources-to-backend";
-// import LanguageDetector from "i18next-browser-languagedetector";
+
 import { initReactI18next, I18nextProvider as Provider } from "react-i18next";
 
-// import { localStorageGetItem } from "src/utils/storage-available";
+
 
 import { i18nOptions, fallbackLng } from "./config-locales";
 import { localStorageGetItem } from "./storage-available";
 
-// ----------------------------------------------------------------------
 
-/**
- * [1] localStorage
- * Auto detection:
- * const lng = localStorageGetItem('i18nextLng')
- */
 const lng = localStorageGetItem("i18nextLng", fallbackLng);
 console.log(lng);
 
 i18next
-  // .use(LanguageDetector)
+ 
   .use(initReactI18next)
   .use(
     resourcesToBackend(

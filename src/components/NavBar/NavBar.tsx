@@ -259,6 +259,15 @@ const NavBar = () => {
                         >
                           Favourites ArtWork
                         </Link>
+
+
+                        <Link
+                            to="/offer-request"
+                            className="hover:bg-gray-100 dark:hover:bg-gray-600 px-2 py-1 rounded"
+                            onClick={() => setIsProfileDropdown(false)}
+                          >
+                            Offers Request
+                          </Link>
                         {isArtist && (
                           <button className="text-left hover:bg-gray-100 dark:hover:bg-gray-600 px-2 py-1 rounded" onClick={handleProfile}>
                             Switch To Artist Profile

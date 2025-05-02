@@ -328,3 +328,17 @@ html {
 .art-card-container {
   transition: all 0.3s ease-in-out;
 }
+
+
+@keyframes scale {
+  0%, 40%, 100% {
+    transform: scaleY(0.05);
+  }
+  20% {
+    transform: scaleY(1);
+  }
+}
+
+.animate-scale {
+  animation: scale 0.9s ease-in-out infinite;
+}

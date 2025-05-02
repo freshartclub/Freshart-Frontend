@@ -1,129 +1,451 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useAppSelector } from "../../../store/typedReduxHooks";
-import LineChart from "./LineChart";
-import Progress from "./Progress";
-import ArtCardPagination from "../Artwork/ArtCardPagination";
+import { motion } from "framer-motion";
+import { FiArrowUp, FiArrowDown } from "react-icons/fi";
+import { Link, useNavigate } from "react-router-dom";
+import { useGetArtistDashboard } from "./https/useGetArtistDashboard";
+import { imageUrl } from "../../utils/baseUrls";
 
-const Dashboard = () => {
-  const dark = useAppSelector((state) => state.theme.mode);
-  const [timeFilter, setTimeFilter] = useState<"all" | "24h" | "7d" | "30d">("all");
-  const [filteredStats, setFilteredStats] = useState([]);
+const ArtistDashboard = () => {
+  const [activeSection, setActiveSection] = useState(null);
+  const darkMode = useAppSelector((state) => state.theme.mode);
 
-  const timeFilters = [
-    { value: "all", label: "All Time" },
-    { value: "24h", label: "24 Hours" },
-    { value: "7d", label: "1 Week" },
-    { value: "30d", label: "1 Month" },
-  ];
+  const {data , isLoading} = useGetArtistDashboard()
 
-  const statsByTime = {
-    all: [
-      { name: "Total Artworks", value: "124", change: "+12%", trend: "up" },
-      { name: "Total Orders", value: "220", change: "+10%", trend: "up" },
-      { name: "Revenue", value: "$16,820", change: "+6.2%", trend: "up" },
-      { name: "Pending Orders", value: "14", change: "-2", trend: "down" },
-    ],
-    "24h": [
-      { name: "New Artworks", value: "3", change: "+1", trend: "up" },
-      { name: "New Orders", value: "5", change: "+1", trend: "up" },
-      { name: "Revenue", value: "$820", change: "+2%", trend: "up" },
-      { name: "Pending Orders", value: "1", change: "-1", trend: "down" },
-    ],
-    "7d": [
-      { name: "Artworks", value: "18", change: "+4", trend: "up" },
-      { name: "Orders", value: "42", change: "+5", trend: "up" },
-      { name: "Revenue", value: "$3,110", change: "+3%", trend: "up" },
-      { name: "Pending Orders", value: "5", change: "0", trend: "down" },
-    ],
-    "30d": [
-      { name: "Uploads", value: "40", change: "+8", trend: "up" },
-      { name: "Orders", value: "160", change: "+7%", trend: "up" },
-      { name: "Revenue", value: "$12,620", change: "+4%", trend: "up" },
-      { name: "Pending Orders", value: "10", change: "-3", trend: "down" },
-    ],
+  const platformDays = data?.createdDate ? new Date(data.createdDate) : null;
+
+  let daysSinceCreation = null;
+  if (platformDays) {
+    const today = new Date();
+    const diffTime = today.getTime() - platformDays.getTime();
+    daysSinceCreation = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  }
+  
+  const daysPlusOne = daysSinceCreation !== null ? daysSinceCreation + 1 : null;
+
+  console.log(data)
+
+  const calculateRemainingDays = () => {
+
+    if (!data?.revaliadtion?.nextRevalidationDate) {
+      return "No revalidation date available";
+    }
+
+    const nextRevalidationDate = new Date(data.revaliadtion.nextRevalidationDate);
+  
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const diffTime = nextRevalidationDate.getTime() - today.getTime();
+
+    const remainingDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    return remainingDays;
+  };
+  
+  const remainingDays = calculateRemainingDays();
+
+  const formatRevalidationStatus = (days) => {
+    if (typeof days === "string") return days;
+    
+    if (days > 0) {
+      return `${days} day${days !== 1 ? 's' : ''}`;
+    } else if (days === 0) {
+      return "Revalidation is due today";
+    } else {
+      return `overdue ${Math.abs(days)}`;
+    }
+  };
+  
+  const revalidationStatus = formatRevalidationStatus(remainingDays);
+  console.log(revalidationStatus);
+
+ 
+  const dashboardData = {
+    metrics: {
+      artworks: {
+        count: data?.publish,
+        contractual: data?.numArtwork,
+        trendData: [data?.draft,data?.numArtwork , data?.publish ] 
+      },
+      incomings: {
+        lastMonth: 2535,
+        currentMonthForecast: 2595,
+        total: 10345
+      },
+      platformDays: daysPlusOne,
+      revalidationDays: revalidationStatus
+    },
+    stats: {
+      views: { value: data?.views?.comingSoon + data?.views?.new + data?.views?.search, trend: "up" },
+      users: { value: data?.circleUser, trend: "up" },
+      likes: { value: 4500, trend: "up" },
+      favorites: { value: 1230, trend: "down" }
+    },
+    topArtworks: data?.top4,
+    artistScore: {
+      value: 345,
+      trend: "up"
+    },
+    insignias: data?.insignia
+  };
+ 
+  const colors = {
+    bg: darkMode ? "bg-gray-900" : "bg-gray-100",
+    cardBg: darkMode ? "bg-gray-800" : "bg-white",
+    primary: darkMode ? "bg-[#1F2937]" : "bg-[#FFFFFF]",
+    secondary: darkMode ? "bg-[#1F2937]" : "bg-[#FFFFFF]",
+    text: darkMode ? "text-gray-100" : "text-gray-800",
+    textSecondary: darkMode ? "text-gray-300" : "text-gray-600",
+    accent: "bg-yellow-400",
+    success: darkMode ? "text-green-400" : "text-green-600",
+    danger: darkMode ? "text-red-400" : "text-red-600",
   };
 
-  useEffect(() => {
-    setFilteredStats(statsByTime[timeFilter]);
-  }, [timeFilter]);
+  const TrendIndicator = ({ trend }) => (
+    <motion.span 
+      initial={{ scale: 1 }}
+      whileHover={{ scale: 1.2 }}
+      className={trend === "up" ? colors.success : colors.danger}
+    >
+      {trend === "up" ? <FiArrowUp /> : <FiArrowDown />}
+    </motion.span>
+  );
+
+
+  const getRevalidationColors = (days) => {
+
+    const input = days;
+    const cleaned = input.replace(/days/i, "").trim()
+
+    
+   
+    if (cleaned >= 30  ) {
+     
+      return ["bg-green-500", "bg-gray-400", "bg-gray-400"]; 
+    } else if (days > 0) {
+  
+      return ["bg-gray-400", "bg-yellow-400", "bg-gray-400"];
+    } else {
+
+      return ["bg-gray-400", "bg-gray-400", "bg-red-500"];
+    }
+  };
+  
+
+  const lightColors = getRevalidationColors(dashboardData.metrics.revalidationDays);
+
+
+  console.log(dashboardData.metrics.revalidationDays)
+  
+
+  const getTextColorClass = (days) => {
+    const input = days;
+    const cleaned = input.replace(/days/i, "").trim()
+
+    if (cleaned >= 30) return "text-green-500";
+    if (cleaned > 0) return "text-yellow-500";
+    return "text-red-500";
+  };
+
+  const navigate = useNavigate()
+
+  const handleNavigate = (url)=>{
+    navigate(url)
+  }
+
+  const MetricCard = ({ title, value, subValue, children, className = "" , url }) => (
+    <motion.div 
+      onClick={()=> handleNavigate(url)} 
+      initial={{ y: 10, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.3 }}
+      className={`bg-gradient-to-br ${colors.primary} ${colors.text} p-4 rounded-lg shadow-lg flex flex-col cursor-pointer ${className}`}
+    >
+      <h2 className="text-lg font-semibold">{title}</h2>
+      <div className="text-center my-2">
+        <span className="text-6xl font-bold">{value}</span>
+        {subValue && <span className={`text-sm ml-2 ${colors.textSecondary}`}>{subValue}</span>}
+      </div>
+      {children}
+    </motion.div>
+  );
+
+  const StatCard = ({ title, value, trend }) => (
+    <motion.div
+      whileHover={{ y: -2 }}
+      className={`p-3 rounded-md ${darkMode ? 'bg-gray-700' : 'bg-[#FFFFFF]'} border border-zinc-300 flex items-center justify-between`}
+    >
+      <div className="flex items-center">
+        <TrendIndicator trend={trend} />
+        <span className="ml-2 capitalize">{title}</span>
+      </div>
+      <span className="text-xl font-bold">
+        {value >= 1000 ? `${(value/1000).toFixed(1)}K` : value?.toLocaleString()}
+      </span>
+    </motion.div>
+  );
+
+  const BarChart = ({ data }) => (
+    <div className="h-16 flex items-end justify-center mt-4">
+      {data.map((height, index) => (
+        <motion.div 
+          key={index}
+          initial={{ height: 0 }}
+          animate={{ height: `${height * 4}px` }}
+          transition={{ duration: 0.5, delay: index * 0.1 }}
+          className={`w-4 mx-1 relative ${index >= 2 ? (darkMode ? 'bg-green-500' : 'bg-green-400') : (darkMode ? 'bg-red-500' : 'bg-red-400')} rounded-t-sm`}
+        >
+          <div className={`absolute top-0 w-4 h-1 ${index >= 2 ? (darkMode ? 'bg-green-600' : 'bg-green-600') : (darkMode ? 'bg-red-600' : 'bg-red-600')}`}></div>
+        </motion.div>
+      ))}
+    </div>
+  );
 
   return (
-    <div className={`w-full p-4 transition-colors duration-200 ${dark ? "bg-gray-900" : "bg-gray-50"}`}>
-      {/* Header */}
-      <div className="mb-6">
-        <h1 className={`text-2xl font-bold mb-1 ${dark ? "text-white" : "text-gray-800"}`}>Artist Dashboard</h1>
-        <p className={`text-sm ${dark ? "text-gray-400" : "text-gray-600"}`}>Overview of your activity</p>
-
-        <div className="mt-4 flex flex-wrap gap-2">
-          {timeFilters.map((filter) => (
-            <button
-              key={filter.value}
-              onClick={() => setTimeFilter(filter.value as any)}
-              className={`px-3 py-1 text-xs font-semibold rounded-full transition-colors border ${
-                timeFilter === filter.value
-                  ? "bg-[#EE1D52] text-white border-transparent"
-                  : dark
-                  ? "text-gray-300 border-gray-600 hover:bg-gray-700"
-                  : "text-gray-600 border-gray-300 hover:bg-gray-200"
-              }`}
-            >
-              {filter.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        {filteredStats.map((stat) => (
-          <div
-            key={stat.name}
-            className={`rounded-lg p-4 shadow-sm transition-all border ${
-              dark ? "bg-gray-800 hover:bg-gray-700 border-gray-600" : "bg-white hover:bg-gray-100"
-            }`}
+    <div className={`${colors.bg} p-4 w-full min-h-screen font-sans transition-colors duration-300`}>
+      <div className="max-w-6xl mx-auto"> 
+        {/* Header */}
+        <motion.header 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className={`bg-gradient-to-r ${colors.primary} ${colors.text} p-4 mb-6 text-center rounded-lg shadow-lg`}
+        >
+          <h1 className="text-2xl font-bold">Artist Dashboard</h1>
+          <p className={darkMode ? "text-blue-200" : "text-blue-100"}>Overview of your artistic performance</p>
+        </motion.header>
+        
+        {/* Main Metrics Row */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          {/* Artworks Section */}
+          <MetricCard 
+            url="arwork-mangement"
+            title="Number of Artworks" 
+            value={dashboardData.metrics.artworks.count} 
+            subValue={dashboardData.metrics.artworks.contractual}
+            className="relative"
           >
-            <p className={`text-xs font-medium ${dark ? "text-gray-400" : "text-gray-500"}`}>{stat.name}</p>
-            <div className="mt-1 flex items-baseline justify-between">
-              <p className={`text-xl font-semibold ${dark ? "text-white" : "text-gray-900"}`}>{stat.value}</p>
-              <span className={`inline-flex items-center text-xs ${stat.trend === "up" ? "text-green-500" : "text-red-500"}`}>
-                {stat.change}
-                {stat.trend === "up" ? (
-                  <svg className="w-3 h-3 ml-1" fill="currentColor" viewBox="0 0 20 20">
-                    <path
-                      fillRule="evenodd"
-                      d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                ) : (
-                  <svg className="w-3 h-3 ml-1" fill="currentColor" viewBox="0 0 20 20">
-                    <path
-                      fillRule="evenodd"
-                      d="M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V5a1 1 0 012 0v7.586l2.293-2.293a1 1 0 011.414 0z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                )}
-              </span>
+            <BarChart data={dashboardData.metrics.artworks.trendData} />
+          </MetricCard>
+          
+          {/* Incomings Section */}
+          <motion.div 
+            initial={{ scale: 0.95 }}
+            animate={{ scale: 1 }}
+            onClick={()=>handleNavigate("commercilization")}
+            className={`relative bg-gradient-to-b ${colors.primary} ${colors.text} p-4 rounded-lg shadow-lg`}
+          >
+            <h2 className="text-xl font-semibold mb-6 text-center">Incomings</h2>
+            
+            <div className="space-y-4">
+              <StatCard 
+                title="Last month" 
+                value={dashboardData.metrics.incomings.lastMonth} 
+                trend="up"
+                suffix="€"
+              />
+              
+              <StatCard 
+                title="Current month forecast" 
+                value={dashboardData.metrics.incomings.currentMonthForecast} 
+                trend="up"
+                suffix="€"
+              />
+              
+              <motion.div 
+                whileHover={{ scale: 1.01 }}
+                className={`flex items-center justify-between ${darkMode ? 'bg-gray-700' : 'bg-[#FFFFFF]'} border border-zinc-300 p-3 rounded-md`}
+              >
+                <span>Total</span>
+                <span className="text-2xl font-bold">{dashboardData.metrics.incomings.total.toLocaleString()}€</span>
+              </motion.div>
+
+              <motion.div 
+                whileHover={{ scale: 1.01 }}
+                className={`flex items-center justify-center ${darkMode ? 'bg-gray-700' : 'bg-[#FFFFFF]'} border border-zinc-300 p-3 rounded-md`}
+              >
+                <span>View All</span>
+                
+              </motion.div>
             </div>
+          </motion.div>
+          
+          {/* Days & Revalidation Section */}
+          <div className="grid grid-rows-2 gap-4">
+            <MetricCard 
+              title="Days in Platform" 
+              value={dashboardData.metrics.platformDays}
+            />
+            
+            <motion.div
+  whileHover={{ y: -2 }}
+  className={`relative bg-gradient-to-b ${colors.primary} ${colors.text} p-4 rounded-lg shadow-lg`}
+>
+  <h2 className="text-lg font-semibold mb-2">Re-validation</h2>
+  <div className="flex items-center justify-center">
+    <span className={`text-xl capitalize font-bold ${getTextColorClass(dashboardData.metrics.revalidationDays)}`}>
+      {dashboardData.metrics.revalidationDays}
+    </span>
+    <span className="text-sm ml-2">
+      {Math.abs(dashboardData?.metrics?.revalidationDays) === 1 ? 'day' : 'days'}
+      {dashboardData?.metrics?.revalidationDays < 0 ? ' overdue' : ' remaining'}
+    </span>
+    <div className="ml-4 flex flex-col items-center">
+      <motion.div
+        animate={{ rotate: dashboardData?.metrics?.revalidationDays <= 0 ? [0, 10, -10, 0] : 0 }}
+        transition={{ repeat: Infinity, duration: 2 }}
+        className={`w-8 h-8 ${lightColors[0]} rounded-full shadow-inner`}
+      />
+      <motion.div
+        animate={{ rotate: dashboardData?.metrics?.revalidationDays > 0 && dashboardData?.metrics?.revalidationDays <= 30 ? [0, 10, -10, 0] : 0 }}
+        transition={{ repeat: Infinity, duration: 2 }}
+        className={`w-8 h-8 ${lightColors[1]} rounded-full mt-1 shadow-inner`}
+      />
+      <motion.div
+        animate={{ rotate: dashboardData?.metrics?.revalidationDays > 30 ? [0, 10, -10, 0] : 0 }}
+        transition={{ repeat: Infinity, duration: 2 }}
+        className={`w-8 h-8 ${lightColors[2]} rounded-full mt-1 shadow-inner`}
+      />
+    </div>
+  </div>
+</motion.div>
           </div>
-        ))}
-      </div>
-
-      <ArtCardPagination dark={dark} />
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className={`rounded-lg p-4 ${dark ? "bg-gray-800" : "bg-white"} shadow-sm`}>
-          <h3 className={`text-sm font-medium mb-3 ${dark ? "text-white" : "text-gray-800"}`}>Your Progress</h3>
-          <Progress dark={dark} />
         </div>
-
-        <div className={`rounded-lg p-4 lg:col-span-2 ${dark ? "bg-gray-800" : "bg-white"} shadow-sm`}>
-          <h3 className={`text-sm font-medium mb-3 ${dark ? "text-white" : "text-gray-800"}`}>Sales Analytics</h3>
-          <LineChart />
+        
+        {/* Stats Row */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          {/* Stats Section */}
+          <motion.div 
+            initial={{ x: -20 }}
+            animate={{ x: 0 }}
+            className={`relative bg-gradient-to-b ${colors.primary} ${colors.text} p-6 rounded-lg shadow-lg`}
+          >
+           
+            
+            <div 
+            onClick={()=> handleNavigate("artist-views")}
+            className="space-y-4">
+              {Object.entries(dashboardData.stats).map(([key, { value, trend }]) => (
+                <StatCard 
+                  
+                  key={key}
+                  title={key}
+                  value={value}
+                  trend={trend}
+                />
+              ))}
+            </div>
+          </motion.div>
+          
+          {/* Top Artworks Section */}
+          <div className="md:col-span-2">
+            <motion.div 
+              whileHover={{ scale: 1.005 }}
+              className={`bg-gradient-to-b ${colors.primary} ${colors.text} p-4 rounded-lg shadow-lg`}
+            >
+              <h2 className="text-xl font-semibold text-center mb-4">Top Artworks</h2>
+              
+              <div className={`${darkMode ? 'bg-gray-700' : 'bg-gray-200'} p-4 rounded-md`}>
+                {dashboardData?.topArtworks?.map((artwork) => (
+                  <motion.div 
+                    key={artwork.id}
+                    whileHover={{ x: 5 }}
+                    className={`flex items-center justify-between mb-3 last:mb-0 ${darkMode ? 'bg-gray-800' : 'bg-[#FFFFFF] '} p-3 rounded-md hover:${darkMode ? 'bg-gray-900' : 'bg-zinc-200'} transition-colors`}
+                  >
+                    <div className="flex items-center">
+                      <motion.img 
+                        src={`${imageUrl}/users/${artwork?.mainImage}`} 
+                        alt={artwork.artworkName} 
+                        whileHover={{ rotate: 5 }}
+                        className="w-10 h-10 mr-3 rounded-full object-cover border-2 border-yellow-400" 
+                      />
+                      <span className="text-lg font-medium">{artwork.artworkName}</span>
+                    </div>
+                    <div className="flex items-center">
+                      <TrendIndicator trend={artwork.trend} />
+                      <span className="text-lg font-medium ml-1">
+                        {(artwork.totalViews/1000).toFixed(1)}K
+                      </span>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        </div>
+        
+        {/* Bottom Row */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Artist Score */}
+          <motion.div 
+            whileHover={{ scale: 1.02 }}
+            className={`relative bg-gradient-to-b ${colors.primary} ${colors.text} p-4 rounded-lg shadow-lg`}
+          >
+           
+            
+            <h2 className="text-xl font-semibold mb-2">Artist Score</h2>
+            <div className="flex items-center">
+              <TrendIndicator trend={dashboardData.artistScore.trend} />
+              <span className="text-6xl font-bold">{dashboardData.artistScore.value}</span>
+              <motion.div 
+                animate={{ 
+                  scale: [1, 1.1, 1],
+                  rotate: [0, 5, -5, 0]
+                }}
+                transition={{ repeat: Infinity, duration: 4 }}
+                className="ml-4 w-12 h-12 bg-white rounded-full shadow-inner"
+              />
+            </div>
+            
+            
+          </motion.div>
+          
+          {/* Insignias Section */}
+          <div className="md:col-span-2">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              className={`relative bg-gradient-to-b ${colors.primary} ${colors.text} p-4 rounded-lg shadow-lg`}
+            >
+            
+              
+              <h2 className="text-xl font-semibold mb-4 text-center">Insignias and Credentials</h2>
+              
+              <div className={`${colors.cardBg} p-4 rounded-md flex flex-wrap justify-center gap-4`}>
+                {dashboardData?.insignias?.map((insignia) => (
+                  <motion.div 
+                    key={insignia.id} 
+                    className="group relative"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    <motion.img 
+                      src={`${imageUrl}/users/${insignia?.insigniaImage}`} 
+                      alt={insignia.credentialName} 
+                      className="w-16 h-16 object-contain"
+                      // animate={{
+                      //   rotate: [0, 5, -5, 0],
+                      //   y: [0, -5, 0]
+                      // }}
+                      // transition={{ duration: 2, repeat: Infinity }}
+                    />
+                    <motion.div 
+                      initial={{ opacity: 0 }}
+                      whileHover={{ opacity: 1 }}
+                      className="absolute bottom-full left-1/2 transform -translate-x-1/2 bg-black text-white text-xs p-1 rounded"
+                    >
+                      {insignia.credentialName}
+                    </motion.div>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-export default Dashboard;
+export default ArtistDashboard;
