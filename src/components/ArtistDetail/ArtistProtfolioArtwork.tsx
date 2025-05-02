@@ -1,17 +1,13 @@
 import { useEffect, useRef, useState } from "react";
-import {
-  FaChevronLeft,
-  FaChevronRight,
-  FaEye,
-  FaToggleOn,
-} from "react-icons/fa6";
+import { FaChevronLeft, FaChevronRight, FaEye, FaToggleOn } from "react-icons/fa6";
 import { MdOutlineOpenInNew } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import "../../App.css";
 import Header from "../ui/Header";
 import { lowImageUrl } from "../utils/baseUrls";
+import getSymbolFromCurrency from "currency-symbol-map";
 
-const ArtistProtfolioArtwork = ({ data }) => {
+const ArtistProtfolioArtwork = ({ data, dark }) => {
   const TEN_DAYS_MS = 10 * 24 * 60 * 60 * 1000;
   const [viewedImages, setViewedImages] = useState({});
   const navigate = useNavigate();
@@ -55,9 +51,7 @@ const ArtistProtfolioArtwork = ({ data }) => {
       const container = scrollContainerRef.current;
       if (!container) return;
       setIsStart(container.scrollLeft === 0);
-      setIsEnd(
-        container.scrollLeft + container.clientWidth >= container.scrollWidth
-      );
+      setIsEnd(container.scrollLeft + container.clientWidth >= container.scrollWidth);
     };
 
     const container = scrollContainerRef.current;
@@ -94,7 +88,9 @@ const ArtistProtfolioArtwork = ({ data }) => {
           }
           handleRedirectToDescription(item?._id);
         }}
-        className="relative cursor-pointer p-3 border flex-shrink-0 bg-white hover:shadow-[5px_5px_5px_rgba(0,0,0,0.05)] transition-shadow duration-300 min-w-[230px] max-w-[300px] h-[280px] group"
+        className={`relative cursor-pointer p-3 border flex-shrink-0 ${
+          dark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
+        } hover:shadow-[5px_5px_5px_rgba(0,0,0,0.05)] transition-shadow duration-300 min-w-[230px] max-w-[300px] h-[280px] group`}
       >
         <div className="relative overflow-hidden rounded-md h-[200px] w-full">
           <img
@@ -137,32 +133,23 @@ const ArtistProtfolioArtwork = ({ data }) => {
         </div>
 
         <div className="mt-3">
-          <h1 className="font-semibold text-md text-gray-900 truncate">
-            {item?.artworkName?.length > 17
-              ? `${item?.artworkName?.slice(0, 17)}...`
-              : item?.artworkName}
+          <h1 className={`font-semibold text-md ${dark ? "text-gray-100" : "text-gray-900"} truncate`}>
+            {item?.artworkName?.length > 17 ? `${item?.artworkName?.slice(0, 17)}...` : item?.artworkName}
           </h1>
-          <p className="text-xs text-gray-500 mt-1">
-            {item?.discipline?.artworkDiscipline} •{" "}
-            {item?.additionalInfo?.artworkTechnic}
+          <p className={`text-xs ${dark ? "text-gray-400" : "text-gray-500"} mt-1`}>
+            {item?.discipline?.artworkDiscipline} • {item?.additionalInfo?.artworkTechnic}
           </p>
-          {hasDiscount ? (
-            <div className="mt-2 flex items-center gap-1">
-              <span className="text-red-600 font-medium text-sm">
-                ${item?.additionalInfo?.finalPrice}
-              </span>
-              <span className="text-gray-500 line-through text-xs">
-                ${item?.additionalInfo?.originalPrice}
-              </span>
-              <span className="text-red-600 text-xs">
-                ({item?.additionalInfo?.discount}% off)
-              </span>
-            </div>
-          ) : (
-            <p className="text-gray-700 mt-2 font-medium text-sm">
-              {item?.size}
+
+          {item?.activeTab == "purchase" ? (
+            <p className={`mt-1 flex gap-1 items-center ${dark ? "text-gray-100" : "text-gray-800"} font-bold`}>
+              {getSymbolFromCurrency(item?.currency.slice(0, 3))} {item?.price}
+              {item?.discount ? (
+                <span>
+                  | <span className="text-red-500">{item?.discount}%</span>
+                </span>
+              ) : null}
             </p>
-          )}
+          ) : null}
         </div>
       </div>
     );
@@ -170,10 +157,7 @@ const ArtistProtfolioArtwork = ({ data }) => {
 
   return (
     <div className="mx-auto px-4">
-      <Header
-        variant={{ size: "xl", theme: "dark", weight: "semiBold" }}
-        className="mb-3"
-      >
+      <Header variant={{ size: "xl", theme: `${dark ? "light" : "dark"}`, weight: "semiBold" }} className="mb-3">
         Artworks
       </Header>
 
@@ -189,10 +173,7 @@ const ArtistProtfolioArtwork = ({ data }) => {
             <FaChevronLeft size={20} />
           </button>
 
-          <div
-            ref={scrollContainerRef}
-            className="flex overflow-x-scroll no-scrollbar space-x-4 pb-2 scrollbar"
-          >
+          <div ref={scrollContainerRef} className="flex overflow-x-scroll no-scrollbar space-x-4 pb-2 scrollbar">
             {data?.artworks.map((item) => renderCard(item))}
           </div>
 
