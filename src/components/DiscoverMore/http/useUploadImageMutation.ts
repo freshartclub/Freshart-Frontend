@@ -9,7 +9,7 @@ async function upLoadImg({ id, file }: { id: string; file: File }) {
   formData.append("checkImage", file); 
 
   return await axiosInstance.post(
-    `${ARTTIST_ENDPOINTS.upLoadImg}/${id}`,
+    `${ARTTIST_ENDPOINTS.upLoadImg}`,
     formData,
     {
       headers: {

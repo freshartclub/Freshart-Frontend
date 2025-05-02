@@ -85,6 +85,8 @@ export const ARTTIST_ENDPOINTS = {
 
   getUpLoadedImage : `${ARTIST_BASE_URl}/get-upload-images`,
 
+  getAllUpLoadedImages :  `${ARTIST_BASE_URl}/get-all-images`,
+
 
 
 

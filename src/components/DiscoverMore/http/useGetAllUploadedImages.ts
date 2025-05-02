@@ -2,17 +2,17 @@ import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "../../utils/axios";
 import { ARTTIST_ENDPOINTS } from "../../../http/apiEndPoints/Artist";
 
-export const useGetUpLoadedImgaes = (id,) => {
+export const useGetAllUploadedImages = () => {
   async function fetchData() {
     const { data } = await axiosInstance.get(
-      `${ARTTIST_ENDPOINTS.getUpLoadedImage}`
+      `${ARTTIST_ENDPOINTS.getAllUpLoadedImages}`
     );
 
     return data;
   }
 
   return useQuery({
-    queryKey: [ARTTIST_ENDPOINTS.getUpLoadedImage, id],
+    queryKey: [ARTTIST_ENDPOINTS.getAllUpLoadedImages],
     queryFn: fetchData,
     refetchOnWindowFocus: false,
   });

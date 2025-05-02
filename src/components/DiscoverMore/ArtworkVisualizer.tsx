@@ -177,12 +177,12 @@ const ArtworkVisualizer = ({ artwork }) => {
       >
         <span>Visualize in Your Space</span>
         <div className="flex gap-2">
-          <button
+          {/* <button
             onClick={() => setShowQrCode(!showQrCode)}
             className={`p-2 rounded-full ${buttonBgClass} ${buttonHoverClass} transition-colors duration-200`}
           >
             <BsQrCode size={20} />
-          </button>
+          </button> */}
           <button
             onClick={toggleFullscreen}
             className={`p-2 rounded-full ${buttonBgClass} ${buttonHoverClass} transition-colors duration-200`}
@@ -348,14 +348,15 @@ const ArtworkVisualizer = ({ artwork }) => {
         )}
 
         <div className="absolute bottom-4 left-4 bg-black bg-opacity-60 text-white px-3 py-1 rounded-md text-sm shadow-lg">
-          Drag artwork to position • Use controls to resize
+          Drag artwork to position • Use controls to resize • Triple Click
         </div>
+        
       </div>
     {isCustom && <CustomPop  onClose={() => setIsCustom(false)}  artwork={artwork} /> }
     
    
       {/* Show QR Code */}
-      {showQrCode && (
+      {/* {showQrCode && (
         <div className="flex justify-center p-4 border-t border-gray-200">
           <div className={`${dark ? 'bg-gray-800' : 'bg-white'} p-6 rounded-lg shadow-xl`}>
             <div className="bg-white p-3 rounded-md inline-block">
@@ -372,7 +373,7 @@ const ArtworkVisualizer = ({ artwork }) => {
             </p>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };
