@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { AiOutlinePlus } from 'react-icons/ai';
 import { FaImage, FaChevronRight, FaChevronLeft } from 'react-icons/fa';
@@ -13,7 +13,7 @@ import Header from '../ui/Header';
 import { imageUrl } from '../utils/baseUrls';
 import CustomPop from './CustomPop';
 
-// High-quality room images - in production, these should be imported properly
+// High-quality room images
 const roomImages = {
   livingRoom: [
     'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
@@ -47,12 +47,7 @@ const roomImages = {
   ]
 };
 
-// Default first image from each room category
-const livingRoomImg = roomImages.livingRoom[0];
-const bedroomImg = roomImages.bedroom[0];
-const kitchenImg = roomImages.kitchen[0];
-const bathroomImg = roomImages.bathroom[0];
-const officeImg = roomImages.office[0];
+const placeholderImage = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%23CCCCCC'/%3E%3Ctext x='50%25' y='50%25' font-family='Arial' font-size='24' text-anchor='middle' fill='%23666666'%3EArtwork%3C/text%3E%3C/svg%3E";
 
 const ArtworkVisualizer = ({ artwork }) => {
   const dark = useAppSelector((state) => state.theme.mode);
@@ -63,12 +58,14 @@ const ArtworkVisualizer = ({ artwork }) => {
   const [showQrCode, setShowQrCode] = useState(false);
   const [artworkScale, setArtworkScale] = useState(1);
   const [artworkPosition, setArtworkPosition] = useState({ x: 0, y: 0 });
+  const [isCustom, setIsCustom] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 0);
+  
   const fileInputRef = useRef(null);
   const visualizerRef = useRef(null);
 
-  const [isCustom , setIsCustom] = useState(false)
-
-  const rooms = [
+  // Define rooms with their configurations
+  const rooms = useMemo(() => [
     {
       id: 'livingRoom',
       name: 'Living Room',
@@ -109,15 +106,35 @@ const ArtworkVisualizer = ({ artwork }) => {
       defaultPosition: { x: 0, y: -15 },
       defaultScale: 0.75
     }
-  ];
+  ], []);
 
+  // Listen for window resize events
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Update artwork position and scale when changing rooms
   useEffect(() => {
     const currentRoom = rooms.find(room => room.id === selectedRoom);
     if (currentRoom) {
       setArtworkPosition(currentRoom.defaultPosition);
       setArtworkScale(currentRoom.defaultScale);
     }
-  }, [selectedRoom]);
+  }, [selectedRoom, rooms]);
+
+  // Handle fullscreen changes
+  useEffect(() => {
+    const onFullScreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener('fullscreenchange', onFullScreenChange);
+    return () => document.removeEventListener('fullscreenchange', onFullScreenChange);
+  }, []);
 
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
@@ -141,58 +158,64 @@ const ArtworkVisualizer = ({ artwork }) => {
     }
   };
 
-  useEffect(() => {
-    const onFullScreenChange = () => {
-      setIsFullscreen(!!document.fullscreenElement);
-    };
-    document.addEventListener('fullscreenchange', onFullScreenChange);
-    return () => document.removeEventListener('fullscreenchange', onFullScreenChange);
-  }, []);
+  const handleCustom = () => {
+    
+      setIsCustom(!isCustom);
+    
+  };
 
-  const mobileScanUrl = `${window.location.origin}/visualize/${artwork?._id}`;
+  // Get current room data
   const currentRoom = rooms.find(r => r.id === selectedRoom) || rooms[0];
   const roomBackgroundImage = customImage || 
     (currentRoom.images && currentRoom.images[selectedRoomImageIndex % currentRoom.images.length]);
 
+  // Theme classes
   const bgClass = dark ? 'bg-gray-900' : 'bg-gray-50';
   const textClass = dark ? 'text-gray-100' : 'text-gray-800';
   const buttonBgClass = dark ? 'bg-gray-800' : 'bg-white';
   const buttonHoverClass = dark ? 'hover:bg-gray-700' : 'hover:bg-gray-100';
   const borderClass = dark ? 'border-gray-700' : 'border-gray-200';
 
+  // Responsive values
+  const isMobile = windowWidth < 640;
+  const isTablet = windowWidth >= 640 && windowWidth < 1024;
+  const visualizerHeight = isFullscreen 
+    ? 'h-screen' 
+    : isMobile 
+      ? 'h-64'
+      : isTablet
+        ? 'h-96'
+        : 'h-[500px]';
 
-  const handleCustom  = ()=> {
-    console.log("helllooooo")
-    setIsCustom(!isCustom)
-  }
-
+  // Determine max artwork size based on screen size
+  const getMaxArtworkSize = () => {
+    if (isMobile) return 200;
+    if (isTablet) return 300;
+    return 400;
+  };
   
-  const placeholderImage = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%23CCCCCC'/%3E%3Ctext x='50%25' y='50%25' font-family='Arial' font-size='24' text-anchor='middle' fill='%23666666'%3EArtwork%3C/text%3E%3C/svg%3E";
+  const maxArtworkSize = getMaxArtworkSize();
 
   return (
-    <div className={`${bgClass} rounded-lg shadow-lg overflow-hidden`}>
+    <div className={`${bgClass} rounded-lg shadow-lg overflow-hidden w-full`}>
       <Header 
         variant={{ size: 'lg', theme: dark ? 'light' : 'dark', weight: 'semiBold' }} 
-        className="p-4 border-b border-gray-200 flex justify-between items-center"
+        className="p-4 border-b flex justify-between items-center"
       >
-        <span>Visualize in Your Space</span>
+        <span className="truncate">Visualize in Your Space</span>
         <div className="flex gap-2">
-          {/* <button
-            onClick={() => setShowQrCode(!showQrCode)}
-            className={`p-2 rounded-full ${buttonBgClass} ${buttonHoverClass} transition-colors duration-200`}
-          >
-            <BsQrCode size={20} />
-          </button> */}
           <button
             onClick={toggleFullscreen}
             className={`p-2 rounded-full ${buttonBgClass} ${buttonHoverClass} transition-colors duration-200`}
+            aria-label="Toggle fullscreen"
           >
-            <BsArrowsFullscreen size={20} />
+            <BsArrowsFullscreen size={18} />
           </button>
         </div>
       </Header>
 
-      <div className="flex overflow-x-auto scrollbar-thin p-2 border-b gap-3 md:justify-center">
+      {/* Room selection tabs - horizontally scrollable on mobile */}
+      <div className="flex overflow-x-auto scrollbar-thin p-2 border-b gap-2 sm:gap-3 md:justify-center">
         {rooms.map(room => {
           const RoomIcon = room.icon;
           return (
@@ -202,27 +225,27 @@ const ArtworkVisualizer = ({ artwork }) => {
                 setSelectedRoom(room.id);
                 setSelectedRoomImageIndex(0); 
               }}
-              className={`flex flex-col items-center px-4 py-2 rounded-lg transition-colors ${
+              className={`flex flex-col items-center px-3 py-2 sm:px-4 rounded-lg transition-colors ${
                 selectedRoom === room.id
                   ? (dark ? 'bg-gray-700 text-white' : 'bg-gray-200 text-gray-800')
                   : (dark ? 'text-gray-400 hover:bg-gray-800' : 'text-gray-600 hover:bg-gray-100')
               }`}
             >
-              <RoomIcon size={24} />
-              <span className="text-xs mt-1">{room.name}</span>
+              <RoomIcon size={20} className="sm:text-xl" />
+              <span className="text-xs mt-1 whitespace-nowrap">{room.name}</span>
             </button>
           );
         })}
         <button
-          onClick={() => handleCustom()}
-          className={`flex flex-col items-center px-4 py-2 rounded-lg transition-colors ${
+          onClick={handleCustom}
+          className={`flex flex-col items-center px-3 py-2 sm:px-4 rounded-lg transition-colors ${
             selectedRoom === 'custom'
               ? (dark ? 'bg-gray-700 text-white' : 'bg-gray-200 text-gray-800')
               : (dark ? 'text-gray-400 hover:bg-gray-800' : 'text-gray-600 hover:bg-gray-100')
           }`}
         >
-          <AiOutlinePlus size={24} />
-          <span className="text-xs mt-1">Custom</span>
+          <AiOutlinePlus size={20} className="sm:text-xl" />
+          <span className="text-xs mt-1 whitespace-nowrap">Custom</span>
         </button>
         <input 
           type="file" 
@@ -233,14 +256,14 @@ const ArtworkVisualizer = ({ artwork }) => {
         />
       </div>
       
-      {/* Room variant selection */}
+      {/* Room variant selection - only show when there are multiple images */}
       {selectedRoom !== 'custom' && currentRoom.images && currentRoom.images.length > 1 && (
         <div className="flex overflow-x-auto scrollbar-thin p-2 border-b gap-2 md:justify-center">
           {currentRoom.images.map((_, index) => (
             <button
               key={index}
               onClick={() => setSelectedRoomImageIndex(index)}
-              className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
+              className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-colors ${
                 selectedRoomImageIndex === index
                   ? (dark ? 'bg-gray-700 text-white' : 'bg-gray-200 text-gray-800')
                   : (dark ? 'bg-gray-800 text-gray-400' : 'bg-gray-100 text-gray-600')
@@ -252,15 +275,17 @@ const ArtworkVisualizer = ({ artwork }) => {
         </div>
       )}
 
+      {/* Visualizer area */}
       <div 
         ref={visualizerRef}
-        className={`relative ${isFullscreen ? 'h-screen' : 'h-96 md:h-[500px]'} overflow-hidden`}
+        className={`relative ${visualizerHeight} overflow-hidden`}
         style={{
           backgroundImage: `url(${roomBackgroundImage})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center'
         }}
       >
+        {/* Draggable artwork */}
         <motion.div
           drag
           dragMomentum={false}
@@ -271,8 +296,8 @@ const ArtworkVisualizer = ({ artwork }) => {
           style={{ 
             top: '50%', 
             left: '50%',
-            marginLeft: '-100px',
-            marginTop: '-100px'
+            marginLeft: `-${maxArtworkSize / 4}px`,
+            marginTop: `-${maxArtworkSize / 4}px`
           }}
           onDragEnd={(_, info) => {
             setArtworkPosition({
@@ -295,8 +320,10 @@ const ArtworkVisualizer = ({ artwork }) => {
             style={{ 
               transform: `scale(${artworkScale})`,
               transition: 'transform 0.3s ease',
-              maxWidth: "400px",
-              maxHeight: "400px"
+              maxWidth: `${maxArtworkSize}px`,
+              maxHeight: `${maxArtworkSize}px`,
+              width: 'auto',
+              height: 'auto'
             }}
             onError={(e) => {
               e.target.onerror = null;
@@ -305,25 +332,25 @@ const ArtworkVisualizer = ({ artwork }) => {
           />
         </motion.div>
 
+        {/* Resize controls */}
         <div className="absolute bottom-4 right-4 flex gap-2">
           <button 
             onClick={() => setArtworkScale(Math.max(artworkScale - 0.1, 0.2))}
             className={`p-2 rounded-full ${buttonBgClass} ${buttonHoverClass} shadow-lg`}
             aria-label="Decrease size"
           >
-             <FaMinus />
-           
+            <FaMinus size={isMobile ? 12 : 16} />
           </button>
           <button 
             onClick={() => setArtworkScale(Math.min(artworkScale + 0.1, 2))}
             className={`p-2 rounded-full ${buttonBgClass} ${buttonHoverClass} shadow-lg`}
             aria-label="Increase size"
           >
-            <FaPlus />
+            <FaPlus size={isMobile ? 12 : 16} />
           </button>
         </div>
 
-        
+        {/* Navigation controls for room variants */}
         {selectedRoom !== 'custom' && currentRoom.images && currentRoom.images.length > 1 && (
           <div className="absolute top-4 right-4 flex gap-2">
             <button 
@@ -333,7 +360,7 @@ const ArtworkVisualizer = ({ artwork }) => {
               className={`p-2 rounded-full ${buttonBgClass} ${buttonHoverClass} shadow-lg`}
               aria-label="Previous room variant"
             >
-              <FaChevronLeft />
+              <FaChevronLeft size={isMobile ? 12 : 16} />
             </button>
             <button 
               onClick={() => setSelectedRoomImageIndex((prevIndex) => 
@@ -342,38 +369,19 @@ const ArtworkVisualizer = ({ artwork }) => {
               className={`p-2 rounded-full ${buttonBgClass} ${buttonHoverClass} shadow-lg`}
               aria-label="Next room variant"
             >
-              <FaChevronRight />
+              <FaChevronRight size={isMobile ? 12 : 16} />
             </button>
           </div>
         )}
 
-        <div className="absolute bottom-4 left-4 bg-black bg-opacity-60 text-white px-3 py-1 rounded-md text-sm shadow-lg">
-          Drag artwork to position • Use controls to resize • Triple Click
+        {/* Helper text */}
+        <div className="absolute bottom-4 left-4 bg-black bg-opacity-60 text-white px-3 py-1 rounded-md text-xs sm:text-sm shadow-lg max-w-full truncate">
+          {isMobile ? "Drag to position • Resize" : "Drag artwork to position • Use controls to resize • Triple Click"}
         </div>
-        
       </div>
-    {isCustom && <CustomPop  onClose={() => setIsCustom(false)}  artwork={artwork} /> }
-    
-   
-      {/* Show QR Code */}
-      {/* {showQrCode && (
-        <div className="flex justify-center p-4 border-t border-gray-200">
-          <div className={`${dark ? 'bg-gray-800' : 'bg-white'} p-6 rounded-lg shadow-xl`}>
-            <div className="bg-white p-3 rounded-md inline-block">
-              <QRCode 
-                value={mobileScanUrl} 
-                size={180}
-                level="H"
-                fgColor="#000000"
-                bgColor="#FFFFFF"
-              />
-            </div>
-            <p className={`text-center mt-3 ${dark ? 'text-gray-200' : 'text-gray-700'}`}>
-              Scan to view on your mobile device
-            </p>
-          </div>
-        </div>
-      )} */}
+      
+      {/* Custom image popup */}
+      {isCustom && <CustomPop onClose={() => setIsCustom(false)} artwork={artwork} />}
     </div>
   );
 };

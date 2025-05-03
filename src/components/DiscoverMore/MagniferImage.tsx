@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { useAppSelector } from "../../store/typedReduxHooks";
 import { imageUrl, lowImageUrl } from "../utils/baseUrls";
 
@@ -7,15 +7,25 @@ export const MagnifierImage = ({ src, alt, isOffensive, safeMode }) => {
   const containerRef = useRef(null);
   const magnifierRef = useRef(null);
   const imgRef = useRef(null);
+  
+  // State management
   const [isZoomed, setIsZoomed] = useState(false);
   const [zoomPosition, setZoomPosition] = useState({ x: 0.5, y: 0.5 });
-  const [zoomScale, setZoomScale] = useState(2.5);
   const [isDragging, setIsDragging] = useState(false);
   const [lastPosition, setLastPosition] = useState({ x: 0, y: 0 });
   const [zoomLevelIndex, setZoomLevelIndex] = useState(1);
   const [isHovering, setIsHovering] = useState(false);
+  const [touchStartPos, setTouchStartPos] = useState({ x: 0, y: 0 });
+  const [touchZoomDistance, setTouchZoomDistance] = useState(null);
+  
+  // Constants
+  const zoomLevels = [1.5, 2.5, 3.5, 4.5, 5];
+  const zoomScale = zoomLevels[zoomLevelIndex];
+  
+  // Generate high resolution source
+  const highResSrc = src.replace(lowImageUrl, `${imageUrl}/users`);
 
-
+  // Prevent default scroll when zoomed
   useEffect(() => {
     const handleWheel = (e) => {
       if (isHovering) {
@@ -30,17 +40,8 @@ export const MagnifierImage = ({ src, alt, isOffensive, safeMode }) => {
     };
   }, [isHovering]);
 
-  const zoomLevels = [1.5, 2.5, 3.5,4.5, 5];
-  
-  
-  const highResSrc = src.replace(lowImageUrl, `${imageUrl}/users`)
-
-
-
-  console.log(highResSrc)
-
-
-  const handleMouseMove = (e) => {
+  // Handle mouse move for magnifier glass
+  const handleMouseMove = useCallback((e) => {
     if (isZoomed) return;
     if (!containerRef.current || !magnifierRef.current || !imgRef.current) return;
 
@@ -51,46 +52,58 @@ export const MagnifierImage = ({ src, alt, isOffensive, safeMode }) => {
     const containerRect = container.getBoundingClientRect();
     const imgRect = img.getBoundingClientRect();
 
+    // Calculate position relative to image
     const posX = e.clientX - imgRect.left;
     const posY = e.clientY - imgRect.top;
 
-    const percX = (posX / imgRect.width) * 100;
-    const percY = (posY / imgRect.height) * 100;
+    // Convert to percentage
+    const percX = Math.max(0, Math.min(100, (posX / imgRect.width) * 100));
+    const percY = Math.max(0, Math.min(100, (posY / imgRect.height) * 100));
     const backgroundPos = `${percX}% ${percY}%`;
 
-    const magnifierSize = Math.min(Math.max(imgRect.width * 0.15, 100), 200);
+    // Determine appropriate magnifier size based on device/screen
+    const screenWidth = window.innerWidth;
+    const baseMagnifierSize = screenWidth < 768 ? 80 : 120;
+    const magnifierSize = Math.min(Math.max(imgRect.width * 0.15, baseMagnifierSize), 200);
     const magnifierOffset = magnifierSize / 2;
 
+    // Calculate magnifier position
     let magnifierX = e.clientX - containerRect.left - magnifierOffset;
     let magnifierY = e.clientY - containerRect.top - magnifierOffset;
 
+    // Keep magnifier within container bounds
     magnifierX = Math.max(0, Math.min(magnifierX, containerRect.width - magnifierSize));
     magnifierY = Math.max(0, Math.min(magnifierY, containerRect.height - magnifierSize));
 
+    // Adjust zoom level based on image size
     const zoomLevel = imgRect.width < 400 ? 3 : 2;
 
-    magnifier.style.width = `${magnifierSize}px`;
-    magnifier.style.height = `${magnifierSize}px`;
-    magnifier.style.left = `${magnifierX}px`;
-    magnifier.style.top = `${magnifierY}px`;
-    magnifier.style.backgroundPosition = backgroundPos;
-    magnifier.style.backgroundSize = `${imgRect.width * zoomLevel}px ${imgRect.height * zoomLevel}px`;
-  };
+    // Apply styles
+    Object.assign(magnifier.style, {
+      width: `${magnifierSize}px`,
+      height: `${magnifierSize}px`,
+      left: `${magnifierX}px`,
+      top: `${magnifierY}px`,
+      backgroundPosition: backgroundPos,
+      backgroundSize: `${imgRect.width * zoomLevel}px ${imgRect.height * zoomLevel}px`,
+      display: "block"
+    });
+  }, [isZoomed]);
 
-
+  // Mouse events
   const handleMouseEnter = () => {
+    setIsHovering(true);
     if (!isZoomed && magnifierRef.current) {
       magnifierRef.current.style.display = "block";
     }
   };
 
-
   const handleMouseLeave = () => {
+    setIsHovering(false);
     if (!isZoomed && magnifierRef.current) {
       magnifierRef.current.style.display = "none";
     }
   };
-
 
   const handleDoubleClick = (e) => {
     if (!imgRef.current) return;
@@ -98,28 +111,23 @@ export const MagnifierImage = ({ src, alt, isOffensive, safeMode }) => {
     const imgRect = imgRef.current.getBoundingClientRect();
     
     if (!isZoomed) {
-
+      // Calculate click position as percentage of image dimensions
       const clickX = (e.clientX - imgRect.left) / imgRect.width;
       const clickY = (e.clientY - imgRect.top) / imgRect.height;
 
       setZoomPosition({ x: clickX, y: clickY });
       setIsZoomed(true);
-      setZoomScale(zoomLevels[zoomLevelIndex]);
-
+      
       if (magnifierRef.current) {
         magnifierRef.current.style.display = "none";
       }
-       setIsHovering(true)
-         
-
+      setIsHovering(true);
     } else {
       setIsZoomed(false);
       setZoomLevelIndex(1);
-      setIsHovering(false) 
-      
+      setIsHovering(false);
     }
   };
-
 
   const handleMouseDown = (e) => {
     if (!isZoomed) return;
@@ -129,13 +137,11 @@ export const MagnifierImage = ({ src, alt, isOffensive, safeMode }) => {
     setLastPosition({ x: e.clientX, y: e.clientY });
   };
 
-
   const handleMouseUp = () => {
     setIsDragging(false);
   };
 
-
-  const handleZoomedMouseMove = (e) => {
+  const handleZoomedMouseMove = useCallback((e) => {
     if (!isZoomed || !isDragging || !containerRef.current) return;
     
     const containerRect = containerRef.current.getBoundingClientRect();
@@ -148,30 +154,142 @@ export const MagnifierImage = ({ src, alt, isOffensive, safeMode }) => {
     }));
     
     setLastPosition({ x: e.clientX, y: e.clientY });
-  };
+  }, [isZoomed, isDragging, zoomScale, lastPosition.x, lastPosition.y]);
 
-
-  const handleZoomWheel = (e) => {
+  const handleZoomWheel = useCallback((e) => {
     if (!isZoomed) return;
     e.preventDefault();
     
     const direction = e.deltaY < 0 ? 1 : -1;
     
-    const newIndex = Math.max(0, Math.min(zoomLevels.length - 1, zoomLevelIndex + direction));
-    setZoomLevelIndex(newIndex);
-    setZoomScale(zoomLevels[newIndex]);
-  };
+    setZoomLevelIndex(prevIndex => 
+      Math.max(0, Math.min(zoomLevels.length - 1, prevIndex + direction))
+    );
+  }, [isZoomed, zoomLevels.length]);
 
+  // Touch events for mobile devices
+  const handleTouchStart = useCallback((e) => {
+    if (e.touches.length === 1) {
+      // Single touch for panning
+      const touch = e.touches[0];
+      setIsDragging(true);
+      setLastPosition({ x: touch.clientX, y: touch.clientY });
+      setTouchStartPos({ x: touch.clientX, y: touch.clientY });
+    } else if (e.touches.length === 2) {
+      // Two fingers for pinch zoom
+      const touch1 = e.touches[0];
+      const touch2 = e.touches[1];
+      const distance = Math.hypot(
+        touch2.clientX - touch1.clientX,
+        touch2.clientY - touch1.clientY
+      );
+      setTouchZoomDistance(distance);
+    }
+  }, []);
 
+  const handleTouchMove = useCallback((e) => {
+    e.preventDefault();
+
+    if (!isZoomed) {
+      // If not zoomed and it's a single touch that moved significantly, perform zoom
+      if (e.touches.length === 1) {
+        const touch = e.touches[0];
+        const deltaX = Math.abs(touch.clientX - touchStartPos.x);
+        const deltaY = Math.abs(touch.clientY - touchStartPos.y);
+        
+        // If touch moved less than threshold, consider it a tap
+        if (deltaX < 10 && deltaY < 10 && imgRef.current) {
+          const imgRect = imgRef.current.getBoundingClientRect();
+          const touchX = (touch.clientX - imgRect.left) / imgRect.width;
+          const touchY = (touch.clientY - imgRect.top) / imgRect.height;
+          
+          setZoomPosition({ x: touchX, y: touchY });
+          setIsZoomed(true);
+          return;
+        }
+      }
+    } else {
+      if (e.touches.length === 1) {
+        // Handle panning when zoomed
+        const touch = e.touches[0];
+        if (isDragging && containerRef.current) {
+          const containerRect = containerRef.current.getBoundingClientRect();
+          const deltaX = (touch.clientX - lastPosition.x) / containerRect.width;
+          const deltaY = (touch.clientY - lastPosition.y) / containerRect.height;
+          
+          setZoomPosition(prev => ({
+            x: Math.max(0, Math.min(1, prev.x - (deltaX / zoomScale * 2))),
+            y: Math.max(0, Math.min(1, prev.y - (deltaY / zoomScale * 2)))
+          }));
+          
+          setLastPosition({ x: touch.clientX, y: touch.clientY });
+        }
+      } else if (e.touches.length === 2) {
+        // Handle pinch zoom
+        const touch1 = e.touches[0];
+        const touch2 = e.touches[1];
+        const distance = Math.hypot(
+          touch2.clientX - touch1.clientX,
+          touch2.clientY - touch1.clientY
+        );
+        
+        if (touchZoomDistance !== null) {
+          const delta = distance - touchZoomDistance;
+          // Calculate zoom direction
+          const direction = delta > 0 ? 1 : -1;
+          
+          // Only change zoom if significant movement
+          if (Math.abs(delta) > 10) {
+            setZoomLevelIndex(prevIndex => {
+              const newIndex = Math.max(0, Math.min(zoomLevels.length - 1, prevIndex + direction));
+              return newIndex;
+            });
+            setTouchZoomDistance(distance);
+          }
+        }
+      }
+    }
+  }, [isZoomed, isDragging, zoomScale, lastPosition, touchStartPos, touchZoomDistance, zoomLevels.length]);
+
+  const handleTouchEnd = useCallback(() => {
+    setIsDragging(false);
+    setTouchZoomDistance(null);
+  }, []);
+
+  const handleDoubleTap = useCallback(() => {
+    if (isZoomed) {
+      setIsZoomed(false);
+      setZoomLevelIndex(1);
+    }
+  }, [isZoomed]);
+
+  // Cleanup
   useEffect(() => {
     const handleGlobalMouseUp = () => {
       setIsDragging(false);
     };
-    window.addEventListener('mouseup', handleGlobalMouseUp);    
+    
+    window.addEventListener('mouseup', handleGlobalMouseUp);
+    
     return () => {
       window.removeEventListener('mouseup', handleGlobalMouseUp);
     };
   }, []);
+
+  // Double-tap detection
+  const [lastTap, setLastTap] = useState(0);
+  
+  const handleTap = useCallback((e) => {
+    const currentTime = new Date().getTime();
+    const tapLength = currentTime - lastTap;
+    
+    if (tapLength < 300 && tapLength > 0) {
+      handleDoubleTap();
+      e.preventDefault();
+    }
+    
+    setLastTap(currentTime);
+  }, [lastTap, handleDoubleTap]);
 
   return (
     <div
@@ -185,11 +303,14 @@ export const MagnifierImage = ({ src, alt, isOffensive, safeMode }) => {
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
       onWheel={handleZoomWheel}
-    //   onMouseLeave={()=>setIsHovering(false)}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      onTouchCancel={handleTouchEnd}
+      onClick={handleTap}
     >
       <img
         ref={imgRef}
-       
         src={src}
         alt={alt}
         className={`
@@ -211,10 +332,18 @@ export const MagnifierImage = ({ src, alt, isOffensive, safeMode }) => {
           }}
         >
           <div className="absolute top-2 right-2 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-xs z-10">
-            Double-click to exit zoom {Math.round(zoomScale * 100)}%
+            {window.innerWidth > 768 ? (
+              <>Double-click to exit zoom {Math.round(zoomScale * 100)}%</>
+            ) : (
+              <>Tap twice to exit • {Math.round(zoomScale * 100)}%</>
+            )}
           </div>
           <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-xs z-10">
-            Use scroll wheel to adjust zoom • Drag to pan
+            {window.innerWidth > 768 ? (
+              <>Use scroll wheel to adjust zoom • Drag to pan</>
+            ) : (
+              <>Pinch to zoom • Drag to pan</>
+            )}
           </div>
         </div>
       )}
@@ -233,13 +362,17 @@ export const MagnifierImage = ({ src, alt, isOffensive, safeMode }) => {
           backgroundRepeat: "no-repeat",
           pointerEvents: "none",
           zIndex: 100,
-          transition: "all 0.1s ease",
+          transition: "transform 0.1s ease",
         }}
       />
       
       {!isZoomed && (
         <div className="absolute bottom-2 right-2 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-xs z-10">
-          Double-click to zoom
+          {window.innerWidth > 768 ? (
+            <>Double-click to zoom</>
+          ) : (
+            <>Tap to zoom</>
+          )}
         </div>
       )}
     </div>
