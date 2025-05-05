@@ -8,7 +8,7 @@ const ArtistPrivateCircle = ({ data }) => {
   const navigate = useNavigate();
 
   const handleCircle = (id: string) => {
-    navigate(`/artist-panel/circle/circlepage?id=${encodeURIComponent(id)}`);
+    navigate(`/artist-panel/circle/detail?id=${encodeURIComponent(id)}`);
   };
 
   const formatNumber = (num) => {
@@ -46,18 +46,10 @@ const ArtistPrivateCircle = ({ data }) => {
           >
             <div className="flex flex-col justify-between gap-2">
               <div className="flex items-center gap-2">
-                <span className="font-semibold">
-                  {circle?.title?.length > 15
-                    ? circle?.title?.slice(0, 15) + "..."
-                    : circle?.title}
-                </span>
-                <p className="bg-[#00B8D929] px-2 text-[#006C9C] text-[10px] font-semibold rounded-full">
-                  {circle?.status}
-                </p>
+                <span className="font-semibold">{circle?.title?.length > 15 ? circle?.title?.slice(0, 15) + "..." : circle?.title}</span>
+                <p className="bg-[#00B8D929] px-2 text-[#006C9C] text-[10px] font-semibold rounded-full">{circle?.status}</p>
 
-                <p className="bg-red-500 px-2 text-white text-[10px] font-semibold rounded-full">
-                  {circle?.type}
-                </p>
+                <p className="bg-red-500 px-2 text-white text-[10px] font-semibold rounded-full">{circle?.type}</p>
               </div>
               <div className="overflow-x-auto flex max-w-[200px] w-max scrollbar-hide bg-[#00B8D929] text-[#10009c] rounded-full font-semibold px-2 text-[11px]">
                 {renderTags(circle?.categories)}
@@ -65,23 +57,18 @@ const ArtistPrivateCircle = ({ data }) => {
 
               <div className="font-sm text-gray-600 font-medium text-[14px]">
                 {circle?.description
-                  ? circle.description.split(" ").slice(0, 17).join(" ") +
-                    (circle.description.split(" ").length > 17 ? " ..." : "")
+                  ? circle.description.split(" ").slice(0, 17).join(" ") + (circle.description.split(" ").length > 17 ? " ..." : "")
                   : ""}
               </div>
 
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-1">
                   <IoEye />
-                  <p className="text-sm">
-                    {formatNumber(circle?.viewCount || 0)}
-                  </p>
+                  <p className="text-sm">{formatNumber(circle?.viewCount || 0)}</p>
                 </div>
                 <span className="flex items-center gap-1">
                   <RiUserFollowFill />
-                  <p className="text-sm font-semibold">
-                    {circle?.followerCount}
-                  </p>
+                  <p className="text-sm font-semibold">{circle?.followerCount}</p>
                 </span>
                 <div className="flex items-center gap-1">
                   <FaShareAlt />
@@ -97,9 +84,7 @@ const ArtistPrivateCircle = ({ data }) => {
           </div>
         ))
       ) : (
-        <div className="shadow-md rounded-lg border p-6 text-center text-gray-600 font-medium">
-          No Circle Assigned
-        </div>
+        <div className="shadow-md rounded-lg border p-6 text-center text-gray-600 font-medium">No Circle Assigned</div>
       )}
     </div>
   );

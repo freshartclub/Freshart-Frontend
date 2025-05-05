@@ -21,10 +21,10 @@ const sections = [
     label: "Dashboard",
     icon: dashboard,
     path: "",
-    submenu: [
-      { key: "overview", label: "Overview", path: "artdashboard" },
-      { key: "analytics", label: "Analytics", path: "artdashboard/analytics" },
-    ],
+    // submenu: [
+    //   { key: "overview", label: "Overview", path: "artdashboard" },
+    //   { key: "analytics", label: "Analytics", path: "artdashboard/analytics" },
+    // ],
   },
   {
     key: "artwork",
@@ -40,19 +40,19 @@ const sections = [
     key: "user",
     label: "Artist",
     icon: user,
-    path: "edit-artistprofile",
-    submenu: [{ key: "profile", label: "Artist Profile", path: "edit-artistprofile" }],
+    path: "profile",
+    submenu: [{ key: "profile", label: "Artist Profile", path: "profile" }],
   },
   {
     key: "order",
     label: "Order",
     icon: order,
-    path: "order",
+    path: "order/purchase",
     submenu: [
-      { key: "current", label: "Current Orders", path: "order" },
-      { key: "subscription", label: "Subscription Orders", path: "subscription-order" },
+      { key: "purchase", label: "Purchase Orders", path: "order/purchase" },
+      { key: "subscription", label: "Subscription Orders", path: "order/subscription" },
 
-      { key: "Custom", label: "Custom Orders", path: "order/custom" },
+      { key: "custom", label: "Custom Orders", path: "order/custom" },
     ],
   },
   {
@@ -68,12 +68,12 @@ const sections = [
     path: "circle",
     submenu: [{ key: "circle", label: "Circle List", path: "circle" }],
   },
-  {
-    key: "mail",
-    label: "Mail",
-    icon: mail,
-    path: "mail",
-  },
+  // {
+  //   key: "mail",
+  //   label: "Mail",
+  //   icon: mail,
+  //   path: "mail",
+  // },
   {
     key: "help",
     label: "Help & Support",
@@ -81,7 +81,7 @@ const sections = [
     path: "ticket",
     submenu: [
       { key: "ticket", label: "Raise Ticket", path: "ticket" },
-      { key: "ticketList", label: "Ticket List", path: "ticket/tickets" },
+      { key: "ticketList", label: "Ticket List", path: "ticket/all" },
     ],
   },
 ];

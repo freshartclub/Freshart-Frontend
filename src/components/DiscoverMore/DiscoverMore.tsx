@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AiOutlineHome } from "react-icons/ai";
 import { FaToggleOff, FaToggleOn } from "react-icons/fa";
 import { MdArrowForwardIos } from "react-icons/md";
@@ -7,12 +7,12 @@ import { useAppSelector } from "../../store/typedReduxHooks";
 import Loader from "../ui/Loader";
 import P from "../ui/P";
 import { imageUrl, lowImageUrl } from "../utils/baseUrls";
+import ArtworkVisualizer from "./ArtworkVisualizer";
 import DiscoverContent from "./DiscoverContent";
 import { useGetArtWorkById } from "./http/useGetArtWorkById";
+import { MagnifierImage } from "./MagniferImage";
 import ProductInfo from "./ProductInfo";
 import SelectedSection from "./SelectedSection";
-import { MagnifierImage } from "./MagniferImage";
-import ArtworkVisualizer from "./ArtworkVisualizer";
 
 const DiscoverMore = () => {
   const dark = useAppSelector((state) => state.theme.mode);
@@ -30,19 +30,19 @@ const DiscoverMore = () => {
 
   const images = data?.data
     ? [
-      { src: data?.data.media?.mainImage, alt: "Main Image" },
-      { src: data?.data.media?.backImage, alt: "Back Image" },
-      { src: data?.data.media?.mainVideo, alt: "Main Video" },
-      ...data?.data.media?.images?.map((item) => ({
-        src: item,
-        alt: "Additional Image",
-      })),
-      { src: data?.data.media?.inProcessImage, alt: "In Process Image" },
-      ...data?.data.media?.otherVideo?.map((item) => ({
-        src: item,
-        alt: "Additional Video",
-      })),
-    ].filter((image) => image.src)
+        { src: data?.data.media?.mainImage, alt: "Main Image" },
+        { src: data?.data.media?.backImage, alt: "Back Image" },
+        { src: data?.data.media?.mainVideo, alt: "Main Video" },
+        ...data?.data.media?.images?.map((item) => ({
+          src: item,
+          alt: "Additional Image",
+        })),
+        { src: data?.data.media?.inProcessImage, alt: "In Process Image" },
+        ...data?.data.media?.otherVideo?.map((item) => ({
+          src: item,
+          alt: "Additional Video",
+        })),
+      ].filter((image) => image.src)
     : [];
 
   const handleThumbnailClick = (index) => {
@@ -100,7 +100,7 @@ const DiscoverMore = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, [currentSlide]);
 
-  if (isLoading) return <Loader />;
+  if (isLoading) return <Loader theme={dark} />;
 
   return (
     <div className={`${dark ? "bg-gray-900 text-gray-100" : "bg-white text-gray-800"}`}>
@@ -133,12 +133,14 @@ const DiscoverMore = () => {
 
         <div className="flex lg:w-[77%] mx-auto md:flex-row flex-col gap-0 lg:gap-5">
           <div
-            className={`flex lg:flex-row flex-col md:w-[60%] ${dark ? "border-gray-700 bg-gray-800" : "border-zinc-300 bg-white"
-              } rounded-lg shadow-md overflow-hidden w-full gap-2 items-center`}
+            className={`flex lg:flex-row flex-col md:w-[60%] ${
+              dark ? "border-gray-700 bg-gray-800" : "border-zinc-300 bg-white"
+            } rounded-lg shadow-md overflow-hidden w-full gap-2 items-center`}
           >
             <div
-              className={`flex lg:flex-col lg:h-[60vh] h-[4rem] w-full lg:w-[17%] overflow-x-auto lg:overflow-y-auto gap-2 lg:pl-2 scrollbar ${dark ? "bg-gray-800" : "bg-zinc-100"
-                }`}
+              className={`flex lg:flex-col lg:h-[60vh] h-[4rem] w-full lg:w-[17%] overflow-x-auto lg:overflow-y-auto gap-2 lg:pl-2 scrollbar ${
+                dark ? "bg-gray-800" : "bg-zinc-100"
+              }`}
             >
               {images?.map((thumb, index) => {
                 const isVideo = thumb.src?.endsWith(".mp4");
@@ -146,21 +148,24 @@ const DiscoverMore = () => {
                   <div
                     key={index}
                     onClick={() => handleThumbnailClick(index)}
-                    className={`flex-shrink-0 cursor-pointer ${currentSlide === index ? (dark ? "border-2 border-blue-400" : "border-2 border-blue-500") : ""
-                      } rounded-lg`}
+                    className={`flex-shrink-0 cursor-pointer ${
+                      currentSlide === index ? (dark ? "border-2 border-blue-400" : "border-2 border-blue-500") : ""
+                    } rounded-lg`}
                   >
                     {isVideo ? (
                       <video
                         src={`${imageUrl}/videos/${thumb?.src}`}
-                        className={`${offensive && safeMode === "Off" ? "blur-md brightness-75" : ""
-                          } lg:w-full w-16 h-16 lg:h-20 object-cover rounded`}
+                        className={`${
+                          offensive && safeMode === "Off" ? "blur-md brightness-75" : ""
+                        } lg:w-full w-16 h-16 lg:h-20 object-cover rounded`}
                       />
                     ) : (
                       <img
                         src={`${lowImageUrl}/${thumb?.src}`}
                         alt={thumb.alt}
-                        className={`${offensive && safeMode === "Off" ? "blur-md brightness-75" : ""
-                          } lg:w-full w-16 h-16 lg:h-20 object-cover rounded`}
+                        className={`${
+                          offensive && safeMode === "Off" ? "blur-md brightness-75" : ""
+                        } lg:w-full w-16 h-16 lg:h-20 object-cover rounded`}
                       />
                     )}
                   </div>
@@ -175,8 +180,9 @@ const DiscoverMore = () => {
                     {slide.src.endsWith(".mp4") ? (
                       <video
                         src={`${imageUrl}/videos/${slide?.src}`}
-                        className={`${offensive && safeMode === "Off" ? "blur-lg brightness-75" : ""
-                          } shadow rounded-l mx-auto object-cover w-full h-[20rem] md:h-[60vh] lg:h-[22rem]`}
+                        className={`${
+                          offensive && safeMode === "Off" ? "blur-lg brightness-75" : ""
+                        } shadow rounded-l mx-auto object-cover w-full h-[20rem] md:h-[60vh] lg:h-[22rem]`}
                         controls
                         autoPlay={currentSlide === index}
                       />
@@ -189,8 +195,9 @@ const DiscoverMore = () => {
                               e.stopPropagation();
                               handleViewClick(data?.data?._id);
                             }}
-                            className={`absolute z-[99] border ${dark ? "bg-gray-700 border-gray-600" : "bg-white"
-                              } px-2 py-1 rounded top-2 right-2 flex items-center gap-2 cursor-pointer`}
+                            className={`absolute z-[99] border ${
+                              dark ? "bg-gray-700 border-gray-600" : "bg-white"
+                            } px-2 py-1 rounded top-2 right-2 flex items-center gap-2 cursor-pointer`}
                           >
                             <p className="text-[12px]">Offensive View Off</p>
                             <FaToggleOff size={20} className="text-green-500" />
@@ -201,8 +208,9 @@ const DiscoverMore = () => {
                               e.stopPropagation();
                               handleHideClick(data?.data?._id);
                             }}
-                            className={`absolute z-[99] border ${dark ? "bg-gray-700 border-gray-600" : "bg-white"
-                              } px-2 py-1 rounded top-2 right-2 flex items-center gap-2 cursor-pointer`}
+                            className={`absolute z-[99] border ${
+                              dark ? "bg-gray-700 border-gray-600" : "bg-white"
+                            } px-2 py-1 rounded top-2 right-2 flex items-center gap-2 cursor-pointer`}
                           >
                             <p className="text-[12px]">Offensive View On</p>
                             <FaToggleOn size={20} className="text-green-500" />
@@ -218,8 +226,9 @@ const DiscoverMore = () => {
                 <>
                   <button
                     onClick={() => setCurrentSlide((prev) => (prev === 0 ? images.length - 1 : prev - 1))}
-                    className={`absolute left-2 top-1/2 -translate-y-1/2 ${dark ? "bg-gray-700/80 hover:bg-gray-600" : "bg-white/80 hover:bg-white"
-                      } p-2 rounded-full shadow-md`}
+                    className={`absolute left-2 top-1/2 -translate-y-1/2 ${
+                      dark ? "bg-gray-700/80 hover:bg-gray-600" : "bg-white/80 hover:bg-white"
+                    } p-2 rounded-full shadow-md`}
                   >
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -227,8 +236,9 @@ const DiscoverMore = () => {
                   </button>
                   <button
                     onClick={() => setCurrentSlide((prev) => (prev === images.length - 1 ? 0 : prev + 1))}
-                    className={`absolute right-2 top-1/2 -translate-y-1/2 ${dark ? "bg-gray-700/80 hover:bg-gray-600" : "bg-white/80 hover:bg-white"
-                      } p-2 rounded-full shadow-md`}
+                    className={`absolute right-2 top-1/2 -translate-y-1/2 ${
+                      dark ? "bg-gray-700/80 hover:bg-gray-600" : "bg-white/80 hover:bg-white"
+                    } p-2 rounded-full shadow-md`}
                   >
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -246,7 +256,7 @@ const DiscoverMore = () => {
 
         <ProductInfo data={data} />
         <ArtworkVisualizer artwork={data} />
-        
+
         <SelectedSection data={data} />
       </div>
     </div>

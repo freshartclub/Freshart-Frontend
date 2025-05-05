@@ -1,4 +1,4 @@
- import React, { Suspense, lazy, useEffect } from "react";
+import React, { Suspense, lazy, useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import ArtistPanel from "./components/ArtistPanel/ArtistPanel";
 import AuthGuard from "./components/AuthGuard";
@@ -90,7 +90,7 @@ const App: React.FC = () => {
     }
   }, [lng]);
 
-  if (isLoading) return <Loader  theme={theme}/>;
+  if (isLoading) return <Loader theme={theme} />;
 
   return (
     <AuthProvider>
@@ -124,7 +124,7 @@ const App: React.FC = () => {
               <Route path="/kb-details" element={<KbDetails />} />
 
               <Route
-                path="/tickets"
+                path="/ticket/all"
                 element={
                   <AuthGuard>
                     <TicketHistory />
@@ -132,7 +132,7 @@ const App: React.FC = () => {
                 }
               />
               <Route
-                path="/ticket_detail"
+                path="/ticket/detail"
                 element={
                   <AuthGuard>
                     <SingleTicket />
@@ -140,7 +140,7 @@ const App: React.FC = () => {
                 }
               />
               <Route
-                path="/new_ticket"
+                path="/ticket/new"
                 element={
                   <AuthGuard>
                     <NewTicket />

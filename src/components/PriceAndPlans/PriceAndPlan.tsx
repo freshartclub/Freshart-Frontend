@@ -53,7 +53,7 @@ const PriceAndPlan = () => {
         if (!a.priority && !b.priority) return 0;
         if (!a.priority) return 1;
         if (!b.priority) return -1;
-        
+
         const aLetter = a.priority.match(/[A-Za-z]+/)?.[0] || "";
         const aNumber = parseInt(a.priority.match(/\d+/)?.[0]) || 0;
         const bLetter = b.priority.match(/[A-Za-z]+/)?.[0] || "";
@@ -102,7 +102,6 @@ const PriceAndPlan = () => {
     setIsConfirmationOpen(true);
   };
 
-
   const closeConfirmation = () => {
     setIsConfirmationOpen(false);
   };
@@ -127,7 +126,6 @@ const PriceAndPlan = () => {
   };
 
   const getBillingText = () => {
-
     return billingCycle === "yearly" ? "/year" : "/month";
   };
 
@@ -389,18 +387,16 @@ const PriceAndPlan = () => {
                         {billingCycle === "yearly" ? "year" : "month"} until cancelled.
                       </p>
                     </div>
-                    a
                   </div>
                 )}
 
                 {showInput ? (
-                <button
-                onClick={handleSubscribe}
-                className="w-full px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 transition-colors duration-200"
-              >
-                Subscribe
-              </button>
-                      
+                  <button
+                    onClick={handleSubscribe}
+                    className="w-full px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 transition-colors duration-200"
+                  >
+                    Subscribe
+                  </button>
                 ) : (
                   <div className="mt-6 flex justify-end space-x-3">
                     <button
