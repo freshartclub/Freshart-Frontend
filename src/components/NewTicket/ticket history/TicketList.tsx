@@ -30,7 +30,7 @@ const TicketsList: FC<TicketsListProps> = ({ tickets, isLoading, dark }) => {
   const { mutateAsync, isPending } = usePatchFeedbackMutation();
 
   const handleClick = (id: string) => {
-    const SingleTicketLink = isArtistProfile ? `/artist-panel/ticket_detail?id=${id}` : `/ticket_detail?id=${id}`;
+    const SingleTicketLink = isArtistProfile ? `/artist-panel/ticket/detail?id=${id}` : `/ticket/detail?id=${id}`;
     navigate(SingleTicketLink);
   };
 

@@ -66,32 +66,30 @@ const ArtistPanel = () => {
             <Route path="/commercilization" element={<CommercializationSection />} />
             <Route path="/artist-views" element={<ArtistDashboardSection />} />
 
-
-
             <Route path="artwork" element={<Artwork />} />
-            <Route path="order" element={<Orders />} />
-            <Route path="subscription-order" element={<SubscriptionOrder />} />
+            <Route path="artwork/add" element={<AddArtwork />} />
 
+            <Route path="order/purchase" element={<Orders />} />
+            <Route path="order/subscription" element={<SubscriptionOrder />} />
+            <Route path="order/detail" element={<OrdersDetail />} />
+            <Route path="order/approve-order" element={<OrderApprove />} />
             <Route path="order/custom" element={<CustomOrder />} />
 
             <Route path="offer" element={<Offers />} />
-            
-            
-            <Route path="order/orderDetail" element={<OrdersDetail />} />
-            <Route path="order/approve-order" element={<OrderApprove />} />
-            <Route path="artwork/add" element={<AddArtwork />} />
-            <Route path="edit-artistprofile" element={<ArtistProfile />} />
+
+            <Route path="profile" element={<ArtistProfile />} />
             <Route path="settings" element={<Settings />} />
             <Route path="circle" element={<Circle />} />
-            <Route path="circle/circlepage" element={<CirclePage />} />
+            <Route path="circle/detail" element={<CirclePage />} />
 
-            <Route path="ticket/tickets" element={<TicketHistory />} />
-            <Route path="/ticket" element={<Support />} />
-            <Route path="/new_ticket" element={<NewTicket />} />
+            <Route path="ticket" element={<Support />} />
+            <Route path="ticket/all" element={<TicketHistory />} />
+            <Route path="ticket/new" element={<NewTicket />} />
+            <Route path="ticket/detail" element={<SingleTicket />} />
+
             <Route path="/kb-database" element={<KbDatabase />} />
             <Route path="/kb-details" element={<KbDetails />} />
             <Route path="/faq" element={<Faq />} />
-            <Route path="/ticket_detail" element={<SingleTicket />} />
             <Route path="artwork/preview/:id" element={<ArtworkReview />} />
           </Routes>
         </div>

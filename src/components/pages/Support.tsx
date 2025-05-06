@@ -226,7 +226,7 @@ const Support = () => {
 
                   <div className="flex flex-wrap gap-4 justify-between">
                     <button
-                      onClick={() => navigate(isArtistProfile ? "/artist-panel/new_ticket" : "/new_ticket")}
+                      onClick={() => navigate(isArtistProfile ? "/artist-panel/ticket/new" : "/ticket/new")}
                       className={`px-6 py-2 rounded-lg font-medium flex items-center gap-2 bg-green-800 hover:bg-green-700 text-white`}
                     >
                       {t("Submit Ticket")}
@@ -234,7 +234,7 @@ const Support = () => {
                     </button>
 
                     <button
-                      onClick={() => navigate(isArtistProfile ? "/artist-panel/ticket/tickets" : "/tickets")}
+                      onClick={() => navigate(isArtistProfile ? "/artist-panel/ticket/all" : "/ticket/all")}
                       className={`px-6 py-2 rounded-lg font-medium flex items-center gap-2 bg-[#EE1D52] hover:bg-[#EE1D52]/80 text-white`}
                     >
                       {t("See Recent Ticket History")}

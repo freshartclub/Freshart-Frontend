@@ -3,8 +3,7 @@ import duration from "dayjs/plugin/duration";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { FiDownload, FiFilter, FiPlus } from "react-icons/fi";
-import { useNavigate } from "react-router-dom";
+import { FiDownload, FiFilter } from "react-icons/fi";
 import { useAppSelector } from "../../store/typedReduxHooks";
 import Loader from "../ui/Loader";
 import AllOrders from "./Orders/Allorders";
@@ -14,7 +13,6 @@ dayjs.extend(duration);
 
 const SubscriptionOrder = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const dark = useAppSelector((state) => state.theme.mode);
 
   const timeFilters = ["All Time", "12 Months", "30 Days", "7 Days", "24 Hours"];
@@ -36,7 +34,7 @@ const SubscriptionOrder = () => {
         return createdAt.isAfter(durations[activeTab as keyof typeof durations]);
       });
 
-  if (isLoading) return <Loader />;
+  if (isLoading) return <Loader theme={dark} />;
 
   return (
     <div className={`px-4 py-6 ${dark ? "bg-gray-900" : "bg-gray-50"} min-h-screen`}>
@@ -57,48 +55,14 @@ const SubscriptionOrder = () => {
               {t("Export")}
             </button>
             <button
-              onClick={() => navigate("/artist-panel/order/add-order")}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-white bg-[#EE1D52] hover:bg-[#EE1D52]/80`}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg ${
+                dark ? "bg-gray-800 text-white border-gray-700 hover:bg-gray-700" : "bg-white border-gray-200 hover:bg-gray-50"
+              } border`}
             >
-              <FiPlus />
-              {t("Add Order")}
+              <FiFilter />
+              {t("Filters")}
             </button>
           </div>
-        </div>
-
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-          <div
-            className={`flex overflow-x-auto gap-2 scrollbar-hide p-1 border rounded-lg ${
-              dark ? "bg-gray-800 border-gray-600" : "bg-gray-200 border-zinc-300"
-            }`}
-          >
-            {timeFilters.map((filter) => (
-              <button
-                key={filter}
-                onClick={() => setActiveTab(filter)}
-                className={`px-4 py-2 rounded-md whitespace-nowrap transition-colors ${
-                  activeTab === filter
-                    ? dark
-                      ? "bg-gray-700 text-white"
-                      : "bg-white text-gray-800 shadow-sm"
-                    : dark
-                    ? "text-gray-400 hover:bg-gray-700"
-                    : "text-gray-600 hover:bg-gray-200"
-                }`}
-              >
-                {t(filter)}
-              </button>
-            ))}
-          </div>
-
-          <button
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg ${
-              dark ? "bg-gray-800 text-white border-gray-700 hover:bg-gray-700" : "bg-white border-gray-200 hover:bg-gray-50"
-            } border`}
-          >
-            <FiFilter />
-            {t("Filters")}
-          </button>
         </div>
 
         <AllOrders allOrders={filterData} dark={dark} />
