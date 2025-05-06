@@ -45,7 +45,7 @@ const CardSection = ({ data, type, darkMode }) => {
 
   const handleRedirectToDescription = (id: string) => {
     mutate(id);
-    navigate(`/discover_more/${id}?a=search`);
+    navigate(`/discover_more/${id}?comingFrom=search`);
     window.scroll(0, 0);
   };
 
@@ -128,7 +128,6 @@ const CardSection = ({ data, type, darkMode }) => {
       setFavoriteLists(favoriteObject);
     }
   }, [favoriteData]);
-
 
   useEffect(() => {
     const storedData = JSON.parse(localStorage.getItem("viewedImages") || "{}");
@@ -226,7 +225,7 @@ const CardSection = ({ data, type, darkMode }) => {
                 </p>
                 {type === "purchase" ? (
                   <p className={`mt-1 flex gap-1 items-center ${darkMode ? "text-gray-200" : "text-gray-800"} font-bold`}>
-                    {item?.pricing?.currency ?   getSymbolFromCurrency(item?.pricing?.currency.slice(0, 3)) : null} {item?.pricing?.basePrice}
+                    {item?.pricing?.currency ? getSymbolFromCurrency(item?.pricing?.currency.slice(0, 3)) : null} {item?.pricing?.basePrice}
                     {item?.pricing?.dpersentage ? (
                       <span>
                         | <span className="text-[#EE1D52]">{item?.pricing?.dpersentage}%</span>

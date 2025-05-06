@@ -1,20 +1,19 @@
 import dayjs from "dayjs";
 import { useState } from "react";
-import { MdOutlineKeyboardArrowRight } from "react-icons/md";
-import { Link, NavLink, useNavigate } from "react-router-dom";
-import export_icon from "../../assets/export.png";
-import invoice from "../../assets/invoice.png";
-import processing from "../../assets/processing.png";
-import Button from "../ui/Button";  
-import Loader from "../ui/Loader";
+import { FaRegSadTear } from "react-icons/fa";
+import { MdChevronLeft, MdChevronRight, MdFirstPage, MdLastPage, MdOutlineFileDownload, MdOutlineSubscriptions, MdShoppingBag } from "react-icons/md";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useAppSelector } from "../../store/typedReduxHooks";
 import Header from "../ui/Header";
+import Loader from "../ui/Loader";
 import P from "../ui/P";
 import { lowImageUrl } from "../utils/baseUrls";
 import { useGetOrder } from "./http/useGetOrder";
-import { useAppSelector } from "../../store/typedReduxHooks";
 
 const OrderPage = () => {
-  const [state, setState] = useState("purchase");
+  const [activeTab, setActiveTab] = useState<"purchase" | "subscription">("purchase");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5);
   const { data, isLoading } = useGetOrder();
   const navigate = useNavigate();
   const dark = useAppSelector((state) => state.theme.mode);
@@ -23,163 +22,242 @@ const OrderPage = () => {
     navigate(`/order_tracking?id=${item?._id}&art=${item?.artwork?._id}`);
   };
 
-  return (
-    <div className={`${dark  ? "bg-[#111827]" : "bg-[#EFEFF7]"} pb-10`}>
-      <div className="container mx-auto md:px-6 px-3">
-        <nav className={`flex pt-5 gap-2 text-sm ${dark  ? "text-gray-300" : "text-[#2E4053]"} items-center`}>
-          <Link to="/" className="flex text-[#FF536B]">
-            Home
-          </Link>
-          <MdOutlineKeyboardArrowRight />
-          <Link to="/order" className="text-[#FF536B]">
-            Order
-          </Link>
-        </nav>
+  const filteredData = data?.filter((item) => (activeTab === "purchase" ? item.type === "purchase" : item.type === "subscription")) || [];
 
-        <div className="flex sm:flex-row flex-col justify-between gap-5 mb-8">
-          <div className="flex gap-5 mt-8">
-            <span
-              onClick={() => setState("purchase")}
-              className={`
-                ${state === "purchase" ? "bg-[#FF536B] text-white" : ""}
-                ${dark && state !== "purchase" ? "border-gray-400 text-gray-300" : "border-zinc-800"}
-                font-bold text-md border px-5 py-2 cursor-pointer rounded-md
-              `}
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+  const nextPage = () => currentPage < totalPages && setCurrentPage(currentPage + 1);
+  const prevPage = () => currentPage > 1 && setCurrentPage(currentPage - 1);
+  const firstPage = () => setCurrentPage(1);
+  const lastPage = () => setCurrentPage(totalPages);
+
+  return (
+    <div className={`min-h-screen ${dark ? "bg-gray-900" : "bg-gray-50"} pb-10 transition-colors duration-200`}>
+      <div className="container mx-auto px-4 sm:px-6 py-6">
+        <div>
+          <h1 className={`text-2xl font-bold ${dark ? "text-white" : "text-gray-800"}`}>All Orders</h1>
+          <span className={dark ? "text-gray-400 text-sm" : "text-gray-400 text-sm"}>View/Manage your all orders</span>
+        </div>
+
+        <div className="flex justify-between min-[500px]:flex-row flex-col gap-4 my-4">
+          <div className="flex gap-2">
+            <button
+              onClick={() => {
+                setActiveTab("purchase");
+                setCurrentPage(1);
+              }}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
+                activeTab === "purchase"
+                  ? `bg-[#EE1D52] hover:bg-[#ee1d51db] text-white`
+                  : `${dark ? "bg-gray-800 text-gray-300 hover:bg-gray-700" : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`
+              }`}
             >
+              <MdShoppingBag />
               Purchase
-            </span>
-            <span
-              onClick={() => setState("subscription")}
-              className={`
-                ${state !== "purchase" ? "bg-[#FF536B] text-white" : ""}
-                ${dark  && state === "purchase" ? "border-gray-400 text-gray-300" : "border-zinc-800"}
-                font-bold text-md border px-5 py-2 cursor-pointer rounded-md
-              `}
+            </button>
+            <button
+              onClick={() => {
+                setActiveTab("subscription");
+                setCurrentPage(1);
+              }}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
+                activeTab === "subscription"
+                  ? `bg-[#EE1D52] hover:bg-[#ee1d51db] text-white`
+                  : `${dark ? "bg-gray-800 text-gray-300 hover:bg-gray-700" : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`
+              }`}
             >
+              <MdOutlineSubscriptions />
               Subscription
-            </span>
+            </button>
           </div>
-          <div className="flex flex-row flex-wrap gap-5 items-center">
-            <Button
-              variant={{ fontSize: "md", fontWeight: "bold" }}
-              className="flex"
-            >
-              <P variant={{ size: "small", theme: "dark", weight: "normal" }}>
-                Processing
-              </P>
-              <img
-                src={processing}
-                alt=""
-                className="w-[12px] h-[8px] mt-2 ml-2"
-              />
-            </Button>
-            <Button
-              variant={{ fontSize: "sm", fontWeight: "bold" }}
-              className="flex bg-[#DEDEFA]"
-            >
-              <img
-                src={export_icon}
-                alt=""
-                className="w-[18px] h-[17px] mr-2"
-              />
-              <P variant={{ size: "small", theme: "dark", weight: "normal" }}>
-                Export
-              </P>
-            </Button>
-            <Button
-              variant={{ fontSize: "lg", fontWeight: "bold", theme: "dark" }}
-              className="flex"
-            >
-              <img src={invoice} alt="" className="w-[18px] h-[16px] mr-2" />
-              <P variant={{ size: "small", theme: "light", weight: "normal" }}>
-                Invoice
-              </P>
-            </Button>
-          </div>
+
+          <span
+            className={`flex min-[500px]:w-max items-center justify-center cursor-pointer gap-2 px-4 py-2 rounded-lg ${
+              dark ? "text-gray-400 bg-gray-800" : "text-gray-600 bg-gray-100"
+            }`}
+          >
+            <MdOutlineFileDownload className="text-lg" />
+            Export
+          </span>
         </div>
 
         {isLoading ? (
-          <Loader />
+          <Loader theme={dark} />
         ) : (
-          <div className="flex flex-col gap-8">
-            {data && data.length > 0 ? (
-              data.map((item, index: number) => (
-                <div
-                  key={index}
-                  className={`${dark  ? "bg-[#2B2B2B]" : "bg-white"} flex flex-col sm:flex-row justify-between gap-5 p-2 rounded-md`}
-                >
-                  <div className="flex flex-col gap-2 items-center">
-                    <img
-                      src={`${lowImageUrl}/${item?.artwork?.media}`}
-                      alt="order image"
-                      className="sm:w-[20vw] sm:h-[10vw] md:w-[15vw] md:h-[8vw] w-[10rem] h-[8rem] object-cover"
-                    />
-                    <Button
-                      onClick={() => handleDetailPage(item)}
+          <div className="grid gap-6">
+            {currentItems.length > 0 ? (
+              <>
+                {currentItems.map((item, index: number) => (
+                  <div
+                    key={index}
+                    className={`${dark ? "bg-gray-800 hover:bg-gray-700" : "bg-white hover:bg-gray-50"} 
+                    rounded-xl shadow-sm border ${dark ? "border-gray-700" : "border-gray-200"} 
+                    transition-all hover:shadow-md overflow-hidden`}
+                  >
+                    <div className="flex flex-col sm:flex-row gap-4 p-4">
+                      <div className="flex-shrink-0 w-full sm:w-48 h-40 rounded-lg overflow-hidden">
+                        <img src={`${lowImageUrl}/${item?.artwork?.media}`} alt={item?.artwork?.artworkName} className="w-full h-full object-cover" />
+                      </div>
+
+                      <div className="flex-1 flex flex-col justify-between">
+                        <div>
+                          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+                            <Header
+                              variant={{
+                                size: "lg",
+                                theme: dark ? "light" : "dark",
+                                weight: "semiBold",
+                              }}
+                              className="flex items-center gap-2"
+                            >
+                              {item?.artwork?.artworkName}
+                              <span className={`text-xs ${dark ? "bg-gray-700" : "bg-gray-100"} px-2 py-1 rounded-full`}>{item?.type}</span>
+                            </Header>
+                            <P
+                              variant={{
+                                size: "small",
+                                theme: dark ? "light" : "dark",
+                                weight: "medium",
+                              }}
+                              className="text-gray-500"
+                            >
+                              #{item?.orderId}
+                            </P>
+                          </div>
+
+                          <P
+                            variant={{
+                              size: "small",
+                              theme: dark ? "light" : "dark",
+                              weight: "normal",
+                            }}
+                            className="mb-2"
+                          >
+                            Ordered on {dayjs(item?.createdAt).format("MMMM D, YYYY")}
+                          </P>
+
+                          <div className={`flex items-center gap-4 ${dark ? "text-gray-300" : "text-gray-700"}`}>
+                            <span className="text-lg font-semibold text-primary-500">€{item?.total}</span>
+                          </div>
+                        </div>
+
+                        <div className="mt-4 flex justify-end">
+                          <span
+                            onClick={() => handleDetailPage(item)}
+                            className="w-full text-center hover:underline sm:w-auto p-2 bg-[#EE1D52] hover:bg-[#ee1d51db] text-white rounded-full px-4 cursor-pointer"
+                          >
+                            View Order Details
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+
+                {filteredData.length > itemsPerPage && (
+                  <div className={`flex flex-col sm:flex-row items-center justify-between gap-4 mt-4 p-4 rounded-lg`}>
+                    <P
                       variant={{
-                        theme: "light",
-                        fontWeight: "600",
+                        size: "sm",
+                        theme: dark ? "light" : "dark",
+                        weight: "normal",
                       }}
-                      className="text-[16px] w-full text-[#FF536B] border border-gray-400 text-sm sm:px-6 sm:py-3 !p-2"
                     >
-                      View Order
-                    </Button>
-                  </div>
+                      Showing {indexOfFirstItem + 1}-{Math.min(indexOfLastItem, filteredData.length)} of {filteredData.length} orders
+                    </P>
 
-                  <div className="w-full">
-                    <div className="flex lg:flex-row flex-col justify-between">
-                      <Header
-                        variant={{
-                          size: "lg",
-                          theme: dark  ? "light" : "dark",
-                          weight: "semiBold",
-                        }}
-                        className="flex items-baseline gap-2"
+                    <div className={`flex gap-2 items-center ${dark ? "text-white" : "text-gray-700"}`}>
+                      <button
+                        onClick={firstPage}
+                        disabled={currentPage === 1}
+                        className={`p-2 rounded-md ${dark ? "hover:bg-gray-700" : "hover:bg-gray-200"} ${
+                          currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
+                        }`}
                       >
-                        {item?.artwork?.artworkName}
-                        <P
-                          variant={{
-                            size: "small",
-                            theme: dark  ? "light" : "dark",
-                            weight: "medium",
-                          }}
-                          className="text-[#848484]"
-                        >
-                          ({dayjs(item?.createdAt).format("MMMM D, YYYY")})
-                        </P>
-                      </Header>
-
-                      <P
-                        variant={{
-                          size: "small",
-                          theme: dark  ? "light" : "dark",
-                          weight: "semiBold",
-                        }}
+                        <MdFirstPage className="text-xl" />
+                      </button>
+                      <button
+                        onClick={prevPage}
+                        disabled={currentPage === 1}
+                        className={`p-2 rounded-md ${dark ? "hover:bg-gray-700" : "hover:bg-gray-200"} ${
+                          currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
+                        }`}
                       >
-                        OrderId - #{item?.orderId}
-                      </P>
-                    </div>
+                        <MdChevronLeft className="text-xl" />
+                      </button>
 
-                    <div className="flex flex-col gap-1">
-                      <span className={`text-xs font-semibold ${dark  ? "text-white" : ""}`}>
-                        € {item?.total}
-                      </span>
-                      <span className="capitalize text-[#71717199] text-xs">
-                        Type : {item?.type}
-                      </span>
+                      <div className="flex gap-1">
+                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
+                          <button
+                            key={number}
+                            onClick={() => paginate(number)}
+                            className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                              currentPage === number
+                                ? `bg-[#EE1D52] hover:bg-[#ee1d51db] text-white`
+                                : `${dark ? "hover:bg-gray-700" : "hover:bg-gray-200"}`
+                            }`}
+                          >
+                            {number}
+                          </button>
+                        ))}
+                      </div>
+
+                      <button
+                        onClick={nextPage}
+                        disabled={currentPage === totalPages}
+                        className={`p-2 rounded-md ${dark ? "hover:bg-gray-700" : "hover:bg-gray-200"} ${
+                          currentPage === totalPages ? "opacity-50 cursor-not-allowed" : ""
+                        }`}
+                      >
+                        <MdChevronRight className="text-xl" />
+                      </button>
+                      <button
+                        onClick={lastPage}
+                        disabled={currentPage === totalPages}
+                        className={`p-2 rounded-md ${dark ? "hover:bg-gray-700" : "hover:bg-gray-200"} ${
+                          currentPage === totalPages ? "opacity-50 cursor-not-allowed" : ""
+                        }`}
+                      >
+                        <MdLastPage className="text-xl" />
+                      </button>
                     </div>
                   </div>
-                </div>
-              ))
+                )}
+              </>
             ) : (
-              <div className={`${dark ? "border-gray-600 text-gray-300" : "border-[#c6c6c9]"} px-6 py-4 text-center border`}>
-                <p className="text-lg text-center font-medium mb-4">
-                  You haven't placed any orders.
-                </p>
-                <NavLink to="/all-artworks?type=subscription">
-                  <button className="px-6 py-2 bg-zinc-800 text-white rounded-lg">
-                    Continue Shopping
-                  </button>
+              <div
+                className={`${dark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"} 
+              border rounded-xl p-8 text-center flex flex-col items-center`}
+              >
+                <FaRegSadTear className={`text-4xl mb-4 ${dark ? "text-gray-500" : "text-gray-400"}`} />
+                <Header
+                  variant={{
+                    size: "xl",
+                    theme: dark ? "light" : "dark",
+                    weight: "bold",
+                  }}
+                  className="mb-2"
+                >
+                  No Orders Found
+                </Header>
+                <P
+                  variant={{
+                    size: "md",
+                    theme: dark ? "light" : "dark",
+                    weight: "normal",
+                  }}
+                  className="mb-6 max-w-md mx-auto"
+                >
+                  {`You haven't placed any ${activeTab === "purchase" ? "purchases" : "subscriptions"} yet.`}
+                </P>
+                <NavLink to={`/all-artworks?type=${activeTab}`}>
+                  <span className="w-full hover:underline sm:w-auto p-2 bg-[#EE1D52] hover:bg-[#ee1d51db] text-white rounded-full px-4 cursor-pointer">
+                    Browse Artworks
+                  </span>
                 </NavLink>
               </div>
             )}

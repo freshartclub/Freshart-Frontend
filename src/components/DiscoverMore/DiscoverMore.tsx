@@ -16,12 +16,20 @@ import SelectedSection from "./SelectedSection";
 
 const DiscoverMore = () => {
   const dark = useAppSelector((state) => state.theme.mode);
+  const user = useAppSelector((state) => state.user.user);
+
   const TEN_DAYS_MS = 10 * 24 * 60 * 60 * 1000;
-  const { id } = useParams();
+  const { id } = useParams() as { id: string };
   const preview = false;
   const [searchParams] = useSearchParams();
-  const comingFrom = searchParams.get("comingFrom");
-  const { data, isLoading, isError } = useGetArtWorkById(id, preview, comingFrom);
+  const comingFrom = searchParams.get("comingFrom") as string;
+  const { data, isLoading, isError } = useGetArtWorkById({
+    id,
+    preview,
+    comingFrom,
+    userId: user?._id,
+  });
+
   const [safeMode, setSafeMode] = useState("Off");
   const [viewedImages, setViewedImages] = useState({});
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -52,8 +60,6 @@ const DiscoverMore = () => {
   const checkArtworkType = data?.data?.commercialization?.activeTab;
   const offensive = data?.data?.additionalInfo?.offensive === "Yes";
 
-  console.log(offensive)
-  console.log(safeMode)
   const handleViewClick = (id: string) => {
     const newViewedImages = { ...viewedImages, [id]: Date.now() };
     localStorage.setItem("viewedImages", JSON.stringify(newViewedImages));
@@ -74,6 +80,7 @@ const DiscoverMore = () => {
     const currentTime = Date.now();
     const filteredData = {};
     Object.keys(storedData).forEach((key) => {
+      n;
       if (currentTime - storedData[key] < TEN_DAYS_MS) {
         filteredData[key] = storedData[key];
       }
@@ -190,13 +197,12 @@ const DiscoverMore = () => {
                       />
                     ) : (
                       <div className="relative h-full">
-                        
                         <MagnifierImage
                           src={`${lowImageUrl}/${slide?.src}`}
                           alt={`Slide ${index + 1}`}
                           isOffensive={offensive}
                           safeMode={safeMode}
-                          enableZoom={index === 0} 
+                          enableZoom={index === 0}
                         />
                         {offensive && safeMode === "Off" ? (
                           <div
@@ -267,12 +273,9 @@ const DiscoverMore = () => {
         <ArtworkVisualizer artwork={data} isLoading={isLoading} error={isError} />
 
         <SelectedSection data={data} />
-
       </div>
     </div>
-
-);
+  );
 };
 
-export default DiscoverMore
-      
+export default DiscoverMore;
