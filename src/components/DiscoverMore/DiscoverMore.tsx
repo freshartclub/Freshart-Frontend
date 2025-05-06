@@ -13,8 +13,6 @@ import { useGetArtWorkById } from "./http/useGetArtWorkById";
 import { MagnifierImage } from "./MagniferImage";
 import ProductInfo from "./ProductInfo";
 import SelectedSection from "./SelectedSection";
-import { MagnifierImage } from "./MagniferImage";
-import ArtworkVisualizer from "./ArtworkVisualizer";
 
 const DiscoverMore = () => {
   const dark = useAppSelector((state) => state.theme.mode);
@@ -266,8 +264,8 @@ const DiscoverMore = () => {
         </div>
 
         <ProductInfo data={data} />
-        <ArtworkVisualizer artwork={data} />
-        
+        <ArtworkVisualizer artwork={data} isLoading={isLoading} error={isError} />
+
         <SelectedSection data={data} />
 
       </div>
@@ -276,4 +274,5 @@ const DiscoverMore = () => {
 );
 };
 
-export default DiscoverMore;
+export default DiscoverMore
+      
