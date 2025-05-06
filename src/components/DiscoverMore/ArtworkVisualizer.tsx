@@ -12,6 +12,8 @@ import P from '../ui/P';
 import Header from '../ui/Header';
 import { imageUrl } from '../utils/baseUrls';
 import CustomPop from './CustomPop';
+import MobileArtworkVisualizer from './MobileArtworkVisualizer';
+import { TbDeviceMobileRotated } from "react-icons/tb";
 
 // High-quality room images
 const roomImages = {
@@ -49,7 +51,7 @@ const roomImages = {
 
 const placeholderImage = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%23CCCCCC'/%3E%3Ctext x='50%25' y='50%25' font-family='Arial' font-size='24' text-anchor='middle' fill='%23666666'%3EArtwork%3C/text%3E%3C/svg%3E";
 
-const ArtworkVisualizer = ({ artwork }) => {
+const ArtworkVisualizer = ({ artwork , isLoading , error}) => {
   const dark = useAppSelector((state) => state.theme.mode);
   const [selectedRoom, setSelectedRoom] = useState('livingRoom');
   const [selectedRoomImageIndex, setSelectedRoomImageIndex] = useState(0);
@@ -60,11 +62,17 @@ const ArtworkVisualizer = ({ artwork }) => {
   const [artworkPosition, setArtworkPosition] = useState({ x: 0, y: 0 });
   const [isCustom, setIsCustom] = useState(false);
   const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 0);
+
+  const [isMobileVisualize , setIsMobileVisualize] = useState(false)
+
+  const handleMobileVisualization = ()=>{
+    setIsMobileVisualize(!isMobileVisualize)
+  }
   
   const fileInputRef = useRef(null);
   const visualizerRef = useRef(null);
 
-  // Define rooms with their configurations
+
   const rooms = useMemo(() => [
     {
       id: 'livingRoom',
@@ -108,17 +116,16 @@ const ArtworkVisualizer = ({ artwork }) => {
     }
   ], []);
 
-  // Listen for window resize events
+
   useEffect(() => {
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
     };
-    
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Update artwork position and scale when changing rooms
+  
   useEffect(() => {
     const currentRoom = rooms.find(room => room.id === selectedRoom);
     if (currentRoom) {
@@ -127,7 +134,7 @@ const ArtworkVisualizer = ({ artwork }) => {
     }
   }, [selectedRoom, rooms]);
 
-  // Handle fullscreen changes
+
   useEffect(() => {
     const onFullScreenChange = () => {
       setIsFullscreen(!!document.fullscreenElement);
@@ -159,24 +166,20 @@ const ArtworkVisualizer = ({ artwork }) => {
   };
 
   const handleCustom = () => {
-    
       setIsCustom(!isCustom);
-    
   };
 
-  // Get current room data
   const currentRoom = rooms.find(r => r.id === selectedRoom) || rooms[0];
   const roomBackgroundImage = customImage || 
     (currentRoom.images && currentRoom.images[selectedRoomImageIndex % currentRoom.images.length]);
 
-  // Theme classes
   const bgClass = dark ? 'bg-gray-900' : 'bg-gray-50';
   const textClass = dark ? 'text-gray-100' : 'text-gray-800';
   const buttonBgClass = dark ? 'bg-gray-800' : 'bg-white';
   const buttonHoverClass = dark ? 'hover:bg-gray-700' : 'hover:bg-gray-100';
   const borderClass = dark ? 'border-gray-700' : 'border-gray-200';
 
-  // Responsive values
+
   const isMobile = windowWidth < 640;
   const isTablet = windowWidth >= 640 && windowWidth < 1024;
   const visualizerHeight = isFullscreen 
@@ -187,7 +190,7 @@ const ArtworkVisualizer = ({ artwork }) => {
         ? 'h-96'
         : 'h-[500px]';
 
-  // Determine max artwork size based on screen size
+
   const getMaxArtworkSize = () => {
     if (isMobile) return 200;
     if (isTablet) return 300;
@@ -211,16 +214,25 @@ const ArtworkVisualizer = ({ artwork }) => {
           >
             <BsArrowsFullscreen size={18} />
           </button>
+
+          <button
+            onClick={handleMobileVisualization}
+            className={`p-2 rounded-full ${buttonBgClass} ${buttonHoverClass} transition-colors duration-200`}
+            aria-label="Toggle fullscreen"
+          >
+            <TbDeviceMobileRotated size={18} />
+          </button>
         </div>
       </Header>
 
-      {/* Room selection tabs - horizontally scrollable on mobile */}
+      {isMobileVisualize ?   <MobileArtworkVisualizer artwork={artwork} isLoading={isLoading} error={error}/>  : null}
+
       <div className="flex overflow-x-auto scrollbar-thin p-2 border-b gap-2 sm:gap-3 md:justify-center">
-        {rooms.map(room => {
-          const RoomIcon = room.icon;
+        {rooms?.map(room => {
+          const RoomIcon = room?.icon;
           return (
             <button
-              key={room.id}
+              key={room?.id}
               onClick={() => {
                 setSelectedRoom(room.id);
                 setSelectedRoomImageIndex(0); 
@@ -256,7 +268,6 @@ const ArtworkVisualizer = ({ artwork }) => {
         />
       </div>
       
-      {/* Room variant selection - only show when there are multiple images */}
       {selectedRoom !== 'custom' && currentRoom.images && currentRoom.images.length > 1 && (
         <div className="flex overflow-x-auto scrollbar-thin p-2 border-b gap-2 md:justify-center">
           {currentRoom.images.map((_, index) => (
@@ -275,7 +286,6 @@ const ArtworkVisualizer = ({ artwork }) => {
         </div>
       )}
 
-      {/* Visualizer area */}
       <div 
         ref={visualizerRef}
         className={`relative ${visualizerHeight} overflow-hidden`}
@@ -285,7 +295,7 @@ const ArtworkVisualizer = ({ artwork }) => {
           backgroundPosition: 'center'
         }}
       >
-        {/* Draggable artwork */}
+      
         <motion.div
           drag
           dragMomentum={false}
@@ -332,7 +342,7 @@ const ArtworkVisualizer = ({ artwork }) => {
           />
         </motion.div>
 
-        {/* Resize controls */}
+        
         <div className="absolute bottom-4 right-4 flex gap-2">
           <button 
             onClick={() => setArtworkScale(Math.max(artworkScale - 0.1, 0.2))}
@@ -350,7 +360,7 @@ const ArtworkVisualizer = ({ artwork }) => {
           </button>
         </div>
 
-        {/* Navigation controls for room variants */}
+        
         {selectedRoom !== 'custom' && currentRoom.images && currentRoom.images.length > 1 && (
           <div className="absolute top-4 right-4 flex gap-2">
             <button 
@@ -374,13 +384,12 @@ const ArtworkVisualizer = ({ artwork }) => {
           </div>
         )}
 
-        {/* Helper text */}
+        
         <div className="absolute bottom-4 left-4 bg-black bg-opacity-60 text-white px-3 py-1 rounded-md text-xs sm:text-sm shadow-lg max-w-full truncate">
           {isMobile ? "Drag to position • Resize" : "Drag artwork to position • Use controls to resize • Triple Click"}
         </div>
       </div>
       
-      {/* Custom image popup */}
       {isCustom && <CustomPop onClose={() => setIsCustom(false)} artwork={artwork} />}
     </div>
   );

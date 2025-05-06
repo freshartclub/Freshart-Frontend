@@ -45,7 +45,7 @@ const CustomPop = ({ onClose, artwork }) => {
     setShowPositioningPopup(true);
   }
 
-  // If we're showing the positioning popup, render that instead
+  
   if (showPositioningPopup) {
     return (
       <ImagePositioningPopup 
@@ -62,9 +62,9 @@ const CustomPop = ({ onClose, artwork }) => {
   return (
     <div className={`fixed inset-0 ${dark ? 'bg-gray-900' : 'bg-black'} bg-opacity-50 flex items-center justify-center z-50 p-4`}>
       <div className={`${dark ? 'bg-gray-800 text-gray-100' : 'bg-white text-gray-800'} rounded-xl shadow-2xl max-w-2xl w-full overflow-hidden`}>
-        {/* Header */}
+    
         <div className={`flex justify-between items-center border-b ${dark ? 'border-gray-700' : 'border-gray-200'} p-4`}>
-          <h3 className="text-xl font-semibold">Upload & QR Generator</h3>
+          <h3 className="text-xl font-semibold"> Custom Art View</h3>
           <button 
             onClick={onClose}
             className={`${dark ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-700'} focus:outline-none`}
@@ -76,7 +76,7 @@ const CustomPop = ({ onClose, artwork }) => {
         </div>
        
         <div className="flex flex-col md:flex-row p-6 gap-6">
-          {/* Left Side - Upload */}
+          
           <div className={`flex-1 border-2 border-dashed ${dark ? 'border-gray-600' : 'border-gray-300'} rounded-lg p-6 flex flex-col items-center justify-center`}>
             <div className="text-center mb-4">
               <svg xmlns="http://www.w3.org/2000/svg" className={`h-12 w-12 mx-auto ${dark ? 'text-gray-500' : 'text-gray-400'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -117,7 +117,7 @@ const CustomPop = ({ onClose, artwork }) => {
             )}
           </div>
 
-          {/* Right Side - QR Code */}
+         
           <div className="flex-1 flex flex-col items-center">
             <h4 className={`text-lg font-medium ${dark ? 'text-gray-300' : 'text-gray-700'} mb-4`}>QR Code Generator</h4>
             
@@ -125,8 +125,8 @@ const CustomPop = ({ onClose, artwork }) => {
               <QRCode 
                 value={qrValue} 
                 size={160}
-                bgColor={dark ? "#374151" : "#ffffff"} // Dark mode gray-700 or white
-                fgColor={dark ? "#ffffff" : "#000000"} // White text in dark mode, black in light
+                bgColor={dark ? "#374151" : "#ffffff"} 
+                fgColor={dark ? "#ffffff" : "#000000"} 
                 level="Q"
               />
             </div>
@@ -159,7 +159,7 @@ const CustomPop = ({ onClose, artwork }) => {
           </div>
         </div>
 
-        {/* Footer */}
+      
         <div className={`${dark ? 'bg-gray-700 border-gray-600' : 'bg-gray-50 border-gray-200'} px-4 py-3 flex justify-end border-t`}>
           <button
             onClick={onClose}

@@ -1,25 +1,52 @@
 import DOMPurify from "dompurify";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaRegHeart, FaHeart, FaShareAlt } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Header from "../ui/Header";
 import P from "../ui/P";
 import { imageUrl } from "../utils/baseUrls";
 import CustomOrderForm from "./CustomOrderForm";
+import useArtistFollowMutation from "./http/useArtistFollowMutation";
+import useArtistUnFollowMutation from "./http/useArtistUnFollowMutation";
+import { useAppSelector } from "../../store/typedReduxHooks";
 
 const ArtistDescription = ({ data, dark }) => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("about");
   const [isLiked, setIsLiked] = useState(false);
+  const { id } = useParams();
+  const userId = useAppSelector((state)=> state.user.user?._id)
 
   const redirectToCircle = () => navigate("/circleblog");
+  const {mutate  } = useArtistFollowMutation()
+
+  const {mutateAsync} = useArtistUnFollowMutation()
+
+  useEffect(()=>{
+   if(data?.is_followed){
+    setIsLiked(data?.is_followed)
+
+   }
+  },[data])
+
+  console.log(userId)
+  console.log(data?._id )
+
+  const handleFollow = ()=>{
+    mutate(id)
+  }
+
+  const handleUnFollow = ()=>{
+    mutateAsync(id)
+  }
 
   return (
     <div className={`rounded-xl border ${dark ? "bg-gray-800 border-gray-600" : "bg-white border-zinc-300"} shadow-md p-3`}>
       <div className="flex justify-end items-center gap-4 mb-2">
-        <button onClick={() => setIsLiked(!isLiked)} className={`p-2 rounded-full ${dark ? "hover:bg-gray-700" : "hover:bg-gray-100"}`}>
-          {isLiked ? <FaHeart className="text-red-500 text-xl" /> : <FaRegHeart className={`text-xl ${dark ? "text-gray-300" : "text-gray-600"}`} />}
-        </button>
+        {userId !== data?._id ?  <button onClick={() => setIsLiked(!isLiked)} className={`p-2 rounded-full ${dark ? "hover:bg-gray-700" : "hover:bg-gray-100"}`}>
+          {isLiked ? <FaHeart onClick={handleUnFollow} className="text-red-500 text-xl" /> : <FaRegHeart  onClick={handleFollow} className={`text-xl ${dark ? "text-gray-300" : "text-gray-600"}`} />}
+        </button>  : null}
+       
         <button className={`p-2 rounded-full ${dark ? "hover:bg-gray-700" : "hover:bg-gray-100"}`}>
           <FaShareAlt className={`text-xl ${dark ? "text-gray-300" : "text-gray-600"}`} />
         </button>

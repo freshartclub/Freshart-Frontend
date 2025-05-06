@@ -13,6 +13,7 @@ import ProductInfo from "./ProductInfo";
 import SelectedSection from "./SelectedSection";
 import { MagnifierImage } from "./MagniferImage";
 import ArtworkVisualizer from "./ArtworkVisualizer";
+import MobileArtworkVisualizer from "./MobileArtworkVisualizer";
 
 const DiscoverMore = () => {
   const dark = useAppSelector((state) => state.theme.mode);
@@ -21,7 +22,7 @@ const DiscoverMore = () => {
   const preview = false;
   const [searchParams] = useSearchParams();
   const comingFrom = searchParams.get("comingFrom");
-  const { data, isLoading } = useGetArtWorkById(id, preview, comingFrom);
+  const { data, isLoading, isError } = useGetArtWorkById(id, preview, comingFrom);
   const [safeMode, setSafeMode] = useState("Off");
   const [viewedImages, setViewedImages] = useState({});
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -52,6 +53,8 @@ const DiscoverMore = () => {
   const checkArtworkType = data?.data?.commercialization?.activeTab;
   const offensive = data?.data?.additionalInfo?.offensive === "Yes";
 
+  console.log(offensive)
+  console.log(safeMode)
   const handleViewClick = (id: string) => {
     const newViewedImages = { ...viewedImages, [id]: Date.now() };
     localStorage.setItem("viewedImages", JSON.stringify(newViewedImages));
@@ -100,7 +103,7 @@ const DiscoverMore = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, [currentSlide]);
 
-  if (isLoading) return <Loader />;
+  if (isLoading) return <Loader theme={dark} />;
 
   return (
     <div className={`${dark ? "bg-gray-900 text-gray-100" : "bg-white text-gray-800"}`}>
@@ -181,8 +184,15 @@ const DiscoverMore = () => {
                         autoPlay={currentSlide === index}
                       />
                     ) : (
-                      <div className="relative h-full ">
-                        <MagnifierImage src={`${lowImageUrl}/${slide?.src}`} alt={`Slide ${index + 1}`} isOffensive={offensive} safeMode={safeMode} />
+                      <div className="relative h-full">
+                        
+                        <MagnifierImage
+                          src={`${lowImageUrl}/${slide?.src}`}
+                          alt={`Slide ${index + 1}`}
+                          isOffensive={offensive}
+                          safeMode={safeMode}
+                          enableZoom={index === 0} 
+                        />
                         {offensive && safeMode === "Off" ? (
                           <div
                             onClick={(e) => {
@@ -245,12 +255,15 @@ const DiscoverMore = () => {
         </div>
 
         <ProductInfo data={data} />
-        <ArtworkVisualizer artwork={data} />
-        
+        <ArtworkVisualizer artwork={data} isLoading={isLoading} error={isError} />
+
         <SelectedSection data={data} />
+
       </div>
     </div>
-  );
+
+);
 };
 
-export default DiscoverMore;
+export default DiscoverMore
+      

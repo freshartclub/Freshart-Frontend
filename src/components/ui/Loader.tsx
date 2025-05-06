@@ -2,22 +2,22 @@ const Loader = ({ theme }) => {
   // Define color classes based on theme
   const colors = theme 
     ? [
-        "bg-[#4c86f9]",  // first-color light
-        "bg-[#49a84c]",  // second-color light
-        "bg-[#f6bb02]",  // third-color light
-        "bg-[#f6bb02]",  // fourth-color light
-        "bg-[#2196f3]",  // fifth-color light
+        "bg-[#4c86f9]",  
+        "bg-[#49a84c]",  
+        "bg-[#f6bb02]", 
+        "bg-[#f6bb02]",  
+        "bg-[#2196f3]",  
       ]
     : [
-        "bg-[#8ab4f8]",  // first-color dark
-        "bg-[#81c784]",  // second-color dark
-        "bg-[#ffd54f]",  // third-color dark
-        "bg-[#ffd54f]",  // fourth-color dark
-        "bg-[#64b5f6]",  // fifth-color dark
+        "bg-[#8ab4f8]", 
+        "bg-[#81c784]",  
+        "bg-[#ffd54f]",  
+        "bg-[#ffd54f]",  
+        "bg-[#64b5f6]",  
       ];
 
   return (
-    <div className="flex justify-center items-center w-full h-screen gap-1.5">
+    <div className={`flex justify-center items-center w-full h-screen gap-1.5 ${theme ? "bg-black"  :""}`}>
       {colors.map((color, index) => (
         <span
           key={index}

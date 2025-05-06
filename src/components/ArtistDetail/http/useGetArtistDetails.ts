@@ -2,18 +2,20 @@ import { useQuery } from "@tanstack/react-query";
 import { ARTTIST_ENDPOINTS } from "../../../http/apiEndPoints/Artist";
 import axiosInstance from "../../utils/axios";
 
-export const useGetArtistDetails = (id: string) => {
-  async function fetchData() {
-    const data = await axiosInstance.get(
-      `${ARTTIST_ENDPOINTS.GetSingleArtistDetials}/${id}`
-    );
+export const useGetArtistDetails = (values) => {
+  const fetchData = async () => {
+    const url = values?.userId
+      ? `${ARTTIST_ENDPOINTS.GetSingleArtistDetials}/${values?.id}?userId=${values?.userId}`
+      : `${ARTTIST_ENDPOINTS.GetSingleArtistDetials}/${values?.id}`;
 
-    return data.data;
-  }
+    const response = await axiosInstance.get(url);
+    return response.data;
+  };
 
   return useQuery({
-    queryKey: [ARTTIST_ENDPOINTS.GetSingleArtistDetials, id],
+    queryKey: [ARTTIST_ENDPOINTS.GetSingleArtistDetials, values],
     queryFn: fetchData,
+    
     refetchOnWindowFocus: false,
   });
 };

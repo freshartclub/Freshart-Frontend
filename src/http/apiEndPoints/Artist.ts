@@ -87,8 +87,12 @@ export const ARTTIST_ENDPOINTS = {
 
   getAllUpLoadedImages :  `${ARTIST_BASE_URl}/get-all-images`,
 
+  // Folllow Artist and UnFollow Artist 
 
 
 
+  followArtist :  `${ARTIST_BASE_URl}/follow`,
+
+  unFollowArtist :  `${ARTIST_BASE_URl}/unfollow`,
 
 };

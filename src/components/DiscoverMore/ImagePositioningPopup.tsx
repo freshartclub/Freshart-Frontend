@@ -6,7 +6,7 @@ import { useAppSelector } from '../../store/typedReduxHooks';
 const ImagePositioningPopup = ({ onClose, artwork }) => {
   const dark = useAppSelector((state) => state.theme.mode);
   
-  // State management
+
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
@@ -17,30 +17,29 @@ const ImagePositioningPopup = ({ onClose, artwork }) => {
   const [fullscreenIsDragging, setFullscreenIsDragging] = useState(false);
   const [fullscreenDragStart, setFullscreenDragStart] = useState({ x: 0, y: 0 });
 
-  // Refs
+
   const artworkRef = useRef(null);
   const containerRef = useRef(null);
   const fullscreenContainerRef = useRef(null);
   const fullscreenArtworkRef = useRef(null);
 
-  // Get all uploaded images
   const { data: uploadedImages, isLoading } = useGetAllUploadedImages();
   
-  // Set the first image as selected when data loads
+
   useEffect(() => {
     if (uploadedImages?.data?.length > 0 && !selectedImage) {
       setSelectedImage(uploadedImages.data[0].image);
     }
   }, [uploadedImages, selectedImage]);
 
-  // Initialize image position to center when component mounts or selected image changes
+  
   useEffect(() => {
     if (containerRef.current && artworkRef.current && selectedImage) {
       centerArtwork();
     }
   }, [selectedImage]);
 
-  // Handle ESC key to exit fullscreen
+
   useEffect(() => {
     const handleEscKey = (e) => {
       if (e.key === 'Escape' && fullscreenActive) {
@@ -52,7 +51,7 @@ const ImagePositioningPopup = ({ onClose, artwork }) => {
     return () => window.removeEventListener('keydown', handleEscKey);
   }, [fullscreenActive]);
 
-  // Handle window resize events to keep artwork properly positioned
+
   useEffect(() => {
     const handleResize = () => {
       if (containerRef.current && artworkRef.current && selectedImage) {
@@ -65,7 +64,7 @@ const ImagePositioningPopup = ({ onClose, artwork }) => {
     return () => window.removeEventListener('resize', handleResize);
   }, [selectedImage]);
 
-  // Memoized theme classes
+ 
   const themeClasses = useMemo(() => ({
     modalBg: dark ? 'bg-gray-900' : 'bg-black',
     contentBg: dark ? 'bg-gray-800 text-gray-100' : 'bg-white text-gray-800',
@@ -84,7 +83,7 @@ const ImagePositioningPopup = ({ onClose, artwork }) => {
     hintText: dark ? 'text-gray-300' : 'text-gray-700',
   }), [dark]);
 
-  // Helper functions as callbacks to prevent unnecessary re-renders
+ 
   const centerArtwork = useCallback(() => {
     if (containerRef.current && artworkRef.current) {
       const containerWidth = containerRef.current.clientWidth;
@@ -114,26 +113,28 @@ const ImagePositioningPopup = ({ onClose, artwork }) => {
   
   const toggleFullscreenPreview = useCallback(() => {
     setFullscreenActive(prev => !prev);
-    setFullscreenZoom(1); // Reset zoom when entering fullscreen
+    setFullscreenZoom(1); 
   }, []);
   
   const closeFullscreenPreview = useCallback(() => {
     setFullscreenActive(false);
   }, []);
 
-  // Standard view mouse/touch drag handlers with unified approach for both desktop and mobile
+ 
   const handleDragStart = useCallback((e) => {
     setIsDragging(true);
-    // Handle both mouse and touch events
+   
     const clientX = e.clientX || (e.touches && e.touches[0].clientX);
     const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+
+    console.log(clientX)
     
     setDragStart({
       x: clientX - position.x,
       y: clientY - position.y
     });
     
-    // Prevent default behavior only for touch events to avoid scrolling while dragging
+   
     if (e.touches) {
       e.preventDefault();
     }
@@ -141,21 +142,21 @@ const ImagePositioningPopup = ({ onClose, artwork }) => {
 
   const handleDragMove = useCallback((e) => {
     if (isDragging && containerRef.current && artworkRef.current) {
-      // Handle both mouse and touch events
+     
       const clientX = e.clientX || (e.touches && e.touches[0].clientX);
       const clientY = e.clientY || (e.touches && e.touches[0].clientY);
       
       const containerRect = containerRef.current.getBoundingClientRect();
       const artworkRect = artworkRef.current.getBoundingClientRect();
       
-      // Calculate new position
+      
       let newX = clientX - dragStart.x;
       let newY = clientY - dragStart.y;
       
       const maxX = containerRect.width - artworkRect.width * zoom;
       const maxY = containerRect.height - artworkRect.height * zoom;
       
-      // Apply boundaries
+     
       newX = Math.min(Math.max(newX, maxX < 0 ? maxX : 0), maxX > 0 ? maxX : 0);
       newY = Math.min(Math.max(newY, maxY < 0 ? maxY : 0), maxY > 0 ? maxY : 0);
       
@@ -167,7 +168,7 @@ const ImagePositioningPopup = ({ onClose, artwork }) => {
     setIsDragging(false);
   }, []);
 
-  // Fullscreen drag handlers
+  
   const handleFullscreenDragStart = useCallback((e) => {
     e.stopPropagation(); // Prevent closing fullscreen when dragging starts
     setFullscreenIsDragging(true);
@@ -190,15 +191,15 @@ const ImagePositioningPopup = ({ onClose, artwork }) => {
 
   const handleFullscreenDragMove = useCallback((e) => {
     if (fullscreenIsDragging && fullscreenContainerRef.current) {
-      // Handle both mouse and touch events
+      
       const clientX = e.clientX || (e.touches && e.touches[0].clientX);
       const clientY = e.clientY || (e.touches && e.touches[0].clientY);
       
-      // Calculate new position
+      
       let newX = (clientX - fullscreenDragStart.x) / fullscreenZoom;
       let newY = (clientY - fullscreenDragStart.y) / fullscreenZoom;
       
-      // Update the main position state
+   
       setPosition({ x: newX, y: newY });
     }
   }, [fullscreenIsDragging, fullscreenDragStart, fullscreenZoom]);
@@ -207,7 +208,7 @@ const ImagePositioningPopup = ({ onClose, artwork }) => {
     setFullscreenIsDragging(false);
   }, []);
 
-  // Handle pinch zoom for touch devices
+ 
   useEffect(() => {
     const handleWheel = (e) => {
       e.preventDefault();
@@ -279,7 +280,7 @@ const ImagePositioningPopup = ({ onClose, artwork }) => {
   }, [handleZoomIn, handleZoomOut]);
 
   const handleSave = useCallback(() => {
-    // Here you would save the positioning data
+   
     const positionData = {
       x: position.x,
       y: position.y,
@@ -289,14 +290,11 @@ const ImagePositioningPopup = ({ onClose, artwork }) => {
     };
     
     console.log("Saving position data:", positionData);
-    // Call your API to save the position
-    // savePositionData(positionData).then(() => onClose());
-    
-    // For now, just close
+   
     onClose();
   }, [position, zoom, artwork, selectedImage, onClose]);
 
-  // Create reusable preview button component
+  
   const PreviewButton = useCallback(({ onClick }) => (
     <button
       onClick={onClick}
@@ -310,7 +308,7 @@ const ImagePositioningPopup = ({ onClose, artwork }) => {
     </button>
   ), [themeClasses.modalBg]);
 
-  // Memoized image gallery to prevent unnecessary re-renders
+
   const ImageGallery = useMemo(() => {
     return (
       <div className="mb-4">
@@ -358,7 +356,7 @@ const ImagePositioningPopup = ({ onClose, artwork }) => {
     );
   }, [isLoading, uploadedImages, selectedImage, themeClasses]);
 
-  // Controls component for zooming and resetting
+
   const Controls = useCallback(({ isFullscreen = false }) => {
     const handleZoomInClick = (e) => {
       if (isFullscreen) e.stopPropagation();
@@ -427,10 +425,10 @@ const ImagePositioningPopup = ({ onClose, artwork }) => {
         </div>
        
         <div className="flex-1 flex flex-col md:flex-row p-2 sm:p-4 gap-3 sm:gap-4 overflow-hidden">
-          {/* Left Side - Positioned Artwork */}
+        
           <div 
             ref={containerRef}
-            className={`flex-1 relative border ${themeClasses.containerBg} rounded-lg overflow-hidden min-h-[300px]`}
+            className={`flex-1 relative border ${themeClasses.containerBg} rounded-lg overflow-hidden min-h-[300px] bg-blue-800`}
             onMouseMove={handleDragMove}
             onMouseUp={handleDragEnd}
             onMouseLeave={handleDragEnd}
@@ -455,7 +453,7 @@ const ImagePositioningPopup = ({ onClose, artwork }) => {
                   ref={artworkRef}
                   src={`${imageUrl}/users/${artwork?.data?.media?.mainImage}` || "/api/placeholder/200/200"} 
                   alt="Artwork"
-                  className="absolute cursor-move touch-manipulation"
+                  className="absolute cursor-move touch-manipulation bg-red-200"
                   style={{
                     transform: `translate(${position.x}px, ${position.y}px) scale(${zoom})`,
                     transformOrigin: 'top left',
@@ -478,12 +476,12 @@ const ImagePositioningPopup = ({ onClose, artwork }) => {
             </div>
           </div>
 
-          {/* Right Side - Preview & Image Selection */}
+          
           <div className="flex-1 flex flex-col overflow-hidden">
-            {/* Image Selection Gallery */}
+          
             {ImageGallery}
             
-            {/* Instructions or preview area */}
+      
             <div className={`flex-1 ${themeClasses.secondaryBg} rounded-lg p-3 overflow-y-auto`}>
               <h4 className={`text-lg font-medium ${themeClasses.hintText} mb-2`}>Instructions</h4>
               <ul className={`list-disc pl-5 ${themeClasses.hintText} text-sm`}>
@@ -497,7 +495,7 @@ const ImagePositioningPopup = ({ onClose, artwork }) => {
           </div>
         </div>
 
-        {/* Footer */}
+   
         <div className={`${themeClasses.footerBg} px-3 sm:px-4 py-3 flex justify-end border-t`}>
           <button
             onClick={handleSave}
@@ -508,7 +506,7 @@ const ImagePositioningPopup = ({ onClose, artwork }) => {
         </div>
       </div>
 
-      {/* Fullscreen Preview - Shows both background and positioned artwork */}
+      
       {fullscreenActive && (
         <div 
           className="fixed inset-0 bg-black z-[60] flex items-center justify-center touch-manipulation"
@@ -525,7 +523,7 @@ const ImagePositioningPopup = ({ onClose, artwork }) => {
           aria-label="Fullscreen preview"
         >
           <div className="relative w-full h-full flex items-center justify-center">
-            {/* Background image */}
+        
             {selectedImage && (
               <img 
                 src={`${imageUrl}/users/${selectedImage}` || "/api/placeholder/500/300"}
@@ -539,7 +537,7 @@ const ImagePositioningPopup = ({ onClose, artwork }) => {
               />
             )}
             
-            {/* Overlay artwork in position - with dragging ability */}
+        
             {artwork?.data?.media?.mainImage && (
               <img
                 ref={fullscreenArtworkRef}
@@ -559,7 +557,7 @@ const ImagePositioningPopup = ({ onClose, artwork }) => {
               />
             )}
             
-            {/* Close button */}
+       
             <button
               onClick={(e) => {
                 e.stopPropagation();
@@ -573,7 +571,7 @@ const ImagePositioningPopup = ({ onClose, artwork }) => {
               </svg>
             </button>
 
-            {/* Zoom controls */}
+         
             <Controls isFullscreen={true} />
             
             <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-50 text-white py-2 px-4 rounded-lg text-xs sm:text-sm z-10">

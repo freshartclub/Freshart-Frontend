@@ -25,25 +25,50 @@ const ArtistDashboard = () => {
 
   console.log(data)
 
-  const calculateRemainingDays = () => {
 
-    if (!data?.revaliadtion?.nextRevalidationDate) {
-      return "No revalidation date available";
-    }
-
-    const nextRevalidationDate = new Date(data.revaliadtion.nextRevalidationDate);
+/**
+ * Calculates the number of days remaining until the next revalidation date
+ * @returns {number|string} - Number of days remaining or a descriptive message
+ */
+const calculateRemainingDays = () => {
+  // Check if data exists and has the next revalidation date
+  if (!data?.revaliadtion?.nextRevalidationDate) {
+    return "No revalidation date available";
+  }
   
+  try {
+    // Parse the next revalidation date string to Date object
+    const nextRevalidationDate = new Date(data.revaliadtion.nextRevalidationDate);
+    
+    // Validate the date is valid
+    if (isNaN(nextRevalidationDate.getTime())) {
+      return "Invalid revalidation date";
+    }
+    
+    // Get current date (today)
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-
+    
+    // Calculate difference in milliseconds
     const diffTime = nextRevalidationDate.getTime() - today.getTime();
-
-    const remainingDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    // Handle case where date is in the past
+    if (diffTime < 0) {
+      return "Revalidation date has passed";
+    }
+    
+    // Convert to days (round down to get whole days remaining)
+    const remainingDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
     
     return remainingDays;
-  };
-  
-  const remainingDays = calculateRemainingDays();
+  } catch (error) {
+    console.error("Error calculating remaining days:", error);
+    return "Error calculating remaining days";
+  }
+};
+
+// Example usage:
+const remainingDays = calculateRemainingDays();
 
   const formatRevalidationStatus = (days) => {
     if (typeof days === "string") return days;
