@@ -1,11 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { AiOutlineHome } from "react-icons/ai";
 import { FaToggleOff, FaToggleOn } from "react-icons/fa";
-import { MdArrowForwardIos } from "react-icons/md";
-import { Link, useParams, useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { useAppSelector } from "../../store/typedReduxHooks";
 import Loader from "../ui/Loader";
-import P from "../ui/P";
 import { imageUrl, lowImageUrl } from "../utils/baseUrls";
 import ArtworkVisualizer from "./ArtworkVisualizer";
 import DiscoverContent from "./DiscoverContent";
@@ -80,7 +77,6 @@ const DiscoverMore = () => {
     const currentTime = Date.now();
     const filteredData = {};
     Object.keys(storedData).forEach((key) => {
-      n;
       if (currentTime - storedData[key] < TEN_DAYS_MS) {
         filteredData[key] = storedData[key];
       }
@@ -113,33 +109,15 @@ const DiscoverMore = () => {
 
   return (
     <div className={`${dark ? "bg-gray-900 text-gray-100" : "bg-white text-gray-800"}`}>
-      <div className="lg:mx-6 py-5 mx-3 lg:px-6 px-3 min-h-screen">
-        <ul className={`flex md:p-2 gap-4 text-xl ${dark ? "text-gray-300" : "text-[#2E4053]"} overflow-x-auto w-full mb-5 items-center`}>
-          <li>
-            <Link to="/" className="rounded-md transition-all flex items-center">
-              <AiOutlineHome size={17} className="mr-2 text-[#EE1D52]" />
-              <P variant={{ size: "small", theme: dark ? "light" : "dark", weight: "medium" }} className="text-[#EE1D52]">
-                Home
-              </P>
-            </Link>
-          </li>
-          <MdArrowForwardIos size={10} />
-          <li>
-            <Link
-              to={checkArtworkType === "subscription" ? "/all-artworks?type=subscription" : "/all-artworks?type=purchase"}
-              className="rounded-md transition-all flex"
-            >
-              <P variant={{ size: "small", theme: dark ? "light" : "dark", weight: "medium" }} className="text-[#EE1D52]">
-                {checkArtworkType === "subscription" ? "Subscription" : "Purchase"}
-              </P>
-            </Link>
-          </li>
-          <MdArrowForwardIos size={10} />
-          <P className="min-w-max scrollbar" variant={{ size: "small", theme: dark ? "light" : "dark", weight: "medium" }}>
-            {data?.data.artworkName}
-          </P>
-        </ul>
-
+      <div className="py-5 mx-2 lg:px-6 px-3 min-h-screen">
+        <div className="mb-6">
+          <h1 className={`text-2xl font-bold mb-1 ${dark ? "text-white" : "text-gray-800"}`}>Artwork Detail</h1>
+          <div className={`flex items-center text-sm ${dark ? "text-gray-400" : "text-gray-500"}`}>
+            <span>{checkArtworkType === "subscription" ? "Subscription" : "Purchase"}</span>
+            <span className="mx-2">•</span>
+            <span>{data?.data.artworkName}</span>
+          </div>
+        </div>
         <div className="flex lg:w-[77%] mx-auto md:flex-row flex-col gap-0 lg:gap-5">
           <div
             className={`flex lg:flex-row flex-col md:w-[60%] ${

@@ -9,19 +9,17 @@ import { useAppSelector } from "../../store/typedReduxHooks";
 
 const ArtistDetail = () => {
   const id = useParams().id as string;
-  const userId = useAppSelector((state)=> state.user.user?._id)
+  const userId = useAppSelector((state) => state.user.user?._id);
 
-  const values  = {
+  const values = {
     id,
-    userId
-  }
-
-  console.log(userId)
+    userId,
+  };
 
   const { data, isLoading } = useGetArtistDetails(values);
   const dark = useAppSelector((state) => state.theme.mode);
 
-  if (isLoading) return <Loader />;
+  if (isLoading) return <Loader theme={dark} />;
 
   return (
     <div className={`px-4 py-6 transition-colors duration-300 ${dark ? "bg-gray-900" : "bg-gray-50"}`}>

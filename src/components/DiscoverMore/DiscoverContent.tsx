@@ -1,10 +1,10 @@
-import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import getSymbolFromCurrency from "currency-symbol-map";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { AiFillLike, AiOutlineEye, AiOutlineHeart, AiOutlineLike } from "react-icons/ai";
+import { AiFillLike, AiOutlineLike } from "react-icons/ai";
 import { BsFillQuestionCircleFill } from "react-icons/bs";
-import { FaShareFromSquare } from "react-icons/fa6";
 import { FaCartPlus } from "react-icons/fa";
+import { FaShareFromSquare } from "react-icons/fa6";
 import { IoMdPricetags } from "react-icons/io";
 
 // Custom hooks
@@ -21,45 +21,34 @@ import P from "../ui/P";
 import MakeAnOfferPopUp from "./MakeAnOfferPopUp";
 
 // Assets
-import cart from "./assets/cart.png";
-import mark from "./assets/offer.png";
-import useAddToFavorite from "../HomePage/http/useAddToFavorite";
 import { IoIosAdd, IoIosClose } from "react-icons/io";
+import useAddToFavorite from "../HomePage/http/useAddToFavorite";
 import { useGetFavoriteList } from "../HomePage/http/useGetFavoriteList";
+import mark from "./assets/offer.png";
 
 const DiscoverContent = ({ data }) => {
-  // Theme state
   const dark = useAppSelector((state) => state.theme.mode);
 
-  // API hooks
   const { mutate: addToCartMutation, isPending } = useAddToCartMutation();
   const { data: cartItem } = useGetCartItems();
   const { mutate: likeMutation } = useLikeUnlikeArtworkMutation();
   const { data: likedItems } = useGetLikedItems();
 
-  // Local state
   const [isOfferPopupOpen, setIsOfferPopupOpen] = useState(false);
   const [offerType, setOfferType] = useState("");
 
-  // Memoized values
   const token = useMemo(() => localStorage.getItem("auth_token"), []);
 
   const checkCartItem = useMemo(() => cartItem?.data?.cart?.filter((item) => item?._id === data?._id) || [], [cartItem, data?._id]);
-
   const isInCart = useMemo(() => checkCartItem.length > 0, [checkCartItem]);
-
   const checkWishlist = useMemo(() => likedItems?.likedArtworks?.filter((item) => item?._id === data?._id) || [], [likedItems, data?._id]);
-
   const isInWishlist = useMemo(() => checkWishlist.length > 0, [checkWishlist]);
-
-  const viewCount = useMemo(() => data?.views?.[0]?.count || 0, [data?.views]);
 
   const isCommingSoon = data?.commingSoon === true;
   const hasBasePrice = Boolean(data?.pricing?.basePrice);
   const purchaseType = data?.commercialization?.purchaseType;
   const isSubscription = data?.commercialization?.activeTab === "subscription";
 
-  // Helper functions
   const formatArtistName = (artist) => {
     if (!artist) return "";
 
@@ -67,17 +56,6 @@ const DiscoverContent = ({ data }) => {
     if (artist.artistSurname1) fullName += " " + artist.artistSurname1;
     if (artist.artistSurname2) fullName += " " + artist.artistSurname2;
     return fullName.trim();
-  };
-
-  const formatViewCount = (count) => {
-    if (!count && count !== 0) return "0";
-
-    if (count >= 1000000) {
-      return `${(count / 1000000).toFixed(1)}M`;
-    } else if (count >= 1000) {
-      return `${(count / 1000).toFixed(1)}K`;
-    }
-    return count.toString();
   };
 
   const getPriceDisplay = () => {
@@ -270,7 +248,6 @@ const DiscoverContent = ({ data }) => {
         </div>
       </div>
 
-      {/* Artwork Details */}
       <div className="mt-3 space-y-1">
         <div className="flex gap-2">
           <P className="!text-[13px]" variant={{ size: "small", theme: dark ? "light" : "dark", weight: "medium" }}>
@@ -320,7 +297,7 @@ const DiscoverContent = ({ data }) => {
               fontWeight: "600",
               rounded: "full",
             }}
-            className={`${actionButtonClasses} gap-2`}
+            className={`${actionButtonClasses} gap-2 ${dark ? "hover:bg-gray-200" : "hover:bg-gray-700"}`}
             disabled={isInCart || isCommingSoon}
           >
             <FaCartPlus className={`${dark ? "text-black" : "text-white"}`} />
@@ -446,14 +423,6 @@ const DiscoverContent = ({ data }) => {
             )}
           </div>
         )}
-
-        <div className="flex items-center gap-1 justify-center group transition-all duration-300 hover:scale-105">
-          <AiOutlineEye />
-
-          <span className={`text-sm md:text-base font-medium ${dark ? "text-gray-300" : "text-gray-700"}`}>
-            {formatViewCount(viewCount)} {viewCount === 1 ? "View" : "Views"}
-          </span>
-        </div>
 
         <button aria-label="Like artwork" onClick={handleLikeToggle} className="transition-transform hover:scale-110">
           {isInWishlist ? <AiFillLike size="1.5rem" color="red" /> : <AiOutlineLike size="1.5rem" color={iconColor} />}
