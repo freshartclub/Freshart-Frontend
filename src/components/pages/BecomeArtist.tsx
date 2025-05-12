@@ -36,9 +36,7 @@ const BecomeArtist = () => {
     artistName: Yup.string().required("Artist Name is required"),
     artistSurname1: Yup.string().required("Artist Surname 1 is required"),
     artistSurname2: Yup.string(),
-    email: Yup.string()
-      .email("Invalid email address")
-      .required("Email is required"),
+    email: Yup.string().email("Invalid email address").required("Email is required"),
     phone: Yup.string().required("Phone Number is required"),
     discipline: Yup.string().required("Discipline is required"),
     style: Yup.array().required("Style is required"),
@@ -54,13 +52,11 @@ const BecomeArtist = () => {
   const [isOtpVerify, setIsOtpVerify] = useState(false);
   const [popUp, setPopUp] = useState(false);
 
-  const [countryCode, setCountryCode] = useState("");
   const [validateEmail, setValidateEmail] = useState("Verify Email");
   const [validatePhone, setValidatePhone] = useState("Verify Code");
   const [validateotp, setValidateotp] = useState("Validate Otp");
   const [filterStyle, setFilterStyle] = useState(null);
   const [validateError, setValidateError] = useState("");
-  const [geoLocation, setGeoLocation] = useState(null);
   const [isValidateEmail, setIsValidateEmail] = useState(false);
   const [isValidatePhone, setIsValidatePhone] = useState(false);
 
@@ -93,17 +89,11 @@ const BecomeArtist = () => {
 
   const { mutateAsync, isPending } = useBecomeAnArtistMutation();
   const { mutateAsync: sendMail, isPending: sendMailPending } = useSendOtp();
-  const { mutateAsync: verifyOtp, isPending: verifyOtpPending } =
-    useOtpVerifyMutationBecomeAnArtist();
+  const { mutateAsync: verifyOtp, isPending: verifyOtpPending } = useOtpVerifyMutationBecomeAnArtist();
+  const { mutateAsync: requestOtp, isPending: requestOtpPending } = useGetPhone();
+  const { mutateAsync: verifyPhoneOtp, isPending: verifyPhoneOtpPending } = usePhoneOtpVerify();
 
-  const { mutateAsync: requestOtp, isPending: requestOtpPending } =
-    useGetPhone();
-
-  const { mutateAsync: verifyPhoneOtp, isPending: verifyPhoneOtpPending } =
-    usePhoneOtpVerify();
-
-  const { data: socialMediaPicklist, isLoading: socialMediaPicklistLoading } =
-    useGetSocialMediaPicklist();
+  const { data: socialMediaPicklist, isLoading: socialMediaPicklistLoading } = useGetSocialMediaPicklist();
 
   const { data, isLoading } = useGetDiscipline();
   const { data: styleData } = useGetStyle();
@@ -114,13 +104,9 @@ const BecomeArtist = () => {
   });
 
   const { t } = useTranslation();
-
   const watchDicipline = watch("discipline");
 
-  const GetOutSocialMedia = socialMediaPicklist?.data?.filter(
-    (item) => item.picklistName === "Social Media"
-  );
-
+  const GetOutSocialMedia = socialMediaPicklist?.data?.filter((item) => item.picklistName === "Social Media");
   const user = useAppSelector((state) => state.user.user);
 
   useEffect(() => {
@@ -135,9 +121,7 @@ const BecomeArtist = () => {
       setValue("region", user?.address?.state);
       setValue("country", user?.address?.country);
       setEmail(user?.email);
-      setValidateEmail(
-        user?.isEmailVerified ? "Email Verified" : "Verify Email"
-      );
+      setValidateEmail(user?.isEmailVerified ? "Email Verified" : "Verify Email");
       setIsValidateEmail(user?.isEmailVerified ? true : false);
     }
   }, []);
@@ -161,11 +145,7 @@ const BecomeArtist = () => {
   useEffect(() => {
     if (watchDicipline) {
       const newStyle = styleData?.data?.filter(
-        (item) =>
-          item.discipline &&
-          item.discipline.some((newItem) =>
-            newItem.disciplineName.includes(getValues("discipline"))
-          )
+        (item) => item.discipline && item.discipline.some((newItem) => newItem.disciplineName.includes(getValues("discipline")))
       );
 
       setFilterStyle(newStyle);
@@ -179,12 +159,10 @@ const BecomeArtist = () => {
 
   useEffect(() => {
     if (country && zipCode && zipCode.length > 4) {
-      getCityStateFromZipCountry(country, zipCode, apiKey).then(
-        ({ state, city }) => {
-          setValue("city", city);
-          setValue("region", state);
-        }
-      );
+      getCityStateFromZipCountry(country, zipCode, apiKey).then(({ state, city }) => {
+        setValue("city", city);
+        setValue("region", state);
+      });
     }
   }, [country, zipCode]);
 
@@ -331,86 +309,51 @@ const BecomeArtist = () => {
 
   return (
     <div className="relative">
-      <div
-        className={`${
-          popUp ? "bg-[#F9F7F6] pointer-events-none blur-sm" : "bg-[#F9F7F6]"
-        }`}
-      >
+      <div className={`${popUp ? "bg-[#F9F7F6] pointer-events-none blur-sm" : "bg-[#F9F7F6]"}`}>
         <div className="container mx-auto sm:px-6 px-2">
           <div className="xl:w-[70%] lg:w-[90%] w-full mx-auto pt-4 sm:py-10">
-            <form
-              onSubmit={onSubmit}
-              className="bg-white border border-zinc-300 rounded-lg px-2 sm:px-8 pt-6 pb-8 mb-4"
-            >
-              <Header
-                variant={{ size: "3xl", weight: "bold", theme: "dark" }}
-                className="text-center mb-4"
-              >
+            <form onSubmit={onSubmit} className="bg-white border border-zinc-300 rounded-lg px-2 sm:px-8 pt-6 pb-8 mb-4">
+              <Header variant={{ size: "3xl", weight: "bold", theme: "dark" }} className="text-center mb-4">
                 {t("Become an Artist")}
               </Header>
-              <P
-                variant={{ size: "md", theme: "dark", weight: "normal" }}
-                className="text-sm text-gray-600 mb-8 text-center"
-              >
-                {t(
-                  "Please fill the form below to become an artist. Feel free to add as much detail as needed. Our admin will contact you."
-                )}
+              <P variant={{ size: "md", theme: "dark", weight: "normal" }} className="text-sm text-gray-600 mb-8 text-center">
+                {t("Please fill the form below to become an artist. Feel free to add as much detail as needed. Our admin will contact you.")}
               </P>
 
               <div className="flex sm:flex-row flex-col justify-between">
                 <div className="mb-4 sm:w-[32%] w-full">
-                  <label className="block text-gray-700 text-sm font-bold mb-2">
-                    {t("Artist Name")} *
-                  </label>
+                  <label className="block text-gray-700 text-sm font-bold mb-2">{t("Artist Name")} *</label>
                   <input
                     {...register("artistName")}
                     className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
                     placeholder={t("Enter Artist Name")}
                   />
-                  {errors.artistName && (
-                    <span className="text-red-500 text-xs">
-                      {t(`${errors.artistName.message}`)}
-                    </span>
-                  )}
+                  {errors.artistName && <span className="text-red-500 text-xs">{t(`${errors.artistName.message}`)}</span>}
                 </div>
                 <div className="mb-4 sm:w-[32%] w-full">
-                  <label className="block text-gray-700 text-sm font-bold mb-2">
-                    {t("Artist Surname 1")}
-                  </label>
+                  <label className="block text-gray-700 text-sm font-bold mb-2">{t("Artist Surname 1")}</label>
                   <input
                     {...register("artistSurname1")}
                     className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
                     placeholder={t("Enter Artist Surname 1")}
                   />
-                  {errors.artistSurname1 && (
-                    <span className="text-red-500 text-xs">
-                      {t(`${errors.artistSurname1.message}`)}
-                    </span>
-                  )}
+                  {errors.artistSurname1 && <span className="text-red-500 text-xs">{t(`${errors.artistSurname1.message}`)}</span>}
                 </div>
 
                 <div className="mb-4 sm:w-[32%] w-full">
-                  <label className="block text-gray-700 text-sm font-bold mb-2">
-                    {t("Artist Surname 2")}
-                  </label>
+                  <label className="block text-gray-700 text-sm font-bold mb-2">{t("Artist Surname 2")}</label>
                   <input
                     {...register("artistSurname2")}
                     className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
                     placeholder={t("Enter Artist Surname 2")}
                   />
-                  {errors.artistSurname2 && (
-                    <span className="text-red-500 text-xs">
-                      {t(`${errors.artistSurname2.message}`)}
-                    </span>
-                  )}
+                  {errors.artistSurname2 && <span className="text-red-500 text-xs">{t(`${errors.artistSurname2.message}`)}</span>}
                 </div>
               </div>
 
               <div className="flex sm:flex-row flex-col justify-between w-full">
                 <div className="sm:mb-4 mb-2 w-full">
-                  <label className="block text-gray-700 text-sm font-bold mb-2">
-                    {t("Email")} *
-                  </label>
+                  <label className="block text-gray-700 text-sm font-bold mb-2">{t("Email")} *</label>
 
                   <div className="flex w-full sm:flex-row flex-col gap-2">
                     <input
@@ -436,19 +379,13 @@ const BecomeArtist = () => {
                     />
                   </div>
 
-                  {errors.email && (
-                    <span className="text-red-500 text-xs">
-                      {t(`${errors.email.message}`)}
-                    </span>
-                  )}
+                  {errors.email && <span className="text-red-500 text-xs">{t(`${errors.email.message}`)}</span>}
                 </div>
               </div>
 
               <div className="mb-4 w-full">
                 <div className="sm:mb-4 mb-2 w-full">
-                  <label className="block text-gray-700 text-sm font-bold mb-2">
-                    {t("Phone Number")} *
-                  </label>
+                  <label className="block text-gray-700 text-sm font-bold mb-2">{t("Phone Number")} *</label>
                   <div className="flex sm:flex-row flex-col w-full gap-2">
                     <PhoneInput
                       className="appearance-none  outline-none rounded w-full text-gray-700 leading-tight focus:outline-none"
@@ -478,19 +415,13 @@ const BecomeArtist = () => {
                     />
                   </div>
 
-                  {errors.phone && (
-                    <span className="text-red-500 text-xs">
-                      {t(`${errors.phone.message}`)}
-                    </span>
-                  )}
+                  {errors.phone && <span className="text-red-500 text-xs">{t(`${errors.phone.message}`)}</span>}
                 </div>
               </div>
 
               <div className="flex sm:flex-row flex-col justify-between">
                 <div className="mb-4 sm:w-[49%] w-full">
-                  <label className="block text-gray-700 text-sm font-bold mb-2">
-                    {t("Discipline")} *
-                  </label>
+                  <label className="block text-gray-700 text-sm font-bold mb-2">{t("Discipline")} *</label>
                   <select
                     {...register("discipline")}
                     className="block appearance-none w-full bg-white border px-4 py-3 pr-8 rounded leading-tight focus:outline-none"
@@ -504,17 +435,11 @@ const BecomeArtist = () => {
                           </option>
                         ))}
                   </select>
-                  {errors.discipline && (
-                    <span className="text-red-500 text-xs">
-                      {t(`${errors.discipline.message}`)}
-                    </span>
-                  )}
+                  {errors.discipline && <span className="text-red-500 text-xs">{t(`${errors.discipline.message}`)}</span>}
                 </div>
 
                 <div className="sm:mb-4 mb-2 sm:w-[49%] w-full">
-                  <label className="block text-gray-700 text-sm font-bold mb-2">
-                    {t("Style")} *
-                  </label>
+                  <label className="block text-gray-700 text-sm font-bold mb-2">{t("Style")} *</label>
 
                   <Controller
                     name="style"
@@ -534,89 +459,53 @@ const BecomeArtist = () => {
                     )}
                   />
 
-                  {errors.style && (
-                    <span className="text-red-500 text-xs">
-                      {t(`${errors.style.message}`)}
-                    </span>
-                  )}
+                  {errors.style && <span className="text-red-500 text-xs">{t(`${errors.style.message}`)}</span>}
                 </div>
               </div>
 
               <div className="mb-4 w-full">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
-                  {t("Country")} *
-                </label>
+                <label className="block text-gray-700 text-sm font-bold mb-2">{t("Country")} *</label>
 
-                <CustomDropdown
-                  control={control}
-                  countryValue={countryValue}
-                  options={options}
-                  name="country"
-                  isActiveStatus="active"
-                />
+                <CustomDropdown control={control} countryValue={countryValue} options={options} name="country" isActiveStatus="active" />
 
-                {errors.value && (
-                  <span className="text-red-500 text-xs">
-                    {t(`${errors.value.message}`)}
-                  </span>
-                )}
+                {errors.value && <span className="text-red-500 text-xs">{t(`${errors.value.message}`)}</span>}
               </div>
 
               <div className="flex sm:flex-row flex-col justify-between">
                 <div className="mb-4 sm:w-[32%] w-full">
-                  <label className="block text-gray-700 text-sm font-bold mb-2">
-                    {t("Zip Code")} *
-                  </label>
+                  <label className="block text-gray-700 text-sm font-bold mb-2">{t("Zip Code")} *</label>
                   <input
                     {...register("zipCode")}
                     className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
                     placeholder={t("Enter Zip Code")}
                   />
-                  {errors.zipCode && (
-                    <span className="text-red-500 text-xs">
-                      {t(`${errors.zipCode.message}`)}
-                    </span>
-                  )}
+                  {errors.zipCode && <span className="text-red-500 text-xs">{t(`${errors.zipCode.message}`)}</span>}
                 </div>
 
                 <div className="mb-4 sm:w-[32%] w-full">
-                  <label className="block text-gray-700 text-sm font-bold mb-2">
-                    {t("City")} *
-                  </label>
+                  <label className="block text-gray-700 text-sm font-bold mb-2">{t("City")} *</label>
                   <input
                     {...register("city")}
                     className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
                     placeholder={t("Enter City")}
                   />
-                  {errors.city && (
-                    <span className="text-red-500 text-xs">
-                      {t(`${errors.city.message}`)}
-                    </span>
-                  )}
+                  {errors.city && <span className="text-red-500 text-xs">{t(`${errors.city.message}`)}</span>}
                 </div>
 
                 <div className="mb-4 sm:w-[32%] w-full">
-                  <label className="block text-gray-700 text-sm font-bold mb-2">
-                    {t("Region")} *
-                  </label>
+                  <label className="block text-gray-700 text-sm font-bold mb-2">{t("Region")} *</label>
                   <input
                     {...register("region")}
                     className="appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none"
                     placeholder={t("Enter Region")}
                   />
-                  {errors.region && (
-                    <span className="text-red-500 text-xs">
-                      {t(`${errors.region.message}`)}
-                    </span>
-                  )}
+                  {errors.region && <span className="text-red-500 text-xs">{t(`${errors.region.message}`)}</span>}
                 </div>
               </div>
 
               <div className="flex sm:flex-row flex-col justify-between">
                 <div className="sm:mb-4 mb-2 sm:w-[49%] w-full">
-                  <label className="block text-gray-700 text-sm font-bold mb-2">
-                    {t("Social Media Reference")}
-                  </label>
+                  <label className="block text-gray-700 text-sm font-bold mb-2">{t("Social Media Reference")}</label>
                   <select
                     {...register("socialMedia")}
                     className="block appearance-none w-full bg-white border px-4 py-3 pr-8 rounded leading-tight focus:outline-none"
@@ -632,17 +521,11 @@ const BecomeArtist = () => {
                       ))
                     )}
                   </select>
-                  {errors.socialMedia && (
-                    <span className="text-red-500 text-xs">
-                      {t(`${errors.socialMedia.message}`)}
-                    </span>
-                  )}
+                  {errors.socialMedia && <span className="text-red-500 text-xs">{t(`${errors.socialMedia.message}`)}</span>}
                 </div>
 
                 <div className="mb-4 sm:w-[49%] w-full">
-                  <label className="block text-gray-700 text-sm font-bold mb-2">
-                    {t("URL")}
-                  </label>
+                  <label className="block text-gray-700 text-sm font-bold mb-2">{t("URL")}</label>
                   <input
                     {...register("website", {
                       required: t("Website URL is required"),
@@ -652,17 +535,13 @@ const BecomeArtist = () => {
                     placeholder="https://www.example.com"
                   />
 
-                  <span className="text-red-500 text-xs">
-                    {validateError && t(validateError)}
-                  </span>
+                  <span className="text-red-500 text-xs">{validateError && t(validateError)}</span>
                 </div>
               </div>
 
               {referralCode ? (
                 <div className="mb-4 w-full">
-                  <label className="block text-gray-700 text-sm font-bold mb-2">
-                    {t("Referral Code")}
-                  </label>
+                  <label className="block text-gray-700 text-sm font-bold mb-2">{t("Referral Code")}</label>
                   <input
                     readOnly
                     value={referralCode}
@@ -676,9 +555,7 @@ const BecomeArtist = () => {
                   <div className="flex justify-center items-center">
                     <img src={browser} alt="browse-icon" />
                   </div>
-                  <label className="block text-gray-700 sm:text-xl text-lg font-bold mb-2 text-center ">
-                    {t("Upload Your CV Here")} *
-                  </label>
+                  <label className="block text-gray-700 sm:text-xl text-lg font-bold mb-2 text-center ">{t("Upload Your CV Here")} *</label>
                   <input
                     {...register("uploadDocs", { required: true })}
                     type="file"
@@ -689,21 +566,12 @@ const BecomeArtist = () => {
                     }}
                     id="file-upload"
                   />
-                  <p className="text-gray-600 sm:text-md text-base mt-4">
-                    {t("PDF, DOC, and Excel formats, up to 5MB")}
-                  </p>
-                  {errors.uploadDocs && (
-                    <span className="text-red-500 text-xs">
-                      {t(`${errors.uploadDocs.message}`)}
-                    </span>
-                  )}
+                  <p className="text-gray-600 sm:text-md text-base mt-4">{t("PDF, DOC, and Excel formats, up to 5MB")}</p>
+                  {errors.uploadDocs && <span className="text-red-500 text-xs">{t(`${errors.uploadDocs.message}`)}</span>}
                 </div>
               </div>
               <div className="flex items-center justify-end gap-2">
-                <button
-                  className="px-5 py-3 max-[430px]:w-full bg-black text-white rounded-md font-bold text-sm"
-                  type="submit"
-                >
+                <button className="px-5 py-3 max-[430px]:w-full bg-black text-white rounded-md font-bold text-sm" type="submit">
                   {isPending ? t("Loading...") : t("Submit")}
                 </button>
               </div>

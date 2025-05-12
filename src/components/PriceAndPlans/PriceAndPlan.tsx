@@ -23,9 +23,11 @@ const PriceAndPlan = () => {
   const [showCreditCardForm, setShowCreditCardForm] = useState(false);
   const [showAddress, setShowAddress] = useState(false);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
-  const [showInput, setShowInput] = useState(false);
+  const [showSubscribeConfirm, setShowSubscribeConfirm] = useState(false);
   const [userNum, setUserNum] = useState("");
   const [billingCycle, setBillingCycle] = useState("monthly");
+
+  const [toPhoneVerify, setToPhoneVerify] = useState(false);
 
   const navigate = useNavigate();
   const { data, isLoading } = useGetAllPlans();
@@ -115,9 +117,9 @@ const PriceAndPlan = () => {
 
     againMutateAsync(input).then(() => {
       setUserNum("");
-      setShowInput(false);
       setIsConfirmationOpen(false);
-      window.location.reload();
+      setShowSubscribeConfirm(false);
+      navigate("/my_plans");
     });
   };
 
@@ -277,7 +279,7 @@ const PriceAndPlan = () => {
                       }`}
                       onClick={() => openConfirmation(defaultPlan)}
                     >
-                      {t("Get Started")}
+                      {checkRef?.status == "active" ? t("Add Plan") : t("Get Started")}
                     </button>
                   </div>
                 );
@@ -390,61 +392,56 @@ const PriceAndPlan = () => {
                   </div>
                 )}
 
-                {showInput ? (
+                <div className="mt-6 flex justify-end space-x-3">
                   <button
-                    onClick={handleSubscribe}
-                    className="w-full px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 transition-colors duration-200"
+                    onClick={closeConfirmation}
+                    className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors duration-200"
                   >
-                    Subscribe
+                    Cancel
                   </button>
-                ) : (
-                  <div className="mt-6 flex justify-end space-x-3">
+                  {checkRef.data == false ? (
                     <button
-                      onClick={closeConfirmation}
-                      className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                      onClick={() => {
+                        closeConfirmation();
+                        setShowAddress(true);
+                      }}
+                      className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 transition-colors duration-200 flex items-center"
                     >
-                      Cancel
+                      Add Payer
                     </button>
-                    {checkRef.data == false ? (
-                      <button
-                        onClick={() => {
-                          closeConfirmation();
-                          setShowAddress(true);
-                        }}
-                        className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 transition-colors duration-200 flex items-center"
-                      >
-                        Add Payer
-                      </button>
-                    ) : checkRef?.store == true ? (
-                      <button
-                        onClick={() => {
-                          setShowInput(true);
-                        }}
-                        className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 transition-colors duration-200 flex items-center"
-                      >
-                        Subscribe To Plan
-                      </button>
-                    ) : checkRef?.prev_saved == true && checkRef?.store == false ? (
-                      <span
-                        onClick={() => navigate("/my_card")}
-                        className="px-4 py-2 bg-black cursor-pointer text-white rounded-md hover:bg-gray-800 transition-colors duration-200 flex items-center"
-                      >
-                        Add Payment Method
-                      </span>
-                    ) : (
-                      <button
-                        onClick={() => {
-                          closeConfirmation();
+                  ) : checkRef?.store == true ? (
+                    <button
+                      onClick={() => {
+                        setShowSubscribeConfirm(true);
+                      }}
+                      className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 transition-colors duration-200 flex items-center"
+                    >
+                      Subscribe To Plan
+                    </button>
+                  ) : checkRef?.prev_saved == true && checkRef?.store == false ? (
+                    <span
+                      onClick={() => navigate("/my_card")}
+                      className="px-4 py-2 bg-black cursor-pointer text-white rounded-md hover:bg-gray-800 transition-colors duration-200 flex items-center"
+                    >
+                      Add Payment Method
+                    </span>
+                  ) : (
+                    <button
+                      onClick={() => {
+                        closeConfirmation();
+                        if (checkRef?.isVerified == true) {
                           setShowCreditCardForm(true);
-                        }}
-                        className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 transition-colors duration-200 flex items-center"
-                      >
-                        <FiCheck className="w-4 h-4 mr-2" />
-                        Create & Proceed to Payment
-                      </button>
-                    )}
-                  </div>
-                )}
+                        } else {
+                          setToPhoneVerify(true);
+                        }
+                      }}
+                      className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 transition-colors duration-200 flex items-center"
+                    >
+                      <FiCheck className="w-4 h-4 mr-2" />
+                      Create & Proceed to Payment
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -452,7 +449,12 @@ const PriceAndPlan = () => {
 
         {showCreditCardForm && (
           <CreditCardForm
-            onClose={() => setShowCreditCardForm(false)}
+            onClose={() => {
+              setShowCreditCardForm(false);
+              setShowOtpModal(false);
+              setOtpSent(false);
+              setOtp("");
+            }}
             isSaved={false}
             planId={selectedPlan._id}
             isPending={isPending}
@@ -460,12 +462,60 @@ const PriceAndPlan = () => {
             onSubmit={(cardDetails) => {
               mutateAsync(cardDetails).then(() => {
                 setShowCreditCardForm(false);
-                window.location.reload();
+                navigate("/my_plans");
               });
             }}
           />
         )}
-        {showAddress && <AddAddress onClose={() => setShowAddress(false)} data={checkRef?.billing ? checkRef.billing : null} />}
+        {showSubscribeConfirm && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
+            <div className="bg-white rounded-xl shadow-xl w-full max-w-md max-h-[95vh] overflow-y-auto scrollbar mx-4">
+              <div className="p-6">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-xl font-bold text-gray-900">Confirm Subscription</h2>
+                  <button onClick={() => setShowSubscribeConfirm(false)} className="text-gray-500 hover:text-gray-700 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+
+                <div className="space-y-4">
+                  <p className="text-gray-700">
+                    Are you sure you want to subscribe to <span className="font-semibold">{selectedPlan?.planName}</span> for $
+                    {getPlanPrice(selectedPlan)} {billingCycle === "yearly" ? "per year" : "per month"}?
+                  </p>
+
+                  <div className="mt-6 flex justify-end space-x-3">
+                    <button
+                      onClick={() => setShowSubscribeConfirm(false)}
+                      className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={() => {
+                        handleSubscribe();
+                        setShowSubscribeConfirm(false);
+                      }}
+                      className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 transition-colors duration-200"
+                    >
+                      {againPending ? "Subscribing..." : "Confirm Subscription"}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        {(showAddress || toPhoneVerify) && (
+          <AddAddress
+            toPhoneVerify={toPhoneVerify}
+            setToPhoneVerify={setToPhoneVerify}
+            onClose={() => setShowAddress(false)}
+            data={checkRef?.billing ? checkRef.billing : null}
+          />
+        )}
       </div>
     </div>
   );

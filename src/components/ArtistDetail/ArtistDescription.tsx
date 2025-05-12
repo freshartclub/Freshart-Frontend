@@ -37,11 +37,9 @@ const ArtistDescription = ({ data, dark }) => {
     setIsFollowing(false);
   };
 
-  console.log(data);
-
   return (
-    <div className={`rounded-xl border ${dark ? "bg-gray-800 border-gray-600" : "bg-white border-zinc-300"} shadow-md p-3`}>
-      <div className="flex justify-end items-center gap-4 mb-2">
+    <div className={`rounded-xl border ${dark ? "bg-gray-800 border-gray-600" : "bg-white border-zinc-300"} p-3`}>
+      <div className="flex overflow-x-auto scrollbar sm:justify-end items-center gap-4 mb-2">
         {userId !== data?.artist?._id ? (
           <button
             onClick={isFollowing ? handleUnFollow : handleFollow}
@@ -69,7 +67,7 @@ const ArtistDescription = ({ data, dark }) => {
 
         <button
           onClick={redirectToCircle}
-          className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium ${
+          className={`flex whitespace-nowrap items-center gap-2 px-4 py-2 rounded-full text-sm font-medium ${
             dark ? "bg-[#EE1D52] text-white hover:bg-[#d81b4a]" : "bg-[#EE1D52] text-white hover:bg-[#d81b4a]"
           }`}
         >

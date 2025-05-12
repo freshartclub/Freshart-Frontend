@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { FaToggleOff, FaToggleOn } from "react-icons/fa";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useAppSelector } from "../../store/typedReduxHooks";
 import Loader from "../ui/Loader";
 import { imageUrl, lowImageUrl } from "../utils/baseUrls";
@@ -14,6 +14,7 @@ import SelectedSection from "./SelectedSection";
 const DiscoverMore = () => {
   const dark = useAppSelector((state) => state.theme.mode);
   const user = useAppSelector((state) => state.user.user);
+  const navigate = useNavigate();
 
   const TEN_DAYS_MS = 10 * 24 * 60 * 60 * 1000;
   const { id } = useParams() as { id: string };
@@ -113,19 +114,25 @@ const DiscoverMore = () => {
         <div className="mb-6">
           <h1 className={`text-2xl font-bold mb-1 ${dark ? "text-white" : "text-gray-800"}`}>Artwork Detail</h1>
           <div className={`flex items-center text-sm ${dark ? "text-gray-400" : "text-gray-500"}`}>
-            <span>{checkArtworkType === "subscription" ? "Subscription" : "Purchase"}</span>
+            <span className="hover:underline cursor-pointer" onClick={() => navigate("/")}>
+              Home
+            </span>
+            <span className="mx-2">•</span>
+            <span className="hover:underline cursor-pointer" onClick={() => navigate(`/all-artworks?type=${checkArtworkType}`)}>
+              {checkArtworkType === "subscription" ? "Subscription" : "Purchase"}
+            </span>
             <span className="mx-2">•</span>
             <span>{data?.data.artworkName}</span>
           </div>
         </div>
-        <div className="flex lg:w-[77%] mx-auto md:flex-row flex-col gap-0 lg:gap-5">
+        <div className="flex lg:w-[70%] mx-auto md:flex-row flex-col gap-0 md:gap-10">
           <div
-            className={`flex lg:flex-row flex-col md:w-[60%] ${
+            className={`flex md:flex-row flex-col md:h-[300px] py-2 md:w-[60%] ${
               dark ? "border-gray-700 bg-gray-800" : "border-zinc-300 bg-white"
             } rounded-lg shadow-md overflow-hidden w-full gap-2 items-center`}
           >
             <div
-              className={`flex lg:flex-col lg:h-[60vh] h-[4rem] w-full lg:w-[17%] overflow-x-auto lg:overflow-y-auto gap-2 lg:pl-2 scrollbar ${
+              className={`flex md:flex-col lg:px-0 px-2 md:h-[280px] w-full md:w-[17%] overflow-x-auto lg:overflow-y-auto gap-2 lg:pl-2 scrollbar ${
                 dark ? "bg-gray-800" : "bg-zinc-100"
               }`}
             >
@@ -135,7 +142,7 @@ const DiscoverMore = () => {
                   <div
                     key={index}
                     onClick={() => handleThumbnailClick(index)}
-                    className={`flex-shrink-0 cursor-pointer ${
+                    className={`flex-shrink-0 w-[4rem] h-[4rem] overflow-hidden cursor-pointer ${
                       currentSlide === index ? (dark ? "border-2 border-blue-400" : "border-2 border-blue-500") : ""
                     } rounded-lg`}
                   >
@@ -144,7 +151,7 @@ const DiscoverMore = () => {
                         src={`${imageUrl}/videos/${thumb?.src}`}
                         className={`${
                           offensive && safeMode === "Off" ? "blur-md brightness-75" : ""
-                        } lg:w-full w-16 h-16 lg:h-20 object-cover rounded`}
+                        } lg:w-full w-[4rem] h-[4rem] object-cover rounded`}
                       />
                     ) : (
                       <img
@@ -152,7 +159,7 @@ const DiscoverMore = () => {
                         alt={thumb.alt}
                         className={`${
                           offensive && safeMode === "Off" ? "blur-md brightness-75" : ""
-                        } lg:w-full w-16 h-16 lg:h-20 object-cover rounded`}
+                        } lg:w-full w-[4rem] h-[4rem] object-cover rounded`}
                       />
                     )}
                   </div>
@@ -160,21 +167,23 @@ const DiscoverMore = () => {
               })}
             </div>
 
-            <div ref={sliderContainerRef} className="flex-1 lg:w-[80%] lg:h-[22rem] w-full overflow-hidden relative">
+            <div ref={sliderContainerRef} className="flex-1 lg:w-[80%] md:h-[280px] h-[350px] w-full overflow-hidden relative">
               <div ref={sliderRef} className="flex transition-transform duration-300 ease-in-out h-full">
                 {images.map((slide, index) => (
-                  <div key={index} className="w-full flex-shrink-0">
+                  <div key={index} className="w-full flex-shrink-0 h-full">
                     {slide.src.endsWith(".mp4") ? (
-                      <video
-                        src={`${imageUrl}/videos/${slide?.src}`}
-                        className={`${
-                          offensive && safeMode === "Off" ? "blur-lg brightness-75" : ""
-                        } shadow rounded-l mx-auto object-cover w-full h-[20rem] md:h-[60vh] lg:h-[22rem]`}
-                        controls
-                        autoPlay={currentSlide === index}
-                      />
+                      <div className="h-full flex items-center justify-center bg-black">
+                        <video
+                          src={`${imageUrl}/videos/${slide?.src}`}
+                          className={`${
+                            offensive && safeMode === "Off" ? "blur-lg brightness-75" : ""
+                          } shadow rounded-l mx-auto object-contain max-h-full max-w-full`}
+                          controls
+                          autoPlay={currentSlide === index}
+                        />
+                      </div>
                     ) : (
-                      <div className="relative h-full">
+                      <div className="relative h-full flex items-center justify-center">
                         <MagnifierImage
                           src={`${lowImageUrl}/${slide?.src}`}
                           alt={`Slide ${index + 1}`}
@@ -242,7 +251,7 @@ const DiscoverMore = () => {
             </div>
           </div>
 
-          <div className="md:w-[40%] lg:mt-0 md:mt-[5rem] w-full">
+          <div className="md:w-[40%] md:mt-0 mt-4 w-full">
             <DiscoverContent data={data?.data} />
           </div>
         </div>

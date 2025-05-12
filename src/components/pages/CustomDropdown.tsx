@@ -2,13 +2,7 @@ import { useEffect, useState } from "react";
 import { Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
-const CustomDropdown = ({
-  options,
-  control,
-  countryValue,
-  name,
-  isActiveStatus,
-}) => {
+const CustomDropdown = ({ options, control, countryValue, name, isActiveStatus, dark }) => {
   const [selectedValue, setSelectedValue] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -16,9 +10,7 @@ const CustomDropdown = ({
 
   useEffect(() => {
     if (countryValue) {
-      const prefilledOption = options.data.find(
-        (item) => item.label.toLowerCase() === countryValue.toLowerCase()
-      );
+      const prefilledOption = options.data.find((item) => item.label.toLowerCase() === countryValue.toLowerCase());
       setSelectedValue(prefilledOption);
     }
   }, [countryValue, options]);
@@ -31,9 +23,7 @@ const CustomDropdown = ({
     setIsOpen(false);
   };
 
-  const filteredOptions = options.data.filter((item) =>
-    item.label.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredOptions = options.data.filter((item) => item.label.toLowerCase().includes(searchTerm.toLowerCase()));
 
   return (
     <div className="relative inline-block w-full">
@@ -46,10 +36,8 @@ const CustomDropdown = ({
               onClick={toggleDropdown}
               type="button"
               className={`flex items-center w-full px-4 py-2 text-gray-700 rounded-md border ${
-                isActiveStatus !== "active"
-                  ? " pointer-events-none bg-gray-100"
-                  : ""
-              } focus:outline-none`}
+                isActiveStatus !== "active" ? " pointer-events-none bg-gray-100" : ""
+              } ${dark ? "border-gray-600 bg-gray-700" : "border-gray-300"} focus:outline-none`}
               {...field}
             >
               {selectedValue ? (
@@ -60,7 +48,7 @@ const CustomDropdown = ({
                     className="w-5 h-3.5 mr-2"
                   />
 
-                  <span>{selectedValue.label}</span>
+                  <span className={dark ? "text-white" : "text-black"}>{selectedValue.label}</span>
                 </>
               ) : (
                 <span>{t("Select")}</span>
@@ -86,11 +74,7 @@ const CustomDropdown = ({
                       field.onChange(item.label);
                     }}
                   >
-                    <img
-                      src={`https://flagcdn.com/w320/${item.value.toLowerCase()}.png`}
-                      alt={item.label}
-                      className="w-5 h-3.5 mr-2"
-                    />
+                    <img src={`https://flagcdn.com/w320/${item.value.toLowerCase()}.png`} alt={item.label} className="w-5 h-3.5 mr-2" />
                     {item.label}
                   </div>
                 ))}

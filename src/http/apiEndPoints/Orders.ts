@@ -21,7 +21,9 @@ export const ORDERS_ENDPOINTS = {
   setActive: `${ARTIST_ORDER_URl}/active`,
   deleteCard: `${ARTIST_ORDER_URl}/delete`,
   addCard: `${ARTIST_ORDER_URl}/add-new`,
-  cancelSchedule:`${ARTIST_ORDER_URl}/cancel`,
-  checkSubscription:`${ARTIST_ORDER_URl}/check-sub`,
+  cancelSchedule: `${ARTIST_ORDER_URl}/cancel`,
+  checkSubscription: `${ARTIST_ORDER_URl}/check-sub`,
   exchangeArtwork: `${ARTIST_ORDER_URl}/exchange`,
+  sendCode: `${ARTIST_ORDER_URl}/send-otp`,
+  verifyCode: `${ARTIST_ORDER_URl}/verify-otp`,
 };
