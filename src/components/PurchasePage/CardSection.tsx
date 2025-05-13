@@ -158,7 +158,7 @@ const CardSection = ({ data, type, darkMode }) => {
                 }
               }}
               className={`relative rounded-lg cursor-pointer p-2 border ${
-                darkMode ? "bg-gray-800 border-gray-700" : "bg-white"
+                darkMode ? "bg-gray-800 border-gray-600" : "bg-white border-[#e0e1e3]"
               } hover:shadow-md transition-shadow duration-200 w-full group`}
             >
               <div className="relative overflow-hidden rounded-md aspect-[4/3] w-full">

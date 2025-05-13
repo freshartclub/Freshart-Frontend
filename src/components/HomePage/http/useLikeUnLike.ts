@@ -12,16 +12,13 @@ const useLikeUnlikeArtworkMutation = () => {
   const queryClient = useQueryClient();
 
   async function useLikeUnLike(input: LikeUnlikeInput) {
-    return axiosInstance.patch(
-      `${ARTTIST_ENDPOINTS.LikeUnlikeArtwork}/${input.id}`,
-      { action: input.action }
-    );
+    return axiosInstance.patch(`${ARTTIST_ENDPOINTS.LikeUnlikeArtwork}/${input.id}`, { action: input.action });
   }
 
   return useMutation({
     mutationFn: useLikeUnLike,
 
-    onSuccess: async (res, input) => {
+    onSuccess: async (res) => {
       queryClient.invalidateQueries({
         queryKey: [ARTTIST_ENDPOINTS.GetLikedArtWork],
         refetchType: "all",

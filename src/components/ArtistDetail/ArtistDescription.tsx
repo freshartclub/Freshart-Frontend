@@ -1,6 +1,6 @@
 import DOMPurify from "dompurify";
 import { useEffect, useState } from "react";
-import { FaRegHeart, FaHeart, FaShareAlt } from "react-icons/fa";
+import { FaUserPlus, FaUserCheck, FaShareAlt, FaUsers } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 import Header from "../ui/Header";
 import P from "../ui/P";
@@ -13,58 +13,79 @@ import { useAppSelector } from "../../store/typedReduxHooks";
 const ArtistDescription = ({ data, dark }) => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("about");
-  const [isLiked, setIsLiked] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(false);
   const { id } = useParams();
-  const userId = useAppSelector((state)=> state.user.user?._id)
+  const userId = useAppSelector((state) => state.user.user?._id);
 
   const redirectToCircle = () => navigate("/circleblog");
-  const {mutate  } = useArtistFollowMutation()
+  const { mutate } = useArtistFollowMutation();
+  const { mutateAsync } = useArtistUnFollowMutation();
 
-  const {mutateAsync} = useArtistUnFollowMutation()
+  useEffect(() => {
+    if (data?.is_followed) {
+      setIsFollowing(data?.is_followed);
+    }
+  }, [data]);
 
-  useEffect(()=>{
-   if(data?.is_followed){
-    setIsLiked(data?.is_followed)
+  const handleFollow = () => {
+    mutate(id);
+    setIsFollowing(true);
+  };
 
-   }
-  },[data])
-
-  console.log(userId)
-  console.log(data?._id )
-
-  const handleFollow = ()=>{
-    mutate(id)
-  }
-
-  const handleUnFollow = ()=>{
-    mutateAsync(id)
-  }
+  const handleUnFollow = () => {
+    mutateAsync(id);
+    setIsFollowing(false);
+  };
 
   return (
-    <div className={`rounded-xl border ${dark ? "bg-gray-800 border-gray-600" : "bg-white border-zinc-300"} shadow-md p-3`}>
-      <div className="flex justify-end items-center gap-4 mb-2">
-        {userId !== data?._id ?  <button onClick={() => setIsLiked(!isLiked)} className={`p-2 rounded-full ${dark ? "hover:bg-gray-700" : "hover:bg-gray-100"}`}>
-          {isLiked ? <FaHeart onClick={handleUnFollow} className="text-red-500 text-xl" /> : <FaRegHeart  onClick={handleFollow} className={`text-xl ${dark ? "text-gray-300" : "text-gray-600"}`} />}
-        </button>  : null}
-       
-        <button className={`p-2 rounded-full ${dark ? "hover:bg-gray-700" : "hover:bg-gray-100"}`}>
-          <FaShareAlt className={`text-xl ${dark ? "text-gray-300" : "text-gray-600"}`} />
-        </button>
+    <div className={`rounded-xl border ${dark ? "bg-gray-800 border-gray-600" : "bg-white border-zinc-300"} p-3`}>
+      <div className="flex overflow-x-auto scrollbar sm:justify-end items-center gap-4 mb-2">
+        {userId !== data?.artist?._id ? (
+          <button
+            onClick={isFollowing ? handleUnFollow : handleFollow}
+            className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium ${
+              isFollowing
+                ? "bg-gray-200 text-gray-800 hover:bg-gray-300"
+                : dark
+                ? "bg-[#EE1D52] text-white hover:bg-[#d81b4a]"
+                : "bg-[#EE1D52] text-white hover:bg-[#d81b4a]"
+            }`}
+          >
+            {isFollowing ? (
+              <>
+                <FaUserCheck className="text-lg" />
+                Following
+              </>
+            ) : (
+              <>
+                <FaUserPlus className="text-lg" />
+                Follow
+              </>
+            )}
+          </button>
+        ) : null}
+
         <button
           onClick={redirectToCircle}
-          className={`p-2 bg-[#EE1D52] w-[90px] rounded-full text-white text-sm font-semibold ${dark ? "hover:bg-gray-700" : "hover:bg-gray-100"}`}
+          className={`flex whitespace-nowrap items-center gap-2 px-4 py-2 rounded-full text-sm font-medium ${
+            dark ? "bg-[#EE1D52] text-white hover:bg-[#d81b4a]" : "bg-[#EE1D52] text-white hover:bg-[#d81b4a]"
+          }`}
         >
-          Circle
+          <FaUsers className="text-lg" />
+          In Circle
+        </button>
+        <button className={`p-2 rounded-full ${dark ? "hover:bg-gray-700" : "hover:bg-gray-100"}`}>
+          <FaShareAlt className={`text-xl ${dark ? "text-gray-300" : "text-gray-600"}`} />
         </button>
       </div>
 
       <div className="border-b border-gray-200 dark:border-gray-700 mb-6">
-        <nav className="flex space-x-8">
-          {["about", "highlight", "curriculum", "Customorder"].map((tab) => (
+        <nav className="flex overflow-x-auto scrollbar space-x-8">
+          {["about", "highlight", "curriculum", "Custom Order"].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`py-4 px-1 border-b-2 font-medium text-sm ${
+              className={`py-4 whitespace-nowrap px-1 border-b-2 font-medium text-sm ${
                 activeTab === tab
                   ? "border-[#EE1D52] text-[#EE1D52]"
                   : dark
@@ -171,7 +192,7 @@ const ArtistDescription = ({ data, dark }) => {
           </div>
         )}
 
-        {activeTab === "Customorder" && <CustomOrderForm id={data?.artist?._id} dark={dark} />}
+        {activeTab === "Custom Order" && <CustomOrderForm id={data?.artist?._id} dark={dark} />}
       </div>
     </div>
   );

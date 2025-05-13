@@ -162,7 +162,6 @@ const OrderPage = () => {
                   <div className={`flex flex-col sm:flex-row items-center justify-between gap-4 mt-4 p-4 rounded-lg`}>
                     <P
                       variant={{
-                        size: "sm",
                         theme: dark ? "light" : "dark",
                         weight: "normal",
                       }}
