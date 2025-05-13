@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { useAppSelector } from "../../store/typedReduxHooks";
 import Loader from "../ui/Loader";
 import { imageUrl } from "../utils/baseUrls";
@@ -8,9 +8,9 @@ import { useGetCircleDetails } from "./https/useGetCircleDetails";
 
 const CirclePage = () => {
   const [searchParams] = useSearchParams();
-  const id = searchParams.get("id") as string;
-  const isViewed = searchParams.get("isViewed") as string;
+  const id = useParams().id as string;
 
+  const isViewed = searchParams.get("isViewed") as string;
   const dark = useAppSelector((state) => state.theme.mode);
 
   useEffect(() => {
@@ -34,9 +34,7 @@ const CirclePage = () => {
         <img
           src={`${imageUrl}/users/${data?.data?.coverImage}`}
           alt="banner image"
-          className={`w-full h-[40vh] object-cover ${
-            dark ? "opacity-50" : "opacity-75"
-          }`}
+          className={`w-full h-[40vh] object-cover ${dark ? "opacity-50" : "opacity-75"}`}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
       </div>
@@ -46,9 +44,7 @@ const CirclePage = () => {
           <img
             src={`${imageUrl}/users/${data?.data?.mainImage}`}
             alt="profile image"
-            className={`w-32 h-32 sm:w-40 sm:h-40 rounded-full shadow-2xl object-cover border-4 ${
-              dark ? "border-gray-800" : "border-white"
-            }`}
+            className={`w-32 h-32 sm:w-40 sm:h-40 rounded-full shadow-2xl object-cover border-4 ${dark ? "border-gray-800" : "border-white"}`}
           />
         </div>
 

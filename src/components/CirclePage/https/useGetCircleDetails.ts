@@ -9,20 +9,16 @@ export const useGetCircleDetails = (id: string, isViewed: string) => {
   const navigate = useNavigate();
 
   async function fetchCircle() {
-    const { data } = await axiosInstance.get(
-      `${CIRCLE_ENDPOINTS.GetCircleDetails}/${id}?view=${isViewed}`
-    );
-
+    const { data } = await axiosInstance.get(`${CIRCLE_ENDPOINTS.GetCircleDetails}/${id}?view=${isViewed}`);
     return data;
   }
 
   const fetchData = async () => {
     try {
       const res = await fetchCircle();
-
       return res;
     } catch (error) {
-      toast.error(error.response?.data?.message);
+      toast.error(error?.response.data?.message);
       return navigate("/circle");
     }
   };

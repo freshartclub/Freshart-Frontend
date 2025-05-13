@@ -18,16 +18,13 @@ const UserAllCircle: React.FC<UserAllCircleProps> = ({ data, dark }) => {
   const navigate = useNavigate();
   const profile = localStorage.getItem("profile") as "user" | "artist" | null;
 
-  const [followStates, setFollowStates] = useState<Record<string, string>>(
-    () => {
-      const initialStates: Record<string, string> = {};
-      data?.data?.forEach((circle) => {
-        initialStates[circle?._id] =
-          circle?.type === "Private" ? "Request" : "Follow";
-      });
-      return initialStates;
-    }
-  );
+  const [followStates, setFollowStates] = useState<Record<string, string>>(() => {
+    const initialStates: Record<string, string> = {};
+    data?.data?.forEach((circle) => {
+      initialStates[circle?._id] = circle?.type === "Private" ? "Request" : "Follow";
+    });
+    return initialStates;
+  });
 
   const { mutateAsync } = usePostFollowMutation() as {
     mutateAsync: (id: string) => Promise<any>;
@@ -35,25 +32,19 @@ const UserAllCircle: React.FC<UserAllCircleProps> = ({ data, dark }) => {
   };
   const userId = useAppSelector((state) => state.user.user._id) as string;
 
-  const [pendingCircles, setPendingCircles] = useState<Record<string, boolean>>(
-    {}
-  );
+  const [pendingCircles, setPendingCircles] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     if (data?.follow?.user === userId && data?.follow?.circle) {
       const followedCircleIds = data.follow.circle;
-      const requestedCircleIds =
-        data.followRequset?.map((req) => req.circle) || [];
+      const requestedCircleIds = data.followRequset?.map((req) => req.circle) || [];
 
       setFollowStates((prev) => {
         const newStates = { ...prev };
         data?.data?.forEach((circle) => {
           if (followedCircleIds.includes(circle?._id)) {
             newStates[circle?._id] = "Following";
-          } else if (
-            circle?.type === "Private" &&
-            requestedCircleIds.includes(circle?._id)
-          ) {
+          } else if (circle?.type === "Private" && requestedCircleIds.includes(circle?._id)) {
             newStates[circle?._id] = "Requested";
           }
         });
@@ -62,35 +53,28 @@ const UserAllCircle: React.FC<UserAllCircleProps> = ({ data, dark }) => {
     }
   }, [data, userId]);
 
-  const handleCircle = (
-    id: string,
-    type: string,
-    isManager?: boolean
-  ): void => {
+  const handleCircle = (id: string, type: string, isManager?: boolean): void => {
     if (profile === "user") {
       if (type === "Private") {
         if (followStates[id] === "Following" || isManager) {
-          navigate(`/circlepage?id=${encodeURIComponent(id)}&isViewed=see`);
+          navigate(`/circle/${encodeURIComponent(id)}?isViewed=see`);
         } else {
           toast("You can't access private circles.");
           return;
         }
       }
 
-      navigate(`/circlepage?id=${encodeURIComponent(id)}&isViewed=see`);
+      navigate(`/circle/${encodeURIComponent(id)}?isViewed=see`);
     } else if (profile === "artist") {
       if (type === "Private") {
         toast("You can't access private circles.");
         return;
       }
-      navigate(`/circlepage?id=${encodeURIComponent(id)}`);
+      navigate(`/circle/${encodeURIComponent(id)}`);
     }
   };
 
-  const handleFollow = async (
-    e: MouseEvent<HTMLButtonElement>,
-    id: string
-  ): Promise<void> => {
+  const handleFollow = async (e: MouseEvent<HTMLButtonElement>, id: string): Promise<void> => {
     e.stopPropagation();
     const circle = data?.data?.find((circle) => circle?._id === id);
 
@@ -136,11 +120,7 @@ const UserAllCircle: React.FC<UserAllCircleProps> = ({ data, dark }) => {
         {tags.map((tag, index) => (
           <span
             key={index}
-            className={`whitespace-nowrap text-xs px-2 py-1 rounded-full ${
-              dark
-                ? "bg-gray-700 text-[#f84773c9]"
-                : "bg-[#fdedf1] text-[#EE1D52]"
-            }`}
+            className={`whitespace-nowrap text-xs px-2 py-1 rounded-full ${dark ? "bg-gray-700 text-[#f84773c9]" : "bg-[#fdedf1] text-[#EE1D52]"}`}
           >
             #{tag}
           </span>
@@ -159,24 +139,12 @@ const UserAllCircle: React.FC<UserAllCircleProps> = ({ data, dark }) => {
       <div
         onClick={() => handleCircle(circle?._id, circle?.type, isManager)}
         className={`flex flex-col lg:flex-row justify-between border gap-4 p-4 rounded-lg shadow-sm transition-all duration-200 hover:shadow-md ${
-          dark
-            ? "bg-gray-800 border-gray-700 hover:shadow-lg"
-            : "bg-white border-gray-200"
-        } ${
-          circle?.type === "Private" && !isFollowing && !isManager
-            ? "cursor-not-allowed"
-            : "cursor-pointer"
-        }`}
+          dark ? "bg-gray-800 border-gray-700 hover:shadow-lg" : "bg-white border-gray-200"
+        } ${circle?.type === "Private" && !isFollowing && !isManager ? "cursor-not-allowed" : "cursor-pointer"}`}
       >
         <div className="flex-1 flex flex-col gap-3">
           <div className="flex flex-wrap items-center gap-2">
-            <h3
-              className={`text-lg font-semibold ${
-                dark ? "text-white" : "text-gray-900"
-              }`}
-            >
-              {circle?.title}
-            </h3>
+            <h3 className={`text-lg font-semibold ${dark ? "text-white" : "text-gray-900"}`}>{circle?.title}</h3>
 
             <span
               className={`px-2 py-1 text-xs font-semibold rounded-full ${
@@ -211,37 +179,20 @@ const UserAllCircle: React.FC<UserAllCircleProps> = ({ data, dark }) => {
 
           <p className={`text-sm ${dark ? "text-gray-300" : "text-gray-600"}`}>
             {circle?.description
-              ? circle.description.split(" ").slice(0, 25).join(" ") +
-                (circle.description.split(" ").length > 25 ? "..." : "")
+              ? circle.description.split(" ").slice(0, 25).join(" ") + (circle.description.split(" ").length > 25 ? "..." : "")
               : "No description available"}
           </p>
 
           <div className="flex items-center gap-4 mt-2">
-            <div
-              className={`flex items-center gap-1 ${
-                dark ? "text-gray-400" : "text-gray-600"
-              }`}
-            >
+            <div className={`flex items-center gap-1 ${dark ? "text-gray-400" : "text-gray-600"}`}>
               <IoEye className="text-lg" />
-              <span className="text-sm">
-                {formatNumber(circle?.viewCount || 0)}
-              </span>
+              <span className="text-sm">{formatNumber(circle?.viewCount || 0)}</span>
             </div>
-            <div
-              className={`flex items-center gap-1 ${
-                dark ? "text-gray-400" : "text-gray-600"
-              }`}
-            >
+            <div className={`flex items-center gap-1 ${dark ? "text-gray-400" : "text-gray-600"}`}>
               <RiUserFollowFill className="text-lg" />
-              <span className="text-sm">
-                {formatNumber(circle?.followerCount || 0)}
-              </span>
+              <span className="text-sm">{formatNumber(circle?.followerCount || 0)}</span>
             </div>
-            <div
-              className={`flex items-center gap-1 ${
-                dark ? "text-gray-400" : "text-gray-600"
-              }`}
-            >
+            <div className={`flex items-center gap-1 ${dark ? "text-gray-400" : "text-gray-600"}`}>
               <FaShareAlt className="text-lg" />
               <span className="text-sm">5</span>
             </div>
@@ -274,11 +225,7 @@ const UserAllCircle: React.FC<UserAllCircleProps> = ({ data, dark }) => {
           )}
 
           {isManager && (
-            <span
-              className={`px-4 py-2 rounded-md text-sm font-medium ${
-                dark ? "bg-green-700 text-white" : "bg-green-600 text-white"
-              }`}
-            >
+            <span className={`px-4 py-2 rounded-md text-sm font-medium ${dark ? "bg-green-700 text-white" : "bg-green-600 text-white"}`}>
               Manager
             </span>
           )}
@@ -289,8 +236,7 @@ const UserAllCircle: React.FC<UserAllCircleProps> = ({ data, dark }) => {
               src={`${imageUrl}/users/${circle?.mainImage}`}
               alt={circle?.title}
               onError={(e) => {
-                (e.target as HTMLImageElement).src =
-                  "https://via.placeholder.com/200";
+                (e.target as HTMLImageElement).src = "https://via.placeholder.com/200";
               }}
             />
           </div>
@@ -310,18 +256,8 @@ const UserAllCircle: React.FC<UserAllCircleProps> = ({ data, dark }) => {
       )}
 
       {data.data.length === 0 && (
-        <div
-          className={`text-center py-12 rounded-lg ${
-            dark ? "bg-gray-800" : "bg-white"
-          }`}
-        >
-          <h3
-            className={`text-lg font-medium ${
-              dark ? "text-gray-300" : "text-gray-700"
-            }`}
-          >
-            No circles found
-          </h3>
+        <div className={`text-center py-12 rounded-lg ${dark ? "bg-gray-800" : "bg-white"}`}>
+          <h3 className={`text-lg font-medium ${dark ? "text-gray-300" : "text-gray-700"}`}>No circles found</h3>
         </div>
       )}
     </div>

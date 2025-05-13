@@ -8,7 +8,7 @@ const ArtistPublicCircle = ({ data }) => {
   const navigate = useNavigate();
 
   const handleCircle = (id: string) => {
-    navigate(`/artist-panel/circle/detail?id=${encodeURIComponent(id)}`);
+    navigate(`/artist-panel/circle/${encodeURIComponent(id)}`);
   };
 
   const formatNumber = (num) => {

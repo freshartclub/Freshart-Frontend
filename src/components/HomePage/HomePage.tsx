@@ -12,12 +12,13 @@ import { useEffect } from "react";
 
 const HomePage = () => {
   const dark = useAppSelector((state) => state.theme.mode);
+  const isAuthorized = useAppSelector((state) => state.user.isAuthorized);
+
   const navigate = useNavigate();
 
   const profile = localStorage.getItem("profile");
   const { data, isLoading } = useGetHomeData();
 
-  const token = localStorage.getItem("auth_token");
   useEffect(() => {
     if (profile === "artist") {
       navigate("/artist-panel");
@@ -37,7 +38,7 @@ const HomePage = () => {
 
       <HelpSection />
       <ArtistPortfolio data={data} />
-      {token ? <RecentSection /> : null}
+      {isAuthorized ? <RecentSection /> : null}
 
       <FreshArt />
     </div>

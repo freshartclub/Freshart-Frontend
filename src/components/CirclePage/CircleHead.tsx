@@ -5,7 +5,7 @@ import { BiInfoCircle } from "react-icons/bi";
 import { GrUserManager } from "react-icons/gr";
 import { MdOutlinePermIdentity, MdOutlinePhotoLibrary } from "react-icons/md";
 import { RiUserFollowFill } from "react-icons/ri";
-import { useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import usePostFollowMutation from "../CIrcle/https/usePostFollowMutation";
 import Followers from "../Followers/Followers";
 import Requests from "../Followers/Requests";
@@ -21,9 +21,7 @@ interface CircleHeadProps {
 
 const CircleHead = ({ data, dark }: CircleHeadProps) => {
   const [activeTab, setActiveTab] = useState(1);
-  const [searchParams] = useSearchParams();
-  const circleId = searchParams.get("id") as string;
-  const type = data?.data?.type;
+  const circleId = useParams().id as string;
 
   const { mutate, isPending } = useUnfollowMutation();
   const { mutateAsync, isPending: isFollowPending } = usePostFollowMutation();
@@ -35,8 +33,6 @@ const CircleHead = ({ data, dark }: CircleHeadProps) => {
   const handleFollow = () => {
     mutateAsync(circleId);
   };
-
-  console.log(data);
 
   const tabItems = [
     {
@@ -73,16 +69,8 @@ const CircleHead = ({ data, dark }: CircleHeadProps) => {
 
   return (
     <div className="mt-8">
-      <Tabs
-        selectedIndex={activeTab}
-        onSelect={(index) => setActiveTab(index)}
-        className={dark ? "dark" : ""}
-      >
-        <TabList
-          className={`flex flex-wrap gap-2 sm:gap-4 border-b ${
-            dark ? "border-gray-700" : "border-gray-200"
-          }`}
-        >
+      <Tabs selectedIndex={activeTab} onSelect={(index) => setActiveTab(index)} className={dark ? "dark" : ""}>
+        <TabList className={`flex flex-wrap gap-2 sm:gap-4 border-b ${dark ? "border-gray-700" : "border-gray-200"}`}>
           {tabItems.map(
             (item, index) =>
               item.visible && (
@@ -99,9 +87,7 @@ const CircleHead = ({ data, dark }: CircleHeadProps) => {
                   }`}
                 >
                   {item.icon}
-                  <span className="text-sm sm:text-base font-medium">
-                    {item.label}
-                  </span>
+                  <span className="text-sm sm:text-base font-medium">{item.label}</span>
                 </Tab>
               )
           )}
@@ -112,9 +98,7 @@ const CircleHead = ({ data, dark }: CircleHeadProps) => {
                 onClick={handleUnfollow}
                 disabled={isPending}
                 className={`px-4 py-2 rounded-md text-sm font-medium whitespace-nowrap transition-colors ${
-                  dark
-                    ? "bg-red-600 hover:bg-red-700 text-white"
-                    : "bg-red-600 hover:bg-red-700 text-white"
+                  dark ? "bg-red-600 hover:bg-red-700 text-white" : "bg-red-600 hover:bg-red-700 text-white"
                 } ${isPending ? "opacity-70 cursor-not-allowed" : ""}`}
               >
                 {isPending ? "Processing..." : "Unfollow"}
@@ -132,15 +116,8 @@ const CircleHead = ({ data, dark }: CircleHeadProps) => {
           </div>
         </TabList>
 
-        <div
-          className={`p-4 sm:p-6 rounded-b-lg ${
-            dark ? "bg-gray-900" : "bg-white"
-          }`}
-        >
-          {tabItems.map(
-            (item, index) =>
-              item.visible && <TabPanel key={index}>{item.panel}</TabPanel>
-          )}
+        <div className={`p-4 sm:p-6 rounded-b-lg ${dark ? "bg-gray-900" : "bg-white"}`}>
+          {tabItems.map((item, index) => item.visible && <TabPanel key={index}>{item.panel}</TabPanel>)}
         </div>
       </Tabs>
     </div>

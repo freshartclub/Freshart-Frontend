@@ -1,25 +1,7 @@
-import { useState, useMemo, useCallback } from "react";
-import { 
-  AreaChart, 
-  Area, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  Legend, 
-  ResponsiveContainer 
-} from "recharts";
+import { BarChart3, Calendar, Star, TrendingUp, Users } from "lucide-react";
+import { useCallback, useMemo, useState } from "react";
+import { Area, AreaChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { useAppSelector } from "../../../store/typedReduxHooks";
-import { 
-  Moon, 
-  Sun, 
-  TrendingUp, 
-  Users, 
-  Star, 
-  Calendar, 
-  Bookmark, 
-  BarChart3 
-} from "lucide-react";
 
 // Sample data - in production, this would be fetched from an API
 const DASHBOARD_DATA = [
@@ -46,24 +28,19 @@ const TIME_FRAME_OPTIONS = [
   { value: "30days", label: "30 Days" },
   { value: "quarter", label: "Last Quarter" },
   { value: "year", label: "Last Year" },
-  { value: "all", label: "All Time" }
+  { value: "all", label: "All Time" },
 ];
 
 const TREND_METRIC_OPTIONS = [
   { value: "views", label: "Views", icon: <TrendingUp size={16} /> },
   { value: "users", label: "Users", icon: <Users size={16} /> },
   { value: "favorites", label: "Favorites", icon: <Star size={16} /> },
-  { value: "totals", label: "All Metrics", icon: <BarChart3 size={16} /> }
+  { value: "totals", label: "All Metrics", icon: <BarChart3 size={16} /> },
 ];
 
 const StatsCard = ({ title, value, icon, color, isDarkMode }) => {
-  const bgColorClass = isDarkMode 
-    ? 'bg-gray-800 text-gray-100' 
-    : 'bg-blue-50 text-gray-800';
-  
-  const iconColorClass = isDarkMode 
-    ? `text-${color}-400` 
-    : `text-${color}-500`;
+  const bgColorClass = isDarkMode ? "bg-gray-800 text-gray-100" : "bg-blue-50 text-gray-800";
+  const iconColorClass = isDarkMode ? `text-${color}-400` : `text-${color}-500`;
 
   return (
     <div className={`${bgColorClass} p-4 rounded-lg shadow-md flex items-center justify-between transition-all duration-300 hover:shadow-lg`}>
@@ -71,9 +48,7 @@ const StatsCard = ({ title, value, icon, color, isDarkMode }) => {
         <h3 className="text-sm font-medium opacity-75">{title}</h3>
         <p className="text-2xl font-bold">{value.toLocaleString()}</p>
       </div>
-      <div className={iconColorClass}>
-        {icon}
-      </div>
+      <div className={iconColorClass}>{icon}</div>
     </div>
   );
 };
@@ -90,10 +65,10 @@ export default function ArtistDashboardSection() {
   // Filter data based on timeFrame
   const filteredData = useMemo(() => {
     setIsLoading(true);
-    
+
     try {
       const totalItems = DASHBOARD_DATA.length;
-      
+
       switch (timeFrame) {
         case "24hours":
           return [DASHBOARD_DATA[totalItems - 1]];
@@ -122,7 +97,7 @@ export default function ArtistDashboardSection() {
     return {
       views: filteredData.reduce((sum, item) => sum + (item.views || 0), 0),
       users: filteredData.reduce((sum, item) => sum + (item.users || 0), 0),
-      favorites: filteredData.reduce((sum, item) => sum + (item.favorites || 0), 0)
+      favorites: filteredData.reduce((sum, item) => sum + (item.favorites || 0), 0),
     };
   }, [filteredData]);
 
@@ -137,9 +112,7 @@ export default function ArtistDashboardSection() {
   }, []);
 
   // Dynamic classes based on dark mode
-  const containerClass = isDarkMode 
-    ? "bg-gray-900 p-6 rounded-lg shadow-md text-gray-100" 
-    : "bg-white p-6 rounded-lg shadow-md";
+  const containerClass = isDarkMode ? "bg-gray-900 p-6 rounded-lg shadow-md text-gray-100" : "bg-white p-6 rounded-lg shadow-md";
 
   const headerClass = isDarkMode
     ? "bg-gray-800 text-white p-3 rounded text-lg font-bold text-center"
@@ -155,17 +128,17 @@ export default function ArtistDashboardSection() {
 
   // Custom tooltip style
   const tooltipStyle = {
-    backgroundColor: isDarkMode ? '#374151' : '#fff',
-    border: `1px solid ${isDarkMode ? '#4b5563' : '#e5e7eb'}`,
-    color: isDarkMode ? '#f3f4f6' : '#111827',
-    borderRadius: '4px',
-    padding: '10px',
-    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+    backgroundColor: isDarkMode ? "#374151" : "#fff",
+    border: `1px solid ${isDarkMode ? "#4b5563" : "#e5e7eb"}`,
+    color: isDarkMode ? "#f3f4f6" : "#111827",
+    borderRadius: "4px",
+    padding: "10px",
+    boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
   };
 
   const CustomTooltip = ({ active, payload, label }) => {
     if (!active || !payload || !payload.length) return null;
-    
+
     return (
       <div className="p-2 rounded shadow-md" style={tooltipStyle}>
         <p className="font-bold mb-1">{label}</p>
@@ -221,15 +194,13 @@ export default function ArtistDashboardSection() {
                 className={`${selectClass} w-full mb-4`}
                 aria-label="Select trend metric"
               >
-                {TREND_METRIC_OPTIONS.map(option => (
-                  <option key={option.value} value={option.value}>
+                {TREND_METRIC_OPTIONS.map((option, i) => (
+                  <option key={i} value={option.value}>
                     {option.label}
                   </option>
                 ))}
               </select>
             </div>
-            
-           
           </div>
         </div>
 
@@ -245,60 +216,32 @@ export default function ArtistDashboardSection() {
           <div className={`${selectionPanelClass}  flex flex-col justify-between`}>
             <div>
               <label className="font-bold mb-2 block text-sm">Select Time Frame:</label>
-              <select
-                value={timeFrame}
-                onChange={handleTimeFrameChange}
-                className={`${selectClass} w-full mb-4`}
-                aria-label="Select time frame"
-              >
-                {TIME_FRAME_OPTIONS.map(option => (
-                  <option key={option.value} value={option.value}>
+              <select value={timeFrame} onChange={handleTimeFrameChange} className={`${selectClass} w-full mb-4`} aria-label="Select time frame">
+                {TIME_FRAME_OPTIONS.map((option, i) => (
+                  <option key={i} value={option.value}>
                     {option.label}
                   </option>
                 ))}
               </select>
-            </div>           
+            </div>
           </div>
         </div>
       </div>
 
       {/* Stats Section */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8 mb-8">
-        <StatsCard 
-          title="Total Views" 
-          value={totals.views} 
-          icon={<TrendingUp size={24} />} 
-          color="green" 
-          isDarkMode={isDarkMode} 
-        />
-        <StatsCard 
-          title="Total Users" 
-          value={totals.users} 
-          icon={<Users size={24} />} 
-          color="amber" 
-          isDarkMode={isDarkMode} 
-        />
-        <StatsCard 
-          title="Total Favorites" 
-          value={totals.favorites} 
-          icon={<Star size={24} />} 
-          color="blue" 
-          isDarkMode={isDarkMode} 
-        />
+        <StatsCard title="Total Views" value={totals.views} icon={<TrendingUp size={24} />} color="green" isDarkMode={isDarkMode} />
+        <StatsCard title="Total Users" value={totals.users} icon={<Users size={24} />} color="amber" isDarkMode={isDarkMode} />
+        <StatsCard title="Total Favorites" value={totals.favorites} icon={<Star size={24} />} color="blue" isDarkMode={isDarkMode} />
       </div>
 
       {/* Chart Section */}
-      <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-gray-50'} p-4 rounded-lg shadow-md mb-2`}>
-        <h3 className={`text-lg font-semibold mb-4 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
-          Performance Trends
-        </h3>
-        
+      <div className={`${isDarkMode ? "bg-gray-800" : "bg-gray-50"} p-4 rounded-lg shadow-md mb-2`}>
+        <h3 className={`text-lg font-semibold mb-4 ${isDarkMode ? "text-gray-200" : "text-gray-700"}`}>Performance Trends</h3>
+
         <div className="h-80 w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart
-              data={filteredData}
-              margin={{ top: 10, right: 30, left: 0, bottom: 5 }}
-            >
+            <AreaChart data={filteredData} margin={{ top: 10, right: 30, left: 0, bottom: 5 }}>
               <defs>
                 <linearGradient id="colorViews" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#10B981" stopOpacity={0.8} />
@@ -313,61 +256,57 @@ export default function ArtistDashboardSection() {
                   <stop offset="95%" stopColor="#3B82F6" stopOpacity={0.1} />
                 </linearGradient>
               </defs>
-              <CartesianGrid 
-                strokeDasharray="3 3" 
-                stroke={isDarkMode ? '#374151' : '#e5e7eb'}
-                opacity={0.6}
+              <CartesianGrid strokeDasharray="3 3" stroke={isDarkMode ? "#374151" : "#e5e7eb"} opacity={0.6} />
+              <XAxis
+                dataKey="name"
+                stroke={isDarkMode ? "#9ca3af" : "#4b5563"}
+                tick={{ fill: isDarkMode ? "#9ca3af" : "#4b5563" }}
+                tickLine={{ stroke: isDarkMode ? "#6b7280" : "#9ca3af" }}
               />
-              <XAxis 
-                dataKey="name" 
-                stroke={isDarkMode ? '#9ca3af' : '#4b5563'}
-                tick={{ fill: isDarkMode ? '#9ca3af' : '#4b5563' }}
-                tickLine={{ stroke: isDarkMode ? '#6b7280' : '#9ca3af' }}
-              />
-              <YAxis 
-                stroke={isDarkMode ? '#9ca3af' : '#4b5563'}
-                tick={{ fill: isDarkMode ? '#9ca3af' : '#4b5563' }}
-                tickLine={{ stroke: isDarkMode ? '#6b7280' : '#9ca3af' }}
+              <YAxis
+                stroke={isDarkMode ? "#9ca3af" : "#4b5563"}
+                tick={{ fill: isDarkMode ? "#9ca3af" : "#4b5563" }}
+                tickLine={{ stroke: isDarkMode ? "#6b7280" : "#9ca3af" }}
                 width={40}
               />
               <Tooltip content={<CustomTooltip />} />
-              <Legend 
-                wrapperStyle={{ 
-                  paddingTop: '10px',
-                  color: isDarkMode ? '#f3f4f6' : '#111827' 
+              <Legend
+                wrapperStyle={{
+                  paddingTop: "10px",
+                  color: isDarkMode ? "#f3f4f6" : "#111827",
                 }}
                 iconType="circle"
               />
-              <Area 
-                type="monotone" 
-                dataKey="views" 
-                stroke="#10B981" 
-                fillOpacity={1} 
-                fill="url(#colorViews)" 
-                strokeWidth={2} 
-                activeDot={{ r: 6, strokeWidth: 2 }} 
+              <Area
+                type="monotone"
+                dataKey="views"
+                stroke="#10B981"
+                fillOpacity={1}
+                fill="url(#colorViews)"
+                strokeWidth={2}
+                activeDot={{ r: 6, strokeWidth: 2 }}
                 name="Views"
                 hide={trendMetric !== "views" && trendMetric !== "totals"}
               />
-              <Area 
-                type="monotone" 
-                dataKey="users" 
-                stroke="#F59E0B" 
-                fillOpacity={1} 
-                fill="url(#colorUsers)" 
+              <Area
+                type="monotone"
+                dataKey="users"
+                stroke="#F59E0B"
+                fillOpacity={1}
+                fill="url(#colorUsers)"
                 strokeWidth={2}
-                activeDot={{ r: 6, strokeWidth: 2 }} 
+                activeDot={{ r: 6, strokeWidth: 2 }}
                 name="Users"
                 hide={trendMetric !== "users" && trendMetric !== "totals"}
               />
-              <Area 
-                type="monotone" 
-                dataKey="favorites" 
-                stroke="#3B82F6" 
-                fillOpacity={1} 
-                fill="url(#colorFavorites)" 
+              <Area
+                type="monotone"
+                dataKey="favorites"
+                stroke="#3B82F6"
+                fillOpacity={1}
+                fill="url(#colorFavorites)"
                 strokeWidth={2}
-                activeDot={{ r: 6, strokeWidth: 2 }} 
+                activeDot={{ r: 6, strokeWidth: 2 }}
                 name="Favorites"
                 hide={trendMetric !== "favorites" && trendMetric !== "totals"}
               />
@@ -375,7 +314,7 @@ export default function ArtistDashboardSection() {
           </ResponsiveContainer>
         </div>
       </div>
-      
+
       {/* Footer */}
       <div className="flex justify-end mt-4 text-xs text-gray-500">
         <span>Last updated: {new Date().toLocaleDateString()}</span>

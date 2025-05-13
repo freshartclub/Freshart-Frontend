@@ -10,6 +10,7 @@ import { useGetRecentArtwork } from "./http/getRecentArtwork";
 
 const RecentSection = () => {
   const dark = useAppSelector((state) => state.theme.mode);
+
   const { data, isLoading } = useGetRecentArtwork();
   const [viewedImages, setViewedImages] = useState({});
   const scrollContainerRef = useRef(null);
@@ -82,7 +83,6 @@ const RecentSection = () => {
   const renderCard = (item) => {
     const isOffensive = item?.additionalInfo?.offensive === "Yes";
     const isViewed = viewedImages[item?._id];
-    const hasDiscount = item?.additionalInfo?.discount > 0;
 
     return (
       <div
@@ -149,7 +149,6 @@ const RecentSection = () => {
           <p className={`text-xs ${dark ? "text-gray-400" : "text-gray-500"} mt-1`}>
             {item?.discipline?.artworkDiscipline} • {item?.additionalInfo?.artworkTechnic}
           </p>
-        
         </div>
       </div>
     );
@@ -161,7 +160,7 @@ const RecentSection = () => {
     <div className={`container ${dark ? "bg-gray-800" : "bg-[#F5F2EB]"} mx-auto pt-5 pb-10 md:px-6 px-3 mt-10`}>
       <h1 className={`text-[25px] md:text-[30px] font-semibold mb-5 w-1/2 sm:w-full ${dark ? "text-gray-100" : "text-gray-900"}`}>Recent Viewed</h1>
 
-      {data?.data && data?.data?.length > 0 ? (
+      {data && data?.length > 0 ? (
         <div className="relative">
           <button
             className={`absolute left-0 top-1/2 transform -translate-y-1/2 p-2 rounded-full shadow-lg z-10 ${
@@ -174,7 +173,7 @@ const RecentSection = () => {
           </button>
 
           <div ref={scrollContainerRef} className="flex overflow-x-scroll no-scrollbar space-x-4 pb-2 scrollbar">
-            {data?.data.map((item) => renderCard(item))}
+            {data.map((item) => renderCard(item))}
           </div>
 
           <button
@@ -187,7 +186,15 @@ const RecentSection = () => {
             <FaChevronRight size={20} />
           </button>
         </div>
-      ) : null}
+      ) : (
+        <div
+          className={`h-[5rem] font-semibold rounded w-full border-2 ${
+            dark ? "border-gray-700 bg-gray-800 text-gray-300" : "border-gray-300 bg-gray-50 text-gray-600"
+          } flex items-center justify-center`}
+        >
+          No Artworks Available
+        </div>
+      )}
     </div>
   );
 };

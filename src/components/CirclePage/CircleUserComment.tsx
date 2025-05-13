@@ -1,9 +1,14 @@
-import { useState, useRef, useEffect } from "react";
-import { BiLike } from "react-icons/bi";
 import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
+import { BiLike } from "react-icons/bi";
 import { FaCommentDots, FaEdit, FaRegCopy, FaShareAlt } from "react-icons/fa";
+import { MdOutlinePhotoLibrary } from "react-icons/md";
 import { RxCross2 } from "react-icons/rx";
-import { useSearchParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 import { Swiper, SwiperSlide } from "swiper/react";
 import Button from "../ui/Button";
 import Loader from "../ui/Loader";
@@ -12,11 +17,6 @@ import CommentBox from "./CommentBox";
 import useCirclePostMutation from "./https/useCirclePostMutation";
 import { useGetCirclePosts } from "./https/useGetCirclePosts";
 import usePostLikeMutation from "./https/usePostLikeMutation";
-import { MdOutlinePhotoLibrary } from "react-icons/md";
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
-import toast from "react-hot-toast";
 
 const reactions = [
   { id: "like", icon: "👍", label: "Like" },
@@ -56,32 +56,19 @@ interface CircleUserCommentProps {
 }
 
 const CircleUserComment = ({ isManager, dark }: CircleUserCommentProps) => {
-  const [searchParams] = useSearchParams();
-  const id = searchParams.get("id") as string;
+  const id = useParams().id as string;
   const { data, isLoading } = useGetCirclePosts(id);
 
   if (isLoading) return <Loader />;
 
   return (
-    <div
-      className={`w-full flex flex-col gap-4 mb-5 ${
-        dark ? "text-gray-100" : "text-gray-800"
-      }`}
-    >
-      {data?.data && data?.data?.length > 0 ? (
-        data?.data.map((item, i: number) => (
-          <Post post={item} isManager={isManager} id={id} key={i} dark={dark} />
-        ))
+    <div className={`w-full flex flex-col gap-4 mb-5 ${dark ? "text-gray-100" : "text-gray-800"}`}>
+      {data && data?.length > 0 ? (
+        data.map((item, i: number) => <Post post={item} isManager={isManager} id={id} key={i} dark={dark} />)
       ) : (
-        <div
-          className={`rounded-xl p-6 text-center ${
-            dark ? "bg-gray-800" : "bg-white"
-          } shadow-sm`}
-        >
+        <div className={`rounded-xl p-6 text-center ${dark ? "bg-gray-800" : "bg-white"} shadow-sm`}>
           <h3 className="text-lg font-medium">No Posts Found</h3>
-          <p className="text-sm mt-1 text-gray-500">
-            Be the first to share something!
-          </p>
+          <p className="text-sm mt-1 text-gray-500">Be the first to share something!</p>
         </div>
       )}
     </div>
@@ -109,13 +96,10 @@ function Post({ post: item, isManager, id, dark }: PostProps) {
     like: item?.totalLikes || 0,
   });
 
-  const [selectedReaction, setSelectedReaction] = useState(
-    item?.reactType || ""
-  );
+  const [selectedReaction, setSelectedReaction] = useState(item?.reactType || "");
 
   const { mutateAsync } = usePostLikeMutation();
-  const { mutateAsync: editPost, isPending: editPending } =
-    useCirclePostMutation();
+  const { mutateAsync: editPost, isPending: editPending } = useCirclePostMutation();
 
   useEffect(() => {
     if (!item?.file) return;
@@ -174,9 +158,7 @@ function Post({ post: item, isManager, id, dark }: PostProps) {
       setSelectedReaction(selectedReaction);
       setCount((prev) => ({
         ...prev,
-        like: isRemoving
-          ? prev.like + 1
-          : prev.like - (selectedReaction ? 0 : 1),
+        like: isRemoving ? prev.like + 1 : prev.like - (selectedReaction ? 0 : 1),
       }));
       toast.error("Failed to react to post");
     }
@@ -230,13 +212,7 @@ function Post({ post: item, isManager, id, dark }: PostProps) {
       if (/(https?:\/\/[^\s]+|www\.[^\s]+)/.test(word)) {
         const url = word.startsWith("www") ? `https://${word}` : word;
         return (
-          <a
-            key={index}
-            href={url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-500 hover:underline"
-          >
+          <a key={index} href={url} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
             {word}{" "}
           </a>
         );
@@ -257,9 +233,7 @@ function Post({ post: item, isManager, id, dark }: PostProps) {
 
   return (
     <motion.article
-      className={`rounded-xl overflow-hidden transition-all border shadow duration-200 ${
-        dark ? "bg-gray-800 border-gray-700" : "bg-white"
-      }`}
+      className={`rounded-xl overflow-hidden transition-all border shadow duration-200 ${dark ? "bg-gray-800 border-gray-700" : "bg-white"}`}
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
@@ -268,30 +242,16 @@ function Post({ post: item, isManager, id, dark }: PostProps) {
         <header className="sm:hidden flex mb-4 gap-3 items-center">
           <div className="flex gap-3 items-center">
             {item?.owner?.image ? (
-              <img
-                className="w-10 h-10 object-cover rounded-full"
-                src={`${imageUrl}/users/${item?.owner?.image}`}
-                alt="profile"
-              />
+              <img className="w-10 h-10 object-cover rounded-full" src={`${imageUrl}/users/${item?.owner?.image}`} alt="profile" />
             ) : (
               <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
-                <svg
-                  className="w-6 h-6 text-gray-400"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
+                <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
                 </svg>
               </div>
             )}
             <div className="flex flex-col">
-              <h3
-                className={`font-medium text-sm ${
-                  dark ? "text-white" : "text-gray-900"
-                }`}
-              >
-                {name(item?.owner)}
-              </h3>
+              <h3 className={`font-medium text-sm ${dark ? "text-white" : "text-gray-900"}`}>{name(item?.owner)}</h3>
               <span className="text-xs text-gray-500">
                 {new Date(item?.createdAt).toLocaleString("en-US", {
                   year: "numeric",
@@ -306,22 +266,11 @@ function Post({ post: item, isManager, id, dark }: PostProps) {
         </header>
 
         <div className="flex flex-col gap-2">
-          <h3
-            className={`font-semibold text-md ${
-              dark ? "text-white" : "text-gray-900"
-            }`}
-          >
-            {item?.title}
-          </h3>
+          <h3 className={`font-semibold text-md ${dark ? "text-white" : "text-gray-900"}`}>{item?.title}</h3>
           <p className={`text-sm ${dark ? "text-gray-300" : "text-gray-700"}`}>
-            {formatTextWithLinks(
-              expanded ? item?.content : item?.content?.slice(0, 300)
-            )}
+            {formatTextWithLinks(expanded ? item?.content : item?.content?.slice(0, 300))}
             {item?.content?.length > 300 && (
-              <button
-                onClick={() => setExpanded(!expanded)}
-                className="text-blue-500 hover:underline text-xs"
-              >
+              <button onClick={() => setExpanded(!expanded)} className="text-blue-500 hover:underline text-xs">
                 {expanded ? "Show Less" : "Show More"}
               </button>
             )}
@@ -340,17 +289,9 @@ function Post({ post: item, isManager, id, dark }: PostProps) {
                 {item.file.map((file, index: number) => (
                   <SwiperSlide key={index} className="flex justify-center">
                     {/\.(jpg|jpeg|png|gif|webp)$/i.test(file) ? (
-                      <img
-                        src={`${imageUrl}/users/${file}`}
-                        alt="media"
-                        className="rounded-lg w-full max-h-[400px] object-cover"
-                      />
+                      <img src={`${imageUrl}/users/${file}`} alt="media" className="rounded-lg w-full max-h-[400px] object-cover" />
                     ) : /\.(mp4|mov|webm)$/i.test(file) ? (
-                      <video
-                        src={`${imageUrl}/videos/${file}`}
-                        controls
-                        className="rounded-lg w-full max-h-[400px] object-cover"
-                      />
+                      <video src={`${imageUrl}/videos/${file}`} controls className="rounded-lg w-full max-h-[400px] object-cover" />
                     ) : null}
                   </SwiperSlide>
                 ))}
@@ -365,13 +306,7 @@ function Post({ post: item, isManager, id, dark }: PostProps) {
                       swiperRef.current?.slideTo(index);
                     }}
                     className={`h-1.5 w-1.5 rounded-full transition-all duration-200 ${
-                      activeIndex === index
-                        ? dark
-                          ? "bg-white w-4"
-                          : "bg-gray-800 w-4"
-                        : dark
-                        ? "bg-gray-500"
-                        : "bg-gray-300"
+                      activeIndex === index ? (dark ? "bg-white w-4" : "bg-gray-800 w-4") : dark ? "bg-gray-500" : "bg-gray-300"
                     }`}
                     aria-label={`Go to slide ${index + 1}`}
                   />
@@ -383,9 +318,7 @@ function Post({ post: item, isManager, id, dark }: PostProps) {
 
         {isEdit && (
           <motion.section
-            className={`rounded-lg p-4 mt-3 ${
-              dark ? "bg-gray-700" : "bg-gray-50"
-            }`}
+            className={`rounded-lg p-4 mt-3 ${dark ? "bg-gray-700" : "bg-gray-50"}`}
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
@@ -393,9 +326,7 @@ function Post({ post: item, isManager, id, dark }: PostProps) {
           >
             <input
               className={`w-full p-3 rounded-lg mb-3 focus:outline-none focus:ring-2 ${
-                dark
-                  ? "bg-gray-600 text-white focus:ring-blue-500"
-                  : "bg-white border focus:ring-blue-400"
+                dark ? "bg-gray-600 text-white focus:ring-blue-500" : "bg-white border focus:ring-blue-400"
               }`}
               type="text"
               placeholder="Post Title..."
@@ -405,50 +336,30 @@ function Post({ post: item, isManager, id, dark }: PostProps) {
             <textarea
               placeholder="Share what you are thinking here..."
               className={`w-full p-3 h-32 rounded-lg focus:outline-none focus:ring-2 ${
-                dark
-                  ? "bg-gray-600 text-white focus:ring-blue-500"
-                  : "bg-white border focus:ring-blue-400"
+                dark ? "bg-gray-600 text-white focus:ring-blue-500" : "bg-white border focus:ring-blue-400"
               }`}
               value={content}
               onChange={(e) => setContent(e.target.value)}
             />
 
             <div className="flex flex-col gap-3 mt-3">
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*, video/*"
-                multiple
-                hidden
-                onChange={handleImage}
-              />
+              <input ref={fileInputRef} type="file" accept="image/*, video/*" multiple hidden onChange={handleImage} />
 
               <div className="flex flex-col sm:flex-row gap-3 w-full justify-between items-center">
                 <Button
                   variant={{ rounded: "lg" }}
                   className={`flex gap-2 sm:w-fit w-full justify-center items-center ${
-                    dark
-                      ? "bg-gray-600 hover:bg-gray-500"
-                      : "bg-gray-200 hover:bg-gray-300"
+                    dark ? "bg-gray-600 hover:bg-gray-500" : "bg-gray-200 hover:bg-gray-300"
                   }`}
                   onClick={() => fileInputRef.current?.click()}
                 >
-                  <MdOutlinePhotoLibrary
-                    className={dark ? "text-blue-400" : "text-gray-700"}
-                    size={20}
-                  />
-                  <span className={dark ? "text-gray-200" : "text-gray-700"}>
-                    Add Files
-                  </span>
+                  <MdOutlinePhotoLibrary className={dark ? "text-blue-400" : "text-gray-700"} size={20} />
+                  <span className={dark ? "text-gray-200" : "text-gray-700"}>Add Files</span>
                 </Button>
                 <div className="flex items-center w-full sm:w-auto gap-2">
                   <Button
                     onClick={handleCancel}
-                    className={`px-4 w-full py-2.5 ${
-                      dark
-                        ? "bg-red-600 hover:bg-red-700"
-                        : "bg-red-500 hover:bg-red-600"
-                    } text-white font-medium`}
+                    className={`px-4 w-full py-2.5 ${dark ? "bg-red-600 hover:bg-red-700" : "bg-red-500 hover:bg-red-600"} text-white font-medium`}
                   >
                     Cancel
                   </Button>
@@ -465,40 +376,21 @@ function Post({ post: item, isManager, id, dark }: PostProps) {
 
             {existingFiles.length > 0 && (
               <div className="mt-4">
-                <h4
-                  className={`text-sm font-medium mb-2 ${
-                    dark ? "text-gray-300" : "text-gray-700"
-                  }`}
-                >
-                  Current Files:
-                </h4>
+                <h4 className={`text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>Current Files:</h4>
                 <div className="flex flex-wrap gap-2">
                   {existingFiles.map((url, index: number) => (
                     <div key={index} className="relative w-24 h-24">
                       {url.match(/\.(jpg|jpeg|png|webp)$/i) ? (
-                        <img
-                          src={url}
-                          alt="Existing file"
-                          className="w-full h-full object-cover rounded-lg"
-                        />
+                        <img src={url} alt="Existing file" className="w-full h-full object-cover rounded-lg" />
                       ) : url.match(/\.(mp4|mov|avi|mkv|webm)$/i) ? (
-                        <video
-                          controls
-                          className="w-full h-full object-cover rounded-lg"
-                        >
+                        <video controls className="w-full h-full object-cover rounded-lg">
                           <source src={url} />
                           Your browser does not support the video tag.
                         </video>
                       ) : null}
                       <button
-                        onClick={() =>
-                          setExistingFiles(
-                            existingFiles.filter((_, i) => i !== index)
-                          )
-                        }
-                        className={`absolute top-1 right-1 rounded-full p-1 ${
-                          dark ? "bg-gray-800" : "bg-white"
-                        } shadow-sm`}
+                        onClick={() => setExistingFiles(existingFiles.filter((_, i) => i !== index))}
+                        className={`absolute top-1 right-1 rounded-full p-1 ${dark ? "bg-gray-800" : "bg-white"} shadow-sm`}
                       >
                         <RxCross2 size="0.8em" />
                       </button>
@@ -510,41 +402,21 @@ function Post({ post: item, isManager, id, dark }: PostProps) {
 
             {files.length > 0 && (
               <div className="mt-3">
-                <h4
-                  className={`text-sm font-medium mb-2 ${
-                    dark ? "text-gray-300" : "text-gray-700"
-                  }`}
-                >
-                  New Files:
-                </h4>
+                <h4 className={`text-sm font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>New Files:</h4>
                 <div className="flex flex-wrap gap-2">
                   {files.map((file, index: number) => (
                     <div key={index} className="relative w-24 h-24">
                       {file.type.startsWith("image") ? (
-                        <img
-                          src={URL.createObjectURL(file)}
-                          alt="New file"
-                          className="w-full h-full object-cover rounded-lg"
-                        />
+                        <img src={URL.createObjectURL(file)} alt="New file" className="w-full h-full object-cover rounded-lg" />
                       ) : file.type.startsWith("video") ? (
-                        <video
-                          controls
-                          className="w-full h-full object-cover rounded-lg"
-                        >
-                          <source
-                            src={URL.createObjectURL(file)}
-                            type={file.type}
-                          />
+                        <video controls className="w-full h-full object-cover rounded-lg">
+                          <source src={URL.createObjectURL(file)} type={file.type} />
                           Your browser does not support the video tag.
                         </video>
                       ) : null}
                       <button
-                        onClick={() =>
-                          setFiles(files.filter((_, i) => i !== index))
-                        }
-                        className={`absolute top-1 right-1 rounded-full p-1 ${
-                          dark ? "bg-gray-800" : "bg-white"
-                        } shadow-sm`}
+                        onClick={() => setFiles(files.filter((_, i) => i !== index))}
+                        className={`absolute top-1 right-1 rounded-full p-1 ${dark ? "bg-gray-800" : "bg-white"} shadow-sm`}
                       >
                         <RxCross2 size="0.8em" />
                       </button>
@@ -559,29 +431,16 @@ function Post({ post: item, isManager, id, dark }: PostProps) {
         {isManager && (
           <button
             onClick={handleCloseEdit}
-            className={`absolute top-4 right-4 p-2 rounded-full transition-colors ${
-              dark ? "hover:bg-gray-700" : "hover:bg-gray-100"
-            }`}
+            className={`absolute top-4 right-4 p-2 rounded-full transition-colors ${dark ? "hover:bg-gray-700" : "hover:bg-gray-100"}`}
             aria-label="Edit post"
           >
-            <FaEdit
-              size="1.1em"
-              className={dark ? "text-gray-300" : "text-gray-600"}
-            />
+            <FaEdit size="1.1em" className={dark ? "text-gray-300" : "text-gray-600"} />
           </button>
         )}
 
-        <footer
-          className={`flex justify-between mt-4 pt-3 border-t ${
-            dark ? "border-gray-700" : "border-gray-200"
-          }`}
-        >
+        <footer className={`flex justify-between mt-4 pt-3 border-t ${dark ? "border-gray-700" : "border-gray-200"}`}>
           <div className="flex gap-4 items-center">
-            <div
-              className="relative flex items-center gap-2"
-              onMouseEnter={() => setHovered(true)}
-              onMouseLeave={() => setHovered(false)}
-            >
+            <div className="relative flex items-center gap-2" onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
               {selectedReaction ? (
                 <motion.button
                   className="text-lg"
@@ -593,12 +452,7 @@ function Post({ post: item, isManager, id, dark }: PostProps) {
                   {reactions.find((i) => i.id === selectedReaction)?.icon}
                 </motion.button>
               ) : (
-                <button
-                  onClick={() => handleLikeClick("like")}
-                  className={`p-1 rounded-full ${
-                    dark ? "hover:bg-gray-700" : "hover:bg-gray-100"
-                  }`}
-                >
+                <button onClick={() => handleLikeClick("like")} className={`p-1 rounded-full ${dark ? "hover:bg-gray-700" : "hover:bg-gray-100"}`}>
                   <BiLike size="1.2em" />
                 </button>
               )}
@@ -629,13 +483,7 @@ function Post({ post: item, isManager, id, dark }: PostProps) {
                 )}
               </AnimatePresence>
 
-              <span
-                className={`text-sm ${
-                  dark ? "text-gray-300" : "text-gray-600"
-                }`}
-              >
-                {count.like}
-              </span>
+              <span className={`text-sm ${dark ? "text-gray-300" : "text-gray-600"}`}>{count.like}</span>
 
               {sortedReactions.length > 0 && (
                 <div className="relative flex items-center -space-x-2">
@@ -655,9 +503,7 @@ function Post({ post: item, isManager, id, dark }: PostProps) {
             </div>
 
             <button
-              className={`flex gap-1 items-center p-1 rounded-full ${
-                dark ? "hover:bg-gray-700" : "hover:bg-gray-100"
-              }`}
+              className={`flex gap-1 items-center p-1 rounded-full ${dark ? "hover:bg-gray-700" : "hover:bg-gray-100"}`}
               onClick={() =>
                 setFieldTrue((prev) => ({
                   ...prev,
@@ -666,14 +512,8 @@ function Post({ post: item, isManager, id, dark }: PostProps) {
               }
             >
               <FaCommentDots size="1.2em" />
-              <span
-                className={`text-sm ${
-                  dark ? "text-gray-300" : "text-gray-600"
-                }`}
-              >
-                {count.commet >= 1000
-                  ? `${(count.commet / 1000).toFixed(1)}k`
-                  : count.commet}
+              <span className={`text-sm ${dark ? "text-gray-300" : "text-gray-600"}`}>
+                {count.commet >= 1000 ? `${(count.commet / 1000).toFixed(1)}k` : count.commet}
               </span>
             </button>
 
@@ -684,9 +524,7 @@ function Post({ post: item, isManager, id, dark }: PostProps) {
                   share: !prev.share,
                 }))
               }
-              className={`p-1 rounded-full ${
-                dark ? "hover:bg-gray-700" : "hover:bg-gray-100"
-              }`}
+              className={`p-1 rounded-full ${dark ? "hover:bg-gray-700" : "hover:bg-gray-100"}`}
             >
               <FaShareAlt size="1.2em" />
             </button>
@@ -694,30 +532,16 @@ function Post({ post: item, isManager, id, dark }: PostProps) {
 
           <div className="hidden sm:flex gap-3 items-center">
             {item?.owner?.image ? (
-              <img
-                className="w-10 h-10 object-cover rounded-full"
-                src={`${imageUrl}/users/${item?.owner?.image}`}
-                alt="profile"
-              />
+              <img className="w-10 h-10 object-cover rounded-full" src={`${imageUrl}/users/${item?.owner?.image}`} alt="profile" />
             ) : (
               <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
-                <svg
-                  className="w-6 h-6 text-gray-400"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
+                <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
                 </svg>
               </div>
             )}
             <div className="flex flex-col">
-              <h3
-                className={`font-medium text-sm ${
-                  dark ? "text-white" : "text-gray-900"
-                }`}
-              >
-                {name(item?.owner)}
-              </h3>
+              <h3 className={`font-medium text-sm ${dark ? "text-white" : "text-gray-900"}`}>{name(item?.owner)}</h3>
               <span className="text-xs text-gray-500">
                 {new Date(item?.createdAt).toLocaleString("en-US", {
                   year: "numeric",
@@ -746,9 +570,7 @@ function Post({ post: item, isManager, id, dark }: PostProps) {
 
         {fieldTrue.share && (
           <motion.div
-            className={`flex w-full items-center gap-2 mt-3 p-2 rounded-lg ${
-              dark ? "bg-gray-700" : "bg-gray-100"
-            }`}
+            className={`flex w-full items-center gap-2 mt-3 p-2 rounded-lg ${dark ? "bg-gray-700" : "bg-gray-100"}`}
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
@@ -757,19 +579,11 @@ function Post({ post: item, isManager, id, dark }: PostProps) {
               type="text"
               value={window.location.href}
               readOnly
-              className={`px-3 w-full py-2 rounded-lg focus:outline-none ${
-                dark
-                  ? "bg-gray-600 text-white"
-                  : "bg-white border border-gray-200"
-              }`}
+              className={`px-3 w-full py-2 rounded-lg focus:outline-none ${dark ? "bg-gray-600 text-white" : "bg-white border border-gray-200"}`}
             />
             <button
               onClick={handleCopy}
-              className={`p-2 rounded-lg font-medium flex items-center ${
-                dark
-                  ? "bg-gray-600 hover:bg-gray-500"
-                  : "bg-gray-200 hover:bg-gray-300"
-              }`}
+              className={`p-2 rounded-lg font-medium flex items-center ${dark ? "bg-gray-600 hover:bg-gray-500" : "bg-gray-200 hover:bg-gray-300"}`}
               aria-label="Copy link"
             >
               <FaRegCopy size={18} />

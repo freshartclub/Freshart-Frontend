@@ -9,7 +9,6 @@ const ArtistDashboard = () => {
   const darkMode = useAppSelector((state) => state.theme.mode);
 
   const { data, isLoading } = useGetArtistDashboard();
-
   const platformDays = data?.createdDate ? new Date(data.createdDate) : null;
 
   let daysSinceCreation = null;
@@ -30,7 +29,7 @@ const ArtistDashboard = () => {
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    
+
     // Calculate difference in milliseconds
     const diffTime = nextRevalidationDate.getTime() - today.getTime();
 
@@ -293,9 +292,9 @@ const ArtistDashboard = () => {
               <h2 className="text-xl font-semibold text-center mb-4">Top Artworks</h2>
 
               <div className={`${darkMode ? "bg-gray-700" : "bg-gray-200"} p-4 rounded-md`}>
-                {dashboardData?.topArtworks?.map((artwork) => (
+                {dashboardData?.topArtworks?.map((artwork, i) => (
                   <motion.div
-                    key={artwork.id}
+                    key={i}
                     whileHover={{ x: 5 }}
                     className={`flex items-center justify-between mb-3 last:mb-0 ${darkMode ? "bg-gray-800" : "bg-[#FFFFFF] "} p-3 rounded-md hover:${
                       darkMode ? "bg-gray-900" : "bg-zinc-200"
@@ -351,8 +350,8 @@ const ArtistDashboard = () => {
               <h2 className="text-xl font-semibold mb-4 text-center">Insignias and Credentials</h2>
 
               <div className={`${colors.cardBg} p-4 rounded-md flex flex-wrap justify-center gap-4`}>
-                {dashboardData?.insignias?.map((insignia) => (
-                  <motion.div key={insignia.id} className="group relative" whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+                {dashboardData?.insignias?.map((insignia, i) => (
+                  <motion.div key={i} className="group relative" whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
                     <motion.img
                       src={`${imageUrl}/users/${insignia?.insigniaImage}`}
                       alt={insignia.credentialName}

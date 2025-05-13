@@ -5,10 +5,8 @@ import axiosInstance from "../../utils/axios";
 
 export const useGetRequest = (id: string) => {
   async function fetchData() {
-    const { data } = await axiosInstance.get(
-      `${CIRCLE_ENDPOINTS.FollowRequests}/${id}`
-    );
-    return data;
+    const { data } = await axiosInstance.get(`${CIRCLE_ENDPOINTS.FollowRequests}/${id}`);
+    return data.data;
   }
 
   return useQuery({

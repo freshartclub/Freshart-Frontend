@@ -61,7 +61,6 @@ const ArtistPanel = () => {
         >
           <Routes>
             <Route index element={<Dashboard />} />
-            {/* <Route index element={<Dashboard />} /> */}
             <Route path="/arwork-mangement" element={<ArtworkManagement />} />
             <Route path="/commercilization" element={<CommercializationSection />} />
             <Route path="/artist-views" element={<ArtistDashboardSection />} />
@@ -80,7 +79,7 @@ const ArtistPanel = () => {
             <Route path="profile" element={<ArtistProfile />} />
             <Route path="settings" element={<Settings />} />
             <Route path="circle" element={<Circle />} />
-            <Route path="circle/detail" element={<CirclePage />} />
+            <Route path="circle/:id" element={<CirclePage />} />
 
             <Route path="ticket" element={<Support />} />
             <Route path="ticket/all" element={<TicketHistory />} />

@@ -4,10 +4,8 @@ import axiosInstance from "../../utils/axios";
 
 export const useGetCirclePosts = (id: string) => {
   async function fetchData() {
-    const { data } = await axiosInstance.get(
-      `${CIRCLE_ENDPOINTS.GetCirclePosts}/${id}`
-    );
-    return data;
+    const { data } = await axiosInstance.get(`${CIRCLE_ENDPOINTS.GetCirclePosts}/${id}`);
+    return data.data;
   }
 
   return useQuery({

@@ -1,7 +1,7 @@
+import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { FaLocationDot } from "react-icons/fa6";
-import { useSearchParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useAppSelector } from "../../store/typedReduxHooks";
 import Button from "../ui/Button";
 import Header from "../ui/Header";
@@ -23,16 +23,13 @@ interface FollowerProps {
 }
 
 const Followers = ({ newData, dark = false }: FollowerProps) => {
-  const [searchParams] = useSearchParams();
-  const id = searchParams.get("id");
+  const id = useParams().id as string;
   const [removingUserId, setRemovingUserId] = useState<string | null>(null);
   const userId = useAppSelector((state) => state?.user?.user?._id);
   const { data, isLoading } = useGetFollowers(id);
   const { mutate, isPending } = useRemoveFollowerMutaion();
 
-  const isManager =
-    newData?.data?.managers?.some((manager) => manager?._id === userId) ||
-    false;
+  const isManager = newData?.data?.managers?.some((manager) => manager?._id === userId) || false;
 
   const handleFollowClick = (userId: string) => {
     setRemovingUserId(userId);
@@ -58,16 +55,8 @@ const Followers = ({ newData, dark = false }: FollowerProps) => {
   };
 
   return (
-    <section
-      className={`mx-auto px-3 sm:px-6 my-8 ${
-        dark ? "text-gray-100" : "text-gray-800"
-      }`}
-    >
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-      >
+    <section className={`mx-auto px-3 sm:px-6 my-8 ${dark ? "text-gray-100" : "text-gray-800"}`}>
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
         <Header
           variant={{
             size: "2xl",
@@ -105,9 +94,7 @@ const Followers = ({ newData, dark = false }: FollowerProps) => {
                   transition={{ delay: index * 0.1, duration: 0.3 }}
                   exit={{ opacity: 0, scale: 0.9 }}
                   className={`p-4 rounded-xl shadow-sm transition-all duration-200 ${
-                    dark
-                      ? "bg-gray-800 border-gray-700 hover:bg-gray-700"
-                      : "bg-white border-gray-200 hover:bg-gray-50"
+                    dark ? "bg-gray-800 border-gray-700 hover:bg-gray-700" : "bg-white border-gray-200 hover:bg-gray-50"
                   } border flex justify-between items-center`}
                 >
                   <div className="flex items-center gap-3 min-w-0">
@@ -130,10 +117,7 @@ const Followers = ({ newData, dark = false }: FollowerProps) => {
                         {name(item?.user)}
                       </Header>
                       <div className="flex items-center gap-2 mt-1">
-                        <FaLocationDot
-                          size={14}
-                          className={dark ? "text-blue-400" : "text-blue-600"}
-                        />
+                        <FaLocationDot size={14} className={dark ? "text-blue-400" : "text-blue-600"} />
                         <P
                           variant={{
                             theme: dark ? "light" : "dark",
@@ -147,10 +131,7 @@ const Followers = ({ newData, dark = false }: FollowerProps) => {
                     </div>
                   </div>
                   {isManager && (
-                    <motion.div
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
+                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                       <Button
                         variant={{
                           fontSize: "sm",
@@ -158,31 +139,13 @@ const Followers = ({ newData, dark = false }: FollowerProps) => {
                           fontWeight: "medium",
                         }}
                         onClick={() => handleFollowClick(item?.user?._id)}
-                        className={`whitespace-nowrap ${
-                          dark
-                            ? "bg-red-600 hover:bg-red-700 text-white"
-                            : "bg-red-500 hover:bg-red-600 text-white"
-                        }`}
-                        disabled={
-                          isPending && removingUserId === item?.user?._id
-                        }
+                        className={`whitespace-nowrap ${dark ? "bg-red-600 hover:bg-red-700 text-white" : "bg-red-500 hover:bg-red-600 text-white"}`}
+                        disabled={isPending && removingUserId === item?.user?._id}
                       >
                         {isPending && removingUserId === item?.user?._id ? (
                           <span className="flex items-center gap-2">
-                            <svg
-                              className="animate-spin h-4 w-4"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                            >
-                              <circle
-                                className="opacity-25"
-                                cx="12"
-                                cy="12"
-                                r="10"
-                                stroke="currentColor"
-                                strokeWidth="4"
-                              ></circle>
+                            <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                               <path
                                 className="opacity-75"
                                 fill="currentColor"
@@ -203,11 +166,7 @@ const Followers = ({ newData, dark = false }: FollowerProps) => {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className={`col-span-full py-8 rounded-xl text-center ${
-                  dark
-                    ? "bg-gray-800 border-gray-700"
-                    : "bg-gray-50 border-gray-200"
-                } border`}
+                className={`col-span-full py-8 rounded-xl text-center ${dark ? "bg-gray-800 border-gray-700" : "bg-gray-50 border-gray-200"} border`}
               >
                 <P
                   variant={{

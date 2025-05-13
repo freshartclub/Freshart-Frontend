@@ -1,6 +1,6 @@
+import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
-import { useSearchParams } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { useParams } from "react-router-dom";
 import Loader from "../ui/Loader";
 import { imageUrl } from "../utils/baseUrls";
 import { useGetComments } from "./https/useGetComments";
@@ -12,13 +12,8 @@ interface CommentBoxProps {
   onCommentAdded?: () => void;
 }
 
-const CommentBox = ({
-  circlePostId,
-  dark,
-  onCommentAdded,
-}: CommentBoxProps) => {
-  const [searchParams] = useSearchParams();
-  const circleId = searchParams.get("id");
+const CommentBox = ({ circlePostId, dark, onCommentAdded }: CommentBoxProps) => {
+  const circleId = useParams().id as string;
   const [newComment, setNewComment] = useState("");
 
   const { mutate, isPending } = usePostCommentMutation();
@@ -48,9 +43,7 @@ const CommentBox = ({
 
   return (
     <motion.div
-      className={`rounded-lg p-3 mt-3 ${
-        dark ? "bg-gray-700" : "bg-gray-50"
-      } border ${dark ? "border-gray-600" : "border-gray-200"}`}
+      className={`rounded-lg p-3 mt-3 ${dark ? "bg-gray-700" : "bg-gray-50"} border ${dark ? "border-gray-600" : "border-gray-200"}`}
       initial={{ opacity: 0, height: 0 }}
       animate={{ opacity: 1, height: "auto" }}
       exit={{ opacity: 0, height: 0 }}
@@ -63,8 +56,8 @@ const CommentBox = ({
       ) : (
         <div className="space-y-3 max-h-[50vh] overflow-y-auto pr-2">
           <AnimatePresence>
-            {data?.data && data?.data?.length > 0 ? (
-              data?.data?.map((comment, i: number) => (
+            {data && data?.length > 0 ? (
+              data?.map((comment, i: number) => (
                 <motion.div
                   key={i}
                   className={`flex gap-2`}
@@ -77,36 +70,21 @@ const CommentBox = ({
                     src={`${imageUrl}/users/${comment?.owner?.img}`}
                     alt="User Avatar"
                     onError={(e) => {
-                      (e.target as HTMLImageElement).src =
-                        "https://via.placeholder.com/28";
+                      (e.target as HTMLImageElement).src = "https://via.placeholder.com/28";
                     }}
                   />
 
                   <div className="flex flex-col">
-                    <span
-                      className={`text-xs font-medium ${
-                        dark ? "text-gray-100" : "text-gray-800"
-                      }`}
-                    >
+                    <span className={`text-xs font-medium ${dark ? "text-gray-100" : "text-gray-800"}`}>
                       {`${comment?.owner?.artistName} ${comment?.owner?.artistSurname1} ${comment?.owner?.artistSurname2}`}
                     </span>
-                    <p
-                      className={`text-sm ${
-                        dark ? "text-gray-300" : "text-gray-700"
-                      }`}
-                    >
-                      {comment?.comment}
-                    </p>
+                    <p className={`text-sm ${dark ? "text-gray-300" : "text-gray-700"}`}>{comment?.comment}</p>
                   </div>
                 </motion.div>
               ))
             ) : (
               <motion.div
-                className={`p-3 rounded-lg text-center ${
-                  dark
-                    ? "bg-gray-600 text-gray-300"
-                    : "bg-gray-100 text-gray-500"
-                }`}
+                className={`p-3 rounded-lg text-center ${dark ? "bg-gray-600 text-gray-300" : "bg-gray-100 text-gray-500"}`}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
               >
@@ -134,11 +112,7 @@ const CommentBox = ({
           {newComment && (
             <button
               onClick={() => setNewComment("")}
-              className={`absolute right-2 top-2 p-1 rounded-full ${
-                dark
-                  ? "text-gray-400 hover:bg-gray-500"
-                  : "text-gray-500 hover:bg-gray-200"
-              }`}
+              className={`absolute right-2 top-2 p-1 rounded-full ${dark ? "text-gray-400 hover:bg-gray-500" : "text-gray-500 hover:bg-gray-200"}`}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -160,32 +134,14 @@ const CommentBox = ({
         <button
           disabled={newComment.trim() === "" || isPending}
           className={`px-4 py-2 rounded-lg mb-2 font-medium transition-colors ${
-            dark
-              ? "bg-blue-600 hover:bg-blue-700 text-white"
-              : "bg-blue-500 hover:bg-blue-600 text-white"
-          } ${
-            newComment.trim() === "" || isPending
-              ? "opacity-50 cursor-not-allowed"
-              : ""
-          }`}
+            dark ? "bg-blue-600 hover:bg-blue-700 text-white" : "bg-blue-500 hover:bg-blue-600 text-white"
+          } ${newComment.trim() === "" || isPending ? "opacity-50 cursor-not-allowed" : ""}`}
           onClick={handleAddComment}
         >
           {isPending ? (
             <span className="flex items-center gap-1">
-              <svg
-                className="animate-spin h-4 w-4"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                ></circle>
+              <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                 <path
                   className="opacity-75"
                   fill="currentColor"

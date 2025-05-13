@@ -368,18 +368,18 @@ const App: React.FC = () => {
                 }
               />
               <Route
-                path="/circlepage"
-                element={
-                  <AuthGuard>
-                    <CirclePage />
-                  </AuthGuard>
-                }
-              />
-              <Route
                 path="/circle"
                 element={
                   <AuthGuard>
                     <UserCircleList />
+                  </AuthGuard>
+                }
+              />
+              <Route
+                path="/circle/:id"
+                element={
+                  <AuthGuard>
+                    <CirclePage />
                   </AuthGuard>
                 }
               />

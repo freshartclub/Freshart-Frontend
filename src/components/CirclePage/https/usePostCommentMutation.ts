@@ -6,10 +6,7 @@ import axiosInstance from "../../utils/axios";
 import { CIRCLE_ENDPOINTS } from "../../../http/apiEndPoints/Circle";
 
 async function circlePostCommentMutation(data) {
-  return await axiosInstance.post(
-    `${CIRCLE_ENDPOINTS.PostCircleComment}/${data.id}`,
-    data
-  );
+  return await axiosInstance.post(`${CIRCLE_ENDPOINTS.PostCircleComment}/${data.id}`, data);
 }
 
 const usePostCommentMutation = () => {
@@ -28,7 +25,7 @@ const usePostCommentMutation = () => {
       });
     },
     onError: (error) => {
-      toast.error(t(error.response?.data?.message) || t("An error occurred"));
+      toast.error(t(error?.response.data?.message) || t("An error occurred"));
     },
   });
 };

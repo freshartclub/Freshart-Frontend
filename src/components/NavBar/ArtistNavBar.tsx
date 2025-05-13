@@ -73,7 +73,7 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
   };
 
   const handleRedirect = () => {
-    navigate("/artist-panel/artdashboard");
+    navigate("/artist-panel");
   };
 
   const openNotification = () => {

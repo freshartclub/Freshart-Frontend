@@ -1,10 +1,9 @@
+import toast from "react-hot-toast";
 import { FaShareAlt } from "react-icons/fa";
 import { IoEye } from "react-icons/io5";
 import { RiUserFollowFill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import { imageUrl } from "../utils/baseUrls";
-import { useAppSelector } from "../../store/typedReduxHooks";
-import toast from "react-hot-toast";
 import { Circle, CircleResponse } from "./UserCircleList";
 
 interface UserAllCircleProps {
@@ -21,7 +20,7 @@ const UserRequestedCircle: React.FC<UserAllCircleProps> = ({ data, dark }) => {
       return;
     }
 
-    navigate(`/circlepage?id=${encodeURIComponent(id)}`);
+    navigate(`/circle/${encodeURIComponent(id)}`);
   };
 
   const formatNumber = (num: number) => {
@@ -42,11 +41,7 @@ const UserRequestedCircle: React.FC<UserAllCircleProps> = ({ data, dark }) => {
         {tags.map((tag, index) => (
           <span
             key={index}
-            className={`whitespace-nowrap text-xs px-2 py-1 rounded-full ${
-              dark
-                ? "bg-gray-700 text-[#f84773c9]"
-                : "bg-[#fdedf1] text-[#EE1D52]"
-            }`}
+            className={`whitespace-nowrap text-xs px-2 py-1 rounded-full ${dark ? "bg-gray-700 text-[#f84773c9]" : "bg-[#fdedf1] text-[#EE1D52]"}`}
           >
             #{tag}
           </span>
@@ -63,20 +58,12 @@ const UserRequestedCircle: React.FC<UserAllCircleProps> = ({ data, dark }) => {
             key={i}
             onClick={() => handleCircle(circle?._id, circle?.type)}
             className={`flex flex-col lg:flex-row justify-between border gap-4 p-4 rounded-lg shadow-sm transition-all duration-200 hover:shadow-md ${
-              dark
-                ? "bg-gray-800 border-gray-700 hover:shadow-lg"
-                : "bg-white border-gray-200"
+              dark ? "bg-gray-800 border-gray-700 hover:shadow-lg" : "bg-white border-gray-200"
             }`}
           >
             <div className="flex-1 flex flex-col gap-3">
               <div className="flex flex-wrap items-center gap-2">
-                <h3
-                  className={`text-lg font-semibold ${
-                    dark ? "text-white" : "text-gray-900"
-                  }`}
-                >
-                  {circle?.title}
-                </h3>
+                <h3 className={`text-lg font-semibold ${dark ? "text-white" : "text-gray-900"}`}>{circle?.title}</h3>
 
                 <span
                   className={`px-2 py-1 text-xs font-semibold rounded-full ${
@@ -109,43 +96,22 @@ const UserRequestedCircle: React.FC<UserAllCircleProps> = ({ data, dark }) => {
 
               {renderTags(circle?.categories)}
 
-              <p
-                className={`text-sm ${
-                  dark ? "text-gray-300" : "text-gray-600"
-                }`}
-              >
+              <p className={`text-sm ${dark ? "text-gray-300" : "text-gray-600"}`}>
                 {circle?.description
-                  ? circle.description.split(" ").slice(0, 25).join(" ") +
-                    (circle.description.split(" ").length > 25 ? "..." : "")
+                  ? circle.description.split(" ").slice(0, 25).join(" ") + (circle.description.split(" ").length > 25 ? "..." : "")
                   : "No description available"}
               </p>
 
               <div className="flex items-center gap-4 mt-2">
-                <div
-                  className={`flex items-center gap-1 ${
-                    dark ? "text-gray-400" : "text-gray-600"
-                  }`}
-                >
+                <div className={`flex items-center gap-1 ${dark ? "text-gray-400" : "text-gray-600"}`}>
                   <IoEye className="text-lg" />
-                  <span className="text-sm">
-                    {formatNumber(circle?.viewCount || 0)}
-                  </span>
+                  <span className="text-sm">{formatNumber(circle?.viewCount || 0)}</span>
                 </div>
-                <div
-                  className={`flex items-center gap-1 ${
-                    dark ? "text-gray-400" : "text-gray-600"
-                  }`}
-                >
+                <div className={`flex items-center gap-1 ${dark ? "text-gray-400" : "text-gray-600"}`}>
                   <RiUserFollowFill className="text-lg" />
-                  <span className="text-sm">
-                    {formatNumber(circle?.followerCount || 0)}
-                  </span>
+                  <span className="text-sm">{formatNumber(circle?.followerCount || 0)}</span>
                 </div>
-                <div
-                  className={`flex items-center gap-1 ${
-                    dark ? "text-gray-400" : "text-gray-600"
-                  }`}
-                >
+                <div className={`flex items-center gap-1 ${dark ? "text-gray-400" : "text-gray-600"}`}>
                   <FaShareAlt className="text-lg" />
                   <span className="text-sm">5</span>
                 </div>
@@ -158,26 +124,15 @@ const UserRequestedCircle: React.FC<UserAllCircleProps> = ({ data, dark }) => {
                 src={`${imageUrl}/users/${circle?.mainImage}`}
                 alt={circle?.title}
                 onError={(e) => {
-                  (e.target as HTMLImageElement).src =
-                    "https://via.placeholder.com/200";
+                  (e.target as HTMLImageElement).src = "https://via.placeholder.com/200";
                 }}
               />
             </div>
           </div>
         ))
       ) : (
-        <div
-          className={`text-center py-12 rounded-lg ${
-            dark ? "bg-gray-800" : "bg-white"
-          }`}
-        >
-          <h3
-            className={`text-lg font-medium ${
-              dark ? "text-gray-300" : "text-gray-700"
-            }`}
-          >
-            No circles found
-          </h3>
+        <div className={`text-center py-12 rounded-lg ${dark ? "bg-gray-800" : "bg-white"}`}>
+          <h3 className={`text-lg font-medium ${dark ? "text-gray-300" : "text-gray-700"}`}>No circles found</h3>
         </div>
       )}
     </div>
