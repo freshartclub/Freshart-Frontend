@@ -70,34 +70,46 @@ const MobileArtworkVisualizer = ({artwork, isLoading , error}) => {
 
   useEffect(() => {
     if (cameraActive) {
-      const setupCamera = async () => {
-        try {
-   
-          if (streamRef.current) {
-            streamRef.current.getTracks().forEach(track => track.stop());
-          }
-          
-          const constraints = {
-            video: {
-              facingMode: 'environment',
-              width: { ideal: window.innerWidth },
-              height: { ideal: window.innerHeight }
-            }
-          };
-          
-          const stream = await navigator.mediaDevices.getUserMedia(constraints);
-          streamRef.current = stream;
-          
-          if (videoRef.current) {
-            videoRef.current.srcObject = stream;
-            setCameraPermission('granted');
-          }
-        } catch (err) {
-          console.error('Error accessing camera:', err);
-          setCameraPermission('denied');
-          setCameraActive(false);
-        }
-      };
+    const setupCamera = async () => {
+  try {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+    }
+    
+    const constraints = {
+      video: {
+        facingMode: 'environment',
+        // Let the browser choose optimal resolution
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
+      }
+    };
+    
+    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    streamRef.current = stream;
+    
+    // Try to disable zoom if supported
+    const videoTrack = stream.getVideoTracks()[0];
+    if (videoTrack && 'applyConstraints' in videoTrack) {
+      try {
+        await videoTrack.applyConstraints({
+          advanced: [{ zoom: 1 }]
+        });
+      } catch (zoomError) {
+        console.log('Zoom adjustment not supported');
+      }
+    }
+    
+    if (videoRef.current) {
+      videoRef.current.srcObject = stream;
+      setCameraPermission('granted');
+    }
+  } catch (err) {
+    console.error('Error accessing camera:', err);
+    setCameraPermission('denied');
+    setCameraActive(false);
+  }
+};
       
       setupCamera();
       
@@ -356,7 +368,7 @@ const MobileArtworkVisualizer = ({artwork, isLoading , error}) => {
           autoPlay
           playsInline
           muted
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-contain"
         />
       )}
       

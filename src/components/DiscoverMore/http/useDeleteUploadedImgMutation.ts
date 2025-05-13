@@ -3,22 +3,23 @@ import toast from "react-hot-toast";
 import { ARTTIST_ENDPOINTS } from "../../../http/apiEndPoints/Artist";
 import axiosInstance from "../../utils/axios";
 
-async function addToCart(values: any) {
-  return await axiosInstance.post(`${ARTTIST_ENDPOINTS.makeAnOffer}/${values?.id}`, values);  
+async function deleteUploadedImage(id: string) {
+  return await axiosInstance.patch(`${ARTTIST_ENDPOINTS.deleteUploadedImage}/${id}`);
 }
 
-const useMakeAnOfferMutation = () => {
+const useDeleteUploadedImgMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: addToCart,
+    mutationFn: deleteUploadedImage,
 
     onSuccess: async (res) => {
       queryClient.invalidateQueries({
-        queryKey: [ARTTIST_ENDPOINTS.makeAnOffer],    
+        queryKey: [ARTTIST_ENDPOINTS.getUpLoadedImage],
         refetchType: "all",
       });
-      toast.success(res?.data?.message);
+
+      toast.success(res?.data?.message)
     },
     onError: (error) => {
       toast.error(error.response?.data?.message);
@@ -26,4 +27,4 @@ const useMakeAnOfferMutation = () => {
   });
 };
 
-export default useMakeAnOfferMutation;
+export default useDeleteUploadedImgMutation;

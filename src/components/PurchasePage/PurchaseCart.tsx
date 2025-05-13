@@ -15,7 +15,6 @@ import CartTotal from "./CartTotal";
 import useRemoveMutation from "./http/useRemoveMutation";
 import { useAppSelector } from "../../store/typedReduxHooks";
 
-
 const PurchaseCart = () => {
   const [state, setState] = useState("purchase");
   const navigate = useNavigate();
@@ -35,6 +34,8 @@ const PurchaseCart = () => {
       console.error(error);
     }
   };
+
+  console.log(renderData)
 
   const handlepurchase = () => {
     navigate(`/all-artworks?type=${state}`);
@@ -88,10 +89,10 @@ const PurchaseCart = () => {
             onClick={() => setState("purchase")}
             className={`px-5 py-2.5 rounded-md font-medium text-sm transition-colors ${
               state === "purchase" 
-                ? "bg-[#FF536B] text-white" 
+                ? "bg-[#FF536B] text-white shadow-md" 
                 : dark 
-                  ? "bg-gray-700 text-gray-300 border border-gray-600" 
-                  : "bg-white text-black border border-zinc-300"
+                  ? "bg-gray-700 text-gray-300 border border-gray-600 hover:bg-gray-600" 
+                  : "bg-white text-black border border-zinc-300 hover:bg-gray-50"
             }`}
           >
             Purchase
@@ -99,11 +100,11 @@ const PurchaseCart = () => {
           <button
             onClick={() => setState("subscription")}
             className={`px-5 py-2.5 rounded-md font-medium text-sm transition-colors ${
-              state !== "purchase" 
-                ? "bg-[#FF536B] text-white" 
+              state === "subscription" 
+                ? "bg-[#FF536B] text-white shadow-md" 
                 : dark 
-                  ? "bg-gray-700 text-gray-300 border border-gray-600" 
-                  : "bg-white text-black border border-zinc-300"
+                  ? "bg-gray-700 text-gray-300 border border-gray-600 hover:bg-gray-600" 
+                  : "bg-white text-black border border-zinc-300 hover:bg-gray-50"
             }`}
           >
             Subscription
@@ -113,16 +114,20 @@ const PurchaseCart = () => {
         {/* Cart content */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 pb-12">
           {/* Cart items table */}
-          <div className={`lg:col-span-8 border rounded-md overflow-hidden ${dark ? "border-gray-700 bg-gray-800" : "border-gray-200 bg-white"}`}>
+          <div className={`lg:col-span-8 border rounded-lg overflow-hidden ${dark ? "border-gray-700 bg-gray-800" : "border-gray-200 bg-white"} shadow-sm`}>
             <div className="overflow-x-auto w-full">
               <table className={`w-full min-w-[800px] ${dark ? "text-gray-300" : "text-gray-700"}`}>
                 <thead className={`text-xs uppercase ${dark ? "bg-gray-700 text-gray-300" : "bg-[#F2F4F5] text-black"}`}>
                   <tr>
-                    <th scope="col" className="px-4 py-3 text-left">Products</th>
-                    <th scope="col" className="px-4 py-3 text-left">Type</th>
-                    <th scope="col" className="px-4 py-3 text-left">Price</th>
-                    <th scope="col" className="px-4 py-3 text-left">Discount %</th>
-                    <th scope="col" className="px-4 py-3 text-left">Sub-total</th>
+                    <th scope="col" className="px-6 py-4 text-left">Products</th>
+                    {state === "purchase" && (
+                      <>
+                        <th scope="col" className="px-6 py-4 text-left">Type</th>
+                        <th scope="col" className="px-6 py-4 text-left">Price</th>
+                        <th scope="col" className="px-6 py-4 text-left">Discount %</th>
+                        <th scope="col" className="px-6 py-4 text-left">Sub-total</th>
+                      </>
+                    )}
                   </tr>
                 </thead>
                 <tbody>
@@ -134,62 +139,72 @@ const PurchaseCart = () => {
                       const discountedPrice = (basePrice - discountAmount).toFixed(2);
 
                       return (
-                        <tr key={index} className={`${dark ? "bg-gray-800" : "bg-white"} border-b ${dark ? "border-gray-700" : "border-gray-200"}`}>
-                          <td className="px-4 py-4">
-                            <div className="flex items-start md:items-center gap-3">
+                        <tr 
+                          key={index} 
+                          className={`${dark ? "bg-gray-800 hover:bg-gray-750" : "bg-white hover:bg-gray-50"} border-b ${dark ? "border-gray-700" : "border-gray-200"} transition-colors`}
+                        >
+                          <td className="px-6 py-5">
+                            <div className="flex items-start md:items-center gap-4">
                               <button 
                                 onClick={() => handleRemove(table?._id)}
-                                className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
+                                className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
                               >
-                                <img src={gray_cross} alt="Remove" className="w-4 h-4" />
+                                <img src={gray_cross} alt="Remove" className="w-4 h-4 opacity-70 hover:opacity-100" />
                               </button>
-                              <div className="flex flex-col md:flex-row md:items-center gap-3">
+                              <div className="flex flex-col md:flex-row md:items-center gap-4">
                                 <img
                                   src={`${imageUrl}/users/${table?.media?.mainImage}`}
                                   alt={table?.artworkName}
-                                  className="w-16 h-16 object-cover rounded"
+                                  className="w-20 h-20 object-cover rounded-lg shadow-sm"
                                 />
-                                <P
-                                  variant={{ weight: "medium" }}
-                                  className={`text-sm ${dark ? "text-gray-300" : ""}`}
-                                >
-                                  {table?.artworkName}
-                                </P>
+                                <div>
+                                  <P
+                                    variant={{ weight: "medium" }}
+                                    className={`text-sm ${dark ? "text-gray-300" : ""}`}
+                                  >
+                                    {table?.artworkName}
+                                  </P>
+                                  {state === "subscription" && (
+                                    <P variant={{ size: "sm", weight: "normal" }} className={`mt-1 ${dark ? "text-gray-400" : "text-gray-500"}`}>
+                                      {/* Premium Subscription */}
+                                    </P>
+                                  )}
+                                </div>
                               </div>
                             </div>
                           </td>
-                          <td className={`px-4 py-4 capitalize ${dark ? "text-gray-300" : "text-[#475156]"}`}>
-                            {table?.commercialization?.activeTab}
-                          </td>
-                          <td className={`px-4 py-4 ${dark ? "text-gray-300" : "text-[#475156]"}`}>
-                            {state === "subscription" 
-                              ? "00" 
-                              : getSymbolFromCurrency(
-                                  table?.pricing?.currency.slice(0, 3)
-                                ) + " " + table?.pricing?.basePrice}
-                          </td>
-                          <td className={`px-4 py-4 ${dark ? "text-gray-300" : "text-[#475156]"}`}>
-                            {state === "subscription" ? "00" : table?.pricing?.dpersentage}%
-                          </td>
-                          <td className={`px-4 py-4 font-semibold ${dark ? "text-gray-300" : "text-[#191C1F]"}`}>
-                            {state === "subscription" 
-                              ? "00" 
-                              : getSymbolFromCurrency(
-                                  table?.pricing?.currency.slice(0, 3)
-                                ) + " " + discountedPrice}
-                          </td>
+                          {state === "purchase" && (
+                            <>
+                              <td className={`px-6 py-5 capitalize ${dark ? "text-gray-300" : "text-[#475156]"}`}>
+                                {table?.commercialization?.activeTab}
+                              </td>
+                              <td className={`px-6 py-5 ${dark ? "text-gray-300" : "text-[#475156]"}`}>
+                                {getSymbolFromCurrency(
+                                    table?.pricing?.currency.slice(0, 3)
+                                  ) + " " + table?.pricing?.basePrice}
+                              </td>
+                              <td className={`px-6 py-5 ${dark ? "text-gray-300" : "text-[#475156]"}`}>
+                                {table?.pricing?.dpersentage}%
+                              </td>
+                              <td className={`px-6 py-5 font-semibold ${dark ? "text-gray-300" : "text-[#191C1F]"}`}>
+                                {getSymbolFromCurrency(
+                                    table?.pricing?.currency.slice(0, 3)
+                                  ) + " " + discountedPrice}
+                              </td>
+                            </>
+                          )}
                         </tr>
                       );
                     })
                   ) : (
                     <tr className={dark ? "bg-gray-800" : ""}>
-                      <td className="px-6 py-8 text-center" colSpan={5}>
+                      <td className="px-6 py-12 text-center" colSpan={state === "purchase" ? 5 : 1}>
                         <div className="flex flex-col items-center">
                           <p className={`text-lg font-medium mb-4 ${dark ? "text-gray-300" : ""}`}>
                             You haven't added any artwork to your cart.
                           </p>
                           <NavLink to="/home">
-                            <button className={`px-6 py-2.5 ${dark ? "bg-gray-600 hover:bg-gray-500" : "bg-zinc-800 hover:bg-zinc-700"} text-white rounded-lg transition-colors`}>
+                            <button className={`px-6 py-2.5 rounded-lg transition-colors ${dark ? "bg-gray-600 hover:bg-gray-500 text-white" : "bg-[#FF536B] hover:bg-[#E04A60] text-white shadow-md"}`}>
                               Add To Cart
                             </button>
                           </NavLink>
@@ -201,10 +216,10 @@ const PurchaseCart = () => {
               </table>
             </div>
 
-            <div className="p-4">
+            <div className="p-6 border-t border-gray-200 dark:border-gray-700">
               <Button
                 onClick={handlepurchase}
-                className={`border ${dark ? "border-gray-600 hover:bg-gray-700" : "border-[#203F58] hover:bg-gray-100"} rounded-full flex items-center justify-center gap-2 px-5 py-2.5 transition-colors`}
+                className={`border ${dark ? "border-gray-600 hover:bg-gray-700" : "border-[#203F58] hover:bg-gray-100"} rounded-full flex items-center justify-center gap-2 px-6 py-3 transition-colors w-full md:w-auto`}
               >
                 <img src={ret_arrow} alt="Return arrow" className="w-4 h-4" />
                 <P

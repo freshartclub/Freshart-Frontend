@@ -9,6 +9,7 @@ import { imageUrl } from "../utils/baseUrls";
 import ArtworkExchangePopup from "./ArtworkExchangePopup";
 import ReturnInstructionsPopup from "./ReturnInstructionsPopup";
 import { useAppSelector } from "../../store/typedReduxHooks";
+import getSymbolFromCurrency from "currency-symbol-map";
 
 const CartTotal = ({ data, state, handleRemove }) => {
   const discountAmounts = data.map((item) => {
@@ -73,7 +74,7 @@ const CartTotal = ({ data, state, handleRemove }) => {
 
         const ids = data?.map((item) => {
           if (!item?._id) {
-           
+
             throw new Error("One or more items missing ID");
           }
           return item?._id;
@@ -162,9 +163,8 @@ const CartTotal = ({ data, state, handleRemove }) => {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div
-          className={`p-6 rounded-lg max-w-md w-full ${
-            dark ? "bg-gray-800 text-gray-200" : "bg-white"
-          }`}
+          className={`p-6 rounded-lg max-w-md w-full ${dark ? "bg-gray-800 text-gray-200" : "bg-white"
+            }`}
         >
           {subscriptionStatus.status === "in_current_plan" ? (
             <>
@@ -237,7 +237,7 @@ const CartTotal = ({ data, state, handleRemove }) => {
 
               <div className="flex flex-col space-y-3 mt-4">
                 <Button
-                className={`${dark ? "text-gray-300 bg-[#102030]" : "text-gray-300"}`}
+                  className={`${dark ? "text-gray-300 bg-[#102030]" : "text-gray-300"}`}
                   onClick={() => handleSubscriptionAction("confirm_exchange")}
                   variant={{ theme: dark ? "light" : "dark", rounded: "full" }}
                 >
@@ -278,9 +278,8 @@ const CartTotal = ({ data, state, handleRemove }) => {
                     return (
                       <li
                         key={artwork._id}
-                        className={`border p-3 rounded-lg ${
-                          dark ? "border-gray-600" : ""
-                        }`}
+                        className={`border p-3 rounded-lg ${dark ? "border-gray-600" : ""
+                          }`}
                       >
                         <div className="flex items-center gap-3">
                           {artwork.media.mainImage && (
@@ -345,9 +344,9 @@ const CartTotal = ({ data, state, handleRemove }) => {
                   }
                   variant={{ theme: dark ? "dark" : "dark", rounded: "full" }}
                 >
-                  Get New Subscription 
+                  Get New Subscription
                 </Button>
-              
+
                 <Button
                   onClick={() => handleSubscriptionAction("remove_from_cart")}
                   variant={{ theme: "light", rounded: "full" }}
@@ -365,89 +364,109 @@ const CartTotal = ({ data, state, handleRemove }) => {
   return (
     <>
       <div
-        className={`p-5 mb-8 border rounded-md ${
-          dark ? "dark bg-gray-800 border-gray-700" : ""
-        }`}
+        className={`p-6 mb-8 border rounded-lg shadow-sm ${dark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"}`}
       >
-        <div>
-          <Header
-            className={`${dark ? "text-gray-300" : "text-[#2E4053]"}`}
-            variant={{ size: "md", theme: "dark", weight: "semiBold" }}
-          >
-            Card Totals
-          </Header>
-
-          <div
-            className={`border-b-2 pb-2 ${
-              dark
-                ? "border-b-gray-700 text-gray-300"
-                : "border-b-[#E4E7E9] text-[#2E4053]"
-            }`}
-          >
-            {card_total?.map((card, index) => (
-              <div key={index} className="flex justify-between my-3">
-                <P
-                  variant={{ size: "small", weight: "medium" }}
-                  className={dark ? "text-gray-400" : "text-[#636363]"}
-                >
-                  {card.title}
-                </P>
-                <P
-                  variant={{ size: "small", weight: "medium" }}
-                  className={dark ? "text-gray-200" : "text-[#191C1F]"}
-                >
-                  {card.value}
-                </P>
-              </div>
-            ))}
-          </div>
-
-          <div className="flex justify-between py-5">
-            <P
-              variant={{
-                size: "base",
-                theme: dark ? "light" : "dark",
-                weight: "medium",
-              }}
+        {state === "subscription" ? (
+          <div className="text-center py-6">
+            <Header
+              className={`mb-4 ${dark ? "text-gray-300" : "text-[#2E4053]"}`}
+              variant={{ size: "lg", theme: "dark", weight: "bold" }}
             >
-              Total
-            </P>
+              Premium Subscription
+            </Header>
             <P
-              variant={{
-                size: "base",
-                theme: dark ? "light" : "dark",
-                weight: "semiBold",
-              }}
+              variant={{ size: "base", weight: "medium" }}
+              className={dark ? "text-gray-400" : "text-[#636363]"}
             >
-              ${ state === "subscription" ? "00" : (totalPrice - totalDiscountAmount).toFixed(2)}
+              Enjoy unlimited access to all artworks
             </P>
           </div>
-        </div>
+        ) : (
+          <div>
+            <Header
+              className={`mb-5 ${dark ? "text-gray-300" : "text-[#2E4053]"}`}
+              variant={{ size: "lg", theme: "dark", weight: "bold" }}
+            >
+              Order Summary
+            </Header>
+
+            <div
+              className={`border-b pb-4 ${dark ? "border-gray-700" : "border-gray-200"}`}
+            >
+              {card_total?.map((card, index) => (
+                <div key={index} className="flex justify-between items-center py-2">
+                  <P
+                    variant={{ size: "base", weight: "medium" }}
+                    className={dark ? "text-gray-400" : "text-[#636363]"}
+                  >
+                    {card.title}
+                  </P>
+                  <P
+                    variant={{ size: "base", weight: "medium" }}
+                    className={dark ? "text-gray-200" : "text-[#191C1F]"}
+                  >
+                    {card.value}
+                  </P>
+                </div>
+              ))}
+            </div>
+
+            <div className={`flex justify-between items-center py-5 ${dark ? "text-gray-300" : "text-[#2E4053]"}`}>
+              <P
+                variant={{
+                  size: "lg",
+                  weight: "bold",
+                }}
+              >
+                Total Amount
+              </P>
+              <P
+                variant={{
+                  size: "xl",
+                  weight: "bold",
+                }}
+                className={dark ? "text-white" : "text-[#191C1F]"}
+              >
+                {getSymbolFromCurrency(
+                  card_total?.[0]?.value?.match(/[^\d.-]/g)?.[0] || "$"
+                )}
+                {(totalPrice - totalDiscountAmount).toFixed(2)}
+              </P>
+            </div>
+          </div>
+        )}
 
         <Button
           onClick={() => handleCheckOut()}
-          variant={{ theme: "dark", rounded: "full" }}
-          className={`${
-            data?.length === 0 && "pointer-events-none opacity-50"
-          } flex gap-2 items-center w-full justify-center xl:!py-5 lg:py-3`}
+          variant={{ theme: "primary", rounded: "full" }}
+          className={`${data?.length === 0 ? "pointer-events-none opacity-50" : "hover:shadow-md"} 
+      flex gap-3 items-center w-full justify-center py-4 transition-all duration-200
+      ${dark ? "bg-[#FF536B] hover:bg-[#E04A60]" : "bg-[#FF536B] hover:bg-[#E04A60]"}`}
+          disabled={isPending}
         >
-          <P variant={{ size: "base", theme: "light", weight: "medium" }}>
-            {isPending ? "Loading..." : "Proceed to Checkout"}
-          </P>
-          <img src={rightarr} alt="" />
+          {isPending ? (
+            <span>Loding...</span>
+          ) : (
+            <>
+              <P variant={{ size: "base", theme: "light", weight: "semiBold" }}>
+                {state === "subscription" ? "Subscribe Now" : "Proceed to Checkout"}
+              </P>
+              <img src={rightarr} alt="" className="w-5 h-5 filter brightness-0 invert" />
+            </>
+          )}
         </Button>
       </div>
 
-      <div
-        className={`border rounded-md ${
-          data?.cart?.length === 0 && "pointer-events-none opacity-50"
-        } ${dark ? "border-gray-700" : ""}`}
+
+
+      {state === "subscription" ? null : <div
+        className={`border rounded-md ${data?.cart?.length === 0 && "pointer-events-none opacity-50"
+          } ${dark ? "border-gray-700" : ""}`}
       >
         <Header
           variant={{ size: "md", weight: "semiBold", theme: dark ? "light" : "dark" }}
-          className={`p-5 border-b-2 ${
-            dark ? "border-b-gray-700" : "border-b-[#E4E7E9]"
-          }`}
+          className={`p-5 border-b-2 ${dark ? "border-b-gray-700" : "border-b-[#E4E7E9]"
+            }`}
         >
           Gift Card
         </Header>
@@ -455,11 +474,10 @@ const CartTotal = ({ data, state, handleRemove }) => {
           <input
             type="text"
             placeholder="Coupon code"
-            className={`w-full outline-none p-3 border ${
-              dark
-                ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400"
-                : ""
-            }`}
+            className={`w-full outline-none p-3 border ${dark
+              ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+              : ""
+              }`}
           />
 
           <Button
@@ -469,7 +487,8 @@ const CartTotal = ({ data, state, handleRemove }) => {
             Apply Coupon
           </Button>
         </div>
-      </div>
+      </div>}
+
 
       {renderSubscriptionPopup()}
 

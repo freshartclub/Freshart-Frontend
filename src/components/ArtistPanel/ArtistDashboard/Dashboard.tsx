@@ -10,6 +10,8 @@ const ArtistDashboard = () => {
 
   const { data, isLoading } = useGetArtistDashboard();
 
+  console.log(data)
+
   const platformDays = data?.createdDate ? new Date(data.createdDate) : null;
 
   let daysSinceCreation = null;

@@ -4,9 +4,11 @@ import { ARTTIST_ENDPOINTS } from "../../../http/apiEndPoints/Artist";
 import axiosInstance from "../../utils/axios";
 
 // Mutation function
-async function upLoadImg({ id, file }: { id: string; file: File }) {
+async function upLoadImg({ id, file , height , width }: { id: string; file: File }) {
   const formData = new FormData();
   formData.append("checkImage", file); 
+  formData.append("height" , height)
+  formData.append("width" , width)
 
   return await axiosInstance.post(
     `${ARTTIST_ENDPOINTS.upLoadImg}`,

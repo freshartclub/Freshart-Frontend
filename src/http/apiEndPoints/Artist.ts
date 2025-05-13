@@ -29,7 +29,6 @@ export const ARTTIST_ENDPOINTS = {
   ReviewArtwork: `${ARTIST_BASE_URl}/give-review`,
   LikeUnlikeArtwork: `${ARTIST_BASE_URl}/like-unlike-artwork`,
   GetLikedArtWork: `${ARTIST_BASE_URl}/get-liked-items`,
-
   GetArtistTickets: `${ARTIST_BASE_URl}/get-user-tickets`,
   GetArtistTicketsDetails: `${ARTIST_BASE_URl}/ticket`,
   GetAllIncidents: `${ARTIST_BASE_URl}/get-all-incidents`,
@@ -37,13 +36,11 @@ export const ARTTIST_ENDPOINTS = {
   GetNotifications: `${ARTIST_BASE_URl}/get-notifications`,
   DeleteNotification: `${ARTIST_BASE_URl}/delete-notification`,
   ReadNotification: `${ARTIST_BASE_URl}/read-notification`,
-
   GetAllArtist: `${ARTIST_BASE_URl}/get-all-artists`,
   addToCart: `${ARTIST_BASE_URl}/add-to-cart`,
   cartItems: `${ARTIST_BASE_URl}/get-cart`,
   unauthorisedCartItem: `${ARTIST_BASE_URl}/get-unauthorized-cart`,
   removeItems: `${ARTIST_BASE_URl}/remove-from-cart`,
-
   addToFavorite: `${ARTIST_BASE_URl}/add-to-favorite`,
   getFavoriteList: `${ARTIST_BASE_URl}/get-favorite-list`,
   getFullList: `${ARTIST_BASE_URl}/get-full-list`,
@@ -54,6 +51,7 @@ export const ARTTIST_ENDPOINTS = {
   GetInviteData: `${ARTIST_BASE_URl}/get-invite`,
   GetInviteFullData: `${ARTIST_BASE_URl}/get-invite-data`,
 
+  //ArtWork Apis Routes 
   GetAllArtwork: `${ARTIST_BASE_URl}/get-all-artworks`,
   addToWishList: `${ARTIST_BASE_URl}/item-to-wishlist`,
   getWishList: `${ARTIST_BASE_URl}/get-wishlist`,
@@ -62,37 +60,41 @@ export const ARTTIST_ENDPOINTS = {
   getSeries: `${ARTIST_BASE_URl}/get-series-list`,
   GetArtSeries: `${ARTIST_BASE_URl}/get-all-series`,
   getAllPlans: `${ARTIST_BASE_URl}/get-all-plans`,
-
   getCard: `${ARTIST_BASE_URl}/card`,
   getAllCollections: `${ARTIST_BASE_URl}/get-all-collections`,
   useGetCollectionById: `${ARTIST_BASE_URl}/get-collection`,
   getToken: `${ARTIST_BASE_URl}/get-pay-token`,
-
   exchangeArtwork: `${ARTIST_BASE_URl}/exchage`,
 
-  makeAnOffer: `${ARTIST_BASE_URl}/make-offer`,
-
-
+  // Offer Apis Routes
+  makeAnOffer: `${ARTIST_BASE_URl}/user-offer`,
   getOfferList : `${ARTIST_BASE_URl}/artist-offers`,
-
-  acceptReject : `${ARTIST_BASE_URl}/accept-offer`,
-
+  acceptReject : `${ARTIST_BASE_URl}/artist-offer`,
   getUserOfferList : `${ARTIST_BASE_URl}/user-offers`,
 
+  // DashBoard Apis Routes
   getArtistDashboard : `${ARTIST_BASE_URl}/get-dashboard-data`,
 
+  // Coustom Uploaded Images Apis Route
   upLoadImg : `${ARTIST_BASE_URl}/check-upload-images`,
-
   getUpLoadedImage : `${ARTIST_BASE_URl}/get-upload-images`,
-
   getAllUpLoadedImages :  `${ARTIST_BASE_URl}/get-all-images`,
+  deleteUploadedImage : `${ARTIST_BASE_URl}/delete-uploaded-image`,
 
-  // Folllow Artist and UnFollow Artist 
-
-
-
+  // Folllow Artist and UnFollow Artist Apis
   followArtist :  `${ARTIST_BASE_URl}/follow`,
-
   unFollowArtist :  `${ARTIST_BASE_URl}/unfollow`,
+
+  // Favourite Artist Apis
+  getFavArtist : `${ARTIST_BASE_URl}/get-following`,
+
+  // offer
+
+  getOffer : `${ARTIST_BASE_URl}/get-offer`,
+
+
+  // Visualization Apis Routes
+
+  getVisualizationImages : `${ARTIST_BASE_URl}/get-visualise-data`,
 
 };
