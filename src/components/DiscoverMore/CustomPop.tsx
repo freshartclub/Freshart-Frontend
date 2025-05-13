@@ -4,13 +4,16 @@ import QRCode from "react-qr-code";
 import { useAppSelector } from "../../store/typedReduxHooks";
 import { useGetUpLoadedImgaes } from "./http/useGetUpLoadedImgaes";
 import useUploadImageMutation from "./http/useUploadImageMutation";
-import ImagePositioningPopup from "./ImagePositioningPopup";
+
+import ImagePlacementWizard from "./ImagePlacementWizard";
 
 const CustomPop = ({ onClose, artwork }) => {
   const [file, setFile] = useState(null);
   const [showPositioningPopup, setShowPositioningPopup] = useState(false);
   const [qrValue, setQrValue] = useState(`${window.location.origin}/discover_more/${artwork?.data?._id}/upload`);
   const [previewUrl, setPreviewUrl] = useState("");
+  const [height, setHeight] = useState(null)
+  const [width, setWidth] = useState(null)
 
   const { mutateAsync, isPending } = useUploadImageMutation();
   const { data, isLoading } = useGetUpLoadedImgaes(artwork?.data?._id);
@@ -37,7 +40,7 @@ const CustomPop = ({ onClose, artwork }) => {
       return;
     }
 
-    await mutateAsync({ id: artwork.data._id, file });
+    await mutateAsync({ id: artwork.data._id, file  , height , width});
     setShowPositioningPopup(true);
   };
 
@@ -46,14 +49,16 @@ const CustomPop = ({ onClose, artwork }) => {
   };
 
   if (showPositioningPopup) {
+
+    console.log("hello")
     return (
-      <ImagePositioningPopup
+      <ImagePlacementWizard
         onClose={() => {
           setShowPositioningPopup(false);
           onClose();
         }}
         artwork={artwork}
-        uploadedImage={data?.data ? data?.data?.image : null}
+      // uploadedImage={data?.data ? data?.data?.image : null}
       />
     );
   }
@@ -76,9 +81,8 @@ const CustomPop = ({ onClose, artwork }) => {
         <div className="flex h-[65vh] overflow-y-auto flex-col p-6 gap-6">
           <div className="flex flex-col md:flex-row gap-4">
             <div
-              className={`flex-1 border-2 border-dashed ${
-                dark ? "border-gray-600" : "border-gray-300"
-              } rounded-lg p-6 flex flex-col items-center justify-center`}
+              className={`flex-1 border-2 border-dashed ${dark ? "border-gray-600" : "border-gray-300"
+                } rounded-lg p-6 flex flex-col items-center justify-center`}
             >
               {previewUrl ? null : (
                 <div className="text-center mb-4">
@@ -142,14 +146,67 @@ const CustomPop = ({ onClose, artwork }) => {
                   type="text"
                   value={qrValue}
                   onChange={handleQrChange}
-                  className={`w-full px-3 py-2 border ${
-                    dark ? "bg-gray-700 border-gray-600 text-white" : "bg-white border-gray-300"
-                  } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
+                  className={`w-full px-3 py-2 border ${dark ? "bg-gray-700 border-gray-600 text-white" : "bg-white border-gray-300"
+                    } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
                   placeholder="Type something..."
                 />
               </div>
             </div>
+
           </div>
+          <h1 className="text-center">Enter Dimension</h1>
+          <div className="flex flex-col md:flex-row gap-4 md:gap-6 items-center justify-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+            
+            <div className="w-full md:w-auto">
+              <label
+                htmlFor="height-input"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >
+                Height
+              </label>
+              <div className="relative">
+                <input
+                  id="height-input"
+                
+                  
+                  placeholder="Enter height"
+                  value={height}
+                  onChange={(e) => setHeight(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                />
+                <span className="absolute right-3 top-2.5 text-sm text-gray-500 dark:text-gray-400">
+                  cm
+                </span>
+              </div>
+            </div>
+
+            <div className="w-full md:w-auto">
+              <label
+                htmlFor="width-input"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >
+                Width
+              </label>
+              <div className="relative">
+                <input
+                  id="width-input"
+                  
+                 
+                  placeholder="Enter width"
+                  value={width}
+                  onChange={(e) => setWidth(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                />
+                <span className="absolute right-3 top-2.5 text-sm text-gray-500 dark:text-gray-400">
+                  cm
+                </span>
+              </div>
+            </div>
+          </div>
+
+
+
+
           <div>
             <div className={`mt-4 text-xs ${dark ? "text-gray-400" : "text-gray-500"} text-center`}>
               <p>Scan this QR code with your device's camera</p>
@@ -165,9 +222,8 @@ const CustomPop = ({ onClose, artwork }) => {
         <div className={`${dark ? "bg-gray-700 border-gray-600" : "bg-gray-50 border-gray-200"} px-4 py-3 flex justify-end border-t`}>
           <button
             onClick={onClose}
-            className={`px-4 py-2 ${
-              dark ? "bg-gray-600 text-gray-200 hover:bg-gray-500" : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-            } rounded-md focus:outline-none focus:ring-2 ${dark ? "focus:ring-gray-500" : "focus:ring-gray-500"} mr-2`}
+            className={`px-4 py-2 ${dark ? "bg-gray-600 text-gray-200 hover:bg-gray-500" : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+              } rounded-md focus:outline-none focus:ring-2 ${dark ? "focus:ring-gray-500" : "focus:ring-gray-500"} mr-2`}
           >
             Cancel
           </button>

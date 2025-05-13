@@ -4,6 +4,7 @@ import useAcceptRejectMutationOffer from "./https/useAcceptRejectMutationOffer";
 import { useAppSelector } from "../../../store/typedReduxHooks";
 import { imageUrl } from "../../utils/baseUrls";
 import { useTranslation } from "react-i18next";
+import { validateYupSchema } from "formik";
 
 interface CounterOffer {
   _id: string;
@@ -49,12 +50,20 @@ const Offers = () => {
   const { data, isLoading } = useGetOffersList();
   const { mutate } = useAcceptRejectMutationOffer();
 
-  const handleAccept = (id: string) => {
-    setActionInProgress(id);
+  const handleAccept = (offer: string) => {
+
+    console.log(offer)
+    setActionInProgress(offer?._id);
     const value = {
-      id,
+      id : offer?._id,
       isAccepted: true,
+      offer : offer?.counterOffer[0]?.offerprice,
+      counterAccept:true,
+
     };
+
+    
+  
     mutate(value, {
       onSuccess: () => {
         setActionInProgress(null);
@@ -65,11 +74,14 @@ const Offers = () => {
     });
   };
 
-  const handleReject = (id: string) => {
-    setActionInProgressReject(id);
+  const handleReject = (offer: string) => {
+    setActionInProgressReject(offer?._id);
     const value = {
-      id,
+      id : offer?._id,
       isAccepted: false,
+     
+      offer: offer?.counterOffer[0]?.offerprice,
+      counterAccept:true,
     };
     mutate(value, {
       onSuccess: () => {
@@ -200,7 +212,7 @@ const Offers = () => {
                               className={`px-3 py-1 text-sm font-medium text-white bg-green-500 rounded-md hover:bg-green-600 transition-colors ${
                                 actionInProgress === offer._id ? "opacity-50 cursor-not-allowed" : ""
                               }`}
-                              onClick={() => handleAccept(offer._id)}
+                              onClick={() => handleAccept(offer)}
                               disabled={actionInProgress === offer._id}
                             >
                               {actionInProgress === offer._id ? "Processing..." : "Accept"}
@@ -209,7 +221,7 @@ const Offers = () => {
                               className={`px-3 py-1 text-sm font-medium text-white bg-red-500 rounded-md hover:bg-red-600 transition-colors ${
                                 actionInProgress === offer._id ? "opacity-50 cursor-not-allowed" : ""
                               }`}
-                              onClick={() => handleReject(offer._id)}
+                              onClick={() => handleReject(offer)}
                               disabled={actionInProgressReject === offer._id}
                             >
                               {actionInProgressReject === offer._id ? "Processing..." : "Reject"}

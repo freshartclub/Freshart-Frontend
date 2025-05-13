@@ -9,6 +9,7 @@ const ArtistDashboard = () => {
   const darkMode = useAppSelector((state) => state.theme.mode);
 
   const { data, isLoading } = useGetArtistDashboard();
+
   const platformDays = data?.createdDate ? new Date(data.createdDate) : null;
 
   let daysSinceCreation = null;

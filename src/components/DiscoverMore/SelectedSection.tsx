@@ -16,7 +16,7 @@ const SelectedSection = ({ data }) => {
 
   return (
     <div className={`mx-auto ${dark ? "bg-gray-900" : "bg-white"}`}>
-      <CommonCardData heading="From this artist" highlightData={data.artworks} />
+      <CommonCardData heading="From this artist" highlightData={data?.artworks} />
       <CommonCardData heading="Other Artworks you may like" highlightData={highlightData} isLoading={isLoading} />
     </div>
   );

@@ -1,29 +1,29 @@
 import React, { useState } from 'react'
 import useMakeAnOfferMutation from './http/useMakeAnOfferMutation';
 import { useAppSelector } from '../../store/typedReduxHooks';
+import { useGetMakeOfferDetials } from './http/useGetMakeOfferDetials';
 
 const MakeAnOfferPopUp = ({ setIsOpen, offerType, data }) => {
     const dark = useAppSelector((state) => state.theme.mode);
     const [offerPrice, setOfferPrice] = useState('');
-    const [offerComment, setOfferComment] = useState('');
+ 
+
+    const {data:offerData,isLoading} = useGetMakeOfferDetials(data?._id)
 
     const { mutateAsync, isPending } = useMakeAnOfferMutation();
 
-    console.log(data);
+    console.log(offerData);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(e);
-
         const values = {
             offer: offerPrice,
-            comment: offerComment,
             offerType,
             artistId: data?.owner?._id,
-            id: data?._id
+            id: data?._id,
+            counterAccept : true,
+            isAccepted:offerData?.data?.status === "pending" ? true : true,
         };
-
-        console.log(values);
         mutateAsync(values).then(() => {
             setIsOpen(false);
             setOfferPrice('');
@@ -75,6 +75,7 @@ const MakeAnOfferPopUp = ({ setIsOpen, offerType, data }) => {
                                 <input
                                     type="number"
                                     id="offer-price"
+                                    required
                                     className={`focus:ring-blue-500 focus:border-blue-500 block w-full pl-7 pr-12 py-2 sm:text-sm rounded-md ${dark ? 'bg-gray-700 border-gray-600 text-white' : 'border-gray-300'}`}
                                     placeholder="0.00"
                                     value={offerPrice}
@@ -87,31 +88,18 @@ const MakeAnOfferPopUp = ({ setIsOpen, offerType, data }) => {
                                 </div>
                             </div>
                         </div>
-
-                        <div className="mb-4">
-                            <label htmlFor="offer-comment" className={`block text-sm font-medium mb-1 ${dark ? 'text-gray-300' : 'text-gray-700'}`}>
-                                Add a Comment (Optional)
-                            </label>
-                            <textarea
-                                id="offer-comment"
-                                rows={3}
-                                className={`shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border rounded-md ${dark ? 'bg-gray-700 border-gray-600 text-white' : 'border-gray-300'}`}
-                                placeholder="Add any additional information about your offer..."
-                                value={offerComment}
-                                onChange={(e) => setOfferComment(e.target.value)}
-                            />
-                        </div>
-
                         <div className="flex justify-end space-x-3">
                             <button
                                 type="button"
                                 onClick={() => setIsOpen(false)}
+                                disabled={isPending}
                                 className={`px-4 py-2 text-sm font-medium rounded-md ${dark ? 'bg-gray-700 text-gray-200 hover:bg-gray-600' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
                             >
                                 Cancel
                             </button>
                             <button
                                 type="submit"
+                                disabled={isPending}
                                 className="px-4 py-2 text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 rounded-md"
                             >
                                 {isPending ? "Loading..." : "Submit Offer"}

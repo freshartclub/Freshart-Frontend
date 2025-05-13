@@ -336,7 +336,7 @@ const NavForHome = () => {
                       <div className="space-y-4">
                         <h3 className="uppercase font-bold dark:text-gray-400 text-gray-800">Series</h3>
                         <ul className="space-y-3">
-                          {selectSeriesPicklist?.[0]?.picklist?.map((item, i) => (
+                          {seriesPickListLoading ? <span>Loading....</span> :   selectSeriesPicklist?.[0]?.picklist?.map((item, i) => (
                             <li key={i} onClick={() => setIsDropdownOpen(false)}>
                               <span className="dark:text-white text-gray-600 cursor-pointer">{item?.name}</span>
                             </li>

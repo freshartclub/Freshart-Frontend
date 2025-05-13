@@ -7,7 +7,7 @@ import axiosInstance from "../../../utils/axios";
 
 async function AcceptRejectMutationOffer(input) {
     console.log(input)
-  return await axiosInstance.patch(`${ARTTIST_ENDPOINTS.acceptReject}/${input?.id}`, input);
+  return await axiosInstance.post(`${ARTTIST_ENDPOINTS.acceptReject}/${input?.id}`, input);
 }
 
 const useAcceptRejectMutationOffer = () => {
