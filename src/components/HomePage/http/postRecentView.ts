@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import axiosInstance from "../../utils/axios";
 import { ARTTIST_ENDPOINTS } from "../../../http/apiEndPoints/Artist";
 
-async function postRecentArtwork(input: any) {
+async function postRecentArtwork(input: string) {
   return axiosInstance.post(`${ARTTIST_ENDPOINTS.RecentArtWorks}/${input}`);
 }
 
@@ -12,11 +12,9 @@ const postRecentArtworkMutation = () => {
   return useMutation({
     mutationFn: postRecentArtwork,
 
-    onSuccess: async (res, input) => {
-      console.log(res.data.message);
-    },
+    onSuccess: async () => {},
     onError: (res) => {
-      toast.error(res.response.data.message);
+      toast.error(res?.response.data.message);
     },
   });
 };

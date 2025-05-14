@@ -25,17 +25,29 @@ import { IoIosAdd, IoIosClose } from "react-icons/io";
 import useAddToFavorite from "../HomePage/http/useAddToFavorite";
 import { useGetFavoriteList } from "../HomePage/http/useGetFavoriteList";
 import mark from "./assets/offer.png";
+import { useGetMakeOfferDetials } from "./http/useGetMakeOfferDetials";
+import { MdLink } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 
 const DiscoverContent = ({ data }) => {
   const dark = useAppSelector((state) => state.theme.mode);
+  const navigate = useNavigate();
 
   const { mutate: addToCartMutation, isPending } = useAddToCartMutation();
   const { data: cartItem } = useGetCartItems();
   const { mutate: likeMutation } = useLikeUnlikeArtworkMutation();
   const { data: likedItems } = useGetLikedItems();
+  const { mutateAsync: favoriteMutation } = useAddToFavorite();
+  const { data: offerData } = useGetMakeOfferDetials(data?._id);
 
   const [isOfferPopupOpen, setIsOfferPopupOpen] = useState(false);
   const [offerType, setOfferType] = useState("");
+  const [favoriteLists, setFavoriteLists] = useState<Record<string, string[]>>({});
+  const [isFavorite, setIsFavorite] = useState<string | null>(null);
+  const [showManageLists, setShowManageLists] = useState(false);
+  const [newLoading, setNewLoading] = useState(false);
+  const [newListName, setNewListName] = useState("");
+  const favoriteListRef = useRef<HTMLDivElement>(null);
 
   const token = useMemo(() => localStorage.getItem("auth_token"), []);
 
@@ -115,7 +127,7 @@ const DiscoverContent = ({ data }) => {
     });
   };
 
-  const handleMakeAnoffer = (type) => {
+  const handleMakeAnoffer = (type: string) => {
     setOfferType(type);
     setIsOfferPopupOpen(true);
   };
@@ -138,19 +150,7 @@ const DiscoverContent = ({ data }) => {
     flex flex-col gap-2
   `;
 
-  const [favoriteLists, setFavoriteLists] = useState<Record<string, string[]>>({});
-
-  const [isFavorite, setIsFavorite] = useState<string | null>(null);
-  const favoriteListRef = useRef<HTMLDivElement>(null);
-
-  const { mutateAsync: favoriteMutation } = useAddToFavorite();
-
-  const [showManageLists, setShowManageLists] = useState(false);
-
   const isFavorited = Object.values(favoriteLists).flat().includes(data?._id);
-  const [newLoading, setNewLoading] = useState(false);
-
-  const [newListName, setNewListName] = useState("");
 
   const handleFavoriteClick = useCallback((id: string) => {
     setIsFavorite((prev) => (prev === id ? null : id));
@@ -323,13 +323,25 @@ const DiscoverContent = ({ data }) => {
             <P variant={{ size: "base", theme: "dark", weight: "normal" }}>Price By Request</P>
           </Button>
         ) : (
-          <span
-            onClick={() => handleMakeAnoffer(purchaseType)}
-            className={`text-base cursor-pointer flex ${borderColorClass} items-center justify-center border p-2.5 gap-2 rounded-full w-full transition-colors hover:bg-gray-600 hover:!text-white`}
-          >
-            <IoMdPricetags />
-            Make an offer
-          </span>
+          <>
+            {offerData?.status == "pending" ? (
+              <span
+                onClick={() => navigate("/offer-request")}
+                className={`text-sm cursor-pointer flex ${borderColorClass} items-center justify-center border p-2.5 gap-2 rounded-full w-full transition-colors hover:bg-gray-600 hover:!text-white`}
+              >
+                <MdLink />
+                Offer Process Going on (View offer)
+              </span>
+            ) : (
+              <span
+                onClick={() => handleMakeAnoffer(purchaseType)}
+                className={`text-base cursor-pointer flex ${borderColorClass} items-center justify-center border p-2.5 gap-2 rounded-full w-full transition-colors hover:bg-gray-600 hover:!text-white`}
+              >
+                <IoMdPricetags />
+                Make an offer
+              </span>
+            )}
+          </>
         )}
       </div>
 

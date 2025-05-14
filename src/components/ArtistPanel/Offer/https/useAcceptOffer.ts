@@ -3,31 +3,27 @@ import toast from "react-hot-toast";
 import { ARTTIST_ENDPOINTS } from "../../../../http/apiEndPoints/Artist";
 import axiosInstance from "../../../utils/axios";
 
-
-
-async function AcceptRejectMutationOffer(input) {
-    console.log(input)
+async function acceptOffer(input: any) {
   return await axiosInstance.post(`${ARTTIST_ENDPOINTS.acceptReject}/${input?.id}`, input);
 }
 
-const useAcceptRejectMutationOffer = () => {
+const useAcceptOffer = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: AcceptRejectMutationOffer,
+    mutationFn: acceptOffer,
 
     onSuccess: async (res) => {
-      toast.success( res.message),
+      toast.success(res.data.message);
       queryClient.invalidateQueries({
-        queryKey: [ARTTIST_ENDPOINTS.getOfferList],
-        refetchType: "all",
+        queryKey: [ARTTIST_ENDPOINTS.getArtistOfferList],
       });
     },
-    
+
     onError: (error) => {
-      toast.error(error.response?.data?.message);
+      toast.error(error?.response.data?.message);
     },
   });
 };
 
-export default useAcceptRejectMutationOffer;
+export default useAcceptOffer;

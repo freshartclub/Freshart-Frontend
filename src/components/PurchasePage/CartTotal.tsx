@@ -1,15 +1,15 @@
+import getSymbolFromCurrency from "currency-symbol-map";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAppSelector } from "../../store/typedReduxHooks";
 import Button from "../ui/Button";
 import Header from "../ui/Header";
 import P from "../ui/P";
-import rightarr from "./assets/ArrowRight.png";
-import useCheckSubscription from "./http/useCheckSubscription";
-import { useState } from "react";
 import { imageUrl } from "../utils/baseUrls";
 import ArtworkExchangePopup from "./ArtworkExchangePopup";
+import rightarr from "./assets/ArrowRight.png";
+import useCheckSubscription from "./http/useCheckSubscription";
 import ReturnInstructionsPopup from "./ReturnInstructionsPopup";
-import { useAppSelector } from "../../store/typedReduxHooks";
-import getSymbolFromCurrency from "currency-symbol-map";
 
 const CartTotal = ({ data, state, handleRemove }) => {
   const discountAmounts = data.map((item) => {
@@ -74,7 +74,6 @@ const CartTotal = ({ data, state, handleRemove }) => {
 
         const ids = data?.map((item) => {
           if (!item?._id) {
-
             throw new Error("One or more items missing ID");
           }
           return item?._id;
@@ -82,7 +81,6 @@ const CartTotal = ({ data, state, handleRemove }) => {
 
         const payload = { ids };
         const result = await mutateAsync(payload);
-
 
         if (result?.data?.validArtworks) {
           setIsPopUpOpen(true);
@@ -117,16 +115,12 @@ const CartTotal = ({ data, state, handleRemove }) => {
   };
 
   const getUnavailableArtworkDetails = () => {
-    const unavailableIds = subscriptionStatus.details.map(
-      (item) => item.artworkId
-    );
+    const unavailableIds = subscriptionStatus.details.map((item) => item.artworkId);
     return data.filter((artwork) => unavailableIds.includes(artwork._id));
   };
 
   const getAvailableArtworkDetails = () => {
-    return data.filter((artwork) =>
-      subscriptionStatus.validArtworks.includes(artwork._id)
-    );
+    return data.filter((artwork) => subscriptionStatus.validArtworks.includes(artwork._id));
   };
 
   const handleSubscriptionAction = (action) => {
@@ -153,7 +147,6 @@ const CartTotal = ({ data, state, handleRemove }) => {
     }
   };
 
-
   const renderSubscriptionPopup = () => {
     if (!isPopUpOpen) return null;
 
@@ -162,16 +155,10 @@ const CartTotal = ({ data, state, handleRemove }) => {
 
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div
-          className={`p-6 rounded-lg max-w-md w-full ${dark ? "bg-gray-800 text-gray-200" : "bg-white"
-            }`}
-        >
+        <div className={`p-4 rounded-lg max-h-[90vh] overflow-y-auto max-w-md w-full ${dark ? "bg-gray-800 text-gray-200" : "bg-white"}`}>
           {subscriptionStatus.status === "in_current_plan" ? (
             <>
-              <Header
-                variant={{ size: "md", theme: dark ? "light" : "dark", weight: "semiBold" }}
-                className="mb-4"
-              >
+              <Header variant={{ size: "lg", theme: dark ? "light" : "dark", weight: "semiBold" }} className="mb-2">
                 Subscription Status
               </Header>
 
@@ -210,23 +197,13 @@ const CartTotal = ({ data, state, handleRemove }) => {
                   </P>
                   <ul className="mt-2 space-y-2">
                     {unavailableArtworks.map((artwork) => {
-                      const detail = subscriptionStatus.details.find(
-
-                        (d) => d.artworkId === artwork._id
-                      );
+                      const detail = subscriptionStatus.details.find((d) => d.artworkId === artwork._id);
                       return (
-                        <li
-                          key={artwork._id}
-                          className="flex items-start gap-2"
-                        >
+                        <li key={artwork._id} className="flex items-start gap-2">
                           <span className="text-red-600">✗</span>
                           <div>
                             <span>{artwork.artworkName}</span>
-                            {detail?.message && (
-                              <P variant={{ size: "sm", theme: "error" }}>
-                                {detail.message}
-                              </P>
-                            )}
+                            {detail?.message && <P variant={{ size: "sm", theme: "error" }}>{detail.message}</P>}
                           </div>
                         </li>
                       );
@@ -243,20 +220,14 @@ const CartTotal = ({ data, state, handleRemove }) => {
                 >
                   Confirm Exchange
                 </Button>
-                <Button
-                  onClick={() => setIsPopUpOpen(false)}
-                  variant={{ theme: dark ? "dark" : "primary", rounded: "full" }}
-                >
+                <Button onClick={() => setIsPopUpOpen(false)} variant={{ theme: dark ? "dark" : "primary", rounded: "full" }}>
                   Cancel
                 </Button>
               </div>
             </>
           ) : (
             <>
-              <Header
-                variant={{ size: "md", theme: dark ? "light" : "dark", weight: "semiBold" }}
-                className="mb-4"
-              >
+              <Header variant={{ size: "lg", theme: dark ? "light" : "dark", weight: "semiBold" }} className="mb-2">
                 Subscription Required
               </Header>
 
@@ -272,15 +243,9 @@ const CartTotal = ({ data, state, handleRemove }) => {
                 </P>
                 <ul className="mt-2 space-y-3">
                   {unavailableArtworks.map((artwork) => {
-                    const detail = subscriptionStatus?.details?.find(
-                      (d) => d.artworkId === artwork._id
-                    );
+                    const detail = subscriptionStatus?.details?.find((d) => d.artworkId === artwork._id);
                     return (
-                      <li
-                        key={artwork._id}
-                        className={`border p-3 rounded-lg ${dark ? "border-gray-600" : ""
-                          }`}
-                      >
+                      <li key={artwork._id} className={`border p-3 rounded-lg ${dark ? "border-gray-600" : ""}`}>
                         <div className="flex items-center gap-3">
                           {artwork.media.mainImage && (
                             <img
@@ -291,27 +256,18 @@ const CartTotal = ({ data, state, handleRemove }) => {
                           )}
                           <div className="flex justify-between gap-20 items-center">
                             <div>
-                              <P
-                                variant={{ size: "base", weight: "semiBold" }}
-                              >
-                                {artwork?.artworkName}
-                              </P>
+                              <P variant={{ size: "base", weight: "semiBold" }}>{artwork?.artworkName}</P>
                               <P
                                 variant={{
                                   size: "sm",
                                   theme: dark ? "light" : "dark",
                                 }}
                               >
-                                {artwork?.pricing?.currency}{" "}
-                                {artwork?.pricing?.basePrice}
+                                {artwork?.pricing?.currency} {artwork?.pricing?.basePrice}
                               </P>
                             </div>
                             <div>
-                              <P
-                                variant={{ size: "base", weight: "semiBold" }}
-                              >
-                                {detail?.planGrp}
-                              </P>
+                              <P variant={{ size: "base", weight: "semiBold" }}>{detail?.planGrp}</P>
                               <P
                                 variant={{
                                   size: "sm",
@@ -324,10 +280,7 @@ const CartTotal = ({ data, state, handleRemove }) => {
                           </div>
                         </div>
                         {detail?.message && (
-                          <P
-                            variant={{ size: "sm", theme: "error" }}
-                            className="mt-2"
-                          >
+                          <P variant={{ size: "sm", theme: "error" }} className="mt-2">
                             {detail?.message}
                           </P>
                         )}
@@ -339,18 +292,13 @@ const CartTotal = ({ data, state, handleRemove }) => {
 
               <div className="flex flex-col space-y-3">
                 <Button
-                  onClick={() =>
-                    handleSubscriptionAction("purchase_new_subscription")
-                  }
+                  onClick={() => handleSubscriptionAction("purchase_new_subscription")}
                   variant={{ theme: dark ? "dark" : "dark", rounded: "full" }}
                 >
                   Get New Subscription
                 </Button>
 
-                <Button
-                  onClick={() => handleSubscriptionAction("remove_from_cart")}
-                  variant={{ theme: "light", rounded: "full" }}
-                >
+                <Button onClick={() => handleSubscriptionAction("remove_from_cart")} variant={{ theme: "light", rounded: "full" }}>
                   Remove from Cart
                 </Button>
               </div>
@@ -363,48 +311,29 @@ const CartTotal = ({ data, state, handleRemove }) => {
 
   return (
     <>
-      <div
-        className={`p-6 mb-8 border rounded-lg shadow-sm ${dark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"}`}
-      >
+      <div className={`p-6 mb-8 border rounded-lg shadow-sm ${dark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"}`}>
         {state === "subscription" ? (
           <div className="text-center py-6">
-            <Header
-              className={`mb-4 ${dark ? "text-gray-300" : "text-[#2E4053]"}`}
-              variant={{ size: "lg", theme: "dark", weight: "bold" }}
-            >
+            <Header className={`mb-4 ${dark ? "text-gray-300" : "text-[#2E4053]"}`} variant={{ size: "lg", theme: "dark", weight: "bold" }}>
               Premium Subscription
             </Header>
-            <P
-              variant={{ size: "base", weight: "medium" }}
-              className={dark ? "text-gray-400" : "text-[#636363]"}
-            >
+            <P variant={{ size: "base", weight: "medium" }} className={dark ? "text-gray-400" : "text-[#636363]"}>
               Enjoy unlimited access to all artworks
             </P>
           </div>
         ) : (
           <div>
-            <Header
-              className={`mb-5 ${dark ? "text-gray-300" : "text-[#2E4053]"}`}
-              variant={{ size: "lg", theme: "dark", weight: "bold" }}
-            >
+            <Header className={`mb-5 ${dark ? "text-gray-300" : "text-[#2E4053]"}`} variant={{ size: "lg", theme: "dark", weight: "bold" }}>
               Order Summary
             </Header>
 
-            <div
-              className={`border-b pb-4 ${dark ? "border-gray-700" : "border-gray-200"}`}
-            >
+            <div className={`border-b pb-4 ${dark ? "border-gray-700" : "border-gray-200"}`}>
               {card_total?.map((card, index) => (
                 <div key={index} className="flex justify-between items-center py-2">
-                  <P
-                    variant={{ size: "base", weight: "medium" }}
-                    className={dark ? "text-gray-400" : "text-[#636363]"}
-                  >
+                  <P variant={{ size: "base", weight: "medium" }} className={dark ? "text-gray-400" : "text-[#636363]"}>
                     {card.title}
                   </P>
-                  <P
-                    variant={{ size: "base", weight: "medium" }}
-                    className={dark ? "text-gray-200" : "text-[#191C1F]"}
-                  >
+                  <P variant={{ size: "base", weight: "medium" }} className={dark ? "text-gray-200" : "text-[#191C1F]"}>
                     {card.value}
                   </P>
                 </div>
@@ -412,24 +341,9 @@ const CartTotal = ({ data, state, handleRemove }) => {
             </div>
 
             <div className={`flex justify-between items-center py-5 ${dark ? "text-gray-300" : "text-[#2E4053]"}`}>
-              <P
-                variant={{
-                  size: "lg",
-                  weight: "bold",
-                }}
-              >
-                Total Amount
-              </P>
-              <P
-                variant={{
-                  size: "xl",
-                  weight: "bold",
-                }}
-                className={dark ? "text-white" : "text-[#191C1F]"}
-              >
-                {getSymbolFromCurrency(
-                  card_total?.[0]?.value?.match(/[^\d.-]/g)?.[0] || "$"
-                )}
+              <P variant={{ size: "base", weight: "medium" }}>Total Amount</P>
+              <P variant={{ size: "base", weight: "medium" }} className={dark ? "text-white" : "text-[#191C1F]"}>
+                {getSymbolFromCurrency(card_total?.[0]?.value?.match(/[^\d.-]/g)?.[0] || "$")}
                 {(totalPrice - totalDiscountAmount).toFixed(2)}
               </P>
             </div>
@@ -457,38 +371,27 @@ const CartTotal = ({ data, state, handleRemove }) => {
         </Button>
       </div>
 
-
-
-      {state === "subscription" ? null : <div
-        className={`border rounded-md ${data?.cart?.length === 0 && "pointer-events-none opacity-50"
-          } ${dark ? "border-gray-700" : ""}`}
-      >
-        <Header
-          variant={{ size: "md", weight: "semiBold", theme: dark ? "light" : "dark" }}
-          className={`p-5 border-b-2 ${dark ? "border-b-gray-700" : "border-b-[#E4E7E9]"
-            }`}
-        >
-          Gift Card
-        </Header>
-        <div className="m-5">
-          <input
-            type="text"
-            placeholder="Coupon code"
-            className={`w-full outline-none p-3 border ${dark
-              ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400"
-              : ""
-              }`}
-          />
-
-          <Button
-            variant={{ fontSize: "sm", fontWeight: "600", rounded: "full" }}
-            className="bg-[#FF536B] text-white uppercase mt-5"
+      {state === "subscription" ? null : (
+        <div className={`border rounded-md ${data?.cart?.length === 0 && "pointer-events-none opacity-50"} ${dark ? "border-gray-700" : ""}`}>
+          <Header
+            variant={{ size: "md", weight: "semiBold", theme: dark ? "light" : "dark" }}
+            className={`p-5 border-b-2 ${dark ? "border-b-gray-700" : "border-b-[#E4E7E9]"}`}
           >
-            Apply Coupon
-          </Button>
-        </div>
-      </div>}
+            Gift Card
+          </Header>
+          <div className="m-5">
+            <input
+              type="text"
+              placeholder="Coupon code"
+              className={`w-full outline-none p-3 border ${dark ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400" : ""}`}
+            />
 
+            <Button variant={{ fontSize: "sm", fontWeight: "600", rounded: "full" }} className="bg-[#FF536B] text-white uppercase mt-5">
+              Apply Coupon
+            </Button>
+          </div>
+        </div>
+      )}
 
       {renderSubscriptionPopup()}
 
@@ -501,12 +404,7 @@ const CartTotal = ({ data, state, handleRemove }) => {
         />
       )}
 
-      {showReturnInstruction && (
-        <ReturnInstructionsPopup
-          setShowReturnInstruction={setShowReturnInstruction}
-          dark={dark}
-        />
-      )}
+      {showReturnInstruction && <ReturnInstructionsPopup setShowReturnInstruction={setShowReturnInstruction} dark={dark} />}
     </>
   );
 };

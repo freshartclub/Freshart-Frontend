@@ -1,10 +1,11 @@
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 import { useEffect, useRef, useState } from "react";
-import { FaBars, FaMoon, FaSearch, FaSun } from "react-icons/fa";
+import { FaBars, FaSearch } from "react-icons/fa";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { MdArrowBackIosNew, MdArrowForwardIos, MdKeyboardArrowDown, MdOutlineFilterList } from "react-icons/md";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useAppSelector } from "../../store/typedReduxHooks";
 import { useGetTechnic } from "../ArtistPanel/AddArtwork/http/useGetTechnic";
 import { useGetTheme } from "../ArtistPanel/AddArtwork/http/useGetTheme";
 import { useGetDiscipline } from "../pages/http/useGetDiscipline";
@@ -18,7 +19,6 @@ import { useDebounce } from "../utils/useDebounce";
 import CardSection from "./CardSection";
 import { useGetHoveredData } from "./http/useGetHoveredData";
 import { useGetPurchaseArtwork } from "./http/useGetPurchaseArtwork";
-import { useAppSelector } from "../../store/typedReduxHooks";
 
 const Purchase = () => {
   const [showAllDiscipline, setShowAllDiscipline] = useState(false);
@@ -156,7 +156,7 @@ const Purchase = () => {
     }));
   };
 
-const filteredDisciplineData = disciplineData?.data?.filter((item) => item?.isMain) || [];
+  const filteredDisciplineData = disciplineData?.data?.filter((item) => item?.isMain) || [];
 
   const matchesSelectedDisciplines = (item) => {
     if (!selectedOption.length) return true;
@@ -164,7 +164,8 @@ const filteredDisciplineData = disciplineData?.data?.filter((item) => item?.isMa
     return selectedOption.every((option) => disciplineNames.includes(option));
   };
 
-  const filteredTechnicData = techData?.data?.filter((item) => item?.isMain && matchesSelectedDisciplines(item)).map((item) => item?.technicName) || [];
+  const filteredTechnicData =
+    techData?.data?.filter((item) => item?.isMain && matchesSelectedDisciplines(item)).map((item) => item?.technicName) || [];
 
   const filteredThemeData = theData?.data?.filter((item) => item?.isMain && matchesSelectedDisciplines(item)).map((item) => item?.themeName) || [];
 
@@ -1105,7 +1106,7 @@ const filteredDisciplineData = disciplineData?.data?.filter((item) => item?.isMa
         </div>
       ) : (
         <div className={`px-4 sm:px-6 md:px-10 lg:px-14 py-6 ${dark ? "bg-gray-900" : "bg-gray-50"}`}>
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6">
             <div className="flex items-center gap-3">
               <button
                 className={`flex items-center gap-2 rounded-full px-4 py-2 shadow-md transition-colors ${
@@ -1126,8 +1127,8 @@ const filteredDisciplineData = disciplineData?.data?.filter((item) => item?.isMa
               </span>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-              <div className="relative flex-1 sm:w-64">
+            <div className="flex max-[450px]:flex-col gap-3 w-full md:w-auto">
+              <div className="relative flex-1 max-[450px]:w-full">
                 <input
                   type="text"
                   placeholder="Search artworks..."
@@ -1139,7 +1140,7 @@ const filteredDisciplineData = disciplineData?.data?.filter((item) => item?.isMa
                 />
                 <FaSearch className={`absolute left-3 top-3 ${dark ? "text-gray-400" : "text-gray-400"}`} />
               </div>
-              <div className="relative w-48">
+              <div className="relative w-48 max-[450px]:w-full">
                 <select
                   value={moreOptions.comingSoon === "Yes" ? "Coming Soon" : "All"}
                   onChange={(e) =>

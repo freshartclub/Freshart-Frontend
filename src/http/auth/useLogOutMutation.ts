@@ -39,7 +39,7 @@ const useLogOutMutation = () => {
       navigate("/login", { replace: true });
     },
     onError: (res) => {
-      toast.error(t(res.response.data.message));
+      toast.error(t(res?.response.data.message));
     },
   });
 };

@@ -51,7 +51,7 @@ export const ARTTIST_ENDPOINTS = {
   GetInviteData: `${ARTIST_BASE_URl}/get-invite`,
   GetInviteFullData: `${ARTIST_BASE_URl}/get-invite-data`,
 
-  //ArtWork Apis Routes 
+  //ArtWork Apis Routes
   GetAllArtwork: `${ARTIST_BASE_URl}/get-all-artworks`,
   addToWishList: `${ARTIST_BASE_URl}/item-to-wishlist`,
   getWishList: `${ARTIST_BASE_URl}/get-wishlist`,
@@ -68,33 +68,31 @@ export const ARTTIST_ENDPOINTS = {
 
   // Offer Apis Routes
   makeAnOffer: `${ARTIST_BASE_URl}/user-offer`,
-  getOfferList : `${ARTIST_BASE_URl}/artist-offers`,
-  acceptReject : `${ARTIST_BASE_URl}/artist-offer`,
-  getUserOfferList : `${ARTIST_BASE_URl}/user-offers`,
+  acceptReject: `${ARTIST_BASE_URl}/artist-offer`,
+  getUserOfferList: `${ARTIST_BASE_URl}/user-offers`,
+  getArtistOfferList: `${ARTIST_BASE_URl}/artist-offers`,
 
   // DashBoard Apis Routes
-  getArtistDashboard : `${ARTIST_BASE_URl}/get-dashboard-data`,
+  getArtistDashboard: `${ARTIST_BASE_URl}/get-dashboard-data`,
 
   // Coustom Uploaded Images Apis Route
-  upLoadImg : `${ARTIST_BASE_URl}/check-upload-images`,
-  getUpLoadedImage : `${ARTIST_BASE_URl}/get-upload-images`,
-  getAllUpLoadedImages :  `${ARTIST_BASE_URl}/get-all-images`,
-  deleteUploadedImage : `${ARTIST_BASE_URl}/delete-uploaded-image`,
+  upLoadImg: `${ARTIST_BASE_URl}/check-upload-images`,
+  getUpLoadedImage: `${ARTIST_BASE_URl}/get-upload-images`,
+  getAllUpLoadedImages: `${ARTIST_BASE_URl}/get-all-images`,
+  deleteUploadedImage: `${ARTIST_BASE_URl}/delete-uploaded-image`,
 
   // Folllow Artist and UnFollow Artist Apis
-  followArtist :  `${ARTIST_BASE_URl}/follow`,
-  unFollowArtist :  `${ARTIST_BASE_URl}/unfollow`,
+  followArtist: `${ARTIST_BASE_URl}/follow`,
+  unFollowArtist: `${ARTIST_BASE_URl}/unfollow`,
 
   // Favourite Artist Apis
-  getFavArtist : `${ARTIST_BASE_URl}/get-following`,
+  getFavArtist: `${ARTIST_BASE_URl}/get-following`,
 
   // offer
 
-  getOffer : `${ARTIST_BASE_URl}/get-offer`,
-
+  getOffer: `${ARTIST_BASE_URl}/get-offer`,
 
   // Visualization Apis Routes
 
-  getVisualizationImages : `${ARTIST_BASE_URl}/get-visualise-data`,
-
+  getVisualizationImages: `${ARTIST_BASE_URl}/get-visualise-data`,
 };

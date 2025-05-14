@@ -177,7 +177,7 @@ const DiscoverMore = () => {
                           src={`${imageUrl}/videos/${slide?.src}`}
                           className={`${
                             offensive && safeMode === "Off" ? "blur-lg brightness-75" : ""
-                          } shadow rounded-l mx-auto object-contain max-h-full max-w-full`}
+                          } shadow rounded-lg mx-auto object-contain max-h-full max-w-full`}
                           controls
                           autoPlay={currentSlide === index}
                         />

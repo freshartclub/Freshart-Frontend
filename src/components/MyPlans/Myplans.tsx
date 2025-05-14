@@ -11,7 +11,7 @@ import { FaTrash } from "react-icons/fa6";
 
 type Plan = {
   _id: string;
-  status: "active" | "not_started" | "inactive" | "cancelled" | "expired";
+  status: "active" | "cancelled" | "expired";
   type: "yearly" | "monthly";
   start_date: string;
   end_date: string;
@@ -31,7 +31,7 @@ type Plan = {
 
 const MyPlans = () => {
   const [plans, setPlans] = useState<Plan[]>([]);
-  const [activeTab, setActiveTab] = useState<"all" | "active" | "not_started" | "inactive">("all");
+  const [activeTab, setActiveTab] = useState<"all" | "active" | "cancelled" | "expired">("all");
   const [showModal, setShowModal] = useState(false);
   const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
   const [deletePop, setDeletePop] = useState({ isDelete: false, isConfirm: false, id: "", text: "" });
@@ -69,7 +69,7 @@ const MyPlans = () => {
     switch (status) {
       case "active":
         return <FaCheckCircle size={15} className="text-green-500" />;
-      case "not_started":
+      case "cancelled":
         return <FaClock size={15} className="text-yellow-500" />;
       case "expired":
         return <FaTimesCircle size={15} className="text-red-500" />;
@@ -133,7 +133,7 @@ const MyPlans = () => {
         </div>
 
         <div className={`mb-8 flex flex-wrap gap-2 border-b ${dark ? "border-gray-700" : "border-gray-200"}`}>
-          {["all", "active", "not_started", "expired"].map((tab) => (
+          {["all", "active", "cancelled", "expired"].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab as any)}
@@ -147,7 +147,7 @@ const MyPlans = () => {
                   : "text-gray-600 hover:bg-gray-100"
               }`}
             >
-              {tab === "all" ? "All Plans" : tab == "expired" ? "Expired/Cancelled" : tab.replace("_", " ")}
+              {tab === "all" ? "All Plans" : tab.replace("_", " ")}
             </button>
           ))}
         </div>
@@ -196,7 +196,7 @@ const MyPlans = () => {
                             ? "bg-red-100 px-1.5 py-1 rounded-full text-red-600"
                             : plan.status === "active"
                             ? "bg-green-100 px-1.5 py-1 rounded-full text-green-600"
-                            : plan.status === "not_started"
+                            : plan.status === "cancelled"
                             ? "bg-yellow-100 px-1.5 py-1 rounded-full text-yellow-600"
                             : "bg-red-100 px-1.5 py-1 rounded-full text-red-600"
                         } ${dark ? "text-opacity-90" : ""} flex items-center`}
@@ -237,12 +237,6 @@ const MyPlans = () => {
                         <span>Price:</span>
                         <span className="font-medium">€ {plan.type === "yearly" ? plan.plan.currentYearlyPrice : plan.plan.currentPrice}</span>
                       </div>
-                      {/* {plan.renewalDate && (
-                      <div className="flex justify-between">
-                        <span>Renews:</span>
-                        <span>{formatDate(plan.renewalDate)}</span>
-                      </div>
-                    )} */}
                     </div>
 
                     {plan.isScheduled ? (

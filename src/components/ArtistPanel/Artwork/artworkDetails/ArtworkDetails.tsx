@@ -23,7 +23,7 @@ const ArtworkDetails = () => {
   }, []);
 
   if (!data) return <Loader />;
-  
+
   return (
     <div className="container p-4 mx-auto">
       <ArtworkHeader />

@@ -1,9 +1,7 @@
-import { motion } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import { BsArrowsFullscreen } from "react-icons/bs";
 import { FaChevronLeft, FaChevronRight, FaImage } from "react-icons/fa";
-import { FaMinus, FaPlus } from "react-icons/fa6";
 import { MdKitchen, MdOutlineBathroom, MdOutlineBedroomParent, MdWorkOutline } from "react-icons/md";
 import { TbDeviceMobileRotated } from "react-icons/tb";
 import { useAppSelector } from "../../store/typedReduxHooks";
@@ -20,40 +18,41 @@ const ArtworkVisualizer = ({ artwork, isLoading, error }) => {
   const dark = useAppSelector((state) => state.theme.mode);
   const [selectedRoom, setSelectedRoom] = useState("livingRoom");
   const [selectedRoomImageIndex, setSelectedRoomImageIndex] = useState(0);
-  const [customImage, setCustomImage] = useState(null);
-  const [isFullscreen, setIsFullscreen] = useState(false);
   const [isCustom, setIsCustom] = useState(false);
   const [windowWidth, setWindowWidth] = useState(typeof window !== "undefined" ? window.innerWidth : 0);
   const [isMobileVisualize, setIsMobileVisualize] = useState(false);
-  const [selectedId, setSelectedId] = useState(null);
 
-  const { data, isLoading: visualizationLoading } = useGetArtVisulaization();
+  const { data } = useGetArtVisulaization();
 
   // Convert backend data to room images format
   const roomImages = useMemo(() => {
-    if (!data?.data) return {
-      livingRoom: [],
-      bedroom: [],
-      kitchen: [],
-      bathroom: [],
-      office: []
-    };
+    if (!data?.data)
+      return {
+        livingRoom: [],
+        bedroom: [],
+        kitchen: [],
+        bathroom: [],
+        office: [],
+      };
 
     return {
-      livingRoom: data.data["Living Room"]?.map(item => ({
-        url: `${imageUrl}/users/${item?.image}`,
-        ...item
-      })) || [],
+      livingRoom:
+        data.data["Living Room"]?.map((item) => ({
+          url: `${imageUrl}/users/${item?.image}`,
+          ...item,
+        })) || [],
       bedroom: [],
-      kitchen: data.data.Kitchen?.map(item => ({
-        url: `${imageUrl}/users/${item?.image}`,
-        ...item
-      })) || [],
+      kitchen:
+        data.data.Kitchen?.map((item) => ({
+          url: `${imageUrl}/users/${item?.image}`,
+          ...item,
+        })) || [],
       bathroom: [],
-      office: data.data.Office?.map(item => ({
-        url: `${imageUrl}/users/${item?.image}`,
-        ...item
-      })) || []
+      office:
+        data.data.Office?.map((item) => ({
+          url: `${imageUrl}/users/${item?.image}`,
+          ...item,
+        })) || [],
     };
   }, [data]);
 
@@ -108,31 +107,11 @@ const ArtworkVisualizer = ({ artwork, isLoading, error }) => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  useEffect(() => {
-    if (selectedRoom === "livingRoom" && roomImages.livingRoom.length > 0) {
-      setSelectedId(roomImages.livingRoom[0]?._id);
-    } else if (selectedRoom === "kitchen" && roomImages.kitchen.length > 0) {
-      setSelectedId(roomImages.kitchen[0]?._id);
-    } else if (selectedRoom === "office" && roomImages.office.length > 0) {
-      setSelectedId(roomImages.office[0]?._id);
-    }
-  }, [selectedRoom, roomImages]);
-
-  useEffect(() => {
-    const onFullScreenChange = () => {
-      setIsFullscreen(!!document.fullscreenElement);
-    };
-    document.addEventListener("fullscreenchange", onFullScreenChange);
-    return () => document.removeEventListener("fullscreenchange", onFullScreenChange);
-  }, []);
-
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
       visualizerRef?.current?.requestFullscreen().catch(console.error);
-      setIsFullscreen(true);
     } else {
       document.exitFullscreen();
-      setIsFullscreen(false);
     }
   };
 
@@ -145,21 +124,19 @@ const ArtworkVisualizer = ({ artwork, isLoading, error }) => {
 
   const currentRoom = rooms?.find((r) => r?.id === selectedRoom) || rooms[0];
   const currentImage = currentRoom.images[selectedRoomImageIndex % currentRoom.images.length];
-  const roomBackgroundImage = customImage || (currentImage?.url || placeholderImage);
+  const roomBackgroundImage = currentImage?.url || placeholderImage;
 
   const bgClass = dark ? "bg-gray-900" : "bg-gray-50";
   const buttonBgClass = dark ? "bg-gray-800" : "bg-white";
   const buttonHoverClass = dark ? "hover:bg-gray-700" : "hover:bg-gray-100";
 
   const isMobile = windowWidth < 640;
-  const isTablet = windowWidth >= 640 && windowWidth < 1024;
 
   // Calculate artwork position and size based on backend data
   const getArtworkPositionAndSize = () => {
-    if (!currentImage) return { width: 100, height: 100, left: '50%', top: '50%' };
+    if (!currentImage) return { width: 100, height: 100, left: "50%", top: "50%" };
 
     const { dimension_weight: widthCm, dimension_height: heightCm, area_x1, area_y1 } = currentImage;
-
 
     const widthPx = widthCm;
     const heightPx = heightCm * 10;
@@ -172,28 +149,26 @@ const ArtworkVisualizer = ({ artwork, isLoading, error }) => {
       width: widthPx,
       height: heightPx,
       left,
-      top
+      top,
     };
   };
 
   const artworkStyle = getArtworkPositionAndSize();
-
-  console.log(artworkStyle)
-
-  console.log(data?.data)
 
   return (
     <div className={`${bgClass} rounded-lg shadow-lg overflow-hidden w-full`}>
       <Header variant={{ size: "lg", theme: dark ? "light" : "dark", weight: "semiBold" }} className="p-4 border-b flex justify-between items-center">
         <span className="truncate">Visualize in Your Space</span>
         <div className="flex gap-2">
-          {isMobileVisualize ? null : <button
-            onClick={toggleFullscreen}
-            className={`p-2 rounded-full ${buttonBgClass} ${buttonHoverClass} transition-colors duration-200`}
-            aria-label="Toggle fullscreen"
-          >
-            <BsArrowsFullscreen size={18} />
-          </button>}
+          {isMobileVisualize ? null : (
+            <button
+              onClick={toggleFullscreen}
+              className={`p-2 rounded-full ${buttonBgClass} ${buttonHoverClass} transition-colors duration-200`}
+              aria-label="Toggle fullscreen"
+            >
+              <BsArrowsFullscreen size={18} />
+            </button>
+          )}
           <button
             onClick={handleMobileVisualization}
             className={`p-2 rounded-full ${buttonBgClass} ${buttonHoverClass} transition-colors duration-200`}
@@ -216,14 +191,15 @@ const ArtworkVisualizer = ({ artwork, isLoading, error }) => {
                 setSelectedRoom(room.id);
                 setSelectedRoomImageIndex(0);
               }}
-              className={`flex flex-col items-center px-3 py-2 sm:px-4 rounded-lg transition-colors ${selectedRoom === room.id
-                ? dark
-                  ? "bg-gray-700 text-white"
-                  : "bg-gray-200 text-gray-800"
-                : dark
+              className={`flex flex-col items-center px-3 py-2 sm:px-4 rounded-lg transition-colors ${
+                selectedRoom === room.id
+                  ? dark
+                    ? "bg-gray-700 text-white"
+                    : "bg-gray-200 text-gray-800"
+                  : dark
                   ? "text-gray-400 hover:bg-gray-800"
                   : "text-gray-600 hover:bg-gray-100"
-                }`}
+              }`}
               disabled={room.images.length === 0}
             >
               <RoomIcon size={20} className="sm:text-xl" />
@@ -233,14 +209,15 @@ const ArtworkVisualizer = ({ artwork, isLoading, error }) => {
         })}
         <button
           onClick={handleCustom}
-          className={`flex flex-col items-center px-3 py-2 sm:px-4 rounded-lg transition-colors ${selectedRoom === "custom"
-            ? dark
-              ? "bg-gray-700 text-white"
-              : "bg-gray-200 text-gray-800"
-            : dark
+          className={`flex flex-col items-center px-3 py-2 sm:px-4 rounded-lg transition-colors ${
+            selectedRoom === "custom"
+              ? dark
+                ? "bg-gray-700 text-white"
+                : "bg-gray-200 text-gray-800"
+              : dark
               ? "text-gray-400 hover:bg-gray-800"
               : "text-gray-600 hover:bg-gray-100"
-            }`}
+          }`}
         >
           <AiOutlinePlus size={20} className="sm:text-xl" />
           <span className="text-xs mt-1 whitespace-nowrap">Custom</span>
@@ -249,21 +226,19 @@ const ArtworkVisualizer = ({ artwork, isLoading, error }) => {
 
       {selectedRoom !== "custom" && currentRoom.images && currentRoom.images.length > 1 && (
         <div className="flex overflow-x-auto scrollbar-thin p-2 border-b gap-2 md:justify-center">
-          {currentRoom?.images.map((img, index) => (
+          {currentRoom?.images.map((img, index: number) => (
             <button
               key={index}
-              onClick={() => {
-                setSelectedRoomImageIndex(index);
-                setSelectedId(img?._id);
-              }}
-              className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-colors ${selectedRoomImageIndex === index
-                ? dark
-                  ? "bg-gray-700 text-white"
-                  : "bg-gray-200 text-gray-800"
-                : dark
+              onClick={() => setSelectedRoomImageIndex(index)}
+              className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-colors ${
+                selectedRoomImageIndex === index
+                  ? dark
+                    ? "bg-gray-700 text-white"
+                    : "bg-gray-200 text-gray-800"
+                  : dark
                   ? "bg-gray-800 text-gray-400"
                   : "bg-gray-100 text-gray-600"
-                }`}
+              }`}
             >
               {index + 1}
             </button>
@@ -275,7 +250,8 @@ const ArtworkVisualizer = ({ artwork, isLoading, error }) => {
         style={{
           aspectRatio: "3/4",
         }}
-        className="flex justify-center h-[80vh] w-full  ">
+        className="flex justify-center h-[80vh] w-full  "
+      >
         <div
           ref={visualizerRef}
           className="relative w-full h-[80vh] overflow-hidden  "
@@ -284,7 +260,7 @@ const ArtworkVisualizer = ({ artwork, isLoading, error }) => {
             backgroundImage: `url(${roomBackgroundImage})`,
             backgroundSize: "contain",
             backgroundPosition: "center",
-            backgroundRepeat: "no-repeat"
+            backgroundRepeat: "no-repeat",
           }}
         >
           {currentImage && (
@@ -295,22 +271,16 @@ const ArtworkVisualizer = ({ artwork, isLoading, error }) => {
                 height: `${artworkStyle.height}px`,
                 left: artworkStyle.left,
                 top: artworkStyle.top,
-                transform: 'translate(-50%, -50%)',
+                transform: "translate(-50%, -50%)",
               }}
             >
               <img
-                src={
-                  artwork?.data?.media?.mainImage
-                    ? `${lowImageUrl}/${artwork.data.media.mainImage}`
-                    : placeholderImage
-                }
+                src={artwork?.data?.media?.mainImage ? `${lowImageUrl}/${artwork.data.media.mainImage}` : placeholderImage}
                 alt={artwork?.artworkName || "Artwork"}
                 className="shadow-sm  object-contain w-[35vh] h-[35vh]"
-
               />
             </div>
           )}
-
 
           {selectedRoom !== "custom" && currentRoom.images && currentRoom.images.length > 1 && (
             <div className="absolute top-4 right-4 flex gap-2">

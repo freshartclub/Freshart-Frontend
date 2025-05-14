@@ -1,7 +1,5 @@
 import { useRef, useState } from "react";
-
 import logoWhite from "/logofarcwhite.svg";
-
 import { useTranslation } from "react-i18next";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IoNotifications } from "react-icons/io5";
@@ -59,11 +57,7 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
   };
 
   const handleLogOut = () => {
-    try {
-      logOut();
-    } catch (error) {
-      console.error(error);
-    }
+    logOut();
   };
 
   const handleProfile = () => {

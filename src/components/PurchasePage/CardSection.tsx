@@ -6,7 +6,6 @@ import { IoIosAdd } from "react-icons/io";
 import { IoHeartOutline } from "react-icons/io5";
 import { MdOutlineOpenInNew } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-import "../../App.css";
 import postRecentArtworkMutation from "../HomePage/http/postRecentView";
 import useAddToFavorite from "../HomePage/http/useAddToFavorite";
 import { useGetFavoriteList } from "../HomePage/http/useGetFavoriteList";

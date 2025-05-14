@@ -4,7 +4,7 @@ import { ARTTIST_ENDPOINTS } from "../../../http/apiEndPoints/Artist";
 import axiosInstance from "../../utils/axios";
 
 async function addToCart(values: any) {
-  return await axiosInstance.post(`${ARTTIST_ENDPOINTS.makeAnOffer}/${values?.id}`, values);  
+  return await axiosInstance.post(`${ARTTIST_ENDPOINTS.makeAnOffer}/${values?.id}`, values);
 }
 
 const useMakeAnOfferMutation = () => {
@@ -14,11 +14,13 @@ const useMakeAnOfferMutation = () => {
     mutationFn: addToCart,
 
     onSuccess: async (res) => {
+      toast.success(res.data.message);
       queryClient.invalidateQueries({
-        queryKey: [ARTTIST_ENDPOINTS.makeAnOffer],    
-        refetchType: "all",
+        queryKey: [ARTTIST_ENDPOINTS.makeAnOffer],
       });
-      toast.success(res?.data?.message);
+      queryClient.invalidateQueries({
+        queryKey: [ARTTIST_ENDPOINTS.getUserOfferList],
+      });
     },
     onError: (error) => {
       toast.error(error.response?.data?.message);
