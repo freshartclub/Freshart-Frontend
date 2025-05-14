@@ -144,7 +144,11 @@ const UserOfferRequest = () => {
           </div>
 
           {filteredData.length === 0 ? (
-            <div className={`text-center py-10 ${dark ? "text-gray-400" : "text-gray-500"}`}>No {activeTab.toLowerCase()} offers found</div>
+            <div
+              className={`text-center border rounded-lg capitalize py-10 ${dark ? "text-gray-400 border-gray-600" : "text-gray-500 border-gray-300"}`}
+            >
+              No {activeTab.toLowerCase()} offers found
+            </div>
           ) : (
             <>
               <div className="overflow-x-auto rounded-lg border border-gray-600 shadow-sm">

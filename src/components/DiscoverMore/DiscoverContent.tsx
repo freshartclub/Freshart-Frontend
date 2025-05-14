@@ -71,18 +71,7 @@ const DiscoverContent = ({ data }) => {
   };
 
   const getPriceDisplay = () => {
-    if (purchaseType === "Upward Offer" || purchaseType === "Downward Offer") {
-      return (
-        <P
-          className={`my-3 ${dark ? "text-gray-300" : "text-[#999999]"} !text-[13px]`}
-          variant={{ size: "small", theme: dark ? "light" : "dark", weight: "medium" }}
-        >
-          Offer Type: {purchaseType}
-        </P>
-      );
-    }
-
-    if (hasBasePrice) {
+    if (hasBasePrice && purchaseType !== "Upward Offer" && purchaseType !== "Downward Offer") {
       const currencySymbol = getSymbolFromCurrency(data.pricing.currency?.slice(0, 3));
       return (
         <Header variant={{ size: "lg", theme: dark ? "light" : "dark", weight: "semiBold" }} className="my-2">
@@ -146,7 +135,7 @@ const DiscoverContent = ({ data }) => {
 
   const containerClasses = `
     ${isCommingSoon ? "pointer-events-none cursor-not-allowed opacity-50" : ""} 
-    ${hasBasePrice ? "" : "mt-10"}
+    ${hasBasePrice && purchaseType !== "Upward Offer" && purchaseType !== "Downward Offer" ? "mt-3" : "mt-6"}
     flex flex-col gap-2
   `;
 
@@ -284,6 +273,25 @@ const DiscoverContent = ({ data }) => {
             {data?.additionalInfo?.length || "0"} × {data?.additionalInfo?.width || "0"} × {data?.additionalInfo?.height || "0"} cm
           </P>
         </div>
+        {isSubscription && (
+          <div className="flex items-center gap-3">
+            <P className="!text-[13px]" variant={{ size: "small", theme: dark ? "light" : "dark", weight: "medium" }}>
+              Purchase Type:
+            </P>
+            <span className="bg-[#EE1D52] text-xs text-white px-2 rounded-full">Yes</span>
+          </div>
+        )}
+        {(purchaseType === "Upward Offer" || purchaseType === "Downward Offer") && (
+          <div className="flex items-center gap-3">
+            <P
+              className={`${dark ? "text-gray-300" : "text-[#999999]"} !text-[13px]`}
+              variant={{ size: "small", theme: dark ? "light" : "dark", weight: "medium" }}
+            >
+              Offer Type:
+            </P>
+            <span className="bg-[#EE1D52] text-xs text-white px-2 rounded-full">{purchaseType}</span>
+          </div>
+        )}
       </div>
 
       {getPriceDisplay()}
@@ -307,11 +315,7 @@ const DiscoverContent = ({ data }) => {
           </Button>
         ) : null}
 
-        {isSubscription ? (
-          <Button className="text-base flex items-center justify-center border rounded-full w-full">
-            <P variant={{ size: "base", theme: "dark", weight: "normal" }}>Purchase Type: {data?.commercialization?.purchaseOption}</P>
-          </Button>
-        ) : purchaseType === "Fixed Price" ? null : purchaseType === "Price By Request" ? (
+        {purchaseType === "Fixed Price" ? null : purchaseType === "Price By Request" ? (
           <Button
             variant={{
               theme: dark ? "light" : "",
@@ -323,25 +327,27 @@ const DiscoverContent = ({ data }) => {
             <P variant={{ size: "base", theme: "dark", weight: "normal" }}>Price By Request</P>
           </Button>
         ) : (
-          <>
-            {offerData?.status == "pending" ? (
-              <span
-                onClick={() => navigate("/offer-request")}
-                className={`text-sm cursor-pointer flex ${borderColorClass} items-center justify-center border p-2.5 gap-2 rounded-full w-full transition-colors hover:bg-gray-600 hover:!text-white`}
-              >
-                <MdLink />
-                Offer Process Going on (View offer)
-              </span>
-            ) : (
-              <span
-                onClick={() => handleMakeAnoffer(purchaseType)}
-                className={`text-base cursor-pointer flex ${borderColorClass} items-center justify-center border p-2.5 gap-2 rounded-full w-full transition-colors hover:bg-gray-600 hover:!text-white`}
-              >
-                <IoMdPricetags />
-                Make an offer
-              </span>
-            )}
-          </>
+          (purchaseType === "Upward Offer" || purchaseType === "Downward Offer") && (
+            <>
+              {offerData?.status == "pending" ? (
+                <span
+                  onClick={() => navigate("/offer-request")}
+                  className={`text-sm cursor-pointer flex ${borderColorClass} items-center justify-center border p-2.5 gap-2 rounded-full w-full transition-colors hover:bg-gray-600 hover:!text-white`}
+                >
+                  <MdLink />
+                  Offer Process Going on (View offer)
+                </span>
+              ) : (
+                <span
+                  onClick={() => handleMakeAnoffer(purchaseType)}
+                  className={`text-base cursor-pointer flex ${borderColorClass} items-center justify-center border p-2.5 gap-2 rounded-full w-full transition-colors hover:bg-gray-600 hover:!text-white`}
+                >
+                  <IoMdPricetags />
+                  Make an offer
+                </span>
+              )}
+            </>
+          )
         )}
       </div>
 

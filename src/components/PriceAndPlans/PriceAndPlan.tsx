@@ -24,7 +24,6 @@ const PriceAndPlan = () => {
   const [showAddress, setShowAddress] = useState(false);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const [showSubscribeConfirm, setShowSubscribeConfirm] = useState(false);
-  const [userNum, setUserNum] = useState("");
   const [billingCycle, setBillingCycle] = useState("monthly");
 
   const [toPhoneVerify, setToPhoneVerify] = useState(false);
@@ -111,12 +110,10 @@ const PriceAndPlan = () => {
   const handleSubscribe = () => {
     const input = {
       planId: selectedPlan._id,
-      user_num: userNum,
       plan_type: billingCycle === "yearly" ? "yearly" : "monthly",
     };
 
     againMutateAsync(input).then(() => {
-      setUserNum("");
       setIsConfirmationOpen(false);
       setShowSubscribeConfirm(false);
       navigate("/my_plans");
@@ -494,10 +491,7 @@ const PriceAndPlan = () => {
                       Cancel
                     </button>
                     <button
-                      onClick={() => {
-                        handleSubscribe();
-                        setShowSubscribeConfirm(false);
-                      }}
+                      onClick={() => handleSubscribe()}
                       className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 transition-colors duration-200"
                     >
                       {againPending ? "Subscribing..." : "Confirm Subscription"}
