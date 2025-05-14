@@ -15,7 +15,7 @@ import ArtistGuard from "./components/ArtistGuard";
 import { useAppDispatch, useAppSelector } from "./store/typedReduxHooks";
 import i18n from "./components/utils/i18n.ts";
 import KbDetails from "./components/pages/KbDetails.tsx";
-import UserOfferRequest from "./components/ui/UserOfferRequest.tsx";
+import UserOfferRequest from "./components/UserOffer/UserOfferRequest.tsx";
 
 // Lazy loading the components
 const UserCircleList = lazy(() => import("./components/CIrcle/UserCircleList"));

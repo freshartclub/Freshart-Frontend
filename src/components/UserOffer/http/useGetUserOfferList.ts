@@ -11,6 +11,5 @@ export const useGetUserOfferList = () => {
   return useQuery({
     queryKey: [ARTTIST_ENDPOINTS.getUserOfferList],
     queryFn: fetchData,
-    refetchOnWindowFocus: false,
   });
 };

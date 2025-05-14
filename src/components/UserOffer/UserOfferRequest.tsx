@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { useAppSelector } from "../../store/typedReduxHooks";
-import { useGetUserOfferList } from "./https/useGetUserOfferList";
-import useAddToCartMutation from "../DiscoverMore/http/useAddToCartMutation";
-import Loader from "./Loader";
-import { imageUrl, lowImageUrl } from "../utils/baseUrls";
-import { FaChevronDown, FaChevronUp, FaShoppingCart, FaClock, FaCheck, FaTimes, FaHandshake, FaExchangeAlt, FaUser, FaPalette } from "react-icons/fa";
-import useMakeAnOfferMutation from "../DiscoverMore/http/useMakeAnOfferMutation";
+import { FaCheck, FaChevronDown, FaChevronUp, FaClock, FaExchangeAlt, FaHandshake, FaShoppingCart, FaTimes } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { useAppSelector } from "../../store/typedReduxHooks";
+import useAddToCartMutation from "../DiscoverMore/http/useAddToCartMutation";
+import useMakeAnOfferMutation from "../DiscoverMore/http/useMakeAnOfferMutation";
+import { useGetUserOfferList } from "./http/useGetUserOfferList";
+import Loader from "../ui/Loader";
+import { imageUrl, lowImageUrl } from "../utils/baseUrls";
 
 interface CounterOffer {
   _id: string;
