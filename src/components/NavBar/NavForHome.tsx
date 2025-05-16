@@ -12,56 +12,38 @@ import { useAppSelector } from "../../store/typedReduxHooks";
 import { useGetCartItems } from "../pages/http/useGetCartItems";
 import { useGetDiscipline } from "../pages/http/useGetDiscipline";
 import ShoppingCard from "../pages/ShoppingCard";
-import { useGetArtistDetails } from "../UserProfile/http/useGetDetails";
 import { imageUrl } from "../utils/baseUrls";
 import useClickOutside from "../utils/useClickOutside";
 import { useGetPicklist } from "./http/getPickList";
 import logo from "/logofarcwhite.svg";
 
 const NavForHome = () => {
+  const isArtist = useAppSelector((state) => state?.user?.isArtist) || null;
+  const user = useAppSelector((state) => state.user.user);
+  const isAuthorized = useAppSelector((state) => state.user.isAuthorized);
+  const navigate = useNavigate();
+
   const [isOpen, setIsOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isProfileDropdown, setIsProfileDropdown] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
-  const navigate = useNavigate();
 
   const closePopup = useRef(null);
   const dropDownPopup = useRef(null);
   const mobileNavPopup = useRef(null);
 
-  const { data: seriesPickList, isLoading: seriesPickListLoading } = useGetPicklist();
-  const { data: cartItem, isLoading: cartLoading } = useGetCartItems();
+  const { data: seriesPickList } = useGetPicklist();
+  const { data: cartItem } = useGetCartItems();
   const { data: disciplineData } = useGetDiscipline();
+  const { mutate: logOut } = useLogOutMutation();
 
   const selectSeriesPicklist = seriesPickList?.data?.filter((item) => item?.picklistName === "Series");
-
-  const { isLoading, refetch } = useGetArtistDetails();
-
-  useEffect(() => {
-    refetch();
-  }, []);
-
-  const isArtist = useAppSelector((state) => state?.user?.isArtist) || null;
-  const user = useAppSelector((state) => state.user.user);
-
-  useEffect(() => {
-    if (isLoading  || cartLoading) {
-      setLoading(true);
-    } else {
-      setLoading(false);
-    }
-  }, [isLoading, cartLoading, ]);
-
-  const token = localStorage.getItem("auth_token");
-  const isAuthorized = useAppSelector((state) => state.user.isAuthorized);
-  const { mutate: logOut } = useLogOutMutation();
 
   useClickOutside(closePopup, () => {
     setIsProfileDropdown(false);
@@ -152,7 +134,7 @@ const NavForHome = () => {
         }`}
       >
         <div className="flex justify-between items-center max-w-7xl mx-auto">
-          {token && isAuthorized ? (
+          {isAuthorized ? (
             <div className="w-full relative flex flex-col gap-2 items-center">
               <div className="w-full flex justify-between items-center">
                 <button onClick={() => setIsOpen(!isOpen)} className="text-white focus:outline-none lg:hidden" aria-label="Toggle menu">
@@ -174,9 +156,7 @@ const NavForHome = () => {
                     onBlur={() => setIsFocused(false)}
                   />
                   <span className={`absolute top-1/2 -translate-y-1/2 transition-all duration-300 ${isFocused ? "right-0 pr-2" : "left-0 pl-2"}`}>
-                    {inputValue === "" ? (
-                      <GoSearch size="1.3em" className="text-gray-600" />
-                    ) : null}
+                    {inputValue === "" ? <GoSearch size="1.3em" className="text-gray-600" /> : null}
                   </span>
                 </div>
 
@@ -336,11 +316,15 @@ const NavForHome = () => {
                       <div className="space-y-4">
                         <h3 className="uppercase font-bold dark:text-gray-400 text-gray-800">Series</h3>
                         <ul className="space-y-3">
-                          {seriesPickListLoading ? <span>Loading....</span> :   selectSeriesPicklist?.[0]?.picklist?.map((item, i) => (
-                            <li key={i} onClick={() => setIsDropdownOpen(false)}>
-                              <span className="dark:text-white text-gray-600 cursor-pointer">{item?.name}</span>
-                            </li>
-                          ))}
+                          {seriesPickListLoading ? (
+                            <span>Loading....</span>
+                          ) : (
+                            selectSeriesPicklist?.[0]?.picklist?.map((item, i) => (
+                              <li key={i} onClick={() => setIsDropdownOpen(false)}>
+                                <span className="dark:text-white text-gray-600 cursor-pointer">{item?.name}</span>
+                              </li>
+                            ))
+                          )}
                         </ul>
                       </div>
 

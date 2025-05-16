@@ -11,52 +11,32 @@ import { useAppSelector } from "../../store/typedReduxHooks";
 import { useGetCartItems } from "../pages/http/useGetCartItems";
 import { useGetDiscipline } from "../pages/http/useGetDiscipline";
 import ShoppingCard from "../pages/ShoppingCard";
-import { useGetArtistDetails } from "../UserProfile/http/useGetDetails";
 import { imageUrl } from "../utils/baseUrls";
 import useClickOutside from "../utils/useClickOutside";
 import { useGetPicklist } from "./http/getPickList";
 import logo from "/logofarcwhite.svg";
 
 const NavBar = () => {
+  const isArtist = useAppSelector((state) => state?.user?.isArtist) || null;
+  const user = useAppSelector((state) => state.user.user);
+  const isAuthorized = useAppSelector((state) => state.user.isAuthorized);
+  const navigate = useNavigate();
+
   const [isOpen, setIsOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isProfileDropdown, setIsProfileDropdown] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
 
   const closePopup = useRef(null);
   const dropDownPopup = useRef(null);
   const mobileNavPopup = useRef(null);
 
-  const token = localStorage.getItem("auth_token");
-
-  const { data: seriesPickList, isLoading: seriesPickListLoading } = useGetPicklist();
-
-  const { data: cartItem, isLoading: cartLoading } = useGetCartItems();
+  const { data: seriesPickList } = useGetPicklist();
+  const { data: cartItem } = useGetCartItems();
   const { data: disciplineData } = useGetDiscipline();
-
   const selectSeriesPicklist = seriesPickList?.data?.filter((item) => item?.picklistName === "Series");
 
-  const { isLoading, refetch } = useGetArtistDetails();
-
-  useEffect(() => {
-    refetch();
-  }, []);
-
-  const isArtist = useAppSelector((state) => state?.user?.isArtist) || null;
-  const user = useAppSelector((state) => state.user.user);
-
-  useEffect(() => {
-    if (isLoading || seriesPickListLoading || cartLoading) {
-      setLoading(true);
-    } else {
-      setLoading(false);
-    }
-  }, [isLoading, cartLoading, seriesPickListLoading]);
-
-  const isAuthorized = useAppSelector((state) => state.user.isAuthorized);
   const { mutate: logOut } = useLogOutMutation();
 
   useClickOutside(closePopup, () => {
@@ -105,7 +85,7 @@ const NavBar = () => {
     <>
       <nav className="bg-[#102030] py-4 px-6 relative">
         <div className="flex justify-between items-center">
-          {token && isAuthorized ? (
+          {isAuthorized ? (
             <>
               <button onClick={() => setIsOpen(!isOpen)} className="text-white focus:outline-none lg:hidden" aria-label="Toggle menu">
                 {isOpen ? <HiOutlineX size={28} /> : <HiOutlineMenu size={28} />}

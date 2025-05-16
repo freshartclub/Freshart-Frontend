@@ -4,9 +4,7 @@ import { ARTTIST_ENDPOINTS } from "../../../http/apiEndPoints/Artist";
 
 export const useGetArtVisulaization = () => {
   async function fetchData() {
-    const { data } = await axiosInstance.get(
-      `${ARTTIST_ENDPOINTS.getVisualizationImages}`
-    );
+    const { data } = await axiosInstance.get(`${ARTTIST_ENDPOINTS.getVisualizationImages}`);
 
     return data;
   }
