@@ -213,9 +213,9 @@ const NavBar = () => {
                     <ShoppingCard isOpen={isSidebarOpen} onClose={toggleSidebar} />
                     <button onClick={toggleSidebar} className="relative focus:outline-none">
                       <img src={bag} alt="bag" className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
-                      {cartItem?.data?.cart?.length > 0 && (
+                      {cartItem?.cart?.length > 0 && (
                         <span className="absolute bg-red-500 text-white text-xs w-4 h-4 -right-1 -top-1 rounded-full flex items-center justify-center">
-                          {cartItem?.data?.cart?.length}
+                          {cartItem?.cart?.length}
                         </span>
                       )}
                     </button>
@@ -346,7 +346,7 @@ const NavBar = () => {
                   <button onClick={toggleSidebar} className="relative focus:outline-none">
                     <img src={bag} alt="bag" className="w-8 h-8 text-white mx-2 " />
                     <span className="absolute bg-red-300 w-4 h-4 right-0 top-0  rounded-full flex items-center justify-center">
-                      {cartItem ? <h1 className="text-sm font-semibold">{cartItem?.data?.cart?.length}</h1> : null}
+                      {cartItem ? <h1 className="text-sm font-semibold">{cartItem?.cart?.length}</h1> : null}
                     </span>
                   </button>
                 </div>

@@ -60,6 +60,10 @@ const PaymentPage = () => {
   const [searchParams] = useSearchParams();
   const type = searchParams.get("type");
 
+  const subType = searchParams.get("subType");
+
+  console.log(subType)
+
   const { data: billingData, isLoading: billingLoading } =
     useGetBillingAddress();
 
@@ -77,9 +81,11 @@ const PaymentPage = () => {
     }
   }, [billingData]);
 
-  const renderData = data?.data?.cart?.filter(
+  const renderData = subType === "offer" ? data?.offer_cart  :    data?.cart?.filter(
     (item) => item?.commercialization?.activeTab === type
   );
+
+  console.log(data)
 
   const discountAmounts = renderData?.reduce((total, item) => {
     const basePrice = item?.pricing?.basePrice;
@@ -91,14 +97,21 @@ const PaymentPage = () => {
 
   const totalPrice = renderData
     ?.reduce((total, item) => {
-      const itemPrice = item?.pricing?.basePrice;
+      const itemPrice = subType === "offer" ? item?.offerprice : item?.pricing?.basePrice;
 
-      return total + itemPrice;
+      return total + itemPrice +1;
     }, 0)
     .toFixed(2);
+const tax = (Number(totalPrice) * Number(0.21)
+).toFixed(2);
+const totalWithTax =  tax
 
-  const tax = 0;
-  const finalPrice = totalPrice - discountAmounts + tax;
+
+  const finalPrice = (
+  Number(totalPrice) - Number(discountAmounts) + Number(tax) 
+).toFixed(2);
+
+
   let itemQu = {};
 
   renderData?.forEach((item) => {
@@ -137,17 +150,11 @@ const PaymentPage = () => {
       setTime(genTime);
 
       const payload = {
-        shipping: 0,
-        tax: tax,
+        shipping: 1,
+        tax: 21,
         currency: "EUR",
-        type: type,
-        items: data.data.cart
-          .map((i) => {
-            if (i.commercialization.activeTab === type) {
-              return i._id;
-            }
-          })
-          .filter(Boolean),
+        type: subType,
+        
         time: genTime,
       };
 
@@ -536,7 +543,7 @@ const PaymentPage = () => {
                   renderData?.map((item, i: number) => (
                     <div key={i} className="flex items-center space-x-4">
                       <img
-                        src={`${lowImageUrl}/${item?.media?.mainImage}`}
+                        src={ subType === "offer" ? `${lowImageUrl}/${item?.media}`  :  `${lowImageUrl}/${item?.media}`}
                         alt={item.title}
                         className="w-14 h-14 rounded-md object-cover"
                       />
@@ -561,7 +568,7 @@ const PaymentPage = () => {
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-[#5F6C72]">Shipping</span>
-                  <span className="text-green-500 semibold">Free</span>
+                  <span className=" font-semibold">€ 1</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-[#5F6C72]">Discount</span>
@@ -574,7 +581,7 @@ const PaymentPage = () => {
                   <span className="text-[#5F6C72]">Tax</span>
                   <span className="font-semibold">
                     {getSymbolFromCurrency("EUR")}
-                    {" " + tax}
+                    {` ${totalWithTax} (21%)`}
                   </span>
                 </div>
                 <hr className="my-2" />

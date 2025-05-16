@@ -1,100 +1,155 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useCallback, memo } from "react";
 import { imageUrl } from "../utils/baseUrls";
-import { useGetAllUploadedImages } from "./http/useGetAllUploadedImages";
 import ImageSelectionStep from "./ImageSelectionStep";
-
-
-import FinalPreviewStep from "./FinalPreviewStep";
 import CropSelectionStep from "./CropSelectionStep";
 import DimensionsStep from "./DimensionsStep";
 import ArtworkPlacementStep from "./ArtworkPlacementStep";
 
-const ImagePlacementWizard = ({ onClose, artwork }) => {
+const STEP_CONFIG = {
+  1: {
+    title: "Select Background Image",
+    description: "Select",
+    progress: 0
+  },
+  2: {
+    title: "Define Selection Area",
+    description: "Crop",
+    progress: 33
+  },
+  3: {
+    title: "Set Dimensions",
+    description: "Dimensions",
+    progress: 66
+  },
+  4: {
+    title: "Position Artwork & Preview",
+    description: "Position",
+    progress: 100
+  }
+};
+
+const INITIAL_DIMENSIONS = {
+  width: 200,
+  height: 200
+};
+
+const INITIAL_CROP = {
+  x: 0,
+  y: 0,
+  width: 200,
+  height: 200
+};
+
+const ImagePlacementWizard = memo(({ onClose, artwork }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedImage, setSelectedImage] = useState(null);
-  const [cropSelection, setCropSelection] = useState({ x: 0, y: 0, width: 200, height: 200 });
-  const [dimensions, setDimensions] = useState({ width: 200, height: 200 });
+  const [cropSelection, setCropSelection] = useState(INITIAL_CROP);
+  const [dimensions, setDimensions] = useState(INITIAL_DIMENSIONS);
   const [artworkPosition, setArtworkPosition] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [error, setError] = useState("");
+  const [imageDimension, setImageDimensions] = useState({ height: 0, width: 0 });
+  const [isMobile, setIsMobile] = useState(false);
 
-  const [imageDimension , setImageDimensions] = useState({height:0 , width:0})
 
-  // Check if artwork dimensions fit in the crop selection
   useEffect(() => {
-    if (artwork?.data?.media?.mainImage) {
+    const checkIfMobile = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+
+    checkIfMobile();
+    window.addEventListener('resize', checkIfMobile);
+    return () => window.removeEventListener('resize', checkIfMobile);
+  }, []);
+
+ 
+  const nextStep = useCallback(() => {
+    setCurrentStep(prev => Math.min(prev + 1, 4));
+  }, []);
+
+  const prevStep = useCallback(() => {
+    setCurrentStep(prev => Math.max(prev - 1, 1));
+  }, []);
+
+ 
+  useEffect(() => {
+    if (!artwork?.data?.media?.mainImage) return;
+
+    const timer = setTimeout(() => {
       const img = new Image();
       img.onload = () => {
-        const artworkAspectRatio = img.width / img.height;
-        const selectionAspectRatio = dimensions.width / dimensions.height;
-        
-        // Simple check - if artwork is significantly larger than selection
-        if (img.width > dimensions.width * 1.5 || img.height > dimensions.height * 1.5) {
-          setError("Artwork may be too large for selected area");
-        } else {
-          setError("");
-        }
+        const tooLarge = img.width > dimensions.width * 1.5 || 
+                        img.height > dimensions.height * 1.5;
+        setError(tooLarge ? "Artwork may be too large for selected area" : "");
       };
-      img.src = `${imageUrl}/users/${artwork?.data?.media?.mainImage}`;
-    }
-  }, [artwork, dimensions]);
+      img.src = `${imageUrl}/users/${artwork.data.media.mainImage}`;
+    }, 300);
 
-  const nextStep = () => {
-    if (currentStep < 5) {
-      setCurrentStep(currentStep + 1);
-    }
-  };
-
-
-  const prevStep = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
-    }
-  };
+    return () => clearTimeout(timer);
+  }, [artwork, dimensions.width, dimensions.height]);
 
   
+  useEffect(() => {
+    if (currentStep !== 3) return;
 
-  
-  const renderStep = () => {
-  
+    const adjustDimensions = () => {
+      const maxWidth = Math.min(window.innerWidth * (isMobile ? 0.9 : 0.8), 1000);
+      const maxHeight = Math.min(window.innerHeight * (isMobile ? 0.6 : 0.7), 800);
+      
+      setDimensions(prev => ({
+        width: Math.min(prev.width, maxWidth),
+        height: Math.min(prev.height, maxHeight)
+      }));
+    };
+
+    adjustDimensions();
+    window.addEventListener('resize', adjustDimensions);
+    return () => window.removeEventListener('resize', adjustDimensions);
+  }, [currentStep, isMobile]);
+
+  const renderStep = useCallback(() => {
+    const commonProps = {
+      selectedImage,
+      onNext: nextStep,
+      onPrev: prevStep
+    };
+
     switch (currentStep) {
       case 1:
         return (
           <ImageSelectionStep 
-            selectedImage={selectedImage}
+            {...commonProps}
             setSelectedImage={setSelectedImage}
             setImageDimensions={setImageDimensions}
             imageDimension={imageDimension}
-            onNext={nextStep}
+            isMobile={isMobile}
           />
         );
       case 2:
         return (
           <CropSelectionStep
-            selectedImage={selectedImage}
+            {...commonProps}
             cropSelection={cropSelection}
             setCropSelection={setCropSelection}
             imageDimension={imageDimension}
-            onNext={nextStep}
-            onPrev={prevStep}
+            isMobile={isMobile}
           />
         );
       case 3:
         return (
           <DimensionsStep
+            {...commonProps}
             dimensions={dimensions}
             setDimensions={setDimensions}
             cropSelection={cropSelection}
             setCropSelection={setCropSelection}
-            selectedImage={selectedImage}
-            onNext={nextStep}
-            onPrev={prevStep}
+            isMobile={isMobile}
           />
         );
       case 4:
         return (
           <ArtworkPlacementStep
-            selectedImage={selectedImage}
+            {...commonProps}
             cropSelection={cropSelection}
             dimensions={dimensions}
             artwork={artwork}
@@ -103,31 +158,42 @@ const ImagePlacementWizard = ({ onClose, artwork }) => {
             zoom={zoom}
             setZoom={setZoom}
             error={error}
-            onNext={nextStep}
-            onPrev={prevStep}
+            isMobile={isMobile}
           />
         );
-      
       default:
         return null;
     }
-  };
+  }, [
+    currentStep, 
+    selectedImage, 
+    imageDimension, 
+    cropSelection, 
+    dimensions, 
+    artwork, 
+    artworkPosition, 
+    zoom, 
+    error, 
+    nextStep, 
+    prevStep,
+    isMobile
+  ]);
 
   return (
-    <div className="fixed inset-0 bg-black  bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4 h-auto">
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-[90vw] w-full h-[100vh] max-h-[100vh] overflow-hidden overflow-y-auto flex flex-col">
-        
-        <div className="flex justify-between items-center border-b border-gray-200 dark:border-gray-700 p-3 sm:p-4">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-2 sm:p-4 overflow-auto">
+      <div className={`
+        bg-white dark:bg-gray-800 rounded-xl shadow-2xl 
+        w-full max-w-6xl max-h-[95vh] flex flex-col
+        ${isMobile ? 'mx-1 my-1' : 'mx-4 my-8'}
+      `}>
+        {/* Header */}
+        <div className="flex justify-between items-center border-b border-gray-200 dark:border-gray-700 p-3 sm:p-4 sticky top-0 bg-white dark:bg-gray-800 z-10">
           <h3 className="text-lg sm:text-xl font-semibold text-gray-800 dark:text-gray-100">
-            {currentStep === 1 && "Select Background Image"}
-            {currentStep === 2 && "Define Selection Area"}
-            {currentStep === 3 && "Set Dimensions"}
-            {currentStep === 4 && "Position Artwork & Preview"}
-            
+            {STEP_CONFIG[currentStep].title}
           </h3>
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none"
+            className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none transition-colors"
             aria-label="Close dialog"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -136,19 +202,18 @@ const ImagePlacementWizard = ({ onClose, artwork }) => {
           </button>
         </div>
 
-       
+        {/* Progress indicator */}
         <div className="px-4 pt-4">
-          <div className="flex justify-between mb-4">
-            {[1, 2, 3, 4, 5].map((step) => (
-              <div key={step} className="flex flex-col items-center">
+          <div className="flex justify-between mb-4 overflow-x-auto pb-2 -mx-1">
+            {[1, 2, 3, 4].map((step) => (
+              <div key={step} className="flex flex-col items-center px-1 min-w-[60px]">
                 <div
-                  className={`w-8 h-8 flex items-center justify-center rounded-full ${
-                    step === currentStep
-                      ? "bg-blue-500 text-white"
-                      : step < currentStep
-                      ? "bg-green-500 text-white"
-                      : "bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400"
-                  }`}
+                  className={`
+                    w-8 h-8 flex items-center justify-center rounded-full transition-colors
+                    ${step === currentStep ? 'bg-blue-500 text-white' :
+                      step < currentStep ? 'bg-green-500 text-white' :
+                      'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400'}
+                  `}
                 >
                   {step < currentStep ? (
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -158,31 +223,27 @@ const ImagePlacementWizard = ({ onClose, artwork }) => {
                     step
                   )}
                 </div>
-                <span className="text-xs mt-1 text-gray-500 dark:text-gray-400">
-                  {step === 1 && "Select"}
-                  {step === 2 && "Crop"}
-                  {step === 3 && "Dimensions"}
-                  {step === 4 && "Position"}
-                  
+                <span className="text-xs mt-1 text-gray-500 dark:text-gray-400 text-center">
+                  {STEP_CONFIG[step].description}
                 </span>
               </div>
             ))}
           </div>
-          <div className="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded-full">
+          <div className="w-full h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full">
             <div
               className="h-full bg-blue-500 rounded-full transition-all duration-300"
-              style={{ width: `${((currentStep - 1) / 4) * 100}%` }}
+              style={{ width: `${STEP_CONFIG[currentStep].progress}%` }}
             ></div>
           </div>
         </div>
 
-       
-        <div className="flex-1 flex flex-col md:flex-row h-full p-4 gap-4 overflow-hidden">
+        {/* Content area */}
+        <div className="flex-1 overflow-auto p-3 sm:p-4">
           {renderStep()}
         </div>
       </div>
     </div>
   );
-};
+});
 
 export default ImagePlacementWizard;

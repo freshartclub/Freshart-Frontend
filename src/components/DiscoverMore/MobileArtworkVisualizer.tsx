@@ -17,9 +17,6 @@ const MobileArtworkVisualizer = ({artwork, isLoading , error}) => {
   const { artworkId } = useParams();
   const navigate = useNavigate();
   const dark = useAppSelector((state) => state.theme.mode);
-
-  
-  // Core state
   const [cameraActive, setCameraActive] = useState(false);
   const [cameraPermission, setCameraPermission] = useState('prompt');
   const [artworkScale, setArtworkScale] = useState(1);
@@ -272,8 +269,6 @@ const MobileArtworkVisualizer = ({artwork, isLoading , error}) => {
   };
 
   const instruction = getInstructionContent();
-
-  
   const bgClass = dark ? 'bg-gray-900' : 'bg-gray-50';
   const textClass = dark ? 'text-gray-100' : 'text-gray-800';
   const buttonBgClass = dark ? 'bg-gray-800' : 'bg-white';

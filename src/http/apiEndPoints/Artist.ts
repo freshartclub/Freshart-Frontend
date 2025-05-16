@@ -91,6 +91,7 @@ export const ARTTIST_ENDPOINTS = {
   // offer
 
   getOffer: `${ARTIST_BASE_URl}/get-offer`,
+  addToCartOffer :`${ARTIST_BASE_URl}/add-offer-cart`,
 
   // Visualization Apis Routes
 

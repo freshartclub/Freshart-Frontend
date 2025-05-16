@@ -4,7 +4,6 @@ import { useGetAllUploadedImages } from "./http/useGetAllUploadedImages";
 import useDeleteUploadedImgMutation from "./http/useDeleteUploadedImgMutation";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
-
 const ImageSelectionStep = ({ 
   selectedImage, 
   setSelectedImage,
@@ -21,18 +20,17 @@ const ImageSelectionStep = ({
     deleteImage(id)
   }
 
-  // Initialize with first image or the previously selected one
   useEffect(() => {
     if (uploadedImages?.data?.length > 0) {
       if (!selectedImage) {
-        // Set first image as default if none selected
+       
         const firstImage = uploadedImages.data[0];
         setPreviewImage(firstImage.image);
         setPreviewImageDimensions({ height: firstImage.height, width: firstImage.width });
         setImageDimensions({ height: firstImage.height, width: firstImage.width });
         setSelectedImage(firstImage.image);
       } else {
-        // Find the selected image in the uploaded images
+       
         const selected = uploadedImages.data.find(img => img.image === selectedImage);
         if (selected) {
           setPreviewImage(selected.image);
@@ -40,14 +38,14 @@ const ImageSelectionStep = ({
         }
       }
     } else {
-      // No images available
+    
       setPreviewImage(null);
       setPreviewImageDimensions({ height: 0, width: 0 });
       setSelectedImage(null);
     }
   }, [uploadedImages, selectedImage, setSelectedImage, setImageDimensions]);
 
-  // Handle image selection
+
   const handleImageSelect = useCallback((image) => {
     const selected = uploadedImages.data.find(img => img.image === image);
     if (selected) {
@@ -57,7 +55,7 @@ const ImageSelectionStep = ({
     }
   }, [uploadedImages, setImageDimensions]);
 
-  // Handle continue to next step
+
   const handleContinue = useCallback(() => {
     if (previewImage) {
       setSelectedImage(previewImage);
@@ -65,12 +63,10 @@ const ImageSelectionStep = ({
     }
   }, [previewImage, setSelectedImage, onNext]);
 
-  // Handle image deletion
- 
 
   return (
     <div className="flex flex-col lg:flex-row gap-6 w-full overflow-y-auto">
-      {/* Left Side - Selected Image Preview */}
+
       <div className="lg:flex-1 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-900 relative min-h-[300px] flex items-center justify-center">
         {previewImage ? (
           <>
@@ -93,7 +89,7 @@ const ImageSelectionStep = ({
         )}
       </div>
 
-   
+
       <div className="lg:flex-1 flex flex-col gap-4">
         <div className="space-y-2">
           <h4 className="text-lg font-medium text-gray-700 dark:text-gray-300">
@@ -132,8 +128,7 @@ const ImageSelectionStep = ({
                     loading="lazy"
                   />
                   <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200"></div>
-                  
-                  {/* Delete button */}
+
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -163,9 +158,7 @@ const ImageSelectionStep = ({
                       </svg>
                     </div>
                   )}
-                  {/* <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs px-2 py-1 truncate">
-                    {img.name || "Untitled"}
-                  </div> */}
+                 
                 </div>
               ))}
             </div>
@@ -186,7 +179,7 @@ const ImageSelectionStep = ({
           )}
         </div>
 
-        {/* Continue Button */}
+       
         <div className="flex justify-end">
           <button
             onClick={handleContinue}

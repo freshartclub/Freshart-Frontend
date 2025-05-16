@@ -11,7 +11,7 @@ import rightarr from "./assets/ArrowRight.png";
 import useCheckSubscription from "./http/useCheckSubscription";
 import ReturnInstructionsPopup from "./ReturnInstructionsPopup";
 
-const CartTotal = ({ data, state, handleRemove }) => {
+const CartTotal = ({ data, state, handleRemove, mode , subsection}) => {
   const discountAmounts = data.map((item) => {
     const basePrice = item?.pricing?.basePrice;
     const discountPercentage = item?.pricing?.dpersentage || 0;
@@ -28,6 +28,8 @@ const CartTotal = ({ data, state, handleRemove }) => {
   });
   const [availableArtworkIds, setAvailableArtworkIds] = useState([]);
 
+  console.log(data)
+
   const dark = useAppSelector((state) => state.theme.mode);
   const navigate = useNavigate();
   const { mutateAsync, isPending } = useCheckSubscription();
@@ -40,32 +42,36 @@ const CartTotal = ({ data, state, handleRemove }) => {
 
   const totalPrice = data
     ?.reduce((total, item) => {
-      const itemPrice = item?.pricing?.basePrice;
+      const itemPrice = subsection === "offer" ? item?.offerprice : item?.pricing?.basePrice;
       return total + itemPrice;
     }, 0)
     .toFixed(2);
 
+ const tax =  totalPrice * 0.21;
+
+  const finalPrice = totalPrice - discountAmounts + tax;
+
   const card_total = [
     {
       title: "Sub-total",
-      value: state === "subscription" ? "$ 00" : totalPrice,
+      value: mode === "subscription" ? "$ 00" : totalPrice,
     },
     {
       title: "Shipping",
-      value: state === "subscription" ? "$ 00" : "Free",
+      value: mode === "subscription" ? "$ 00" : "Free",
     },
     {
       title: "Discount",
-      value: state === "subscription" ? "$ 00" : `$ ${totalDiscountAmount}`,
+      value: mode === "subscription" ? "$ 00" : `$ ${totalDiscountAmount}`,
     },
     {
       title: "Tax",
-      value: state === "subscription" ? "$ 00" : "$61.99",
+      value: mode === "subscription" ? "$ 00" :`$ ${tax}` ,
     },
   ];
 
   const handleCheckOut = async () => {
-    if (state === "subscription") {
+    if (mode === "subscription") {
       try {
         if (!data || data.length === 0) {
           console.error("No items in cart");
@@ -109,8 +115,8 @@ const CartTotal = ({ data, state, handleRemove }) => {
           });
         }
       }
-    } else {
-      navigate(`/payment_page?type=${state}`);
+    } else  {
+      navigate(`/payment_page?type=${mode}&subType=${subsection}`);
     }
   };
 
@@ -174,7 +180,7 @@ const CartTotal = ({ data, state, handleRemove }) => {
                     These artworks are in your current plan:
                   </P>
                   <ul className="mt-2 space-y-2">
-                    {availableArtworks.map((artwork) => (
+                    {availableArtworks?.map((artwork) => (
                       <li key={artwork._id} className="flex items-center gap-2">
                         <span className="text-green-600">✓</span>
                         <span>{artwork.artworkName}</span>
@@ -196,8 +202,8 @@ const CartTotal = ({ data, state, handleRemove }) => {
                     These artworks require action:
                   </P>
                   <ul className="mt-2 space-y-2">
-                    {unavailableArtworks.map((artwork) => {
-                      const detail = subscriptionStatus.details.find((d) => d.artworkId === artwork._id);
+                    {unavailableArtworks?.map((artwork) => {
+                      const detail = subscriptionStatus?.details.find((d) => d.artworkId === artwork._id);
                       return (
                         <li key={artwork._id} className="flex items-start gap-2">
                           <span className="text-red-600">✗</span>
@@ -312,7 +318,7 @@ const CartTotal = ({ data, state, handleRemove }) => {
   return (
     <>
       <div className={`p-6 mb-8 border rounded-lg shadow-sm ${dark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"}`}>
-        {state === "subscription" ? (
+        {mode === "subscription" ? (
           <div className="text-center py-6">
             <Header className={`mb-4 ${dark ? "text-gray-300" : "text-[#2E4053]"}`} variant={{ size: "lg", theme: "dark", weight: "bold" }}>
               Premium Subscription
@@ -344,7 +350,7 @@ const CartTotal = ({ data, state, handleRemove }) => {
               <P variant={{ size: "base", weight: "medium" }}>Total Amount</P>
               <P variant={{ size: "base", weight: "medium" }} className={dark ? "text-white" : "text-[#191C1F]"}>
                 {getSymbolFromCurrency(card_total?.[0]?.value?.match(/[^\d.-]/g)?.[0] || "$")}
-                {(totalPrice - totalDiscountAmount).toFixed(2)}
+                {(finalPrice - totalDiscountAmount).toFixed(2)}
               </P>
             </div>
           </div>
@@ -363,7 +369,7 @@ const CartTotal = ({ data, state, handleRemove }) => {
           ) : (
             <>
               <P variant={{ size: "base", theme: "light", weight: "semiBold" }}>
-                {state === "subscription" ? "Subscribe Now" : "Proceed to Checkout"}
+                {mode === "subscription" ? "Subscribe Now" : "Proceed to Checkout"}
               </P>
               <img src={rightarr} alt="" className="w-5 h-5 filter brightness-0 invert" />
             </>
@@ -371,7 +377,7 @@ const CartTotal = ({ data, state, handleRemove }) => {
         </Button>
       </div>
 
-      {state === "subscription" ? null : (
+      {mode === "subscription" ? null : (
         <div className={`border rounded-md ${data?.cart?.length === 0 && "pointer-events-none opacity-50"} ${dark ? "border-gray-700" : ""}`}>
           <Header
             variant={{ size: "md", weight: "semiBold", theme: dark ? "light" : "dark" }}

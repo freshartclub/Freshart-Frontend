@@ -7,7 +7,6 @@ export const MagnifierImage = ({ src, alt, isOffensive, safeMode, enableZoom = f
   const containerRef = useRef(null);
   const magnifierRef = useRef(null);
   const imgRef = useRef(null);
-
   const [isZoomed, setIsZoomed] = useState(false);
   const [zoomPosition, setZoomPosition] = useState({ x: 0.5, y: 0.5 });
   const [isDragging, setIsDragging] = useState(false);

@@ -7,6 +7,7 @@ import useMakeAnOfferMutation from "../DiscoverMore/http/useMakeAnOfferMutation"
 import { useGetUserOfferList } from "./http/useGetUserOfferList";
 import Loader from "../ui/Loader";
 import { imageUrl, lowImageUrl } from "../utils/baseUrls";
+import useAddToCartOfferMutation from "./http/useAddToCartOfferMutation";
 
 interface CounterOffer {
   _id: string;
@@ -57,9 +58,15 @@ const UserOfferRequest = () => {
   const { data, isLoading } = useGetUserOfferList();
   const { mutate: addToCartMutation, isPending } = useAddToCartMutation();
   const { mutateAsync, isPending: isOfferPending } = useMakeAnOfferMutation();
+  const {mutateAsync:addOfferToCart , isPending:isOfferCartPending} = useAddToCartOfferMutation()
 
-  const handleAddToCart = (artworkId: string) => {
-    addToCartMutation(artworkId);
+  const handleAddToCart = (offer: string) => {
+    const values= {
+      offerprice : offer.counterOffer[offer.counterOffer.length - 1].offerprice,
+      artworkId: offer?.artwork?._id,
+      offerId:offer?._id
+    }
+    addOfferToCart(values);
   };
 
   const toggleExpandOffer = (offerId: string) => {
@@ -184,9 +191,7 @@ const UserOfferRequest = () => {
                                 className="w-12 h-12 rounded object-cover"
                                 src={`${lowImageUrl}/${offer.artwork.media.mainImage}` || ""}
                                 alt={offer.artwork.artworkName}
-                                // onError={(e) => {
-                                //   (e.target as HTMLImageElement).src = "https://via.placeholder.com/50";
-                                // }}
+                                
                               />
                               <div>
                                 <p className="font-medium">{offer.artwork.artworkName}</p>
@@ -233,14 +238,14 @@ const UserOfferRequest = () => {
                             <div className="flex items-center gap-2">
                               {offer.status == "complete" && offer.counterOffer[offer.counterOffer.length - 1].isAccepted == true && (
                                 <button
-                                  onClick={() => handleAddToCart(offer.artwork._id)}
+                                  onClick={() => handleAddToCart(offer)}
                                   disabled={isPending}
                                   className={`inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm ${
                                     dark ? "bg-blue-600 hover:bg-blue-700 text-white" : "bg-blue-500 hover:bg-blue-600 text-white"
                                   } ${isPending ? "opacity-50 cursor-not-allowed" : ""}`}
                                 >
                                   <FaShoppingCart className="mr-1" />
-                                  {isPending ? "Adding..." : "Add to Cart"}
+                                  {isOfferCartPending ? "Adding..." : "Add to Cart"}
                                 </button>
                               )}
                               {offer.counterOffer && offer.counterOffer.length > 0 && (

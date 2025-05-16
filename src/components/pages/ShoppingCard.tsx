@@ -32,10 +32,10 @@ const ShoppingCard = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
     }
   };
 
-  const totalItems = data?.data?.cart?.length;
+  const totalItems = data?.cart?.length;
 
-  const subscriptionItems = data?.data?.cart?.filter((item: any) => item?.commercialization?.activeTab === "subscription");
-  const purchaseItems = data?.data?.cart?.filter((item: any) => item?.commercialization?.activeTab === "purchase");
+  const subscriptionItems = data?.cart?.filter((item: any) => item?.commercialization?.activeTab === "subscription");
+  const purchaseItems = data?.cart?.filter((item: any) => item?.commercialization?.activeTab === "purchase");
 
   const purchaseTotal = purchaseItems?.reduce((total: any, item: any) => total + item?.pricing?.basePrice, 0).toFixed(2);
   const grandTotal = Number(purchaseTotal || 0).toFixed(2);
@@ -191,7 +191,7 @@ const CartItem = ({ item, navigate, handleRemoveItem, type, dark }: any) => {
     >
       <div className="flex gap-3 items-center flex-1">
         <div className="relative">
-          <img src={`${imageUrl}/users/${item?.media?.mainImage}`} alt="cart image" className="object-cover w-14 h-14 rounded-lg" />
+          <img src={`${imageUrl}/users/${item?.media}`} alt="cart image" className="object-cover w-14 h-14 rounded-lg" />
           {type === "subscription" && <div className="absolute -top-2 -right-2 bg-blue-500 text-white text-xs px-1.5 py-0.5 rounded-full">Sub</div>}
         </div>
 
