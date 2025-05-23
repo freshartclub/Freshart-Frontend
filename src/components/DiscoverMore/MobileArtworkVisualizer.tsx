@@ -157,7 +157,7 @@ const MobileArtworkVisualizer = ({artwork, isLoading , error}) => {
     setInstructionStep(instructionStep + 1);
   };
 
-const captureImage = () => {
+  const captureImage = () => {
   if (!videoRef.current || !canvasRef.current) return;
 
   setTakingPhoto(true);
@@ -192,16 +192,14 @@ const captureImage = () => {
       try {
         // Draw the artwork image on top of the video
         ctx.drawImage(img, x, y, width, height);
-        
         // Create and download the combined image
-        const dataUrl = canvas.toDataURL('image/jpeg', 0.9); // Added quality parameter
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
         const link = document.createElement('a');
         link.href = dataUrl;
         link.download = `${artwork.artworkName || 'artwork'}-visualization.jpg`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-
         setTimeout(() => setTakingPhoto(false), 1000);
       } catch (err) {
         console.error('Error creating snapshot:', err);
@@ -227,7 +225,6 @@ const captureImage = () => {
       }
     };
 
-    // Set crossOrigin before setting src to handle CORS issues
     img.crossOrigin = 'anonymous';
     img.src = `${imageUrl}/users/${artwork?.data?.media?.mainImage}`;
     
@@ -247,7 +244,7 @@ const captureImage = () => {
       setTakingPhoto(false);
     }
   }
-};
+  };
 
   const handleAdjustScale = (delta) => {
     const newScale = Math.max(0.3, Math.min(2, artworkScale + delta));
@@ -297,7 +294,6 @@ const captureImage = () => {
       </div>
     );
   }
-
  
   if (error) {
     return (
@@ -413,13 +409,13 @@ const captureImage = () => {
           style={{ 
             top: '50%', 
             left: '50%',
-            marginLeft: artwork.images?.[0]?.width ? `-${(artwork.images[0].width / 4)}px` : '-150px', 
-            marginTop: artwork.images?.[0]?.height ? `-${(artwork.images[0].height / 4)}px` : '-100px' 
+            marginLeft: artwork.images?.[0]?.width ? `-${(artwork?.images[0].width / 4)}px` : '-150px', 
+            marginTop: artwork.images?.[0]?.height ? `-${(artwork?.images[0].height / 4)}px` : '-100px' 
           }}
           onDragEnd={(_, info) => {
             setArtworkPosition({
-              x: artworkPosition.x + info.offset.x,
-              y: artworkPosition.y + info.offset.y
+              x: artworkPosition.x + info?.offset?.x,
+              y: artworkPosition.y + info?.offset?.y
             });
           }}
         >

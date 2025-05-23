@@ -1,4 +1,4 @@
-// ----------------------------------------------------------------------
+
 
 export type LanguageValue = "en" | "fr" | "vi" | "cn" | "ar";
 
@@ -7,11 +7,9 @@ export const languages = ["en", "fr", "vi", "cn", "ar"];
 export const defaultNS = "common";
 export const cookieName = "i18next";
 
-// ----------------------------------------------------------------------
 
 export function i18nOptions(lng = fallbackLng, ns = defaultNS) {
   return {
-    // debug: true,
     lng,
     fallbackLng,
     ns,
@@ -21,7 +19,7 @@ export function i18nOptions(lng = fallbackLng, ns = defaultNS) {
   };
 }
 
-// ----------------------------------------------------------------------
+
 
 export const changeLangMessages: Record<
   LanguageValue,

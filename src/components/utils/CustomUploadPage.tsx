@@ -8,7 +8,9 @@ const CustomUploadPage = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
-
+  const [width, setWidth] = useState<string>('');
+  const [height, setHeight] = useState<string>('');
+  const [showPositioningPopup, setShowPositioningPopup] = useState(false);
 
   const { mutateAsync, isPending } = useUploadImageMutation();
 
@@ -28,15 +30,25 @@ const CustomUploadPage = () => {
     setIsDragging(true);
   };
 
-
   const handleNext = async () => {
-    if (!selectedFile || !artwork?.data?._id) {
-      toast.error("Missing file or ID");
+    if (!selectedFile) {
+      toast.error("Please select a file first");
       return;
     }
 
-    await mutateAsync({ id: artwork.data._id, file, height, width });
-    setShowPositioningPopup(true);
+    const numericWidth = width ? parseInt(width) : 0;
+    const numericHeight = height ? parseInt(height) : 0;
+
+    try {
+      await mutateAsync({ 
+        file: selectedFile, 
+        height: numericHeight, 
+        width: numericWidth 
+      });
+      setShowPositioningPopup(true);
+    } catch (error) {
+      toast.error("Failed to upload image");
+    }
   };
 
   const handleDragLeave = () => {
@@ -139,10 +151,36 @@ const CustomUploadPage = () => {
           </div>
         )}
 
+        <div className="mt-4 grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">Width (cm)</label>
+            <input
+              type="number"
+              placeholder="Width"
+              required
+              value={width}
+              onChange={(e) => setWidth(e.target.value)}
+              className={`w-full p-2 rounded border ${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-300'}`}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Height (cm)</label>
+            <input
+              type="number"
+              placeholder="Height"
+              required
+              value={height}
+              onChange={(e) => setHeight(e.target.value)}
+              className={`w-full p-2 rounded border ${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-300'}`}
+            />
+          </div>
+        </div>
+
         <div className="mt-8 flex justify-center">
           <button
-            disabled={!selectedFile}
-            className={`px-6 py-3 rounded-md font-medium transition-colors ${selectedFile
+            onClick={handleNext}
+            disabled={!selectedFile || isPending}
+            className={`px-6 py-3 rounded-md font-medium transition-colors ${selectedFile && !isPending
               ? darkMode
                 ? 'bg-blue-600 hover:bg-blue-700'
                 : 'bg-blue-500 hover:bg-blue-600'
@@ -151,9 +189,15 @@ const CustomUploadPage = () => {
                 : 'bg-gray-300 cursor-not-allowed'
               } text-white`}
           >
-            Upload Image
+            {isPending ? 'Uploading...' : 'Upload Image'}
           </button>
         </div>
+
+        {showPositioningPopup && (
+          <div className="mt-4 p-4 bg-green-100 text-green-800 rounded-lg">
+            Image uploaded successfully! You can now position it.
+          </div>
+        )}
       </div>
     </div>
   );

@@ -137,8 +137,8 @@ const DiscoverMore = () => {
               }`}
             >
               {images?.map((thumb, index) => {
-                const isVideo = thumb.src?.endsWith(".mp4");
-                return thumb.src ? (
+                const isVideo = thumb?.src?.endsWith(".mp4");
+                return thumb?.src ? (
                   <div
                     key={index}
                     onClick={() => handleThumbnailClick(index)}
@@ -156,7 +156,7 @@ const DiscoverMore = () => {
                     ) : (
                       <img
                         src={`${lowImageUrl}/${thumb?.src}`}
-                        alt={thumb.alt}
+                        alt={thumb?.alt}
                         className={`${
                           offensive && safeMode === "Off" ? "blur-md brightness-75" : ""
                         } lg:w-full w-[4rem] h-[4rem] object-cover rounded`}
@@ -171,7 +171,7 @@ const DiscoverMore = () => {
               <div ref={sliderRef} className="flex transition-transform duration-300 ease-in-out h-full">
                 {images.map((slide, index) => (
                   <div key={index} className="w-full flex-shrink-0 h-full">
-                    {slide.src.endsWith(".mp4") ? (
+                    {slide?.src?.endsWith(".mp4") ? (
                       <div className="h-full flex items-center justify-center bg-black">
                         <video
                           src={`${imageUrl}/videos/${slide?.src}`}
@@ -224,7 +224,7 @@ const DiscoverMore = () => {
                 ))}
               </div>
 
-              {images.length > 1 && (
+              {images?.length > 1 && (
                 <>
                   <button
                     onClick={() => setCurrentSlide((prev) => (prev === 0 ? images.length - 1 : prev - 1))}

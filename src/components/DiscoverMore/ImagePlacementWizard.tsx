@@ -50,13 +50,9 @@ const ImagePlacementWizard = memo(({ onClose, artwork }) => {
   const [error, setError] = useState("");
   const [imageDimension, setImageDimensions] = useState({ height: 0, width: 0 });
   const [isMobile, setIsMobile] = useState(false);
-  const [imageHW , setIageHW]  = useState(null)
-   const [previewImageDimensions, setPreviewImageDimensions] = useState({ height: 0, width: 0 });
- const [imageSizeS, setImageSizeS] = useState({ width: 0, height: 0 });
-  
-  
-
-
+  const [imageHW, setIageHW] = useState(null)
+  const [previewImageDimensions, setPreviewImageDimensions] = useState({ height: 0, width: 0 });
+  const [imageSizeS, setImageSizeS] = useState({ width: 0, height: 0 });
 
   useEffect(() => {
     const checkIfMobile = () => {
@@ -68,7 +64,7 @@ const ImagePlacementWizard = memo(({ onClose, artwork }) => {
     return () => window.removeEventListener('resize', checkIfMobile);
   }, []);
 
- 
+
   const nextStep = useCallback(() => {
     setCurrentStep(prev => Math.min(prev + 1, 4));
   }, []);
@@ -76,16 +72,16 @@ const ImagePlacementWizard = memo(({ onClose, artwork }) => {
   const prevStep = useCallback(() => {
     setCurrentStep(prev => Math.max(prev - 1, 1));
   }, []);
-console.log("this is crop selection" , imageSizeS)
- 
+
+
   useEffect(() => {
     if (!artwork?.data?.media?.mainImage) return;
 
     const timer = setTimeout(() => {
       const img = new Image();
       img.onload = () => {
-        const tooLarge = img.width > dimensions.width * 1.5 || 
-                        img.height > dimensions.height * 1.5;
+        const tooLarge = img.width > dimensions.width * 1.5 ||
+          img.height > dimensions.height * 1.5;
         setError(tooLarge ? "Artwork may be too large for selected area" : "");
       };
       img.src = `${imageUrl}/users/${artwork.data.media.mainImage}`;
@@ -94,14 +90,14 @@ console.log("this is crop selection" , imageSizeS)
     return () => clearTimeout(timer);
   }, [artwork, dimensions.width, dimensions.height]);
 
-  
+
   useEffect(() => {
     if (currentStep !== 3) return;
 
     const adjustDimensions = () => {
       const maxWidth = Math.min(window.innerWidth * (isMobile ? 0.9 : 0.8), 1000);
       const maxHeight = Math.min(window.innerHeight * (isMobile ? 0.6 : 0.7), 800);
-      
+
       setDimensions(prev => ({
         width: Math.min(prev.width, maxWidth),
         height: Math.min(prev.height, maxHeight)
@@ -123,7 +119,7 @@ console.log("this is crop selection" , imageSizeS)
     switch (currentStep) {
       case 1:
         return (
-          <ImageSelectionStep 
+          <ImageSelectionStep
             {...commonProps}
             setSelectedImage={setSelectedImage}
             setImageDimensions={setImageDimensions}
@@ -141,12 +137,12 @@ console.log("this is crop selection" , imageSizeS)
             {...commonProps}
             cropSelection={cropSelection}
             setCropSelection={setCropSelection}
-         previewImageDimensions={previewImageDimensions}
+            previewImageDimensions={previewImageDimensions}
             dimensions={dimensions}
             isMobile={isMobile}
             imageHW={imageHW}
             setImageSizeS={setImageSizeS}
-            
+
 
           />
         );
@@ -160,7 +156,7 @@ console.log("this is crop selection" , imageSizeS)
             setCropSelection={setCropSelection}
             isMobile={isMobile}
             imageSizeS={imageSizeS}
-            
+
           />
         );
       case 4:
@@ -184,16 +180,16 @@ console.log("this is crop selection" , imageSizeS)
         return null;
     }
   }, [
-    currentStep, 
-    selectedImage, 
-    imageDimension, 
-    cropSelection, 
-    dimensions, 
-    artwork, 
-    artworkPosition, 
-    zoom, 
-    error, 
-    nextStep, 
+    currentStep,
+    selectedImage,
+    imageDimension,
+    cropSelection,
+    dimensions,
+    artwork,
+    artworkPosition,
+    zoom,
+    error,
+    nextStep,
     prevStep,
     isMobile
   ]);
@@ -205,7 +201,7 @@ console.log("this is crop selection" , imageSizeS)
         w-full max-w-6xl max-h-[95vh] flex flex-col
         ${isMobile ? 'mx-1 my-1' : 'mx-4 my-8'}
       `}>
-        {/* Header */}
+
         <div className="flex justify-between items-center border-b border-gray-200 dark:border-gray-700 p-3 sm:p-4 sticky top-0 bg-white dark:bg-gray-800 z-10">
           <h3 className="text-lg sm:text-xl font-semibold text-gray-800 dark:text-gray-100">
             {STEP_CONFIG[currentStep].title}
@@ -221,7 +217,7 @@ console.log("this is crop selection" , imageSizeS)
           </button>
         </div>
 
-        {/* Progress indicator */}
+
         <div className="px-4 pt-4">
           <div className="flex justify-between mb-4 overflow-x-auto pb-2 -mx-1">
             {[1, 2, 3, 4].map((step) => (
@@ -231,7 +227,7 @@ console.log("this is crop selection" , imageSizeS)
                     w-8 h-8 flex items-center justify-center rounded-full transition-colors
                     ${step === currentStep ? 'bg-blue-500 text-white' :
                       step < currentStep ? 'bg-green-500 text-white' :
-                      'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400'}
+                        'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400'}
                   `}
                 >
                   {step < currentStep ? (
@@ -256,7 +252,7 @@ console.log("this is crop selection" , imageSizeS)
           </div>
         </div>
 
-        {/* Content area */}
+
         <div className="flex-1 overflow-auto p-3 sm:p-4">
           {renderStep()}
         </div>
