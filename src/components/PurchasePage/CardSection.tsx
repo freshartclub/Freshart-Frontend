@@ -11,8 +11,11 @@ import useAddToFavorite from "../HomePage/http/useAddToFavorite";
 import { useGetFavoriteList } from "../HomePage/http/useGetFavoriteList";
 import { lowImageUrl } from "../utils/baseUrls";
 import useClickOutside from "../utils/useClickOutside";
+import { useAppSelector } from "../../store/typedReduxHooks";
 
 const CardSection = ({ data, type, darkMode }) => {
+  const isAuthorized = useAppSelector((state) => state.user.isAuthorized);
+
   const TEN_DAYS_MS = 10 * 24 * 60 * 60 * 1000;
   const [favoriteLists, setFavoriteLists] = useState({});
   const [isFavorite, setIsFavorite] = useState("");
@@ -43,7 +46,7 @@ const CardSection = ({ data, type, darkMode }) => {
   const { data: favoriteData } = useGetFavoriteList(listType);
 
   const handleRedirectToDescription = (id: string) => {
-    mutate(id);
+    if (isAuthorized) mutate(id);
     navigate(`/discover_more/${id}?comingFrom=search`);
     window.scroll(0, 0);
   };

@@ -2,12 +2,11 @@ import React, { useState } from "react";
 import { FaCheck, FaChevronDown, FaChevronUp, FaClock, FaExchangeAlt, FaHandshake, FaShoppingCart, FaTimes } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../store/typedReduxHooks";
-import useAddToCartMutation from "../DiscoverMore/http/useAddToCartMutation";
 import useMakeAnOfferMutation from "../DiscoverMore/http/useMakeAnOfferMutation";
-import { useGetUserOfferList } from "./http/useGetUserOfferList";
 import Loader from "../ui/Loader";
 import { imageUrl, lowImageUrl } from "../utils/baseUrls";
-import useAddToCartOfferMutation from "./http/useAddToCartOfferMutation";
+import useAddToOfferCart from "./http/useAddToOfferCart";
+import { useGetUserOfferList } from "./http/useGetUserOfferList";
 
 interface CounterOffer {
   _id: string;
@@ -56,16 +55,15 @@ const UserOfferRequest = () => {
   const img = useAppSelector((state) => state.user.user.mainImage || "");
 
   const { data, isLoading } = useGetUserOfferList();
-  const { mutate: addToCartMutation, isPending } = useAddToCartMutation();
   const { mutateAsync, isPending: isOfferPending } = useMakeAnOfferMutation();
-  const {mutateAsync:addOfferToCart , isPending:isOfferCartPending} = useAddToCartOfferMutation()
+  const { mutateAsync: addOfferToCart, isPending } = useAddToOfferCart();
 
-  const handleAddToCart = (offer: string) => {
-    const values= {
-      offerprice : offer.counterOffer[offer.counterOffer.length - 1].offerprice,
+  const handleAddToCart = (offer: Offer) => {
+    const values = {
+      offerprice: offer.counterOffer[offer.counterOffer.length - 1].offerprice,
       artworkId: offer?.artwork?._id,
-      offerId:offer?._id
-    }
+      offerId: offer?._id,
+    };
     addOfferToCart(values);
   };
 
@@ -189,9 +187,8 @@ const UserOfferRequest = () => {
                             <div className={`flex gap-4 items-center text-sm ${dark ? "text-gray-100" : "text-gray-900"}`}>
                               <img
                                 className="w-12 h-12 rounded object-cover"
-                                src={`${lowImageUrl}/${offer?.artwork?.media?.mainImage}` || ""}
-                                alt={offer?.artwork?.artworkName}
-                                
+                                src={`${lowImageUrl}/${offer.artwork.media.mainImage}` || ""}
+                                alt={offer.artwork.artworkName}
                               />
                               <div>
                                 <p className="font-medium">{offer?.artwork?.artworkName}</p>
@@ -245,7 +242,7 @@ const UserOfferRequest = () => {
                                   } ${isPending ? "opacity-50 cursor-not-allowed" : ""}`}
                                 >
                                   <FaShoppingCart className="mr-1" />
-                                  {isOfferCartPending ? "Adding..." : "Add to Cart"}
+                                  {isPending ? "Adding..." : "Add to Cart"}
                                 </button>
                               )}
                               {offer?.counterOffer && offer?.counterOffer?.length > 0 && (
