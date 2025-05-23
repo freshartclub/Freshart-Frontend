@@ -79,7 +79,7 @@ const ImageSelectionStep = ({
               loading="eager"
             />
             <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
-              {previewImageDimensions.width} × {previewImageDimensions.height} cm
+              {previewImageDimensions?.width} × {previewImageDimensions?.height} cm
             </div>
           </>
         ) : (
@@ -109,23 +109,23 @@ const ImageSelectionStep = ({
             </div>
           ) : uploadedImages?.data?.length > 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-              {uploadedImages.data.map((img) => (
+              {uploadedImages?.data?.map((img) => (
                 <div
-                  key={img._id}
+                  key={img?._id}
                   className={`relative group cursor-pointer rounded-lg overflow-hidden border-2 transition-all ${
-                    previewImage === img.image
+                    previewImage === img?.image
                       ? "border-blue-500 ring-2 ring-blue-300 dark:ring-blue-500"
                       : "border-transparent hover:border-gray-300 dark:hover:border-gray-600"
                   }`}
-                  onClick={() => handleImageSelect(img.image)}
+                  onClick={() => handleImageSelect(img?.image)}
                   role="button"
                   tabIndex={0}
                   aria-label={`Select image ${img?.name || img?._id}`}
-                  onKeyDown={(e) => e.key === 'Enter' && handleImageSelect(img.image)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleImageSelect(img?.image)}
                 >
                   <img
                     src={`${imageUrl}/users/${img?.image}`}
-                    alt={img.name || "User uploaded"}
+                    alt={img?.name || "User uploaded"}
                     className="w-full h-32 object-cover"
                     loading="lazy"
                   />

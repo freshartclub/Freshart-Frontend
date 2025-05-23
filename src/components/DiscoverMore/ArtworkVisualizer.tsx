@@ -225,34 +225,41 @@ const calculatedValues = getCalculatedValues()
 
 
 if(visualizationLoading){
-  return <Loader/>
+  return <div className="flex justify-center items-center min-h-[400px]"><Loader/></div>
 }
 
   return (
-    <div className={`${bgClass} rounded-lg shadow-lg overflow-hidden w-full `}>
-      <Header variant={{ size: "lg", theme: dark ? "light" : "dark", weight: "semiBold" }} className="p-4 border-b flex justify-between items-center">
-        <span className="truncate">Visualize in Your Space</span>
-        <div className="flex gap-2">
-          {isMobileVisualize ? null : <button
-            onClick={toggleFullscreen}
-            className={`p-2 rounded-full ${buttonBgClass} ${buttonHoverClass} transition-colors duration-200`}
-            aria-label="Toggle fullscreen"
-          >
-            <BsArrowsFullscreen size={18} />
-          </button>}
+    <div className={`${bgClass} rounded-lg shadow-lg overflow-hidden w-full max-w-full`}>
+      {/* Header - Responsive */}
+      <Header 
+        variant={{ size: "lg", theme: dark ? "light" : "dark", weight: "semiBold" }} 
+        className="p-2 sm:p-4 border-b flex justify-between items-center"
+      >
+        <span className="truncate text-sm sm:text-base lg:text-lg">Visualize in Your Space</span>
+        <div className="flex gap-1 sm:gap-2">
+          {isMobileVisualize ? null : (
+            <button
+              onClick={toggleFullscreen}
+              className={`p-1.5 sm:p-2 rounded-full ${buttonBgClass} ${buttonHoverClass} transition-colors duration-200`}
+              aria-label="Toggle fullscreen"
+            >
+              <BsArrowsFullscreen size={isMobile ? 14 : 18} />
+            </button>
+          )}
           <button
             onClick={handleMobileVisualization}
-            className={`p-2 rounded-full ${buttonBgClass} ${buttonHoverClass} transition-colors duration-200`}
+            className={`p-1.5 sm:p-2 rounded-full ${buttonBgClass} ${buttonHoverClass} transition-colors duration-200`}
             aria-label="Mobile visualization"
           >
-            <TbDeviceMobileRotated size={18} />
+            <TbDeviceMobileRotated size={isMobile ? 14 : 18} />
           </button>
         </div>
       </Header>
 
       {isMobileVisualize ? <MobileArtworkVisualizer artwork={artwork} isLoading={isLoading} error={error} /> : null}
 
-      <div className="flex overflow-x-auto scrollbar-thin p-2 border-b gap-2 sm:gap-3 md:justify-center">
+      {/* Room Selection - Responsive */}
+      <div className="flex overflow-x-auto scrollbar-thin p-2 sm:p-3 border-b gap-1 sm:gap-2 md:gap-3 lg:justify-center">
         {rooms?.map((room) => {
           const RoomIcon = room?.icon;
           return (
@@ -262,39 +269,42 @@ if(visualizationLoading){
                 setSelectedRoom(room.id);
                 setSelectedRoomImageIndex(0);
               }}
-              className={`flex flex-col items-center px-3 py-2 sm:px-4 rounded-lg transition-colors ${selectedRoom === room.id
-                ? dark
-                  ? "bg-gray-700 text-white"
-                  : "bg-gray-200 text-gray-800"
-                : dark
-                  ? "text-gray-400 hover:bg-gray-800"
-                  : "text-gray-600 hover:bg-gray-100"
-                }`}
+              className={`flex flex-col items-center px-2 py-1.5 sm:px-3 sm:py-2 lg:px-4 rounded-lg transition-colors whitespace-nowrap min-w-0 ${
+                selectedRoom === room.id
+                  ? dark
+                    ? "bg-gray-700 text-white"
+                    : "bg-gray-200 text-gray-800"
+                  : dark
+                    ? "text-gray-400 hover:bg-gray-800"
+                    : "text-gray-600 hover:bg-gray-100"
+              }`}
               disabled={room.images.length === 0}
             >
-              <RoomIcon size={20} className="sm:text-xl" />
-              <span className="text-xs mt-1 whitespace-nowrap">{room.name}</span>
+              <RoomIcon size={isMobile ? 16 : isTablet ? 18 : 20} />
+              <span className="text-xs mt-1">{room.name}</span>
             </button>
           );
         })}
         <button
           onClick={handleCustom}
-          className={`flex flex-col items-center px-3 py-2 sm:px-4 rounded-lg transition-colors ${selectedRoom === "custom"
-            ? dark
-              ? "bg-gray-700 text-white"
-              : "bg-gray-200 text-gray-800"
-            : dark
-              ? "text-gray-400 hover:bg-gray-800"
-              : "text-gray-600 hover:bg-gray-100"
-            }`}
+          className={`flex flex-col items-center px-2 py-1.5 sm:px-3 sm:py-2 lg:px-4 rounded-lg transition-colors whitespace-nowrap ${
+            selectedRoom === "custom"
+              ? dark
+                ? "bg-gray-700 text-white"
+                : "bg-gray-200 text-gray-800"
+              : dark
+                ? "text-gray-400 hover:bg-gray-800"
+                : "text-gray-600 hover:bg-gray-100"
+          }`}
         >
-          <AiOutlinePlus size={20} className="sm:text-xl" />
-          <span className="text-xs mt-1 whitespace-nowrap">Custom</span>
+          <AiOutlinePlus size={isMobile ? 16 : isTablet ? 18 : 20} />
+          <span className="text-xs mt-1">Custom</span>
         </button>
       </div>
 
+      {/* Room Image Variants - Responsive */}
       {selectedRoom !== "custom" && currentRoom?.images && currentRoom?.images?.length > 1 && (
-        <div className="flex overflow-x-auto scrollbar-thin p-2 border-b gap-2 md:justify-center">
+        <div className="flex overflow-x-auto scrollbar-thin p-2 sm:p-3 border-b gap-1 sm:gap-2 md:justify-center">
           {currentRoom?.images.map((img, index) => (
             <button
               key={index}
@@ -302,14 +312,15 @@ if(visualizationLoading){
                 setSelectedRoomImageIndex(index);
                 setSelectedId(img?._id);
               }}
-              className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-colors ${selectedRoomImageIndex === index
-                ? dark
-                  ? "bg-gray-700 text-white"
-                  : "bg-gray-200 text-gray-800"
-                : dark
-                  ? "bg-gray-800 text-gray-400"
-                  : "bg-gray-100 text-gray-600"
-                }`}
+              className={`w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full flex items-center justify-center transition-colors text-xs sm:text-sm ${
+                selectedRoomImageIndex === index
+                  ? dark
+                    ? "bg-gray-700 text-white"
+                    : "bg-gray-200 text-gray-800"
+                  : dark
+                    ? "bg-gray-800 text-gray-400"
+                    : "bg-gray-100 text-gray-600"
+              }`}
             >
               {index + 1}
             </button>
@@ -317,34 +328,37 @@ if(visualizationLoading){
         </div>
       )}
 
+      {/* Visualizer Container - Responsive */}
       <div
-      ref={containerRef}
+        ref={containerRef}
+        className="flex justify-center w-full px-2 sm:px-4 py-2 sm:py-4"
         style={{
           aspectRatio: "3/4",
         }}
-        className="flex justify-center h-[80vh] w-full">
+      >
         <div
           ref={visualizerRef}
-          className="relative w-full h-[80vh] overflow-hidden  "
+          className="relative w-full max-w-full overflow-hidden rounded-lg"
           style={{
             aspectRatio: "3/4",
+            height: isMobile ? "50vh" : isTablet ? "60vh" : "80vh",
+            maxHeight: "90vh",
             backgroundImage: `url(${roomBackgroundImage})`,
             backgroundSize: "contain",
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat"
           }}
         >
+          {/* Artwork Positioning */}
           {currentImage && (
             <div
-              className="absolute  flex items-center   justify-center"
+              className="absolute flex items-center justify-center"
               style={{
-                
                 left: calculatedValues.leftPercent,
                 top: calculatedValues.topPercent,
-                right : calculatedValues.rightPercent,
+                right: calculatedValues.rightPercent,
                 bottom: calculatedValues.bottomPercent,
                 transform: 'translate(-50%, -50%)',
-               
               }}
             >
               <img
@@ -354,38 +368,38 @@ if(visualizationLoading){
                     : placeholderImage
                 }
                 alt={artwork?.artworkName || "Artwork"}
-                className="shadow-sm  object-contain "
+                className="shadow-sm object-contain max-w-full max-h-full"
                 style={{
-                  height : calculatedValues.artworkHeight,
-                  width : calculatedValues.artworkWidth
+                  height: calculatedValues.artworkHeight,
+                  width: calculatedValues.artworkWidth
                 }}
-
               />
             </div>
           )}
 
-
+          {/* Navigation Controls - Responsive */}
           {selectedRoom !== "custom" && currentRoom.images && currentRoom.images.length > 1 && (
-            <div className="absolute top-4 right-4 flex gap-2">
+            <div className="absolute top-2 sm:top-4 right-2 sm:right-4 flex gap-1 sm:gap-2">
               <button
                 onClick={() => setSelectedRoomImageIndex((prevIndex) => (prevIndex - 1 + currentRoom.images.length) % currentRoom.images.length)}
-                className={`p-2 rounded-full ${buttonBgClass} ${buttonHoverClass} shadow-lg`}
+                className={`p-1.5 sm:p-2 rounded-full ${buttonBgClass} ${buttonHoverClass} shadow-lg`}
                 aria-label="Previous room variant"
               >
-                <FaChevronLeft size={isMobile ? 12 : 16} />
+                <FaChevronLeft size={isMobile ? 10 : isTablet ? 12 : 16} />
               </button>
               <button
                 onClick={() => setSelectedRoomImageIndex((prevIndex) => (prevIndex + 1) % currentRoom.images.length)}
-                className={`p-2 rounded-full ${buttonBgClass} ${buttonHoverClass} shadow-lg`}
+                className={`p-1.5 sm:p-2 rounded-full ${buttonBgClass} ${buttonHoverClass} shadow-lg`}
                 aria-label="Next room variant"
               >
-                <FaChevronRight size={isMobile ? 12 : 16} />
+                <FaChevronRight size={isMobile ? 10 : isTablet ? 12 : 16} />
               </button>
             </div>
           )}
         </div>
       </div>
 
+      {/* Custom Pop Modal */}
       {isCustom && <CustomPop onClose={() => setIsCustom(false)} artwork={artwork} />}
     </div>
   );

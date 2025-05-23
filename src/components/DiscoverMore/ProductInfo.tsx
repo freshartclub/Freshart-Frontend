@@ -113,7 +113,7 @@ const ProductInfo = ({ data }: any) => {
       return toast.error("Message must be at least 5 words!");
     }
 
-    formData.append("message", ticData.message);
+    formData.append("message", ticData?.message);
     formData.append("subject", `Additional Information about ${data?.data?.artworkId}`);
     formData.append("ticketType", "Artwork Additional Information");
     formData.append("isArtDetail", "true");
@@ -260,7 +260,7 @@ const ProductInfo = ({ data }: any) => {
             <div className="w-full my-5">
               <form className="flex md:w-[50%] flex-col gap-4">
                 <textarea
-                  value={ticData.message}
+                  value={ticData?.message}
                   required
                   onChange={(e) =>
                     setTicData((prev) => ({

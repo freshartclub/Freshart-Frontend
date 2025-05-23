@@ -166,20 +166,20 @@ const ImagePositioningPopup = ({ onClose, artwork }) => {
 
   const handleFullscreenDragStart = useCallback(
     (e) => {
-      e.stopPropagation(); // Prevent closing fullscreen when dragging starts
+      e.stopPropagation(); 
       setFullscreenIsDragging(true);
 
-      // Handle both mouse and touch events
+     
       const clientX = e.clientX || (e.touches && e.touches[0].clientX);
       const clientY = e.clientY || (e.touches && e.touches[0].clientY);
 
-      // Calculate drag start coordinates
+      
       setFullscreenDragStart({
         x: clientX - position.x * fullscreenZoom,
         y: clientY - position.y * fullscreenZoom,
       });
 
-      // Prevent default behavior only for touch events
+      
       if (e.touches) {
         e.preventDefault();
       }
@@ -216,7 +216,7 @@ const ImagePositioningPopup = ({ onClose, artwork }) => {
       }
     };
 
-    // Add touch pinch zoom gesture
+   
     let initialDistance = 0;
 
     const handleTouchStart = (e) => {
@@ -304,25 +304,25 @@ const ImagePositioningPopup = ({ onClose, artwork }) => {
         <h4 className={`text-lg font-medium ${themeClasses.hintText} mb-2`}>Select Background Image</h4>
 
         {isLoading ? (
-          <div className={`flex justify-center items-center h-24 ${themeClasses.secondaryBg} rounded-lg`}>
+          <div className={`flex justify-center items-center h-24 ${themeClasses?.secondaryBg} rounded-lg`}>
             <p>Loading images...</p>
           </div>
         ) : (
-          <div className={`grid grid-cols-2 sm:grid-cols-3 gap-2 h-full max-h-64 overflow-y-auto p-2 ${themeClasses.secondaryBg} rounded-lg`}>
+          <div className={`grid grid-cols-2 sm:grid-cols-3 gap-2 h-full max-h-64 overflow-y-auto p-2 ${themeClasses?.secondaryBg} rounded-lg`}>
             {uploadedImages?.data?.length > 0 ? (
-              uploadedImages.data.map((img) => (
+              uploadedImages?.data?.map((img) => (
                 <div
-                  key={img._id}
+                  key={img?._id}
                   className={`relative cursor-pointer rounded-md overflow-hidden border-2 ${
-                    selectedImage === img.image ? themeClasses.selectedBorder : "border-transparent"
+                    selectedImage === img?.image ? themeClasses?.selectedBorder : "border-transparent"
                   }`}
-                  onClick={() => setSelectedImage(img.image)}
+                  onClick={() => setSelectedImage(img?.image)}
                   role="button"
-                  aria-label={`Select image ${img.name || img._id}`}
-                  aria-selected={selectedImage === img.image}
+                  aria-label={`Select image ${img?.name || img._id}`}
+                  aria-selected={selectedImage === img?.image}
                 >
                   <img src={`${imageUrl}/users/${img.image}`} alt="User uploaded" className="w-full h-24 object-cover" loading="lazy" />
-                  {selectedImage === img.image && (
+                  {selectedImage === img?.image && (
                     <div className={`absolute top-1 right-1 ${themeClasses.selectedBg} rounded-full p-1`}>
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white" viewBox="0 0 20 20" fill="currentColor">
                         <path
@@ -368,13 +368,13 @@ const ImagePositioningPopup = ({ onClose, artwork }) => {
           className={`${
             isFullscreen
               ? "absolute bottom-16 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-70 rounded-lg p-2 flex items-center z-10"
-              : `absolute bottom-4 left-1/2 transform -translate-x-1/2 ${themeClasses.controlsBg} rounded-lg p-2 flex items-center`
+              : `absolute bottom-4 left-1/2 transform -translate-x-1/2 ${themeClasses?.controlsBg} rounded-lg p-2 flex items-center`
           }`}
         >
           <button
             onClick={handleZoomOutClick}
             className={`p-2 ${
-              isFullscreen ? "text-white hover:bg-gray-800" : `${themeClasses.controlsText} ${themeClasses.controlsHover}`
+              isFullscreen ? "text-white hover:bg-gray-800" : `${themeClasses?.controlsText} ${themeClasses?.controlsHover}`
             } rounded-md`}
             aria-label="Zoom out"
           >
@@ -386,7 +386,7 @@ const ImagePositioningPopup = ({ onClose, artwork }) => {
           <button
             onClick={handleZoomInClick}
             className={`p-2 ${
-              isFullscreen ? "text-white hover:bg-gray-800" : `${themeClasses.controlsText} ${themeClasses.controlsHover}`
+              isFullscreen ? "text-white hover:bg-gray-800" : `${themeClasses?.controlsText} ${themeClasses?.controlsHover}`
             } rounded-md`}
             aria-label="Zoom in"
           >
@@ -397,7 +397,7 @@ const ImagePositioningPopup = ({ onClose, artwork }) => {
           <button
             onClick={handleResetClick}
             className={`ml-2 p-2 ${
-              isFullscreen ? "text-white hover:bg-gray-800" : `${themeClasses.controlsText} ${themeClasses.controlsHover}`
+              isFullscreen ? "text-white hover:bg-gray-800" : `${themeClasses?.controlsText} ${themeClasses?.controlsHover}`
             } rounded-md`}
             aria-label="Reset position and zoom"
           >
@@ -417,12 +417,12 @@ const ImagePositioningPopup = ({ onClose, artwork }) => {
 
   return (
     <div
-      className={`fixed inset-0 ${themeClasses.modalBg} bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4`}
+      className={`fixed inset-0 ${themeClasses?.modalBg} bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4`}
       role="dialog"
       aria-modal="true"
       aria-labelledby="image-positioning-title"
     >
-      <div className={`${themeClasses.contentBg} rounded-xl shadow-2xl max-w-6xl w-full h-[90vh] max-h-[90vh] overflow-hidden flex flex-col`}>
+      <div className={`${themeClasses?.contentBg} rounded-xl shadow-2xl max-w-6xl w-full h-[90vh] max-h-[90vh] overflow-hidden flex flex-col`}>
         {/* Header */}
         <div className={`flex justify-between items-center border-b ${themeClasses.border} p-3 sm:p-4`}>
           <h3 id="image-positioning-title" className="text-lg sm:text-xl font-semibold">

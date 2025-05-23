@@ -11,6 +11,7 @@ import P from '../ui/P';
 import Header from '../ui/Header';
 
 import { imageUrl } from '../utils/baseUrls';
+import { FaMinus, FaPlus } from 'react-icons/fa6';
 
 
 const MobileArtworkVisualizer = ({artwork, isLoading , error}) => {
@@ -156,70 +157,63 @@ const MobileArtworkVisualizer = ({artwork, isLoading , error}) => {
     setInstructionStep(instructionStep + 1);
   };
 
-  const captureImage = () => {
-    if (!videoRef.current || !canvasRef.current) return;
-    
-    setTakingPhoto(true);
+const captureImage = () => {
+  if (!videoRef.current || !canvasRef.current) return;
 
-    const video = videoRef.current;
-    const canvas = canvasRef.current;
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    
-    const ctx = canvas.getContext('2d');
-    
+  setTakingPhoto(true);
+  const video = videoRef.current;
+  const canvas = canvasRef.current;
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+
+  const ctx = canvas.getContext('2d');
   
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+  // First, draw the video frame as background
+  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+  // If artwork exists, overlay it on top
+  if (artworkContainerRef.current && artwork?.images?.[0]?.url) {
+    const artworkRect = artworkContainerRef.current.getBoundingClientRect();
+    const videoRect = video.getBoundingClientRect();
+
+    // Calculate scaling ratios
+    const xRatio = canvas.width / videoRect.width;
+    const yRatio = canvas.height / videoRect.height;
+
+    // Calculate artwork position on canvas
+    const x = (artworkRect.left - videoRect.left) * xRatio;
+    const y = (artworkRect.top - videoRect.top) * yRatio;
+    const width = artworkRect.width * xRatio * (artworkScale || 1);
+    const height = artworkRect.height * yRatio * (artworkScale || 1);
+
+    const img = new Image();
     
-    
-    if (artworkContainerRef.current && artwork?.images?.[0]?.url) {
-     
-      const artworkRect = artworkContainerRef?.current?.getBoundingClientRect();
-      const videoRect = video?.getBoundingClientRect();
-      
-      
-      const xRatio = canvas?.width / videoRect?.width;
-      const yRatio = canvas?.height / videoRect?.height;
-      
-      const x = (artworkRect?.left - videoRect.left) * xRatio;
-      const y = (artworkRect?.top - videoRect.top) * yRatio;
-     
-      const img = new Image();
-      img.onload = () => {
-       
-        const width = artworkRect.width * xRatio * artworkScale;
-        const height = artworkRect.height * yRatio * artworkScale;
-        
+    img.onload = () => {
+      try {
+        // Draw the artwork image on top of the video
         ctx.drawImage(img, x, y, width, height);
         
-        
-        try {
-          const dataUrl = canvas.toDataURL('image/jpeg');
-          
-          const link = document.createElement('a');
-          link.href = dataUrl;
-          link.download = `${artwork.artworkName || 'artwork'}-visualization.jpg`;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          
-          setTimeout(() => setTakingPhoto(false), 1000);
-        } catch (err) {
-          console.error('Error creating snapshot:', err);
-          setTakingPhoto(false);
-        }
-      };
-      
-      img.onerror = () => {
-        console.error('Error loading artwork image for snapshot');
+        // Create and download the combined image
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.9); // Added quality parameter
+        const link = document.createElement('a');
+        link.href = dataUrl;
+        link.download = `${artwork.artworkName || 'artwork'}-visualization.jpg`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        setTimeout(() => setTakingPhoto(false), 1000);
+      } catch (err) {
+        console.error('Error creating snapshot:', err);
         setTakingPhoto(false);
-      };
-      
-      img.src = `${imageUrl}/users/${artwork?.data?.media?.mainImage}`;
-    } else {
-      // Just capture the video if no artwork is displayed
+      }
+    };
+
+    img.onerror = () => {
+      console.error('Error loading artwork image for snapshot');
+      // Still save the video-only version if artwork fails to load
       try {
-        const dataUrl = canvas.toDataURL('image/jpeg');
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
         const link = document.createElement('a');
         link.href = dataUrl;
         link.download = 'space-visualization.jpg';
@@ -227,12 +221,33 @@ const MobileArtworkVisualizer = ({artwork, isLoading , error}) => {
         link.click();
         document.body.removeChild(link);
       } catch (err) {
-        console.error('Error creating snapshot:', err);
+        console.error('Error creating video snapshot:', err);
       } finally {
         setTakingPhoto(false);
       }
+    };
+
+    // Set crossOrigin before setting src to handle CORS issues
+    img.crossOrigin = 'anonymous';
+    img.src = `${imageUrl}/users/${artwork?.data?.media?.mainImage}`;
+    
+  } else {
+    // Just capture the video if no artwork is displayed
+    try {
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+      const link = document.createElement('a');
+      link.href = dataUrl;
+      link.download = 'space-visualization.jpg';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (err) {
+      console.error('Error creating snapshot:', err);
+    } finally {
+      setTakingPhoto(false);
     }
-  };
+  }
+};
 
   const handleAdjustScale = (delta) => {
     const newScale = Math.max(0.3, Math.min(2, artworkScale + delta));
@@ -491,7 +506,7 @@ const MobileArtworkVisualizer = ({artwork, isLoading , error}) => {
                     {artwork?.data?.owner?.artistName || 'Artist'}
                   </P>
                   <P variant={{ size: 'xs', theme: dark ? 'light' : 'dark', weight: 'normal' }} className="opacity-70">
-                    {artwork?.dimensions || `${artwork?.images?.[0]?.width || '?'}x${artwork?.images?.[0]?.height || '?'}`}
+                    {artwork?.dimensions || `${artwork?.data?.additionalInfo?.width || '?'}x${artwork?.data?.additionalInfo?.height || '?'}`}
                   </P>
                 </div>
                 <Button
@@ -524,14 +539,14 @@ const MobileArtworkVisualizer = ({artwork, isLoading , error}) => {
             className={`p-3 rounded-full ${buttonBgClass} shadow-lg active:shadow-sm transition-shadow`}
             aria-label="Decrease size"
           >
-            <FaChevronLeft size={20} className={textColorClass} />
+            <FaPlus size={20} className={textColorClass} />
           </button>
           <button 
             onClick={() => handleAdjustScale(0.1)}
             className={`p-3 rounded-full ${buttonBgClass} shadow-lg active:shadow-sm transition-shadow`}
             aria-label="Increase size"
           >
-            <FaChevronRight size={20} className={textColorClass} />
+            <FaMinus size={20} className={textColorClass} />
           </button>
         </div>
       )}
