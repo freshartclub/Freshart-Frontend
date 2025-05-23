@@ -23,14 +23,14 @@ const STEP_CONFIG = {
   },
   4: {
     title: "Position Artwork & Preview",
-    description: "Position",
+    description: "Preview",
     progress: 100
   }
 };
 
 const INITIAL_DIMENSIONS = {
-  width: 200,
-  height: 200
+  width: 0,
+  height: 0,
 };
 
 const INITIAL_CROP = {
@@ -50,6 +50,12 @@ const ImagePlacementWizard = memo(({ onClose, artwork }) => {
   const [error, setError] = useState("");
   const [imageDimension, setImageDimensions] = useState({ height: 0, width: 0 });
   const [isMobile, setIsMobile] = useState(false);
+  const [imageHW , setIageHW]  = useState(null)
+   const [previewImageDimensions, setPreviewImageDimensions] = useState({ height: 0, width: 0 });
+ const [imageSizeS, setImageSizeS] = useState({ width: 0, height: 0 });
+  
+  
+
 
 
   useEffect(() => {
@@ -70,7 +76,7 @@ const ImagePlacementWizard = memo(({ onClose, artwork }) => {
   const prevStep = useCallback(() => {
     setCurrentStep(prev => Math.max(prev - 1, 1));
   }, []);
-
+console.log("this is crop selection" , imageSizeS)
  
   useEffect(() => {
     if (!artwork?.data?.media?.mainImage) return;
@@ -123,6 +129,10 @@ const ImagePlacementWizard = memo(({ onClose, artwork }) => {
             setImageDimensions={setImageDimensions}
             imageDimension={imageDimension}
             isMobile={isMobile}
+            setIageHW={setIageHW}
+            setPreviewImageDimensions={setPreviewImageDimensions}
+            previewImageDimensions={previewImageDimensions}
+
           />
         );
       case 2:
@@ -131,8 +141,13 @@ const ImagePlacementWizard = memo(({ onClose, artwork }) => {
             {...commonProps}
             cropSelection={cropSelection}
             setCropSelection={setCropSelection}
-            imageDimension={imageDimension}
+         previewImageDimensions={previewImageDimensions}
+            dimensions={dimensions}
             isMobile={isMobile}
+            imageHW={imageHW}
+            setImageSizeS={setImageSizeS}
+            
+
           />
         );
       case 3:
@@ -144,6 +159,8 @@ const ImagePlacementWizard = memo(({ onClose, artwork }) => {
             cropSelection={cropSelection}
             setCropSelection={setCropSelection}
             isMobile={isMobile}
+            imageSizeS={imageSizeS}
+            
           />
         );
       case 4:
@@ -159,6 +176,8 @@ const ImagePlacementWizard = memo(({ onClose, artwork }) => {
             setZoom={setZoom}
             error={error}
             isMobile={isMobile}
+            imageSizeS={imageSizeS}
+            onClose={onClose}
           />
         );
       default:

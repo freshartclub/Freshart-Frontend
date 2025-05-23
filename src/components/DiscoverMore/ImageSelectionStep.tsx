@@ -7,12 +7,14 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 const ImageSelectionStep = ({ 
   selectedImage, 
   setSelectedImage,
+  setIageHW,
   setImageDimensions,
+  setPreviewImageDimensions,
+  previewImageDimensions,
   onNext 
 }) => {
   const { data: uploadedImages, isLoading, refetch } = useGetAllUploadedImages();
   const [previewImage, setPreviewImage] = useState(null);
-  const [previewImageDimensions, setPreviewImageDimensions] = useState({ height: 0, width: 0 });
 
   const { mutate: deleteImage, isPending: isDeleting } = useDeleteUploadedImgMutation();
 
@@ -23,14 +25,14 @@ const ImageSelectionStep = ({
   useEffect(() => {
     if (uploadedImages?.data?.length > 0) {
       if (!selectedImage) {
-       
         const firstImage = uploadedImages.data[0];
+        console.log(firstImage.height)
         setPreviewImage(firstImage.image);
         setPreviewImageDimensions({ height: firstImage.height, width: firstImage.width });
         setImageDimensions({ height: firstImage.height, width: firstImage.width });
         setSelectedImage(firstImage.image);
+        setIageHW(firstImage)
       } else {
-       
         const selected = uploadedImages.data.find(img => img.image === selectedImage);
         if (selected) {
           setPreviewImage(selected.image);
@@ -38,7 +40,6 @@ const ImageSelectionStep = ({
         }
       }
     } else {
-    
       setPreviewImage(null);
       setPreviewImageDimensions({ height: 0, width: 0 });
       setSelectedImage(null);
@@ -49,6 +50,7 @@ const ImageSelectionStep = ({
   const handleImageSelect = useCallback((image) => {
     const selected = uploadedImages.data.find(img => img.image === image);
     if (selected) {
+      console.log(selected)
       setPreviewImage(selected.image);
       setPreviewImageDimensions({ height: selected.height, width: selected.width });
       setImageDimensions({ height: selected.height, width: selected.width });
@@ -77,7 +79,7 @@ const ImageSelectionStep = ({
               loading="eager"
             />
             <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
-              {previewImageDimensions.width} × {previewImageDimensions.height} px
+              {previewImageDimensions.width} × {previewImageDimensions.height} cm
             </div>
           </>
         ) : (
@@ -118,11 +120,11 @@ const ImageSelectionStep = ({
                   onClick={() => handleImageSelect(img.image)}
                   role="button"
                   tabIndex={0}
-                  aria-label={`Select image ${img.name || img._id}`}
+                  aria-label={`Select image ${img?.name || img?._id}`}
                   onKeyDown={(e) => e.key === 'Enter' && handleImageSelect(img.image)}
                 >
                   <img
-                    src={`${imageUrl}/users/${img.image}`}
+                    src={`${imageUrl}/users/${img?.image}`}
                     alt={img.name || "User uploaded"}
                     className="w-full h-32 object-cover"
                     loading="lazy"

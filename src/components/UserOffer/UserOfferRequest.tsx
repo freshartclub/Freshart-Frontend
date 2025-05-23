@@ -150,11 +150,11 @@ const UserOfferRequest = () => {
             ))}
           </div>
 
-          {filteredData.length === 0 ? (
+          {filteredData?.length === 0 ? (
             <div
               className={`text-center border rounded-lg capitalize py-10 ${dark ? "text-gray-400 border-gray-600" : "text-gray-500 border-gray-300"}`}
             >
-              No {activeTab.toLowerCase()} offers found
+              No {activeTab?.toLowerCase()} offers found
             </div>
           ) : (
             <>
@@ -182,25 +182,25 @@ const UserOfferRequest = () => {
                     </tr>
                   </thead>
                   <tbody className={dark ? "bg-gray-900 divide-gray-700" : "bg-white divide-gray-200"}>
-                    {paginatedData.map((offer: Offer) => (
-                      <React.Fragment key={offer._id}>
+                    {paginatedData?.map((offer: Offer) => (
+                      <React.Fragment key={offer?._id}>
                         <tr className="hover:bg-opacity-10 hover:bg-gray-500 transition-colors">
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className={`flex gap-4 items-center text-sm ${dark ? "text-gray-100" : "text-gray-900"}`}>
                               <img
                                 className="w-12 h-12 rounded object-cover"
-                                src={`${lowImageUrl}/${offer.artwork.media.mainImage}` || ""}
-                                alt={offer.artwork.artworkName}
+                                src={`${lowImageUrl}/${offer?.artwork?.media?.mainImage}` || ""}
+                                alt={offer?.artwork?.artworkName}
                                 
                               />
                               <div>
-                                <p className="font-medium">{offer.artwork.artworkName}</p>
+                                <p className="font-medium">{offer?.artwork?.artworkName}</p>
                                 <p className="text-sm text-gray-500">
-                                  by {offer.artist.artistName.length > 17 ? `${offer.artist.artistName.slice(0, 17)}...` : offer.artist.artistName}
+                                  by {offer?.artist?.artistName?.length > 17 ? `${offer?.artist?.artistName?.slice(0, 17)}...` : offer?.artist?.artistName}
                                 </p>
                               </div>
-                              {offer.counterOffer[offer.counterOffer.length - 1]?.userType == "artist" &&
-                                offer.counterOffer[offer.counterOffer.length - 1]?.isAccepted == null && (
+                              {offer?.counterOffer[offer.counterOffer?.length - 1]?.userType == "artist" &&
+                                offer?.counterOffer[offer.counterOffer?.length - 1]?.isAccepted == null && (
                                   <span
                                     className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
                                       dark ? "bg-red-900 text-red-200" : "bg-red-100 text-red-800"
@@ -212,19 +212,19 @@ const UserOfferRequest = () => {
                             </div>
                           </td>
                           <td className="px-6 py-4 text-center whitespace-nowrap">
-                            <div className={`text-sm ${dark ? "text-gray-100" : "text-gray-900"}`}>3 / {offer.maxOffer}</div>
+                            <div className={`text-sm ${dark ? "text-gray-100" : "text-gray-900"}`}>3 / {offer?.maxOffer}</div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className={`text-sm ${dark ? "text-gray-100" : "text-gray-900"}`}>
-                              {new Date(offer.createdAt).toLocaleDateString()}
+                              {new Date(offer?.createdAt).toLocaleDateString()}
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {offer.status == "complete" && offer.counterOffer[offer.counterOffer.length - 1].isAccepted == true ? (
+                            {offer?.status == "complete" && offer?.counterOffer[offer?.counterOffer.length - 1].isAccepted == true ? (
                               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                                 <FaCheck className="mr-1" /> Accepted
                               </span>
-                            ) : offer.status == "complete" && offer.counterOffer[offer.counterOffer.length - 1].isAccepted == false ? (
+                            ) : offer?.status == "complete" && offer?.counterOffer[offer?.counterOffer.length - 1].isAccepted == false ? (
                               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
                                 <FaTimes className="mr-1" /> Rejected
                               </span>
@@ -236,7 +236,7 @@ const UserOfferRequest = () => {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className="flex items-center gap-2">
-                              {offer.status == "complete" && offer.counterOffer[offer.counterOffer.length - 1].isAccepted == true && (
+                              {offer?.status == "complete" && offer?.counterOffer[offer?.counterOffer?.length - 1].isAccepted == true && (
                                 <button
                                   onClick={() => handleAddToCart(offer)}
                                   disabled={isPending}
@@ -248,68 +248,68 @@ const UserOfferRequest = () => {
                                   {isOfferCartPending ? "Adding..." : "Add to Cart"}
                                 </button>
                               )}
-                              {offer.counterOffer && offer.counterOffer.length > 0 && (
+                              {offer?.counterOffer && offer?.counterOffer?.length > 0 && (
                                 <button
-                                  onClick={() => toggleExpandOffer(offer._id)}
+                                  onClick={() => toggleExpandOffer(offer?._id)}
                                   className={`p-1.5 rounded-full ${dark ? "hover:bg-gray-700" : "hover:bg-gray-100"} transition-colors`}
                                   aria-label="View counter offers"
                                 >
-                                  {expandedOffer === offer._id ? <FaChevronUp /> : <FaChevronDown />}
+                                  {expandedOffer === offer?._id ? <FaChevronUp /> : <FaChevronDown />}
                                 </button>
                               )}
                             </div>
                           </td>
                         </tr>
-                        {expandedOffer === offer._id && offer.counterOffer && (
+                        {expandedOffer === offer?._id && offer?.counterOffer && (
                           <tr>
                             <td colSpan={6} className="px-6 py-4">
                               <div className={`rounded-lg ${dark ? "bg-gray-900" : "bg-gray-50"}`}>
                                 <h3 className="font-medium text-lg mb-3">Counter Offers</h3>
                                 <div className="space-y-3">
-                                  {offer.counterOffer.map((counterOffer, index) => {
-                                    const isLatest = index === offer.counterOffer.length - 1;
+                                  {offer?.counterOffer?.map((counterOffer, index) => {
+                                    const isLatest = index === offer?.counterOffer?.length - 1;
                                     return (
                                       <div
-                                        key={counterOffer._id}
+                                        key={counterOffer?._id}
                                         className={`flex flex-col hover:scale-[1.01] transition-all ease-in border md:flex-row md:items-center justify-between p-3 rounded gap-3 ${
                                           dark ? "bg-gray-800 border-gray-700" : "bg-gray-100 border-gray-300"
                                         }`}
                                       >
                                         <div className="flex items-center gap-3">
                                           <div className={`rounded-full`}>
-                                            {counterOffer.userType === "artist" ? (
-                                              <img src={`${imageUrl}/users/${offer.artist.mainImg}`} alt="user" className="w-10 h-10 rounded-full" />
+                                            {counterOffer?.userType === "artist" ? (
+                                              <img src={`${imageUrl}/users/${offer?.artist?.mainImg}`} alt="user" className="w-10 h-10 rounded-full" />
                                             ) : (
                                               <img src={`${imageUrl}/users/${img}`} alt="user" className="w-10 h-10 rounded-full" />
                                             )}
                                           </div>
                                           <div>
                                             <p className="font-medium">
-                                              Offer Made - € {counterOffer.offerprice} ({counterOffer.userType === "artist" ? "Artist" : "You"})
+                                              Offer Made - € {counterOffer?.offerprice} ({counterOffer?.userType === "artist" ? "Artist" : "You"})
                                             </p>
                                             <p className={`text-xs ${dark ? "text-gray-400" : "text-gray-600"}`}>
-                                              {new Date(counterOffer.createdAt).toLocaleString()}
+                                              {new Date(counterOffer?.createdAt).toLocaleString()}
                                             </p>
                                           </div>
                                         </div>
 
                                         <div className="flex sm:flex-row gap-2">
-                                          {isLatest && counterOffer.userType === "user" && counterOffer.isAccepted && offer.status == "complete" ? (
+                                          {isLatest && counterOffer?.userType === "user" && counterOffer?.isAccepted && offer?.status == "complete" ? (
                                             <span className="inline-flex items-center px-2.5 py-1.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                                               <FaCheck className="mr-1" /> Offer Accepted By Artist
                                             </span>
                                           ) : isLatest &&
-                                            counterOffer.userType === "artist" &&
-                                            counterOffer.isAccepted &&
-                                            offer.status == "complete" ? (
+                                            counterOffer?.userType === "artist" &&
+                                            counterOffer?.isAccepted &&
+                                            offer?.status == "complete" ? (
                                             <span className="inline-flex items-center px-2.5 py-1.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                                               <FaCheck className="mr-1" /> Offer Accepted By You
                                             </span>
-                                          ) : isLatest && counterOffer.isAccepted == false && offer.status == "complete" ? (
+                                          ) : isLatest && counterOffer?.isAccepted == false && offer?.status == "complete" ? (
                                             <span className="inline-flex items-center px-2.5 py-1.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                                               <FaCheck className="mr-1" /> Offer Reached it's max limit
                                             </span>
-                                          ) : isLatest && counterOffer.userType === "artist" ? (
+                                          ) : isLatest && counterOffer?.userType === "artist" ? (
                                             <>
                                               <button
                                                 onClick={() => handleMakeAnoffer(offer, true)}
@@ -338,7 +338,7 @@ const UserOfferRequest = () => {
                                                 </button>
                                               )}
                                             </>
-                                          ) : isLatest && counterOffer.userType == "user" && counterOffer.isAccepted == false ? (
+                                          ) : isLatest && counterOffer?.userType == "user" && counterOffer?.isAccepted == false ? (
                                             <button
                                               onClick={() => handleMakeAnoffer(offer, false)}
                                               className={`flex items-center px-2 py-1.5 rounded-full text-sm font-medium bg-[#EE1D52] hover:bg-[#EE1D52]/80 text-white`}
@@ -346,17 +346,17 @@ const UserOfferRequest = () => {
                                               <FaExchangeAlt className="mr-2" /> Counter Offer
                                             </button>
                                           ) : null}
-                                          {counterOffer.isAccepted === true ? (
+                                          {counterOffer?.isAccepted === true ? (
                                             <span className="inline-flex items-center px-2.5 py-1.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                                               <FaCheck className="mr-1" /> Accepted
                                             </span>
-                                          ) : counterOffer.isAccepted === false ? (
+                                          ) : counterOffer?.isAccepted === false ? (
                                             <span className="inline-flex items-center px-2.5 py-1.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
                                               <FaTimes className="mr-1" /> Rejected
                                             </span>
                                           ) : (
                                             <>
-                                              {counterOffer.userType === "user" && (
+                                              {counterOffer?.userType === "user" && (
                                                 <span className="inline-flex items-center px-2.5 py-1.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
                                                   <FaClock className="mr-1" /> Waiting for Artist Response
                                                 </span>
@@ -380,8 +380,8 @@ const UserOfferRequest = () => {
 
               <div className="flex flex-col sm:flex-row justify-between items-center mt-4 gap-4">
                 <div className={`text-sm ${dark ? "text-gray-300" : "text-gray-700"}`}>
-                  Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, filteredData.length)} of{" "}
-                  {filteredData.length} results
+                  Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, filteredData?.length)} of{" "}
+                  {filteredData?.length} results
                 </div>
                 <div className="flex gap-2">
                   <button
@@ -396,8 +396,8 @@ const UserOfferRequest = () => {
                   <button
                     className={`inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded ${
                       dark ? "bg-gray-700 hover:bg-gray-600 text-white" : "bg-gray-200 hover:bg-gray-300 text-gray-700"
-                    } ${currentPage * itemsPerPage >= filteredData.length ? "opacity-50 cursor-not-allowed" : ""}`}
-                    disabled={currentPage * itemsPerPage >= filteredData.length}
+                    } ${currentPage * itemsPerPage >= filteredData?.length ? "opacity-50 cursor-not-allowed" : ""}`}
+                    disabled={currentPage * itemsPerPage >= filteredData?.length}
                     onClick={() => setCurrentPage((prev) => prev + 1)}
                   >
                     Next
@@ -408,7 +408,8 @@ const UserOfferRequest = () => {
           )}
         </div>
       )}
-      {isOfferPopupOpen.makeAnOffer && (
+      
+      {isOfferPopupOpen?.makeAnOffer && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className={`rounded-lg p-6 w-[90%] sm:w-1/2  ${dark ? "bg-gray-800 text-white" : "bg-white text-gray-900"}`}>
             <div className="flex relative justify-center items-center w-full mb-4">
@@ -544,7 +545,7 @@ const UserOfferRequest = () => {
           </div>
         </div>
       )}
-      {isOfferPopupOpen.acceptOffer && (
+      {isOfferPopupOpen?.acceptOffer && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className={`rounded-lg p-6 w-[90%] sm:w-1/2 ${dark ? "bg-gray-800 text-white" : "bg-white text-gray-900"}`}>
             <div className="flex relative justify-center items-center w-full mb-4">
@@ -590,7 +591,7 @@ const UserOfferRequest = () => {
               <p className={`text-sm mb-2 ${dark ? "text-gray-300" : "text-gray-600"}`}>You are accepting the following offer:</p>
               <div className={`p-4 rounded-md ${dark ? "bg-gray-700" : "bg-gray-100"}`}>
                 <p className="font-medium">
-                  € {offerData?.counterOffer[offerData?.counterOffer.length - 1]?.offerprice} <span className="text-xs">(Offered By Artist)</span>
+                  € {offerData?.counterOffer[offerData?.counterOffer?.length - 1]?.offerprice} <span className="text-xs">(Offered By Artist)</span>
                 </p>
               </div>
             </div>

@@ -267,11 +267,11 @@ const Purchase = () => {
           <label key={index} className="flex items-center space-x-2 cursor-pointer">
             <input
               type="checkbox"
-              checked={selectedOption.includes(item.disciplineName)}
-              onChange={() => handleOptionSelect(item.disciplineName)}
+              checked={selectedOption.includes(item?.disciplineName)}
+              onChange={() => handleOptionSelect(item?.disciplineName)}
               className={`form-checkbox h-4 w-4 rounded ${dark ? "text-blue-400 bg-gray-700 border-gray-600" : "text-blue-600"}`}
             />
-            <span className="text-sm">{item.disciplineName}</span>
+            <span className="text-sm">{item?.disciplineName}</span>
           </label>
         ))}
         {disciplineData?.data?.length > filteredDisciplineData.length && (
@@ -299,7 +299,7 @@ const Purchase = () => {
           <label key={index} className="flex items-center space-x-2 cursor-pointer">
             <input
               type="checkbox"
-              checked={selectedTechnic.includes(item)}
+              checked={selectedTechnic?.includes(item)}
               onChange={() => handleTechnicSelect(item)}
               className={`form-checkbox h-4 w-4 rounded ${dark ? "text-blue-400 bg-gray-700 border-gray-600" : "text-blue-600"}`}
             />
@@ -368,7 +368,7 @@ const Purchase = () => {
             <span className="text-sm">{item}</span>
           </label>
         ))}
-        {styleData?.length > filteredStyleData.length && (
+        {styleData?.length > filteredStyleData?.length && (
           <button
             className={`text-sm ${dark ? "text-blue-400 hover:text-blue-300" : "text-blue-600 hover:text-blue-800"} mt-2`}
             onClick={() => setShowAllStyle(!showAllStyle)}
@@ -517,7 +517,7 @@ const Purchase = () => {
                               <h3 className={`text-lg font-bold ${dark ? "text-white" : "text-gray-900"} mb-2`}>Artists</h3>
                               <ul className="space-y-2">
                                 {allHoverData?.insignia &&
-                                  allHoverData.insignia?.map((key, i: number) => (
+                                  allHoverData?.insignia?.map((key, i: number) => (
                                     <li
                                       key={i}
                                       onClick={() =>
@@ -665,8 +665,8 @@ const Purchase = () => {
                 const items = selectedItemsMap[key as keyof typeof selectedItemsMap];
 
                 return (
-                  items.length > 0 &&
-                  items.map((item: string, i: number) => (
+                  items?.length > 0 &&
+                  items?.map((item: string, i: number) => (
                     <Badge key={`${key}-${i}`} color="blue" onRemove={() => handleOptions.find((o) => o.key === key)?.handler(item)}>
                       {label}: {item}
                     </Badge>
@@ -766,9 +766,9 @@ const Purchase = () => {
               className={`flex justify-between items-center w-full text-left font-semibold ${dark ? "text-gray-100" : "text-gray-800"}`}
             >
               <span>Discipline</span>
-              <MdKeyboardArrowDown size={20} className={`transition-transform ${optionOpen.discipline ? "rotate-180" : ""}`} />
+              <MdKeyboardArrowDown size={20} className={`transition-transform ${optionOpen?.discipline ? "rotate-180" : ""}`} />
             </button>
-            {optionOpen.discipline && renderDisciplineOptions()}
+            {optionOpen?.discipline && renderDisciplineOptions()}
           </div>
 
           {selectedOption.length > 0 && (
@@ -789,7 +789,7 @@ const Purchase = () => {
             </div>
           )}
           {/* Technic Filter (only shown when disciplines are selected) */}
-          {selectedOption.length > 0 && (
+          {selectedOption?.length > 0 && (
             <div className="space-y-2">
               <button
                 onClick={() =>
@@ -819,9 +819,9 @@ const Purchase = () => {
                 className={`flex justify-between items-center w-full text-left font-semibold ${dark ? "text-gray-100" : "text-gray-800"}`}
               >
                 <span>Style</span>
-                <MdKeyboardArrowDown size={20} className={`transition-transform ${optionOpen.style ? "rotate-180" : ""}`} />
+                <MdKeyboardArrowDown size={20} className={`transition-transform ${optionOpen?.style ? "rotate-180" : ""}`} />
               </button>
-              {optionOpen.style && renderStyleOptions()}
+              {optionOpen?.style && renderStyleOptions()}
             </div>
           )}
           {/* Orientation Filter */}
@@ -841,8 +841,8 @@ const Purchase = () => {
                       orientation: prev.orientation === item.value ? "" : item.value,
                     }))
                   }
-                  className={`${item.width} h-12 flex items-center justify-center rounded-lg border-2 ${
-                    moreOptions.orientation === item.value
+                  className={`${item?.width} h-12 flex items-center justify-center rounded-lg border-2 ${
+                    moreOptions.orientation === item?.value
                       ? dark
                         ? "border-blue-500 bg-blue-900"
                         : "border-blue-500 bg-blue-50"
@@ -851,7 +851,7 @@ const Purchase = () => {
                       : "border-gray-200 hover:border-gray-300"
                   } transition-colors`}
                 >
-                  <span className="text-xl">{item.icon}</span>
+                  <span className="text-xl">{item?.icon}</span>
                 </button>
               ))}
             </div>
@@ -860,7 +860,7 @@ const Purchase = () => {
           <div className="space-y-2">
             <h3 className={`font-semibold ${dark ? "text-gray-100" : "text-gray-800"}`}>Color</h3>
             <select
-              value={moreOptions.color}
+              value={moreOptions?.color}
               onChange={(e) => setMoreOptions((prev) => ({ ...prev, color: e.target.value }))}
               className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all ${
                 dark ? "bg-gray-700 border-gray-600 text-white" : "border-gray-300"
@@ -868,8 +868,8 @@ const Purchase = () => {
             >
               <option value="">Select Color</option>
               {colors?.map((item, i) => (
-                <option key={i} value={item.value}>
-                  {item.value}
+                <option key={i} value={item?.value}>
+                  {item?.value}
                 </option>
               ))}
             </select>
@@ -878,9 +878,9 @@ const Purchase = () => {
           <div className="space-y-2">
             <h3 className={`font-semibold ${dark ? "text-gray-100" : "text-gray-800"}`}>Commercial Options</h3>
             <div className="space-y-2">
-              {commercialOptions.map((option) => (
-                <label key={option.key} className="flex items-center justify-between">
-                  <span className={dark ? "text-gray-300" : "text-gray-700"}>{option.label}</span>
+              {commercialOptions?.map((option) => (
+                <label key={option?.key} className="flex items-center justify-between">
+                  <span className={dark ? "text-gray-300" : "text-gray-700"}>{option?.label}</span>
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input
                       type="checkbox"
@@ -1025,8 +1025,8 @@ const Purchase = () => {
                     >
                       <option value="">All</option>
                       {commOptions?.map((item, i) => (
-                        <option key={i} value={item.value}>
-                          {item.value}
+                        <option key={i} value={item?.value}>
+                          {item?.value}
                         </option>
                       ))}
                     </select>
@@ -1041,7 +1041,7 @@ const Purchase = () => {
                     <input
                       type="checkbox"
                       className="sr-only peer"
-                      checked={moreOptions.purchaseOption === "Yes"}
+                      checked={moreOptions?.purchaseOption === "Yes"}
                       onChange={(e) =>
                         setMoreOptions((prev) => ({
                           ...prev,
@@ -1067,7 +1067,7 @@ const Purchase = () => {
             <input
               type="text"
               placeholder="Search by tags..."
-              value={keywords.tag}
+              value={keywords?.tag}
               onChange={(e) =>
                 setKeywords((prev) => ({
                   ...prev,
@@ -1142,7 +1142,7 @@ const Purchase = () => {
               </div>
               <div className="relative w-48 max-[450px]:w-full">
                 <select
-                  value={moreOptions.comingSoon === "Yes" ? "Coming Soon" : "All"}
+                  value={moreOptions?.comingSoon === "Yes" ? "Coming Soon" : "All"}
                   onChange={(e) =>
                     setMoreOptions((prev) => ({
                       ...prev,
@@ -1184,7 +1184,7 @@ const Purchase = () => {
             <div className="flex items-center gap-2">
               <span className="text-sm">Rows per page:</span>
               <select
-                value={options.limit}
+                value={options?.limit}
                 onChange={(e) =>
                   setOptions({
                     ...options,

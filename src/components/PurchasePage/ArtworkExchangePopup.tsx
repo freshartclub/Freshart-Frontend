@@ -61,7 +61,7 @@ const ArtworkExchangePopup = ({ setOnExchange, setShowReturnInstruction, availab
                 type="date"
                 id="pickup-date"
                 name="pickupDate"
-                value={formData.pickupDate}
+                value={formData?.pickupDate}
                 onChange={handleChange}
                 className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
                   dark ? "bg-gray-800 text-white border-gray-600" : "border-gray-300"
@@ -78,7 +78,7 @@ const ArtworkExchangePopup = ({ setOnExchange, setShowReturnInstruction, availab
                 type="date"
                 id="return-date"
                 name="returnDate"
-                value={formData.returnDate}
+                value={formData?.returnDate}
                 onChange={handleChange}
                 className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
                   dark ? "bg-gray-800 text-white border-gray-600" : "border-gray-300"
@@ -110,7 +110,7 @@ const ArtworkExchangePopup = ({ setOnExchange, setShowReturnInstruction, availab
               id="terms-agreement"
               name="termsAgreement"
               type="checkbox"
-              checked={formData.termsAgreement}
+              checked={formData?.termsAgreement}
               onChange={handleChange}
               className={`h-4 w-4 text-indigo-600 focus:ring-indigo-500 rounded ${dark ? "border-gray-600 bg-gray-800" : "border-gray-300"}`}
               required

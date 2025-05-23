@@ -3,9 +3,9 @@ import { useTranslation } from "react-i18next";
 const OrderList = ({ order }: any) => {
   const { t } = useTranslation();
   const grandTotal =
-    parseFloat(order.totle) +
-    parseFloat(order.vat) +
-    parseFloat(order.shippingrate);
+    parseFloat(order?.totle) +
+    parseFloat(order?.vat) +
+    parseFloat(order?.shippingrate);
 
   return (
     <div className=" border shadow-md rounded-md">
@@ -35,28 +35,28 @@ const OrderList = ({ order }: any) => {
           <div className="col-span-2 flex  gap-2">
             <div className="">
               <img
-                src={order.image}
+                src={order?.image}
                 alt="product image"
                 className="w-[2em] h-[2.5em] rounded-xl"
               />
             </div>
             <div>
               <p className="text-black font-bold text-[12px] md:text-[14px]">
-                {order.artname}
+                {order?.artname}
               </p>
-              <p className="text-[10px] md:text-[14px]">{order.color}</p>
+              <p className="text-[10px] md:text-[14px]">{order?.color}</p>
             </div>
           </div>
           <div className="grid-cols-1 ">
             <h2 className="text-[14px] text-[#FF536B] font-semibold">
-              {order.Orderid}
+              {order?.Orderid}
             </h2>
           </div>
           <div className="grid-cols-1">
-            <p className="text-[14px] font-semibold">{order.qty}</p>
+            <p className="text-[14px] font-semibold">{order?.qty}</p>
           </div>
           <div className="grid-cols-1 ">
-            <p className="text-[14px] font-semibold">${order.price}</p>
+            <p className="text-[14px] font-semibold">${order?.price}</p>
             <p className="text-[14px] text-black font-semibold pt-7">
               {t("Subtotal")}
             </p>
@@ -70,15 +70,15 @@ const OrderList = ({ order }: any) => {
           </div>
 
           <div className="grid-cols-1">
-            <p className="text-[14px] font-semibold">${order.totle}</p>
+            <p className="text-[14px] font-semibold">${order?.totle}</p>
             <p className="text-[14px] text-black font-semibold pt-7">
-              ${order.totle}
+              ${order?.totle}
             </p>
             <p className="text-[14px] text-black font-semibold pt-7">
-              ${order.vat}
+              ${order?.vat}
             </p>
             <p className="text-[14px] text-black font-semibold pt-7">
-              ${order.shippingrate}
+              ${order?.shippingrate}
             </p>
             <p className="text-[14px] text-black font-semibold pt-7">
               ${grandTotal}

@@ -4,17 +4,12 @@ import { RiAddLine, RiArrowLeftLine, RiCloseLine, RiShoppingCartLine } from "rea
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../store/typedReduxHooks";
 import { useGetCartItems } from "../pages/http/useGetCartItems";
-// import { useGetOfferCartItems } from "../pages/http/useGetOfferCartItems";
-// import { useGetCustomCartItems } from "../pages/http/useGetCustomCartItems";
 import Button from "../ui/Button";
 import Loader from "../ui/Loader";
 import P from "../ui/P";
-import { imageUrl, lowImageUrl } from "../utils/baseUrls";
+import { lowImageUrl } from "../utils/baseUrls";
 import CartTotal from "./CartTotal";
 import useRemoveMutation from "./http/useRemoveMutation";
-// import useRemoveOfferMutation from "./http/useRemoveOfferMutation";
-// import useRemoveCustomMutation from "./http/useRemoveCustomMutation";
-
 type PurchaseSubsection = "instant" | "offer" | "custom";
 type CartViewMode = "purchase" | "subscription";
 
@@ -24,25 +19,16 @@ const PurchaseCart = () => {
   const navigate = useNavigate();
   const dark = useAppSelector((state) => state.theme.mode);
 
-  
   const { data: instantData, isLoading: instantLoading } = useGetCartItems();
-  // const { data: offerData, isLoading: offerLoading } = useGetOfferCartItems();
-  // const { data: customData, isLoading: customLoading } = useGetCustomCartItems();
 
-  // Mutation hooks for different cart types
   const { mutate: removeInstantProduct } = useRemoveMutation();
-  // const { mutate: removeOfferProduct } = useRemoveOfferMutation();
-  // const { mutate: removeCustomProduct } = useRemoveCustomMutation();
 
   const isLoading = instantLoading 
-
-  console.log(instantData)
 
   const getCurrentData = () => {
     if (mode === "subscription") {
       return instantData?.cart?.filter((item) => item?.commercialization?.activeTab === "subscription") || [];
     }
-
     switch (purchaseSubsection) {
       case "instant":
         return instantData?.cart?.filter(
@@ -50,7 +36,7 @@ const PurchaseCart = () => {
         ) || [];
       case "offer":
         return instantData?.offer_cart
-  ||  [];
+       ||  [];
       case "custom":
         return  [];
       default:
@@ -60,26 +46,35 @@ const PurchaseCart = () => {
 
   const renderData = getCurrentData();
 
-  const handleRemove = (id: string) => {
+  const handleRemove = (id , mode: string) => {
+
+    const checkType = mode === "purchase" &&  purchaseSubsection === "offer" 
+    const type = checkType ? "offer" : "purchase"
+
+    const values = {
+      id,
+      type
+    }
+
+
     switch (purchaseSubsection) {
       case "instant":
-        removeInstantProduct(id);
+        removeInstantProduct(values);
         break;
       case "offer":
-        // removeOfferProduct(id);
+        removeInstantProduct(values);
         break;
       case "custom":
         // removeCustomProduct(id);
         break;
       default:
-        removeInstantProduct(id);
+        removeInstantProduct(values);
     }
   };
 
   const handleClearCart = () => {
     if (renderData.length === 0) return;
-  
-    renderData.forEach((item) => handleRemove(item._id));
+    renderData.forEach((item) => handleRemove(item._id , mode));
   };
 
   const handleContinueShopping = () => {
@@ -133,7 +128,6 @@ const PurchaseCart = () => {
           </button>
         </div>
 
-        
         {mode === "purchase" && (
           <div className="flex flex-wrap gap-3 mb-6">
             <button
@@ -256,7 +250,7 @@ const PurchaseCart = () => {
                                   </P>
                                   {purchaseSubsection === "custom" && (
                                     <p className={`text-xs ${dark ? "text-gray-400" : "text-gray-500"}`}>
-                                      Custom options: {item.customOptions || item?.options || "None"}
+                                      Custom options: {item?.customOptions || item?.options || "None"}
                                     </p>
                                   )}
                                 </div>
@@ -293,7 +287,7 @@ const PurchaseCart = () => {
                             <RiShoppingCartLine className="text-2xl text-gray-400" />
                           </div>
                           <p className={`text-lg font-medium mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>
-                            Your {mode === "purchase" ? purchaseSubsection.replace(/([A-Z])/g, ' $1').trim() : 'subscription'} cart is empty
+                            Your {mode === "purchase" ? purchaseSubsection?.replace(/([A-Z])/g, ' $1').trim() : 'subscription'} cart is empty
                           </p>
                           <p className={`text-sm mb-4 ${dark ? "text-gray-400" : "text-gray-500"}`}>
                             {mode === "purchase"
@@ -330,9 +324,9 @@ const PurchaseCart = () => {
                 <RiArrowLeftLine /> Continue Shopping
               </button>
               
-              {renderData && renderData.length > 0 && (
+              {renderData && renderData?.length > 0 && (
                 <button
-                  onClick={handleClearCart}
+                  onClick={  handleClearCart}
                   className={`text-sm cursor-pointer rounded-full flex gap-2 p-2 px-4 items-center ${
                     dark ? "bg-gray-700 text-red-400" : "text-red-600 bg-gray-200"
                   } hover:underline`}

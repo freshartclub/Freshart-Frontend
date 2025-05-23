@@ -119,7 +119,7 @@ const CardSection = ({ data, type, darkMode }) => {
 
   useEffect(() => {
     if (favoriteData && Array.isArray(favoriteData)) {
-      const favoriteObject = favoriteData.reduce((acc, curr) => {
+      const favoriteObject = favoriteData?.reduce((acc, curr) => {
         acc[curr.title] = Array.isArray(curr.items) ? curr.items : [];
         return acc;
       }, {});
@@ -144,7 +144,7 @@ const CardSection = ({ data, type, darkMode }) => {
   return (
     <div className="grid grid-cols-1 min-[450px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-2 p-2">
       {data && data?.length > 0 ? (
-        data.map((item, index: number) => {
+        data?.map((item, index: number) => {
           const isOffensive = item?.additionalInfo?.offensive === "Yes";
           const isViewed = viewedImages[item?._id];
 
@@ -262,7 +262,7 @@ const CardSection = ({ data, type, darkMode }) => {
                           } cursor-pointer text-sm`}
                           onClick={(e) => {
                             e.stopPropagation();
-                            addToFavoriteList(item._id, listName);
+                            addToFavoriteList(item?._id, listName);
                           }}
                         >
                           <span className={darkMode ? "text-gray-200" : ""}>{listName}</span>
@@ -303,7 +303,7 @@ const CardSection = ({ data, type, darkMode }) => {
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              handleAddNewList(item._id);
+                              handleAddNewList(item?._id);
                             }}
                             className={`w-full ${
                               darkMode ? "bg-gray-600 hover:bg-gray-500" : "bg-gray-800 hover:bg-gray-900"

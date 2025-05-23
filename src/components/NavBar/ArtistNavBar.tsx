@@ -8,7 +8,6 @@ import useLogOutMutation from "../../http/auth/useLogOutMutation";
 import { useAppSelector } from "../../store/typedReduxHooks";
 import { imageUrl } from "../utils/baseUrls";
 import useClickOutside from "../utils/useClickOutside";
-
 import { RxCross2 } from "react-icons/rx";
 import useDeleteNotification from "./http/useDeleteNotification";
 import { useGetNotification } from "./http/useGetNotification";
@@ -160,7 +159,7 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
                 <div className={`flex flex-col gap-2 px-4 py-2 text-sm ${dark ? "text-white" : "text-gray-700"}`}>
                   <Link
                     className={`${dark ? "hover:bg-gray-600" : "hover:bg-gray-100"} px-2 py-1 rounded`}
-                    to="/artist-panel/edit-artistprofile"
+                    to="/artist-panel/profile"
                     onClick={() => setIsToggelOpen(false)}
                   >
                     {t("Profile")}

@@ -26,10 +26,10 @@ const ReturnInstructionsPopup = ({ setShowReturnInstruction, dark }) => {
 
         <div className="p-6 space-y-4">
           <div className="space-y-2">
-            {returnInstructions.map((instruction, index) => (
+            {returnInstructions?.map((instruction, index) => (
               <div key={index} className="flex items-start">
                 <span className="text-indigo-600 font-medium mr-2">{instruction.split(" ")[0]}</span>
-                <span>{instruction.split(" ").slice(1).join(" ")}</span>
+                <span>{instruction?.split(" ").slice(1).join(" ")}</span>
               </div>
             ))}
           </div>

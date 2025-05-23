@@ -49,7 +49,7 @@ const NavForHome = () => {
   }, []);
 
   const isArtist = useAppSelector((state) => state?.user?.isArtist) || null;
-  const user = useAppSelector((state) => state.user.user);
+  const user = useAppSelector((state) => state?.user?.user);
 
   useEffect(() => {
     if (isLoading  || cartLoading) {
@@ -60,7 +60,7 @@ const NavForHome = () => {
   }, [isLoading, cartLoading, ]);
 
   const token = localStorage.getItem("auth_token");
-  const isAuthorized = useAppSelector((state) => state.user.isAuthorized);
+  const isAuthorized = useAppSelector((state) => state?.user?.isAuthorized);
   const { mutate: logOut } = useLogOutMutation();
 
   useClickOutside(closePopup, () => {
@@ -188,6 +188,7 @@ const NavForHome = () => {
                   <button onClick={() => navigate("/circle")} aria-label="Circle" className="hidden sm:block">
                     <IoIosFlower className="cursor-pointer" fontSize="1.8em" color="white" />
                   </button>
+                 
 
                   <ShoppingCard isOpen={isSidebarOpen} onClose={toggleSidebar} />
 

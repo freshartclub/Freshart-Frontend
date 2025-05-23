@@ -454,14 +454,14 @@ const MobileArtworkVisualizer = ({artwork, isLoading , error}) => {
             variant={{ size: 'lg', theme: dark ? 'light' : 'dark', weight: 'semiBold' }}
             className="mb-2"
           >
-            {instruction.title}
+            {instruction?.title}
           </Header>
           
           <P variant={{ size: 'base', theme: dark ? 'light' : 'dark', weight: 'normal' }} className="mb-4">
-            {instruction.text}
+            {instruction?.text}
           </P>
           
-          {instruction.action && (
+          {instruction?.action && (
             <Button
               onClick={instructionStep === 0 ? handleStartCamera : handleNextStep}
               variant={{
@@ -471,7 +471,7 @@ const MobileArtworkVisualizer = ({artwork, isLoading , error}) => {
               className="w-full flex items-center justify-center gap-2"
             >
               {instructionStep === 0 && <AiOutlineCamera size={20} />}
-              {instruction.action}
+              {instruction?.action}
             </Button>
           )}
           
@@ -488,10 +488,10 @@ const MobileArtworkVisualizer = ({artwork, isLoading , error}) => {
               <div className="flex justify-between items-center">
                 <div>
                   <P variant={{ size: 'sm', theme: dark ? 'light' : 'dark', weight: 'semiBold' }} className="mb-1">
-                    {artwork.data?.owner?.artistName || 'Artist'}
+                    {artwork?.data?.owner?.artistName || 'Artist'}
                   </P>
                   <P variant={{ size: 'xs', theme: dark ? 'light' : 'dark', weight: 'normal' }} className="opacity-70">
-                    {artwork.dimensions || `${artwork.images?.[0]?.width || '?'}x${artwork.images?.[0]?.height || '?'}`}
+                    {artwork?.dimensions || `${artwork?.images?.[0]?.width || '?'}x${artwork?.images?.[0]?.height || '?'}`}
                   </P>
                 </div>
                 <Button

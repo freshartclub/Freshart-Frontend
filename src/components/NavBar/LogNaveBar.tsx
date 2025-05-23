@@ -147,7 +147,7 @@ const LogNaveBar = () => {
                         className="w-6 h-6"
                       />
 
-                      <span className="ml-2">{choice.nativeName}</span>
+                      <span className="ml-2">{choice?.nativeName}</span>
                     </button>
                   ))}
                 </div>

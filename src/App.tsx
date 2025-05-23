@@ -16,6 +16,7 @@ import { useAppDispatch, useAppSelector } from "./store/typedReduxHooks";
 import i18n from "./components/utils/i18n.ts";
 import KbDetails from "./components/pages/KbDetails.tsx";
 import UserOfferRequest from "./components/UserOffer/UserOfferRequest.tsx";
+import CustomUploadPage from "./components/utils/CustomUploadPage.tsx";
 
 // Lazy loading the components
 const UserCircleList = lazy(() => import("./components/CIrcle/UserCircleList"));
@@ -157,6 +158,17 @@ const App: React.FC = () => {
                   </AuthGuard>
                 }
               />
+
+              <Route
+                path="/discover_more/:id/upload"
+                element={
+                  <AuthGuard>
+                    <CustomUploadPage />
+                  </AuthGuard>
+                }
+              />
+
+
               <Route
                 path="/thankyou"
                 element={
@@ -461,9 +473,8 @@ const App: React.FC = () => {
             </Routes>
             <button
               onClick={() => dispatch(toggleTheme())}
-              className={`fixed right-4 bottom-4 z-50 p-3 rounded-full shadow-lg ${
-                theme ? "bg-gray-700 text-yellow-300" : "bg-gray-200 text-gray-700"
-              }`}
+              className={`fixed right-4 bottom-4 z-50 p-3 rounded-full shadow-lg ${theme ? "bg-gray-700 text-yellow-300" : "bg-gray-200 text-gray-700"
+                }`}
               aria-label="Toggle mode"
             >
               {theme ? <FaSun size={20} /> : <FaMoon size={20} />}

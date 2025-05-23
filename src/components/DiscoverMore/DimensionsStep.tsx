@@ -8,7 +8,9 @@ const DimensionsStep = ({
     setCropSelection,
     selectedImage,
     onNext,
-    onPrev
+    onPrev,
+    imageSizeS,
+
 }) => {
     const [isDirty, setIsDirty] = useState(false);
     const [widthInput, setWidthInput] = useState(dimensions.width.toString());
@@ -19,10 +21,8 @@ const DimensionsStep = ({
     const [imageDimensions, setImageDimensions] = useState({ width: 0, height: 0 });
     const previewRef = useRef(null);
 
-
     console.log(cropSelection)
 
-    // Load image dimensions
     useEffect(() => {
         if (selectedImage) {
             const img = new Image();
@@ -33,7 +33,7 @@ const DimensionsStep = ({
         }
     }, [selectedImage]);
 
-    // Initialize dimensions from crop selection if not already set
+   
     useEffect(() => {
         if (!isDirty && cropSelection.width > 0 && cropSelection.height > 0) {
             const roundedWidth = Math.round(cropSelection.width);
@@ -170,6 +170,7 @@ const DimensionsStep = ({
         }
     };
 
+    console.log(cropSelection.x, "___________")
     const handleSubmit = (e) => {
         e.preventDefault();
         if (!error && dimensions.width > 0 && dimensions.height > 0) {
@@ -178,42 +179,46 @@ const DimensionsStep = ({
     };
 
     return (
-        <div className="flex flex-col md:flex-row w-full">
+        <div className="flex flex-col lg:flex-row w-full h-full">
             {/* Left Side - Image with Selection Preview */}
-
-             
-            <div className="relative md:w-3/5 w-1/2  flex-1 border border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-900 ">
-                <div className="relative  w-full h-full flex items-center justify-center">
+            <div className="relative lg:w-3/5 w-full h-64 sm:h-80 md:h-96 lg:h-auto border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-900">
+                <div className="relative w-full h-full flex items-center justify-center">
                     {selectedImage && (
-                        <div className="relative w-full h-full flex items-center justify-center ">
-                            <img
-                                src={`${imageUrl}/users/${selectedImage}`}
-                                alt="Background with selection"
-                                className="w-full h-full object-contain"
-                                draggable="false"
-                            />
+                        <div className="relative  w-full h-full flex items-center justify-center">
 
-                            {/* Selection preview */}
-                            <div
-                                ref={previewRef}
-                                className="absolute border-2 border-blue-500 bg-blue-500 bg-opacity-20 pointer-events-none"
-                                style={{
-                                    left: `${cropSelection.x}px`,
-                                    top: `${cropSelection.y}px`,
-                                    width: `${cropSelection.width}px`,
-                                    height: `${cropSelection.height}px`,
-                                    boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.5)'
-                                }}
-                            ></div>
+                            <div className="relative ">
+                                <img
+                                    src={`${imageUrl}/users/${selectedImage}`}
+                                    alt="Background with selection"
+                                    className="max-w-full max-h-full object-contain"
+                                    draggable="false"
+                                    style={{
+                                        width: `${imageSizeS?.width}px`,
+                                        height: `${imageSizeS?.height}px`
+                                    }}
+                                />
+
+
+                                <div
+                                    ref={previewRef}
+                                    className="absolute border-2 border-blue-500 bg-blue-500 bg-opacity-20 pointer-events-none"
+                                    style={{
+                                        left: `${cropSelection.x}px`,
+                                        top: `${cropSelection.y}px`,
+                                        width: `${cropSelection.width}px`,
+                                        height: `${cropSelection.height}px`,
+                                        boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.5)'
+                                    }}
+                                ></div>
+                            </div>
+
                         </div>
                     )}
                 </div>
             </div>
 
-            
-
-        
-            <div className=" w-1/2 flex flex-col md:w-2/5 p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg">
+            {/* Right Side - Controls */}
+            <div className="w-full lg:w-2/5 flex flex-col p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg mt-4 lg:mt-0 lg:ml-4">
                 <h4 className="text-lg font-medium mb-2 text-gray-700 dark:text-gray-300">Edit Dimensions</h4>
 
                 <div className="flex-1 border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-800">
@@ -299,8 +304,8 @@ const DimensionsStep = ({
                                 type="submit"
                                 disabled={!!error || dimensions.width <= 0 || dimensions.height <= 0}
                                 className={`px-6 py-2 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${error || dimensions.width <= 0 || dimensions.height <= 0
-                                        ? 'bg-gray-400 dark:bg-gray-600 cursor-not-allowed text-gray-200 dark:text-gray-400'
-                                        : 'bg-blue-500 hover:bg-blue-600 text-white'
+                                    ? 'bg-gray-400 dark:bg-gray-600 cursor-not-allowed text-gray-200 dark:text-gray-400'
+                                    : 'bg-blue-500 hover:bg-blue-600 text-white'
                                     }`}
                             >
                                 Continue

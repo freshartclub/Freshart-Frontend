@@ -3,9 +3,9 @@ import toast from "react-hot-toast";
 import { ARTTIST_ENDPOINTS } from "../../../http/apiEndPoints/Artist";
 import axiosInstance from "../../utils/axios";
 
-async function removeToCart(id: string) {
+async function removeToCart(values: any) {
   return await axiosInstance.patch(
-    `${ARTTIST_ENDPOINTS.removeItems}/${id}?remove=true`
+    `${ARTTIST_ENDPOINTS.removeItems}/${values?.id}?type=${values?.type}`,
   );
 }
 

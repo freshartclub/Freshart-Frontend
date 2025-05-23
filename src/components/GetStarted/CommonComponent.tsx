@@ -11,7 +11,7 @@ const CommonComponent = ({
   imageSide = "right",
 }: any) => {
   const stripHtmlTags = (text) => {
-    return text.replace(/<[^>]*>/g, "");
+    return text?.replace(/<[^>]*>/g, "");
   };
 
   return (

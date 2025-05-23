@@ -104,14 +104,13 @@ const ArtworkGroup = () => {
             Follow
           </Button>
         </div>
-        {/* <hr className="w-full bg-red-700" /> */}
         <hr className="2xl:w-[75%] xl:w-[70%] lg:w-[65%] w-[55%] sm:block hidden h-0.5 bg-black dark:bg-gray-700" />
       </div>
       <div className="my-10 artwork_group">
         <Slider {...settings}>
-          {highlightData.map((item, index) => (
+          {highlightData?.map((item, index) => (
             <div key={index} className="sm:px-3 px-0 border-none outline-none">
-              <img src={item.image} alt="image" className="w-full" />
+              <img src={item?.image} alt="image" className="w-full" />
               <div className="mt-3">
                 <p className="text-[14px] text-[#696868]">{item?.title}</p>
                 <div className="flex justify-between items-center">

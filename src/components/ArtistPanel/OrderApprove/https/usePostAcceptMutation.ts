@@ -5,7 +5,7 @@ import { ORDERS_ENDPOINTS } from "../../../../http/apiEndPoints/Orders";
 import { useTranslation } from "react-i18next";
 
 async function acceptOrder(newData) {
-  return await axiosInstance.patch(
+  return await axiosInstance.post(
     `${ORDERS_ENDPOINTS.AcceptOrder}/${newData.id}`,
     newData
   );

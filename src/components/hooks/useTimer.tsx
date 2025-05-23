@@ -4,7 +4,7 @@ export function formatTime(seconds: any) {
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = seconds % 60;
 
-  // Use template literals to format the time
+ 
   const formattedTime = `${minutes}:${
     remainingSeconds < 10 ? "0" : ""
   }${remainingSeconds}`;

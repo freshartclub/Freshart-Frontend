@@ -11,7 +11,7 @@ import rightarr from "./assets/ArrowRight.png";
 import useCheckSubscription from "./http/useCheckSubscription";
 import ReturnInstructionsPopup from "./ReturnInstructionsPopup";
 
-const CartTotal = ({ data, state, handleRemove, mode , subsection}) => {
+const CartTotal = ({ data, state, handleRemove, mode, subsection }) => {
   const discountAmounts = data.map((item) => {
     const basePrice = item?.pricing?.basePrice;
     const discountPercentage = item?.pricing?.dpersentage || 0;
@@ -27,9 +27,8 @@ const CartTotal = ({ data, state, handleRemove, mode , subsection}) => {
     validArtworks: [],
   });
   const [availableArtworkIds, setAvailableArtworkIds] = useState([]);
-
-  console.log(data)
-
+  const [expandedTax, setExpandedTax] = useState(false);
+  const [expandedDiscount, setExpandedDiscount] = useState(false);
   const dark = useAppSelector((state) => state.theme.mode);
   const navigate = useNavigate();
   const { mutateAsync, isPending } = useCheckSubscription();
@@ -42,14 +41,39 @@ const CartTotal = ({ data, state, handleRemove, mode , subsection}) => {
 
   const totalPrice = data
     ?.reduce((total, item) => {
-      const itemPrice = subsection === "offer" ? item?.offerprice : item?.pricing?.basePrice;
+      const itemPrice = subsection === "offer" ? item?.offerprice : Number(item?.pricing?.basePrice);
       return total + itemPrice;
     }, 0)
     .toFixed(2);
 
- const tax =  totalPrice * 0.21;
 
-  const finalPrice = totalPrice - discountAmounts + tax;
+  const vatAmount = data?.map((item) => item?.pricing?.vatAmount) || [];
+
+  const totalTaxAmount = data?.reduce((totalTax, item) => {
+    const itemPrice = subsection === "offer" ? item?.offerprice : Number(item?.pricing?.basePrice) || 0;
+    const itemVat = Number(item?.pricing?.vatAmount) || 0;
+
+
+    return totalTax + (itemPrice * (itemVat / 100));
+  }, 0).toFixed(2)
+
+  const tdis = data?.reduce((discount, item) => {
+
+    const itemPrice = subsection === "offer" ? 0 : Number(item?.pricing?.basePrice) || 0;
+
+    const discountPercentage = Number(item?.pricing?.dpersentage) || 0;
+
+    return discount + (itemPrice * (discountPercentage / 100));
+  }, 0);
+
+
+  const tax = totalPrice * (vatAmount / 100);
+
+  const finalPrice =
+    (Number(totalPrice) || 0)
+    - (Number(tdis) || 0)
+    + (Number(totalTaxAmount) || 0);
+
 
   const card_total = [
     {
@@ -62,11 +86,11 @@ const CartTotal = ({ data, state, handleRemove, mode , subsection}) => {
     },
     {
       title: "Discount",
-      value: mode === "subscription" ? "$ 00" : `$ ${totalDiscountAmount}`,
+      value: mode === "subscription" ? "$ 00" : mode === "purchase" ? tdis : `Euro ${totalDiscountAmount}`,
     },
     {
       title: "Tax",
-      value: mode === "subscription" ? "$ 00" :`$ ${tax}` ,
+      value: mode === "subscription" ? "$ 00" : `$ ${totalTaxAmount}`,
     },
   ];
 
@@ -115,7 +139,7 @@ const CartTotal = ({ data, state, handleRemove, mode , subsection}) => {
           });
         }
       }
-    } else  {
+    } else {
       navigate(`/payment_page?type=${mode}&subType=${subsection}`);
     }
   };
@@ -131,6 +155,7 @@ const CartTotal = ({ data, state, handleRemove, mode , subsection}) => {
 
   const handleSubscriptionAction = (action) => {
     setIsPopUpOpen(false);
+
     switch (action) {
       case "confirm_exchange":
         setOnExchange(true);
@@ -335,14 +360,80 @@ const CartTotal = ({ data, state, handleRemove, mode , subsection}) => {
 
             <div className={`border-b pb-4 ${dark ? "border-gray-700" : "border-gray-200"}`}>
               {card_total?.map((card, index) => (
-                <div key={index} className="flex justify-between items-center py-2">
-                  <P variant={{ size: "base", weight: "medium" }} className={dark ? "text-gray-400" : "text-[#636363]"}>
-                    {card.title}
-                  </P>
-                  <P variant={{ size: "base", weight: "medium" }} className={dark ? "text-gray-200" : "text-[#191C1F]"}>
-                    {card.value}
-                  </P>
-                </div>
+                <>
+                  <div key={index}>
+
+                    <div className="flex justify-between items-center py-2">
+                      <P variant={{ size: "base", weight: "medium" }} className={dark ? "text-gray-400" : "text-[#636363]"}>
+                        {card?.title}
+                      </P>
+                      <div className="flex items-center gap-2">
+                        <P variant={{ size: "base", weight: "medium" }} className={dark ? "text-gray-200" : "text-[#191C1F]"}>
+                          {card?.value}
+                        </P>
+                        {card?.title === 'Discount' && data?.length > 1 && (
+                          <button
+                            onClick={() => setExpandedDiscount(!expandedDiscount)}
+                            className="focus:outline-none"
+                          >
+                            <svg
+                              className={`w-4 h-4 transition-transform ${expandedDiscount ? 'rotate-180' : ''}`}
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                            </svg>
+                          </button>
+                        )}
+
+                        {card?.title === 'Tax' && data.length > 1 && (
+                          <button
+                            onClick={() => setExpandedTax(!expandedTax)}
+                            className="focus:outline-none"
+                          >
+                            <svg
+                              className={`w-4 h-4 transition-transform ${expandedTax ? 'rotate-180' : ''}`}
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                            </svg>
+                          </button>
+                        )}
+                      </div>
+                    </div>
+
+                    {card?.title === 'Tax' && expandedTax && data?.length > 1 && (
+                      <div className="ml-4 pl-4 border-l-2 border-gray-200 dark:border-gray-600">
+                        {data?.map((item, idx) => (
+                          <div key={idx} className="flex justify-between items-center py-1 text-sm">
+                            <span className={dark ? "text-gray-400" : "text-[#636363]"}>{item?.artworkName}</span>
+                            <span className={dark ? "text-gray-300" : "text-[#191C1F]"}>{item?.pricing?.vatAmount + "%"}</span>
+                          </div>
+                        ))}
+
+
+                      </div>
+                    )}
+
+
+                    {card?.title === 'Discount' && expandedDiscount && data?.length > 1 && (
+                      <div className="ml-4 pl-4 border-l-2 border-gray-200 dark:border-gray-600">
+                        {data?.map((item, idx) => (
+                          <div key={idx} className="flex justify-between items-center py-1 text-sm">
+                            <span className={dark ? "text-gray-400" : "text-[#636363]"}>{item?.artworkName}</span>
+                            <span className={dark ? "text-gray-300" : "text-[#191C1F]"}>{item?.pricing?.dpersentage ? item?.pricing?.dpersentage + "%" : "N/A"}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                  </div>
+                </>
               ))}
             </div>
 
@@ -350,7 +441,7 @@ const CartTotal = ({ data, state, handleRemove, mode , subsection}) => {
               <P variant={{ size: "base", weight: "medium" }}>Total Amount</P>
               <P variant={{ size: "base", weight: "medium" }} className={dark ? "text-white" : "text-[#191C1F]"}>
                 {getSymbolFromCurrency(card_total?.[0]?.value?.match(/[^\d.-]/g)?.[0] || "$")}
-                {(finalPrice - totalDiscountAmount).toFixed(2)}
+                {finalPrice}
               </P>
             </div>
           </div>

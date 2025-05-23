@@ -155,7 +155,7 @@ const PriceAndPlan = () => {
                   billingCycle === "yearly" ? "bg-black text-white" : "text-gray-700 hover:bg-gray-50"
                 }`}
               >
-                {/* Yearly Billing (Save 10%) */}
+                
                 Yearly Billing
               </button>
             </div>
@@ -247,16 +247,16 @@ const PriceAndPlan = () => {
                       value={defaultPlan?.planName}
                       onChange={(e) => handlePlanChange(groupName, e.target.value)}
                     >
-                      {plans.map((plan) => (
+                      {plans?.map((plan) => (
                         <option key={plan?.planName} value={plan?.planName}>
-                          {plan.planName}
+                          {plan?.planName}
                         </option>
                       ))}
                     </select>
 
                     <ul className="space-y-3 flex-grow">
-                      {returnList(defaultPlan.planDesc) ? (
-                        returnList(defaultPlan.planDesc).map((feature, i) => (
+                      {returnList(defaultPlan?.planDesc) ? (
+                        returnList(defaultPlan?.planDesc).map((feature, i) => (
                           <li key={i} className="flex items-start">
                             <FiCheck className="text-green-500 mt-0.5 mr-2 flex-shrink-0" />
                             <span className="text-left text-sm">{feature}</span>
@@ -302,21 +302,17 @@ const PriceAndPlan = () => {
                     <div className="flex items-center">
                       <img src={`${imageUrl}/users/${selectedPlan?.planImg}`} alt="Plan" className="w-16 h-16 mr-4 rounded-lg object-cover" />
                       <div>
-                        <h3 className="font-bold text-lg">{selectedPlan.planName}</h3>
+                        <h3 className="font-bold text-lg">{selectedPlan?.planName}</h3>
                         <p className="text-gray-600">
                           ${getPlanPrice(selectedPlan)} {billingCycle === "yearly" ? "per year" : "per month"}
-                          {/* {billingCycle === "yearly" && (
-                            <span className="text-sm text-green-600 ml-2">
-                              (Save 10%)
-                            </span>
-                          )} */}
+                         
                         </p>
                       </div>
                     </div>
                     <div className="border-t border-b border-gray-200 py-4">
                       <h4 className="font-semibold mb-2">Plan Features:</h4>
                       <ul className="space-y-2">
-                        {returnList(selectedPlan.planDesc)?.map((feature, i) => (
+                        {returnList(selectedPlan?.planDesc)?.map((feature, i) => (
                           <li key={i} className="flex items-start">
                             <FiCheck className="text-green-500 mt-0.5 mr-2 flex-shrink-0" />
                             <span>{feature}</span>
@@ -337,8 +333,8 @@ const PriceAndPlan = () => {
                         us.
                       </p>
                     </div>
-                    <div className={`${checkRef.data == false ? "bg-red-50" : "bg-green-50"} p-3 rounded-lg flex items-start`}>
-                      {checkRef.data == false ? (
+                    <div className={`${checkRef?.data == false ? "bg-red-50" : "bg-green-50"} p-3 rounded-lg flex items-start`}>
+                      {checkRef?.data == false ? (
                         <svg className={`h-5 w-5 text-red-500 mr-2 mt-0.5 flex-shrink-0`} fill="currentColor" viewBox="0 0 20 20">
                           <path
                             fillRule="evenodd"
@@ -350,18 +346,18 @@ const PriceAndPlan = () => {
                         <TiTickOutline className="h-5 w-5 text-green-800 mr-2" />
                       )}
 
-                      {checkRef.data == false ? (
+                      {checkRef?.data == false ? (
                         <div>
                           <p className="text-sm text-red-800 mt-1">
                             We found that you don&apos;t have any basic information saved with us. Please enter your basic information and add
                             yourself as a payer.
                           </p>
                         </div>
-                      ) : checkRef.status == "active" ? (
+                      ) : checkRef?.status == "active" ? (
                         <div>
                           <p className="text-sm text-green-800">You already have an active subscription plan.</p>
                         </div>
-                      ) : checkRef.status == "inactive" && checkRef?.store == true ? (
+                      ) : checkRef?.status == "inactive" && checkRef?.store == true ? (
                         <div>
                           <p className="text-sm text-green-800">You dont have an active subscription plan. Subscribe to a plan and get started.</p>
                         </div>
@@ -396,7 +392,7 @@ const PriceAndPlan = () => {
                   >
                     Cancel
                   </button>
-                  {checkRef.data == false ? (
+                  {checkRef?.data == false ? (
                     <button
                       onClick={() => {
                         closeConfirmation();
@@ -453,7 +449,7 @@ const PriceAndPlan = () => {
               setOtp("");
             }}
             isSaved={false}
-            planId={selectedPlan._id}
+            planId={selectedPlan?._id}
             isPending={isPending}
             billingCycle={billingCycle}
             onSubmit={(cardDetails) => {

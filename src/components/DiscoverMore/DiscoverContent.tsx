@@ -51,10 +51,14 @@ const DiscoverContent = ({ data }) => {
 
   const token = useMemo(() => localStorage.getItem("auth_token"), []);
 
-  const checkCartItem = useMemo(() => cartItem?.data?.cart?.filter((item) => item?._id === data?._id) || [], [cartItem, data?._id]);
+  const checkCartItem = useMemo(() => cartItem?.cart?.filter((item) => item?._id === data?._id) || [], [cartItem, data?._id]);
   const isInCart = useMemo(() => checkCartItem.length > 0, [checkCartItem]);
   const checkWishlist = useMemo(() => likedItems?.likedArtworks?.filter((item) => item?._id === data?._id) || [], [likedItems, data?._id]);
   const isInWishlist = useMemo(() => checkWishlist.length > 0, [checkWishlist]);
+
+
+  console.log(checkCartItem)
+  console.log(cartItem?.cart)
 
   const isCommingSoon = data?.commingSoon === true;
   const hasBasePrice = Boolean(data?.pricing?.basePrice);
@@ -106,7 +110,7 @@ const DiscoverContent = ({ data }) => {
     }
 
     addToCartMutation(id);
-    toast.success("Item added to cart successfully");
+    
   };
 
   const handleLikeToggle = () => {

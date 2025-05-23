@@ -8,7 +8,9 @@ const ArtworkPlacementStep = ({
   artworkPosition,
   setArtworkPosition,
   onNext,
-  onPrev
+  onPrev,
+  imageSizeS,
+  onClose
 }) => {
   const containerRef = useRef(null);
   const artworkRef = useRef(null);
@@ -16,6 +18,7 @@ const ArtworkPlacementStep = ({
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [scale, setScale] = useState(1);
   const [finalImage, setFinalImage] = useState(null);
+  const [backgroundImage, setBackgroundImage] = useState(null);
 
   // Handle artwork dragging
   const handleMouseDown = (e) => {
@@ -32,6 +35,8 @@ const ArtworkPlacementStep = ({
 
     const newX = e.clientX - dragStart.x;
     const newY = e.clientY - dragStart.y;
+
+    console.log(newX, newY, "kuch values")
 
     const maxX = cropSelection.width - (artworkRef.current.offsetWidth * scale);
     const maxY = cropSelection.height - (artworkRef.current.offsetHeight * scale);
@@ -55,9 +60,12 @@ const ArtworkPlacementStep = ({
     });
   };
 
+  const height = artwork.data?.additionalInfo?.height;
+  const width = artwork?.data?.additionalInfo?.width;
+
   const handleTouchMove = (e) => {
     if (!isDragging || !cropSelection || !artworkRef.current) return;
-    
+
     const touch = e.touches[0];
     const newX = touch.clientX - dragStart.x;
     const newY = touch.clientY - dragStart.y;
@@ -79,6 +87,28 @@ const ArtworkPlacementStep = ({
   const handleScaleChange = (e) => {
     const newScale = parseFloat(e.target.value);
     setScale(newScale);
+  };
+
+  // Generate the background image for download
+  const generateBackgroundImage = () => {
+    if (!selectedImage) return;
+
+    const bgImg = new Image();
+    bgImg.crossOrigin = "anonymous";
+    bgImg.src = `${imageUrl}/users/${selectedImage}`;
+
+    bgImg.onload = () => {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      
+      canvas.width = bgImg.width;
+      canvas.height = bgImg.height;
+      
+      ctx.drawImage(bgImg, 0, 0, bgImg.width, bgImg.height);
+      
+      const dataUrl = canvas.toDataURL("image/png");
+      setBackgroundImage(dataUrl);
+    };
   };
 
   // Generate and download the composite image
@@ -135,24 +165,39 @@ const ArtworkPlacementStep = ({
     };
   };
 
-  // Download the composite image
+  // Download both images
   const handleDownload = () => {
-    if (!finalImage) {
+    if (!finalImage || !backgroundImage) {
       generateImage();
-      // Give time for the image to generate before downloading
+      generateBackgroundImage();
+      
+      // Give time for the images to generate before downloading
       setTimeout(() => {
-        if (finalImage) {
-          const link = document.createElement("a");
-          link.download = "artwork-placement.png";
-          link.href = finalImage;
-          link.click();
-        }
+        downloadImages();
       }, 500);
     } else {
-      const link = document.createElement("a");
-      link.download = "artwork-placement.png";
-      link.href = finalImage;
-      link.click();
+      downloadImages();
+    }
+  };
+
+  // Function to download both images
+  const downloadImages = () => {
+    if (finalImage) {
+      // Download composition
+      const compositionLink = document.createElement("a");
+      compositionLink.download = "artwork-composition.png";
+      compositionLink.href = finalImage;
+      compositionLink.click();
+    }
+    
+    if (backgroundImage) {
+      // Download background image
+      setTimeout(() => {
+        const bgLink = document.createElement("a");
+        bgLink.download = "background-image.png";
+        bgLink.href = backgroundImage;
+        bgLink.click();
+      }, 300);
     }
   };
 
@@ -160,6 +205,7 @@ const ArtworkPlacementStep = ({
   useEffect(() => {
     if (cropSelection && selectedImage && artwork) {
       generateImage();
+      generateBackgroundImage();
     }
   }, [cropSelection, selectedImage, artwork, artworkPosition, scale]);
 
@@ -169,7 +215,7 @@ const ArtworkPlacementStep = ({
     window.addEventListener("mouseup", handleMouseUp);
     window.addEventListener("touchmove", handleTouchMove);
     window.addEventListener("touchend", handleTouchEnd);
-    
+
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseup", handleMouseUp);
@@ -200,36 +246,38 @@ const ArtworkPlacementStep = ({
     );
   }
 
-  // console.log(cropSelection?.height)
-  console.log(artwork?.data?.additionalInfo)
-
   return (
-    <div className="flex flex-col md:flex-row w-full">
-      {/* Left Side - Preview */}
-      <div className="relative md:w-3/5  w-1/2 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-900">
-        
-        <div 
+    <div className="flex flex-col md:flex-row w-full gap-4">
+     
+      <div className="md:w-3/5 w-full h-64 sm:h-80 md:h-96 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-900">
+        <div
           ref={containerRef}
-          className=" border border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-900 h-96 lg:h-[500px]"
+          className="border border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-900 "
         >
-          
-          <div
-            className="  h-full w-full bg-center bg-contain bg-no-repeat "
-            style={{ backgroundImage: `url(${imageUrl}/users/${selectedImage})` }}
-          >
+          <div className="relative  w-full h-full flex items-center justify-center">
+            <div className="relative ">
+ <img
+              src={`${imageUrl}/users/${selectedImage}`}
+              alt="Background with selection"
+              className="max-w-full max-h-full object-contain"
+              draggable="false"
+              style={{
+                width: imageSizeS?.width ? `${imageSizeS.width}px` : 'auto',
+                height: imageSizeS?.height ? `${imageSizeS.height}px` : 'auto'
+              }}
+            />
             {cropSelection && (
               <div
-                className="relative bg-white bg-opacity-10 border border-blue-500"
+                className="absolute  bg-opacity-10 border border-blue-500"
                 style={{
-                  top: cropSelection.y,
-                  left: cropSelection.x,
+                  left: `${cropSelection.x}px`,
+                  top: `${cropSelection.y}px`,
                   width: `${cropSelection.width}px`,
                   height: `${cropSelection.height}px`,
                 }}
               >
-              
                 <div
-                  className="absolute cursor-move select-none"
+                  className="absolute  cursor-move select-none "
                   ref={artworkRef}
                   onMouseDown={handleMouseDown}
                   onTouchStart={handleTouchStart}
@@ -244,25 +292,31 @@ const ArtworkPlacementStep = ({
                     <img
                       src={`${imageUrl}/users/${artwork.data.media.mainImage}`}
                       alt="Selected artwork"
-                      className="max-w-full pointer-events-none "
-                      style={{ maxWidth: "150px" }}
+                      className="max-w-full pointer-events-none object-contain"
+                      style={{
+                        width: width || 'auto',
+                        height: height || 'auto'
+                      }}
                     />
                   )}
                 </div>
               </div>
             )}
+            </div>
+           
+            
           </div>
         </div>
-        
+
         {/* Final composition preview */}
         {finalImage && (
-          <div className="mt-4">
+          <div className="mt-4 p-2">
             <h5 className="text-md font-medium text-gray-700 dark:text-gray-300 mb-2">Final Composition</h5>
             <div className="border border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-900 p-2">
-              <img 
-                src={finalImage} 
-                alt="Final composition" 
-                className="max-w-full h-auto rounded" 
+              <img
+                src={finalImage}
+                alt="Final composition"
+                className="max-w-full h-auto rounded mx-auto"
               />
             </div>
           </div>
@@ -270,7 +324,7 @@ const ArtworkPlacementStep = ({
       </div>
 
       {/* Right Side - Controls */}
-      <div className="md:w-2/5 w-1/2 p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg">
+      <div className="md:w-2/5 w-full p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg mt-4 md:mt-0">
         <div>
           <h4 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Position Your Artwork</h4>
           <p className="text-gray-600 dark:text-gray-400 mb-4">
@@ -278,26 +332,8 @@ const ArtworkPlacementStep = ({
           </p>
         </div>
 
-        {/* Size Control */}
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-            Artwork Size
-          </label>
-          <input
-            type="range"
-            min="0.1"
-            max="2"
-            step="0.05"
-            value={scale}
-            onChange={handleScaleChange}
-            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
-          />
-          <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400">
-            <span>Small</span>
-            <span>Large</span>
-          </div>
-        </div>
-        
+      
+
         {/* Download Button */}
         <button
           onClick={handleDownload}
@@ -306,7 +342,7 @@ const ArtworkPlacementStep = ({
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
             <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
           </svg>
-          Download Composition
+          Download Images
         </button>
 
         {/* Navigation Buttons */}
@@ -319,16 +355,13 @@ const ArtworkPlacementStep = ({
           </button>
 
           <button
-            onClick={onNext}
+            onClick={onClose}
             className="flex-1 px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors"
           >
             Finish
           </button>
         </div>
       </div>
-
-
-
     </div>
   );
 };

@@ -26,7 +26,6 @@ declare global {
 
 const PaymentPage = () => {
   const user = useAppSelector((state) => state.user.user);
-
   const [time, setTime] = useState("");
   const [active, setActive] = useState(false);
   const { data, isLoading } = useGetCartItems();
@@ -62,7 +61,7 @@ const PaymentPage = () => {
 
   const subType = searchParams.get("subType");
 
-  console.log(subType)
+
 
   const { data: billingData, isLoading: billingLoading } =
     useGetBillingAddress();
@@ -81,35 +80,42 @@ const PaymentPage = () => {
     }
   }, [billingData]);
 
-  const renderData = subType === "offer" ? data?.offer_cart  :    data?.cart?.filter(
+  const renderData = subType === "offer" ? data?.offer_cart : data?.cart?.filter(
     (item) => item?.commercialization?.activeTab === type
   );
 
-  console.log(data)
 
-  const discountAmounts = renderData?.reduce((total, item) => {
-    const basePrice = item?.pricing?.basePrice;
+  const discountAmounts = renderData?.reduce((discount, item) => {
 
-    const discountPercentage = item?.pricing?.dpersentage || 0;
-    const discountAmount = (basePrice * discountPercentage) / 100;
-    return total + discountAmount;
+    const itemPrice = subType === "offer" ? 0 : Number(item?.pricing?.basePrice) || 0;
+
+    const discountPercentage = Number(item?.pricing?.dpersentage) || 0;
+
+    return discount + (itemPrice * (discountPercentage / 100));
   }, 0);
 
   const totalPrice = renderData
     ?.reduce((total, item) => {
       const itemPrice = subType === "offer" ? item?.offerprice : item?.pricing?.basePrice;
 
-      return total + itemPrice +1;
+      return total + itemPrice + 1;
     }, 0)
     .toFixed(2);
-const tax = (Number(totalPrice) * Number(0.21)
-).toFixed(2);
-const totalWithTax =  tax
 
+  const vatAmount = renderData[0]?.pricing?.vatAmount
+
+  const tax = renderData?.reduce((totalTax, item) => {
+    const itemPrice = subType === "offer" ? item?.offerprice : Number(item?.pricing?.basePrice) || 0;
+    const itemVat = Number(item?.pricing?.vatAmount) || 0;
+
+
+    return totalTax + (itemPrice * (itemVat / 100));
+  }, 0).toFixed(2)
+  const totalWithTax = tax
 
   const finalPrice = (
-  Number(totalPrice) - Number(discountAmounts) + Number(tax) 
-).toFixed(2);
+    Number(totalPrice) - Number(discountAmounts) + Number(tax)
+  ).toFixed(2);
 
 
   let itemQu = {};
@@ -154,7 +160,7 @@ const totalWithTax =  tax
         tax: 21,
         currency: "EUR",
         type: subType,
-        
+
         time: genTime,
       };
 
@@ -191,6 +197,8 @@ const totalWithTax =  tax
     }
   };
 
+
+  console.log(renderData)
   const handleCheck = (val) => {
     setIsCheckBox(val.target.checked);
   };
@@ -362,11 +370,10 @@ const totalWithTax =  tax
                 <input
                   type="checkbox"
                   id="shipToDifferentAddress"
-                  className={`w-4 h-4 ${
-                    orderData.hash
-                      ? "opacity-50 pointer-events-none cursor-not-allowed"
-                      : ""
-                  } `}
+                  className={`w-4 h-4 ${orderData.hash
+                    ? "opacity-50 pointer-events-none cursor-not-allowed"
+                    : ""
+                    } `}
                   onChange={(val) => handleCheck(val)}
                 />
                 <label
@@ -387,11 +394,10 @@ const totalWithTax =  tax
                   </Header>
 
                   <div
-                    className={`${
-                      orderData.hash
-                        ? "opacity-50 pointer-events-none cursor-not-allowed"
-                        : ""
-                    } grid md:grid-cols-2 gap-4 mb-4`}
+                    className={`${orderData.hash
+                      ? "opacity-50 pointer-events-none cursor-not-allowed"
+                      : ""
+                      } grid md:grid-cols-2 gap-4 mb-4`}
                   >
                     <div>
                       <label className="block mb-1">Email</label>
@@ -520,11 +526,10 @@ const totalWithTax =  tax
                   {...register("additionalInfo")}
                   type="text"
                   placeholder="Notes about your order, e.g. special notes for delivery"
-                  className={`w-full ${
-                    orderData.hash
-                      ? "opacity-50 pointer-events-none cursor-not-allowed"
-                      : ""
-                  }  p-2 border border-gray-300 rounded-lg`}
+                  className={`w-full ${orderData.hash
+                    ? "opacity-50 pointer-events-none cursor-not-allowed"
+                    : ""
+                    }  p-2 border border-gray-300 rounded-lg`}
                 />
                 {errors.additionalinfo && (
                   <p className="text-red-500">
@@ -543,7 +548,7 @@ const totalWithTax =  tax
                   renderData?.map((item, i: number) => (
                     <div key={i} className="flex items-center space-x-4">
                       <img
-                        src={ subType === "offer" ? `${lowImageUrl}/${item?.media}`  :  `${lowImageUrl}/${item?.media}`}
+                        src={subType === "offer" ? `${lowImageUrl}/${item?.media}` : `${lowImageUrl}/${item?.media}`}
                         alt={item.title}
                         className="w-14 h-14 rounded-md object-cover"
                       />
@@ -554,7 +559,7 @@ const totalWithTax =  tax
                           {getSymbolFromCurrency(
                             item?.pricing?.currency.slice(0, 3)
                           )}
-                          {" " + item?.pricing?.basePrice}
+                          { subType === "offer" ? item?.offerprice :    item?.pricing?.basePrice}
                         </span>
                       </div>
                     </div>
@@ -574,14 +579,14 @@ const totalWithTax =  tax
                   <span className="text-[#5F6C72]">Discount</span>
                   <span className="font-semibold">
                     {getSymbolFromCurrency("EUR")}
-                    {" " + discountAmounts}
+                    {subType === "offer" ? " 00" : " " + discountAmounts}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-[#5F6C72]">Tax</span>
                   <span className="font-semibold">
                     {getSymbolFromCurrency("EUR")}
-                    {` ${totalWithTax} (21%)`}
+                    {` ${totalWithTax} `}
                   </span>
                 </div>
                 <hr className="my-2" />
@@ -648,9 +653,8 @@ const totalWithTax =  tax
                   <input
                     type="hidden"
                     name="MERCHANT_RESPONSE_URL"
-                    value={`${
-                      import.meta.env.VITE_SERVER_BASE_URL
-                    }/api/artist/get-response-data`}
+                    value={`${import.meta.env.VITE_SERVER_BASE_URL
+                      }/api/artist/get-response-data`}
                   />
                 </>
 
@@ -664,11 +668,10 @@ const totalWithTax =  tax
               ) : (
                 <input
                   disabled={isPending}
-                  className={`${
-                    active
-                      ? "hidden"
-                      : "p-2 w-full bg-black rounded-md text-center text-white cursor-pointer hover:bg-[#131313df]"
-                  }`}
+                  className={`${active
+                    ? "hidden"
+                    : "p-2 w-full bg-black rounded-md text-center text-white cursor-pointer hover:bg-[#131313df]"
+                    }`}
                   onClick={() => {
                     createOrder();
                   }}
@@ -687,7 +690,7 @@ const totalWithTax =  tax
             title="Hosted Payment Page"
             className="md:w-[40%] h-[500px] shadow-lg"
             style={{ border: "none" }}
-            // src={hppUrl}
+          // src={hppUrl}
           ></iframe>
         </div>
       ) : null}

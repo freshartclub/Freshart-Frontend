@@ -64,7 +64,7 @@ const NavBar = () => {
   });
 
   const handleClickOutside = (event) => {
-    if (dropDownPopup.current && !dropDownPopup.current.contains(event.target)) {
+    if (dropDownPopup?.current && !dropDownPopup?.current?.contains(event?.target)) {
       setIsDropdownOpen(false);
     }
   };
@@ -145,7 +145,7 @@ const NavBar = () => {
                         <ul className="space-y-3">
                           {disciplineData?.data?.map((item, i) => (
                             <li key={i} onClick={() => setIsDropdownOpen(false)}>
-                              <Link to={`${item.disciplineName}?option=subscription`} className="dark:text-white text-gray-600">
+                              <Link to={`${item?.disciplineName}?option=subscription`} className="dark:text-white text-gray-600">
                                 {item?.disciplineName}
                               </Link>
                             </li>

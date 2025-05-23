@@ -89,9 +89,9 @@ const PaymentPremium = () => {
             </Header>
 
             <div className="mt-14">
-              {cards_Data.map((item, index) => (
+              {cards_Data?.map((item, index) => (
                 <div key={index} className="flex justift-between mt-12">
-                  <img src={item.card} alt="card image" />
+                  <img src={item?.card} alt="card image" />
                   <div>
                     <Header
                       variant={{
@@ -100,7 +100,7 @@ const PaymentPremium = () => {
                         weight: "semiBold",
                       }}
                     >
-                      {item.title}
+                      {item?.title}
                     </Header>
                     <P
                       variant={{
@@ -109,7 +109,7 @@ const PaymentPremium = () => {
                         weight: "normal",
                       }}
                     >
-                      {item.text}
+                      {item?.text}
                     </P>
                   </div>
                 </div>

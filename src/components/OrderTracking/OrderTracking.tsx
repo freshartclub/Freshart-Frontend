@@ -19,141 +19,250 @@ const OrderTracking = () => {
   };
 
   const { data, isLoading, refetch } = useGetOrderDetails(values);
-  const pdfRef = useRef();
+  
 
   useEffect(() => {
     refetch();
   }, [values.art]);
 
- const generateInvoice = () => {
+const generateInvoice = () => {
   if (!data?.foundArt) return;
 
   const order = data.foundArt;
   const doc = new jsPDF();
-
-const discountPercentage = order?.items?.artwork?.pricing?.dpersentage ; 
-const basePrice = order?.items?.artwork?.pricing?.basePrice;
-
-
-const discountedPrice = basePrice - (basePrice * (discountPercentage / 100));
-
-
-const taxPercentage = order?.tax || 0;
-
-const taxAmount = parseFloat((discountedPrice * (taxPercentage / 100)).toFixed(2));
+  
+  // Calculate prices
+  const discountPercentage = order?.items?.artwork?.pricing?.dpersentage || 0;
+  const basePrice = order?.items?.artwork?.pricing?.basePrice || 0;
+  const discountedPrice = basePrice - (basePrice * (discountPercentage / 100));
+  const taxPercentage = order?.tax || 0;
+  const taxAmount = parseFloat((discountedPrice * (taxPercentage / 100)).toFixed(2));
+  const totalAmount = discountedPrice + parseFloat(taxAmount);
 
 
-
-const totalAmount = discountedPrice + taxAmount;
-
-
-
-
-  doc.setFontSize(20);
-  doc.setTextColor(40, 40, 40);
-  doc.setFont("helvetica", "bold");
-  doc.text("INVOICE", 105, 20, { align: "center" });
+  const logoUrl = "/logofarcwhite.svg" 
+  try {
+    doc.addImage(logoUrl, 'PNG', 14, 10, 40, 20); 
+  } catch (e) {
+    console.warn("Could not load logo:", e);
+    // Fallback to text if logo fails
+    doc.setFontSize(20);
+    doc.setTextColor(40, 40, 40);
+    doc.setFont("helvetica", "bold");
+    doc.text("FRESHART CLUB", 105, 20, { align: "center" });
+  }
 
  
-  doc.setFontSize(12);
-  doc.setFont("helvetica", "normal");
-  doc.text("FreshArt Club", 105, 30, { align: "center" });
-  // doc.text("Vijay Nagar, Indore", 105, 35, { align: "center" });
-  // doc.text("Madhya Pradesh, 452001, India", 105, 40, { align: "center" });
-  // doc.text(`Phone: ${order.billingPhone}`, 105, 45, { align: "center" });
-  // doc.text(`Email: ${order.billingEmail}`, 105, 50, { align: "center" });
+  const primaryColor = [255, 83, 107]; 
+  const secondaryColor = [60, 60, 60];
+  const lightColor = [220, 220, 220];
 
- 
-  doc.setFontSize(10);
-  doc.text(`Invoice #: ${order.orderId}`, 14, 60);
-  doc.text(`Date: ${new Date(order.createdAt).toLocaleDateString()}`, 14, 65);
-  doc.text(`Customer: ${order.billingAddress?.billingFirstName} ${order.billingAddress?.billingLastName}`, 14, 70);
-  doc.text(`Order Type: ${order.type}`, 14, 75);
-  doc.text(`Status: ${order.status}`, 14, 80);
-
-  
-  doc.text("Billing Address:", 14, 90);
-  doc.text(`${order.billingAddress?.billingCompanyName}`, 14, 95);
-  doc.text(`${order.billingAddress?.billingAddress}, ${order.billingAddress?.billingCity}`, 14, 100);
-  doc.text(`${order.billingAddress?.billingState}, ${order.billingAddress?.billingZipCode}, ${order.billingAddress?.billingCountry}`, 14, 105);
-  doc.text(`Phone: ${order.billingAddress?.billingPhone}`, 14, 110);
-
-  doc.text("Shipping Address:", 105, 90);
-  doc.text(`${order.shippingAddress.address}, ${order.shippingAddress.city}`, 105, 95);
-  doc.text(`${order.shippingAddress.state}, ${order.shippingAddress.zipCode}, ${order.shippingAddress.country}`, 105, 100);
-  doc.text(`Phone: ${order.shippingAddress.phone}`, 105, 105);
-  doc.text(`Email: ${order.shippingAddress.email}`, 105, 110);
-
-  
-  doc.setDrawColor(200, 200, 200);
-  doc.line(14, 115, 195, 115);
-
-
-  autoTable(doc, {
-    startY: 120,
-    head: [['Item', 'Description', 'Quantity', 'Unit Price', 'Discount',  'Total']],
-    body: [
-      [
-        order.items.artwork.artworkName,
-        `Material: ${order.items.artwork.inventoryShipping?.packageMaterial}`,
-        1,
-        `${order.items.artwork.pricing.currency  } ${order.items.artwork.pricing.basePrice.toFixed(2)}`,
-        `${order.items?.artwork?.pricing?.dpersentage }%`,
-       
-        `${order.items.artwork.pricing.currency  } ${(order.items.artwork.pricing.basePrice - order.items?.artwork?.pricing?.dpersentage + order.items.artwork.pricing.vatAmount).toFixed(2)}`
-      ]
-    ],
-    
-    theme: 'grid',
-    headStyles: {
-      fillColor: [255, 83, 107],
-      textColor: 255
-    },
-  });
-
-
-  const finalY = doc.lastAutoTable.finalY || 140;
-  
-  doc.setFontSize(12);
+  // Header section
+  doc.setFontSize(16);
+  doc.setTextColor(...secondaryColor);
   doc.setFont("helvetica", "bold");
-  doc.text("Order Summary", 14, finalY + 15);
-  
-
-
-  doc.setFont("helvetica", "normal");
-  doc.text(`Subtotal: ${order.items.artwork.pricing.currency .split(' ')[0]} ${order.subTotal.toFixed(2)}`, 150, finalY + 15);
-  doc.text(`Discount: ${order.items.artwork.pricing.currency .split(' ')[0]} ${order.discount.toFixed(2)}`, 150, finalY + 20);
- doc.text(
-  `Tax (${order.tax.toFixed(2)}%): ${order.items.artwork.pricing.currency.split(' ')[0]} ${ taxAmount}`,
-  150,
-  finalY + 25
-);
-
-
-  doc.text(`Shipping: ${order.items.artwork.pricing.currency .split(' ')[0]} ${order.shipping.toFixed(2)}`, 150, finalY + 30);
-  
-  doc.setFontSize(14);
-  doc.setFont("helvetica", "bold");
-  doc.text(`Total: ${order.items.artwork.pricing.currency .split(' ')[0]} ${order.total.toFixed(2)}`, 150, finalY + 40);
-
-
-  doc.setFontSize(10);
-  doc.text("Package Details:", 14, finalY + 50);
-  doc.text(`Dimensions: ${order.items.artwork.inventoryShipping?.packageLength} × ${order.items.artwork.inventoryShipping?.packageWidth} × ${order.items.artwork.inventoryShipping?.packageHeight} cm`, 14, finalY + 55);
-  doc.text(`Weight: ${order.items.artwork.inventoryShipping?.packageWeight} kg`, 14, finalY + 60);
-
+  doc.text("INVOICE", 105, 40, { align: "center" });
 
   doc.setFontSize(10);
   doc.setTextColor(100, 100, 100);
-  doc.text("Thank you for your purchase!", 105, 280, { align: "center" });
-  doc.text("For any queries, please contact freshartclub@gmail.com", 105, 285, { align: "center" });
+  doc.setFont("helvetica", "normal");
+  doc.text("Premium Art Marketplace", 105, 45, { align: "center" });
+
+  
+  doc.setFillColor(...lightColor);
+  doc.rect(14, 55, 185, 10, 'F');
+  doc.setFontSize(10);
+  doc.setTextColor(...secondaryColor);
+  doc.setFont("helvetica", "bold");
+  doc.text("INVOICE DETAILS", 20, 61);
+
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(80, 80, 80);
+  doc.text(`Invoice #: ${order.orderId}`, 14, 75);
+  doc.text(`Date: ${new Date(order.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}`, 14, 80);
+  doc.text(`Customer: ${order.billingAddress?.billingFirstName} ${order.billingAddress?.billingLastName}`, 14, 85);
+  doc.text(`Order Type: ${order.type}`, 100, 75);
+  doc.text(`Status: ${order.status}`, 100, 80);
+  doc.text(`Payment Method: ${order.paymentMethod || 'Credit Card'}`, 100, 85);
+
+ 
+  doc.setFillColor(...lightColor);
+  doc.rect(14, 95, 85, 10, 'F');
+  doc.rect(105, 95, 85, 10, 'F');
+  doc.setTextColor(...secondaryColor);
+  doc.setFont("helvetica", "bold");
+  doc.text("BILLING ADDRESS", 20, 101);
+  doc.text("SHIPPING ADDRESS", 110, 101);
+
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(80, 80, 80);
+  doc.text(`${order.billingAddress?.billingCompanyName || ''}`, 14, 110);
+  doc.text(`${order.billingAddress?.billingAddress}, ${order.billingAddress?.billingCity}`, 14, 115);
+  doc.text(`${order.billingAddress?.billingState}, ${order.billingAddress?.billingZipCode}`, 14, 120);
+  doc.text(`${order.billingAddress?.billingCountry}`, 14, 125);
+  doc.text(`Phone: ${order.billingAddress?.billingPhone}`, 14, 130);
+
+  doc.text(`${order.shippingAddress?.address}, ${order.shippingAddress?.city}`, 105, 110);
+  doc.text(`${order.shippingAddress?.state}, ${order.shippingAddress?.zipCode}`, 105, 115);
+  doc.text(`${order.shippingAddress?.country}`, 105, 120);
+  doc.text(`Phone: ${order.shippingAddress?.phone}`, 105, 125);
+  doc.text(`Email: ${order.shippingAddress?.email}`, 105, 130);
+
+  // Divider line
+  doc.setDrawColor(...lightColor);
+  doc.line(14, 135, 195, 135);
 
 
-  doc.save(`invoice_${order.orderId}.pdf`);
+  autoTable(doc, {
+    startY: 140,
+    head: [
+      [
+        { 
+          content: 'Item', 
+          styles: { 
+            fillColor: primaryColor,
+            textColor: 255,
+            fontStyle: 'bold'
+          }
+        },
+        { 
+          content: 'Description', 
+          styles: { 
+            fillColor: primaryColor,
+            textColor: 255,
+            fontStyle: 'bold'
+          }
+        },
+        { 
+          content: 'Qty', 
+          styles: { 
+            fillColor: primaryColor,
+            textColor: 255,
+            fontStyle: 'bold'
+          }
+        },
+        { 
+          content: 'Unit Price', 
+          styles: { 
+            fillColor: primaryColor,
+            textColor: 255,
+            fontStyle: 'bold'
+          }
+        },
+        { 
+          content: 'Discount', 
+          styles: { 
+            fillColor: primaryColor,
+            textColor: 255,
+            fontStyle: 'bold'
+          }
+        },
+        { 
+          content: 'Total', 
+          styles: { 
+            fillColor: primaryColor,
+            textColor: 255,
+            fontStyle: 'bold'
+          }
+        }
+      ]
+    ],
+    body: [
+      [
+        order.items.artwork.artworkName,
+        `Artist: ${order.items.artwork.artistName}\nMaterial: ${order.items.artwork.inventoryShipping?.packageMaterial}\nYear: ${order.items.artwork.yearCreated}`,
+        1,
+        `${order.items.artwork.pricing.currency} ${order.items.artwork.pricing.basePrice.toFixed(2)}`,
+        `${discountPercentage}%`,
+        `${order.items.artwork.pricing.currency} ${(discountedPrice + parseFloat(taxAmount)).toFixed(2)}`
+      ]
+    ],
+    theme: 'grid',
+    headStyles: {
+      fillColor: primaryColor,
+      textColor: 255,
+      fontStyle: 'bold'
+    },
+    alternateRowStyles: {
+      fillColor: [245, 245, 245]
+    },
+    styles: {
+      cellPadding: 3,
+      fontSize: 9,
+      overflow: 'linebreak'
+    },
+    columnStyles: {
+      0: { cellWidth: 30, fontStyle: 'bold' },
+      1: { cellWidth: 'auto' },
+      2: { cellWidth: 15 },
+      3: { cellWidth: 25 },
+      4: { cellWidth: 25 },
+      5: { cellWidth: 25 }
+    }
+  });
+
+  const finalY = doc.lastAutoTable.finalY || 160;
+
+  
+  doc.setFillColor(...lightColor);
+  doc.rect(14, finalY + 10, 185, 10, 'F');
+  doc.setFontSize(12);
+  doc.setTextColor(...secondaryColor);
+  doc.setFont("helvetica", "bold");
+  doc.text("ORDER SUMMARY", 20, finalY + 16);
+
+doc.setFont("helvetica", "normal");
+doc.setTextColor(80, 80, 80);
+const summaryStartY = finalY + 25;
+const summaryCol1 = 130;
+const summaryCol2 = 170;
+
+
+const subtotal = order.items.artwork.pricing.basePrice;
+const discountAmount = subtotal * (discountPercentage / 100);
+const taxableAmount = subtotal - discountAmount;
+const calculatedTax = taxableAmount * (taxPercentage / 100);
+const shipping = order.shipping || 0;
+const calculatedTotal = subtotal - discountAmount + calculatedTax + shipping;
+
+doc.text("Subtotal:", summaryCol1, summaryStartY);
+doc.text(`${order.items.artwork.pricing.currency} ${subtotal.toFixed(2)}`, summaryCol2, summaryStartY, { align: "left" });
+
+doc.text(`Discount (${discountPercentage}%):`, summaryCol1, summaryStartY + 5);
+doc.text(`${order.items.artwork.pricing.currency} ${discountAmount.toFixed(2)}`, summaryCol2, summaryStartY + 5, { align: "left" });
+
+doc.text(`Tax (${taxPercentage}%):`, summaryCol1, summaryStartY + 10);
+doc.text(`${order.items.artwork.pricing.currency} ${calculatedTax.toFixed(2)}`, summaryCol2, summaryStartY + 10, { align: "left" });
+
+   doc.text("Shipping:", summaryCol1, summaryStartY + 15);
+   doc.text(`${order.items.artwork.pricing.currency} ${shipping.toFixed(2)}`, summaryCol2, summaryStartY + 15, { align: "left" });
+
+
+  doc.setFontSize(14);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(...primaryColor);
+  doc.text("Total Amount:", summaryCol1, summaryStartY + 25);
+  doc.text(`${order.items.artwork.pricing.currency} ${calculatedTotal.toFixed(2)}`, summaryCol2, summaryStartY + 25, { align: "left" });
+
+
+  doc.setFontSize(10);
+  doc.setTextColor(80, 80, 80);
+  doc.text("Package Details:", 14, summaryStartY + 40);
+  doc.text(`Dimensions: ${order.items.artwork.inventoryShipping?.packageLength} × ${order.items.artwork.inventoryShipping?.packageWidth} × ${order.items.artwork.inventoryShipping?.packageHeight} cm`, 14, summaryStartY + 45);
+  doc.text(`Weight: ${order.items.artwork.inventoryShipping?.packageWeight} kg`, 14, summaryStartY + 50);
+
+  doc.setFontSize(8);
+  doc.setTextColor(150, 150, 150);
+  doc.text("Thank you for choosing FreshArt Club for your premium art purchase.", 105, 280, { align: "center" });
+  doc.text("For any inquiries, please contact freshartclub@gmail.com", 105, 285, { align: "center" });
+  doc.text(`© ${new Date().getFullYear()} FreshArt Club. All rights reserved.`, 105, 290, { align: "center" });
+
+
+  doc.save(`FreshArt_Invoice_${order.orderId}.pdf`);
 };
 
 
-  console.log(data)
+
 
   if (isLoading) return <Loader />;
 
