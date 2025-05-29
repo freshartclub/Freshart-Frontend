@@ -152,124 +152,201 @@ const ArtworkPlacementStep = ({
     return { width: baseWidth, height: baseHeight };
   };
 
-  // Generate the background image for download
-  const generateBackgroundImage = () => {
-    if (!selectedImage) return;
-
-    const bgImg = new Image();
-    bgImg.crossOrigin = "anonymous";
-    bgImg.src = `${imageUrl}/users/${selectedImage}`;
-
-    bgImg.onload = () => {
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
-      
-      canvas.width = bgImg.width;
-      canvas.height = bgImg.height;
-      
-      ctx.drawImage(bgImg, 0, 0, bgImg.width, bgImg.height);
-      
-      const dataUrl = canvas.toDataURL("image/png");
-      setBackgroundImage(dataUrl);
-    };
-
-    bgImg.onerror = () => {
-      console.error("Failed to load background image");
-    };
-  };
-
-  // Generate composite image
-  const generateImage = () => {
-    if (!cropSelection || !selectedImage || !artwork || !artworkPosition) return;
-
-    const bgImg = new Image();
-    bgImg.crossOrigin = "anonymous";
-    bgImg.src = `${imageUrl}/users/${selectedImage}`;
-
-    bgImg.onload = () => {
-      const artworkImg = new Image();
-      artworkImg.crossOrigin = "anonymous";
-      artworkImg.src = `${imageUrl}/users/${artwork.data.media.mainImage}`;
-
-      artworkImg.onload = () => {
-        const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
-
-        // Set canvas size to the crop selection size
-        canvas.width = cropSelection.width;
-        canvas.height = cropSelection.height;
-
-        // Draw the cropped background
-        ctx.drawImage(
-          bgImg,
-          cropSelection.x, cropSelection.y, cropSelection.width, cropSelection.height,
-          0, 0, cropSelection.width, cropSelection.height
-        );
-
-        // Calculate artwork dimensions
-        const { width: baseWidth, height: baseHeight } = getArtworkDimensions();
-        const artworkWidth = baseWidth * scale;
-        const artworkHeight = baseHeight * scale;
-
-        // Draw the artwork at the specified position
-        ctx.drawImage(
-          artworkImg,
-          artworkPosition.x,
-          artworkPosition.y,
-          artworkWidth,
-          artworkHeight
-        );
-
-        const dataUrl = canvas.toDataURL("image/png");
-        setFinalImage(dataUrl);
-      };
-
-      artworkImg.onerror = () => {
-        console.error("Failed to load artwork image");
-      };
-    };
-
-    bgImg.onerror = () => {
-      console.error("Failed to load background image");
-    };
-  };
-
-  // Download function
-  const downloadImages = () => {
-    if (finalImage) {
-      const compositionLink = document.createElement("a");
-      compositionLink.download = "artwork-composition.png";
-      compositionLink.href = finalImage;
-      compositionLink.click();
+  // Generate preview image for display
+  const generatePreviewImage = async () => {
+    try {
+      const croppedImage = await generateCroppedImage();
+      setFinalImage(croppedImage);
+    } catch (error) {
+      console.error("Failed to generate preview:", error);
     }
-    
-    if (backgroundImage) {
+  };
+
+  // Generate composite image with artwork positioned on background
+  const generateCompositeImage = () => {
+    return new Promise((resolve, reject) => {
+      if (!cropSelection || !selectedImage || !artwork || !artworkPosition) {
+        reject("Missing required data");
+        return;
+      }
+
+      const bgImg = new Image();
+      bgImg.crossOrigin = "anonymous";
+      bgImg.src = `${imageUrl}/users/${selectedImage}`;
+
+      bgImg.onload = () => {
+        const artworkImg = new Image();
+        artworkImg.crossOrigin = "anonymous";
+        artworkImg.src = `${imageUrl}/users/${artwork.data.media.mainImage}`;
+
+        artworkImg.onload = () => {
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
+
+          // Set canvas size to match the full background image
+          canvas.width = bgImg.width;
+          canvas.height = bgImg.height;
+
+          // Draw the full background image
+          ctx.drawImage(bgImg, 0, 0, bgImg.width, bgImg.height);
+
+          // Calculate the scale factor between display and actual image
+          const displayWidth = imageSizeS?.width || bgImg.width;
+          const displayHeight = imageSizeS?.height || bgImg.height;
+          const scaleFactorX = bgImg.width / displayWidth;
+          const scaleFactorY = bgImg.height / displayHeight;
+
+          // Calculate artwork dimensions and position in actual image coordinates
+          const { width: baseWidth, height: baseHeight } = getArtworkDimensions();
+          const artworkWidth = (baseWidth * scale) * scaleFactorX;
+          const artworkHeight = (baseHeight * scale) * scaleFactorY;
+          
+          // Convert position from display coordinates to actual image coordinates
+          const actualX = (cropSelection.x + artworkPosition.x) * scaleFactorX;
+          const actualY = (cropSelection.y + artworkPosition.y) * scaleFactorY;
+
+          // Draw the artwork at the calculated position
+          ctx.drawImage(
+            artworkImg,
+            actualX,
+            actualY,
+            artworkWidth,
+            artworkHeight
+          );
+
+          const dataUrl = canvas.toDataURL("image/png", 0.95);
+          resolve(dataUrl);
+        };
+
+        artworkImg.onerror = () => {
+          reject("Failed to load artwork image");
+        };
+      };
+
+      bgImg.onerror = () => {
+        reject("Failed to load background image");
+      };
+    });
+  };
+
+  // Generate cropped composite image (just the selected area)
+  const generateCroppedImage = () => {
+    return new Promise((resolve, reject) => {
+      if (!cropSelection || !selectedImage || !artwork || !artworkPosition) {
+        reject("Missing required data");
+        return;
+      }
+
+      const bgImg = new Image();
+      bgImg.crossOrigin = "anonymous";
+      bgImg.src = `${imageUrl}/users/${selectedImage}`;
+
+      bgImg.onload = () => {
+        const artworkImg = new Image();
+        artworkImg.crossOrigin = "anonymous";
+        artworkImg.src = `${imageUrl}/users/${artwork.data.media.mainImage}`;
+
+        artworkImg.onload = () => {
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
+
+          // Set canvas size to the crop selection size
+          canvas.width = cropSelection.width;
+          canvas.height = cropSelection.height;
+
+          // Calculate scale factor
+          const displayWidth = imageSizeS?.width || bgImg.width;
+          const displayHeight = imageSizeS?.height || bgImg.height;
+          const scaleFactorX = bgImg.width / displayWidth;
+          const scaleFactorY = bgImg.height / displayHeight;
+
+          // Draw the cropped background
+          ctx.drawImage(
+            bgImg,
+            cropSelection.x * scaleFactorX,
+            cropSelection.y * scaleFactorY,
+            cropSelection.width * scaleFactorX,
+            cropSelection.height * scaleFactorY,
+            0,
+            0,
+            cropSelection.width,
+            cropSelection.height
+          );
+
+          // Calculate artwork dimensions
+          const { width: baseWidth, height: baseHeight } = getArtworkDimensions();
+          const artworkWidth = baseWidth * scale;
+          const artworkHeight = baseHeight * scale;
+
+          // Draw the artwork at the specified position within the crop area
+          ctx.drawImage(
+            artworkImg,
+            artworkPosition.x,
+            artworkPosition.y,
+            artworkWidth,
+            artworkHeight
+          );
+
+          const dataUrl = canvas.toDataURL("image/png", 0.95);
+          resolve(dataUrl);
+        };
+
+        artworkImg.onerror = () => {
+          reject("Failed to load artwork image");
+        };
+      };
+
+      bgImg.onerror = () => {
+        reject("Failed to load background image");
+      };
+    });
+  };
+
+  // Download function with proper error handling
+  const downloadImages = async () => {
+    try {
+      // Generate both images
+      const [fullComposite, croppedComposite] = await Promise.all([
+        generateCompositeImage(),
+        generateCroppedImage()
+      ]);
+
+      // Download full composite (background + artwork)
+      if (fullComposite) {
+        const fullLink = document.createElement("a");
+        fullLink.download = "artwork-on-background-full.png";
+        fullLink.href = fullComposite;
+        document.body.appendChild(fullLink);
+        fullLink.click();
+        document.body.removeChild(fullLink);
+      }
+
+      // Download cropped version with a slight delay
       setTimeout(() => {
-        const bgLink = document.createElement("a");
-        bgLink.download = "background-image.png";
-        bgLink.href = backgroundImage;
-        bgLink.click();
-      }, 300);
+        if (croppedComposite) {
+          const croppedLink = document.createElement("a");
+          croppedLink.download = "artwork-on-background-cropped.png";
+          croppedLink.href = croppedComposite;
+          document.body.appendChild(croppedLink);
+          croppedLink.click();
+          document.body.removeChild(croppedLink);
+        }
+      }, 500);
+
+    } catch (error) {
+      console.error("Download failed:", error);
+      alert("Failed to generate images. Please try again.");
     }
   };
 
   const handleDownload = () => {
-    if (!finalImage || !backgroundImage) {
-      generateImage();
-      generateBackgroundImage();
-      setTimeout(() => {
-        downloadImages();
-      }, 500);
-    } else {
-      downloadImages();
-    }
+    downloadImages();
   };
 
   // Generate preview images when dependencies change
   useEffect(() => {
     if (cropSelection && selectedImage && artwork && artworkPosition !== null) {
-      generateImage();
-      generateBackgroundImage();
+      generatePreviewImage();
     }
   }, [cropSelection, selectedImage, artwork, artworkPosition, scale]);
 
@@ -451,8 +528,12 @@ const ArtworkPlacementStep = ({
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
             </svg>
-            Download Images
+            Download Both Images
           </button>
+          
+          <div className="text-xs text-gray-500 dark:text-gray-400 mb-4 text-center">
+            Downloads: Full background with artwork + Cropped version
+          </div>
 
           {/* Navigation Buttons */}
           <div className="flex gap-3">
