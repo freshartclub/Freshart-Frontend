@@ -1,545 +1,479 @@
-import { motion } from "framer-motion";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { AiOutlinePlus } from "react-icons/ai";
-import { BsArrowsFullscreen } from "react-icons/bs";
-import { FaChevronLeft, FaChevronRight, FaImage } from "react-icons/fa";
-import { FaMinus, FaPlus } from "react-icons/fa6";
-import { MdKitchen, MdOutlineBathroom, MdOutlineBedroomParent, MdWorkOutline } from "react-icons/md";
-import { TbDeviceMobileRotated } from "react-icons/tb";
-import { useAppSelector } from "../../store/typedReduxHooks";
-import Header from "../ui/Header";
-import { imageUrl, lowImageUrl } from "../utils/baseUrls";
-import CustomPop from "./CustomPop";
-import MobileArtworkVisualizer from "./MobileArtworkVisualizer";
-import { useGetArtVisulaization } from "./http/useGetArtVisulaization";
-import ArtWork from "../ArtistPortfolioPage/ArtWork";
-import { Loader } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { imageUrl } from "../utils/baseUrls";
 
-const placeholderImage =
-  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%23CCCCCC'/%3E%3Ctext x='50%25' y='50%25' font-family='Arial' font-size='24' text-anchor='middle' fill='%23666666'%3EArtwork%3C/text%3E%3C/svg%3E";
-
-const ArtworkVisualizer = ({ artwork, isLoading, error }) => {
-  const dark = useAppSelector((state) => state.theme.mode);
-  const [selectedRoom, setSelectedRoom] = useState("livingRoom");
-  const [selectedRoomImageIndex, setSelectedRoomImageIndex] = useState(0);
-  const [customImage, setCustomImage] = useState(null);
-  const [isFullscreen, setIsFullscreen] = useState(false);
-  const [isCustom, setIsCustom] = useState(false);
-  const [windowWidth, setWindowWidth] = useState(typeof window !== "undefined" ? window.innerWidth : 0);
-  const [isMobileVisualize, setIsMobileVisualize] = useState(false);
-  const [selectedId, setSelectedId] = useState(null);
-
-  const { data, isLoading: visualizationLoading } = useGetArtVisulaization();
-
-  // Convert backend data to room images format
-  const roomImages = useMemo(() => {
-    if (!data?.data) return {
-      livingRoom: [],
-      bedroom: [],
-      kitchen: [],
-      bathroom: [],
-      office: []
-    };
-
-    return {
-      livingRoom: data.data["Living Room"]?.map(item => ({
-        url: `${imageUrl}/users/${item?.image}`,
-        ...item
-      })) || [],
-      bedroom: data.data["Bed Room"]?.map(item => ({
-        url: `${imageUrl}/users/${item?.image}`,
-        ...item
-      })) || [],
-      kitchen: data.data.Kitchen?.map(item => ({
-        url: `${imageUrl}/users/${item?.image}`,
-        ...item
-      })) || [],
-      bathroom: data.data.bathroom?.map(item => ({
-        url: `${imageUrl}/users/${item?.image}`,
-        ...item
-      })) || [],
-      office: data.data.Office?.map(item => ({
-        url: `${imageUrl}/users/${item?.image}`,
-        ...item
-      })) || []
-    };
-  }, [data]);
-
-  const handleMobileVisualization = () => {
-    setIsMobileVisualize(!isMobileVisualize);
-  };
-
-  const fileInputRef = useRef(null);
-  const visualizerRef = useRef(null);
+const ArtworkPlacementStep = ({
+  selectedImage,
+  cropSelection,
+  artwork,
+  artworkPosition,
+  setArtworkPosition,
+  onNext,
+  onPrev,
+  imageSizeS,
+  onClose
+}) => {
   const containerRef = useRef(null);
+  const artworkRef = useRef(null);
+  const cropAreaRef = useRef(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [scale, setScale] = useState(1);
+  const [finalImage, setFinalImage] = useState(null);
+  const [backgroundImage, setBackgroundImage] = useState(null);
 
-  const rooms = useMemo(
-    () => [
-      {
-        id: "livingRoom",
-        name: "Living Room",
-        images: roomImages.livingRoom,
-        icon: FaImage,
-      },
-      {
-        id: "bedroom",
-        name: "Bedroom",
-        images: roomImages.bedroom,
-        icon: MdOutlineBedroomParent,
-      },
-      {
-        id: "kitchen",
-        name: "Kitchen",
-        images: roomImages.kitchen,
-        icon: MdKitchen,
-      },
+  // Initialize artwork position if not set
+  useEffect(() => {
+    if (!artworkPosition && cropSelection) {
+      setArtworkPosition({
+        x: cropSelection.width / 4,
+        y: cropSelection.height / 4
+      });
+    }
+  }, [artworkPosition, cropSelection, setArtworkPosition]);
+
+  // Handle artwork dragging - Mouse Events
+  const handleMouseDown = (e) => {
+    if (!artworkRef.current || !cropAreaRef.current) return;
+    
+    e.preventDefault();
+    e.stopPropagation();
+    
+    setIsDragging(true);
+    
+    // Get the current position of the artwork relative to the crop area
+    const cropRect = cropAreaRef.current.getBoundingClientRect();
+    const artworkRect = artworkRef.current.getBoundingClientRect();
+    
+    // Calculate offset from mouse to artwork's top-left corner
+    setDragOffset({
+      x: e.clientX - artworkRect.left,
+      y: e.clientY - artworkRect.top
+    });
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging || !cropAreaRef.current || !artworkRef.current) return;
+
+    e.preventDefault();
+    
+    const cropRect = cropAreaRef.current.getBoundingClientRect();
+    const artworkWidth = artworkRef.current.offsetWidth;
+    const artworkHeight = artworkRef.current.offsetHeight;
+    
+    // Calculate new position relative to crop area
+    let newX = e.clientX - cropRect.left - dragOffset.x;
+    let newY = e.clientY - cropRect.top - dragOffset.y;
+    
+    // Apply boundaries - keep artwork within crop area
+    const maxX = cropRect.width - artworkWidth;
+    const maxY = cropRect.height - artworkHeight;
+    
+    newX = Math.max(0, Math.min(newX, maxX));
+    newY = Math.max(0, Math.min(newY, maxY));
+    
+    setArtworkPosition({ x: newX, y: newY });
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  // Handle artwork dragging - Touch Events
+  const handleTouchStart = (e) => {
+    if (!artworkRef.current || !cropAreaRef.current) return;
+    
+    e.preventDefault();
+    
+    setIsDragging(true);
+    
+    const touch = e.touches[0];
+    const cropRect = cropAreaRef.current.getBoundingClientRect();
+    const artworkRect = artworkRef.current.getBoundingClientRect();
+    
+    setDragOffset({
+      x: touch.clientX - artworkRect.left,
+      y: touch.clientY - artworkRect.top
+    });
+  };
+
+  const handleTouchMove = (e) => {
+    if (!isDragging || !cropAreaRef.current || !artworkRef.current) return;
+    
+    e.preventDefault();
+    
+    const touch = e.touches[0];
+    const cropRect = cropAreaRef.current.getBoundingClientRect();
+    const artworkWidth = artworkRef.current.offsetWidth;
+    const artworkHeight = artworkRef.current.offsetHeight;
+    
+    let newX = touch.clientX - cropRect.left - dragOffset.x;
+    let newY = touch.clientY - cropRect.top - dragOffset.y;
+    
+    const maxX = cropRect.width - artworkWidth;
+    const maxY = cropRect.height - artworkHeight;
+    
+    newX = Math.max(0, Math.min(newX, maxX));
+    newY = Math.max(0, Math.min(newY, maxY));
+    
+    setArtworkPosition({ x: newX, y: newY });
+  };
+
+  const handleTouchEnd = () => {
+    setIsDragging(false);
+  };
+
+  const handleScaleChange = (e) => {
+    const newScale = parseFloat(e.target.value);
+    setScale(newScale);
+    
+    // Adjust position if artwork goes out of bounds after scaling
+    if (artworkRef.current && cropAreaRef.current && artworkPosition) {
+      const cropRect = cropAreaRef.current.getBoundingClientRect();
+      const baseWidth = artworkRef.current.offsetWidth / scale; // Get original size
+      const baseHeight = artworkRef.current.offsetHeight / scale;
       
-      {
-        id: "office",
-        name: "Office",
-        images: roomImages.office,
-        icon: MdWorkOutline,
-      },
-    ],
-    [roomImages]
-  );
-
-  useEffect(() => {
-    const handleResize = () => {
-      setWindowWidth(window.innerWidth);
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  useEffect(() => {
-    if (selectedRoom === "livingRoom" && roomImages.livingRoom.length > 0) {
-      setSelectedId(roomImages.livingRoom[0]?._id);
-    } else if (selectedRoom === "kitchen" && roomImages.kitchen.length > 0) {
-      setSelectedId(roomImages.kitchen[0]?._id);
-    } else if (selectedRoom === "office" && roomImages.office.length > 0) {
-      setSelectedId(roomImages.office[0]?._id);
+      const newWidth = baseWidth * newScale;
+      const newHeight = baseHeight * newScale;
+      
+      const maxX = cropRect.width - newWidth;
+      const maxY = cropRect.height - newHeight;
+      
+      setArtworkPosition({
+        x: Math.max(0, Math.min(artworkPosition.x, maxX)),
+        y: Math.max(0, Math.min(artworkPosition.y, maxY))
+      });
     }
-  }, [selectedRoom, roomImages]);
+  };
 
-  useEffect(() => {
-    const onFullScreenChange = () => {
-      setIsFullscreen(!!document.fullscreenElement);
+  // Get artwork dimensions
+  const getArtworkDimensions = () => {
+    const baseWidth = artwork?.data?.additionalInfo?.width || 150;
+    const baseHeight = artwork?.data?.additionalInfo?.height || 150;
+    return { width: baseWidth, height: baseHeight };
+  };
+
+  // Generate the background image for download
+  const generateBackgroundImage = () => {
+    if (!selectedImage) return;
+
+    const bgImg = new Image();
+    bgImg.crossOrigin = "anonymous";
+    bgImg.src = `${imageUrl}/users/${selectedImage}`;
+
+    bgImg.onload = () => {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      
+      canvas.width = bgImg.width;
+      canvas.height = bgImg.height;
+      
+      ctx.drawImage(bgImg, 0, 0, bgImg.width, bgImg.height);
+      
+      const dataUrl = canvas.toDataURL("image/png");
+      setBackgroundImage(dataUrl);
     };
-    document.addEventListener("fullscreenchange", onFullScreenChange);
-    return () => document.removeEventListener("fullscreenchange", onFullScreenChange);
-  }, []);
 
-  const toggleFullscreen = () => {
-    if (!document.fullscreenElement) {
-      visualizerRef?.current?.requestFullscreen().catch(console.error);
-      setIsFullscreen(true);
+    bgImg.onerror = () => {
+      console.error("Failed to load background image");
+    };
+  };
+
+  // Generate composite image
+  const generateImage = () => {
+    if (!cropSelection || !selectedImage || !artwork || !artworkPosition) return;
+
+    const bgImg = new Image();
+    bgImg.crossOrigin = "anonymous";
+    bgImg.src = `${imageUrl}/users/${selectedImage}`;
+
+    bgImg.onload = () => {
+      const artworkImg = new Image();
+      artworkImg.crossOrigin = "anonymous";
+      artworkImg.src = `${imageUrl}/users/${artwork.data.media.mainImage}`;
+
+      artworkImg.onload = () => {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        // Set canvas size to the crop selection size
+        canvas.width = cropSelection.width;
+        canvas.height = cropSelection.height;
+
+        // Draw the cropped background
+        ctx.drawImage(
+          bgImg,
+          cropSelection.x, cropSelection.y, cropSelection.width, cropSelection.height,
+          0, 0, cropSelection.width, cropSelection.height
+        );
+
+        // Calculate artwork dimensions
+        const { width: baseWidth, height: baseHeight } = getArtworkDimensions();
+        const artworkWidth = baseWidth * scale;
+        const artworkHeight = baseHeight * scale;
+
+        // Draw the artwork at the specified position
+        ctx.drawImage(
+          artworkImg,
+          artworkPosition.x,
+          artworkPosition.y,
+          artworkWidth,
+          artworkHeight
+        );
+
+        const dataUrl = canvas.toDataURL("image/png");
+        setFinalImage(dataUrl);
+      };
+
+      artworkImg.onerror = () => {
+        console.error("Failed to load artwork image");
+      };
+    };
+
+    bgImg.onerror = () => {
+      console.error("Failed to load background image");
+    };
+  };
+
+  // Download function
+  const downloadImages = () => {
+    if (finalImage) {
+      const compositionLink = document.createElement("a");
+      compositionLink.download = "artwork-composition.png";
+      compositionLink.href = finalImage;
+      compositionLink.click();
+    }
+    
+    if (backgroundImage) {
+      setTimeout(() => {
+        const bgLink = document.createElement("a");
+        bgLink.download = "background-image.png";
+        bgLink.href = backgroundImage;
+        bgLink.click();
+      }, 300);
+    }
+  };
+
+  const handleDownload = () => {
+    if (!finalImage || !backgroundImage) {
+      generateImage();
+      generateBackgroundImage();
+      setTimeout(() => {
+        downloadImages();
+      }, 500);
     } else {
-      document.exitFullscreen();
-      setIsFullscreen(false);
+      downloadImages();
     }
   };
 
-  const handleCustom = () => {
-    setIsCustom(!isCustom);
-    if (!isCustom) {
-      fileInputRef.current?.click();
+  // Generate preview images when dependencies change
+  useEffect(() => {
+    if (cropSelection && selectedImage && artwork && artworkPosition !== null) {
+      generateImage();
+      generateBackgroundImage();
     }
-  };
+  }, [cropSelection, selectedImage, artwork, artworkPosition, scale]);
 
-  const currentRoom = rooms?.find((r) => r?.id === selectedRoom) || rooms[0];
-  const currentImage = currentRoom.images[selectedRoomImageIndex % currentRoom.images.length];
-  const roomBackgroundImage = customImage || (currentImage?.url || placeholderImage);
+  // Set up global event listeners for drag operations
+  useEffect(() => {
+    if (isDragging) {
+      const handleGlobalMouseMove = (e) => handleMouseMove(e);
+      const handleGlobalMouseUp = () => handleMouseUp();
+      const handleGlobalTouchMove = (e) => handleTouchMove(e);
+      const handleGlobalTouchEnd = () => handleTouchEnd();
 
-  const bgClass = dark ? "bg-gray-900" : "bg-gray-50";
-  const buttonBgClass = dark ? "bg-gray-800" : "bg-white";
-  const buttonHoverClass = dark ? "hover:bg-gray-700" : "hover:bg-gray-100";
+      document.addEventListener("mousemove", handleGlobalMouseMove);
+      document.addEventListener("mouseup", handleGlobalMouseUp);
+      document.addEventListener("touchmove", handleGlobalTouchMove, { passive: false });
+      document.addEventListener("touchend", handleGlobalTouchEnd);
 
-  const isMobile = windowWidth < 640;
-  const isTablet = windowWidth >= 640 && windowWidth < 1024;
+      return () => {
+        document.removeEventListener("mousemove", handleGlobalMouseMove);
+        document.removeEventListener("mouseup", handleGlobalMouseUp);
+        document.removeEventListener("touchmove", handleGlobalTouchMove);
+        document.removeEventListener("touchend", handleGlobalTouchEnd);
+      };
+    }
+  }, [isDragging, dragOffset]);
 
-  // Calculate artwork position and size based on backend data
-  const getArtworkPositionAndSize = () => {
-    if (!currentImage) return { width: 100, height: 100, left: '50%', top: '50%' };
-
-    const { dimension_width: widthCm, dimension_height: heightCm, area_x1, area_y1 , area_x2 , area_y2 } = currentImage;
-
-
-    const widthPx = widthCm
-    const heightPx = heightCm ;
-   
-    const left = area_x1 ;
-    const top = area_y1;
-    const bottom = area_y2;
-    const right =  area_x2 
-
-    return {
-      width: widthPx,
-      height: heightPx,
-      left,
-      top,
-      bottom,
-      right
-    };
-  };
-
-  const artworkStyle = getArtworkPositionAndSize();
-
-const getCalculatedValues = () => {
-  const wallWidthCm = artworkStyle.width;
-  const wallHeightCm = artworkStyle.height;
-
-  const leftCm = artworkStyle.left;
-  const rightCm = artworkStyle.right;
-  const topCm = artworkStyle.top;
-  const bottomCm = artworkStyle.bottom;
-
-  
-  const leftPercent = (leftCm / wallWidthCm) * 100;
-  const rightPercent = (rightCm / wallWidthCm) * 100;
-  const topPercent = (topCm / wallHeightCm) * 100;
-  const bottomPercent = (bottomCm / wallHeightCm) * 100;
-
-  const artworkHeight = (artwork?.data?.additionalInfo?.height / wallHeightCm ) * 100
-const artworkWidth = (artwork?.data?.additionalInfo?.width / wallWidthCm) * 100
-
- 
-  const widthCm = wallWidthCm - leftCm - rightCm;
-  const heightCm = wallHeightCm - topCm - bottomCm;
-  const areaCm2 = widthCm * heightCm;
-
-  return {
-    leftPercent: leftPercent.toFixed(2) + '%',
-    rightPercent: rightPercent.toFixed(2) + '%',
-    topPercent: topPercent.toFixed(2) + '%',
-    bottomPercent: bottomPercent.toFixed(2) + '%',
-    widthCm,
-    heightCm,
-     artworkHeight : artworkHeight.toFixed(2) + '%' ,
-    artworkWidth :artworkWidth.toFixed(2) + '%' ,
-    areaCm2: areaCm2.toFixed(2), 
-  };
-};
-
-const calculatedValues = getCalculatedValues()
-
-
-if(visualizationLoading){
-  return <Loader/>
-}
-
-// Mobile Version
-if (isMobile) {
-  return (
-    <div className={`${bgClass} rounded-lg shadow-lg overflow-hidden w-full`}>
-      <Header variant={{ size: "lg", theme: dark ? "light" : "dark", weight: "semiBold" }} className="p-3 border-b flex justify-between items-center">
-        <span className="truncate text-sm">Visualize in Your Space</span>
-        <div className="flex gap-2">
-          <button
-            onClick={handleMobileVisualization}
-            className={`p-2 rounded-full ${buttonBgClass} ${buttonHoverClass} transition-colors duration-200`}
-            aria-label="Mobile visualization"
-          >
-            <TbDeviceMobileRotated size={16} />
-          </button>
-        </div>
-      </Header>
-
-      {isMobileVisualize ? <MobileArtworkVisualizer artwork={artwork} isLoading={isLoading} error={error} /> : null}
-
-      <div className="flex overflow-x-auto scrollbar-thin p-2 border-b gap-1">
-        {rooms?.map((room) => {
-          const RoomIcon = room?.icon;
-          return (
-            <button
-              key={room?.id}
-              onClick={() => {
-                setSelectedRoom(room.id);
-                setSelectedRoomImageIndex(0);
-              }}
-              className={`flex flex-col items-center px-2 py-2 rounded-lg transition-colors min-w-[60px] ${
-                selectedRoom === room.id
-                  ? dark
-                    ? "bg-gray-700 text-white"
-                    : "bg-gray-200 text-gray-800"
-                  : dark
-                    ? "text-gray-400 hover:bg-gray-800"
-                    : "text-gray-600 hover:bg-gray-100"
-              }`}
-              disabled={room.images.length === 0}
-            >
-              <RoomIcon size={16} />
-              <span className="text-xs mt-1 text-center leading-tight">{room.name.split(' ').join('\n')}</span>
-            </button>
-          );
-        })}
-        <button
-          onClick={handleCustom}
-          className={`flex flex-col items-center px-2 py-2 rounded-lg transition-colors min-w-[60px] ${
-            selectedRoom === "custom"
-              ? dark
-                ? "bg-gray-700 text-white"
-                : "bg-gray-200 text-gray-800"
-              : dark
-                ? "text-gray-400 hover:bg-gray-800"
-                : "text-gray-600 hover:bg-gray-100"
-          }`}
-        >
-          <AiOutlinePlus size={16} />
-          <span className="text-xs mt-1">Custom</span>
-        </button>
+  // Loading states
+  if (!selectedImage || !cropSelection) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <div className="text-gray-500 dark:text-gray-400">Loading...</div>
       </div>
+    );
+  }
 
-      {selectedRoom !== "custom" && currentRoom?.images && currentRoom?.images?.length > 1 && (
-        <div className="flex overflow-x-auto scrollbar-thin p-2 border-b gap-2 justify-center">
-          {currentRoom?.images.map((img, index) => (
-            <button
-              key={index}
-              onClick={() => {
-                setSelectedRoomImageIndex(index);
-                setSelectedId(img?._id);
-              }}
-              className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors text-sm ${
-                selectedRoomImageIndex === index
-                  ? dark
-                    ? "bg-gray-700 text-white"
-                    : "bg-gray-200 text-gray-800"
-                  : dark
-                    ? "bg-gray-800 text-gray-400"
-                    : "bg-gray-100 text-gray-600"
-              }`}
-            >
-              {index + 1}
-            </button>
-          ))}
-        </div>
-      )}
+  if (!artwork) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <div className="text-gray-500 dark:text-gray-400">No artwork selected</div>
+      </div>
+    );
+  }
 
-      <div
-        ref={containerRef}
-        className="flex justify-center w-full p-2"
-      >
-        <div
-          ref={visualizerRef}
-          className="relative w-full h-[50vh] overflow-hidden rounded"
-          style={{
-            backgroundImage: `url(${roomBackgroundImage})`,
-            backgroundSize: "contain",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat"
-          }}
-        >
-          {currentImage && (
-            <div
-              className="absolute flex items-center justify-center"
-              style={{
-                left: calculatedValues.leftPercent,
-                top: calculatedValues.topPercent,
-                right: calculatedValues.rightPercent,
-                bottom: calculatedValues.bottomPercent,
-                transform: 'translate(-50%, -50%)',
-              }}
-            >
+  const { width: baseWidth, height: baseHeight } = getArtworkDimensions();
+
+  return (
+    <div className="flex flex-col lg:flex-row w-full gap-6">
+      {/* Left Side - Preview */}
+      <div className="lg:w-3/5 w-full">
+        <div className="relative w-full h-96 lg:h-[500px] border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-900">
+          <div
+            ref={containerRef}
+            className="relative w-full h-full flex items-center justify-center p-4"
+          >
+            {/* Background Image Container */}
+            <div className="relative max-w-full max-h-full">
               <img
-                src={
-                  artwork?.data?.media?.mainImage
-                    ? `${lowImageUrl}/${artwork?.data?.media?.mainImage}`
-                    : placeholderImage
-                }
-                alt={artwork?.artworkName || "Artwork"}
-                className="shadow-sm object-contain"
+                src={`${imageUrl}/users/${selectedImage}`}
+                alt="Background"
+                className="max-w-full max-h-full object-contain select-none"
+                draggable="false"
                 style={{
-                  height: calculatedValues.artworkHeight,
-                  width: calculatedValues.artworkWidth
+                  width: imageSizeS?.width ? `${imageSizeS.width}px` : 'auto',
+                  height: imageSizeS?.height ? `${imageSizeS.height}px` : 'auto'
                 }}
               />
+              
+              {/* Crop Selection Overlay */}
+              {cropSelection && (
+                <div
+                  ref={cropAreaRef}
+                  className="absolute border-2 border-blue-500 bg-blue-500 bg-opacity-10"
+                  style={{
+                    left: `${cropSelection.x}px`,
+                    top: `${cropSelection.y}px`,
+                    width: `${cropSelection.width}px`,
+                    height: `${cropSelection.height}px`,
+                  }}
+                >
+                  {/* Draggable Artwork */}
+                  {artwork?.data?.media?.mainImage && artworkPosition && (
+                    <div
+                      ref={artworkRef}
+                      className={`absolute select-none ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+                      onMouseDown={handleMouseDown}
+                      onTouchStart={handleTouchStart}
+                      style={{
+                        left: `${artworkPosition.x}px`,
+                        top: `${artworkPosition.y}px`,
+                        transform: `scale(${scale})`,
+                        transformOrigin: "top left",
+                        zIndex: 20,
+                        userSelect: 'none',
+                        WebkitUserSelect: 'none',
+                        MozUserSelect: 'none',
+                        msUserSelect: 'none'
+                      }}
+                    >
+                      <img
+                        src={`${imageUrl}/users/${artwork.data.media.mainImage}`}
+                        alt="Artwork"
+                        className="pointer-events-none select-none"
+                        draggable="false"
+                        style={{
+                          width: `${baseWidth}px`,
+                          height: `${baseHeight}px`,
+                          maxWidth: 'none',
+                          maxHeight: 'none'
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Final Composition Preview */}
+        {finalImage && (
+          <div className="mt-6">
+            <h5 className="text-lg font-medium text-gray-700 dark:text-gray-300 mb-3">Final Composition Preview</h5>
+            <div className="border border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-900 p-4">
+              <img
+                src={finalImage}
+                alt="Final composition"
+                className="max-w-full h-auto rounded mx-auto shadow-lg"
+                style={{ maxHeight: '300px' }}
+              />
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Right Side - Controls */}
+      <div className="lg:w-2/5 w-full">
+        <div className="sticky top-4 p-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
+          <div className="mb-6">
+            <h4 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">Position Your Artwork</h4>
+            <p className="text-gray-600 dark:text-gray-400">
+              Drag the artwork within the blue area to position it. Use the slider to adjust the size.
+            </p>
+          </div>
+
+          {/* Size Control */}
+          <div className="mb-8">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+              Artwork Size: {Math.round(scale * 100)}%
+            </label>
+            <input
+              type="range"
+              min="0.2"
+              max="3"
+              step="0.1"
+              value={scale}
+              onChange={handleScaleChange}
+              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 slider"
+            />
+            <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
+              <span>20%</span>
+              <span>300%</span>
+            </div>
+          </div>
+
+          {/* Position Info */}
+          {artworkPosition && (
+            <div className="mb-6 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+              <div className="text-sm text-gray-600 dark:text-gray-400">
+                <div>Position: X: {Math.round(artworkPosition.x)}, Y: {Math.round(artworkPosition.y)}</div>
+                <div>Scale: {Math.round(scale * 100)}%</div>
+              </div>
             </div>
           )}
 
-          {selectedRoom !== "custom" && currentRoom.images && currentRoom.images.length > 1 && (
-            <div className="absolute top-2 right-2 flex gap-1">
-              <button
-                onClick={() => setSelectedRoomImageIndex((prevIndex) => (prevIndex - 1 + currentRoom.images.length) % currentRoom.images.length)}
-                className={`p-2 rounded-full ${buttonBgClass} ${buttonHoverClass} shadow-lg`}
-                aria-label="Previous room variant"
-              >
-                <FaChevronLeft size={12} />
-              </button>
-              <button
-                onClick={() => setSelectedRoomImageIndex((prevIndex) => (prevIndex + 1) % currentRoom.images.length)}
-                className={`p-2 rounded-full ${buttonBgClass} ${buttonHoverClass} shadow-lg`}
-                aria-label="Next room variant"
-              >
-                <FaChevronRight size={12} />
-              </button>
-            </div>
-          )}
+          {/* Download Button */}
+          <button
+            onClick={handleDownload}
+            className="w-full mb-4 px-4 py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg font-medium transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
+            </svg>
+            Download Images
+          </button>
+
+          {/* Navigation Buttons */}
+          <div className="flex gap-3">
+            <button
+              onClick={onPrev}
+              className="flex-1 px-4 py-3 bg-gray-200 hover:bg-gray-300 dark:bg-gray-600 dark:hover:bg-gray-500 text-gray-800 dark:text-gray-200 rounded-lg font-medium transition-colors"
+            >
+              Previous
+            </button>
+
+            <button
+              onClick={onClose}
+              className="flex-1 px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors"
+            >
+              Finish
+            </button>
+          </div>
         </div>
       </div>
-
-      {isCustom && <CustomPop onClose={() => setIsCustom(false)} artwork={artwork} />}
     </div>
   );
-}
-
-// Desktop/Tablet Version
-return (
-  <div className={`${bgClass} rounded-lg shadow-lg overflow-hidden w-full`}>
-    <Header variant={{ size: "lg", theme: dark ? "light" : "dark", weight: "semiBold" }} className="p-4 border-b flex justify-between items-center">
-      <span className="truncate">Visualize in Your Space</span>
-      <div className="flex gap-2">
-        {isMobileVisualize ? null : <button
-          onClick={toggleFullscreen}
-          className={`p-2 rounded-full ${buttonBgClass} ${buttonHoverClass} transition-colors duration-200`}
-          aria-label="Toggle fullscreen"
-        >
-          <BsArrowsFullscreen size={18} />
-        </button>}
-        <button
-          onClick={handleMobileVisualization}
-          className={`p-2 rounded-full ${buttonBgClass} ${buttonHoverClass} transition-colors duration-200`}
-          aria-label="Mobile visualization"
-        >
-          <TbDeviceMobileRotated size={18} />
-        </button>
-      </div>
-    </Header>
-
-    {isMobileVisualize ? <MobileArtworkVisualizer artwork={artwork} isLoading={isLoading} error={error} /> : null}
-
-    <div className="flex overflow-x-auto scrollbar-thin p-2 border-b gap-2 sm:gap-3 md:justify-center">
-      {rooms?.map((room) => {
-        const RoomIcon = room?.icon;
-        return (
-          <button
-            key={room?.id}
-            onClick={() => {
-              setSelectedRoom(room.id);
-              setSelectedRoomImageIndex(0);
-            }}
-            className={`flex flex-col items-center px-3 py-2 sm:px-4 rounded-lg transition-colors ${selectedRoom === room.id
-              ? dark
-                ? "bg-gray-700 text-white"
-                : "bg-gray-200 text-gray-800"
-              : dark
-                ? "text-gray-400 hover:bg-gray-800"
-                : "text-gray-600 hover:bg-gray-100"
-              }`}
-            disabled={room.images.length === 0}
-          >
-            <RoomIcon size={20} className="sm:text-xl" />
-            <span className="text-xs mt-1 whitespace-nowrap">{room.name}</span>
-          </button>
-        );
-      })}
-      <button
-        onClick={handleCustom}
-        className={`flex flex-col items-center px-3 py-2 sm:px-4 rounded-lg transition-colors ${selectedRoom === "custom"
-          ? dark
-            ? "bg-gray-700 text-white"
-            : "bg-gray-200 text-gray-800"
-          : dark
-            ? "text-gray-400 hover:bg-gray-800"
-            : "text-gray-600 hover:bg-gray-100"
-          }`}
-      >
-        <AiOutlinePlus size={20} className="sm:text-xl" />
-        <span className="text-xs mt-1 whitespace-nowrap">Custom</span>
-      </button>
-    </div>
-
-    {selectedRoom !== "custom" && currentRoom?.images && currentRoom?.images?.length > 1 && (
-      <div className="flex overflow-x-auto scrollbar-thin p-2 border-b gap-2 md:justify-center">
-        {currentRoom?.images.map((img, index) => (
-          <button
-            key={index}
-            onClick={() => {
-              setSelectedRoomImageIndex(index);
-              setSelectedId(img?._id);
-            }}
-            className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-colors ${selectedRoomImageIndex === index
-              ? dark
-                ? "bg-gray-700 text-white"
-                : "bg-gray-200 text-gray-800"
-              : dark
-                ? "bg-gray-800 text-gray-400"
-                : "bg-gray-100 text-gray-600"
-              }`}
-          >
-            {index + 1}
-          </button>
-        ))}
-      </div>
-    )}
-
-    <div
-      ref={containerRef}
-      style={{
-        aspectRatio: "3/4",
-      }}
-      className="flex justify-center h-[80vh] w-full">
-      <div
-        ref={visualizerRef}
-        className="relative w-full h-[80vh] overflow-hidden"
-        style={{
-          aspectRatio: "3/4",
-          backgroundImage: `url(${roomBackgroundImage})`,
-          backgroundSize: "contain",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat"
-        }}
-      >
-        {currentImage && (
-          <div
-            className="absolute flex items-center justify-center"
-            style={{
-              left: calculatedValues.leftPercent,
-              top: calculatedValues.topPercent,
-              right: calculatedValues.rightPercent,
-              bottom: calculatedValues.bottomPercent,
-              transform: 'translate(-50%, -50%)',
-            }}
-          >
-            <img
-              src={
-                artwork?.data?.media?.mainImage
-                  ? `${lowImageUrl}/${artwork?.data?.media?.mainImage}`
-                  : placeholderImage
-              }
-              alt={artwork?.artworkName || "Artwork"}
-              className="shadow-sm object-contain"
-              style={{
-                height: calculatedValues.artworkHeight,
-                width: calculatedValues.artworkWidth
-              }}
-            />
-          </div>
-        )}
-
-        {selectedRoom !== "custom" && currentRoom.images && currentRoom.images.length > 1 && (
-          <div className="absolute top-4 right-4 flex gap-2">
-            <button
-              onClick={() => setSelectedRoomImageIndex((prevIndex) => (prevIndex - 1 + currentRoom.images.length) % currentRoom.images.length)}
-              className={`p-2 rounded-full ${buttonBgClass} ${buttonHoverClass} shadow-lg`}
-              aria-label="Previous room variant"
-            >
-              <FaChevronLeft size={16} />
-            </button>
-            <button
-              onClick={() => setSelectedRoomImageIndex((prevIndex) => (prevIndex + 1) % currentRoom.images.length)}
-              className={`p-2 rounded-full ${buttonBgClass} ${buttonHoverClass} shadow-lg`}
-              aria-label="Next room variant"
-            >
-              <FaChevronRight size={16} />
-            </button>
-          </div>
-        )}
-      </div>
-    </div>
-
-    {isCustom && <CustomPop onClose={() => setIsCustom(false)} artwork={artwork} />}
-  </div>
-);
 };
 
-export default ArtworkVisualizer;
+export default ArtworkPlacementStep;

@@ -531,9 +531,9 @@ const PaymentPage = () => {
                     : ""
                     }  p-2 border border-gray-300 rounded-lg`}
                 />
-                {errors.additionalinfo && (
+                {errors?.additionalinfo && (
                   <p className="text-red-500">
-                    {String(errors.additionalinfo.message)}
+                    {String(errors?.additionalinfo?.message)}
                   </p>
                 )}
               </div>
@@ -544,7 +544,7 @@ const PaymentPage = () => {
 
               <div className="space-y-4">
                 {renderData &&
-                  renderData.length > 0 &&
+                  renderData?.length > 0 &&
                   renderData?.map((item, i: number) => (
                     <div key={i} className="flex items-center space-x-4">
                       <img

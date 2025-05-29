@@ -201,7 +201,7 @@ const getCalculatedValues = () => {
   const bottomPercent = (bottomCm / wallHeightCm) * 100;
 
   const artworkHeight = (artwork?.data?.additionalInfo?.height / wallHeightCm ) * 100
-const artworkWidth = (artwork?.data?.additionalInfo?.width / wallWidthCm) * 100
+  const artworkWidth = (artwork?.data?.additionalInfo?.width / wallWidthCm) * 100
 
  
   const widthCm = wallWidthCm - leftCm - rightCm;
@@ -333,7 +333,7 @@ if(visualizationLoading){
         ref={containerRef}
         className="flex justify-center w-full px-2 sm:px-4 py-2 sm:py-4"
         style={{
-          aspectRatio: "3/4",
+          // aspectRatio: "3/4",
         }}
       >
         <div

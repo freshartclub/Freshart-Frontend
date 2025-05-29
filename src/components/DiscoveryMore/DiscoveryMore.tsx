@@ -29,7 +29,7 @@ const DiscoveryMore = () => {
 
   return (
     <>
-      {/* Collection Info */}
+   
       <section className="bg-[#f1f1f1] p-6 md:px-12">
         <Header variant={{ size: "3xl", theme: "dark", weight: "bold" }}>
           {data?.collectionName}
@@ -58,7 +58,7 @@ const DiscoveryMore = () => {
         </div>
       </section>
 
-      {/* Artwork Display */}
+      
       <section className="flex flex-col md:flex-row items-center p-6 gap-6">
         <motion.img
           initial={{ opacity: 0, y: 30 }}
@@ -88,7 +88,7 @@ const DiscoveryMore = () => {
         </motion.div>
       </section>
 
-      {/* Thumbnail Gallery */}
+      
       <div className="flex overflow-x-auto gap-3 px-6 py-4 justify-center">
         {images.map((item, i) => (
           <motion.img
