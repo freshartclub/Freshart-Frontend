@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Maximize2, Home, Bed, ChefHat, Briefcase, Plus, AlertTriangle, CheckCircle, Info } from 'lucide-react';
 import { useAppSelector } from '../../store/typedReduxHooks';
 import { useGetArtVisulaization } from './http/useGetArtVisulaization';
@@ -34,33 +34,53 @@ const ArtworkVisualizer = ({ artwork: orignalArtwork, isLoading, error }) => {
 
 
 
-  const roomData = useMemo(() => {
-    if (!data?.data) return {
-      livingRoom: [],
-      bedroom: [],
-      kitchen: [],
-      bathroom: [],
-      office: []
-    };
+const [roomData, setRoomData] = useState({
+  livingRoom: [],
+  bedroom: [],
+  kitchen: [],
+  bathroom: [],
+  office: []
+});
 
-    const mapRoomItems = (items) =>
-      items?.map((item, index) => ({
-        id: item.id || index + 1, // fallback if no ID
-        name: item.name || "Untitled Room",
-        backgroundUrl: `${imageUrl}/users/${item?.image}`,
-        wallWidth: item.dimension_width || 400,
-        wallHeight: item.dimension_height || 280,
-        artworkArea: item.artworkArea || { x1: item.area_x1, y1: item.area_y1, x2: item.area_x2, y2: item.area_y2 }
-      })) || [];
+useEffect(() => {
+  if (!data?.data) return;
 
-    return {
-      livingRoom: mapRoomItems(data.data["Living Room"]),
-      bedroom: mapRoomItems(data.data["Bed Room"]),
-      kitchen: mapRoomItems(data.data.Kitchen),
-      bathroom: mapRoomItems(data.data.bathroom),
-      office: mapRoomItems(data.data.Office)
-    };
-  }, [data]);
+  const mapRoomItems = (items) =>
+    items?.map((item, index) => ({
+      id: item.id || index + 1,
+      name: item.name || "Untitled Room",
+      backgroundUrl: `${imageUrl}/users/${item?.image}`,
+      wallWidth: item.dimension_width || 400,
+      wallHeight: item.dimension_height || 280,
+      artworkArea: item.artworkArea || {
+        x1: item.area_x1,
+        y1: item.area_y1,
+        x2: item.area_x2,
+        y2: item.area_y2
+      }
+    })) || [];
+
+  const livingRoom = mapRoomItems(data.data["Living Room"]);
+  const bedroom = mapRoomItems(data.data["Bed Room"]);
+  const kitchen = mapRoomItems(data.data.Kitchen);
+  const bathroom = mapRoomItems(data.data.bathroom);
+  const office = mapRoomItems(data.data.Office);
+
+  const allRooms = { livingRoom, bedroom, kitchen, bathroom, office };
+
+  
+  Object.values(allRooms).flat().forEach(room => {
+    if (room?.backgroundUrl) {
+      const img = new Image();
+      img.src = room.backgroundUrl;
+    }
+  });
+
+ 
+  setRoomData(allRooms);
+
+}, [data, imageUrl]);
+
 
 
 
