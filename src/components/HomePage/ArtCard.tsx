@@ -11,6 +11,7 @@ import { lowImageUrl } from "../utils/baseUrls";
 import postRecentArtworkMutation from "./http/postRecentView";
 import useAddToFavorite from "./http/useAddToFavorite";
 import { useGetFavoriteList } from "./http/useGetFavoriteList";
+import { FaHandshake } from "react-icons/fa";
 
 // Constants
 const TEN_DAYS_MS = 10 * 24 * 60 * 60 * 1000;
@@ -305,15 +306,20 @@ const ArtCard = memo(({ data, title, viewType, loading }: ArtCardProps) => {
               {item?.discipline?.artworkDiscipline} • {item?.additionalInfo?.artworkTechnic}
             </p>
             {item?.activeTab == "purchase" && (
-              <p className={`mt-1 flex gap-1 items-center ${dark ? "text-gray-100" : "text-gray-800"} font-bold`}>
+              <p className={`mt-1 flex gap-2  items-center ${dark ? "text-gray-100" : "text-gray-800"} font-bold`}>
                 {item?.currency ? getSymbolFromCurrency(item?.currency?.slice(0, 3)) : null} {item?.price}
                 {item?.discount && (
                   <span>
                     | <span className="text-red-500">{item?.discount}%</span>
                   </span>
                 )}
+
+            {item?.purchaseType === "Downward Offer"  ?   <FaHandshake  size={32} color={dark ? "#ffffff" : "#000000"} />  : null}
+
               </p>
             )}
+
+            {item?.purchaseType === "Upward Offer"  ?   <FaHandshake  size={32} color={dark ? "#ffffff" : "#000000"} />  : null}
             <div className="absolute bottom-3 right-3">
               <motion.button
                 onClick={(e) => {
@@ -342,10 +348,10 @@ const ArtCard = memo(({ data, title, viewType, loading }: ArtCardProps) => {
               </motion.button>
 
               <AnimatePresence>
-                {isFavorite === item._id && (
+                {isFavorite === item?._id && (
                   <motion.div
                     ref={favoriteListRef}
-                    onClick={(e) => e.stopPropagation()}
+                    onClick={(e) => e?.stopPropagation()}
                     className={`absolute bottom-0 right-0 ${
                       dark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
                     } shadow-lg rounded-md p-3 w-56 z-10 border`}
@@ -404,14 +410,14 @@ const ArtCard = memo(({ data, title, viewType, loading }: ArtCardProps) => {
                         <input
                           type="text"
                           value={newListName}
-                          onChange={(e) => setNewListName(e.target.value)}
+                          onChange={(e) => setNewListName(e?.target?.value)}
                           placeholder="New List Name"
                           className={`w-full text-xs p-2 ${
                             dark ? "bg-gray-700 border-gray-600 text-gray-100" : "bg-white border-gray-200 text-gray-800"
                           } border rounded-md mb-2 focus:outline-none focus:ring-1 ${dark ? "focus:ring-gray-500" : "focus:ring-gray-300"}`}
                         />
                         <motion.button
-                          onClick={() => handleAddNewList(item._id)}
+                          onClick={() => handleAddNewList(item?._id)}
                           className={`w-full ${
                             dark ? "bg-gray-700 hover:bg-gray-600" : "bg-gray-800 hover:bg-gray-900"
                           } text-white text-xs py-1 rounded-md transition-colors`}

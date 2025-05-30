@@ -13,15 +13,11 @@ const STEP_CONFIG = {
   },
   2: {
     title: "Define Selection Area",
-    description: "Crop",
+    description: "Installation ",
     progress: 33
   },
+ 
   3: {
-    title: "Set Dimensions",
-    description: "Dimensions",
-    progress: 66
-  },
-  4: {
     title: "Position Artwork & Preview",
     description: "Preview",
     progress: 100
@@ -36,8 +32,8 @@ const INITIAL_DIMENSIONS = {
 const INITIAL_CROP = {
   x: 0,
   y: 0,
-  width: 200,
-  height: 200
+  width: 100,
+  height: 100
 };
 
 const ImagePlacementWizard = memo(({ onClose, artwork }) => {
@@ -109,6 +105,10 @@ const ImagePlacementWizard = memo(({ onClose, artwork }) => {
     return () => window.removeEventListener('resize', adjustDimensions);
   }, [currentStep, isMobile]);
 
+
+  
+
+
   const renderStep = useCallback(() => {
     const commonProps = {
       selectedImage,
@@ -139,6 +139,7 @@ const ImagePlacementWizard = memo(({ onClose, artwork }) => {
             setCropSelection={setCropSelection}
             previewImageDimensions={previewImageDimensions}
             dimensions={dimensions}
+           imageDimension={imageDimension} 
             isMobile={isMobile}
             imageHW={imageHW}
             setImageSizeS={setImageSizeS}
@@ -146,20 +147,8 @@ const ImagePlacementWizard = memo(({ onClose, artwork }) => {
 
           />
         );
-      case 3:
-        return (
-          <DimensionsStep
-            {...commonProps}
-            dimensions={dimensions}
-            setDimensions={setDimensions}
-            cropSelection={cropSelection}
-            setCropSelection={setCropSelection}
-            isMobile={isMobile}
-            imageSizeS={imageSizeS}
 
-          />
-        );
-      case 4:
+      case 3:
         return (
           <ArtworkPlacementStep
             {...commonProps}
@@ -169,6 +158,7 @@ const ImagePlacementWizard = memo(({ onClose, artwork }) => {
             artworkPosition={artworkPosition}
             setArtworkPosition={setArtworkPosition}
             zoom={zoom}
+            imageDimension={imageDimension}
             setZoom={setZoom}
             error={error}
             isMobile={isMobile}
@@ -220,7 +210,7 @@ const ImagePlacementWizard = memo(({ onClose, artwork }) => {
 
         <div className="px-4 pt-4">
           <div className="flex justify-between mb-4 overflow-x-auto pb-2 -mx-1">
-            {[1, 2, 3, 4].map((step) => (
+            {[1, 2, 3].map((step) => (
               <div key={step} className="flex flex-col items-center px-1 min-w-[60px]">
                 <div
                   className={`

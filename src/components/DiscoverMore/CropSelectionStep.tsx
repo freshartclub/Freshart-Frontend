@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { imageUrl } from "../utils/baseUrls";
 
-
 const INCH_TO_CM = 2.54;
 const MIN_SIZE_CM = 0.5;
 const MIN_SIZE_PX = 5;
@@ -11,11 +10,11 @@ const CropSelectionStep = ({
   previewImageDimensions,
   cropSelection,
   setCropSelection,
+  imageDimension,
   imageHW,
   onNext,
   onPrev,
   setImageSizeS
-
 }) => {
   const imageContainerRef = useRef(null);
   const imageRef = useRef(null);
@@ -28,10 +27,11 @@ const CropSelectionStep = ({
   const [containerRect, setContainerRect] = useState(null);
   const [loading, setLoading] = useState(true);
   const [imageDimensions, setImageDimensions] = useState({
-    realDimensions: { width: 0, height: 0 }, // in cm
-    pixelDimensions: { width: 0, height: 0 }, // in px
-    pixelsPerCm: 0 // conversion ratio
+    realDimensions: { width: 0, height: 0 }, 
+    pixelDimensions: { width: 0, height: 0 }, 
+    pixelsPerCm: 0 
   });
+  const [showRuler, setShowRuler] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -42,6 +42,8 @@ const CropSelectionStep = ({
     });
   }, [selectedImage]);
 
+
+
   const loadImage = useCallback(async () => {
     if (!selectedImage) return;
 
@@ -49,9 +51,19 @@ const CropSelectionStep = ({
     img.onload = () => {
       const pixelWidth = img.naturalWidth;
       const pixelHeight = img.naturalHeight;
-      const estimatedDpi = 300;
-      const widthCm = (pixelWidth / estimatedDpi) * INCH_TO_CM;
-      const heightCm = (pixelHeight / estimatedDpi) * INCH_TO_CM;
+      
+      // Use imageDimension prop for real dimensions if available
+      let widthCm, heightCm;
+      if (imageDimension && imageDimension.width && imageDimension.height) {
+        widthCm = imageDimension.width;
+        heightCm = imageDimension.height;
+      } else {
+        // Fallback to estimated DPI calculation
+        const estimatedDpi = 300;
+        widthCm = (pixelWidth / estimatedDpi) * INCH_TO_CM;
+        heightCm = (pixelHeight / estimatedDpi) * INCH_TO_CM;
+      }
+      
       const pixelsPerCm = pixelWidth / widthCm;
 
       setImageDimensions({
@@ -79,7 +91,6 @@ const CropSelectionStep = ({
           displayHeight = containerWidth / aspectRatio;
         }
 
-
         setImageSize({
           width: displayWidth,
           height: displayHeight
@@ -87,8 +98,7 @@ const CropSelectionStep = ({
         setImageSizeS({
           width: displayWidth,
           height: displayHeight
-        })
-
+        });
       }
 
       setLoading(false);
@@ -101,9 +111,7 @@ const CropSelectionStep = ({
 
     img.src = `${imageUrl}/users/${selectedImage}`;
     imageRef.current = img;
-  }, [selectedImage]);
-
-
+  }, [selectedImage, imageDimension]);
 
   useEffect(() => {
     if (loading || !imageDimensions.pixelsPerCm || !imageSize.width) return;
@@ -114,8 +122,8 @@ const CropSelectionStep = ({
         height: Math.min(10, imageDimensions.realDimensions.height * 0.3)
       };
 
-      const widthPx = cmToPixels(initialSizeCm.width);
-      const heightPx = cmToPixels(initialSizeCm.height);
+      const widthPx = cmToDisplayPixels(initialSizeCm.width);
+      const heightPx = cmToDisplayPixels(initialSizeCm.height);
 
       setCropSelection({
         x: (imageSize.width - widthPx) / 2,
@@ -127,13 +135,19 @@ const CropSelectionStep = ({
     }
   }, [loading, imageDimensions, imageSize, cropSelection, setCropSelection]);
 
-  const cmToPixels = useCallback((cm) => {
-    return Math.round(cm / 10);
-  }, []);
+  const cmToDisplayPixels = useCallback((cm) => {
+    if (!imageDimensions.pixelsPerCm || !imageSize.width) return 0;
+    const realPixels = cm * imageDimensions.pixelsPerCm;
+    const displayPixels = (realPixels / imageDimensions.pixelDimensions.width) * imageSize.width;
+    return Math.round(displayPixels);
+  }, [imageDimensions, imageSize]);
 
-  const pixelsToCm = useCallback((pixels) => {
-    return parseFloat((pixels / imageDimensions.pixelsPerCm).toFixed(1));
-  }, [imageDimensions.pixelsPerCm]);
+  const displayPixelsToCm = useCallback((displayPixels) => {
+    if (!imageDimensions.pixelsPerCm || !imageSize.width) return 0;
+    const realPixels = (displayPixels / imageSize.width) * imageDimensions.pixelDimensions.width;
+    const cm = realPixels / imageDimensions.pixelsPerCm;
+    return parseFloat(cm.toFixed(1));
+  }, [imageDimensions, imageSize]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -156,7 +170,7 @@ const CropSelectionStep = ({
         setImageSizeS({
           width: displayWidth,
           height: displayHeight
-        })
+        });
 
         setImageSize({
           width: displayWidth,
@@ -188,8 +202,8 @@ const CropSelectionStep = ({
 
     value = Math.max(MIN_SIZE_CM, Math.min(maxValue, value));
 
-    const newWidth = dimension === 'width' ? cmToPixels(value) : cropSelection.width;
-    const newHeight = dimension === 'height' ? cmToPixels(value) : cropSelection.height;
+    const newWidth = dimension === 'width' ? cmToDisplayPixels(value) : cropSelection.width;
+    const newHeight = dimension === 'height' ? cmToDisplayPixels(value) : cropSelection.height;
 
     if (newWidth < MIN_SIZE_PX || newHeight < MIN_SIZE_PX) return;
 
@@ -206,7 +220,7 @@ const CropSelectionStep = ({
       height: newHeight,
       unit: 'px'
     });
-  }, [imageDimensions, cropSelection, imageSize, cmToPixels, setCropSelection]);
+  }, [imageDimensions, cropSelection, imageSize, cmToDisplayPixels, setCropSelection]);
 
   const getClientCoordinates = useCallback((e) => {
     return e.touches
@@ -270,7 +284,6 @@ const CropSelectionStep = ({
 
     let newSelection = { ...cropSelection };
 
-
     switch (resizeCorner) {
       case "top-left":
         newSelection.width = Math.max(MIN_SIZE_PX, newSelection.width - deltaX);
@@ -328,8 +341,8 @@ const CropSelectionStep = ({
       const x = clientX - rect.left;
       const y = clientY - rect.top;
 
-      const width = cropSelection.width || cmToPixels(5);
-      const height = cropSelection.height || cmToPixels(5);
+      const width = cropSelection.width || cmToDisplayPixels(5);
+      const height = cropSelection.height || cmToDisplayPixels(5);
 
       setCropSelection({
         x: Math.max(0, Math.min(x - width / 2, imageSize.width - width)),
@@ -339,11 +352,10 @@ const CropSelectionStep = ({
         unit: 'px'
       });
     }
-  }, [selectionRef, containerRect, getClientCoordinates, cropSelection, cmToPixels, imageSize, setCropSelection]);
+  }, [selectionRef, containerRect, getClientCoordinates, cropSelection, cmToDisplayPixels, imageSize, setCropSelection]);
 
   return (
     <div className="flex flex-col lg:flex-row w-full h-full">
-
       <div className="relative lg:w-3/5 w-full h-64 sm:h-80 md:h-96 lg:h-auto border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-900">
         {loading && (
           <div className="absolute inset-0 flex items-center justify-center bg-gray-100 dark:bg-gray-900 bg-opacity-75 z-10">
@@ -352,24 +364,21 @@ const CropSelectionStep = ({
         )}
         <div
           ref={imageContainerRef}
-          className="relative w-full h-full flex items-center justify-center "
+          className="relative w-full h-full flex items-center justify-center"
           onClick={handleImageClick}
         >
           {selectedImage && (
-
             <div className="relative">
               <img
                 src={`${imageUrl}/users/${selectedImage}`}
                 alt="Image to crop"
                 className="max-w-full max-h-full object-contain"
                 style={{
-                  width: `${imageSize.width}px`,
-                  height: `${imageSize.height}px`
+                  width: `${imageSize?.width}px`,
+                  height: `${imageSize?.height}px`
                 }}
                 draggable="false"
               />
-
-
 
               {!loading && (
                 <div className="absolute inset-0 select-none">
@@ -377,10 +386,10 @@ const CropSelectionStep = ({
                     ref={selectionRef}
                     className="absolute border-2 border-blue-500 bg-transparent cursor-move"
                     style={{
-                      left: `${cropSelection.x}px`,
-                      top: `${cropSelection.y}px`,
-                      width: `${cropSelection.width}px`,
-                      height: `${cropSelection.height}px`,
+                      left: `${cropSelection?.x}px`,
+                      top: `${cropSelection?.y}px`,
+                      width: `${cropSelection?.width}px`,
+                      height: `${cropSelection?.height}px`,
                       touchAction: 'none'
                     }}
                     onMouseDown={handleSelectionDragStart}
@@ -389,20 +398,20 @@ const CropSelectionStep = ({
                     <div className="absolute inset-0 bg-blue-500 bg-opacity-20 pointer-events-none"></div>
 
                     <div className="absolute -top-6 left-0 right-0 text-center">
-                      {/* <span className="text-xs font-mono bg-blue-500 text-white px-1 py-0.5 rounded">
-                        {cmToPixels(cropSelection.width)}px × {cmToPixels(cropSelection.height)}px
-                      </span> */}
+                      <span className="text-xs font-mono bg-blue-500 text-white px-1 py-0.5 rounded">
+                        {displayPixelsToCm(cropSelection?.width)} × {displayPixelsToCm(cropSelection?.height)} cm
+                      </span>
                     </div>
 
                     {['top-left', 'top-right', 'bottom-left', 'bottom-right'].map((corner) => (
                       <div
                         key={corner}
-                        className={`absolute w-3 h-3 bg-blue-500 rounded-full cursor-${corner.replace('-', '')}-resize`}
+                        className={`absolute w-3 h-3 bg-blue-500 rounded-full cursor-${corner?.replace('-', '')}-resize`}
                         style={{
-                          left: corner.includes('left') ? '-0.375rem' : 'auto',
-                          right: corner.includes('right') ? '-0.375rem' : 'auto',
-                          top: corner.includes('top') ? '-0.375rem' : 'auto',
-                          bottom: corner.includes('bottom') ? '-0.375rem' : 'auto',
+                          left: corner?.includes('left') ? '-0.375rem' : 'auto',
+                          right: corner?.includes('right') ? '-0.375rem' : 'auto',
+                          top: corner?.includes('top') ? '-0.375rem' : 'auto',
+                          bottom: corner?.includes('bottom') ? '-0.375rem' : 'auto',
                         }}
                         onMouseDown={(e) => handleResizeStart(e, corner)}
                         onTouchStart={(e) => handleResizeStart(e, corner)}
@@ -412,27 +421,26 @@ const CropSelectionStep = ({
                 </div>
               )}
             </div>
-
           )}
-
-
         </div>
       </div>
 
-   
       <div className="lg:w-2/5 w-full p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg mt-4 lg:mt-0 lg:ml-4">
-        <h2 className="text-xl font-bold mb-4 dark:text-white">Crop Selection</h2>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-bold dark:text-white">Crop Selection</h2>
+
+        </div>
 
         <div className="mb-6 p-3 bg-gray-100 dark:bg-gray-700 rounded-lg">
           <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-2">Image Information</h3>
           <div className="grid grid-cols-2 gap-2 text-sm">
             <div className="text-gray-600 dark:text-gray-300">Pixel Dimensions:</div>
             <div className="text-gray-800 dark:text-gray-100">
-              {previewImageDimensions.width * 10} × {previewImageDimensions.height * 10} px
+              {imageDimensions.pixelDimensions.width} × {imageDimensions.pixelDimensions.height} px
             </div>
             <div className="text-gray-600 dark:text-gray-300">Physical Size:</div>
             <div className="text-gray-800 dark:text-gray-100">
-              {previewImageDimensions.width} × {previewImageDimensions.height} cm
+              {imageDimensions.realDimensions.width} × {imageDimensions.realDimensions.height} cm
             </div>
             <div className="text-gray-600 dark:text-gray-300">Resolution:</div>
             <div className="text-gray-800 dark:text-gray-100">
@@ -452,7 +460,7 @@ const CropSelectionStep = ({
                 min={MIN_SIZE_CM}
                 max={imageDimensions.realDimensions.width}
                 step="0.1"
-                value={cmToPixels(cropSelection.width * 10)}
+                value={displayPixelsToCm(cropSelection?.width)}
                 onChange={(e) => handleSizeChange('width', parseFloat(e.target.value))}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
               />
@@ -464,10 +472,24 @@ const CropSelectionStep = ({
                 min={MIN_SIZE_CM}
                 max={imageDimensions.realDimensions.height}
                 step="0.1"
-                value={cmToPixels(cropSelection.height * 10)}
+                value={displayPixelsToCm(cropSelection?.height)}
                 onChange={(e) => handleSizeChange('height', parseFloat(e.target.value))}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
               />
+            </div>
+          </div>
+
+          <div className="mb-4 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+            <h4 className="font-medium text-gray-800 dark:text-gray-200 mb-2">Selection Position (cm)</h4>
+            <div className="grid grid-cols-2 gap-2 text-sm">
+              <div className="text-gray-600 dark:text-gray-300">X1, Y1 (Top-Left):</div>
+              <div className="text-gray-800 dark:text-gray-100">
+                {displayPixelsToCm(cropSelection.x)}, {displayPixelsToCm(cropSelection.y)}
+              </div>
+              <div className="text-gray-600 dark:text-gray-300">X2, Y2 (Bottom-Right):</div>
+              <div className="text-gray-800 dark:text-gray-100">
+                {displayPixelsToCm(cropSelection.x + cropSelection.width)}, {displayPixelsToCm(cropSelection.y + cropSelection.height)}
+              </div>
             </div>
           </div>
         </div>

@@ -1009,10 +1009,10 @@ const AddArtwork = () => {
                             id="mainImage"
                             src={mainImage}
                             alt="Main artwork"
-                            className="w-full h-48 object-cover rounded-lg"
+                            className="w-full h-48 object-contain rounded-lg"
                           />
 
-                          {/* Delete Button */}
+                         
                           <span
                             onClick={(e) => {
                               e.stopPropagation();
@@ -1092,7 +1092,7 @@ const AddArtwork = () => {
                       />
                       {backImage ? (
                         <div className="relative w-full">
-                          <img src={backImage} alt="Back of artwork" id="backImage" className="w-full h-48 object-cover rounded-lg" />
+                          <img src={backImage} alt="Back of artwork" id="backImage" className="w-full h-48 object-contain rounded-lg" />
                           <span
                             onClick={(e) => {
                               e.stopPropagation();
@@ -1171,7 +1171,7 @@ const AddArtwork = () => {
                       />
                       {inProcessImage ? (
                         <div className="relative w-full">
-                          <img src={inProcessImage} alt="Artwork in process" id="inProcessImage" className="w-full h-48 object-cover rounded-lg" />
+                          <img src={inProcessImage} alt="Artwork in process" id="inProcessImage" className="w-full h-48 object-contain rounded-lg" />
                           <span
                             onClick={(e) => {
                               e.stopPropagation();
@@ -1257,7 +1257,7 @@ const AddArtwork = () => {
                         images.length > 0 &&
                         images.map((img, index: number) => (
                           <div key={index} className="relative w-32 h-32">
-                            <img src={URL.createObjectURL(img)} id="images" alt={`Detail ${index + 1}`} className="w-full h-full object-cover rounded-lg" />
+                            <img src={URL.createObjectURL(img)} id="images" alt={`Detail ${index + 1}`} className="w-full h-full object-contain rounded-lg" />
                             <span
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -1301,7 +1301,7 @@ const AddArtwork = () => {
                           const index = i + (images?.length || 0);
                           return (
                             <div key={index} className="relative">
-                              <img src={`${imageUrl}/users/${img}`} alt="image" className="w-full h-full object-cover rounded-lg" />
+                              <img src={`${imageUrl}/users/${img}`} alt="image" className="w-full h-full object-contain rounded-lg" />
                               <span
                                 onClick={(e) => {
                                   e.stopPropagation();
@@ -1430,7 +1430,7 @@ const AddArtwork = () => {
                           otherVideo.length > 0 &&
                           otherVideo.map((video, index) => (
                             <div key={index} className="relative w-32 h-32">
-                              <video src={URL.createObjectURL(video)} controls className="w-full h-full object-cover rounded-lg" />
+                              <video src={URL.createObjectURL(video)} controls className="w-full h-full object-contain rounded-lg" />
                               <span
                                 onClick={(e) => {
                                   e.stopPropagation();
