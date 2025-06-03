@@ -142,7 +142,7 @@ const DiscoverContent = ({ data, dark }) => {
         </P>
       </div>
 
-      {data?.pricing?.basePrice ? (
+      {/* {data?.pricing?.basePrice ? (
         <Header variant={{ size: "lg", theme: dark ? "light" : "dark", weight: "semiBold" }} className="my-2">
           {data?.pricing?.currency ? (
             <>{`${getSymbolFromCurrency(data?.pricing?.currency?.slice(0, 3))} ${data?.pricing?.basePrice}`}</>
@@ -150,7 +150,7 @@ const DiscoverContent = ({ data, dark }) => {
             <>{`${getSymbolFromCurrency("EUR")} ${data?.pricing?.basePrice}`}</>
           )}
         </Header>
-      ) : null}
+      ) : null} */}
 
       <div className={`${preview && "pointer-events-none opacity-50"} flex flex-col gap-2 mt-5`}>
         <Button

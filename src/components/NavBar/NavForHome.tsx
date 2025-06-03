@@ -19,8 +19,8 @@ import logo from "/logofarcwhite.svg";
 
 const NavForHome = () => {
   const isArtist = useAppSelector((state) => state?.user?.isArtist) || null;
-  const user = useAppSelector((state) => state.user.user);
-  const isAuthorized = useAppSelector((state) => state.user.isAuthorized);
+  const user = useAppSelector((state) => state?.user?.user);
+  const isAuthorized = useAppSelector((state) => state?.user?.isAuthorized);
   const navigate = useNavigate();
 
   const [isOpen, setIsOpen] = useState(false);

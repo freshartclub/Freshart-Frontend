@@ -37,6 +37,10 @@ const ShoppingCard = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
     }
   };
 
+  useEffect(()=>{
+   refetch()
+  },[isOpen])
+
   const totalItems = data?.cart?.length + data?.offer_cart?.length;
   const subscriptionItems = data?.cart?.filter((item: any) => item?.commercialization?.activeTab === "subscription");
   const purchaseItems = data?.cart?.filter((item: any) => item?.commercialization?.activeTab === "purchase");

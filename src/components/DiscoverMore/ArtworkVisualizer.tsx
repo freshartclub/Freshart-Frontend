@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Maximize2, Home, Bed, ChefHat, Briefcase, Plus, AlertTriangle, CheckCircle, Info } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Maximize2, Home, Bed, ChefHat, Briefcase, Plus, AlertTriangle, CheckCircle, Info, StoreIcon } from 'lucide-react';
 import { useAppSelector } from '../../store/typedReduxHooks';
 import { useGetArtVisulaization } from './http/useGetArtVisulaization';
 import { imageUrl } from '../utils/baseUrls';
@@ -16,6 +16,8 @@ const ArtworkVisualizer = ({ artwork: orignalArtwork, isLoading, error }) => {
   const [customBackground, setCustomBackground] = useState(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
+  const isAuthorized = useAppSelector((state) => state.user.isAuthorized)
+
   const dark = useAppSelector((state) => state.theme.mode);
 
   const [selectedRoomImageIndex, setSelectedRoomImageIndex] = useState(0);
@@ -29,61 +31,61 @@ const ArtworkVisualizer = ({ artwork: orignalArtwork, isLoading, error }) => {
   const fileInputRef = useRef(null);
   const visualizerRef = useRef(null);
 
-  const { data, isLoading: visualizationLoading } = useGetArtVisulaization();
+  const userId = useAppSelector((state) => state?.user?.user?._id)
 
 
+  const { data, isLoading: visualizationLoading } = useGetArtVisulaization(userId);
 
-
-const [roomData, setRoomData] = useState({
-  livingRoom: [],
-  bedroom: [],
-  kitchen: [],
-  bathroom: [],
-  office: []
-});
-
-useEffect(() => {
-  if (!data?.data) return;
-
-  const mapRoomItems = (items) =>
-    items?.map((item, index) => ({
-      id: item.id || index + 1,
-      name: item.name || "Untitled Room",
-      backgroundUrl: `${imageUrl}/users/${item?.image}`,
-      wallWidth: item.dimension_width || 400,
-      wallHeight: item.dimension_height || 280,
-      artworkArea: item.artworkArea || {
-        x1: item.area_x1,
-        y1: item.area_y1,
-        x2: item.area_x2,
-        y2: item.area_y2
-      }
-    })) || [];
-
-  const livingRoom = mapRoomItems(data.data["Living Room"]);
-  const bedroom = mapRoomItems(data.data["Bed Room"]);
-  const kitchen = mapRoomItems(data.data.Kitchen);
-  const bathroom = mapRoomItems(data.data.bathroom);
-  const office = mapRoomItems(data.data.Office);
-
-  const allRooms = { livingRoom, bedroom, kitchen, bathroom, office };
-
-  
-  Object.values(allRooms).flat().forEach(room => {
-    if (room?.backgroundUrl) {
-      const img = new Image();
-      img.src = room.backgroundUrl;
-    }
+  const [roomData, setRoomData] = useState({
+    livingRoom: [],
+    bedroom: [],
+    kitchen: [],
+    bathroom: [],
+    office: [],
+    custom: []
   });
 
- 
-  setRoomData(allRooms);
+  useEffect(() => {
+    if (!data?.data) return;
 
-}, [data, imageUrl]);
+    const mapRoomItems = (items) =>
+      items?.map((item, index) => ({
+        id: item.id || index + 1,
+        name: item.name || "Untitled Room",
+        backgroundUrl: `${imageUrl}/users/${item?.image}`,
+        wallWidth: item.dimension_width || item?.width || 400,
+        wallHeight: item.dimension_height || item?.height || 280,
+        artworkArea: item.artworkArea || {
+          x1: item.area_x1,
+          y1: item.area_y1,
+          x2: item.area_x2,
+          y2: item.area_y2
+        }
+      })) || [];
+
+    const livingRoom = mapRoomItems(data.data["Living Room"]);
+    const bedroom = mapRoomItems(data.data["Bed Room"]);
+    const kitchen = mapRoomItems(data.data.Kitchen);
+    const bathroom = mapRoomItems(data.data.bathroom);
+    const office = mapRoomItems(data.data.Office);
+    const custom = mapRoomItems(data?.images)
+
+    const allRooms = { livingRoom, bedroom, kitchen, bathroom, office, custom };
 
 
+    Object.values(allRooms).flat().forEach(room => {
+      if (room?.backgroundUrl) {
+        const img = new Image();
+        img.src = room.backgroundUrl;
+      }
+    });
 
 
+    setRoomData(allRooms);
+
+  }, [data, imageUrl]);
+
+  console.log(roomData)
 
 
   const artwork = {
@@ -97,7 +99,9 @@ useEffect(() => {
     { id: 'livingRoom', name: 'Living Room', icon: Home },
     { id: 'bedroom', name: 'Bedroom', icon: Bed },
     { id: 'kitchen', name: 'Kitchen', icon: ChefHat },
-    { id: 'office', name: 'Office', icon: Briefcase }
+    { id: 'office', name: 'Office', icon: Briefcase },
+
+    { id: 'custom', name: 'Custom', icon: StoreIcon }
   ];
 
   const currentRoomVariants = roomData[selectedRoom] || [];
@@ -204,7 +208,7 @@ useEffect(() => {
         bottom: y2
       },
 
-      // Additional useful data
+      
       minScaleNeeded: minScaleNeeded,
       wasScaled: optimalScale < 1,
       centerPosition: {
@@ -272,61 +276,68 @@ useEffect(() => {
 
       <div className="p-4 border-b bg-gray-50">
         <div className="flex flex-wrap gap-2 justify-center">
-          {rooms.map((room) => {
-            const Icon = room.icon;
+          {rooms?.map((room) => {
+            const Icon = room?.icon;
+
+            if (room?.name === 'Custom' && !isAuthorized) return null;
+
             return (
               <button
-                key={room.id}
+                key={room?.id}
                 onClick={() => {
-                  setSelectedRoom(room.id);
+                  setSelectedRoom(room?.id);
                   setSelectedVariant(0);
                   setCustomBackground(null);
                 }}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${selectedRoom === room.id
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-white text-gray-600 hover:bg-gray-100 border'
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${selectedRoom === room?.id
+                    ? 'bg-blue-500 text-white'
+                    : 'bg-white text-gray-600 hover:bg-gray-100 border'
                   }`}
               >
                 <Icon size={18} />
-                <span className="text-sm font-medium">{room.name}</span>
+                <span className="text-sm font-medium">{room?.name}</span>
               </button>
             );
           })}
-          <button
+
+          {isAuthorized ? <button
             onClick={handleCustomUpload}
             className={`flex flex-col items-center px-2 py-1.5 sm:px-3 sm:py-2 lg:px-4 rounded-lg transition-colors whitespace-nowrap ${selectedRoom === "custom"
-                ? dark
-                  ? "bg-gray-700 text-white"
-                  : "bg-gray-200 text-gray-800"
-                : dark
-                  ? "text-gray-400 hover:bg-gray-800"
-                  : "text-gray-600 hover:bg-gray-100"
+              ? dark
+                ? "bg-gray-700 text-white"
+                : "bg-gray-200 text-gray-800"
+              : dark
+                ? "text-gray-400 hover:bg-gray-800"
+                : "text-gray-600 hover:bg-gray-100"
               }`}
           >
             <Plus size={isMobile ? 16 : isTablet ? 18 : 20} />
             <span className="text-xs mt-1">Custom</span>
-          </button>
+          </button> : null}
+
+          
         </div>
       </div>
 
 
       {currentRoom && (
         <div className="px-6 py-3 border-b">
-          {calculateArtworkStyle.fitStatus === 'too-large' && (
+
+          {calculateArtworkStyle?.fitStatus === 'too-large' && (
             <div className="flex items-center gap-3 p-3 bg-red-50 border border-red-200 rounded-lg">
               <AlertTriangle className="text-red-500 flex-shrink-0" size={20} />
               <div className="flex-1">
                 <div className="font-medium text-red-800">Artwork Too Large</div>
                 <div className="text-sm text-red-600">
-                  This artwork ({artwork.width}×{artwork.height}cm) is too large for the available space
-                  ({calculateArtworkStyle.availableSpace.width.toFixed(1)}×{calculateArtworkStyle.availableSpace.height.toFixed(1)}cm)
+                  This artwork ({artwork?.width}×{artwork?.height}cm) is too large for the available space
+                  ({calculateArtworkStyle?.availableSpace?.width?.toFixed(1)}×{calculateArtworkStyle?.availableSpace?.height?.toFixed(1)}cm)
                   Consider choosing a smaller artwork or a different room.
                 </div>
               </div>
             </div>
-
           )}
-          {calculateArtworkStyle.fitStatus === 'scaled-down' && (
+
+          {calculateArtworkStyle?.fitStatus === 'scaled-down' && (
             <div className="flex items-center gap-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
               <Info className="text-yellow-600 flex-shrink-0" size={20} />
               <div className="flex-1">
@@ -339,7 +350,7 @@ useEffect(() => {
             </div>
           )}
 
-          {calculateArtworkStyle.fitStatus === 'perfect' && (
+          {calculateArtworkStyle?.fitStatus === 'perfect' && (
             <div className="flex items-center gap-3 p-3 bg-green-50 border border-green-200 rounded-lg">
               <CheckCircle className="text-green-500 flex-shrink-0" size={20} />
               <div className="flex-1">
@@ -351,12 +362,14 @@ useEffect(() => {
               </div>
             </div>
           )}
+
         </div>
       )}
-      {currentRoomVariants.length > 1 && (
+
+      {currentRoomVariants?.length > 1 && (
         <div className="p-4 border-b bg-gray-50">
           <div className="flex gap-2 justify-center">
-            {currentRoomVariants.map((_, index) => (
+            {currentRoomVariants?.map((_, index) => (
               <button
                 key={index}
                 onClick={() => setSelectedVariant(index)}
@@ -375,11 +388,15 @@ useEffect(() => {
 
 
       <div className="p-6">
+        <span className="text-base px-2">
+          {currentRoom?.name}
+        </span>
+
         <div
           ref={visualizerRef}
           className="relative w-full mx-auto bg-gray-100 rounded-lg overflow-hidden shadow-inner"
           style={{
-            aspectRatio: currentRoom ? `${currentRoom.wallWidth}/${currentRoom.wallHeight}` : '4/3',
+            aspectRatio: currentRoom ? `${currentRoom?.wallWidth}/${currentRoom?.wallHeight}` : '4/3',
             maxHeight: '70vh'
           }}
         >
@@ -397,24 +414,24 @@ useEffect(() => {
             <div
               className="absolute border-2 border-dashed border-red-300 bg-red-50 bg-opacity-30"
               style={{
-                left: `${(currentRoom.artworkArea.x1 / currentRoom.wallWidth) * 100}%`,
-                top: `${(currentRoom.artworkArea.y1 / currentRoom.wallHeight) * 100}%`,
-                right: `${(currentRoom.artworkArea.x2 / currentRoom.wallWidth) * 100}%`,
-                bottom: `${(currentRoom.artworkArea.y2 / currentRoom.wallHeight) * 100}%`
+                left: `${(currentRoom?.artworkArea.x1 / currentRoom?.wallWidth) * 100}%`,
+                top: `${(currentRoom?.artworkArea.y1 / currentRoom?.wallHeight) * 100}%`,
+                right: `${(currentRoom?.artworkArea.x2 / currentRoom?.wallWidth) * 100}%`,
+                bottom: `${(currentRoom?.artworkArea.y2 / currentRoom?.wallHeight) * 100}%`
               }}
             />
           )}
 
 
-          {currentRoom && calculateArtworkStyle.fits && (
+          {currentRoom && calculateArtworkStyle?.fits && (
             <div
               className="absolute flex items-center justify-center"
               style={calculateArtworkStyle}
             >
               <img
-                src={artwork.imageUrl}
-                alt={artwork.name}
-                className={`max-w-full max-h-full object-contain shadow-lg rounded transition-opacity duration-300 ${calculateArtworkStyle.fitStatus === 'scaled-down' ? 'opacity-80' : 'opacity-100'
+                src={artwork?.imageUrl}
+                alt={artwork?.name}
+                className={`max-w-full max-h-full object-contain shadow-lg rounded transition-opacity duration-300 ${calculateArtworkStyle?.fitStatus === 'scaled-down' ? 'opacity-80' : 'opacity-100'
                   }`}
                 style={{
                   filter: 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1))'
@@ -422,23 +439,23 @@ useEffect(() => {
               />
 
               {/* Scale indicator for scaled artwork */}
-              {calculateArtworkStyle.fitStatus === 'scaled-down' && (
+              {calculateArtworkStyle?.fitStatus === 'scaled-down' && (
                 <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 bg-yellow-500 text-white text-xs px-2 py-1 rounded-full">
-                  {(calculateArtworkStyle.scale * 100).toFixed(0)}%
+                  {(calculateArtworkStyle?.scale * 100).toFixed(0)}%
                 </div>
               )}
             </div>
           )}
 
 
-          {currentRoom && !calculateArtworkStyle.fits && (
+          {currentRoom && !calculateArtworkStyle?.fits && (
             <div
               className="absolute flex items-center justify-center bg-red-100 border-2 border-dashed border-red-300 rounded-lg"
               style={{
-                left: `${(currentRoom.artworkArea.x1 / currentRoom.wallWidth) * 100}%`,
-                top: `${(currentRoom.artworkArea.y1 / currentRoom.wallHeight) * 100}%`,
-                right: `${(currentRoom.artworkArea.x2 / currentRoom.wallWidth) * 100}%`,
-                bottom: `${(currentRoom.artworkArea.y2 / currentRoom.wallHeight) * 100}%`
+                left: `${(currentRoom?.artworkArea.x1 / currentRoom?.wallWidth) * 100}%`,
+                top: `${(currentRoom?.artworkArea.y1 / currentRoom?.wallHeight) * 100}%`,
+                right: `${(currentRoom?.artworkArea.x2 / currentRoom?.wallWidth) * 100}%`,
+                bottom: `${(currentRoom?.artworkArea.y2 / currentRoom?.wallHeight) * 100}%`
               }}
             >
               <div className="text-center text-red-600 p-4">
@@ -448,14 +465,14 @@ useEffect(() => {
                   {artwork.width}×{artwork.height}cm
                 </div>
                 <div className="text-xs mt-1">
-                  Available: {calculateArtworkStyle?.availableSpace?.width.toFixed(1)}×{calculateArtworkStyle.availableSpace?.height?.toFixed(1)}cm
+                  Available: {calculateArtworkStyle?.availableSpace?.width.toFixed(1)}×{calculateArtworkStyle?.availableSpace?.height?.toFixed(1)}cm
                 </div>
               </div>
             </div>
           )}
 
 
-          {currentRoomVariants.length > 1 && (
+          {currentRoomVariants?.length > 1 && (
             <div className="absolute top-4 right-4 flex gap-2">
               <button
                 onClick={() => setSelectedVariant((prev) =>
@@ -483,67 +500,72 @@ useEffect(() => {
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-center">
               <div>
                 <div className="text-lg font-semibold text-gray-800">
-                  {artwork.width} × {artwork.height} cm
+                  {artwork?.width} × {artwork?.height} cm
                 </div>
                 <div className="text-sm text-gray-600">Artwork Size</div>
               </div>
               <div>
                 <div className="text-lg font-semibold text-gray-800">
-                  {calculateArtworkStyle.availableSpace?.width.toFixed(1)} × {calculateArtworkStyle.availableSpace?.height.toFixed(1)} cm
+                  {calculateArtworkStyle?.availableSpace?.width?.toFixed(1)} × {calculateArtworkStyle?.availableSpace?.height?.toFixed(1)} cm
                 </div>
                 <div className="text-sm text-gray-600">Available Space</div>
               </div>
               <div>
-                <div className={`text-lg font-semibold ${calculateArtworkStyle.fits ? 'text-green-600' : 'text-red-600'}`}>
-                  {calculateArtworkStyle.fits ? 'Yes' : 'No'}
+                <div className={`text-lg font-semibold ${calculateArtworkStyle?.fits ? 'text-green-600' : 'text-red-600'}`}>
+                  {calculateArtworkStyle?.fits ? 'Yes' : 'No'}
                 </div>
                 <div className="text-sm text-gray-600">Fits in Space</div>
               </div>
-              <div>
+              {/* <div>
                 <div className="text-lg font-semibold text-gray-800">
-                  {calculateArtworkStyle.fits
-                    ? `${calculateArtworkStyle.finalDimensions?.width.toFixed(1)} × ${calculateArtworkStyle.finalDimensions?.height.toFixed(1)} cm`
+                  {calculateArtworkStyle?.fits
+                    ? `${calculateArtworkStyle?.finalDimensions?.width?.toFixed(1)} × ${calculateArtworkStyle?.finalDimensions?.height?.toFixed(1)} cm`
                     : 'N/A'
                   }
                 </div>
                 <div className="text-sm text-gray-600">Display Size</div>
-              </div>
+              </div> */}
               <div>
-                <div className={`text-lg font-semibold ${calculateArtworkStyle.scale === 1 ? 'text-green-600' :
-                  calculateArtworkStyle.scale < 1 ? 'text-yellow-600' : 'text-gray-800'
+                <div className={`text-lg font-semibold ${calculateArtworkStyle?.scale === 1 ? 'text-green-600' :
+                  calculateArtworkStyle?.scale < 1 ? 'text-yellow-600' : 'text-gray-800'
                   }`}>
-                  {calculateArtworkStyle.fits
-                    ? `${(calculateArtworkStyle.scale * 100).toFixed(0)}%`
-                    : `${(calculateArtworkStyle.minScaleNeeded * 100).toFixed(0)}% needed`
+                  {calculateArtworkStyle?.fits
+                    ? `${(calculateArtworkStyle?.scale * 100).toFixed(0)}%`
+                    : `${(calculateArtworkStyle?.minScaleNeeded * 100).toFixed(0)}% needed`
                   }
                 </div>
                 <div className="text-sm text-gray-600">Scale Factor</div>
               </div>
+
+              <div><div className={`text-lg font-semibold `}>
+                  {currentRoom?.wallWidth +" x "+ currentRoom.wallHeight + " "
+                  } cm
+                </div>
+                <div>Wall Size</div>
+                </div>
+             
             </div>
 
-            {/* Fit Status Summary */}
+
             <div className="mt-3 pt-3 border-t border-gray-200">
               <div className="text-center">
                 <span className="text-sm font-medium text-gray-700">Status: </span>
-                <span className={`text-sm font-semibold ${calculateArtworkStyle.fitStatus === 'perfect' ? 'text-green-600' :
-                  calculateArtworkStyle.fitStatus === 'scaled-down' ? 'text-yellow-600' :
+                <span className={`text-sm font-semibold ${calculateArtworkStyle?.fitStatus === 'perfect' ? 'text-green-600' :
+                  calculateArtworkStyle?.fitStatus === 'scaled-down' ? 'text-yellow-600' :
                     'text-red-600'
                   }`}>
-                  {calculateArtworkStyle.fitStatus === 'perfect' ? 'Perfect Fit' :
-                    calculateArtworkStyle.fitStatus === 'scaled-down' ? 'Scaled to Fit' :
+                  {calculateArtworkStyle?.fitStatus === 'perfect' ? 'Perfect Fit' :
+                    calculateArtworkStyle?.fitStatus === 'scaled-down' ? 'Scaled to Fit' :
                       'Too Large for Space'}
                 </span>
               </div>
             </div>
           </div>
         )}
+
       </div>
 
-
-
       {isCustom && <CustomPop onClose={() => setIsCustom(false)} artwork={orignalArtwork} />}
-
-
 
     </div>
   );

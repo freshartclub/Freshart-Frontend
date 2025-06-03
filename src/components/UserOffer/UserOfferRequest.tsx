@@ -7,6 +7,7 @@ import Loader from "../ui/Loader";
 import { imageUrl, lowImageUrl } from "../utils/baseUrls";
 import useAddToOfferCart from "./http/useAddToOfferCart";
 import { useGetUserOfferList } from "./http/useGetUserOfferList";
+import { useGetCartItems } from "../pages/http/useGetCartItems";
 
 interface CounterOffer {
   _id: string;
@@ -51,6 +52,8 @@ const UserOfferRequest = () => {
   const [offerPrice, setOfferPrice] = useState("");
   const itemsPerPage = 10;
 
+
+
   const dark = useAppSelector((state) => state.theme.mode);
   const img = useAppSelector((state) => state.user.user.mainImage || "");
 
@@ -58,13 +61,20 @@ const UserOfferRequest = () => {
   const { mutateAsync, isPending: isOfferPending } = useMakeAnOfferMutation();
   const { mutateAsync: addOfferToCart, isPending } = useAddToOfferCart();
 
+
+  const { data: cartData, refetch } = useGetCartItems();
+
+
+
   const handleAddToCart = (offer: Offer) => {
     const values = {
       offerprice: offer.counterOffer[offer.counterOffer.length - 1].offerprice,
       artworkId: offer?.artwork?._id,
       offerId: offer?._id,
     };
-    addOfferToCart(values);
+    addOfferToCart(values).then(()=>{
+      refetch()
+    })
   };
 
   const toggleExpandOffer = (offerId: string) => {
@@ -115,6 +125,10 @@ const UserOfferRequest = () => {
     });
   };
 
+  const handleNavigate = (id) => {
+    navigate(`/discover_more/${id}/?comingFrom=new`)
+  }
+
   return (
     <>
       {isLoading ? (
@@ -135,9 +149,8 @@ const UserOfferRequest = () => {
             {["Upward", "Downward"].map((tab) => (
               <button
                 key={tab}
-                className={`px-4 py-2 font-medium transition-colors duration-200 ${
-                  activeTab === tab ? "border-b-2 border-[#EE1D52] text-[#EE1D52] hover:text-[#ff648b]" : "hover:text-[#ff648b]"
-                }`}
+                className={`px-4 py-2 font-medium transition-colors duration-200 ${activeTab === tab ? "border-b-2 border-[#EE1D52] text-[#EE1D52] hover:text-[#ff648b]" : "hover:text-[#ff648b]"
+                  }`}
                 onClick={() => {
                   setActiveTab(tab as "Upward" | "Downward" | "Fixed");
                   setCurrentPage(1);
@@ -191,7 +204,7 @@ const UserOfferRequest = () => {
                                 alt={offer.artwork.artworkName}
                               />
                               <div>
-                                <p className="font-medium">{offer?.artwork?.artworkName}</p>
+                                <p onClick={() => handleNavigate(offer?._id)} className="font-medium cursor-pointer">{offer?.artwork?.artworkName}</p>
                                 <p className="text-sm text-gray-500">
                                   by {offer?.artist?.artistName?.length > 17 ? `${offer?.artist?.artistName?.slice(0, 17)}...` : offer?.artist?.artistName}
                                 </p>
@@ -199,9 +212,8 @@ const UserOfferRequest = () => {
                               {offer?.counterOffer[offer.counterOffer?.length - 1]?.userType == "artist" &&
                                 offer?.counterOffer[offer.counterOffer?.length - 1]?.isAccepted == null && (
                                   <span
-                                    className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                                      dark ? "bg-red-900 text-red-200" : "bg-red-100 text-red-800"
-                                    }`}
+                                    className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${dark ? "bg-red-900 text-red-200" : "bg-red-100 text-red-800"
+                                      }`}
                                   >
                                     <FaClock className="mr-1" /> Action Required (New offer from Artist)
                                   </span>
@@ -233,18 +245,28 @@ const UserOfferRequest = () => {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className="flex items-center gap-2">
-                              {offer?.status == "complete" && offer?.counterOffer[offer?.counterOffer?.length - 1].isAccepted == true && (
-                                <button
-                                  onClick={() => handleAddToCart(offer)}
-                                  disabled={isPending}
-                                  className={`inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm ${
-                                    dark ? "bg-blue-600 hover:bg-blue-700 text-white" : "bg-blue-500 hover:bg-blue-600 text-white"
-                                  } ${isPending ? "opacity-50 cursor-not-allowed" : ""}`}
-                                >
-                                  <FaShoppingCart className="mr-1" />
-                                  {isPending ? "Adding..." : "Add to Cart"}
-                                </button>
-                              )}
+                              {offer?.status === "complete" &&
+                                offer?.counterOffer[offer?.counterOffer?.length - 1]?.isAccepted === true && (() => {
+                                
+                                  const isInCart = cartData?.offer_cart?.some(
+                                    (item) => item?._id === offer?.artwork?._id
+                                  );
+
+                                  return (
+                                    <button
+                                      onClick={() => !isInCart && handleAddToCart(offer)}
+                                      disabled={isPending || isInCart}
+                                      className={`inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm ${dark
+                                          ? "bg-blue-600 hover:bg-blue-700 text-white"
+                                          : "bg-blue-500 hover:bg-blue-600 text-white"
+                                        } ${isPending || isInCart ? "opacity-50 cursor-not-allowed" : ""}`}
+                                    >
+                                      <FaShoppingCart className="mr-1" />
+                                      {isInCart ? "Added" : isPending ? "Adding..." : "Add to Cart"}
+                                    </button>
+                                  );
+                                })()}
+
                               {offer?.counterOffer && offer?.counterOffer?.length > 0 && (
                                 <button
                                   onClick={() => toggleExpandOffer(offer?._id)}
@@ -268,9 +290,8 @@ const UserOfferRequest = () => {
                                     return (
                                       <div
                                         key={counterOffer?._id}
-                                        className={`flex flex-col hover:scale-[1.01] transition-all ease-in border md:flex-row md:items-center justify-between p-3 rounded gap-3 ${
-                                          dark ? "bg-gray-800 border-gray-700" : "bg-gray-100 border-gray-300"
-                                        }`}
+                                        className={`flex flex-col hover:scale-[1.01] transition-all ease-in border md:flex-row md:items-center justify-between p-3 rounded gap-3 ${dark ? "bg-gray-800 border-gray-700" : "bg-gray-100 border-gray-300"
+                                          }`}
                                       >
                                         <div className="flex items-center gap-3">
                                           <div className={`rounded-full`}>
@@ -310,9 +331,8 @@ const UserOfferRequest = () => {
                                             <>
                                               <button
                                                 onClick={() => handleMakeAnoffer(offer, true)}
-                                                className={`inline-flex items-center px-3 py-1.5 rounded text-xs font-medium ${
-                                                  dark ? "bg-green-600 hover:bg-green-700 text-white" : "bg-green-500 hover:bg-green-600 text-white"
-                                                }`}
+                                                className={`inline-flex items-center px-3 py-1.5 rounded text-xs font-medium ${dark ? "bg-green-600 hover:bg-green-700 text-white" : "bg-green-500 hover:bg-green-600 text-white"
+                                                  }`}
                                               >
                                                 <FaHandshake className="mr-1" /> Accept
                                               </button>
@@ -327,9 +347,8 @@ const UserOfferRequest = () => {
                                               ) : (
                                                 <button
                                                   onClick={() => handleMakeAnoffer(offer, false)}
-                                                  className={`inline-flex items-center px-3 py-1.5 rounded text-xs font-medium ${
-                                                    dark ? "bg-blue-600 hover:bg-blue-700 text-white" : "bg-blue-500 hover:bg-blue-600 text-white"
-                                                  }`}
+                                                  className={`inline-flex items-center px-3 py-1.5 rounded text-xs font-medium ${dark ? "bg-blue-600 hover:bg-blue-700 text-white" : "bg-blue-500 hover:bg-blue-600 text-white"
+                                                    }`}
                                                 >
                                                   <FaExchangeAlt className="mr-1" /> Counter Offer
                                                 </button>
@@ -382,18 +401,16 @@ const UserOfferRequest = () => {
                 </div>
                 <div className="flex gap-2">
                   <button
-                    className={`inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded ${
-                      dark ? "bg-gray-700 hover:bg-gray-600 text-white" : "bg-gray-200 hover:bg-gray-300 text-gray-700"
-                    } ${currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""}`}
+                    className={`inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded ${dark ? "bg-gray-700 hover:bg-gray-600 text-white" : "bg-gray-200 hover:bg-gray-300 text-gray-700"
+                      } ${currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""}`}
                     disabled={currentPage === 1}
                     onClick={() => setCurrentPage((prev) => prev - 1)}
                   >
                     Previous
                   </button>
                   <button
-                    className={`inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded ${
-                      dark ? "bg-gray-700 hover:bg-gray-600 text-white" : "bg-gray-200 hover:bg-gray-300 text-gray-700"
-                    } ${currentPage * itemsPerPage >= filteredData?.length ? "opacity-50 cursor-not-allowed" : ""}`}
+                    className={`inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded ${dark ? "bg-gray-700 hover:bg-gray-600 text-white" : "bg-gray-200 hover:bg-gray-300 text-gray-700"
+                      } ${currentPage * itemsPerPage >= filteredData?.length ? "opacity-50 cursor-not-allowed" : ""}`}
                     disabled={currentPage * itemsPerPage >= filteredData?.length}
                     onClick={() => setCurrentPage((prev) => prev + 1)}
                   >
@@ -405,7 +422,7 @@ const UserOfferRequest = () => {
           )}
         </div>
       )}
-      
+
       {isOfferPopupOpen?.makeAnOffer && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className={`rounded-lg p-6 w-[90%] sm:w-1/2  ${dark ? "bg-gray-800 text-white" : "bg-white text-gray-900"}`}>
@@ -477,9 +494,8 @@ const UserOfferRequest = () => {
                       type="number"
                       id="offer-price"
                       required
-                      className={`block w-full pl-7 pr-12 py-2 border sm:text-sm rounded-md ${
-                        dark ? "bg-gray-700 border-gray-600 text-white" : "border-gray-300"
-                      }`}
+                      className={`block w-full pl-7 pr-12 py-2 border sm:text-sm rounded-md ${dark ? "bg-gray-700 border-gray-600 text-white" : "border-gray-300"
+                        }`}
                       placeholder="0.00"
                       value={offerPrice}
                       onChange={(e) => setOfferPrice(e.target.value)}
@@ -497,9 +513,8 @@ const UserOfferRequest = () => {
                   type="button"
                   onClick={() => setIsOfferPopupOpen((prev) => ({ ...prev, makeAnOffer: false }))}
                   disabled={isPending}
-                  className={`px-4 py-2 text-sm font-medium rounded-md ${
-                    dark ? "bg-gray-700 text-gray-200 hover:bg-gray-600" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                  }`}
+                  className={`px-4 py-2 text-sm font-medium rounded-md ${dark ? "bg-gray-700 text-gray-200 hover:bg-gray-600" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    }`}
                 >
                   Cancel
                 </button>
@@ -598,9 +613,8 @@ const UserOfferRequest = () => {
                 type="button"
                 onClick={() => setIsOfferPopupOpen((prev) => ({ ...prev, acceptOffer: false }))}
                 disabled={isPending}
-                className={`px-4 py-2 text-sm font-medium rounded-md ${
-                  dark ? "bg-gray-700 text-gray-200 hover:bg-gray-600" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
+                className={`px-4 py-2 text-sm font-medium rounded-md ${dark ? "bg-gray-700 text-gray-200 hover:bg-gray-600" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}
               >
                 Cancel
               </button>

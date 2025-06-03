@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { imageUrl } from "../utils/baseUrls";
+import useUploadImageMutation from "./http/useUploadImageMutation";
+import useUpdateValuesMutation from "./http/useUpadteValuesMutation";
 
 const INCH_TO_CM = 2.54;
 const MIN_SIZE_CM = 0.5;
@@ -10,6 +12,7 @@ const CropSelectionStep = ({
   previewImageDimensions,
   cropSelection,
   setCropSelection,
+  imageId,
   imageDimension,
   imageHW,
   onNext,
@@ -27,11 +30,14 @@ const CropSelectionStep = ({
   const [containerRect, setContainerRect] = useState(null);
   const [loading, setLoading] = useState(true);
   const [imageDimensions, setImageDimensions] = useState({
-    realDimensions: { width: 0, height: 0 }, 
-    pixelDimensions: { width: 0, height: 0 }, 
-    pixelsPerCm: 0 
+    realDimensions: { width: 0, height: 0 },
+    pixelDimensions: { width: 0, height: 0 },
+    pixelsPerCm: 0
   });
   const [showRuler, setShowRuler] = useState(false);
+
+  const { mutateAsync, isPending } = useUpdateValuesMutation();
+
 
   useEffect(() => {
     setLoading(true);
@@ -51,19 +57,19 @@ const CropSelectionStep = ({
     img.onload = () => {
       const pixelWidth = img.naturalWidth;
       const pixelHeight = img.naturalHeight;
-      
-      // Use imageDimension prop for real dimensions if available
+
+
       let widthCm, heightCm;
       if (imageDimension && imageDimension.width && imageDimension.height) {
         widthCm = imageDimension.width;
         heightCm = imageDimension.height;
       } else {
-        // Fallback to estimated DPI calculation
+
         const estimatedDpi = 300;
         widthCm = (pixelWidth / estimatedDpi) * INCH_TO_CM;
         heightCm = (pixelHeight / estimatedDpi) * INCH_TO_CM;
       }
-      
+
       const pixelsPerCm = pixelWidth / widthCm;
 
       setImageDimensions({
@@ -354,6 +360,23 @@ const CropSelectionStep = ({
     }
   }, [selectionRef, containerRect, getClientCoordinates, cropSelection, cmToDisplayPixels, imageSize, setCropSelection]);
 
+
+const handleNext = () => {
+  const id = imageId;
+  const area_x1 = displayPixelsToCm(cropSelection.x);
+  const area_y1 = displayPixelsToCm(cropSelection.y);
+  const area_x2 = displayPixelsToCm(imageSize?.width - (cropSelection.x + cropSelection.width));
+  const area_y2 = displayPixelsToCm(imageSize?.height - (cropSelection.y + cropSelection.height));
+
+  mutateAsync({ id, area_x1, area_y1, area_x2, area_y2 }).then(()=>{
+    onNext()
+  })
+};
+
+
+
+
+
   return (
     <div className="flex flex-col lg:flex-row w-full h-full">
       <div className="relative lg:w-3/5 w-full h-64 sm:h-80 md:h-96 lg:h-auto border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-900">
@@ -482,15 +505,27 @@ const CropSelectionStep = ({
           <div className="mb-4 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
             <h4 className="font-medium text-gray-800 dark:text-gray-200 mb-2">Selection Position (cm)</h4>
             <div className="grid grid-cols-2 gap-2 text-sm">
-              <div className="text-gray-600 dark:text-gray-300">X1, Y1 (Top-Left):</div>
+              <div className="text-gray-600 dark:text-gray-300">Top Margin:</div>
               <div className="text-gray-800 dark:text-gray-100">
-                {displayPixelsToCm(cropSelection.x)}, {displayPixelsToCm(cropSelection.y)}
+                {displayPixelsToCm(cropSelection.y)}
               </div>
-              <div className="text-gray-600 dark:text-gray-300">X2, Y2 (Bottom-Right):</div>
+
+              <div className="text-gray-600 dark:text-gray-300">Left Margin:</div>
               <div className="text-gray-800 dark:text-gray-100">
-                {displayPixelsToCm(cropSelection.x + cropSelection.width)}, {displayPixelsToCm(cropSelection.y + cropSelection.height)}
+                {displayPixelsToCm(cropSelection.x)}
+              </div>
+
+              <div className="text-gray-600 dark:text-gray-300">Right Margin:</div>
+              <div className="text-gray-800 dark:text-gray-100">
+                {displayPixelsToCm(imageSize?.width - (cropSelection.x + cropSelection.width))}
+              </div>
+
+              <div className="text-gray-600 dark:text-gray-300">Bottom Margin:</div>
+              <div className="text-gray-800 dark:text-gray-100">
+                {displayPixelsToCm(imageSize?.height - (cropSelection.y + cropSelection.height))}
               </div>
             </div>
+
           </div>
         </div>
 
@@ -502,9 +537,9 @@ const CropSelectionStep = ({
             Back
           </button>
           <button
-            onClick={onNext}
+            onClick={handleNext}
             className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-md text-white transition-colors"
-            disabled={loading}
+            disabled={loading || isPending}
           >
             Next
           </button>

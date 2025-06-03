@@ -309,7 +309,7 @@ export const MagnifierImage = ({ src, alt, isOffensive, safeMode, enableZoom = f
         alt={alt}
         className={`
           ${isOffensive && safeMode === "Off" ? "blur-lg brightness-75" : ""}
-          mx-auto overflow-hidden object-contain md:w-[25rem] lg:w-full h-[350px] md:h-[280px]
+          mx-auto overflow-hidden object-contain md:w-[25rem] lg:w-full h-[350px] md:h-[280px] 
           ${isZoomed ? "opacity-0" : ""}
         `}
       />

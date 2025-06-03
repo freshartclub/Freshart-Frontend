@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback, memo } from "react";
 import { imageUrl } from "../utils/baseUrls";
 import ImageSelectionStep from "./ImageSelectionStep";
 import CropSelectionStep from "./CropSelectionStep";
-import DimensionsStep from "./DimensionsStep";
 import ArtworkPlacementStep from "./ArtworkPlacementStep";
 
 const STEP_CONFIG = {
@@ -16,7 +15,7 @@ const STEP_CONFIG = {
     description: "Installation ",
     progress: 33
   },
- 
+
   3: {
     title: "Position Artwork & Preview",
     description: "Preview",
@@ -49,6 +48,7 @@ const ImagePlacementWizard = memo(({ onClose, artwork }) => {
   const [imageHW, setIageHW] = useState(null)
   const [previewImageDimensions, setPreviewImageDimensions] = useState({ height: 0, width: 0 });
   const [imageSizeS, setImageSizeS] = useState({ width: 0, height: 0 });
+  const [imageId, setImageId] = useState(null)
 
   useEffect(() => {
     const checkIfMobile = () => {
@@ -105,10 +105,6 @@ const ImagePlacementWizard = memo(({ onClose, artwork }) => {
     return () => window.removeEventListener('resize', adjustDimensions);
   }, [currentStep, isMobile]);
 
-
-  
-
-
   const renderStep = useCallback(() => {
     const commonProps = {
       selectedImage,
@@ -125,6 +121,7 @@ const ImagePlacementWizard = memo(({ onClose, artwork }) => {
             setImageDimensions={setImageDimensions}
             imageDimension={imageDimension}
             isMobile={isMobile}
+            setImageId={setImageId}
             setIageHW={setIageHW}
             setPreviewImageDimensions={setPreviewImageDimensions}
             previewImageDimensions={previewImageDimensions}
@@ -139,7 +136,8 @@ const ImagePlacementWizard = memo(({ onClose, artwork }) => {
             setCropSelection={setCropSelection}
             previewImageDimensions={previewImageDimensions}
             dimensions={dimensions}
-           imageDimension={imageDimension} 
+            imageId={imageId}
+            imageDimension={imageDimension}
             isMobile={isMobile}
             imageHW={imageHW}
             setImageSizeS={setImageSizeS}
@@ -147,7 +145,6 @@ const ImagePlacementWizard = memo(({ onClose, artwork }) => {
 
           />
         );
-
       case 3:
         return (
           <ArtworkPlacementStep

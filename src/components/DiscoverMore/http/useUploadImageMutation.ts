@@ -21,7 +21,7 @@ async function upLoadImg({ id, file , height , width }: { id: string; file: File
   );
 }
 
-// Hook
+
 const useUploadImageMutation = () => {
   const queryClient = useQueryClient();
 

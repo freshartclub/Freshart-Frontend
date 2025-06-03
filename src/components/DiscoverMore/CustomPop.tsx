@@ -14,19 +14,52 @@ const CustomPop = ({ onClose, artwork }) => {
   const [previewUrl, setPreviewUrl] = useState("");
   const [height, setHeight] = useState(null)
   const [width, setWidth] = useState(null)
+  const [roomName, setRoomName] = useState("")
+  const [isDragOver, setIsDragOver] = useState(false);
 
   const { mutateAsync, isPending } = useUploadImageMutation();
-  const { data, isLoading } = useGetUpLoadedImgaes(artwork?.data?._id);
 
   const dark = useAppSelector((state) => state.theme.mode);
 
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
+  const handleFileSelection = (selectedFile) => {
     if (selectedFile) {
       setFile(selectedFile);
       if (selectedFile.type.startsWith("image/")) {
         setPreviewUrl(URL.createObjectURL(selectedFile));
       }
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    handleFileSelection(selectedFile);
+  };
+
+  const handleDragEnter = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(false);
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(false);
+
+    const files = e.dataTransfer.files;
+    if (files && files.length > 0) {
+      handleFileSelection(files[0]);
     }
   };
 
@@ -40,7 +73,7 @@ const CustomPop = ({ onClose, artwork }) => {
       return;
     }
 
-    await mutateAsync({ id: artwork.data._id, file  , height , width});
+    await mutateAsync({ id: artwork.data._id, file, height, width });
     setShowPositioningPopup(true);
   };
 
@@ -81,14 +114,23 @@ const CustomPop = ({ onClose, artwork }) => {
         <div className="flex h-[65vh] overflow-y-auto flex-col p-6 gap-6">
           <div className="flex flex-col md:flex-row gap-4">
             <div
-              className={`flex-1 border-2 border-dashed ${dark ? "border-gray-600" : "border-gray-300"
-                } rounded-lg p-6 flex flex-col items-center justify-center`}
+              className={`flex-1 border-2 border-dashed ${isDragOver
+                ? (dark ? "border-blue-400 bg-blue-900/20" : "border-blue-400 bg-blue-50")
+                : (dark ? "border-gray-600" : "border-gray-300")
+                } rounded-lg p-6 flex flex-col items-center justify-center transition-all duration-200`}
+              onDragEnter={handleDragEnter}
+              onDragLeave={handleDragLeave}
+              onDragOver={handleDragOver}
+              onDrop={handleDrop}
             >
               {previewUrl ? null : (
                 <div className="text-center mb-4">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className={`h-12 w-12 mx-auto ${dark ? "text-gray-500" : "text-gray-400"}`}
+                    className={`h-12 w-12 mx-auto ${isDragOver
+                      ? "text-blue-500"
+                      : (dark ? "text-gray-500" : "text-gray-400")
+                      } transition-colors`}
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -100,8 +142,12 @@ const CustomPop = ({ onClose, artwork }) => {
                       d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
                     />
                   </svg>
-                  <h4 className={`mt-2 text-lg font-medium ${dark ? "text-gray-300" : "text-gray-700"}`}>Upload File</h4>
-                  <p className={`mt-1 text-sm ${dark ? "text-gray-400" : "text-gray-500"}`}>Drag and drop or click to browse</p>
+                  <h4 className={`mt-2 text-lg font-medium ${dark ? "text-gray-300" : "text-gray-700"}`}>
+                    {isDragOver ? "Drop file here" : "Upload File"}
+                  </h4>
+                  <p className={`mt-1 text-sm ${dark ? "text-gray-400" : "text-gray-500"}`}>
+                    {isDragOver ? "Release to upload" : "Drag and drop or click to browse"}
+                  </p>
                 </div>
               )}
 
@@ -154,21 +200,44 @@ const CustomPop = ({ onClose, artwork }) => {
             </div>
 
           </div>
-          <h1 className="text-center">Enter Dimension</h1>
+          <h1 className="text-center">Enter Details</h1>
+          <div>
+            <label
+              htmlFor="room-input"
+              className="block text-sm font-medium  mb-1"
+            >
+              Enter Room Name *
+            </label>
+
+            <div className="relative">
+              <input
+                id="room-input"
+
+                required
+                placeholder="Enter room name"
+                value={roomName}
+                onChange={(e) => setRoomName(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+              />
+
+            </div>
+          </div>
           <div className="flex flex-col md:flex-row gap-4 md:gap-6 items-center justify-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-            
+
+
+
             <div className="w-full md:w-auto">
               <label
                 htmlFor="height-input"
                 className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
               >
-                Height
+                Height *
               </label>
               <div className="relative">
                 <input
                   id="height-input"
-                
-                  
+
+
                   placeholder="Enter height"
                   value={height}
                   onChange={(e) => setHeight(e.target.value)}
@@ -185,13 +254,11 @@ const CustomPop = ({ onClose, artwork }) => {
                 htmlFor="width-input"
                 className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
               >
-                Width
+                Width *
               </label>
               <div className="relative">
                 <input
                   id="width-input"
-                  
-                 
                   placeholder="Enter width"
                   value={width}
                   onChange={(e) => setWidth(e.target.value)}

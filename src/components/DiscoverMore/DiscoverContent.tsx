@@ -75,7 +75,7 @@ const DiscoverContent = ({ data }) => {
   };
 
   const getPriceDisplay = () => {
-    if (hasBasePrice && purchaseType !== "Upward Offer" && purchaseType !== "Downward Offer") {
+    if (hasBasePrice && purchaseType !== "Upward Offer" ) {
       const currencySymbol = getSymbolFromCurrency(data.pricing.currency?.slice(0, 3));
       return (
         <Header variant={{ size: "lg", theme: dark ? "light" : "dark", weight: "semiBold" }} className="my-2">
@@ -125,7 +125,7 @@ const DiscoverContent = ({ data }) => {
     setIsOfferPopupOpen(true);
   };
 
-  // CSS classes
+ 
   const textThemeClass = dark ? "text-gray-100" : "text-gray-800";
   const borderClass = dark ? "border-gray-700" : "border-gray-200";
   const secondaryTextClass = dark ? "text-gray-300" : "text-[#999999]";
@@ -210,7 +210,7 @@ const DiscoverContent = ({ data }) => {
   useEffect(() => {
     if (favoriteData && Array.isArray(favoriteData)) {
       const favoriteObject = favoriteData?.reduce((acc, curr) => {
-        acc[curr.title] = Array.isArray(curr.items) ? curr.items : [];
+        acc[curr?.title] = Array?.isArray(curr?.items) ? curr?.items : [];
         return acc;
       }, {} as Record<string, string[]>);
 
@@ -301,7 +301,7 @@ const DiscoverContent = ({ data }) => {
       {getPriceDisplay()}
 
       <div className={containerClasses}>
-        {purchaseType === "Fixed Price" || isSubscription ? (
+        {purchaseType === "Fixed Price" || isSubscription || purchaseType === "Downward Offer" ? (
           <Button
             onClick={() => handleAddToCart(data?._id)}
             variant={{
@@ -317,7 +317,7 @@ const DiscoverContent = ({ data }) => {
               {isInCart ? "Already Added" : isPending ? "Adding..." : "Add to cart"}
             </P>
           </Button>
-        ) : null}
+        ) : null }
 
         {purchaseType === "Fixed Price" ? null : purchaseType === "Price By Request" ? (
           <Button
@@ -427,14 +427,14 @@ const DiscoverContent = ({ data }) => {
                 <input
                   type="text"
                   value={newListName}
-                  onChange={(e) => setNewListName(e.target.value)}
+                  onChange={(e) => setNewListName(e?.target?.value)}
                   placeholder="New List Name"
                   className={`w-full text-xs p-2 ${
                     dark ? "bg-gray-700 border-gray-600 text-gray-100" : "bg-white border-gray-200 text-gray-800"
                   } border rounded-md mb-2 focus:outline-none focus:ring-1 ${dark ? "focus:ring-gray-500" : "focus:ring-gray-300"}`}
                 />
                 <button
-                  onClick={() => handleAddNewList(data._id)}
+                  onClick={() => handleAddNewList(data?._id)}
                   className={`w-full ${
                     dark ? "bg-gray-700 hover:bg-gray-600" : "bg-gray-800 hover:bg-gray-900"
                   } text-white text-xs py-1 rounded-md transition-colors`}
@@ -459,7 +459,7 @@ const DiscoverContent = ({ data }) => {
         </button>
       </div>
 
-      {/* Offer Popup */}
+      
       {isOfferPopupOpen && (
         <div className="relative">
           <MakeAnOfferPopUp setIsOpen={setIsOfferPopupOpen} offerType={offerType} data={data} />

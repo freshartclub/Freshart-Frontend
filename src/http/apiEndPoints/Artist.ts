@@ -80,6 +80,8 @@ export const ARTTIST_ENDPOINTS = {
   getUpLoadedImage: `${ARTIST_BASE_URl}/get-upload-images`,
   getAllUpLoadedImages: `${ARTIST_BASE_URl}/get-all-images`,
   deleteUploadedImage: `${ARTIST_BASE_URl}/delete-uploaded-image`,
+  updateUploadCrop: `${ARTIST_BASE_URl}/update-crop-area`,
+
 
   // Folllow Artist and UnFollow Artist Apis
   followArtist: `${ARTIST_BASE_URl}/follow`,

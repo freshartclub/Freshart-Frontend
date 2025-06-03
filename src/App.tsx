@@ -111,6 +111,14 @@ const App: React.FC = () => {
               <Route path="/faq" element={<Faq />} />
               <Route path="/kb-database" element={<KbDatabase />} />
               <Route path="/about-us" element={<AboutUs />} />
+                 <Route
+                path="/discover_more/:id/upload"
+                element={
+                  
+                    <CustomUploadPage />
+                 
+                }
+              />
 
               <Route
                 path="/artist-panel/*"
@@ -159,14 +167,7 @@ const App: React.FC = () => {
                 }
               />
 
-              <Route
-                path="/discover_more/:id/upload"
-                element={
-                  <AuthGuard>
-                    <CustomUploadPage />
-                  </AuthGuard>
-                }
-              />
+           
 
 
               <Route

@@ -4,39 +4,49 @@ import { useGetAllUploadedImages } from "./http/useGetAllUploadedImages";
 import useDeleteUploadedImgMutation from "./http/useDeleteUploadedImgMutation";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
-const ImageSelectionStep = ({ 
-  selectedImage, 
+const ImageSelectionStep = ({
+  selectedImage,
   setSelectedImage,
   setIageHW,
+  setImageId,
   setImageDimensions,
   setPreviewImageDimensions,
   previewImageDimensions,
-  onNext 
+  onNext
 }) => {
   const { data: uploadedImages, isLoading, refetch } = useGetAllUploadedImages();
   const [previewImage, setPreviewImage] = useState(null);
 
   const { mutate: deleteImage, isPending: isDeleting } = useDeleteUploadedImgMutation();
 
-  const handleDelete = (id)=>{
+  const handleDelete = (id) => {
     deleteImage(id)
   }
 
   useEffect(() => {
-    if (uploadedImages?.data?.length > 0) {
-      if (!selectedImage) {
-        const firstImage = uploadedImages.data[0];
-        console.log(firstImage.height)
-        setPreviewImage(firstImage.image);
-        setPreviewImageDimensions({ height: firstImage.height, width: firstImage.width });
-        setImageDimensions({ height: firstImage.height, width: firstImage.width });
-        setSelectedImage(firstImage.image);
-        setIageHW(firstImage)
+    if (uploadedImages?.data && uploadedImages?.data?.length > 0) {
+      const firstImage = uploadedImages?.data[0];
+
+      if (!selectedImage && firstImage) {
+        setPreviewImage(firstImage?.image || null);
+        setPreviewImageDimensions({
+          height: firstImage?.height || 0,
+          width: firstImage?.width || 0,
+        });
+        setImageDimensions({
+          height: firstImage?.height || 0,
+          width: firstImage?.width || 0,
+        });
+        setSelectedImage(firstImage?.image || null);
+     
       } else {
-        const selected = uploadedImages.data.find(img => img.image === selectedImage);
+        const selected = uploadedImages?.data?.find(img => img?.image === selectedImage);
         if (selected) {
-          setPreviewImage(selected.image);
-          setPreviewImageDimensions({ height: selected.height, width: selected.width });
+          setPreviewImage(selected?.image || null);
+          setPreviewImageDimensions({
+            height: selected?.height || 0,
+            width: selected?.width || 0,
+          });
         }
       }
     } else {
@@ -44,19 +54,29 @@ const ImageSelectionStep = ({
       setPreviewImageDimensions({ height: 0, width: 0 });
       setSelectedImage(null);
     }
-  }, [uploadedImages, selectedImage, setSelectedImage, setImageDimensions]);
-
+  }, [uploadedImages, selectedImage]);
 
   const handleImageSelect = useCallback((image) => {
-    const selected = uploadedImages.data.find(img => img.image === image);
+    // Add safety check for uploadedImages.data
+    if (!uploadedImages?.data) return;
+    
+    const selected = uploadedImages.data.find(img => img.image === image?.image);
+
     if (selected) {
-      console.log(selected)
+      setImageId(selected?._id)
       setPreviewImage(selected.image);
       setPreviewImageDimensions({ height: selected.height, width: selected.width });
       setImageDimensions({ height: selected.height, width: selected.width });
     }
   }, [uploadedImages, setImageDimensions]);
 
+  useEffect(() => {
+    // Add safety check for uploadedImages.data
+    if (uploadedImages?.data && uploadedImages.data.length > 0) {
+      const selectedImage = uploadedImages.data[0];
+      setImageId(selectedImage?._id)
+    }
+  }, [uploadedImages])
 
   const handleContinue = useCallback(() => {
     if (previewImage) {
@@ -65,6 +85,9 @@ const ImageSelectionStep = ({
     }
   }, [previewImage, setSelectedImage, onNext]);
 
+  if (isLoading) {
+    return <div>Loading...</div>
+  }
 
   return (
     <div className="flex flex-col lg:flex-row gap-6 w-full overflow-y-auto">
@@ -91,7 +114,6 @@ const ImageSelectionStep = ({
         )}
       </div>
 
-
       <div className="lg:flex-1 flex flex-col gap-4">
         <div className="space-y-2">
           <h4 className="text-lg font-medium text-gray-700 dark:text-gray-300">
@@ -112,16 +134,15 @@ const ImageSelectionStep = ({
               {uploadedImages?.data?.map((img) => (
                 <div
                   key={img?._id}
-                  className={`relative group cursor-pointer rounded-lg overflow-hidden border-2 transition-all ${
-                    previewImage === img?.image
+                  className={`relative group cursor-pointer rounded-lg overflow-hidden border-2 transition-all ${previewImage === img?.image
                       ? "border-blue-500 ring-2 ring-blue-300 dark:ring-blue-500"
                       : "border-transparent hover:border-gray-300 dark:hover:border-gray-600"
-                  }`}
-                  onClick={() => handleImageSelect(img?.image)}
+                    }`}
+                  onClick={() => handleImageSelect(img)}
                   role="button"
                   tabIndex={0}
                   aria-label={`Select image ${img?.name || img?._id}`}
-                  onKeyDown={(e) => e.key === 'Enter' && handleImageSelect(img?.image)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleImageSelect(img)}
                 >
                   <img
                     src={`${imageUrl}/users/${img?.image}`}
@@ -142,13 +163,13 @@ const ImageSelectionStep = ({
                   >
                     <RiDeleteBin6Line className="h-3 w-3 text-white" />
                   </button>
-                  
+
                   {previewImage === img.image && (
                     <div className="absolute top-2 right-2 bg-blue-500 rounded-full p-1">
-                      <svg 
-                        xmlns="http://www.w3.org/2000/svg" 
-                        className="h-4 w-4 text-white" 
-                        viewBox="0 0 20 20" 
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4 text-white"
+                        viewBox="0 0 20 20"
                         fill="currentColor"
                         aria-hidden="true"
                       >
@@ -160,17 +181,17 @@ const ImageSelectionStep = ({
                       </svg>
                     </div>
                   )}
-                 
+
                 </div>
               ))}
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center h-64 text-center">
-              <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                className="h-12 w-12 text-gray-400 mb-2" 
-                fill="none" 
-                viewBox="0 0 24 24" 
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-12 w-12 text-gray-400 mb-2"
+                fill="none"
+                viewBox="0 0 24 24"
                 stroke="currentColor"
                 aria-hidden="true"
               >
@@ -181,16 +202,14 @@ const ImageSelectionStep = ({
           )}
         </div>
 
-       
         <div className="flex justify-end">
           <button
             onClick={handleContinue}
             disabled={!previewImage || isLoading || isDeleting}
-            className={`px-6 py-2 rounded-lg font-medium transition-colors flex items-center ${
-              previewImage && !isLoading && !isDeleting
+            className={`px-6 py-2 rounded-lg font-medium transition-colors flex items-center ${previewImage && !isLoading && !isDeleting
                 ? "bg-blue-600 hover:bg-blue-700 text-white"
                 : "bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
-            }`}
+              }`}
             aria-disabled={!previewImage || isLoading || isDeleting}
           >
             {(isLoading || isDeleting) ? (

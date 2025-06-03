@@ -48,6 +48,7 @@ const Offers = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [expandedOffer, setExpandedOffer] = useState<string | null>(null);
   const [offerPrice, setOfferPrice] = useState("");
+  const [isType, setIsType] = useState("")
   const itemsPerPage = 10;
 
   const dark = useAppSelector((state) => state.theme.mode);
@@ -61,8 +62,10 @@ const Offers = () => {
   const filteredData = data?.filter((offer: Offer) => offer?.type === `${activeTab} Offer`) || [];
   const paginatedData = filteredData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
-  const handleMakeAnoffer = (data: Offer, counterAccept: boolean) => {
+  const handleMakeAnoffer = (data: Offer, counterAccept: boolean, type: string) => {
     setOfferData(data);
+
+    setIsType(type)
     setCounterAccept(counterAccept);
     if (counterAccept) {
       setIsOfferPopupOpen((prev) => ({ ...prev, acceptRejectOffer: true }));
@@ -113,9 +116,8 @@ const Offers = () => {
             {["Upward", "Downward"].map((tab) => (
               <button
                 key={tab}
-                className={`px-4 py-2 font-medium transition-colors duration-200 ${
-                  activeTab === tab ? "border-b-2 border-[#EE1D52] text-[#EE1D52] hover:text-[#ff648b]" : "hover:text-[#ff648b]"
-                }`}
+                className={`px-4 py-2 font-medium transition-colors duration-200 ${activeTab === tab ? "border-b-2 border-[#EE1D52] text-[#EE1D52] hover:text-[#ff648b]" : "hover:text-[#ff648b]"
+                  }`}
                 onClick={() => {
                   setActiveTab(tab as "Upward" | "Downward" | "Fixed");
                   setCurrentPage(1);
@@ -168,7 +170,7 @@ const Offers = () => {
                                 className="w-12 h-12 rounded object-cover"
                                 src={`${imageUrl}/users/${offer?.artwork?.media?.mainImage}` || ""}
                                 alt={offer?.artwork?.artworkName}
-                               
+
                               />
 
                               <div>
@@ -177,9 +179,8 @@ const Offers = () => {
                                 {offer?.counterOffer[offer.counterOffer?.length - 1]?.userType == "user" &&
                                   offer?.counterOffer[offer.counterOffer?.length - 1]?.isAccepted == null && (
                                     <span
-                                      className={`inline-flex mt-1 items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                                        dark ? "bg-red-900 text-red-200" : "bg-red-100 text-red-800"
-                                      }`}
+                                      className={`inline-flex mt-1 items-center px-2 py-0.5 rounded-full text-xs font-medium ${dark ? "bg-red-900 text-red-200" : "bg-red-100 text-red-800"
+                                        }`}
                                     >
                                       <FaClock className="mr-1" /> Action Required (New Request from User)
                                     </span>
@@ -233,22 +234,20 @@ const Offers = () => {
                           <tr>
                             <td colSpan={6} className="px-6 py-4">
                               <div className={`rounded-lg p-4 ${dark ? "bg-gray-800" : "bg-gray-50"}`}>
-                                <h4 className="font-medium mb-3">Counter Offers</h4>
+                                <h4 className="font-medium mb-3">Offer Details</h4>
                                 <div className="space-y-3">
                                   {offer?.counterOffer?.map((counterOffer, index) => {
                                     const isLatest = index === offer?.counterOffer?.length - 1;
                                     return (
                                       <div
                                         key={counterOffer?._id}
-                                        className={`flex flex-col md:flex-row md:items-center justify-between p-3 rounded gap-3 ${
-                                          dark ? "bg-gray-700" : "bg-white"
-                                        }`}
+                                        className={`flex flex-col md:flex-row md:items-center justify-between p-3 rounded gap-3 ${dark ? "bg-gray-700" : "bg-white"
+                                          }`}
                                       >
                                         <div className="flex items-center gap-3">
                                           <div
-                                            className={`p-2 rounded-full ${
-                                              counterOffer?.userType === "artist" ? "bg-purple-100 text-purple-800" : "bg-blue-100 text-blue-800"
-                                            }`}
+                                            className={`p-2 rounded-full ${counterOffer?.userType === "artist" ? "bg-purple-100 text-purple-800" : "bg-blue-100 text-blue-800"
+                                              }`}
                                           >
                                             {counterOffer?.userType === "artist" ? <FaPalette className="text-lg" /> : <FaUser className="text-lg" />}
                                           </div>
@@ -279,19 +278,26 @@ const Offers = () => {
                                           ) : isLatest && counterOffer?.userType === "user" && counterOffer?.isAccepted == null ? (
                                             <>
                                               <button
-                                                onClick={() => handleMakeAnoffer(offer, true)}
-                                                className={`inline-flex items-center px-3 py-1.5 rounded text-xs font-medium ${
-                                                  dark ? "bg-green-600 hover:bg-green-700 text-white" : "bg-green-500 hover:bg-green-600 text-white"
-                                                }`}
+                                                onClick={() => handleMakeAnoffer(offer, true, "accept")}
+                                                className={`inline-flex items-center px-3 py-1.5 rounded text-xs font-medium ${dark ? "bg-green-600 hover:bg-green-700 text-white" : "bg-green-500 hover:bg-green-600 text-white"
+                                                  }`}
                                               >
-                                                <FaHandshake className="mr-1" /> Accept/Reject Offer
+                                                <FaHandshake className="mr-1" /> Accept Offer
                                               </button>
                                               <button
-                                                onClick={() => handleMakeAnoffer(offer, false)}
-                                                className={`inline-flex items-center px-3 py-1.5 rounded text-xs font-medium text-white bg-[#EE1D52]`}
+                                                onClick={() => handleMakeAnoffer(offer, true, "reject")}
+                                                className={`inline-flex items-center px-3 py-1.5 rounded text-xs font-medium ${dark ? "bg-[#EE1D52] text-white" : "bg-[#EE1D52] text-white"
+                                                  }`}
+                                              >
+                                                <FaHandshake className="mr-1" /> Reject Offer
+                                              </button>
+                                              <button
+                                                onClick={() => handleMakeAnoffer(offer, false, "counter")}
+                                                className="inline-flex items-center px-3 py-1.5 rounded text-xs font-medium  bg-teal-400"
                                               >
                                                 <FaExchangeAlt className="mr-1" /> Counter Offer
                                               </button>
+
                                             </>
                                           ) : null}
                                           {counterOffer?.isAccepted === true ? (
@@ -333,18 +339,16 @@ const Offers = () => {
                 </div>
                 <div className="flex gap-2">
                   <button
-                    className={`inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded ${
-                      dark ? "bg-gray-700 hover:bg-gray-600 text-white" : "bg-gray-200 hover:bg-gray-300 text-gray-700"
-                    } ${currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""}`}
+                    className={`inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded ${dark ? "bg-gray-700 hover:bg-gray-600 text-white" : "bg-gray-200 hover:bg-gray-300 text-gray-700"
+                      } ${currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""}`}
                     disabled={currentPage === 1}
                     onClick={() => setCurrentPage((prev) => prev - 1)}
                   >
                     Previous
                   </button>
                   <button
-                    className={`inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded ${
-                      dark ? "bg-gray-700 hover:bg-gray-600 text-white" : "bg-gray-200 hover:bg-gray-300 text-gray-700"
-                    } ${currentPage * itemsPerPage >= filteredData?.length ? "opacity-50 cursor-not-allowed" : ""}`}
+                    className={`inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded ${dark ? "bg-gray-700 hover:bg-gray-600 text-white" : "bg-gray-200 hover:bg-gray-300 text-gray-700"
+                      } ${currentPage * itemsPerPage >= filteredData?.length ? "opacity-50 cursor-not-allowed" : ""}`}
                     disabled={currentPage * itemsPerPage >= filteredData?.length}
                     onClick={() => setCurrentPage((prev) => prev + 1)}
                   >
@@ -412,9 +416,8 @@ const Offers = () => {
                     type="number"
                     id="offer-price"
                     required
-                    className={`block w-full pl-7 pr-12 py-2 border sm:text-sm rounded-md ${
-                      dark ? "bg-gray-700 border-gray-600 text-white" : "border-gray-300"
-                    }`}
+                    className={`block w-full pl-7 pr-12 py-2 border sm:text-sm rounded-md ${dark ? "bg-gray-700 border-gray-600 text-white" : "border-gray-300"
+                      }`}
                     placeholder="0.00"
                     value={offerPrice}
                     onChange={(e) => setOfferPrice(e.target.value)}
@@ -431,9 +434,8 @@ const Offers = () => {
                   type="button"
                   onClick={() => setIsOfferPopupOpen((prev) => ({ ...prev, makeAnOffer: false }))}
                   disabled={isPending}
-                  className={`px-4 py-2 text-sm font-medium rounded-md ${
-                    dark ? "bg-gray-700 text-gray-200 hover:bg-gray-600" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                  }`}
+                  className={`px-4 py-2 text-sm font-medium rounded-md ${dark ? "bg-gray-700 text-gray-200 hover:bg-gray-600" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    }`}
                 >
                   Cancel
                 </button>
@@ -524,13 +526,13 @@ const Offers = () => {
                 type="button"
                 onClick={() => setIsOfferPopupOpen((prev) => ({ ...prev, acceptRejectOffer: false }))}
                 disabled={isPending}
-                className={`px-4 py-2 text-sm font-medium rounded-md ${
-                  dark ? "bg-gray-700 text-gray-200 hover:bg-gray-600" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
+                className={`px-4 py-2 text-sm font-medium rounded-md ${dark ? "bg-gray-700 text-gray-200 hover:bg-gray-600" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}
               >
                 Cancel
               </button>
-              <button
+
+              {isType === "accept" ? <button
                 type="button"
                 onClick={(e) => handleAcceptOffer(e, true)}
                 disabled={isPending}
@@ -556,8 +558,7 @@ const Offers = () => {
                     Accept Offer
                   </>
                 )}
-              </button>
-              <button
+              </button> : <button
                 type="button"
                 onClick={(e) => handleAcceptOffer(e, false)}
                 disabled={isPending}
@@ -581,7 +582,10 @@ const Offers = () => {
                     Reject Offer
                   </>
                 )}
-              </button>
+              </button>}
+
+
+
             </div>
           </div>
         </div>

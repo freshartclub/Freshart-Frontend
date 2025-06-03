@@ -18,8 +18,8 @@ import logo from "/logofarcwhite.svg";
 
 const NavBar = () => {
   const isArtist = useAppSelector((state) => state?.user?.isArtist) || null;
-  const user = useAppSelector((state) => state.user.user);
-  const isAuthorized = useAppSelector((state) => state.user.isAuthorized);
+  const user = useAppSelector((state) => state?.user?.user);
+  const isAuthorized = useAppSelector((state) => state?.user?.isAuthorized);
   const navigate = useNavigate();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -33,11 +33,11 @@ const NavBar = () => {
   const mobileNavPopup = useRef(null);
 
   const { data: seriesPickList } = useGetPicklist();
-  const { data: cartItem } = useGetCartItems();
-  const { data: disciplineData } = useGetDiscipline();
+  const { data: cartItem , isLoading:cartLoading} = useGetCartItems();
+  // const { data: disciplineData } = useGetDiscipline();
   const selectSeriesPicklist = seriesPickList?.data?.filter((item) => item?.picklistName === "Series");
 
-  const { mutate: logOut } = useLogOutMutation();
+  const { mutate: logOut , isPending:logOutPending } = useLogOutMutation();
 
   useClickOutside(closePopup, () => {
     setIsProfileDropdown(false);
@@ -122,7 +122,7 @@ const NavBar = () => {
                     >
                       <div className="space-y-4">
                         <h3 className="uppercase font-bold dark:text-gray-400 text-gray-800">Discipline</h3>
-                        <ul className="space-y-3">
+                        {/* <ul className="space-y-3">
                           {disciplineData?.data?.map((item, i) => (
                             <li key={i} onClick={() => setIsDropdownOpen(false)}>
                               <Link to={`${item?.disciplineName}?option=subscription`} className="dark:text-white text-gray-600">
@@ -130,7 +130,7 @@ const NavBar = () => {
                               </Link>
                             </li>
                           ))}
-                        </ul>
+                        </ul> */}
                       </div>
 
                       <div className="space-y-4">
@@ -193,7 +193,7 @@ const NavBar = () => {
                     <ShoppingCard isOpen={isSidebarOpen} onClose={toggleSidebar} />
                     <button onClick={toggleSidebar} className="relative focus:outline-none">
                       <img src={bag} alt="bag" className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
-                      {cartItem?.cart?.length > 0 && (
+                      {cartLoading ? "0" :   cartItem?.cart?.length > 0 && (
                         <span className="absolute bg-red-500 text-white text-xs w-4 h-4 -right-1 -top-1 rounded-full flex items-center justify-center">
                           {cartItem?.cart?.length}
                         </span>
@@ -412,7 +412,10 @@ const NavBar = () => {
                 >
                   Cancel
                 </button>
-                <button onClick={() => logOut()} className="px-4 py-2 bg-[#EE1D52] rounded-md text-sm font-medium text-white hover:bg-[#ee1d51c2]">
+                <button   
+                
+                disabled={logOutPending}
+                onClick={() => logOut()} className="px-4 py-2 bg-[#EE1D52] rounded-md text-sm font-medium text-white hover:bg-[#ee1d51c2]">
                   Logout
                 </button>
               </div>

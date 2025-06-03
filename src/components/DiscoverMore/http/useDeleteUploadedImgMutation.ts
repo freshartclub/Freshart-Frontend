@@ -15,7 +15,7 @@ const useDeleteUploadedImgMutation = () => {
 
     onSuccess: async (res) => {
       queryClient.invalidateQueries({
-        queryKey: [ARTTIST_ENDPOINTS.getUpLoadedImage],
+        queryKey: [ARTTIST_ENDPOINTS.getAllUpLoadedImages],
         refetchType: "all",
       });
 
