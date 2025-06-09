@@ -395,7 +395,7 @@ const App: React.FC = () => {
               {theme ? <FaSun size={20} /> : <FaMoon size={20} />}
             </button>
           </div>
-          {window.location.pathname.includes("/artist-panel") ? null : <FooterSection />}
+          {window.location.pathname.includes("/artist-panel") ? null : null}
         </Suspense>
       </Layout>
     </AuthProvider>
