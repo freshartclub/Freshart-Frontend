@@ -191,10 +191,10 @@ const ArtistDashboard = () => {
           className={`bg-gradient-to-r ${colors.primary} ${colors.text} p-4 mb-6 text-center rounded-lg shadow-lg`}
         >
           <h1 className="text-2xl font-bold">Artist Dashboard</h1>
-          <p className={darkMode ? "text-blue-200" : "text-gray-600"}>Overview of your artistic performance</p>
+          <p className={darkMode ? "text-blue-200" : "text-gray-600"}>Coming Soon</p>
         </motion.header>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <MetricCard
             url="arwork-mangement"
             title="Number of Artworks"
@@ -270,12 +270,12 @@ const ArtistDashboard = () => {
               </div>
             </motion.div>
           </div>
-        </div>
+        </div> */}
 
-        {/* Stats Row */}
+       
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          {/* Stats Section */}
-          <motion.div
+          
+          {/* <motion.div
             initial={{ x: -20 }}
             animate={{ x: 0 }}
             className={`relative bg-gradient-to-b ${colors.primary} ${colors.text} p-6 rounded-lg shadow-lg`}
@@ -285,10 +285,10 @@ const ArtistDashboard = () => {
                 <StatCard key={key} title={key} value={value} trend={trend} />
               ))}
             </div>
-          </motion.div>
+          </motion.div> */}
 
-          {/* Top Artworks Section */}
-          <div className="md:col-span-2">
+    
+          {/* <div className="md:col-span-2">
             <motion.div whileHover={{ scale: 1.005 }} className={`bg-gradient-to-b ${colors.primary} ${colors.text} p-4 rounded-lg shadow-lg`}>
               <h2 className="text-xl font-semibold text-center mb-4">Top Artworks</h2>
 
@@ -318,12 +318,12 @@ const ArtistDashboard = () => {
                 ))}
               </div>
             </motion.div>
-          </div>
+          </div> */}
         </div>
 
-        {/* Bottom Row */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* Artist Score */}
+       
+        {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          
           <motion.div whileHover={{ scale: 1.02 }} className={`relative bg-gradient-to-b ${colors.primary} ${colors.text} p-4 rounded-lg shadow-lg`}>
             <h2 className="text-xl font-semibold mb-2">Artist Score</h2>
             <div className="flex items-center">
@@ -340,7 +340,7 @@ const ArtistDashboard = () => {
             </div>
           </motion.div>
 
-          {/* Insignias Section */}
+         
           <div className="md:col-span-2">
             <motion.div
               initial={{ opacity: 0 }}
@@ -375,7 +375,7 @@ const ArtistDashboard = () => {
               </div>
             </motion.div>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );
