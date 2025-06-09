@@ -170,13 +170,13 @@ const Login: React.FC = () => {
               variant={{ theme: "dark", weight: "medium" }}
               className="md:text-base text-sm"
             >
-              {t("Don’t have account ?")}{" "}
-              <Link
+              {/* {t("Don’t have account ?")}{" "} */}
+              {/* <Link
                 to="/signup"
                 className="font-bold uppercase ml-1 md:text-base text-sm"
               >
                 {t("Sign Up")}
-              </Link>
+              </Link> */}
             </P>
           </div>
           <Link

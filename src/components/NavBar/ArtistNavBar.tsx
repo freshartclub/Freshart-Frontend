@@ -177,9 +177,9 @@ const ArtistNavBar = ({ setSidebarOpen, sidebarOpen }) => {
                     {t("Invite Artist")}
                   </span>
 
-                  <span className={`${dark ? "hover:bg-gray-600" : "hover:bg-gray-100"} px-2 py-1 rounded`} onClick={handleProfile}>
+                  {/* <span className={`${dark ? "hover:bg-gray-600" : "hover:bg-gray-100"} px-2 py-1 rounded`} onClick={handleProfile}>
                     {t("Switch To User Profile")}
-                  </span>
+                  </span> */}
                   <button
                     className={`bg-[#EE1D52] text-white flex flex-col items-center justify-center gap-1 py-2 rounded hover:bg-[#EE1D52]/80 font-medium`}
                     onClick={handleLogOut}

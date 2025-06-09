@@ -18,6 +18,7 @@ import KbDetails from "./components/pages/KbDetails.tsx";
 import UserOfferRequest from "./components/UserOffer/UserOfferRequest.tsx";
 import CustomUploadPage from "./components/utils/CustomUploadPage.tsx";
 import ArtistSeriesList from "./components/ArtistDetail/ArtistSeriesList.tsx";
+import UnderConstruction from "./components/GetStarted/UnderConstruction.tsx";
 
 // Lazy loading the components
 const UserCircleList = lazy(() => import("./components/CIrcle/UserCircleList"));
@@ -100,9 +101,9 @@ const App: React.FC = () => {
         <Suspense fallback={<Loader />}>
           <div>
             <Routes>
-              <Route path="/" element={<GetStarted />} />
+              <Route path="/" element={<UnderConstruction />} />
               <Route path="/login" element={<LoginPage />} />
-              <Route path="/signup" element={<SignUp />} />
+              {/* <Route path="/signup" element={<SignUp />} /> */}
               <Route path="/become_artist" element={<BecomeArtist />} />
               <Route path="/forget-password" element={<ForgetPassword />} />
               <Route path="/reset-password" element={<ChangePassword />} />
@@ -112,22 +113,22 @@ const App: React.FC = () => {
               <Route path="/faq" element={<Faq />} />
               <Route path="/kb-database" element={<KbDatabase />} />
               <Route path="/about-us" element={<AboutUs />} />
-              <Route path="/discover_more/:id/upload" element={ <CustomUploadPage /> } />
+              {/* <Route path="/discover_more/:id/upload" element={ <CustomUploadPage /> } /> */}
               <Route path="/artist-panel/*" element={ <AuthGuard> <ArtistGuard> <ArtistPanel/> </ArtistGuard> </AuthGuard>}/>
               <Route path="/kb-details" element={<KbDetails />} />
               <Route path="/ticket/all" element={ <AuthGuard> <TicketHistory /> </AuthGuard>}/>
               <Route path="/ticket/detail" element={<AuthGuard> <SingleTicket /> </AuthGuard> }/>
               <Route path="/ticket/new" element={<AuthGuard> <NewTicket /> </AuthGuard> }/>
-              <Route path="/home" element={<HomePage />} />
-              <Route path="/payment_successful" element={<AuthGuard> <PaymentSuccessfull /> </AuthGuard>}/>
-              <Route path="/thankyou" element={<AuthGuard> <ThankYou /> </AuthGuard>}/>
-              <Route path="/error" element={<AuthGuard> <ErrorPage /> </AuthGuard>}/>
-              <Route path="/blog" element={ <AuthGuard> <BlogAndNews /> </AuthGuard>}/>
-              <Route path="/offer-request" element={ <AuthGuard>  <UserOfferRequest /></AuthGuard>} />
-              <Route path="/circleblog" element={ <AuthGuard>  <CircleBlog />  </AuthGuard>} />
-              <Route path="/registration_process" element={ <AuthGuard> <CompleteProfileForm /> </AuthGuard>} />
-              <Route path="/card_success" element={ <AuthGuard> <CardSuccessPage /> </AuthGuard>} />
-              <Route
+              {/* <Route path="/home" element={<HomePage />} /> */}
+              {/* <Route path="/payment_successful" element={<AuthGuard> <PaymentSuccessfull /> </AuthGuard>}/> */}
+              {/* <Route path="/thankyou" element={<AuthGuard> <ThankYou /> </AuthGuard>}/> */}
+              {/* <Route path="/error" element={<AuthGuard> <ErrorPage /> </AuthGuard>}/> */}
+              {/* <Route path="/blog" element={ <AuthGuard> <BlogAndNews /> </AuthGuard>}/> */}
+              {/* <Route path="/offer-request" element={ <AuthGuard>  <UserOfferRequest /></AuthGuard>} /> */}
+              {/* <Route path="/circleblog" element={ <AuthGuard>  <CircleBlog />  </AuthGuard>} /> */}
+              {/* <Route path="/registration_process" element={ <AuthGuard> <CompleteProfileForm /> </AuthGuard>} /> */}
+              {/* <Route path="/card_success" element={ <AuthGuard> <CardSuccessPage /> </AuthGuard>} /> */}
+              {/* <Route
                 path="/collections"
                 element={
                   <AuthGuard>
@@ -380,7 +381,7 @@ const App: React.FC = () => {
                     <PaymentPage />
                   </AuthGuard>
                 }
-              />
+              /> */}
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
             <button
@@ -392,7 +393,7 @@ const App: React.FC = () => {
               {theme ? <FaSun size={20} /> : <FaMoon size={20} />}
             </button>
           </div>
-          {window.location.pathname.includes("/artist-panel") ? null : <FooterSection />}
+          {window.location.pathname.includes("/artist-panel") ? null : null}
         </Suspense>
       </Layout>
     </AuthProvider>

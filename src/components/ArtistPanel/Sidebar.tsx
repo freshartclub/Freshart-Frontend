@@ -43,31 +43,31 @@ const sections = [
     path: "profile",
     submenu: [{ key: "profile", label: "Artist Profile", path: "profile" }],
   },
-  {
-    key: "order",
-    label: "Order",
-    icon: order,
-    path: "order/purchase",
-    submenu: [
-      { key: "purchase", label: "Purchase Orders", path: "order/purchase" },
-      { key: "subscription", label: "Subscription Orders", path: "order/subscription" },
+  // {
+  //   key: "order",
+  //   label: "Order",
+  //   icon: order,
+  //   path: "order/purchase",
+  //   submenu: [
+  //     { key: "purchase", label: "Purchase Orders", path: "order/purchase" },
+  //     { key: "subscription", label: "Subscription Orders", path: "order/subscription" },
 
-      { key: "custom", label: "Custom Orders", path: "order/custom" },
-    ],
-  },
-  {
-    key: "offers",
-    label: "Offers Request",
-    icon: invoice,
-    path: "offer",
-  },
-  {
-    key: "circle",
-    label: "Circle",
-    icon: circle,
-    path: "circle",
-    submenu: [{ key: "circle", label: "Circle List", path: "circle" }],
-  },
+  //     { key: "custom", label: "Custom Orders", path: "order/custom" },
+  //   ],
+  // },
+  // {
+  //   key: "offers",
+  //   label: "Offers Request",
+  //   icon: invoice,
+  //   path: "offer",
+  // },
+  // {
+  //   key: "circle",
+  //   label: "Circle",
+  //   icon: circle,
+  //   path: "circle",
+  //   submenu: [{ key: "circle", label: "Circle List", path: "circle" }],
+  // },
   // {
   //   key: "mail",
   //   label: "Mail",

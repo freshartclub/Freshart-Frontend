@@ -68,18 +68,18 @@ const ArtistPanel = () => {
             <Route path="artwork" element={<Artwork />} />
             <Route path="artwork/add" element={<AddArtwork />} />
 
-            <Route path="order/purchase" element={<Orders />} />
+            {/* <Route path="order/purchase" element={<Orders />} />
             <Route path="order/subscription" element={<SubscriptionOrder />} />
             <Route path="order/detail" element={<OrdersDetail />} />
             <Route path="order/approve-order" element={<OrderApprove />} />
-            <Route path="order/custom" element={<CustomOrder />} />
+            <Route path="order/custom" element={<CustomOrder />} /> */}
 
-            <Route path="offer" element={<Offers />} />
+            {/* <Route path="offer" element={<Offers />} /> */}
 
             <Route path="profile" element={<ArtistProfile />} />
             <Route path="settings" element={<Settings />} />
-            <Route path="circle" element={<Circle />} />
-            <Route path="circle/:id" element={<CirclePage />} />
+            {/* <Route path="circle" element={<Circle />} />
+            <Route path="circle/:id" element={<CirclePage />} /> */}
 
             <Route path="ticket" element={<Support />} />
             <Route path="ticket/all" element={<TicketHistory />} />
