@@ -23,6 +23,9 @@ export const ARTTIST_ENDPOINTS = {
   UpdateBillingAddress: `${ARTIST_BASE_URl}/update-billing-address`,
   PatchRevalidation: `${ARTIST_BASE_URl}/revalidate-profile`,
   GetArtWorkBySeries: `${ARTIST_BASE_URl}/get-artist-artworks-by-series`,
+
+  GetArtWorkBySeriesName: `${ARTIST_BASE_URl}/get-artwork-by-name`,
+
   GetOtherArtworks: `${ARTIST_BASE_URl}/get-other-artworks`,
   getInsignia: `${ARTIST_BASE_URl}/get-insignias`,
 

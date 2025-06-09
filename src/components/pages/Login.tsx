@@ -43,8 +43,19 @@ const Login: React.FC = () => {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
+       if (rememberMe) {
+        localStorage.setItem("email", data.email);
+      } else {
+        localStorage.removeItem("email");
+      }
+     
       await mutateAsync(data);
     } catch (error) {
+      if (error) {
+        localStorage.setItem("email", data.email);
+      } else {
+        localStorage.removeItem("email");
+      }
       console.error(error?.message);
     }
   });
@@ -131,6 +142,7 @@ const Login: React.FC = () => {
                 <img src={arrow} alt="arrow" className="ml-2 mt-1" />
               </Button>
             </div>
+
           </form>
 
           <div className="flex sm:flex-row flex-col justify-between items-center mb-6 mt-4">

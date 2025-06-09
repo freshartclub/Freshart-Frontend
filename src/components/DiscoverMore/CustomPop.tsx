@@ -2,10 +2,10 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import QRCode from "react-qr-code";
 import { useAppSelector } from "../../store/typedReduxHooks";
-import { useGetUpLoadedImgaes } from "./http/useGetUpLoadedImgaes";
 import useUploadImageMutation from "./http/useUploadImageMutation";
 
 import ImagePlacementWizard from "./ImagePlacementWizard";
+
 
 const CustomPop = ({ onClose, artwork }) => {
   const [file, setFile] = useState(null);
@@ -200,78 +200,72 @@ const CustomPop = ({ onClose, artwork }) => {
             </div>
 
           </div>
-          <h1 className="text-center">Enter Details</h1>
-          <div>
-            <label
-              htmlFor="room-input"
-              className="block text-sm font-medium  mb-1"
-            >
-              Enter Room Name *
-            </label>
 
-            <div className="relative">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow border border-gray-200 dark:border-gray-700">
+            <h1 className="text-2xl font-semibold text-center mb-6 text-gray-900 dark:text-white">
+              Enter Room Details
+            </h1>
+
+           
+            <div className="mb-6">
+              <label
+                htmlFor="room-input"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
+                Room Name <span className="text-red-500">*</span>
+              </label>
               <input
                 id="room-input"
-
                 required
-                placeholder="Enter room name"
+                placeholder="e.g., Living Room"
                 value={roomName}
                 onChange={(e) => setRoomName(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                className="w-full px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-gray-700 dark:text-white"
               />
-
             </div>
-          </div>
-          <div className="flex flex-col md:flex-row gap-4 md:gap-6 items-center justify-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
 
 
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-            <div className="w-full md:w-auto">
-              <label
-                htmlFor="height-input"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-              >
-                Height *
-              </label>
-              <div className="relative">
-                <input
-                  id="height-input"
-
-
-                  placeholder="Enter height"
-                  value={height}
-                  onChange={(e) => setHeight(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-                />
-                <span className="absolute right-3 top-2.5 text-sm text-gray-500 dark:text-gray-400">
-                  cm
-                </span>
+              <div className="w-full">
+                <label
+                  htmlFor="height-input"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >
+                  Height <span className="text-red-500">*</span>
+                </label>
+                <div className="relative">
+                  <input
+                    id="height-input"
+                    placeholder="Enter height"
+                    value={height}
+                    onChange={(e) => setHeight(e.target.value)}
+                    className="w-full px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-gray-700 dark:text-white"
+                  />
+                  <span className="absolute right-3 top-2.5 text-sm text-gray-500 dark:text-gray-400">cm</span>
+                </div>
               </div>
-            </div>
 
-            <div className="w-full md:w-auto">
-              <label
-                htmlFor="width-input"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-              >
-                Width *
-              </label>
-              <div className="relative">
-                <input
-                  id="width-input"
-                  placeholder="Enter width"
-                  value={width}
-                  onChange={(e) => setWidth(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-                />
-                <span className="absolute right-3 top-2.5 text-sm text-gray-500 dark:text-gray-400">
-                  cm
-                </span>
+              <div className="w-full">
+                <label
+                  htmlFor="width-input"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >
+                  Width <span className="text-red-500">*</span>
+                </label>
+                <div className="relative">
+                  <input
+                    id="width-input"
+                    placeholder="Enter width"
+                    value={width}
+                    onChange={(e) => setWidth(e.target.value)}
+                    className="w-full px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-gray-700 dark:text-white"
+                  />
+                  <span className="absolute right-3 top-2.5 text-sm text-gray-500 dark:text-gray-400">cm</span>
+                </div>
               </div>
             </div>
           </div>
-
-
 
 
           <div>

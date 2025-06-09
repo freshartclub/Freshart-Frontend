@@ -52,19 +52,16 @@ const ArtCard = memo(({ data, title, viewType, loading }: ArtCardProps) => {
   const [favoriteLists, setFavoriteLists] = useState<Record<string, string[]>>({});
   const favoriteListRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-
   const [showManageLists, setShowManageLists] = useState(false);
   const [newListName, setNewListName] = useState("");
   const [isStart, setIsStart] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
   const [newLoading, setNewLoading] = useState(false);
   const [isFavorite, setIsFavorite] = useState<string | null>(null);
-
   const { mutate: postRecentView } = postRecentArtworkMutation();
   const { mutateAsync: favoriteMutation } = useAddToFavorite();
   const isAuthorized = useAppSelector((state) => state.user.isAuthorized);
   const navigate = useNavigate();
-
   const type = "artwork";
   const { data: favoriteData } = useGetFavoriteList(type);
 
@@ -223,12 +220,17 @@ const ArtCard = memo(({ data, title, viewType, loading }: ArtCardProps) => {
             if (isOffensive && !isViewed) return;
             handleRedirectToDescription(item?._id);
           }}
-          className={`relative cursor-pointer p-3 border flex-shrink-0 ${
+          className={`relative cursor-pointer p-3 border flex-shrink-0 py-2 ${
             dark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
           } hover:shadow-[5px_5px_5px_rgba(0,0,0,0.05)] transition-all duration-300 min-w-[${CARD_WIDTH}px] max-w-[300px] h-[320px] group`}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
+            {item?.exclusive  && (
+              <div className="absolute top-2 left-2 bg-[#E05A48] text-white text-[10px] tracking-wider font-bold uppercase px-2 py-1 rounded shadow-sm z-[9999]">
+                Exclusive
+              </div>
+            )}         
           <div className="relative overflow-hidden rounded-md h-[200px] w-full">
             <motion.img
               src={`${lowImageUrl}/${item?.media}`}
@@ -292,7 +294,7 @@ const ArtCard = memo(({ data, title, viewType, loading }: ArtCardProps) => {
             )}
           </div>
 
-          <div className="mt-3">
+          <div className="mt-3 ">
             <h1 className={`font-semibold text-md ${dark ? "text-gray-100" : "text-gray-900"} truncate`}>
               {item?.artworkName?.length > 17 ? `${item?.artworkName?.slice(0, 17)}...` : item?.artworkName}
             </h1>
@@ -306,7 +308,7 @@ const ArtCard = memo(({ data, title, viewType, loading }: ArtCardProps) => {
               {item?.discipline?.artworkDiscipline} • {item?.additionalInfo?.artworkTechnic}
             </p>
             {item?.activeTab == "purchase" && (
-              <p className={`mt-1 flex gap-2  items-center ${dark ? "text-gray-100" : "text-gray-800"} font-bold`}>
+              <p className={`mt-1 flex gap-2  items-center ${dark ? "text-gray-100" : "text-gray-800"} font-bold `}>
                 {item?.currency ? getSymbolFromCurrency(item?.currency?.slice(0, 3)) : null} {item?.price}
                 {item?.discount && (
                   <span>
@@ -314,10 +316,10 @@ const ArtCard = memo(({ data, title, viewType, loading }: ArtCardProps) => {
                   </span>
                 )}
 
-            {item?.purchaseType === "Downward Offer"  ?   <FaHandshake  size={32} color={dark ? "#ffffff" : "#000000"} />  : null}
+              {item?.purchaseType === "Downward Offer"  ?   <FaHandshake  size={32} color={dark ? "#ffffff" : "#000000"} />  : null}
 
               </p>
-            )}
+              )}
 
             {item?.purchaseType === "Upward Offer"  ?   <FaHandshake  size={32} color={dark ? "#ffffff" : "#000000"} />  : null}
             <div className="absolute bottom-3 right-3">
@@ -485,7 +487,7 @@ const ArtCard = memo(({ data, title, viewType, loading }: ArtCardProps) => {
           </AnimatePresence>
 
           <div ref={scrollContainerRef} className="flex overflow-x-scroll no-scrollbar space-x-4 pb-2 scrollbar">
-            {data.map((item) => renderCard(item))}
+            {data?.map((item) => renderCard(item))}
           </div>
 
           <AnimatePresence>
@@ -498,8 +500,8 @@ const ArtCard = memo(({ data, title, viewType, loading }: ArtCardProps) => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                // whileHover={{ scale: 1.1 }}
-                // whileTap={{ scale: 0.9 }}
+            // whileHover={{ scale: 1.1 }}
+              // whileTap={{ scale: 0.9 }}
               >
                 <FaChevronRight size={20} />
               </motion.button>

@@ -82,9 +82,9 @@ const ShoppingCard = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
         onClick={onClose}
       ></div>
 
-      {/* Shopping cart panel */}
+    
       <div
-        className={`fixed inset-y-0 right-0 flex max-w-full ${
+        className={`fixed inset-y-0 right-0 flex max-w-full h-[100vh] ${
           isOpen ? "translate-x-0" : "translate-x-full"
         } transition-transform duration-300 ease-in-out`}
       >
@@ -199,7 +199,7 @@ const ShoppingCard = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
                     </div>
 
                     <div className="space-y-3">
-                      {offredArtwork.map((item: any, index: number) => (
+                      {offredArtwork?.map((item: any, index: number) => (
                         <CartItem
                           key={`offer-${index}`}
                           item={item}

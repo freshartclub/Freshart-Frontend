@@ -22,9 +22,6 @@ const ArtworkPlacementStep = ({
   const [finalImage, setFinalImage] = useState(null);
   const [backgroundImage, setBackgroundImage] = useState(null);
 
-
-
-
   useEffect(() => {
     if (!artworkPosition && cropSelection) {
       setArtworkPosition({
@@ -33,7 +30,6 @@ const ArtworkPlacementStep = ({
       });
     }
   }, [artworkPosition, cropSelection, setArtworkPosition]);
-
 
   const handleMouseDown = (e) => {
     if (!artworkRef.current || !cropAreaRef.current) return;
@@ -81,7 +77,6 @@ const ArtworkPlacementStep = ({
     setIsDragging(false);
   };
 
-
   const handleTouchStart = (e) => {
     if (!artworkRef.current || !cropAreaRef.current) return;
 
@@ -125,15 +120,11 @@ const ArtworkPlacementStep = ({
     setIsDragging(false);
   };
 
-
-
-
   const getArtworkDimensions = () => {
     const baseWidth = artwork?.data?.additionalInfo?.width || 150;
     const baseHeight = artwork?.data?.additionalInfo?.height || 150;
     return { width: baseWidth, height: baseHeight };
   };
-
 
   const generatePreviewImage = async () => {
     try {
@@ -143,7 +134,6 @@ const ArtworkPlacementStep = ({
       console.error("Failed to generate preview:", error);
     }
   };
-
 
   const generateCompositeImage = () => {
     return new Promise((resolve, reject) => {
@@ -209,7 +199,6 @@ const ArtworkPlacementStep = ({
       };
     });
   };
-
 
   const generateCroppedImage = () => {
     return new Promise((resolve, reject) => {
@@ -283,15 +272,12 @@ const ArtworkPlacementStep = ({
     });
   };
 
-
   const downloadImages = async () => {
     try {
 
       const [fullComposite] = await Promise.all([
         generateCompositeImage(),
-
       ]);
-
 
       if (fullComposite) {
         const fullLink = document.createElement("a");
@@ -301,7 +287,6 @@ const ArtworkPlacementStep = ({
         fullLink.click();
         document.body.removeChild(fullLink);
       }
-
 
       setTimeout(() => {
         if (croppedComposite) {

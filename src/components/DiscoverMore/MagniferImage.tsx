@@ -19,6 +19,44 @@ export const MagnifierImage = ({ src, alt, isOffensive, safeMode, enableZoom = f
   const zoomLevels = [1.5, 2.5, 3.5, 4.5, 5];
   const zoomScale = zoomLevels[zoomLevelIndex];
 
+  const [zoom, setZoom] = useState(8);
+
+  const [isVisible, setIsVisible] = useState(true);
+  
+  useEffect(() => {
+    const img = containerRef.current;
+    if (!magnifierRef.current || !isVisible || !img) return;
+
+    const handleWheel = (e) => {
+      e.preventDefault();
+
+      setZoom((prevZoom) => {
+        const isZoomIn = e.deltaY < 0;
+        const step = 1;
+        const minZoom = 8;
+        const maxZoom = 16;
+
+        if (isZoomIn) {
+          return Math.min(prevZoom + step, maxZoom);
+        } else if (prevZoom > minZoom) {
+          return Math.max(prevZoom - step, minZoom);
+        }
+
+        return prevZoom;
+      });
+    };
+
+    img.addEventListener("wheel", handleWheel, { passive: false });
+
+    return () => {
+      img.removeEventListener("wheel", handleWheel);
+    };
+  }, [isVisible]);
+
+  useEffect(() => {
+    if (!isVisible) setZoom(5);
+  }, [isVisible]);
+
   const highResSrc = src.replace(lowImageUrl, `${imageUrl}/users`);
 
   useEffect(() => {
@@ -73,7 +111,7 @@ export const MagnifierImage = ({ src, alt, isOffensive, safeMode, enableZoom = f
         left: `${magnifierX}px`,
         top: `${magnifierY}px`,
         backgroundPosition: backgroundPos,
-        backgroundSize: `${imgRect.width * zoomLevel}px ${imgRect.height * zoomLevel}px`,
+        // backgroundSize: `${imgRect.width * zoomLevel}px ${imgRect.height * zoomLevel}px`,
         display: "block",
       });
     },
@@ -268,7 +306,6 @@ export const MagnifierImage = ({ src, alt, isOffensive, safeMode, enableZoom = f
         handleDoubleTap();
         e.preventDefault();
       }
-
       setLastTap(currentTime);
     },
     [lastTap, handleDoubleTap]
@@ -280,15 +317,14 @@ export const MagnifierImage = ({ src, alt, isOffensive, safeMode, enableZoom = f
         src={src}
         alt={alt}
         className={`${isOffensive && safeMode === "Off" ? "blur-lg brightness-75" : ""} 
-          mx-auto overflow-hidden object-contain md:w-[25rem] h-[350px] md:h-[280px] lg:w-full`}
+          mx-auto  overflow-hidden object-contain md:w-[25rem] h-[550px] md:h-[280px] lg:w-full`}
       />
     );
   }
 
   return (
     <div
-      ref={containerRef}
-      className={`relative ${dark ? "bg-gray-700" : "bg-gray-200"} px-2 w-full h-full`}
+      className={`relative ${dark ? "bg-gray-700" : "bg-grey-500"} px-2 w-full lg:h-full h-[550px] flex items-center justify-center `}
       style={{ cursor: isZoomed ? (isDragging ? "grabbing" : "grab") : "zoom-in" }}
       onMouseMove={isZoomed ? handleZoomedMouseMove : handleMouseMove}
       onMouseEnter={handleMouseEnter}
@@ -303,16 +339,40 @@ export const MagnifierImage = ({ src, alt, isOffensive, safeMode, enableZoom = f
       onTouchCancel={handleTouchEnd}
       onClick={handleTap}
     >
-      <img
-        ref={imgRef}
-        src={src}
-        alt={alt}
-        className={`
+
+      <div ref={containerRef} className="relative">
+        <img
+          ref={imgRef}
+          src={src}
+          alt={alt}
+          className={`
           ${isOffensive && safeMode === "Off" ? "blur-lg brightness-75" : ""}
-          mx-auto overflow-hidden object-contain md:w-[25rem] lg:w-full h-[350px] md:h-[280px] 
+          mx-auto overflow-hidden object-contain w-full h-[69vh]   py-6
           ${isZoomed ? "opacity-0" : ""}
         `}
-      />
+        />
+
+        <div
+          ref={magnifierRef}
+          className={`magnifier ${isOffensive && safeMode === "Off" ? "blur" : ""}`}
+          style={{
+            visibility: isVisible ? "visible" : "hidden",
+            position: "absolute",
+            borderRadius: "50%",
+            border: "3px solid #fff",
+            boxShadow: "0 0 10px rgba(0,0,0,0.3)",
+            backgroundColor: "white",
+            backgroundImage: `url(${highResSrc})`,
+            backgroundRepeat: "no-repeat",
+            zIndex: 100,
+            transition: "transform 0.1s ease",
+            backgroundSize: `${zoom * 100}%`,
+            width: "200px",
+            height: "200px",
+            pointerEvents: "auto",
+          }}
+        />
+      </div>
 
       {isZoomed && (
         <div
@@ -338,23 +398,6 @@ export const MagnifierImage = ({ src, alt, isOffensive, safeMode, enableZoom = f
         </div>
       )}
 
-      <div
-        ref={magnifierRef}
-        className={`magnifier ${isOffensive && safeMode === "Off" ? "blur  " : ""}`}
-        style={{
-          display: "none",
-          position: "absolute",
-          borderRadius: "50%",
-          border: "3px solid #fff",
-          boxShadow: "0 0 10px rgba(0,0,0,0.3)",
-          backgroundColor: "white",
-          backgroundImage: `url(${highResSrc})`,
-          backgroundRepeat: "no-repeat",
-          pointerEvents: "none",
-          zIndex: 100,
-          transition: "transform 0.1s ease",
-        }}
-      />
 
       {!isZoomed && (
         <div className="absolute bottom-2 right-2 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-xs z-10">

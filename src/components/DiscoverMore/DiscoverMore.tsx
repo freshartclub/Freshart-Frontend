@@ -36,19 +36,19 @@ const DiscoverMore = () => {
 
   const images = data?.data
     ? [
-        { src: data?.data.media?.mainImage, alt: "Main Image" },
-        { src: data?.data.media?.backImage, alt: "Back Image" },
-        { src: data?.data.media?.mainVideo, alt: "Main Video" },
-        ...data?.data.media?.images?.map((item) => ({
-          src: item,
-          alt: "Additional Image",
-        })),
-        { src: data?.data.media?.inProcessImage, alt: "In Process Image" },
-        ...data?.data.media?.otherVideo?.map((item) => ({
-          src: item,
-          alt: "Additional Video",
-        })),
-      ].filter((image) => image.src)
+      { src: data?.data.media?.mainImage, alt: "Main Image" },
+      { src: data?.data.media?.backImage, alt: "Back Image" },
+      { src: data?.data.media?.mainVideo, alt: "Main Video" },
+      ...data?.data.media?.images?.map((item) => ({
+        src: item,
+        alt: "Additional Image",
+      })),
+      { src: data?.data.media?.inProcessImage, alt: "In Process Image" },
+      ...data?.data.media?.otherVideo?.map((item) => ({
+        src: item,
+        alt: "Additional Video",
+      })),
+    ].filter((image) => image.src)
     : [];
 
   const handleThumbnailClick = (index) => {
@@ -125,137 +125,131 @@ const DiscoverMore = () => {
             <span>{data?.data.artworkName}</span>
           </div>
         </div>
-        <div className="flex lg:w-[70%] mx-auto md:flex-row flex-col gap-0 md:gap-10">
+        <div className="w-full max-w-[1400px] mx-auto px-4 flex flex-col md:flex-row gap-4">
+        
           <div
-            className={`flex md:flex-row flex-col md:h-[300px] py-2 md:w-[60%] ${
-              dark ? "border-gray-700 bg-gray-800" : "border-zinc-300 bg-white"
-            } rounded-lg shadow-md overflow-hidden w-full gap-2 items-center`}
+            className={`flex gap-2 px-2 py-2 md:flex-col items-center md:items-start overflow-x-auto md:overflow-x-hidden overflow-y-hidden md:overflow-y-auto md:h-[500px] max-w-full md:max-w-[100px] min-w-[80px]  scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 rounded-lg ${dark ? "bg-gray-800" : "bg-zinc-100"} [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]`}
+          // style={{ maxWidth: '100px', minWidth: '80px' }}
           >
-            <div
-              className={`flex md:flex-col lg:px-0 px-2 md:h-[280px] w-full md:w-[17%] overflow-x-auto lg:overflow-y-auto gap-2 lg:pl-2 scrollbar ${
-                dark ? "bg-gray-800" : "bg-zinc-100"
-              }`}
-            >
-              {images?.map((thumb, index) => {
-                const isVideo = thumb?.src?.endsWith(".mp4");
-                return thumb?.src ? (
-                  <div
-                    key={index}
-                    onClick={() => handleThumbnailClick(index)}
-                    className={`flex-shrink-0 w-[4rem] h-[4rem] overflow-hidden cursor-pointer ${
-                      currentSlide === index ? (dark ? "border-2 border-blue-400" : "border-2 border-blue-500") : ""
-                    } rounded-lg`}
-                  >
-                    {isVideo ? (
-                      <video
-                        src={`${imageUrl}/videos/${thumb?.src}`}
-                        className={`${
-                          offensive && safeMode === "Off" ? "blur-md brightness-75" : ""
-                        } lg:w-full w-[4rem] h-[4rem] object-cover rounded`}
-                      />
-                    ) : (
-                      <img
-                        src={`${lowImageUrl}/${thumb?.src}`}
-                        alt={thumb?.alt}
-                        className={`${
-                          offensive && safeMode === "Off" ? "blur-md brightness-75" : ""
-                        } lg:w-full w-[4rem] h-[4rem] object-cover rounded`}
-                      />
-                    )}
-                  </div>
-                ) : null;
-              })}
-            </div>
-
-            <div ref={sliderContainerRef} className="flex-1 lg:w-[80%] md:h-[280px] h-[350px] w-full overflow-hidden relative">
-              <div ref={sliderRef} className="flex transition-transform duration-300 ease-in-out h-full">
-                {images.map((slide, index) => (
-                  <div key={index} className="w-full flex-shrink-0 h-full">
-                    {slide?.src?.endsWith(".mp4") ? (
-                      <div className="h-full flex items-center justify-center bg-black">
-                        <video
-                          src={`${imageUrl}/videos/${slide?.src}`}
-                          className={`${
-                            offensive && safeMode === "Off" ? "blur-lg brightness-75" : ""
-                          } shadow h-[350px] md:h-[280px] rounded-lg mx-auto object-contain max-h-full max-w-full`}
-                          controls
-                          autoPlay={currentSlide === index}
-                        />
-                      </div>
-                    ) : (
-                      <div className="relative h-full flex items-center justify-center">
-                        <MagnifierImage
-                          src={`${lowImageUrl}/${slide?.src}`}
-                          alt={`Slide ${index + 1}`}
-                          isOffensive={offensive}
-                          safeMode={safeMode}
-                          enableZoom={index === 0}
-                        />
-                        {offensive && safeMode === "Off" ? (
-                          <div
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleViewClick(data?.data?._id);
-                            }}
-                            className={`absolute z-[99] border ${
-                              dark ? "bg-gray-700 border-gray-600" : "bg-white"
-                            } px-2 py-1 rounded top-2 right-2 flex items-center gap-2 cursor-pointer`}
-                          >
-                            <p className="text-[12px]">Offensive View Off</p>
-                            <FaToggleOff size={20} className="text-green-500" />
-                          </div>
-                        ) : offensive && safeMode === "On" ? (
-                          <div
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleHideClick(data?.data?._id);
-                            }}
-                            className={`absolute z-[99] border ${
-                              dark ? "bg-gray-700 border-gray-600" : "bg-white"
-                            } px-2 py-1 rounded top-2 right-2 flex items-center gap-2 cursor-pointer`}
-                          >
-                            <p className="text-[12px]">Offensive View On</p>
-                            <FaToggleOn size={20} className="text-green-500" />
-                          </div>
-                        ) : null}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-
-              {images?.length > 1 && (
-                <>
-                  <button
-                    onClick={() => setCurrentSlide((prev) => (prev === 0 ? images.length - 1 : prev - 1))}
-                    className={`absolute left-2 top-1/2 -translate-y-1/2 ${
-                      dark ? "bg-gray-700/80 hover:bg-gray-600" : "bg-white/80 hover:bg-white"
-                    } p-2 rounded-full shadow-md`}
-                  >
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                    </svg>
-                  </button>
-                  <button
-                    onClick={() => setCurrentSlide((prev) => (prev === images.length - 1 ? 0 : prev + 1))}
-                    className={`absolute right-2 top-1/2 -translate-y-1/2 ${
-                      dark ? "bg-gray-700/80 hover:bg-gray-600" : "bg-white/80 hover:bg-white"
-                    } p-2 rounded-full shadow-md`}
-                  >
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </button>
-                </>
-              )}
-            </div>
+            {images?.map((thumb, index) => {
+              const isVideo = thumb?.src?.endsWith(".mp4");
+              return (
+                <div
+                  key={index}
+                  onClick={() => handleThumbnailClick(index)}
+                  className={`w-20 h-28 flex-shrink-0 cursor-pointer overflow-hidden rounded-lg
+                    ${currentSlide === index ? (dark ? "border-2 border-blue-400" : "border-2 border-blue-500  transition-transform duration-[700ms] ease-[cubic-bezier(0.77,0,0.175,1)]") : ""}`}
+                >
+                  {isVideo ? (
+                    <video
+                      src={`${imageUrl}/videos/${thumb?.src}`}
+                      className={`object-cover w-full h-full rounded ${offensive && safeMode === "Off" ? "blur-md brightness-75" : ""
+                        }`}
+                    />
+                  ) : (
+                    <img
+                      src={`${lowImageUrl}/${thumb?.src}`}
+                      alt={thumb?.alt}
+                      className={`object-cover w-full h-full rounded ${offensive && safeMode === "Off" ? "blur-md brightness-75" : ""
+                        }`}
+                    />
+                  )}
+                </div>
+              );
+            })}
           </div>
 
-          <div className="md:w-[40%] md:mt-0 mt-4 w-full">
+          <div
+            ref={sliderContainerRef}
+            className="relative flex-1 w-full md:w-[40%] h-[300px] sm:h-[400px] md:h-[500px] rounded-lg overflow-hidden">
+            <div ref={sliderRef} className="flex transition-transform duration-[700ms] ease-[cubic-bezier(0.77,0,0.175,1)] h-full">
+
+            {images?.map((slide, index) => (
+                <div key={index} className="w-full flex-shrink-0 h-full">
+                  {slide?.src?.endsWith(".mp4") ? (
+                    <div className="h-full flex items-center justify-center bg-black">
+                      <video
+                        src={`${imageUrl}/videos/${slide?.src}`}
+                        className={`object-contain w-full h-full ${offensive && safeMode === "Off" ? "blur-lg brightness-75" : ""
+                          }`}
+                        controls
+                        autoPlay={currentSlide === index}
+                      />
+                    </div>
+                  ) : (
+                    <div className="relative h-full flex items-center justify-center">
+                      <MagnifierImage
+                        src={`${lowImageUrl}/${slide?.src}`}
+                        alt={`Slide ${index + 1}`}
+                        isOffensive={offensive}
+                        safeMode={safeMode}
+                        enableZoom={index === 0}
+                      />
+                    </div>
+                  )}
+                </div>
+            ))}
+
+            </div>
+
+            {images?.length > 1 && (
+              <>
+                <button
+                  onClick={() =>
+                    setCurrentSlide((prev) => (prev === 0 ? images.length - 1 : prev - 1))
+                  }
+                  className={`absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-full shadow-md transition-colors duration-300 ${dark
+                    ? 'bg-black/80 hover:bg-black text-white'
+                    : 'bg-white/80 hover:bg-white text-black'
+                    }`}
+                >
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 19l-7-7 7-7"
+                    />
+                  </svg>
+                </button>
+
+                <button
+                  onClick={() =>
+                    setCurrentSlide((prev) => (prev === images.length - 1 ? 0 : prev + 1))
+                  }
+                  className={`absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full shadow-md transition-colors duration-300 ${dark
+                    ? 'bg-black/80 hover:bg-black text-white'
+                    : 'bg-white/80 hover:bg-white text-black'
+                    }`}
+                >
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </button>
+              </>
+            )}
+
+          </div>
+
+          <div className="w-full md:w-[30%]">
             <DiscoverContent data={data?.data} />
           </div>
         </div>
-
         <ProductInfo data={data} />
         <ArtworkVisualizer artwork={data} isLoading={isLoading} error={isError} />
 

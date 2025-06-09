@@ -134,7 +134,7 @@ const CartTotal = ({ data, state, handleRemove, mode, subsection }) => {
           setIsPopUpOpen(true);
           setSubscriptionStatus({
             status: "not_in_any_plan",
-            details: error.response.data.notInCurrentPlan || [],
+            details: error?.response?.data?.notInCurrentPlan || [],
             validArtworks: [],
           });
         }
@@ -145,12 +145,12 @@ const CartTotal = ({ data, state, handleRemove, mode, subsection }) => {
   };
 
   const getUnavailableArtworkDetails = () => {
-    const unavailableIds = subscriptionStatus.details.map((item) => item.artworkId);
-    return data.filter((artwork) => unavailableIds.includes(artwork._id));
+    const unavailableIds = subscriptionStatus?.details?.map((item) => item?.artworkId);
+    return data?.filter((artwork) => unavailableIds?.includes(artwork?._id));
   };
 
   const getAvailableArtworkDetails = () => {
-    return data.filter((artwork) => subscriptionStatus.validArtworks.includes(artwork._id));
+    return data?.filter((artwork) => subscriptionStatus?.validArtworks?.includes(artwork?._id));
   };
 
   const handleSubscriptionAction = (action) => {
@@ -159,19 +159,21 @@ const CartTotal = ({ data, state, handleRemove, mode, subsection }) => {
     switch (action) {
       case "confirm_exchange":
         setOnExchange(true);
-        // navigate(`/payment_page?type=subscription&action=exchange`);
         break;
       case "select_other_subscription":
         navigate("/subscriptions");
         break;
       case "purchase_new_subscription":
-        navigate("/subscriptions?new=true");
+        navigate("/priceandplans");
         break;
       case "upgrade_subscription":
         navigate("/subscriptions?upgrade=true");
         break;
       case "remove_from_cart":
         // Implement remove from cart logic here
+        break;
+      case "go_to_My_Subscriptions":
+        navigate("/my_plans")
         break;
       default:
         break;
@@ -193,7 +195,7 @@ const CartTotal = ({ data, state, handleRemove, mode, subsection }) => {
                 Subscription Status
               </Header>
 
-              {availableArtworks.length > 0 && (
+              {availableArtworks?.length > 0 && (
                 <div className="mb-4">
                   <P
                     variant={{
@@ -206,16 +208,16 @@ const CartTotal = ({ data, state, handleRemove, mode, subsection }) => {
                   </P>
                   <ul className="mt-2 space-y-2">
                     {availableArtworks?.map((artwork) => (
-                      <li key={artwork._id} className="flex items-center gap-2">
+                      <li key={artwork?._id} className="flex items-center gap-2">
                         <span className="text-green-600">✓</span>
-                        <span>{artwork.artworkName}</span>
+                        <span>{artwork?.artworkName}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
               )}
 
-              {unavailableArtworks.length > 0 && (
+              {unavailableArtworks?.length > 0 && (
                 <div className="mb-4">
                   <P
                     variant={{
@@ -228,13 +230,13 @@ const CartTotal = ({ data, state, handleRemove, mode, subsection }) => {
                   </P>
                   <ul className="mt-2 space-y-2">
                     {unavailableArtworks?.map((artwork) => {
-                      const detail = subscriptionStatus?.details.find((d) => d.artworkId === artwork._id);
+                      const detail = subscriptionStatus?.details.find((d) => d?.artworkId === artwork?._id);
                       return (
-                        <li key={artwork._id} className="flex items-start gap-2">
+                        <li key={artwork?._id} className="flex items-start gap-2">
                           <span className="text-red-600">✗</span>
                           <div>
-                            <span>{artwork.artworkName}</span>
-                            {detail?.message && <P variant={{ size: "sm", theme: "error" }}>{detail.message}</P>}
+                            <span>{artwork?.artworkName}</span>
+                            {detail?.message && <P variant={{ size: "sm", theme: "error" }}>{detail?.message}</P>}
                           </div>
                         </li>
                       );
@@ -273,12 +275,12 @@ const CartTotal = ({ data, state, handleRemove, mode, subsection }) => {
                   The following artworks require a subscription:
                 </P>
                 <ul className="mt-2 space-y-3">
-                  {unavailableArtworks.map((artwork) => {
-                    const detail = subscriptionStatus?.details?.find((d) => d.artworkId === artwork._id);
+                  {unavailableArtworks?.map((artwork) => {
+                    const detail = subscriptionStatus?.details?.find((d) => d?.artworkId === artwork?._id);
                     return (
-                      <li key={artwork._id} className={`border p-3 rounded-lg ${dark ? "border-gray-600" : ""}`}>
+                      <li key={artwork?._id} className={`border p-3 rounded-lg ${dark ? "border-gray-600" : ""}`}>
                         <div className="flex items-center gap-3">
-                          {artwork.media.mainImage && (
+                          {artwork?.media?.mainImage && (
                             <img
                               src={`${imageUrl}/users/${artwork?.media?.mainImage}`}
                               alt={artwork?.artworkName}
@@ -328,9 +330,11 @@ const CartTotal = ({ data, state, handleRemove, mode, subsection }) => {
                 >
                   Get New Subscription
                 </Button>
-
+                <Button onClick={() => handleSubscriptionAction("go_to_My_Subscriptions")} variant={{ theme: "light", rounded: "full" }}>
+                  Go to My Subscriptions
+                </Button>
                 <Button onClick={() => handleSubscriptionAction("remove_from_cart")} variant={{ theme: "light", rounded: "full" }}>
-                  Remove from Cart
+                  Back To Cart
                 </Button>
               </div>
             </>
@@ -388,7 +392,7 @@ const CartTotal = ({ data, state, handleRemove, mode, subsection }) => {
                           </button>
                         )}
 
-                        {card?.title === 'Tax' && data.length > 1 && (
+                        {card?.title === 'Tax' && data?.length > 1 && (
                           <button
                             onClick={() => setExpandedTax(!expandedTax)}
                             className="focus:outline-none"
@@ -415,11 +419,8 @@ const CartTotal = ({ data, state, handleRemove, mode, subsection }) => {
                             <span className={dark ? "text-gray-300" : "text-[#191C1F]"}>{item?.pricing?.vatAmount + "%"}</span>
                           </div>
                         ))}
-
-
                       </div>
                     )}
-
 
                     {card?.title === 'Discount' && expandedDiscount && data?.length > 1 && (
                       <div className="ml-4 pl-4 border-l-2 border-gray-200 dark:border-gray-600">

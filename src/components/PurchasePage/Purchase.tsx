@@ -143,11 +143,11 @@ const Purchase = () => {
 
   useEffect(() => {
     if (hoverData && !allHoverData) {
-      setAllHoverData(hoverData.data);
+      setAllHoverData(hoverData?.data);
     }
   }, [hoverData, allHoverData]);
 
-  const filteredHoverData = allHoverData?.disData?.find((item) => item.discipline === hoveredDiscipline?.disciplineName) || null;
+  const filteredHoverData = allHoverData?.disData?.find((item) => item?.discipline === hoveredDiscipline?.disciplineName) || null;
 
   const handleSliderChange = (key, value) => {
     setSliderData((prev) => ({
@@ -160,8 +160,8 @@ const Purchase = () => {
 
   const matchesSelectedDisciplines = (item) => {
     if (!selectedOption.length) return true;
-    const disciplineNames = item.discipline?.map((d) => d.disciplineName) || [];
-    return selectedOption.every((option) => disciplineNames.includes(option));
+    const disciplineNames = item?.discipline?.map((d) => d?.disciplineName) || [];
+    return selectedOption?.every((option) => disciplineNames?.includes(option));
   };
 
   const filteredTechnicData =
@@ -259,9 +259,8 @@ const Purchase = () => {
 
     return (
       <div
-        className={`z-10 border flex flex-col p-2 gap-2 ${
-          dark ? "bg-gray-800 text-gray-100 border-gray-700" : "bg-white text-gray-800 border-gray-200"
-        } rounded-lg shadow-md`}
+        className={`z-10 border flex flex-col p-2 gap-2 ${dark ? "bg-gray-800 text-gray-100 border-gray-700" : "bg-white text-gray-800 border-gray-200"
+          } rounded-lg shadow-md`}
       >
         {dataToShow?.map((item, index: number) => (
           <label key={index} className="flex items-center space-x-2 cursor-pointer">
@@ -291,9 +290,8 @@ const Purchase = () => {
 
     return (
       <div
-        className={`z-10 border flex flex-col p-2 gap-2 ${
-          dark ? "bg-gray-800 text-gray-100 border-gray-700" : "bg-white text-gray-800 border-gray-200"
-        } rounded-lg shadow-md`}
+        className={`z-10 border flex flex-col p-2 gap-2 ${dark ? "bg-gray-800 text-gray-100 border-gray-700" : "bg-white text-gray-800 border-gray-200"
+          } rounded-lg shadow-md`}
       >
         {dataToShow?.map((item: string, index: number) => (
           <label key={index} className="flex items-center space-x-2 cursor-pointer">
@@ -322,9 +320,8 @@ const Purchase = () => {
     const dataToShow = showAllTheme ? themeData : filteredThemeData;
     return (
       <div
-        className={`z-10 border flex flex-col p-2 gap-2 ${
-          dark ? "bg-gray-800 text-gray-100 border-gray-700" : "bg-white text-gray-800 border-gray-200"
-        } rounded-lg shadow-md`}
+        className={`z-10 border flex flex-col p-2 gap-2 ${dark ? "bg-gray-800 text-gray-100 border-gray-700" : "bg-white text-gray-800 border-gray-200"
+          } rounded-lg shadow-md`}
       >
         {dataToShow?.map((item: string, index: number) => (
           <label key={index} className="flex items-center space-x-2 cursor-pointer">
@@ -353,9 +350,8 @@ const Purchase = () => {
     const dataToShow = showAllStyle ? styleData : filteredStyleData;
     return (
       <div
-        className={`z-10 border flex flex-col p-2 gap-2 ${
-          dark ? "bg-gray-800 text-gray-100 border-gray-700" : "bg-white text-gray-800 border-gray-200"
-        } rounded-lg shadow-md`}
+        className={`z-10 border flex flex-col p-2 gap-2 ${dark ? "bg-gray-800 text-gray-100 border-gray-700" : "bg-white text-gray-800 border-gray-200"
+          } rounded-lg shadow-md`}
       >
         {dataToShow?.map((item: string, index: number) => (
           <label key={index} className="flex items-center space-x-2 cursor-pointer">
@@ -409,16 +405,18 @@ const Purchase = () => {
 
             <div
               className={`${isOpen ? "block" : "hidden"} lg:flex flex-col lg:flex-row items-start lg:items-center mt-3 lg:mt-0
-           space-y-2 lg:space-y-0 lg:space-x-4 absolute lg:relative z-10 md:w-[40%] sm:w-[50%]
-            lg:w-auto shadow-lg lg:shadow-none p-4 lg:p-0 ${dark ? "bg-gray-800" : "bg-white"} lg:bg-transparent rounded-lg lg:rounded-none`}
+                space-y-2 lg:space-y-0 lg:space-x-4 absolute lg:relative z-10 md:w-[40%] sm:w-[50%]
+                lg:w-auto shadow-lg lg:shadow-none p-4 lg:p-0 ${dark ? "bg-gray-800" : "bg-white"} lg:bg-transparent rounded-lg lg:rounded-none`}
             >
+
+
+
               {disciplineData?.data?.map((item, index: number) => (
                 <div key={index}>
                   <div className="relative group" onMouseEnter={() => setHoveredDiscipline(item)}>
                     <span
-                      className={`${
-                        dark ? "text-gray-300" : "text-gray-700"
-                      } font-semibold px-3 cursor-pointer group-hover:text-[#EE1D52] transition-all duration-200 ease-in-out rounded-md`}
+                      className={`${dark ? "text-gray-300" : "text-gray-700"
+                        } font-semibold px-3 cursor-pointer group-hover:text-[#EE1D52] transition-all duration-200 ease-in-out rounded-md`}
                     >
                       {item?.disciplineName}
                     </span>
@@ -430,9 +428,8 @@ const Purchase = () => {
                         <p className={`${dark ? "text-gray-400" : "text-gray-400"} text-sm animate-pulse`}></p>
                       ) : (
                         <div
-                          className={`absolute border-t -left-[60px] top-[42px] w-[99.1vw] ${
-                            dark ? "bg-gray-800 text-gray-100 border-gray-700" : "bg-white text-gray-800"
-                          } z-30 pt-3 pb-6 flex items-start justify-between gap-6 transform transition-all duration-300 ease-in-out overflow-x-auto scrollbar-thin shadow-xl`}
+                          className={`absolute border-t -left-[60px] top-[42px] w-[99.1vw] ${dark ? "bg-gray-800 text-gray-100 border-gray-700" : "bg-white text-gray-800"
+                            } z-30 pt-3 pb-6 flex items-start justify-between gap-6 transform transition-all duration-300 ease-in-out overflow-x-auto scrollbar-thin shadow-xl`}
                           onMouseEnter={() => setHoveredDiscipline(item)}
                           onMouseLeave={() => setHoveredDiscipline(null)}
                         >
@@ -449,9 +446,8 @@ const Purchase = () => {
                                         setHoveredDiscipline(null);
                                       }}
                                       key={styleIndex}
-                                      className={`text-sm ${
-                                        dark ? "text-gray-300 hover:text-blue-400" : "text-gray-700 hover:text-blue-600"
-                                      } transition-colors duration-150 cursor-pointer`}
+                                      className={`text-sm ${dark ? "text-gray-300 hover:text-blue-400" : "text-gray-700 hover:text-blue-600"
+                                        } transition-colors duration-150 cursor-pointer`}
                                     >
                                       {styleItem?.styleName}
                                     </li>
@@ -469,9 +465,8 @@ const Purchase = () => {
                                   filteredHoverData?.theme?.map((themeItem, themeIndex: number) => (
                                     <li
                                       key={themeIndex}
-                                      className={`text-sm ${
-                                        dark ? "text-gray-300 hover:text-blue-400" : "text-gray-700 hover:text-blue-600"
-                                      } transition-colors duration-150 cursor-pointer`}
+                                      className={`text-sm ${dark ? "text-gray-300 hover:text-blue-400" : "text-gray-700 hover:text-blue-600"
+                                        } transition-colors duration-150 cursor-pointer`}
                                       onClick={() => {
                                         handleOptionSelect(hoveredDiscipline?.disciplineName);
                                         handleThemeSelect(themeItem?.themeName);
@@ -499,13 +494,12 @@ const Purchase = () => {
                                         [key.key]: prev[key.key] === "Yes" ? "" : "Yes",
                                       }))
                                     }
-                                    className={`${
-                                      moreOptions[key.key] === "Yes"
-                                        ? `${dark ? "bg-blue-900 text-blue-200" : "bg-blue-100 text-blue-800"} px-2 rounded`
-                                        : dark
+                                    className={`${moreOptions[key.key] === "Yes"
+                                      ? `${dark ? "bg-blue-900 text-blue-200" : "bg-blue-100 text-blue-800"} px-2 rounded`
+                                      : dark
                                         ? "text-gray-300"
                                         : "text-gray-700"
-                                    } text-sm hover:text-blue-600 transition-colors duration-150 cursor-pointer`}
+                                      } text-sm hover:text-blue-600 transition-colors duration-150 cursor-pointer`}
                                   >
                                     {key.label}
                                   </li>
@@ -526,13 +520,12 @@ const Purchase = () => {
                                           insig: prev.insig === key._id ? "" : key._id,
                                         }))
                                       }
-                                      className={`${
-                                        moreOptions?.insig === key._id
-                                          ? `${dark ? "bg-blue-900 text-blue-200" : "bg-blue-100 text-blue-800"} px-2 rounded`
-                                          : dark
+                                      className={`${moreOptions?.insig === key._id
+                                        ? `${dark ? "bg-blue-900 text-blue-200" : "bg-blue-100 text-blue-800"} px-2 rounded`
+                                        : dark
                                           ? "text-gray-300"
                                           : "text-gray-700"
-                                      } text-sm hover:text-blue-600 transition-colors duration-150 cursor-pointer`}
+                                        } text-sm hover:text-blue-600 transition-colors duration-150 cursor-pointer`}
                                     >
                                       {key?.credentialName}
                                     </li>
@@ -549,11 +542,10 @@ const Purchase = () => {
                                     <li
                                       className="relative rounded-lg overflow-hidden w-[15vw] min-w-[120px] shadow-md hover:shadow-lg transition-all duration-200 group"
                                       style={{
-                                        backgroundImage: `url(${
-                                          allHoverData?.collection
-                                            ? `${imageUrl}/users/${allHoverData?.collection[0]?.collectionFile}`
-                                            : "https://via.placeholder.com/80"
-                                        })`,
+                                        backgroundImage: `url(${allHoverData?.collection
+                                          ? `${imageUrl}/users/${allHoverData?.collection[0]?.collectionFile}`
+                                          : "https://via.placeholder.com/80"
+                                          })`,
                                         backgroundSize: "cover",
                                         backgroundPosition: "center",
                                         height: "40vh",
@@ -579,11 +571,10 @@ const Purchase = () => {
                                     <li
                                       className="relative rounded-lg overflow-hidden w-[15vw] min-w-[120px] shadow-md hover:shadow-lg transition-all duration-200 group"
                                       style={{
-                                        backgroundImage: `url(${
-                                          allHoverData?.artists[0].profile?.mainImage
-                                            ? `${imageUrl}/users/${allHoverData?.artists[0].profile.mainImage}`
-                                            : "https://via.placeholder.com/80"
-                                        })`,
+                                        backgroundImage: `url(${allHoverData?.artists[0].profile?.mainImage
+                                          ? `${imageUrl}/users/${allHoverData?.artists[0].profile.mainImage}`
+                                          : "https://via.placeholder.com/80"
+                                          })`,
                                         backgroundSize: "cover",
                                         backgroundPosition: "center",
                                         height: "40vh",
@@ -609,6 +600,8 @@ const Purchase = () => {
                   )}
                 </div>
               ))}
+
+
             </div>
           </div>
 
@@ -631,9 +624,8 @@ const Purchase = () => {
 
       <div
         ref={openRef}
-        className={`fixed border-r shadow-xl top-0 left-0 h-screen overflow-y-auto w-80 transform ${
-          isOpenSidePanel ? "translate-x-0" : "-translate-x-full"
-        } transition-transform duration-300 ease-in-out z-30 ${dark ? "bg-gray-800 border-gray-700 text-gray-100" : "bg-white text-gray-800"}`}
+        className={`fixed border-r shadow-xl top-0 left-0 h-screen overflow-y-auto w-80 transform ${isOpenSidePanel ? "translate-x-0" : "-translate-x-full"
+          } transition-transform duration-300 ease-in-out z-30 ${dark ? "bg-gray-800 border-gray-700 text-gray-100" : "bg-white text-gray-800"}`}
       >
         <div className={`flex items-center justify-between border-b px-4 py-3`}>
           <div className="flex items-center gap-2">
@@ -747,9 +739,8 @@ const Purchase = () => {
                 placeholder="Search artworks..."
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                className={`w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all ${
-                  dark ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400" : "border-gray-300"
-                }`}
+                className={`w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all ${dark ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400" : "border-gray-300"
+                  }`}
               />
               <FaSearch className={`absolute left-3 top-3 ${dark ? "text-gray-400" : "text-gray-400"}`} />
             </div>
@@ -771,7 +762,7 @@ const Purchase = () => {
             {optionOpen?.discipline && renderDisciplineOptions()}
           </div>
 
-          {selectedOption.length > 0 && (
+          {selectedOption?.length > 0 && (
             <div className="space-y-2">
               <button
                 onClick={() =>
@@ -783,9 +774,9 @@ const Purchase = () => {
                 className={`flex justify-between items-center w-full text-left font-semibold ${dark ? "text-gray-100" : "text-gray-800"}`}
               >
                 <span>Theme</span>
-                <MdKeyboardArrowDown size={20} className={`transition-transform ${optionOpen.theme ? "rotate-180" : ""}`} />
+                <MdKeyboardArrowDown size={20} className={`transition-transform ${optionOpen?.theme ? "rotate-180" : ""}`} />
               </button>
-              {optionOpen.theme && renderThemeOptions()}
+              {optionOpen?.theme && renderThemeOptions()}
             </div>
           )}
           {/* Technic Filter (only shown when disciplines are selected) */}
@@ -801,9 +792,9 @@ const Purchase = () => {
                 className={`flex justify-between items-center w-full text-left font-semibold ${dark ? "text-gray-100" : "text-gray-800"}`}
               >
                 <span>Technic</span>
-                <MdKeyboardArrowDown size={20} className={`transition-transform ${optionOpen.technic ? "rotate-180" : ""}`} />
+                <MdKeyboardArrowDown size={20} className={`transition-transform ${optionOpen?.technic ? "rotate-180" : ""}`} />
               </button>
-              {optionOpen.technic && renderTechnicOptions()}
+              {optionOpen?.technic && renderTechnicOptions()}
             </div>
           )}
           {/* Style Filter (only shown when disciplines are selected) */}
@@ -841,15 +832,14 @@ const Purchase = () => {
                       orientation: prev.orientation === item.value ? "" : item.value,
                     }))
                   }
-                  className={`${item?.width} h-12 flex items-center justify-center rounded-lg border-2 ${
-                    moreOptions.orientation === item?.value
-                      ? dark
-                        ? "border-blue-500 bg-blue-900"
-                        : "border-blue-500 bg-blue-50"
-                      : dark
+                  className={`${item?.width} h-12 flex items-center justify-center rounded-lg border-2 ${moreOptions.orientation === item?.value
+                    ? dark
+                      ? "border-blue-500 bg-blue-900"
+                      : "border-blue-500 bg-blue-50"
+                    : dark
                       ? "border-gray-600 hover:border-gray-500"
                       : "border-gray-200 hover:border-gray-300"
-                  } transition-colors`}
+                    } transition-colors`}
                 >
                   <span className="text-xl">{item?.icon}</span>
                 </button>
@@ -862,9 +852,8 @@ const Purchase = () => {
             <select
               value={moreOptions?.color}
               onChange={(e) => setMoreOptions((prev) => ({ ...prev, color: e.target.value }))}
-              className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all ${
-                dark ? "bg-gray-700 border-gray-600 text-white" : "border-gray-300"
-              }`}
+              className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all ${dark ? "bg-gray-700 border-gray-600 text-white" : "border-gray-300"
+                }`}
             >
               <option value="">Select Color</option>
               {colors?.map((item, i) => (
@@ -894,11 +883,10 @@ const Purchase = () => {
                       }
                     />
                     <div
-                      className={`w-11 h-6 rounded-full peer peer-focus:ring-4 ${
-                        dark
-                          ? "peer-focus:ring-blue-800 bg-gray-600 peer-checked:bg-blue-600"
-                          : "peer-focus:ring-blue-300 bg-gray-200 peer-checked:bg-blue-600"
-                      } after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full`}
+                      className={`w-11 h-6 rounded-full peer peer-focus:ring-4 ${dark
+                        ? "peer-focus:ring-blue-800 bg-gray-600 peer-checked:bg-blue-600"
+                        : "peer-focus:ring-blue-300 bg-gray-200 peer-checked:bg-blue-600"
+                        } after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full`}
                     ></div>
                   </label>
                 </label>
@@ -974,11 +962,10 @@ const Purchase = () => {
                     }
                   />
                   <div
-                    className={`w-11 h-6 rounded-full peer peer-focus:ring-4 ${
-                      dark
-                        ? "peer-focus:ring-blue-800 bg-gray-600 peer-checked:bg-blue-600"
-                        : "peer-focus:ring-blue-300 bg-gray-200 peer-checked:bg-blue-600"
-                    } after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full`}
+                    className={`w-11 h-6 rounded-full peer peer-focus:ring-4 ${dark
+                      ? "peer-focus:ring-blue-800 bg-gray-600 peer-checked:bg-blue-600"
+                      : "peer-focus:ring-blue-300 bg-gray-200 peer-checked:bg-blue-600"
+                      } after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full`}
                   ></div>
                 </label>
               </div>
@@ -1000,11 +987,10 @@ const Purchase = () => {
                         }
                       />
                       <div
-                        className={`w-11 h-6 rounded-full peer peer-focus:ring-4 ${
-                          dark
-                            ? "peer-focus:ring-blue-800 bg-gray-600 peer-checked:bg-blue-600"
-                            : "peer-focus:ring-blue-300 bg-gray-200 peer-checked:bg-blue-600"
-                        } after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full`}
+                        className={`w-11 h-6 rounded-full peer peer-focus:ring-4 ${dark
+                          ? "peer-focus:ring-blue-800 bg-gray-600 peer-checked:bg-blue-600"
+                          : "peer-focus:ring-blue-300 bg-gray-200 peer-checked:bg-blue-600"
+                          } after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full`}
                       ></div>
                     </label>
                   </div>
@@ -1019,9 +1005,8 @@ const Purchase = () => {
                           purchase: e.target.value,
                         }))
                       }
-                      className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all ${
-                        dark ? "bg-gray-700 border-gray-600 text-white" : "border-gray-300"
-                      }`}
+                      className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all ${dark ? "bg-gray-700 border-gray-600 text-white" : "border-gray-300"
+                        }`}
                     >
                       <option value="">All</option>
                       {commOptions?.map((item, i) => (
@@ -1050,11 +1035,10 @@ const Purchase = () => {
                       }
                     />
                     <div
-                      className={`w-11 h-6 rounded-full peer peer-focus:ring-4 ${
-                        dark
-                          ? "peer-focus:ring-blue-800 bg-gray-600 peer-checked:bg-blue-600"
-                          : "peer-focus:ring-blue-300 bg-gray-200 peer-checked:bg-blue-600"
-                      } after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full`}
+                      className={`w-11 h-6 rounded-full peer peer-focus:ring-4 ${dark
+                        ? "peer-focus:ring-blue-800 bg-gray-600 peer-checked:bg-blue-600"
+                        : "peer-focus:ring-blue-300 bg-gray-200 peer-checked:bg-blue-600"
+                        } after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full`}
                     ></div>
                   </label>
                 </div>
@@ -1074,9 +1058,8 @@ const Purchase = () => {
                   tag: e.target.value,
                 }))
               }
-              className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all ${
-                dark ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400" : "border-gray-300"
-              }`}
+              className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all ${dark ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400" : "border-gray-300"
+                }`}
             />
           </div>
           {/* Artist Filter */}
@@ -1092,9 +1075,8 @@ const Purchase = () => {
                   name: e.target.value,
                 }))
               }
-              className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all ${
-                dark ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400" : "border-gray-300"
-              }`}
+              className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all ${dark ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400" : "border-gray-300"
+                }`}
             />
           </div>
         </div>
@@ -1109,9 +1091,8 @@ const Purchase = () => {
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6">
             <div className="flex items-center gap-3">
               <button
-                className={`flex items-center gap-2 rounded-full px-4 py-2 shadow-md transition-colors ${
-                  dark ? "bg-gray-700 text-gray-200 hover:bg-gray-600" : "bg-white text-gray-800 hover:bg-gray-50"
-                }`}
+                className={`flex items-center gap-2 rounded-full px-4 py-2 shadow-md transition-colors ${dark ? "bg-gray-700 text-gray-200 hover:bg-gray-600" : "bg-white text-gray-800 hover:bg-gray-50"
+                  }`}
                 onClick={() => setIsOpenSidePanel((prev) => !prev)}
               >
                 <MdOutlineFilterList size={20} />
@@ -1134,9 +1115,8 @@ const Purchase = () => {
                   placeholder="Search artworks..."
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  className={`w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#EE1D52] focus:border-[#EE1D52] outline-none transition-all ${
-                    dark ? "bg-gray-800 border-gray-600 text-white placeholder-gray-400" : "border-gray-300"
-                  }`}
+                  className={`w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#EE1D52] focus:border-[#EE1D52] outline-none transition-all ${dark ? "bg-gray-800 border-gray-600 text-white placeholder-gray-400" : "border-gray-300"
+                    }`}
                 />
                 <FaSearch className={`absolute left-3 top-3 ${dark ? "text-gray-400" : "text-gray-400"}`} />
               </div>
@@ -1150,21 +1130,17 @@ const Purchase = () => {
                     }))
                   }
                   className={`
-          w-full appearance-none px-4 py-2 rounded-lg border
-          ${dark ? "bg-gray-800 text-white border-gray-600" : "bg-white text-gray-900 border-gray-300"}
-          focus:outline-none focus:ring-2 ${dark ? "focus:ring-[#EE1D52]" : "focus:ring-[#EE1D52]"}
-          transition duration-200
-        `}
+                 w-full appearance-none px-4 py-2 rounded-lg border
+                 ${dark ? "bg-gray-800 text-white border-gray-600" : "bg-white text-gray-900 border-gray-300"}
+                 focus:outline-none focus:ring-2 ${dark ? "focus:ring-[#EE1D52]" : "focus:ring-[#EE1D52]"}
+                 transition duration-200`}
                 >
                   <option value="All">Show All</option>
                   <option value="Coming Soon">Coming Soon</option>
                 </select>
 
                 <div
-                  className={`
-          pointer-events-none absolute inset-y-0 right-3 flex items-center
-          ${dark ? "text-gray-300" : "text-gray-500"}
-        `}
+                  className={` pointer-events-none absolute inset-y-0 right-3 flex items-center ${dark ? "text-gray-300" : "text-gray-500"}`}
                 >
                   <svg className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                     <path
@@ -1193,9 +1169,8 @@ const Purchase = () => {
                     limit: Number(e.target.value),
                   })
                 }
-                className={`border rounded-md px-2 py-1 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none ${
-                  dark ? "bg-gray-700 border-gray-600" : "border-gray-300"
-                }`}
+                className={`border rounded-md px-2 py-1 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none ${dark ? "bg-gray-700 border-gray-600" : "border-gray-300"
+                  }`}
               >
                 {[5, 10, 25].map((option) => (
                   <option key={option} value={option}>
@@ -1207,8 +1182,8 @@ const Purchase = () => {
 
             <div className="flex items-center gap-4">
               <span className="text-sm">
-                {Math.min((options.currPage - 1) * options.limit + 1, data?.totalCount)}-
-                {Math.min(options.currPage * options.limit, data?.totalCount)} of {data?.totalCount}
+                {Math.min((options?.currPage - 1) * options?.limit + 1, data?.totalCount)}-
+                {Math.min(options?.currPage * options?.limit, data?.totalCount)} of {data?.totalCount}
               </span>
               <div className="flex gap-2">
                 <button
@@ -1217,19 +1192,18 @@ const Purchase = () => {
                       ...options,
                       cursor: prevCursor,
                       direction: "prev",
-                      currPage: options.currPage === 1 ? 1 : options.currPage - 1,
+                      currPage: options?.currPage === 1 ? 1 : options?.currPage - 1,
                     });
                   }}
                   disabled={!prevCursor || isLoading}
-                  className={`p-2 rounded-full border ${
-                    !prevCursor || isLoading
-                      ? dark
-                        ? "bg-gray-700 text-gray-500 cursor-not-allowed"
-                        : "bg-gray-100 text-gray-400 cursor-not-allowed"
-                      : dark
+                  className={`p-2 rounded-full border ${!prevCursor || isLoading
+                    ? dark
+                      ? "bg-gray-700 text-gray-500 cursor-not-allowed"
+                      : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                    : dark
                       ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
                       : "bg-white text-gray-700 hover:bg-gray-50"
-                  }`}
+                    }`}
                 >
                   <MdArrowBackIosNew size={18} />
                 </button>
@@ -1239,19 +1213,18 @@ const Purchase = () => {
                       ...options,
                       cursor: nextCursor,
                       direction: "next",
-                      currPage: options.currPage + 1,
+                      currPage: options?.currPage + 1,
                     });
                   }}
                   disabled={!nextCursor || isLoading}
-                  className={`p-2 rounded-full border ${
-                    !nextCursor || isLoading
-                      ? dark
-                        ? "bg-gray-700 text-gray-500 cursor-not-allowed"
-                        : "bg-gray-100 text-gray-400 cursor-not-allowed"
-                      : dark
+                  className={`p-2 rounded-full border ${!nextCursor || isLoading
+                    ? dark
+                      ? "bg-gray-700 text-gray-500 cursor-not-allowed"
+                      : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                    : dark
                       ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
                       : "bg-white text-gray-700 hover:bg-gray-50"
-                  }`}
+                    }`}
                 >
                   <MdArrowForwardIos size={18} />
                 </button>

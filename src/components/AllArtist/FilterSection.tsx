@@ -24,8 +24,8 @@ const FilterSection = ({
     <>
       <p className="mt-3 text-[30px] font-semibold">Top Insignias</p>
       <div className="flex mt-4 w-full max-w-full overflow-x-auto scrollbar items-center gap-4">
-        {cred && cred.length > 0 ? (
-          cred.map((item, i: number) => (
+        {cred && cred?.length > 0 ? (
+          cred?.map((item, i: number) => (
             <div key={i} className="group relative cursor-pointer flex items-center" onClick={() => setSelectedInsignia(item?.credentialName)}>
               <div className="relative overflow-hidden w-[250px] h-[250px]">
                 <img
@@ -61,7 +61,7 @@ const FilterSection = ({
           <SelectOption
             value={selectedOption ? { value: selectedOption, label: selectedOption } : null}
             options={
-              discipline && discipline.length > 0
+              discipline && discipline?.length > 0
                 ? discipline.map((item) => ({
                     value: item?.disciplineName,
                     label: item?.disciplineName,

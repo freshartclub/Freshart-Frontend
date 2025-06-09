@@ -94,6 +94,7 @@ const CardSection = ({ data, type, darkMode }) => {
     }
   };
 
+
   const handleAddNewList = async (id: string) => {
     if (!newListName.trim()) return;
 
@@ -159,10 +160,15 @@ const CardSection = ({ data, type, darkMode }) => {
                   handleRedirectToDescription(item?._id);
                 }
               }}
-              className={`relative rounded-lg cursor-pointer p-2 border ${
-                darkMode ? "bg-gray-800 border-gray-600" : "bg-white border-[#e0e1e3]"
-              } hover:shadow-md transition-shadow duration-200 w-full group`}
+              className={`relative rounded-lg cursor-pointer p-2 border ${darkMode ? "bg-gray-800 border-gray-600" : "bg-white border-[#e0e1e3]"
+                } hover:shadow-md transition-shadow duration-200 w-full group`}
             >
+              {item?.exclusive && (
+                <div className="absolute top-2 left-2 bg-[#E05A48] text-white text-[10px] tracking-wider font-bold uppercase px-2 py-1 rounded shadow-sm z-[9999]">
+                  Exclusive
+                </div>
+              )}
+              
               <div className="relative overflow-hidden rounded-md aspect-[4/3] w-full">
                 <img
                   src={`${lowImageUrl}/${item?.media}`}
@@ -175,9 +181,8 @@ const CardSection = ({ data, type, darkMode }) => {
                 {isOffensive && !isViewed ? (
                   <div className="absolute inset-0 flex flex-col justify-center items-center gap-3 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <button
-                      className={`${
-                        darkMode ? "bg-gray-700 text-gray-100 hover:bg-gray-600" : "bg-white text-gray-800 hover:bg-gray-100"
-                      } px-3 py-1 rounded-full text-xs font-medium transition-colors flex items-center gap-2`}
+                      className={`${darkMode ? "bg-gray-700 text-gray-100 hover:bg-gray-600" : "bg-white text-gray-800 hover:bg-gray-100"
+                        } px-3 py-1 rounded-full text-xs font-medium transition-colors flex items-center gap-2`}
                       onClick={(e) => {
                         e.stopPropagation();
                         handleViewClick(item?._id);
@@ -190,9 +195,8 @@ const CardSection = ({ data, type, darkMode }) => {
                         e.stopPropagation();
                         handleRedirectToDescription(item?._id);
                       }}
-                      className={`${
-                        darkMode ? "bg-gray-700 text-gray-100 hover:bg-gray-600" : "bg-white text-gray-800 hover:bg-gray-100"
-                      } px-3 py-1 rounded-full text-xs font-medium transition-colors flex items-center gap-2`}
+                      className={`${darkMode ? "bg-gray-700 text-gray-100 hover:bg-gray-600" : "bg-white text-gray-800 hover:bg-gray-100"
+                        } px-3 py-1 rounded-full text-xs font-medium transition-colors flex items-center gap-2`}
                     >
                       <MdOutlineOpenInNew /> View Details
                     </button>
@@ -205,9 +209,8 @@ const CardSection = ({ data, type, darkMode }) => {
                       e.stopPropagation();
                       handleHideClick(item?._id);
                     }}
-                    className={`absolute ${
-                      darkMode ? "bg-gray-700" : "bg-white/90"
-                    } px-2 py-1 rounded-full top-2 right-2 flex items-center gap-1 text-xs`}
+                    className={`absolute ${darkMode ? "bg-gray-700" : "bg-white/90"
+                      } px-2 py-1 rounded-full top-2 right-2 flex items-center gap-1 text-xs`}
                   >
                     <p className={`text-xs font-medium ${darkMode ? "text-gray-200" : "text-gray-700"}`}>Hide</p>
                     <FaToggleOn size={18} className={darkMode ? "text-gray-400" : "text-gray-600"} />
@@ -260,9 +263,8 @@ const CardSection = ({ data, type, darkMode }) => {
                       {Object.keys(favoriteLists).map((listName) => (
                         <div
                           key={listName}
-                          className={`flex items-center justify-between px-2 py-1 ${
-                            darkMode ? "hover:bg-gray-600" : "hover:bg-gray-100"
-                          } cursor-pointer text-sm`}
+                          className={`flex items-center justify-between px-2 py-1 ${darkMode ? "hover:bg-gray-600" : "hover:bg-gray-100"
+                            } cursor-pointer text-sm`}
                           onClick={(e) => {
                             e.stopPropagation();
                             addToFavoriteList(item?._id, listName);
@@ -271,7 +273,7 @@ const CardSection = ({ data, type, darkMode }) => {
                           <span className={darkMode ? "text-gray-200" : ""}>{listName}</span>
                           <input
                             type="checkbox"
-                            checked={favoriteLists[listName].includes(item._id)}
+                            checked={favoriteLists[listName]?.includes(item?._id)}
                             readOnly
                             className={darkMode ? "accent-blue-500" : ""}
                           />
@@ -279,9 +281,8 @@ const CardSection = ({ data, type, darkMode }) => {
                       ))}
                       <div className="border-t mt-2 pt-2">
                         <button
-                          className={`text-xs flex items-center gap-1 rounded text-white py-1 justify-center ${
-                            darkMode ? "bg-gray-600 hover:bg-gray-500" : "bg-gray-900 hover:bg-gray-700"
-                          } w-full font-medium transition-colors`}
+                          className={`text-xs flex items-center gap-1 rounded text-white py-1 justify-center ${darkMode ? "bg-gray-600 hover:bg-gray-500" : "bg-gray-900 hover:bg-gray-700"
+                            } w-full font-medium transition-colors`}
                           onClick={(e) => {
                             e.stopPropagation();
                             setShowManageLists((prev) => !prev);
@@ -299,18 +300,16 @@ const CardSection = ({ data, type, darkMode }) => {
                             onChange={(e) => setNewListName(e.target.value)}
                             onClick={(e) => e.stopPropagation()}
                             placeholder="New List Name"
-                            className={`w-full text-sm p-1 border rounded mb-2 ${
-                              darkMode ? "bg-gray-600 border-gray-500 text-white placeholder-gray-400" : ""
-                            }`}
+                            className={`w-full text-sm p-1 border rounded mb-2 ${darkMode ? "bg-gray-600 border-gray-500 text-white placeholder-gray-400" : ""
+                              }`}
                           />
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
                               handleAddNewList(item?._id);
                             }}
-                            className={`w-full ${
-                              darkMode ? "bg-gray-600 hover:bg-gray-500" : "bg-gray-800 hover:bg-gray-900"
-                            } text-white text-xs py-1 rounded-md transition-colors`}
+                            className={`w-full ${darkMode ? "bg-gray-600 hover:bg-gray-500" : "bg-gray-800 hover:bg-gray-900"
+                              } text-white text-xs py-1 rounded-md transition-colors`}
                           >
                             {newLoading ? "Adding..." : "Add List"}
                           </button>
@@ -325,9 +324,8 @@ const CardSection = ({ data, type, darkMode }) => {
         })
       ) : (
         <div
-          className={`h-[5rem] font-semibold col-span-4 rounded w-full border-2 ${
-            darkMode ? "border-gray-600 bg-gray-800 text-gray-300" : "border-gray-300 bg-gray-50 text-gray-600"
-          } flex items-center justify-center`}
+          className={`h-[5rem] font-semibold col-span-4 rounded w-full border-2 ${darkMode ? "border-gray-600 bg-gray-800 text-gray-300" : "border-gray-300 bg-gray-50 text-gray-600"
+            } flex items-center justify-center`}
         >
           No Artworks Available
         </div>

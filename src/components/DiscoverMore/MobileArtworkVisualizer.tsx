@@ -14,7 +14,7 @@ import { imageUrl } from '../utils/baseUrls';
 import { FaMinus, FaPlus } from 'react-icons/fa6';
 
 
-const MobileArtworkVisualizer = ({artwork, isLoading , error}) => {
+const MobileArtworkVisualizer = ({ artwork, isLoading, error }) => {
   const { artworkId } = useParams();
   const navigate = useNavigate();
   const dark = useAppSelector((state) => state.theme.mode);
@@ -25,25 +25,25 @@ const MobileArtworkVisualizer = ({artwork, isLoading , error}) => {
   const [isMobile, setIsMobile] = useState(false);
   const [instructionStep, setInstructionStep] = useState(0);
   const [takingPhoto, setTakingPhoto] = useState(false);
-  
-  
+
+
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const streamRef = useRef(null);
   const artworkContainerRef = useRef(null);
 
- 
+
   useEffect(() => {
     const checkMobile = () => {
       return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     };
-    
+
     setIsMobile(checkMobile());
-    
-   
+
+
     const handleResize = () => {
       if (videoRef.current && streamRef.current) {
-        
+
         const track = streamRef.current.getVideoTracks()[0];
         if (track) {
           const capabilities = track.getCapabilities();
@@ -59,7 +59,7 @@ const MobileArtworkVisualizer = ({artwork, isLoading , error}) => {
     };
 
     window.addEventListener('resize', handleResize);
-    
+
     return () => {
       window.removeEventListener('resize', handleResize);
     };
@@ -68,50 +68,50 @@ const MobileArtworkVisualizer = ({artwork, isLoading , error}) => {
 
   useEffect(() => {
     if (cameraActive) {
-    const setupCamera = async () => {
-  try {
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach(track => track.stop());
-    }
-    
-    const constraints = {
-      video: {
-        facingMode: 'environment',
-        // Let the browser choose optimal resolution
-        width: { ideal: 1280 },
-        height: { ideal: 720 }
-      }
-    };
-    
-    const stream = await navigator.mediaDevices.getUserMedia(constraints);
-    streamRef.current = stream;
-    
-    // Try to disable zoom if supported
-    const videoTrack = stream.getVideoTracks()[0];
-    if (videoTrack && 'applyConstraints' in videoTrack) {
-      try {
-        await videoTrack.applyConstraints({
-          advanced: [{ zoom: 1 }]
-        });
-      } catch (zoomError) {
-        console.log('Zoom adjustment not supported');
-      }
-    }
-    
-    if (videoRef.current) {
-      videoRef.current.srcObject = stream;
-      setCameraPermission('granted');
-    }
-  } catch (err) {
-    console.error('Error accessing camera:', err);
-    setCameraPermission('denied');
-    setCameraActive(false);
-  }
-};
-      
+      const setupCamera = async () => {
+        try {
+          if (streamRef.current) {
+            streamRef.current.getTracks().forEach(track => track.stop());
+          }
+
+          const constraints = {
+            video: {
+              facingMode: 'environment',
+              // Let the browser choose optimal resolution
+              width: { ideal: 1280 },
+              height: { ideal: 720 }
+            }
+          };
+
+          const stream = await navigator.mediaDevices.getUserMedia(constraints);
+          streamRef.current = stream;
+
+          // Try to disable zoom if supported
+          const videoTrack = stream.getVideoTracks()[0];
+          if (videoTrack && 'applyConstraints' in videoTrack) {
+            try {
+              await videoTrack.applyConstraints({
+                advanced: [{ zoom: 1 }]
+              });
+            } catch (zoomError) {
+              console.log('Zoom adjustment not supported');
+            }
+          }
+
+          if (videoRef.current) {
+            videoRef.current.srcObject = stream;
+            setCameraPermission('granted');
+          }
+        } catch (err) {
+          console.error('Error accessing camera:', err);
+          setCameraPermission('denied');
+          setCameraActive(false);
+        }
+      };
+
       setupCamera();
-      
-     
+
+
       return () => {
         if (streamRef.current) {
           streamRef.current.getTracks().forEach(track => track.stop());
@@ -120,7 +120,7 @@ const MobileArtworkVisualizer = ({artwork, isLoading , error}) => {
     }
   }, [cameraActive]);
 
- 
+
   useEffect(() => {
     return () => {
       if (streamRef.current) {
@@ -129,7 +129,7 @@ const MobileArtworkVisualizer = ({artwork, isLoading , error}) => {
     };
   }, []);
 
- 
+
   useEffect(() => {
     if (instructionStep === 2 && artworkContainerRef.current) {
       // Center positioning logic
@@ -152,64 +152,84 @@ const MobileArtworkVisualizer = ({artwork, isLoading , error}) => {
       navigate(-1);
     }
   };
-  
+
   const handleNextStep = () => {
     setInstructionStep(instructionStep + 1);
   };
 
   const captureImage = () => {
-  if (!videoRef.current || !canvasRef.current) return;
+    if (!videoRef.current || !canvasRef.current) return;
 
-  setTakingPhoto(true);
-  const video = videoRef.current;
-  const canvas = canvasRef.current;
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
+    setTakingPhoto(true);
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
 
-  const ctx = canvas.getContext('2d');
-  
-  // First, draw the video frame as background
-  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const ctx = canvas.getContext('2d');
 
-  // If artwork exists, overlay it on top
-  if (artworkContainerRef.current && artwork?.images?.[0]?.url) {
-    const artworkRect = artworkContainerRef.current.getBoundingClientRect();
-    const videoRect = video.getBoundingClientRect();
+    // First, draw the video frame as background
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    // Calculate scaling ratios
-    const xRatio = canvas.width / videoRect.width;
-    const yRatio = canvas.height / videoRect.height;
+    // If artwork exists, overlay it on top
+    if (artworkContainerRef.current && artwork?.images?.[0]?.url) {
+      const artworkRect = artworkContainerRef.current.getBoundingClientRect();
+      const videoRect = video.getBoundingClientRect();
 
-    // Calculate artwork position on canvas
-    const x = (artworkRect.left - videoRect.left) * xRatio;
-    const y = (artworkRect.top - videoRect.top) * yRatio;
-    const width = artworkRect.width * xRatio * (artworkScale || 1);
-    const height = artworkRect.height * yRatio * (artworkScale || 1);
+      // Calculate scaling ratios
+      const xRatio = canvas.width / videoRect.width;
+      const yRatio = canvas.height / videoRect.height;
 
-    const img = new Image();
-    
-    img.onload = () => {
-      try {
-        // Draw the artwork image on top of the video
-        ctx.drawImage(img, x, y, width, height);
-        // Create and download the combined image
-        const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
-        const link = document.createElement('a');
-        link.href = dataUrl;
-        link.download = `${artwork.artworkName || 'artwork'}-visualization.jpg`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        setTimeout(() => setTakingPhoto(false), 1000);
-      } catch (err) {
-        console.error('Error creating snapshot:', err);
-        setTakingPhoto(false);
-      }
-    };
+      // Calculate artwork position on canvas
+      const x = (artworkRect.left - videoRect.left) * xRatio;
+      const y = (artworkRect.top - videoRect.top) * yRatio;
+      const width = artworkRect.width * xRatio * (artworkScale || 1);
+      const height = artworkRect.height * yRatio * (artworkScale || 1);
 
-    img.onerror = () => {
-      console.error('Error loading artwork image for snapshot');
-      // Still save the video-only version if artwork fails to load
+      const img = new Image();
+
+      img.onload = () => {
+        try {
+          // Draw the artwork image on top of the video
+          ctx.drawImage(img, x, y, width, height);
+          // Create and download the combined image
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+          const link = document.createElement('a');
+          link.href = dataUrl;
+          link.download = `${artwork.artworkName || 'artwork'}-visualization.jpg`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          setTimeout(() => setTakingPhoto(false), 1000);
+        } catch (err) {
+          console.error('Error creating snapshot:', err);
+          setTakingPhoto(false);
+        }
+      };
+
+      img.onerror = () => {
+        console.error('Error loading artwork image for snapshot');
+        // Still save the video-only version if artwork fails to load
+        try {
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+          const link = document.createElement('a');
+          link.href = dataUrl;
+          link.download = 'space-visualization.jpg';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        } catch (err) {
+          console.error('Error creating video snapshot:', err);
+        } finally {
+          setTakingPhoto(false);
+        }
+      };
+
+      img.crossOrigin = 'anonymous';
+      img.src = `${imageUrl}/users/${artwork?.data?.media?.mainImage}`;
+
+    } else {
+      // Just capture the video if no artwork is displayed
       try {
         const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
         const link = document.createElement('a');
@@ -219,38 +239,18 @@ const MobileArtworkVisualizer = ({artwork, isLoading , error}) => {
         link.click();
         document.body.removeChild(link);
       } catch (err) {
-        console.error('Error creating video snapshot:', err);
+        console.error('Error creating snapshot:', err);
       } finally {
         setTakingPhoto(false);
       }
-    };
-
-    img.crossOrigin = 'anonymous';
-    img.src = `${imageUrl}/users/${artwork?.data?.media?.mainImage}`;
-    
-  } else {
-    // Just capture the video if no artwork is displayed
-    try {
-      const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
-      const link = document.createElement('a');
-      link.href = dataUrl;
-      link.download = 'space-visualization.jpg';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } catch (err) {
-      console.error('Error creating snapshot:', err);
-    } finally {
-      setTakingPhoto(false);
     }
-  }
   };
 
   const handleAdjustScale = (delta) => {
     const newScale = Math.max(0.3, Math.min(2, artworkScale + delta));
     setArtworkScale(newScale);
   };
- 
+
   const getInstructionContent = () => {
     switch (instructionStep) {
       case 0:
@@ -294,13 +294,13 @@ const MobileArtworkVisualizer = ({artwork, isLoading , error}) => {
       </div>
     );
   }
- 
+
   if (error) {
     return (
       <div className={`${bgClass} min-h-screen p-4 ${textClass}`}>
         <div className="max-w-md mx-auto bg-opacity-90 backdrop-blur-md rounded-lg shadow-lg p-6">
-          <Header 
-            variant={{ size: 'lg', theme: dark ? 'light' : 'dark', weight: 'semiBold' }} 
+          <Header
+            variant={{ size: 'lg', theme: dark ? 'light' : 'dark', weight: 'semiBold' }}
             className="mb-4"
           >
             Error Loading Artwork
@@ -328,8 +328,8 @@ const MobileArtworkVisualizer = ({artwork, isLoading , error}) => {
     return (
       <div className={`${bgClass} min-h-screen p-4 ${textClass}`}>
         <div className="max-w-md mx-auto bg-opacity-90 backdrop-blur-md rounded-lg shadow-lg p-6">
-          <Header 
-            variant={{ size: 'lg', theme: dark ? 'light' : 'dark', weight: 'semiBold' }} 
+          <Header
+            variant={{ size: 'lg', theme: dark ? 'light' : 'dark', weight: 'semiBold' }}
             className="mb-4"
           >
             Mobile Device Required
@@ -339,13 +339,13 @@ const MobileArtworkVisualizer = ({artwork, isLoading , error}) => {
           </P>
           {artwork?.data && (
             <div className="my-6">
-              <img 
-                src={`${imageUrl}/users/${artwork?.data?.media?.mainImage}` || 'https://via.placeholder.com/400x300?text=Artwork'} 
+              <img
+                src={`${imageUrl}/users/${artwork?.data?.media?.mainImage}` || 'https://via.placeholder.com/400x300?text=Artwork'}
                 alt={artwork?.data?.artworkName || 'Artwork image'}
                 className="max-w-full h-auto rounded shadow-lg mx-auto"
               />
               <P variant={{ size: 'sm', theme: dark ? 'light' : 'dark', weight: 'normal' }} className="mt-2 text-center">
-                {artwork?.data?.artworkName } by {artwork?.data?.owner?.artistName || 'Artist'}
+                {artwork?.data?.artworkName} by {artwork?.data?.owner?.artistName || 'Artist'}
               </P>
             </div>
           )}
@@ -367,7 +367,7 @@ const MobileArtworkVisualizer = ({artwork, isLoading , error}) => {
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden">
-    
+
       {cameraActive && (
         <video
           ref={videoRef}
@@ -377,14 +377,14 @@ const MobileArtworkVisualizer = ({artwork, isLoading , error}) => {
           className="absolute inset-0 w-full h-full object-contain"
         />
       )}
-      
-      
+
+
       {!cameraActive && (
         <div className={`absolute inset-0 ${bgClass}`}>
           {artwork && (
             <div className="w-full h-full flex items-center justify-center p-6">
-              <img 
-                src={`${imageUrl}/users/${artwork?.data?.media?.mainImage}`|| 'https://via.placeholder.com/400x300?text=Artwork'} 
+              <img
+                src={`${imageUrl}/users/${artwork?.data?.media?.mainImage}` || 'https://via.placeholder.com/400x300?text=Artwork'}
                 alt={artwork?.data?.artworkName || 'Artwork'}
                 className="max-w-full max-h-64 object-contain opacity-30"
               />
@@ -392,11 +392,11 @@ const MobileArtworkVisualizer = ({artwork, isLoading , error}) => {
           )}
         </div>
       )}
-      
-      
+
+
       <canvas ref={canvasRef} className="hidden" />
-      
-      
+
+
       {cameraActive && instructionStep >= 2 && artwork?.data && (
         <motion.div
           ref={artworkContainerRef}
@@ -406,11 +406,11 @@ const MobileArtworkVisualizer = ({artwork, isLoading , error}) => {
           animate={{ x: artworkPosition.x, y: artworkPosition.y, opacity: 1 }}
           transition={{ opacity: { duration: 0.5 } }}
           className="absolute cursor-move touch-manipulation"
-          style={{ 
-            top: '50%', 
+          style={{
+            top: '50%',
             left: '50%',
-            marginLeft: artwork.images?.[0]?.width ? `-${(artwork?.images[0].width / 4)}px` : '-150px', 
-            marginTop: artwork.images?.[0]?.height ? `-${(artwork?.images[0].height / 4)}px` : '-100px' 
+            marginLeft: artwork.images?.[0]?.width ? `-${(artwork?.images[0].width / 4)}px` : '-150px',
+            marginTop: artwork.images?.[0]?.height ? `-${(artwork?.images[0].height / 4)}px` : '-100px'
           }}
           onDragEnd={(_, info) => {
             setArtworkPosition({
@@ -419,11 +419,11 @@ const MobileArtworkVisualizer = ({artwork, isLoading , error}) => {
             });
           }}
         >
-          <img 
-            src={`${imageUrl}/users/${artwork?.data?.media?.mainImage}` || 'https://via.placeholder.com/400x300?text=Artwork'} 
+          <img
+            src={`${imageUrl}/users/${artwork?.data?.media?.mainImage}` || 'https://via.placeholder.com/400x300?text=Artwork'}
             alt={artwork?.data?.artworkName || 'Artwork'}
             className="shadow-xl max-w-xs"
-            style={{ 
+            style={{
               transform: `scale(${artworkScale})`,
               transition: 'transform 0.3s ease',
               transformOrigin: 'center center',
@@ -431,17 +431,17 @@ const MobileArtworkVisualizer = ({artwork, isLoading , error}) => {
               maxWidth: '80vw'
             }}
           />
-          
-          
+
+
           <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-20 opacity-0 hover:opacity-100 transition-opacity">
             <BsArrowsMove size={40} color="white" />
           </div>
         </motion.div>
       )}
-      
-      
+
+
       <div className="absolute top-0 left-0 right-0 p-4 flex items-center z-10">
-        <button 
+        <button
           onClick={handleBack}
           className={`p-2 rounded-full ${buttonBgClass} shadow-lg`}
           aria-label="Go back"
@@ -449,7 +449,7 @@ const MobileArtworkVisualizer = ({artwork, isLoading , error}) => {
           <AiOutlineArrowLeft size={24} className={textColorClass} />
         </button>
         {artwork?.data && (
-          <Header 
+          <Header
             variant={{ size: 'base', theme: 'light', weight: 'semiBold' }}
             className="ml-4 bg-black bg-opacity-50 text-white px-3 py-1 rounded truncate max-w-xs"
           >
@@ -457,21 +457,21 @@ const MobileArtworkVisualizer = ({artwork, isLoading , error}) => {
           </Header>
         )}
       </div>
-      
-   
+
+
       <div className={`absolute bottom-0 left-0 right-0 p-4 ${instructionStep >= 2 ? 'pb-20' : 'pb-4'}`}>
         <div className={`${buttonBgClass} rounded-lg shadow-lg p-4 bg-opacity-90 backdrop-blur-sm`}>
-          <Header 
+          <Header
             variant={{ size: 'lg', theme: dark ? 'light' : 'dark', weight: 'semiBold' }}
             className="mb-2"
           >
             {instruction?.title}
           </Header>
-          
+
           <P variant={{ size: 'base', theme: dark ? 'light' : 'dark', weight: 'normal' }} className="mb-4">
             {instruction?.text}
           </P>
-          
+
           {instruction?.action && (
             <Button
               onClick={instructionStep === 0 ? handleStartCamera : handleNextStep}
@@ -486,14 +486,12 @@ const MobileArtworkVisualizer = ({artwork, isLoading , error}) => {
             </Button>
           )}
           
-        
           {cameraPermission === 'denied' && (
             <div className="mt-4 p-3 bg-red-100 text-red-700 rounded-lg">
               Camera access was denied. Please enable camera permissions in your browser settings.
             </div>
           )}
-          
-          
+
           {instructionStep >= 2 && artwork?.data && (
             <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
               <div className="flex justify-between items-center">
@@ -526,18 +524,18 @@ const MobileArtworkVisualizer = ({artwork, isLoading , error}) => {
           )}
         </div>
       </div>
-      
-      
+
+
       {instructionStep >= 2 && (
         <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-6 z-20">
-          <button 
+          <button
             onClick={() => handleAdjustScale(-0.1)}
             className={`p-3 rounded-full ${buttonBgClass} shadow-lg active:shadow-sm transition-shadow`}
             aria-label="Decrease size"
           >
             <FaPlus size={20} className={textColorClass} />
           </button>
-          <button 
+          <button
             onClick={() => handleAdjustScale(0.1)}
             className={`p-3 rounded-full ${buttonBgClass} shadow-lg active:shadow-sm transition-shadow`}
             aria-label="Increase size"

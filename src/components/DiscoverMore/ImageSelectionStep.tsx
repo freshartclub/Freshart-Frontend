@@ -3,6 +3,7 @@ import { imageUrl } from "../utils/baseUrls";
 import { useGetAllUploadedImages } from "./http/useGetAllUploadedImages";
 import useDeleteUploadedImgMutation from "./http/useDeleteUploadedImgMutation";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import Loader from "../ui/Loader";
 
 const ImageSelectionStep = ({
   selectedImage,
@@ -86,7 +87,7 @@ const ImageSelectionStep = ({
   }, [previewImage, setSelectedImage, onNext]);
 
   if (isLoading) {
-    return <div>Loading...</div>
+    return <Loader/>  //This we need to check this before pushing in producation
   }
 
   return (

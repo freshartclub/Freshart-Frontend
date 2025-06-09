@@ -10,11 +10,14 @@ import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import useForgotPasswordMutation from "../../http/auth/useForgetPasswordMutation";
 import { useTranslation } from "react-i18next";
+import { useEffect } from "react";
 
 const ForgetPassword = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   let langCode = localStorage.getItem("langCode") || "EN";
+
+  
 
   const handleBack = () => {
     navigate("/login");
@@ -30,9 +33,17 @@ const ForgetPassword = () => {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm({
     resolver: yupResolver(validationSchema),
   });
+
+  useEffect(() => {
+    const storedEmail = localStorage.getItem("email");
+    if (storedEmail) {
+      setValue("email", storedEmail);
+    }
+  }, [setValue]);
 
   const { mutateAsync, isPending } = useForgotPasswordMutation();
 
@@ -73,12 +84,12 @@ const ForgetPassword = () => {
                   placeholder={t("Enter Email")}
                   {...register("email")}
                   className={`border ${
-                    errors.email ? "border-red-500" : "border-[#D3D3D3]"
+                    errors?.email ? "border-red-500" : "border-[#D3D3D3]"
                   } p-2 w-full rounded-md focus:outline-none`}
                 />
-                {errors.email && (
+                {errors?.email && (
                   <div className="text-red-500 text-sm text-left">
-                    {t(`${errors.email.message}`)}
+                    {t(`${errors?.email.message}`)}
                   </div>
                 )}
               </div>

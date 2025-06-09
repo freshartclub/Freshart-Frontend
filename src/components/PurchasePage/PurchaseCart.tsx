@@ -326,7 +326,7 @@ const PurchaseCart = () => {
               
               {renderData && renderData?.length > 0 && (
                 <button
-                  onClick={  handleClearCart}
+                  onClick={handleClearCart}
                   className={`text-sm cursor-pointer rounded-full flex gap-2 p-2 px-4 items-center ${
                     dark ? "bg-gray-700 text-red-400" : "text-red-600 bg-gray-200"
                   } hover:underline`}
@@ -337,7 +337,6 @@ const PurchaseCart = () => {
             </div>
           </div>
 
- 
           <div className="lg:col-span-4">
             <CartTotal 
               data={renderData} 

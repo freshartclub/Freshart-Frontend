@@ -115,7 +115,7 @@ const ArtworkGroup = () => {
                 <p className="text-[14px] text-[#696868]">{item?.title}</p>
                 <div className="flex justify-between items-center">
                   <h1 className="font-bold text-[20px] text-[#333333]">
-                    {item.heading}
+                    {item?.heading}
                   </h1>
                   <div className="">
                     <img src={like} alt="" className="" />

@@ -18,7 +18,7 @@ const ProductInfo = ({ data }: any) => {
   const [ticData, setTicData] = useState({
     message: "",
   });
-
+  const [showSupportForm, setShowSupportForm] = useState(false)
   const isAuthorized = useAppSelector((state) => state.user.isAuthorized);
 
   const name = (val: { artistName: string; artistSurname1: string; artistSurname2: string }) => {
@@ -27,76 +27,6 @@ const ProductInfo = ({ data }: any) => {
     if (val?.artistSurname2) fullName += " " + val?.artistSurname2;
     return fullName.trim();
   };
-
-  const overview_data = [
-    {
-      head: "Title :",
-      name: data?.data?.artworkName,
-    },
-    {
-      head: "Creation Year :",
-      name: data?.data?.artworkCreationYear,
-    },
-    {
-      head: "Series :",
-      name: data?.data?.artworkSeries,
-    },
-    {
-      head: "Discipline :",
-      name: data?.data?.discipline,
-    },
-    {
-      head: "Technic :",
-      name: data?.data?.additionalInfo?.artworkTechnic,
-    },
-    {
-      head: "Dimensions: ",
-      name:
-        (data?.data?.additionalInfo?.height || "N/A") +
-        " x " +
-        (data?.data?.additionalInfo?.width || "N/A") +
-        " x " +
-        (data?.data?.additionalInfo?.length || "N/A") +
-        " cm",
-    },
-    {
-      head: "Weight :",
-      name: data?.data?.additionalInfo?.weight + " kg" || "N/A",
-    },
-  ];
-
-  const shipping_data = [
-    {
-      head: "Package Material :",
-      name: data?.data?.inventoryShipping?.packageMaterial || "N/A",
-    },
-    {
-      head: "Package Dimensions :",
-      name:
-        (data?.data?.inventoryShipping?.packageHeight || "N/A") +
-        " x " +
-        (data?.data?.inventoryShipping?.packageWidth || "N/A") +
-        " x " +
-        (data?.data?.inventoryShipping?.packageLength || "N/A") +
-        " cm",
-    },
-    {
-      head: "Package Weight :",
-      name: data?.data?.inventoryShipping?.packageWeight + " kg" || "N/A",
-    },
-    {
-      head: "Ship from :",
-      name: data?.data?.owner?.address?.city + ", " + data?.data?.owner?.address?.country || "N/A",
-    },
-    {
-      head: "Delivery Time :",
-      name: "Typically 5-7 Days",
-    },
-    {
-      head: "Delivery Cost :",
-      name: "** To be Discussed **",
-    },
-  ];
 
   const { mutate, isPending } = useGetPostArtistTicketMutation();
   const navigate = useNavigate();
@@ -107,12 +37,10 @@ const ProductInfo = ({ data }: any) => {
 
   const handleSubmit = async () => {
     const formData = new FormData();
-
     if (!ticData.message) return toast.error("Message is required!");
     if (ticData.message.split(" ").length < 5) {
       return toast.error("Message must be at least 5 words!");
     }
-
     formData.append("message", ticData?.message);
     formData.append("subject", `Additional Information about ${data?.data?.artworkId}`);
     formData.append("ticketType", "Artwork Additional Information");
@@ -121,115 +49,106 @@ const ProductInfo = ({ data }: any) => {
     mutate(formData);
   };
 
+  const [formData, setFormData] = useState({
+    subject: `Additional information about ${data?.data?.artworkId}`,
+    requestDetails: "",
+    ticketType: "Artwork additional information"
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const textColor = dark ? "text-gray-100" : "text-gray-800";
+  const inputBg = dark ? "bg-gray-700" : "bg-white";
+  const borderColor = dark ? "border-gray-600" : "border-gray-300";
+
+
   return (
-    <div className={`mt-10 ${dark ? "text-gray-100" : "text-gray-800"}`}>
+    <div className={`mt-5 ${dark ? "text-gray-100" : "text-gray-800"}`}>
       <Tabs onSelect={(index: number) => setTabIndex(index)}>
         <TabList className={`flex gap-5 p-2 rounded-lg overflow-x-auto scrollbar1 whitespace-nowrap ${dark ? "bg-gray-800" : "bg-gray-200"}`}>
           {["About the artwork", "Artwork Details", "Shipping Information", "Need Additional Detail?", "Artist information"].map((label, index) => (
             <Tab
               key={index}
-              className={`cursor-pointer px-4 py-2 rounded-md transition-colors shrink-0 ${
-                tabIndex === index ? (dark ? "text-[#EE1D52] font-semibold" : "text-[#EE1D52] bg-transparent font-semibold") : ""
-              }`}
+              className={`cursor-pointer px-4 py-2 rounded-md transition-colors shrink-0 ${tabIndex === index ? (dark ? "text-[#EE1D52] font-semibold" : "text-[#EE1D52] bg-transparent font-semibold") : ""
+                }`}
             >
               {label}
             </Tab>
           ))}
         </TabList>
 
-        <TabPanel>
-          <P
-            variant={{ size: "small", theme: dark ? "light" : "dark", weight: "normal" }}
-            className={`${dark ? "text-gray-300" : "text-[#999999]"} my-5 italic`}
-          >
-            {data?.data?.productDescription}
-          </P>
+        <TabPanel className="p-4 md:p-6">
+          <div className="">
+            <div>
+              <h3 className="text-lg font-medium mb-4">Artwork Description</h3>
+              <p className="w-full max-w-full text-gray-600 dark:text-gray-300 italic mb-6 min-h-[15rem] break-words">
+                {data?.data?.productDescription || "No description available"}
+              </p>
+              <div className="mb-6">
+                <h4 className="text-sm font-medium mb-2">External tags</h4>
+                <div className="flex flex-wrap gap-2">
+                  {data?.data?.tags?.extTags?.length ? (
+                    data?.data?.tags?.extTags?.map((tag: string, index: number) => (
+                      <span
+                        key={index}
+                        className={`px-3 py-1 rounded-full text-xs ${dark ? "bg-gray-700 text-gray-300" : "bg-gray-200 text-gray-800"
+                          }`}
+                      >
+                        #{tag}
+                      </span>
+                    ))
+                  ) : (
+                    <span className="text-gray-500">No external tags available</span>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
         </TabPanel>
 
         <TabPanel>
-          <div className="flex flex-col md:flex-row gap-10 w-full my-5">
+          <h3 className="text-lg font-medium mb-4">Artwork Details</h3>
+          <div className="flex flex-col md:flex-row gap-10 w-full ">
             <div className="w-full md:w-[50%]">
-              {overview_data?.map((item, index) => (
-                <div key={index} className="flex">
-                  <P variant={{ size: "small", theme: dark ? "light" : "dark", weight: "medium" }} className="w-48 my-1">
-                    {item?.head}
-                  </P>
-                  <P variant={{ size: "small", weight: "medium" }} className={`${dark ? "text-gray-300" : "text-[#999999]"}`}>
-                    {item?.name}
-                  </P>
-                </div>
-              ))}
+              <div className="space-y-2 text-sm">
+                <p><span className="font-medium">Title:</span> {data?.data?.artworkSeries && `${data.data.artworkSeries} - `}{data?.data?.artworkName}, {data?.data?.artworkCreationYear}</p>
+                <p><span className="font-medium">Artist:</span> {data?.data?.owner?.artistName} {data?.data?.owner?.artistSurname1}</p>
+                {data?.data?.isArtProvider === "Yes" ? <p><span className="font-medium">Supplied By:</span> {data?.data?.provideArtistName} </p> : null}
+                <p><span className="font-medium">Discipline & Technique:</span> {data?.data?.discipline}, {data?.data?.additionalInfo?.artworkTechnic}</p>
+                <p><span className="font-medium">Theme:</span> {data?.data?.additionalInfo?.artworkTheme || "N/A"}</p>
+                <p><span className="font-medium">Dimensions (H/W/D in cm):</span> {data?.data?.additionalInfo?.height} x {data?.data?.additionalInfo?.width} x {data?.data?.additionalInfo?.depth} (Weight: {data?.data?.additionalInfo?.weight} Kg)</p>
+              </div>
             </div>
+            <div className="w-full md:w-[50%] space-y-2 text-sm ">
+              <p>
+                <span className="font-medium">Style:</span>{" "}
+                {data?.data?.additionalInfo?.artworkStyle?.length
+                  ? data.data.additionalInfo.artworkStyle.join(", ")
+                  : "N/A"}
+              </p>
 
-            <div className="w-full md:w-[50%]">
-              <div className="flex items-center gap-5">
-                <P variant={{ size: "small", theme: dark ? "light" : "dark", weight: "medium" }} className="w-48 my-1">
-                  Framed :
-                </P>
-                <P variant={{ size: "small", weight: "medium" }} className={`${dark ? "text-gray-300" : "text-[#999999]"}`}>
-                  {data?.data?.additionalInfo?.framed}
-                </P>
-              </div>
-              {data?.data?.additionalInfo?.framed == "Yes" ? (
-                <>
-                  <div className="flex flex-col gap-2">
-                    <P
-                      variant={{
-                        size: "small",
-                        theme: dark ? "light" : "dark",
-                        weight: "medium",
-                      }}
-                    >
-                      Framed Description :
-                    </P>
-                    <P variant={{ size: "small", weight: "medium" }} className={`${dark ? "text-gray-300" : "text-[#999999]"}`}>
-                      {data?.data?.additionalInfo?.framedDescription || "N/A"}
-                    </P>
-                  </div>
-                  <div className="flex items-center gap-5 mt-2">
-                    <P
-                      variant={{
-                        size: "small",
-                        theme: dark ? "light" : "dark",
-                        weight: "medium",
-                      }}
-                      className="w-48 my-1"
-                    >
-                      Framed Dimensions :
-                    </P>
-                    <P variant={{ size: "small", weight: "medium" }} className={`${dark ? "text-gray-300" : "text-[#999999]"}`}>
-                      {data?.data?.additionalInfo?.frameHeight || "N/A"} x {data?.data?.additionalInfo?.frameWidth || "N/A"} x{" "}
-                      {data?.data?.additionalInfo?.frameLength || "N/A"} cm
-                    </P>
-                  </div>
-                </>
-              ) : null}
-              <div className="flex items-center gap-5">
-                <P variant={{ size: "small", theme: dark ? "light" : "dark", weight: "medium" }} className="w-48 my-1">
-                  Hanging :
-                </P>
-                <P variant={{ size: "small", weight: "medium" }} className={`${dark ? "text-gray-300" : "text-[#999999]"}`}>
-                  {data?.data?.additionalInfo?.hangingAvailable}
-                </P>
-              </div>
-              {data?.data?.additionalInfo?.hangingAvailable == "Yes" ? (
-                <div className="flex flex-col gap-2">
-                  <P
-                    variant={{
-                      size: "small",
-                      theme: dark ? "light" : "dark",
-                      weight: "medium",
-                    }}
-                  >
-                    Hanging Description :
-                  </P>
-                  <P variant={{ size: "small", weight: "medium" }} className={`${dark ? "text-gray-300" : "text-[#999999]"}`}>
-                    {data?.data?.additionalInfo?.hangingDescription || "N/A"}
-                  </P>
-                </div>
-              ) : null}
-              <div className="flex items-center gap-5">
-                <P variant={{ size: "small", theme: dark ? "light" : "dark", weight: "medium" }} className="w-48 my-1">
+              <p><span className="font-medium">Color:</span> {data?.data?.additionalInfo?.colors?.map((color: string) => `${color}`).join(", ") || "N/A"}</p>
+              <p><span className="font-medium">Emotion:</span> {data?.data?.additionalInfo?.emotions?.map((emotion: string) => `${emotion}`).join(", ")}</p>
+              <p>
+                <span className="font-medium">Framed:</span>{" "}
+                {data?.data?.additionalInfo?.framed === "Yes"
+                  ? `Yes — ${data.data.additionalInfo?.framedDescription} (${data.data.additionalInfo?.frameHeight} x ${data.data.additionalInfo?.frameWidth})`
+                  : data?.data?.additionalInfo?.framed || "N/A"}
+              </p>
+
+
+
+              <p><span className="font-medium">Hanging:</span> {data?.data?.additionalInfo?.hangingAvailable}
+                {data?.data?.additionalInfo?.hangingAvailable === "Yes" && `, ${data?.data?.additionalInfo?.hangingDescription}`}
+              </p>
+              <div className="flex items-center ">
+                <P variant={{ size: "small", theme: dark ? "light" : "dark", weight: "medium" }} className="mr-2 my-1">
                   External Tags :
                 </P>
                 <P variant={{ size: "small", weight: "medium" }} className={`${dark ? "text-gray-300" : "text-[#999999]"}`}>
@@ -241,24 +160,63 @@ const ProductInfo = ({ data }: any) => {
         </TabPanel>
 
         <TabPanel>
-          <div className="w-full my-5">
-            {shipping_data.map((item, index) => (
-              <div key={index} className="flex items-center">
-                <P variant={{ size: "small", theme: dark ? "light" : "dark", weight: "medium" }} className="w-48 my-1">
-                  {item?.head}
-                </P>
-                <P variant={{ size: "small", weight: "medium" }} className={`${dark ? "text-gray-300" : "text-[#999999]"}`}>
-                  {item?.name}
-                </P>
-              </div>
-            ))}
+          <h3 className="text-lg font-medium mb-4">Shipping Information</h3>
+          <div className="w-full ">
+
+
+            <div className="space-y-2 text-sm">
+              <p><span className="font-medium">Package Material:</span> {data?.data?.inventoryShipping?.packageMaterial}</p>
+              <p><span className="font-medium">Package Dimensions (H/W/D in cm):</span> {data?.data?.inventoryShipping?.packageHeight} x {data?.data?.inventoryShipping?.packageWidth} x {data?.data?.inventoryShipping?.packageDepth}</p>
+              <p><span className="font-medium">Package Weight (Kg):</span> {data?.data?.inventoryShipping?.packageWeight}</p>
+              <p><span className="font-medium">Ships from:</span> {data?.data?.owner?.address?.city}, {data?.data?.owner?.address?.country}</p>
+              <p><span className="font-medium">Delivery time:</span> Typically 5-7 days</p>
+              <p><span className="font-medium">Delivery Cost:</span> *** To be discussed ***</p>
+            </div>
+            <p className="text-xs mt-2 text-gray-500">Standard Shipping conditions</p>
           </div>
+
         </TabPanel>
 
         <TabPanel>
           {isAuthorized ? (
-            <div className="w-full my-5">
+            <div className="w-full ">
               <form className="flex md:w-[50%] flex-col gap-4">
+
+                <div>
+                  <label htmlFor="subject" className={`block text-sm font-medium mb-1 ${textColor}`}>
+                    Subject
+                  </label>
+                  <input
+                    type="text"
+                    id="subject"
+                    name="subject"
+                    value={formData.subject}
+                    onChange={handleChange}
+                    readOnly
+                    className={`w-full px-3 py-2 rounded border ${borderColor} ${inputBg} ${textColor} focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="ticketType" className={`block text-sm font-medium mb-1 ${textColor}`}>
+                    Ticket Type
+                  </label>
+                  <select
+                    id="ticketType"
+                    name="ticketType"
+                    value={formData.ticketType}
+                    onChange={handleChange}
+                    required
+                    className={`w-full px-3 py-2 rounded border ${borderColor} ${inputBg} ${textColor} focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                  >
+                    <option value="Artwork additional information">Artwork additional information</option>
+                    <option value="Shipping inquiry">Shipping inquiry</option>
+                    <option value="Payment question">Payment question</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+
+
                 <textarea
                   value={ticData?.message}
                   required
@@ -268,9 +226,8 @@ const ProductInfo = ({ data }: any) => {
                       message: e.target.value,
                     }))
                   }
-                  className={`p-2 border ${
-                    dark ? "bg-gray-800 border-gray-700 text-gray-100" : "bg-white border-gray-200 text-gray-800"
-                  } outline-none rounded`}
+                  className={`p-2 border ${dark ? "bg-gray-800 border-gray-700 text-gray-100" : "bg-white border-gray-200 text-gray-800"
+                    } outline-none rounded`}
                   placeholder="Type here request..."
                   rows={4}
                 />
@@ -290,7 +247,7 @@ const ProductInfo = ({ data }: any) => {
         </TabPanel>
 
         <TabPanel>
-          <div className="flex flex-col gap-5 md:flex-row my-5">
+          <div className="flex flex-col gap-5 md:flex-row ">
             <div className={`${dark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"} w-full md:w-[27%] border sm:w-[90%] p-5`}>
               <div className="flex items-center flex-col">
                 {data?.data?.owner?.profile ? (
@@ -309,9 +266,8 @@ const ProductInfo = ({ data }: any) => {
               </div>
 
               <div
-                className={`flex border-t ${
-                  dark ? "border-gray-700" : "border-zinc-300"
-                } pt-4 items-center gap-4 mt-2 max-w-full w-full overflow-x-auto`}
+                className={`flex border-t ${dark ? "border-gray-700" : "border-zinc-300"
+                  } pt-4 items-center gap-4 mt-2 max-w-full w-full overflow-x-auto`}
               >
                 {data?.data?.owner?.insignia &&
                   data?.data?.owner?.insignia.map((item, index: number) => (
@@ -355,5 +311,8 @@ const ProductInfo = ({ data }: any) => {
     </div>
   );
 };
+
+
+
 
 export default ProductInfo;

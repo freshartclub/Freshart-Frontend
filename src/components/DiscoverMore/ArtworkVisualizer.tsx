@@ -85,8 +85,6 @@ const ArtworkVisualizer = ({ artwork: orignalArtwork, isLoading, error }) => {
 
   }, [data, imageUrl]);
 
-  console.log(roomData)
-
 
   const artwork = {
     imageUrl: `${imageUrl}/users/${orignalArtwork?.data?.media?.mainImage}`,
@@ -208,7 +206,7 @@ const ArtworkVisualizer = ({ artwork: orignalArtwork, isLoading, error }) => {
         bottom: y2
       },
 
-      
+      // Additional useful data
       minScaleNeeded: minScaleNeeded,
       wasScaled: optimalScale < 1,
       centerPosition: {
@@ -249,15 +247,19 @@ const ArtworkVisualizer = ({ artwork: orignalArtwork, isLoading, error }) => {
   }
 
   return (
-    <div className="w-full max-w-6xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
+    <div className={`relative max-w-6xl mx-auto  shadow-lg rounded-lg overflow-hidden ${dark ? 'bg-gray-900' : 'bg-white'}`}>
 
-      <div className="bg-gray-50 px-6 py-4 border-b flex  justify-between items-center">
-        <h2 className="text-xl font-semibold text-gray-800">Artwork Visualizer</h2>
+      <div className={`flex items-center justify-between px-6 p-4 border-b ${dark ? 'border-gray-500 bg-gray-900' : 'border-gray-200'} bg-gray-50`}>
+
+        
+        <h2 className={`text-xl font-semibold ${dark ? 'text-white' : 'text-gray-900'}`}>Artwork Visualizer</h2>
 
         <div className="flex gap-1 sm:gap-2">
           <button
             onClick={toggleFullscreen}
-            className="p-2 hover:bg-gray-200 rounded-full transition-colors"
+            className={`p-1.5 sm:p-2 rounded-full ${buttonBgClass} ${buttonHoverClass} transition-colors duration-200`}
+
+            // p-2 hover:bg-gray-200 rounded-full transition-colors
             title="Toggle Fullscreen"
           >
             <Maximize2 size={20} />
@@ -274,7 +276,9 @@ const ArtworkVisualizer = ({ artwork: orignalArtwork, isLoading, error }) => {
 
       {isMobileVisualize ? <MobileArtworkVisualizer artwork={artwork} isLoading={isLoading} error={error} /> : null}
 
-      <div className="p-4 border-b bg-gray-50">
+      <div className={`p-4 ${dark ? 'bg-gray-800 text-white' : 'bg-gray-50 text-gray-900'}`}>
+
+        
         <div className="flex flex-wrap gap-2 justify-center">
           {rooms?.map((room) => {
             const Icon = room?.icon;
@@ -290,8 +294,7 @@ const ArtworkVisualizer = ({ artwork: orignalArtwork, isLoading, error }) => {
                   setCustomBackground(null);
                 }}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${selectedRoom === room?.id
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-white text-gray-600 hover:bg-gray-100 border'
+                  ? dark ? "bg-gray-700 text-white" : "bg-gray-200 text-gray-800" : dark ? "text-gray-400 hover:bg-gray-800" : "text-gray-600 hover:bg-gray-100"
                   }`}
               >
                 <Icon size={18} />
@@ -321,7 +324,7 @@ const ArtworkVisualizer = ({ artwork: orignalArtwork, isLoading, error }) => {
 
 
       {currentRoom && (
-        <div className="px-6 py-3 border-b">
+        <div className={`px-6 py-4 ${dark ? 'bg-gray-800 text-white' : 'bg-gray-50 text-gray-900'} border-b ${dark ? 'border-gray-700' : 'border-gray-200'}`}>
 
           {calculateArtworkStyle?.fitStatus === 'too-large' && (
             <div className="flex items-center gap-3 p-3 bg-red-50 border border-red-200 rounded-lg">
@@ -367,17 +370,16 @@ const ArtworkVisualizer = ({ artwork: orignalArtwork, isLoading, error }) => {
       )}
 
       {currentRoomVariants?.length > 1 && (
-        <div className="p-4 border-b bg-gray-50">
+        <div className={`px-6 py-4 ${dark ? 'bg-gray-800 text-white' : 'bg-gray-50 text-gray-900'} border-b ${dark ? 'border-gray-700' : 'border-gray-200'}`}>
           <div className="flex gap-2 justify-center">
             {currentRoomVariants?.map((_, index) => (
               <button
                 key={index}
                 onClick={() => setSelectedVariant(index)}
-                className={`w-8 h-8 rounded-full text-sm font-medium transition-colors ${selectedVariant === index
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-white text-gray-600 hover:bg-gray-100 border'
-                  }`}
+                className={`  w-8 h-8 rounded-lg transition-colors text-sm font-medium ${selectedVariant === index ? dark ? 'bg-gray-700 text-white' : 'bg-gray-200 text-gray-800' : dark ? 'text-gray-400 hover:bg-gray-800' : 'text-gray-600 hover:bg-gray-100'}`}
               >
+
+              
                 {index + 1}
               </button>
             ))}
@@ -387,14 +389,16 @@ const ArtworkVisualizer = ({ artwork: orignalArtwork, isLoading, error }) => {
       )}
 
 
-      <div className="p-6">
+      <div className={`p-6 ${dark ? 'bg-gray-800 text-white' : 'bg-gray-50 text-gray-900'}`}>
         <span className="text-base px-2">
           {currentRoom?.name}
         </span>
 
         <div
           ref={visualizerRef}
-          className="relative w-full mx-auto bg-gray-100 rounded-lg overflow-hidden shadow-inner"
+          className={`relative w-full mx-auto shadow-inner rounded-lg overflow-hidden ${dark ? 'bg-gray-700' : 'bg-gray-200'} transition-all duration-300`}
+
+         
           style={{
             aspectRatio: currentRoom ? `${currentRoom?.wallWidth}/${currentRoom?.wallHeight}` : '4/3',
             maxHeight: '70vh'
@@ -465,7 +469,7 @@ const ArtworkVisualizer = ({ artwork: orignalArtwork, isLoading, error }) => {
                   {artwork.width}×{artwork.height}cm
                 </div>
                 <div className="text-xs mt-1">
-                  Available: {calculateArtworkStyle?.availableSpace?.width.toFixed(1)}×{calculateArtworkStyle?.availableSpace?.height?.toFixed(1)}cm
+                  Available: {calculateArtworkStyle?.availableSpace?.width?.toFixed(1)}×{calculateArtworkStyle?.availableSpace?.height?.toFixed(1)}cm
                 </div>
               </div>
             </div>
@@ -476,7 +480,7 @@ const ArtworkVisualizer = ({ artwork: orignalArtwork, isLoading, error }) => {
             <div className="absolute top-4 right-4 flex gap-2">
               <button
                 onClick={() => setSelectedVariant((prev) =>
-                  prev === 0 ? currentRoomVariants.length - 1 : prev - 1
+                  prev === 0 ? currentRoomVariants?.length - 1 : prev - 1
                 )}
                 className="p-2 bg-white bg-opacity-80 hover:bg-opacity-100 rounded-full shadow-lg transition-all"
               >
@@ -484,7 +488,7 @@ const ArtworkVisualizer = ({ artwork: orignalArtwork, isLoading, error }) => {
               </button>
               <button
                 onClick={() => setSelectedVariant((prev) =>
-                  (prev + 1) % currentRoomVariants.length
+                  (prev + 1) % currentRoomVariants?.length
                 )}
                 className="p-2 bg-white bg-opacity-80 hover:bg-opacity-100 rounded-full shadow-lg transition-all"
               >
@@ -496,25 +500,29 @@ const ArtworkVisualizer = ({ artwork: orignalArtwork, isLoading, error }) => {
 
 
         {currentRoom && (
-          <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+          <div className={`mt-4 p-4  rounded-lg shadow-md ${dark ? 'bg-gray-800 text-white border-zinc-700 shadow-xl border-1' : 'bg-gray-50 text-gray-900'}`}>
+
+           
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-center">
               <div>
-                <div className="text-lg font-semibold text-gray-800">
+                <div className={`text-lg font-semibold ${dark ? 'text-white' : 'text-gray-800'}`}>
+
+                  
                   {artwork?.width} × {artwork?.height} cm
                 </div>
-                <div className="text-sm text-gray-600">Artwork Size</div>
+                <div className={`text-lg ${dark ? 'text-white' : 'text-gray-600'}`}>Artwork Size</div>
               </div>
               <div>
-                <div className="text-lg font-semibold text-gray-800">
+                <div className={`text-lg font-semibold ${dark ? 'text-white' : 'text-gray-800'}`}>
                   {calculateArtworkStyle?.availableSpace?.width?.toFixed(1)} × {calculateArtworkStyle?.availableSpace?.height?.toFixed(1)} cm
                 </div>
-                <div className="text-sm text-gray-600">Available Space</div>
+                <div className={`text-lg ${dark ? 'text-white' : 'text-gray-600'}`}>Available Space</div>
               </div>
               <div>
                 <div className={`text-lg font-semibold ${calculateArtworkStyle?.fits ? 'text-green-600' : 'text-red-600'}`}>
                   {calculateArtworkStyle?.fits ? 'Yes' : 'No'}
                 </div>
-                <div className="text-sm text-gray-600">Fits in Space</div>
+                <div className={`text-lg ${dark ? 'text-white' : 'text-gray-600'}`}>Fits in Space</div>
               </div>
               {/* <div>
                 <div className="text-lg font-semibold text-gray-800">
@@ -534,18 +542,16 @@ const ArtworkVisualizer = ({ artwork: orignalArtwork, isLoading, error }) => {
                     : `${(calculateArtworkStyle?.minScaleNeeded * 100).toFixed(0)}% needed`
                   }
                 </div>
-                <div className="text-sm text-gray-600">Scale Factor</div>
+                <div className={`text-lg ${dark ? 'text-white' : 'text-gray-600'}`}>Scale Factor</div>
               </div>
 
-              <div><div className={`text-lg font-semibold `}>
-                  {currentRoom?.wallWidth +" x "+ currentRoom.wallHeight + " "
+              <div><div className={`text-lg ${dark ? 'text-white' : 'text-gray-600'}`}>
+                  {currentRoom?.wallWidth +" x "+ currentRoom?.wallHeight
                   } cm
                 </div>
                 <div>Wall Size</div>
-                </div>
-             
+                </div>             
             </div>
-
 
             <div className="mt-3 pt-3 border-t border-gray-200">
               <div className="text-center">

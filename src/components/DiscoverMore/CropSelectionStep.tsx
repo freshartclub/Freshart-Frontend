@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, SetStateAction } from "react";
 import { imageUrl } from "../utils/baseUrls";
 import useUploadImageMutation from "./http/useUploadImageMutation";
 import useUpdateValuesMutation from "./http/useUpadteValuesMutation";
@@ -7,7 +7,19 @@ const INCH_TO_CM = 2.54;
 const MIN_SIZE_CM = 0.5;
 const MIN_SIZE_PX = 5;
 
-const CropSelectionStep = ({
+
+type CropSelectionStep = {
+  selectedImage: string;
+  height: string;
+  width: string;
+  setCropSelection: (value: any) => void;
+  onNext: () => void;
+  onPrev: () => void;
+  setImageSizeS: (value: string) => void;
+
+};
+
+const CropSelectionStep :  React.FC<CropSelectionStep> = ({
   selectedImage,
   previewImageDimensions,
   cropSelection,
@@ -34,7 +46,7 @@ const CropSelectionStep = ({
     pixelDimensions: { width: 0, height: 0 },
     pixelsPerCm: 0
   });
-  const [showRuler, setShowRuler] = useState(false);
+ 
 
   const { mutateAsync, isPending } = useUpdateValuesMutation();
 
@@ -141,14 +153,14 @@ const CropSelectionStep = ({
     }
   }, [loading, imageDimensions, imageSize, cropSelection, setCropSelection]);
 
-  const cmToDisplayPixels = useCallback((cm) => {
+  const cmToDisplayPixels = useCallback((cm: number) => {
     if (!imageDimensions.pixelsPerCm || !imageSize.width) return 0;
     const realPixels = cm * imageDimensions.pixelsPerCm;
     const displayPixels = (realPixels / imageDimensions.pixelDimensions.width) * imageSize.width;
     return Math.round(displayPixels);
   }, [imageDimensions, imageSize]);
 
-  const displayPixelsToCm = useCallback((displayPixels) => {
+  const displayPixelsToCm = useCallback((displayPixels: number) => {
     if (!imageDimensions.pixelsPerCm || !imageSize.width) return 0;
     const realPixels = (displayPixels / imageSize.width) * imageDimensions.pixelDimensions.width;
     const cm = realPixels / imageDimensions.pixelsPerCm;
@@ -199,7 +211,7 @@ const CropSelectionStep = ({
     }
   }, [imageSize]);
 
-  const handleSizeChange = useCallback((dimension, value) => {
+  const handleSizeChange = useCallback((dimension: string , value: number) => {
     if (isNaN(value)) return;
 
     const maxValue = dimension === 'width'
@@ -228,13 +240,13 @@ const CropSelectionStep = ({
     });
   }, [imageDimensions, cropSelection, imageSize, cmToDisplayPixels, setCropSelection]);
 
-  const getClientCoordinates = useCallback((e) => {
+  const getClientCoordinates = useCallback((e: { touches: { clientY: unknown; }[]; clientX: unknown; clientY: unknown; }) => {
     return e.touches
       ? { clientX: e.touches[0].clientX, clientY: e.touches[0].clientY }
       : { clientX: e.clientX, clientY: e.clientY };
   }, []);
 
-  const handleSelectionDragStart = useCallback((e) => {
+  const handleSelectionDragStart = useCallback((e: { preventDefault: () => void; }) => {
     e.preventDefault();
     setIsDragging(true);
 
@@ -246,7 +258,7 @@ const CropSelectionStep = ({
     });
   }, [cropSelection, containerRect]);
 
-  const handleResizeStart = useCallback((e, corner) => {
+  const handleResizeStart = useCallback((e: { preventDefault: () => void; stopPropagation: () => void; }, corner: SetStateAction<string>) => {
     e.preventDefault();
     e.stopPropagation();
     setIsResizing(true);
@@ -268,7 +280,7 @@ const CropSelectionStep = ({
     }
   }, [containerRect, isDragging, isResizing, getClientCoordinates]);
 
-  const handleDrag = useCallback((clientX, clientY) => {
+  const handleDrag = useCallback((clientX: number, clientY: number) => {
     let newX = clientX - containerRect.left - dragStart.x;
     let newY = clientY - containerRect.top - dragStart.y;
 
@@ -282,7 +294,7 @@ const CropSelectionStep = ({
     }));
   }, [containerRect, dragStart, imageSize, cropSelection, setCropSelection]);
 
-  const handleResize = useCallback((clientX, clientY) => {
+  const handleResize = useCallback((clientX: number, clientY: number) => {
     const deltaX = clientX - dragStart.x;
     const deltaY = clientY - dragStart.y;
 
@@ -360,8 +372,7 @@ const CropSelectionStep = ({
     }
   }, [selectionRef, containerRect, getClientCoordinates, cropSelection, cmToDisplayPixels, imageSize, setCropSelection]);
 
-
-const handleNext = () => {
+  const handleNext = () => {
   const id = imageId;
   const area_x1 = displayPixelsToCm(cropSelection.x);
   const area_y1 = displayPixelsToCm(cropSelection.y);
@@ -371,11 +382,7 @@ const handleNext = () => {
   mutateAsync({ id, area_x1, area_y1, area_x2, area_y2 }).then(()=>{
     onNext()
   })
-};
-
-
-
-
+  };
 
   return (
     <div className="flex flex-col lg:flex-row w-full h-full">
@@ -451,7 +458,6 @@ const handleNext = () => {
       <div className="lg:w-2/5 w-full p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg mt-4 lg:mt-0 lg:ml-4">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold dark:text-white">Crop Selection</h2>
-
         </div>
 
         <div className="mb-6 p-3 bg-gray-100 dark:bg-gray-700 rounded-lg">
@@ -459,15 +465,15 @@ const handleNext = () => {
           <div className="grid grid-cols-2 gap-2 text-sm">
             <div className="text-gray-600 dark:text-gray-300">Pixel Dimensions:</div>
             <div className="text-gray-800 dark:text-gray-100">
-              {imageDimensions.pixelDimensions.width} × {imageDimensions.pixelDimensions.height} px
+              {imageDimensions?.pixelDimensions?.width} × {imageDimensions?.pixelDimensions?.height} px
             </div>
             <div className="text-gray-600 dark:text-gray-300">Physical Size:</div>
             <div className="text-gray-800 dark:text-gray-100">
-              {imageDimensions.realDimensions.width} × {imageDimensions.realDimensions.height} cm
+              {imageDimensions?.realDimensions?.width} × {imageDimensions?.realDimensions?.height} cm
             </div>
             <div className="text-gray-600 dark:text-gray-300">Resolution:</div>
             <div className="text-gray-800 dark:text-gray-100">
-              ~{Math.round(imageDimensions.pixelsPerCm * INCH_TO_CM)} DPI
+              ~{Math.round(imageDimensions?.pixelsPerCm * INCH_TO_CM)} DPI
             </div>
           </div>
         </div>
@@ -481,7 +487,7 @@ const handleNext = () => {
               <input
                 type="number"
                 min={MIN_SIZE_CM}
-                max={imageDimensions.realDimensions.width}
+                max={imageDimensions?.realDimensions?.width}
                 step="0.1"
                 value={displayPixelsToCm(cropSelection?.width)}
                 onChange={(e) => handleSizeChange('width', parseFloat(e.target.value))}
@@ -493,7 +499,7 @@ const handleNext = () => {
               <input
                 type="number"
                 min={MIN_SIZE_CM}
-                max={imageDimensions.realDimensions.height}
+                max={imageDimensions?.realDimensions?.height}
                 step="0.1"
                 value={displayPixelsToCm(cropSelection?.height)}
                 onChange={(e) => handleSizeChange('height', parseFloat(e.target.value))}
@@ -507,22 +513,22 @@ const handleNext = () => {
             <div className="grid grid-cols-2 gap-2 text-sm">
               <div className="text-gray-600 dark:text-gray-300">Top Margin:</div>
               <div className="text-gray-800 dark:text-gray-100">
-                {displayPixelsToCm(cropSelection.y)}
+                {displayPixelsToCm(cropSelection?.y)}
               </div>
 
               <div className="text-gray-600 dark:text-gray-300">Left Margin:</div>
               <div className="text-gray-800 dark:text-gray-100">
-                {displayPixelsToCm(cropSelection.x)}
+                {displayPixelsToCm(cropSelection?.x)}
               </div>
 
               <div className="text-gray-600 dark:text-gray-300">Right Margin:</div>
               <div className="text-gray-800 dark:text-gray-100">
-                {displayPixelsToCm(imageSize?.width - (cropSelection.x + cropSelection.width))}
+                {displayPixelsToCm(imageSize?.width - (cropSelection?.x + cropSelection?.width))}
               </div>
 
               <div className="text-gray-600 dark:text-gray-300">Bottom Margin:</div>
               <div className="text-gray-800 dark:text-gray-100">
-                {displayPixelsToCm(imageSize?.height - (cropSelection.y + cropSelection.height))}
+                {displayPixelsToCm(imageSize?.height - (cropSelection?.y + cropSelection?.height))}
               </div>
             </div>
 

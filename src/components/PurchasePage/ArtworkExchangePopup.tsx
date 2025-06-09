@@ -95,7 +95,7 @@ const ArtworkExchangePopup = ({ setOnExchange, setShowReturnInstruction, availab
             <textarea
               id="special-instructions"
               name="specialInstructions"
-              value={formData.specialInstructions}
+              value={formData?.specialInstructions}
               onChange={handleChange}
               rows="2"
               className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
@@ -120,7 +120,7 @@ const ArtworkExchangePopup = ({ setOnExchange, setShowReturnInstruction, availab
             </label>
           </div>
 
-          <div>
+           <div>
             <button
               type="submit"
               className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${

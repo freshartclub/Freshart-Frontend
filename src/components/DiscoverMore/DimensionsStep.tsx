@@ -21,8 +21,6 @@ const DimensionsStep = ({
     const [imageDimensions, setImageDimensions] = useState({ width: 0, height: 0 });
     const previewRef = useRef(null);
 
-    console.log(cropSelection)
-
     useEffect(() => {
         if (selectedImage) {
             const img = new Image();
@@ -33,23 +31,21 @@ const DimensionsStep = ({
         }
     }, [selectedImage]);
 
-   
     useEffect(() => {
-        if (!isDirty && cropSelection.width > 0 && cropSelection.height > 0) {
-            const roundedWidth = Math.round(cropSelection.width);
-            const roundedHeight = Math.round(cropSelection.height);
+        if (!isDirty && cropSelection?.width > 0 && cropSelection?.height > 0) {
+            const roundedWidth = Math.round(cropSelection?.width);
+            const roundedHeight = Math.round(cropSelection?.height);
 
             setDimensions({
                 width: roundedWidth,
                 height: roundedHeight
             });
-            setWidthInput(roundedWidth.toString());
-            setHeightInput(roundedHeight.toString());
-            setAspectRatio(cropSelection.width / cropSelection.height);
+            setWidthInput(roundedWidth?.toString());
+            setHeightInput(roundedHeight?.toString());
+            setAspectRatio(cropSelection?.width / cropSelection?.height);
         }
     }, [cropSelection, isDirty, setDimensions]);
 
-    // Validate and update dimensions
     const updateDimensions = useCallback((newWidth, newHeight) => {
         // Validate width
         if (newWidth <= 0) {
@@ -57,8 +53,8 @@ const DimensionsStep = ({
             return false;
         }
 
-        if (newWidth > imageDimensions.width) {
-            setError(`Width cannot exceed image width (${imageDimensions.width}px)`);
+        if (newWidth > imageDimensions?.width) {
+            setError(`Width cannot exceed image width (${imageDimensions?.width}px)`);
             return false;
         }
 
@@ -68,8 +64,8 @@ const DimensionsStep = ({
             return false;
         }
 
-        if (newHeight > imageDimensions.height) {
-            setError(`Height cannot exceed image height (${imageDimensions.height}px)`);
+        if (newHeight > imageDimensions?.height) {
+            setError(`Height cannot exceed image height (${imageDimensions?.height}px)`);
             return false;
         }
 
@@ -79,22 +75,21 @@ const DimensionsStep = ({
         return true;
     }, [imageDimensions, setDimensions]);
 
-    // Update crop selection when dimensions change
     useEffect(() => {
-        if (isDirty && dimensions.width > 0 && dimensions.height > 0) {
+        if (isDirty && dimensions?.width > 0 && dimensions?.height > 0) {
             // Calculate new crop selection maintaining the center point
-            const centerX = cropSelection.x + cropSelection.width / 2;
-            const centerY = cropSelection.y + cropSelection.height / 2;
+            const centerX = cropSelection?.x + cropSelection?.width / 2;
+            const centerY = cropSelection?.y + cropSelection?.height / 2;
 
-            const newWidth = dimensions.width;
-            const newHeight = dimensions.height;
+            const newWidth = dimensions?.width;
+            const newHeight = dimensions?.height;
 
             let newX = centerX - newWidth / 2;
             let newY = centerY - newHeight / 2;
 
             // Constrain to image bounds
-            newX = Math.max(0, Math.min(newX, imageDimensions.width - newWidth));
-            newY = Math.max(0, Math.min(newY, imageDimensions.height - newHeight));
+            newX = Math.max(0, Math.min(newX, imageDimensions?.width - newWidth));
+            newY = Math.max(0, Math.min(newY, imageDimensions?.height - newHeight));
 
             setCropSelection({
                 x: newX,
@@ -109,12 +104,10 @@ const DimensionsStep = ({
         const value = e.target.value;
         setWidthInput(value);
 
-        // Only process numeric values
         if (/^\d*$/.test(value) && value !== "") {
             const newWidth = parseInt(value, 10);
             let newHeight = dimensions.height;
 
-            // Maintain aspect ratio if enabled
             if (maintainAspectRatio) {
                 newHeight = Math.round(newWidth / aspectRatio);
                 setHeightInput(newHeight.toString());
@@ -128,17 +121,14 @@ const DimensionsStep = ({
         const value = e.target.value;
         setHeightInput(value);
 
-        // Only process numeric values
         if (/^\d*$/.test(value) && value !== "") {
             const newHeight = parseInt(value, 10);
-            let newWidth = dimensions.width;
+            let newWidth = dimensions?.width;
 
-            // Maintain aspect ratio if enabled
             if (maintainAspectRatio) {
                 newWidth = Math.round(newHeight * aspectRatio);
-                setWidthInput(newWidth.toString());
+                setWidthInput(newWidth?.toString());
             }
-
             updateDimensions(newWidth, newHeight);
         }
     };
@@ -146,41 +136,38 @@ const DimensionsStep = ({
     const toggleAspectRatio = () => {
         const newMaintainAspectRatio = !maintainAspectRatio;
         setMaintainAspectRatio(newMaintainAspectRatio);
-
         if (newMaintainAspectRatio) {
-            // When re-enabling aspect ratio, recalculate based on current width
-            setAspectRatio(dimensions.width / dimensions.height);
+            setAspectRatio(dimensions?.width / dimensions?.height);
         }
     };
 
     const resetDimensions = () => {
-        if (cropSelection.width > 0 && cropSelection.height > 0) {
-            const roundedWidth = Math.round(cropSelection.width);
-            const roundedHeight = Math.round(cropSelection.height);
+        if (cropSelection.width > 0 && cropSelection?.height > 0) {
+            const roundedWidth = Math.round(cropSelection?.width);
+            const roundedHeight = Math.round(cropSelection?.height);
 
             setDimensions({
                 width: roundedWidth,
                 height: roundedHeight
             });
-            setWidthInput(roundedWidth.toString());
-            setHeightInput(roundedHeight.toString());
-            setAspectRatio(cropSelection.width / cropSelection.height);
+            setWidthInput(roundedWidth?.toString());
+            setHeightInput(roundedHeight?.toString());
+            setAspectRatio(cropSelection?.width / cropSelection?.height);
             setIsDirty(false);
             setError(null);
         }
     };
 
-    console.log(cropSelection.x, "___________")
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (!error && dimensions.width > 0 && dimensions.height > 0) {
+        if (!error && dimensions?.width > 0 && dimensions?.height > 0) {
             onNext();
         }
     };
 
     return (
         <div className="flex flex-col lg:flex-row w-full h-full">
-            {/* Left Side - Image with Selection Preview */}
+           
             <div className="relative lg:w-3/5 w-full h-64 sm:h-80 md:h-96 lg:h-auto border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-900">
                 <div className="relative w-full h-full flex items-center justify-center">
                     {selectedImage && (
@@ -203,10 +190,10 @@ const DimensionsStep = ({
                                     ref={previewRef}
                                     className="absolute border-2 border-blue-500 bg-blue-500 bg-opacity-20 pointer-events-none"
                                     style={{
-                                        left: `${cropSelection.x}px`,
-                                        top: `${cropSelection.y}px`,
-                                        width: `${cropSelection.width}px`,
-                                        height: `${cropSelection.height}px`,
+                                        left: `${cropSelection?.x}px`,
+                                        top: `${cropSelection?.y}px`,
+                                        width: `${cropSelection?.width}px`,
+                                        height: `${cropSelection?.height}px`,
                                         boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.5)'
                                     }}
                                 ></div>
@@ -217,7 +204,7 @@ const DimensionsStep = ({
                 </div>
             </div>
 
-            {/* Right Side - Controls */}
+         
             <div className="w-full lg:w-2/5 flex flex-col p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg mt-4 lg:mt-0 lg:ml-4">
                 <h4 className="text-lg font-medium mb-2 text-gray-700 dark:text-gray-300">Edit Dimensions</h4>
 

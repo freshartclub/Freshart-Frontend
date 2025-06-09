@@ -17,6 +17,7 @@ import i18n from "./components/utils/i18n.ts";
 import KbDetails from "./components/pages/KbDetails.tsx";
 import UserOfferRequest from "./components/UserOffer/UserOfferRequest.tsx";
 import CustomUploadPage from "./components/utils/CustomUploadPage.tsx";
+import ArtistSeriesList from "./components/ArtistDetail/ArtistSeriesList.tsx";
 
 // Lazy loading the components
 const UserCircleList = lazy(() => import("./components/CIrcle/UserCircleList"));
@@ -111,122 +112,21 @@ const App: React.FC = () => {
               <Route path="/faq" element={<Faq />} />
               <Route path="/kb-database" element={<KbDatabase />} />
               <Route path="/about-us" element={<AboutUs />} />
-                 <Route
-                path="/discover_more/:id/upload"
-                element={
-                  
-                    <CustomUploadPage />
-                 
-                }
-              />
-
-              <Route
-                path="/artist-panel/*"
-                element={
-                  <AuthGuard>
-                    <ArtistGuard>
-                      <ArtistPanel />
-                    </ArtistGuard>
-                  </AuthGuard>
-                }
-              />
+              <Route path="/discover_more/:id/upload" element={ <CustomUploadPage /> } />
+              <Route path="/artist-panel/*" element={ <AuthGuard> <ArtistGuard> <ArtistPanel/> </ArtistGuard> </AuthGuard>}/>
               <Route path="/kb-details" element={<KbDetails />} />
-
-              <Route
-                path="/ticket/all"
-                element={
-                  <AuthGuard>
-                    <TicketHistory />
-                  </AuthGuard>
-                }
-              />
-              <Route
-                path="/ticket/detail"
-                element={
-                  <AuthGuard>
-                    <SingleTicket />
-                  </AuthGuard>
-                }
-              />
-              <Route
-                path="/ticket/new"
-                element={
-                  <AuthGuard>
-                    <NewTicket />
-                  </AuthGuard>
-                }
-              />
-
+              <Route path="/ticket/all" element={ <AuthGuard> <TicketHistory /> </AuthGuard>}/>
+              <Route path="/ticket/detail" element={<AuthGuard> <SingleTicket /> </AuthGuard> }/>
+              <Route path="/ticket/new" element={<AuthGuard> <NewTicket /> </AuthGuard> }/>
               <Route path="/home" element={<HomePage />} />
-              <Route
-                path="/payment_successful"
-                element={
-                  <AuthGuard>
-                    <PaymentSuccessfull />
-                  </AuthGuard>
-                }
-              />
-
-           
-
-
-              <Route
-                path="/thankyou"
-                element={
-                  <AuthGuard>
-                    <ThankYou />
-                  </AuthGuard>
-                }
-              />
-              <Route
-                path="/error"
-                element={
-                  <AuthGuard>
-                    <ErrorPage />
-                  </AuthGuard>
-                }
-              />
-              <Route
-                path="/blog"
-                element={
-                  <AuthGuard>
-                    <BlogAndNews />
-                  </AuthGuard>
-                }
-              />
-              <Route
-                path="/offer-request"
-                element={
-                  <AuthGuard>
-                    <UserOfferRequest />
-                  </AuthGuard>
-                }
-              />
-              <Route
-                path="/circleblog"
-                element={
-                  <AuthGuard>
-                    <CircleBlog />
-                  </AuthGuard>
-                }
-              />
-              <Route
-                path="/registration_process"
-                element={
-                  <AuthGuard>
-                    <CompleteProfileForm />
-                  </AuthGuard>
-                }
-              />
-
-              <Route
-                path="/card_success"
-                element={
-                  <AuthGuard>
-                    <CardSuccessPage />
-                  </AuthGuard>
-                }
-              />
+              <Route path="/payment_successful" element={<AuthGuard> <PaymentSuccessfull /> </AuthGuard>}/>
+              <Route path="/thankyou" element={<AuthGuard> <ThankYou /> </AuthGuard>}/>
+              <Route path="/error" element={<AuthGuard> <ErrorPage /> </AuthGuard>}/>
+              <Route path="/blog" element={ <AuthGuard> <BlogAndNews /> </AuthGuard>}/>
+              <Route path="/offer-request" element={ <AuthGuard>  <UserOfferRequest /></AuthGuard>} />
+              <Route path="/circleblog" element={ <AuthGuard>  <CircleBlog />  </AuthGuard>} />
+              <Route path="/registration_process" element={ <AuthGuard> <CompleteProfileForm /> </AuthGuard>} />
+              <Route path="/card_success" element={ <AuthGuard> <CardSuccessPage /> </AuthGuard>} />
               <Route
                 path="/collections"
                 element={
@@ -259,6 +159,17 @@ const App: React.FC = () => {
                   </AuthGuard>
                 }
               />
+
+                 <Route
+                path="/artist-series/:series"
+                element={
+                  <AuthGuard>
+                    <ArtistSeriesList />
+                  </AuthGuard>
+                }
+              />
+
+
               <Route
                 path="/my_card"
                 element={
