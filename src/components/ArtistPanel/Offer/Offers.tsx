@@ -80,6 +80,7 @@ const Offers = () => {
       offer: offerPrice,
       id: offerData?._id, // offer ki id jaygi isma
       counterAccept: counterAccept,
+      langCode : "EN"
     };
 
     mutateAsync(values).then(() => {

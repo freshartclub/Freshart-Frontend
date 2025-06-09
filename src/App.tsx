@@ -82,6 +82,8 @@ const App: React.FC = () => {
   const theme = useAppSelector((state) => state.theme.mode);
   const lng = useAppSelector((state) => state.user.language);
 
+
+
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -119,15 +121,15 @@ const App: React.FC = () => {
               <Route path="/ticket/all" element={ <AuthGuard> <TicketHistory /> </AuthGuard>}/>
               <Route path="/ticket/detail" element={<AuthGuard> <SingleTicket /> </AuthGuard> }/>
               <Route path="/ticket/new" element={<AuthGuard> <NewTicket /> </AuthGuard> }/>
-              {/* <Route path="/home" element={<HomePage />} /> */}
-              {/* <Route path="/payment_successful" element={<AuthGuard> <PaymentSuccessfull /> </AuthGuard>}/> */}
-              {/* <Route path="/thankyou" element={<AuthGuard> <ThankYou /> </AuthGuard>}/> */}
-              {/* <Route path="/error" element={<AuthGuard> <ErrorPage /> </AuthGuard>}/> */}
-              {/* <Route path="/blog" element={ <AuthGuard> <BlogAndNews /> </AuthGuard>}/> */}
-              {/* <Route path="/offer-request" element={ <AuthGuard>  <UserOfferRequest /></AuthGuard>} /> */}
-              {/* <Route path="/circleblog" element={ <AuthGuard>  <CircleBlog />  </AuthGuard>} /> */}
-              {/* <Route path="/registration_process" element={ <AuthGuard> <CompleteProfileForm /> </AuthGuard>} /> */}
-              {/* <Route path="/card_success" element={ <AuthGuard> <CardSuccessPage /> </AuthGuard>} /> */}
+              {/* <Route path="/home" element={<HomePage />} />
+              <Route path="/payment_successful" element={<AuthGuard> <PaymentSuccessfull /> </AuthGuard>}/>
+              <Route path="/thankyou" element={<AuthGuard> <ThankYou /> </AuthGuard>}/> */}
+              <Route path="/error" element={<AuthGuard> <ErrorPage /> </AuthGuard>}/>
+              {/* <Route path="/blog" element={ <AuthGuard> <BlogAndNews /> </AuthGuard>}/>
+              <Route path="/offer-request" element={ <AuthGuard>  <UserOfferRequest /></AuthGuard>} />
+              <Route path="/circleblog" element={ <AuthGuard>  <CircleBlog />  </AuthGuard>} />
+              <Route path="/registration_process" element={ <AuthGuard> <CompleteProfileForm /> </AuthGuard>} />
+              <Route path="/card_success" element={ <AuthGuard> <CardSuccessPage /> </AuthGuard>} /> */}
               {/* <Route
                 path="/collections"
                 element={
@@ -393,7 +395,7 @@ const App: React.FC = () => {
               {theme ? <FaSun size={20} /> : <FaMoon size={20} />}
             </button>
           </div>
-          {window.location.pathname.includes("/artist-panel") ? null : null}
+          {window.location.pathname.includes("/artist-panel") ? null : <FooterSection />}
         </Suspense>
       </Layout>
     </AuthProvider>

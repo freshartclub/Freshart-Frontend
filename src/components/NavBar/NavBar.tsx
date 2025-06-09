@@ -319,23 +319,23 @@ const NavBar = () => {
 
               <div className="flex items-center gap-4 justify-center">
                 <div className="flex items-center justify-center">
-                  <div className="overflow-x-hidden">
+                  {/* <div className="overflow-x-hidden">
                     <ShoppingCard isOpen={isSidebarOpen} onClose={toggleSidebar} />
-                  </div>
+                  </div> */}
 
                   <button onClick={toggleSidebar} className="relative focus:outline-none">
-                    <img src={bag} alt="bag" className="w-8 h-8 text-white mx-2 " />
-                    <span className="absolute bg-red-300 w-4 h-4 right-0 top-0  rounded-full flex items-center justify-center">
+                    {/* <img src={bag} alt="bag" className="w-8 h-8 text-white mx-2 " /> */}
+                    {/* <span className="absolute bg-red-300 w-4 h-4 right-0 top-0  rounded-full flex items-center justify-center">
                       {cartItem ? <h1 className="text-sm font-semibold">{cartItem?.cart?.length}</h1> : null}
-                    </span>
+                    </span> */}
                   </button>
                 </div>
                 <Link to="/login" className="px-4 py-2 text-sm bg-white rounded-md hover:bg-gray-200 focus:outline-none">
                   Sign In
                 </Link>
-                <Link to="/signup" className="text-sm text-white ">
+                {/* <Link to="/signup" className="text-sm text-white ">
                   Sign Up
-                </Link>
+                </Link> */}
               </div>
             </>
           )}

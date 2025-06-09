@@ -6,6 +6,9 @@ import useMakeAnOfferMutation from "./http/useMakeAnOfferMutation";
 const MakeAnOfferPopUp = ({ setIsOpen, offerType, data }) => {
   const dark = useAppSelector((state) => state.theme.mode);
   const [offerPrice, setOfferPrice] = useState("");
+  const langcode = useAppSelector((state) => state.user.language);
+
+  console.log(langcode)
 
   const { data: offerData, isLoading } = useGetMakeOfferDetials(data?._id);
   const { mutateAsync, isPending } = useMakeAnOfferMutation();
@@ -18,6 +21,7 @@ const MakeAnOfferPopUp = ({ setIsOpen, offerType, data }) => {
       artistId: data?.owner?._id,
       id: data?._id,
       counterAccept: true,
+      langCode: "EN",
       isAccepted: offerData?.data?.status === "pending" ? true : true,
     };
     mutateAsync(values).then(() => {

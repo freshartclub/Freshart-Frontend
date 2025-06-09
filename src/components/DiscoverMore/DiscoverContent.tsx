@@ -41,6 +41,9 @@ const DiscoverContent = ({ data }) => {
   const { mutateAsync: favoriteMutation } = useAddToFavorite();
   const { data: offerData } = useGetMakeOfferDetials(data?._id);
 
+
+  console.log(offerData)
+
   const [isOfferPopupOpen, setIsOfferPopupOpen] = useState(false);
   const [offerType, setOfferType] = useState("");
   const [favoriteLists, setFavoriteLists] = useState<Record<string, string[]>>({});

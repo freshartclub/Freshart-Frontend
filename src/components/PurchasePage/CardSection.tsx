@@ -164,7 +164,7 @@ const CardSection = ({ data, type, darkMode }) => {
                 } hover:shadow-md transition-shadow duration-200 w-full group`}
             >
               {item?.exclusive && (
-                <div className="absolute top-2 left-2 bg-[#E05A48] text-white text-[10px] tracking-wider font-bold uppercase px-2 py-1 rounded shadow-sm z-[9999]">
+                <div className="absolute top-2 left-2 bg-[#E05A48] text-white text-[10px] tracking-wider font-bold uppercase px-2 py-1 rounded shadow-sm z-[99]">
                   Exclusive
                 </div>
               )}

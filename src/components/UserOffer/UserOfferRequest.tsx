@@ -101,6 +101,7 @@ const UserOfferRequest = () => {
       offerType: offerData?.type,
       artistId: offerData?.artist?._id,
       id: offerData?.artwork?._id,
+         langCode: "EN",
       counterAccept: counterAccept,
     };
 
@@ -117,6 +118,7 @@ const UserOfferRequest = () => {
       offerType: offerData?.type,
       artistId: offerData?.artist?._id,
       id: offerData?.artwork?._id,
+      langCode: "EN",
       counterAccept: counterAccept,
     };
 
